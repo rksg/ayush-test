@@ -22,15 +22,15 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useInviteCustomerListQuery }                                               from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                                 from '@acx-ui/rc/services'
-import { useTableQuery }                                                            from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
-import { useParams }                                                                from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, isDelegationMode, PverName, useTenantId } from '@acx-ui/utils'
+import { useInviteCustomerListQuery }                                       from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                               from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                         from '@acx-ui/rc/services'
+import { useTableQuery }                                                    from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { useParams }                                                        from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                        from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                  from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }   from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -75,8 +75,6 @@ function Layout () {
   const showHomeButton = nonVarDelegation ||
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
-    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
@@ -118,14 +116,7 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
-        { showHomeButton && (isBackToRC ?
-          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-            <UI.Home>
-              <LayoutUI.Icon children={<HomeSolid />} />
-              {isSupportDelegation
-                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
-            </UI.Home>
-          </a> :
+        { showHomeButton && (
           <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />

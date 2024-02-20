@@ -8,9 +8,7 @@ import {
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
-import {
-  Provider, store
-} from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -95,7 +93,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     }
   })
 
-
   it('render SwitchUpgradeWizard - schedule', async () => {
     render(
       <Provider>
@@ -127,7 +124,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -145,7 +143,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(await screen.findByText('Skip This Update?')).toBeInTheDocument()
   })
 
-  it('render SwitchUpgradeWizard - select switch step - venue', async () => {
+  it('render SwitchUpgradeWizard - select switch step - venue - select one', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -153,7 +151,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -168,6 +167,23 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     //deselect 1 item
     await userEvent.click(within(myVenue).getByRole('checkbox'))
     expect(within(myVenue).getByRole('checkbox')).not.toBeChecked()
+  })
+
+  it('render SwitchUpgradeWizard - select switch step - venue - select all', async () => {
+    render(
+      <Provider>
+        <SwitchUpgradeWizard
+          wizardType={SwitchFirmwareWizardType.skip}
+          visible={true}
+          setVisible={mockedCancel}
+          onSubmit={() => { }}
+          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
+      })
+
+    const stepsFormSteps = screen.getByText(/skip updates/i)
+    expect(stepsFormSteps).toBeInTheDocument()
 
     //select all
     const selectAll = screen.getByRole('row', {
@@ -191,7 +207,8 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenue.upgradeVenueViewList.filter(
+            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -219,19 +236,15 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const checkboxes = screen.getAllByRole('checkbox')
-    checkboxes.forEach((checkbox) => {
-      if ((checkbox as HTMLInputElement).checked) {
-        userEvent.click(checkbox)
-      }
-    })
+    const dialog = screen.getByRole('dialog')
 
-    const stepsFormSteps = screen.getByText(/skip updates/i)
+    const stepsFormSteps = within(dialog).getByText(/skip updates/i)
     expect(stepsFormSteps).toBeInTheDocument()
 
-    const searchBox = screen.getByRole('textbox')
+    const searchBox = within(dialog).getByRole('textbox')
     expect(searchBox).toBeInTheDocument()
     await userEvent.type(searchBox, 'mock')
+
     expect(screen.getByDisplayValue(/mock/i)).toBeInTheDocument()
     expect(await screen.findByTestId('switch-search-table')).toBeInTheDocument()
 
@@ -244,26 +257,6 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     const FEK3224R0AGCheckbox = within(FEK3224R0AG).getByRole('checkbox')
     await userEvent.click(FEK3224R0AGCheckbox)
     expect(FEK3224R0AGCheckbox).toBeChecked()
-
-    const selectAllRow = screen.getByRole('row', {
-      name: /switch model current firmware available firmware scheduling/i
-    })
-    const selectAllCheckbox = within(selectAllRow).getByRole('checkbox')
-    expect(selectAllCheckbox).toBeInTheDocument()
-
-    //Flaky test
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).toBeChecked()
-
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).not.toBeChecked()
-
-    // await userEvent.click(selectAllCheckbox)
-    // expect(selectAllCheckbox).toBeChecked()
-    // expect(FEK3224R0AGCheckbox).toBeChecked()
-
-    // await userEvent.click(FEK3224R0AGCheckbox)
-    // expect(FEK3224R0AGCheckbox).not.toBeChecked()
   })
 
 })

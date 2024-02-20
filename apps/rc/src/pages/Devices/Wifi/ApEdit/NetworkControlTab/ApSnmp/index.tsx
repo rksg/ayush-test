@@ -4,6 +4,7 @@ import { Form, Select, Switch, Row, Button, Col, Space } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
+import { ApSnmpMibsDownloadInfo }                                                                      from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
@@ -198,6 +199,19 @@ export function ApSnmp () {
     handleFormApSnmpChange()
   }
 
+  const handleAddApSnmp = async () => {
+    await setEditContextData({
+      ...editContextData,
+      isDirty: false,
+      hasError: false
+    })
+
+    await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
+      type: PolicyType.SNMP_AGENT,
+      oper: PolicyOperation.CREATE
+    })}`)
+  }
+
 
   return (<Loader states={[{
     isLoading: formInitializing,
@@ -208,7 +222,7 @@ export function ApSnmp () {
       onFormChange={() => handleFormApSnmpChange()}
     >
       <StepsFormLegacy.StepForm
-        layout='horizontal'
+        //layout='horizontal'
         initialValues={apSnmpSettings}>
         <VenueSettingsHeader venue={venue}
           isUseVenueSettings={isUseVenueSettings}
@@ -216,15 +230,16 @@ export function ApSnmp () {
         />
         <Row>
           <Col span={12}>
-            <Space align='start' size={'large'}>
+            <Space>
               <StepsFormLegacy.FieldLabel
                 width='max-content'
-                style={{ height: '32px', display: 'flex' }}
+                style={{ height: '48px', display: 'flex', alignItems: 'center' }}
               >
                 <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
                 <Form.Item
                   name='enableApSnmp'
                   valuePropName='checked'
+                  style={{ marginBottom: '3px' }}
                 >
                   <Switch
                     disabled={isUseVenueSettings}
@@ -233,53 +248,35 @@ export function ApSnmp () {
                   />
                 </Form.Item>
               </StepsFormLegacy.FieldLabel>
-              <div style={{ width: '20px' }}></div>
-              {isApSnmpEnable && <Space align='center'>
-                <StepsFormLegacy.FieldLabel
-                  width='max-content'
-                  style={{ height: '32px', display: 'flex' }}
-                >
-                  <span>{$t({ defaultMessage: 'SNMP Agent' })}</span>
-                  <Form.Item name='apSnmpAgentProfileId'
-                  >
-                    <Select
-                      data-testid='snmp-select'
-                      disabled={isUseVenueSettings}
-                      options={[
-                        { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                        ...getApSnmpAgentList?.data?.map(
-                          item => ({ label: item.policyName, value: item.id })
-                        ) ?? []
-                      ]}
-                      style={{ width: '200px', marginLeft: '20px' }}
-                    />
-                  </Form.Item>
-                  {((getApSnmpAgentList?.data?.length as number) < 64) &&
-                    <Button
-                      data-testid='use-push'
-                      type='link'
-                      onClick={async () => {
-                        await setEditContextData({
-                          ...editContextData,
-                          isDirty: false,
-                          hasError: false
-                        })
-                        await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
-                          type: PolicyType.SNMP_AGENT,
-                          oper: PolicyOperation.CREATE
-                        })}`)
-                      }
-                      }
-                    >
-                      {$t({ defaultMessage: 'Add' })}
-                    </Button>
-                  }
-                </StepsFormLegacy.FieldLabel>
-              </Space>
+              {isApSnmpEnable && <>
+                <Form.Item name='apSnmpAgentProfileId' style={{ margin: '0' }}>
+                  <Select
+                    data-testid='snmp-select'
+                    disabled={isUseVenueSettings}
+                    options={[
+                      { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
+                      ...getApSnmpAgentList?.data?.map(
+                        item => ({ label: item.policyName, value: item.id })
+                      ) ?? []
+                    ]}
+                    style={{ width: '200px' }}
+                  />
+                </Form.Item>
+                {((getApSnmpAgentList?.data?.length as number) < 64) &&
+                  <Button
+                    data-testid='use-push'
+                    type='link'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleAddApSnmp} >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
+                }
+              </>
               }
             </Space>
           </Col>
         </Row>
+        <ApSnmpMibsDownloadInfo />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   </Loader>)

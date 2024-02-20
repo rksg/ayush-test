@@ -60,6 +60,7 @@ export interface EdgeUpdateScheduleRequest {
 
 export interface UpdateNowRequest {
   firmwareCategoryId?: string;
+  firmwareSequence?: number,
   firmwareVersion?: string;
   venueIds: Array<string>;
 }
@@ -81,6 +82,22 @@ export enum FirmwareType {
   DP_FIRMWARE_UPGRADE = 'DP_FIRMWARE_UPGRADE',
   SWITCH_FIRMWARE_UPGRADE = 'SWITCH_FIRMWARE_UPGRADE',
   EDGE_FIRMWARE_UPGRADE = 'EDGE_FIRMWARE_UPGRADE',
+}
+
+export enum ApModelFamilyType {
+  WIFI_11AC_1 = 'AC_WAVE1',
+  WIFI_11AC_2 = 'AC_WAVE2',
+  WIFI_6 = 'WIFI_6',
+  WIFI_6E = 'WIFI_6E',
+  WIFI_7 = 'WIFI_7'
+}
+
+export const defaultApModelFamilyDisplayNames: { [key in ApModelFamilyType]: string } = {
+  [ApModelFamilyType.WIFI_11AC_1]: '11ac',
+  [ApModelFamilyType.WIFI_11AC_2]: '11ac wave2',
+  [ApModelFamilyType.WIFI_6]: 'Wi-Fi 6',
+  [ApModelFamilyType.WIFI_6E]: 'Wi-Fi 6E',
+  [ApModelFamilyType.WIFI_7]: 'Wi-Fi 7'
 }
 
 export interface VenueUpdateAdvice {
@@ -108,12 +125,18 @@ export interface FirmwareVersion {
 export interface ABFVersion {
   abf: string;
   sequence?: number;
-  supportedApModels?: string[];
   id: string;
   name: string;
   category: FirmwareCategory;
   releaseDate: string;
   onboardDate: string;
+  supportedApModels?: string[];
+}
+
+export interface ApModelFamily {
+  name: ApModelFamilyType;
+  displayName: string;
+  apModels: string[]
 }
 
 export interface EolApFirmware {
@@ -123,6 +146,7 @@ export interface EolApFirmware {
   apCount: string;
   apModels: string[];
   isAbfGreaterThanVenueCurrentAbf: boolean;
+  sequence?: number;
 }
 
 export interface FirmwareVenue {
@@ -144,6 +168,7 @@ export interface FirmwareVenueVersion {
   version: string;
   category?: FirmwareCategory;
   type: FirmwareType;
+  sequence?: number;
 }
 
 export interface Schedule {

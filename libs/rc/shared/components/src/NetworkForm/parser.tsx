@@ -259,11 +259,14 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   } as OpenWlanAdvancedCustomization |
        AAAWlanAdvancedCustomization |
        DpskWlanAdvancedCustomization |
-       PskWlanAdvancedCustomization
+       PskWlanAdvancedCustomization |
+       GuestWlanAdvancedCustomization
 
   if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
     advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
   }
+
+
 
   // radioCustomization
   advancedCustomization.radioCustomization = {
@@ -404,6 +407,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     ...data,
     wlan: {
       ...originalData?.wlan,
+      ...data.wlan,
       vlanId,
       advancedCustomization
     }

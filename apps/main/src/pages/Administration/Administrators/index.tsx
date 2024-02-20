@@ -65,7 +65,8 @@ const Administrators = () => {
   useEffect(() => {
     if (tenantAuthenticationData) {
       const ssoData = tenantAuthenticationData.data?.filter(n =>
-        n.authenticationType === TenantAuthenticationType.saml)
+        n.authenticationType === TenantAuthenticationType.saml ||
+        n.authenticationType === TenantAuthenticationType.google_workspace)
       if (ssoData?.length && ssoData?.length > 0) {
         setSsoConfigured(true)
       }

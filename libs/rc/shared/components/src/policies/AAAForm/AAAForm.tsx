@@ -8,18 +8,20 @@ import {
   StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
+  useAaaPolicyQuery,
+  useAddAAAPolicyMutation,
+  useUpdateAAAPolicyMutation,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation
-} from '@acx-ui/msp/services'
-import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
+} from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
   generatePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
-  usePolicyBreadcrumb,
+  usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -42,7 +44,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const { data } = useGetInstance(isEdit)
   const createInstance = useAddInstance()
   const updateInstance = useUpdateInstance()

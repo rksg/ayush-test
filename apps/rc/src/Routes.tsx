@@ -14,7 +14,8 @@ import {
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
-  NetworkForm
+  NetworkForm,
+  AccessControlDetail, AccessControlTable
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -37,6 +38,7 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
 import { SwitchList, SwitchTabsEnum }               from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
@@ -55,8 +57,6 @@ import { ConfigurationProfileForm }                 from './pages/Networks/wired
 import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
-import AccessControlDetail                          from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlTable                           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
 import AdaptivePolicyDetail                         from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
 import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
@@ -104,6 +104,8 @@ import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/Edg
 import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
 import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
 import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
+import EdgeSdLanTableP2                     from './pages/Services/EdgeSdLanP2/EdgeSdLanTable'
+import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
 import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
@@ -204,6 +206,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
+      <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
+        element={<EditEdgeCluster />} />
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
@@ -292,11 +296,22 @@ const edgeSdLanRoutes = () => {
 }
 
 const edgeSdLanPhase2Routes = () => {
-  return <Route
+  return <><Route
     path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
       oper: ServiceOperation.CREATE })}
     element={<AddEdgeSdLanP2 />}
   />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.EDIT })}
+    element={<EditEdgeSdLanP2 />}
+  />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
+      oper: ServiceOperation.LIST })}
+    element={<EdgeSdLanTableP2 />}
+  />
+  </>
 }
 
 
@@ -533,17 +548,14 @@ function PolicyRoutes () {
         element={<RogueAPDetectionTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={<AAAForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
         element={<AAAForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
         element={<AAAPolicyDetail/>}
       />
@@ -552,12 +564,10 @@ function PolicyRoutes () {
         element={<AAATable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
         element={<SyslogForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
         element={<SyslogForm edit={true}/>}
       />
@@ -565,7 +575,6 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
         element={<SyslogTable />} />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
         element={<SyslogDetailView />}
       />
@@ -588,17 +597,14 @@ function PolicyRoutes () {
           element={<MacRegistrationListForm editMode={true} />}
         /> </> : <></> }
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
         element={<VLANPoolForm edit={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
         element={<VLANPoolForm edit={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
         element={<VLANPoolDetail/>}
       />
@@ -611,12 +617,10 @@ function PolicyRoutes () {
         element={<AccessControlForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
         element={<AccessControlForm editMode={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
         element={<AccessControlDetail />}
       />
@@ -649,12 +653,10 @@ function PolicyRoutes () {
         element={<IdentityProviderTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
         element={<SnmpAgentForm editMode={false}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })}
         element={<SnmpAgentForm editMode={true}/>}
       />
@@ -663,7 +665,6 @@ function PolicyRoutes () {
         element={<SnmpAgentTable />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })}
         element={<SnmpAgentDetail />}
       />

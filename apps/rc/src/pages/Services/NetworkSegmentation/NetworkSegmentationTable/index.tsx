@@ -36,8 +36,11 @@ const getNetworkSegmentationPayload = {
     'name',
     'tags',
     'networkIds',
+    'venueInfoIds',
     'venueInfos',
+    'edgeInfoIds',
     'edgeInfos',
+    'distributionSwitchInfoIds',
     'distributionSwitchInfos',
     'accessSwitchInfos',
     'edgeAlarmSummary'
@@ -75,6 +78,7 @@ const NetworkSegmentationTable = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const settingsId = 'services-network-segmentation-table'
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
@@ -84,7 +88,8 @@ const NetworkSegmentationTable = () => {
     },
     search: {
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId }
   })
   const [
     deleteNetworkSegmentationGroup,
@@ -302,7 +307,7 @@ const NetworkSegmentationTable = () => {
         { isLoading: false, isFetching: isNetworkSegmentationGroupDeleting }
       ]}>
         <Table
-          settingsId='services-network-segmentation-table'
+          settingsId={settingsId}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: 'checkbox' }}

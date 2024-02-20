@@ -4,10 +4,17 @@ import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Tooltip }                               from '@acx-ui/components'
-import { useGetVenueBssColoringQuery, useUpdateVenueBssColoringMutation } from '@acx-ui/rc/services'
+import { Loader, StepsFormLegacy }                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import {
+  useGetVenueBssColoringQuery, useGetVenueTemplateBssColoringQuery,
+  useUpdateVenueBssColoringMutation, useUpdateVenueTemplateBssColoringMutation
+} from '@acx-ui/rc/services'
+import { VenueBssColoring } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 export function BssColoring () {
   const { $t } = useIntl()
@@ -20,10 +27,20 @@ export function BssColoring () {
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
 
+  /* eslint-disable-next-line max-len */
+  const tooltipInfo = $t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [enableBssColoring, setEnableBssColoring] = useState(false)
-  const getVenueBssColoring = useGetVenueBssColoringQuery({ params: { venueId } })
+  const getVenueBssColoring = useVenueConfigTemplateQueryFnSwitcher<VenueBssColoring>(
+    useGetVenueBssColoringQuery,
+    useGetVenueTemplateBssColoringQuery
+  )
   const [updateVenueBssColoring, { isLoading: isUpdatingVenueBssColoring }] =
-    useUpdateVenueBssColoringMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueBssColoringMutation,
+      useUpdateVenueTemplateBssColoringMutation
+    )
 
   useEffect(() => {
     const { data } = getVenueBssColoring
@@ -71,12 +88,12 @@ export function BssColoring () {
         >
           <span>{$t({ defaultMessage: 'Enable BSS Coloring' })}</span>
           <div style={{ margin: '2px' }}></div>
-          <Tooltip.Question
-          // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })}
+          <ApCompatibilityToolTip
+            title={tooltipInfo}
+            visible={supportApCompatibleCheck}
             placement='bottom'
+            onClick={() => setDrawerVisible(true)}
           />
-
           <Switch
             data-testid='bss-coloring-switch'
             checked={enableBssColoring}
@@ -85,6 +102,15 @@ export function BssColoring () {
             }}
             style={{ marginLeft: '20px' }}
           />
+          {supportApCompatibleCheck &&
+            <ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={venueId?ApCompatibilityType.VENUE:ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.QOS_MIRRORING}
+              onClose={() => setDrawerVisible(false)}
+            />
+          }
         </StepsFormLegacy.FieldLabel>
       </Space>
     </Loader>

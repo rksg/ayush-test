@@ -19,25 +19,34 @@ import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
-  useGetVenueQuery,
-  useUpdateVenueMutation
+  useUpdateVenueMutation,
+  useAddVenueTemplateMutation,
+  useUpdateVenueTemplateMutation,
+  useLazyGetVenuesTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
+  LocationExtended,
   VenueExtended,
   checkObjectNotExists,
+  generatePageHeaderTitle,
   redirectPreviousPage,
+  useConfigTemplateBreadcrumb,
+  useConfigTemplate,
   whitespaceOnlyRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
-  useParams
+  useParams,
+  useLocation
 } from '@acx-ui/react-router-dom'
+import { RequestPayload }     from '@acx-ui/types'
 import { validationMessages } from '@acx-ui/utils'
 
-import { MessageMapping }   from '../MessageMapping'
-import { VenueEditContext } from '../VenueEdit'
+import { MessageMapping }      from '../MessageMapping'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }    from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -137,8 +146,8 @@ export function VenuesForm () {
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
-  const [addVenue] = useAddVenueMutation()
-  const [updateVenue] = useUpdateVenueMutation()
+  const addVenue = useAddInstance()
+  const updateVenue = useUpdateInstance()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -148,9 +157,21 @@ export function VenuesForm () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [countryCode, setCountryCode] = useState('')
 
-  const { tenantId, venueId, action } = useParams()
-  const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
-  const { previousPath } = useContext(VenueEditContext)
+  const { action } = useParams()
+  const { data } = useGetVenueInstance()
+  const previousPath = usePreviousPath()
+
+  // Config Template related states
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
+  ])
+  const pageTitle = generatePageHeaderTitle({
+    isEdit: action === 'edit',
+    isTemplate,
+    instanceLabel: intl.$t({ defaultMessage: 'Venue' }),
+    addLabel: intl.$t({ defaultMessage: 'Add New' })
+  })
 
   useEffect(() => {
     if (data) {
@@ -208,7 +229,7 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const [venuesList] = useLazyVenuesListQuery()
+  const venuesList = useGetLazyInstances()
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject(intl.$t(validationMessages.name))
@@ -262,35 +283,35 @@ export function VenuesForm () {
     onPlaceSelected: addressOnChange
   })
 
-  const handleAddVenue = async (values: VenueExtended) => {
+  const handleSubmit = async (
+    values: VenueExtended,
+    action: (args: RequestPayload<unknown>) => { unwrap: () => Promise<VenueExtended> },
+    needRedirect: boolean = true
+  ) => {
     try {
       const formData = { ...values }
       formData.address = countryCode ? { ...address, countryCode } : address
-      await addVenue({ params, payload: formData }).unwrap()
+      await action({ params, payload: formData }).unwrap()
 
-      navigate(linkToVenues, { replace: true })
+      needRedirect && redirectPreviousPage(navigate, previousPath, linkToVenues)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const handleAddVenue = async (values: VenueExtended) => {
+    handleSubmit(values, addVenue)
+  }
+
   const handleEditVenue = async (values: VenueExtended) => {
-    try {
-      const formData = { ...values }
-      formData.address = countryCode ? { ...address, countryCode } : address
-      await updateVenue({ params, payload: formData }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    handleSubmit(values, updateVenue, false)
   }
 
   return (
     <>
       {action !== 'edit' && <PageHeader
-        title={intl.$t({ defaultMessage: 'Add New Venue' })}
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy
         formRef={formRef}
@@ -407,4 +428,38 @@ export function VenuesForm () {
       </StepsFormLegacy>
     </>
   )
+}
+
+function useAddInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ addVenue ] = useAddVenueMutation()
+  const [ addVenueTemplate ] = useAddVenueTemplateMutation()
+
+  return isTemplate ? addVenueTemplate : addVenue
+}
+
+function useUpdateInstance () {
+  const { isTemplate } = useConfigTemplate()
+  const [ updateVenue ] = useUpdateVenueMutation()
+  const [ updateVenueTemplate ] = useUpdateVenueTemplateMutation()
+
+  return isTemplate ? updateVenueTemplate : updateVenue
+}
+
+function useGetLazyInstances () {
+  const { isTemplate } = useConfigTemplate()
+  const [ venuesList ] = useLazyVenuesListQuery()
+  const [ venuesTemplateList ] = useLazyGetVenuesTemplateListQuery()
+
+  return isTemplate ? venuesTemplateList : venuesList
+}
+
+function usePreviousPath (): string {
+  const { previousPath } = useContext(VenueEditContext)
+  const { isTemplate } = useConfigTemplate()
+  const location = useLocation()
+
+  return isTemplate
+    ? (previousPath ?? (location as LocationExtended)?.state?.from?.pathname)
+    : previousPath
 }

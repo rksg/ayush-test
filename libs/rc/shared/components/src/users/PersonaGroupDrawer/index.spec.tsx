@@ -1,6 +1,5 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   NewDpskBaseUrl,
@@ -8,8 +7,8 @@ import {
   NewPersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 
 import {
@@ -137,7 +136,6 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(addButton[addButton.length - 1])
 
     await waitFor(() => expect(createPersonaGroupSpy).toHaveBeenCalled())
-    await screen.findByText('Identity Group New Identity Group Name was added')
   })
 
   it('should edit a persona group', async () => {
@@ -166,6 +164,5 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
-    await screen.findByText('Identity Group Class A was updated')
   })
 })

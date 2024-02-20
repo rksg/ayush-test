@@ -1,7 +1,11 @@
-import { useGetAAAPolicyTemplateListQuery, useLazyGetAAAPolicyTemplateQuery } from '@acx-ui/msp/services'
-import { useGetAAAPolicyViewModelListQuery, useLazyAaaPolicyQuery }           from '@acx-ui/rc/services'
-import { useConfigTemplate }                                                  from '@acx-ui/rc/utils'
-import { useParams }                                                          from '@acx-ui/react-router-dom'
+import {
+  useGetAAAPolicyViewModelListQuery,
+  useLazyAaaPolicyQuery,
+  useGetAAAPolicyTemplateListQuery,
+  useLazyGetAAAPolicyTemplateQuery
+} from '@acx-ui/rc/services'
+import { useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }         from '@acx-ui/react-router-dom'
 
 interface useGetAAAPolicyInstanceListProps {
   customPayload?: {}

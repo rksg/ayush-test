@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, FirmwareUrlsInfo }    from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                        from '@acx-ui/user'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, FirmwareUrlsInfo }               from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                   from '@acx-ui/user'
 
 import Layout from '.'
 
@@ -36,6 +37,44 @@ const tenantNonVarDetail = {
   tenantType: 'MSP_NON_VAR',
   updatedDate: '2022-12-24T01:06:05.021+00:00',
   upgradeGroup: 'production'
+}
+
+const tenantLSPDetail = {
+  createdDate: '2022-12-24T01:06:03.205+00:00',
+  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  id: '3061bd56e37445a8993ac834c01e2710',
+  isActivated: true,
+  maintenanceState: false,
+  name: 'Din Tai Fung',
+  ruckusUser: false,
+  status: 'active',
+  tenantType: 'MSP_INTEGRATOR',
+  updatedDate: '2022-12-24T01:06:05.021+00:00',
+  upgradeGroup: 'production'
+}
+
+const integratorCustomersList = {
+  data: [{
+    accountType: 'TRIAL',
+    apSwLicenses: 50,
+    creationDate: '1706776366333',
+    edgeLicenses: 0,
+    entitlements: [{ expirationDateTs: '1709368337000', consumed: '0', quantity: '50' }],
+    id: '42aba1adf0e544df8e13ece0515c8d4f',
+    installerCount: 0,
+    integrator: 'fe39255f8c1547ed9893b79f793fd333',
+    integratorCount: 1,
+    mspAdminCount: 1,
+    mspEcAdminCount: 0,
+    mspIntegratorAdminCount: 1,
+    name: 'customer1234',
+    status: 'Active',
+    streetAddress: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+    switchLicenses: 0,
+    tenantType: 'MSP_REC',
+    wifiLicenses: 0
+  }]
 }
 
 const userProfile1 = {
@@ -143,6 +182,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
 }))
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Layout', () => {
   let params: { tenantId: string }
@@ -237,6 +277,54 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'Device Inventory' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Subscriptions' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Settings' })).toBeNull()
+  })
+
+  // below tests cases are temporary and need to revert once BE changes available
+  // show / hide brand 360 and Ruckus End customer menu option for LSP
+  it('should hide menu options in case of LSP has no REC data', async () => {
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantLSPDetail }
+    })
+    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
+      return { data: [] }
+    })
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile2 }
+    })
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeNull()
+    await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
+    await waitFor(async () => expect(await screen.findByText('MSP Customers')).toBeInTheDocument())
+  })
+
+  it('should show menu options in case of LSP has no REC data', async () => {
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantLSPDetail }
+    })
+    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
+      return { data: integratorCustomersList }
+    })
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile2 }
+    })
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(screen.getByRole('menuitem', { name: 'Brand 360' })).toBeInTheDocument()
+    await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
+    await waitFor(async () => expect(await screen.findByText('MSP Customers')).not.toBeVisible())
   })
   it('should render layout correctly for non-support', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {

@@ -9,13 +9,16 @@ import {
   Modal
 } from '@acx-ui/components'
 import {
+  EolApFirmware,
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
 import {
-  getVersionLabel, isBetaFirmware
+  getApSequence,
+  getVersionLabel,
+  isBetaFirmware
 } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
@@ -50,6 +53,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     const venuesData = data as FirmwareVenue[]
     const request = [{
       firmwareCategoryId: selectedFirmware?.abf,
+      firmwareSequence: selectedFirmware?.sequence,
       firmwareVersion: selectedVersion,
       venueIds: venuesData.map(venue => venue.id)
     }]
@@ -78,15 +82,27 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     const fw = availableVersions?.filter((abfVersion: FirmwareVersion) => abfVersion.id === selectedVersion)
     if (fw && fw.length > 0) {
       setSelectedFirmware(fw[0])
+      let unSupportedModels: string[] = []
       if (data && data[0] && data[0].apModels) {
-        let unSupportedModels: string[] = []
         for (let model of data[0].apModels) {
           if (!fw[0].supportedApModels?.includes(model)) {
             unSupportedModels.push(model)
           }
         }
-        setUnSupportedModels(unSupportedModels)
       }
+      if (data && data[0] && data[0].eolApFirmwares) {
+        const downgradeEolFirmwares = getDowngradeEolFirmware(data[0])
+        if (downgradeEolFirmwares && downgradeEolFirmwares.length > 0) {
+          for (let eolFirmware of downgradeEolFirmwares) {
+            for (let model of eolFirmware.apModels) {
+              if (!fw[0].supportedApModels?.includes(model) && !unSupportedModels.includes(model)) {
+                unSupportedModels.push(model)
+              }
+            }
+          }
+        }
+      }
+      setUnSupportedModels(unSupportedModels)
     }
     setStep(2)
   }
@@ -213,3 +229,10 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
     </Modal>
   )
 }
+
+function getDowngradeEolFirmware (venue: FirmwareVenue): EolApFirmware[] {
+  const eolApFirmwares = venue.eolApFirmwares || []
+  const currentSequence = getApSequence(venue) ?? 0
+  return eolApFirmwares.filter(eol => eol.sequence as number >= currentSequence)
+}
+

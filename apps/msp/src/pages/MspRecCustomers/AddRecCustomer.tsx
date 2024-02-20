@@ -183,15 +183,19 @@ export function AddRecCustomer () {
       })
       const ecDelegations=[] as MspIntegratorDelegated[]
       if (mspIntegrator.length > 0) {
-        ecDelegations.push({
-          delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: mspIntegrator[0].id
+        mspIntegrator.forEach((integrator: MspEc) => {
+          ecDelegations.push({
+            delegation_type: AccountType.MSP_INTEGRATOR,
+            delegation_id: integrator.id
+          })
         })
       }
       if (mspInstaller.length > 0) {
-        ecDelegations.push({
-          delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: mspInstaller[0].id
+        mspInstaller.forEach((installer: MspEc) => {
+          ecDelegations.push({
+            delegation_type: AccountType.MSP_INSTALLER,
+            delegation_id: installer.id
+          })
         })
       }
       const customer: MspRecData = {
@@ -349,7 +353,10 @@ export function AddRecCustomer () {
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' })}
+        title={!isEditMode ?
+          intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' }) :
+          intl.$t({ defaultMessage: 'RUCKUS End Customer Account' })
+        }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {

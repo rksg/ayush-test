@@ -56,7 +56,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   }
 
   const appTokenData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType !== TenantAuthenticationType.saml)
+    n.authenticationType !== TenantAuthenticationType.saml &&
+    n.authenticationType !== TenantAuthenticationType.google_workspace)
   useEffect(() => {
     const hasTokenData = (Array.isArray(appTokenData) && appTokenData.length > 0)
     setAppToken(hasTokenData)

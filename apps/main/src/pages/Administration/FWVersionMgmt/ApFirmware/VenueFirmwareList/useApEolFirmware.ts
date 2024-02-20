@@ -2,11 +2,12 @@
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { useGetAvailableABFListQuery }              from '@acx-ui/rc/services'
-import { ABFVersion, EolApFirmware, FirmwareVenue } from '@acx-ui/rc/utils'
-import { getIntl }                                  from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
+import { useGetApModelFamiliesQuery, useGetAvailableABFListQuery }                                       from '@acx-ui/rc/services'
+import { ABFVersion, ApModelFamilyType, EolApFirmware, FirmwareVenue, defaultApModelFamilyDisplayNames } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                       from '@acx-ui/utils'
 
-import { compareVersions, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
+import { MaxABFVersionEntity, compactEolApFirmwares, compareABFSequence, compareVersions, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 export type EolApFirmwareGroup = {
   name: string,
@@ -15,16 +16,19 @@ export type EolApFirmwareGroup = {
   isUpgradable: boolean
 }
 
-type MaxEolABFVersionEntity = {
-  maxVersion: string,
-  isAllTheSame: boolean,
-  latestVersion: string,
-}
-type MaxEolABFVersionMap = {
-  [abfName: string]: MaxEolABFVersionEntity
+export type UpgradableApModelsAndFamilies = {
+  [abfName: string]: {
+    familyNames: string[],
+    apModels: string[],
+    sequence?: number
+  }
 }
 
 export function useApEolFirmware () {
+  const intl = getIntl()
+  // eslint-disable-next-line max-len
+  const isBranchLevelSupportedModelsEnabled = useIsSplitOn(Features.WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE)
+
   const { releasedABFList, latestEolVersionByABFs } = useGetAvailableABFListQuery({}, {
     refetchOnMountOrArgChange: false,
     selectFromResult: ({ data }) => {
@@ -38,13 +42,28 @@ export function useApEolFirmware () {
       }
     }
   })
-  const intl = getIntl()
+  const { modelToFamilyMap, apModelFamilyDisplayNames } = useGetApModelFamiliesQuery({}, {
+    skip: !isBranchLevelSupportedModelsEnabled,
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => ({
+      // eslint-disable-next-line max-len
+      modelToFamilyMap: (data ?? []).reduce((result: Record<string, ApModelFamilyType>, item) => {
+        item.apModels.forEach(apModel => result[apModel] = item.name)
+        return result
+      }, {}),
+      // eslint-disable-next-line max-len
+      apModelFamilyDisplayNames: (data ?? []).reduce((result: Record<ApModelFamilyType, string>, item) => {
+        result[item.name] = item.displayName
+        return result
+      }, { ...defaultApModelFamilyDisplayNames })
+    })
+  })
 
   // eslint-disable-next-line max-len
   const getEolABFOtherVersionsOptions = (selectedRows: FirmwareVenue[]): { [abfName: string]: DefaultOptionType[] } => {
     if (!releasedABFList) return {}
 
-    const maxEolABFVersionMap = findMaxEolABFVersion(selectedRows)
+    const maxEolABFVersionMap = findMaxEolABFVersions(selectedRows)
     let result: { [abfName: string]: DefaultOptionType[] } = {}
 
     releasedABFList
@@ -122,17 +141,86 @@ export function useApEolFirmware () {
     return target ? getVersionLabel(intl, target, false) : ''
   }
 
+  // eslint-disable-next-line max-len
+  const findUpgradableApModelsAndFamilies = (targetVersions: string[], selectedRows: FirmwareVenue[]): UpgradableApModelsAndFamilies => {
+    if (!isBranchLevelSupportedModelsEnabled) {
+      return extractUpgradableApModelsAndFamilies(selectedRows)
+    }
+
+    if (!releasedABFList || !modelToFamilyMap || targetVersions.length === 0) return {}
+
+    const sortedTargetVersions = targetVersions.sort((v1, v2) => -compareVersions(v1, v2)) // Sort versions from high to low
+    // eslint-disable-next-line max-len
+    const allEolApModels = compactEolApFirmwares(selectedRows).flatMap((eolFw: EolApFirmware) => eolFw.apModels)
+    const allActiveApModels = getActiveApModels(selectedRows)
+    const allApModels = [...new Set([...allEolApModels, ...allActiveApModels])]
+    const upgradableApModelAndFamilies: UpgradableApModelsAndFamilies = {}
+
+    sortedTargetVersions.forEach(targetVersion => {
+      const targetABFInfo = releasedABFList.find(abf => abf.id === targetVersion)
+
+      if (!targetABFInfo?.supportedApModels) return
+
+      const supportedApModels = targetABFInfo.supportedApModels.filter(apModel => {
+        return _.remove(allApModels, (currentModel) => currentModel === apModel).length > 0
+      })
+
+      const existingData = upgradableApModelAndFamilies[targetABFInfo.abf]
+
+      if (existingData) {
+        existingData.apModels = [...new Set([...existingData.apModels, ...supportedApModels])]
+      } else {
+        upgradableApModelAndFamilies[targetABFInfo.abf] = {
+          familyNames: [],
+          apModels: supportedApModels,
+          sequence: targetABFInfo.sequence
+        }
+      }
+    })
+
+    Object.keys(upgradableApModelAndFamilies).forEach(abf => {
+      const target = upgradableApModelAndFamilies[abf]
+      // eslint-disable-next-line max-len
+      target.familyNames = [...new Set(target.apModels.map(model => apModelFamilyDisplayNames[modelToFamilyMap[model]]))]
+    })
+
+    return upgradableApModelAndFamilies
+  }
+
   return {
     getAvailableEolApFirmwareGroups,
     getEolABFOtherVersionsOptions,
     canUpdateEolApFirmware,
     getDefaultEolVersionLabel,
+    findUpgradableApModelsAndFamilies,
     latestEolVersionByABFs
   }
 }
 
+export function getRemainingApModels (
+  currentAbfName: string,
+  initialApModels: string[],
+  upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
+): string[] {
+  if (!upgradableApModelsAndFamilies) return initialApModels
+
+  const currentAbfSequence = upgradableApModelsAndFamilies[currentAbfName]?.sequence
+  let remainingModels = [...initialApModels]
+
+  Object.keys(upgradableApModelsAndFamilies).forEach(existingAbfName => {
+    const existingAbf = upgradableApModelsAndFamilies[existingAbfName]
+
+    // eslint-disable-next-line max-len
+    if (compareABFSequence(existingAbf.sequence, currentAbfSequence) > 0 && existingAbfName !== currentAbfName) {
+      _.pull(remainingModels , ...existingAbf.apModels)
+    }
+  })
+
+  return remainingModels
+}
+
 // eslint-disable-next-line max-len
-function canABFVersionDisplay (maxEolABFVersionEntity: MaxEolABFVersionEntity, abfVersion: string): boolean {
+function canABFVersionDisplay (maxEolABFVersionEntity: MaxABFVersionEntity, abfVersion: string): boolean {
   const comparedResult = compareVersions(abfVersion, maxEolABFVersionEntity.maxVersion)
   return (abfVersion !== maxEolABFVersionEntity.latestVersion)
     && ((comparedResult > 0) || (comparedResult === 0 && !maxEolABFVersionEntity.isAllTheSame))
@@ -145,32 +233,39 @@ function getGreaterABFVersionList (abfVersionList: ABFVersion[], abfName: string
   })
 }
 
-function compactEolApFirmwares (selectedRows: FirmwareVenue[]): EolApFirmware[] {
-  return _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
+const eolABFSupportedApFamilyLabels: { [abfName: string]: string[] } = {
+  'active': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_7]],
+  'ABF2-3R': [
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6],
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_6E],
+    defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_2]
+  ],
+  'eol-ap-2022-12': [defaultApModelFamilyDisplayNames[ApModelFamilyType.WIFI_11AC_1]]
 }
+// eslint-disable-next-line max-len
+function extractUpgradableApModelsAndFamilies (selectedRows: FirmwareVenue[]): UpgradableApModelsAndFamilies {
+  const activeABFApModels = getActiveApModels(selectedRows)
+  const eolApFirmwares = compactEolApFirmwares(selectedRows)
+  const upgradableApModelAndFamilies: UpgradableApModelsAndFamilies = {}
 
-function findMaxEolABFVersion (selectedRows: FirmwareVenue[]): MaxEolABFVersionMap {
-  const eolFirmwares = compactEolApFirmwares(selectedRows)
-  let result: MaxEolABFVersionMap = {}
+  if (activeABFApModels.length > 0) {
+    upgradableApModelAndFamilies['active'] = {
+      familyNames: eolABFSupportedApFamilyLabels['active'],
+      apModels: activeABFApModels
+    }
+  }
 
-  eolFirmwares.forEach((eol: EolApFirmware) => {
-    if (result.hasOwnProperty(eol.name)) {
-      const current = result[eol.name]
-      const comparedResult = compareVersions(current.maxVersion, eol.currentEolVersion)
-
-      result[eol.name] = {
-        maxVersion: comparedResult >= 0 ? current.maxVersion : eol.currentEolVersion,
-        isAllTheSame: current.isAllTheSame && comparedResult === 0,
-        latestVersion: eol.latestEolVersion
-      }
+  eolApFirmwares.forEach((eolApFirmware: EolApFirmware) => {
+    const existingData = upgradableApModelAndFamilies[eolApFirmware.name]
+    if (existingData) {
+      existingData.apModels = [...new Set([...existingData.apModels, ...eolApFirmware.apModels])]
     } else {
-      result[eol.name] = {
-        maxVersion: eol.currentEolVersion,
-        isAllTheSame: true,
-        latestVersion: eol.latestEolVersion
+      upgradableApModelAndFamilies[eolApFirmware.name] = {
+        familyNames: eolABFSupportedApFamilyLabels[eolApFirmware.name] ?? [],
+        apModels: eolApFirmware.apModels
       }
     }
   })
 
-  return result
+  return upgradableApModelAndFamilies
 }

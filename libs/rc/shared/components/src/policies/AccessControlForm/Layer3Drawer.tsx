@@ -55,7 +55,8 @@ export interface Layer3DrawerProps {
   isOnlyViewMode?: boolean,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 interface Layer3NetworkCol {
@@ -165,7 +166,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [localEditMode, setLocalEdiMode] = useState(
@@ -282,7 +284,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
     if (form && requestId && queryPolicyName) {
-      layer3SelectOptions.map(option => {
+      layer3SelectOptions.forEach(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
             form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
@@ -426,6 +428,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
   const handleLayer3Rule = () => {

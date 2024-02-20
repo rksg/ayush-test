@@ -54,7 +54,8 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
     networkImpactCharts: build.query<ResultType, RequestPayload>({
       query: ({ charts, incident, toggles }) => {
         const useTotal = _.get(toggles, IncidentToggle.AirtimeIncidents, false)
-        const queries = charts.filter(c => !c.disabled).map(({ chart, query, type, dimension }) => {
+        const queries = charts.filter(c => !c.disabled).map((
+          { chart, query, type, dimension, showTotal }) => {
           switch(query){
             case NetworkImpactQueryTypes.Distribution:
               return [
@@ -67,7 +68,7 @@ export const networkImpactChartsApi = dataApi.injectEndpoints({
             default:
               return [
                 gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
-                  count ${useTotal ? 'total' : ''} data { key value }
+                  count ${showTotal && useTotal ? 'total' : ''} data { key value }
                 }`
               ]
           }

@@ -9,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -87,7 +87,8 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
@@ -258,19 +259,21 @@ export function DeviceInventory () {
   }
 
   const DeviceTable = () => {
+    const settingsId = 'device-inventory-table'
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
       apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='device-inventory-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

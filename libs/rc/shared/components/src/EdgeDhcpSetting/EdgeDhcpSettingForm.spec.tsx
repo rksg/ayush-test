@@ -1,9 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { act }   from 'react-dom/test-utils'
 
-import { StepsForm }                           from '@acx-ui/components'
-import { render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { StepsForm }                                from '@acx-ui/components'
+import { act, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockEdgeDhcpDataRelayOff, mockEdgeDhcpDataRelayOn } from './__tests__/fixtures'
 import { EdgeDhcpSettingForm }                               from './EdgeDhcpSettingForm'

@@ -36,6 +36,7 @@ const params = {
 
 describe('RWGDetails GatewayOverview', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
@@ -62,7 +63,6 @@ describe('RWGDetails GatewayOverview', () => {
       )
     )
 
-    store.dispatch(venueApi.util.resetApiState())
   })
 
   it('should render overview tab correctly', async () => {

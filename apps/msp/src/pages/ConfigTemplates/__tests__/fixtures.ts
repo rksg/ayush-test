@@ -1,3 +1,5 @@
+import { ConfigTemplate } from '@acx-ui/rc/utils'
+
 export const mockedConfigTemplateList = {
   totalCount: 3,
   page: 1,
@@ -8,7 +10,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598400000,
       createdBy: 'Author 1',
       ecTenants: ['t1', 't2'],
-      templateType: 'NETWORK',
+      type: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
     },
@@ -18,7 +20,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598500000,
       createdBy: 'Author 2',
       ecTenants: [],
-      templateType: 'NETWORK',
+      type: 'NETWORK',
       lastModified: 1690598500000,
       lastApplied: 1690598505000
     },
@@ -32,7 +34,7 @@ export const mockedConfigTemplateList = {
       lastModified: 1690598500000,
       lastApplied: 1690598510000
     }
-  ]
+  ] as ConfigTemplate[]
 }
 
 export const mockedMSPCustomerList = {
@@ -82,3 +84,62 @@ export const mockedMSPCustomerList = {
     }
   ]
 }
+
+export const layer2PolicyListResponse = [
+  {
+    id: '36ec4826b5da48cc8118eda83aa4080f',
+    name: 'layer2policy1',
+    macAddressesCount: 1,
+    networksCount: 0
+  }
+]
+
+export const layer3PolicyListResponse = [
+  {
+    id: '233d3182a1aa49ee9f50aeb039347021',
+    name: 'layer3policy1',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
+
+export const avcCat = [
+  {
+    catName: 'Web',
+    catId: 30
+  },
+  {
+    catName: 'Printer',
+    catId: 21
+  },
+  {
+    catName: 'Audio/Video',
+    catId: 3
+  }
+]
+
+export const avcApp = [{
+  appName: 'BBC',
+  avcAppAndCatId: {
+    catId: 30,
+    appId: 1754
+  }
+}, {
+  appName: 'AppsFlyer',
+  avcAppAndCatId: {
+    catId: 30,
+    appId: 2334
+  }
+}, {
+  appName: 'BJNP',
+  avcAppAndCatId: {
+    catId: 21,
+    appId: 2481
+  }
+}, {
+  appName: '050 plus',
+  avcAppAndCatId: {
+    catId: 3,
+    appId: 1123
+  }
+}]

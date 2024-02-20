@@ -6,14 +6,16 @@ import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 import { Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 
 export type SliceType = 'property' | 'lsp'
-const slices: Record<SliceType, MessageDescriptor> = {
-  property: defineMessage({ defaultMessage: 'Property' }),
-  lsp: defineMessage({ defaultMessage: 'LSP' })
+type Slices = {
+  [type in SliceType]?: MessageDescriptor;
 }
-
-export const useSliceType = () => {
+const slices: Slices = {
+  lsp: defineMessage({ defaultMessage: 'LSP' }),
+  property: defineMessage({ defaultMessage: 'Property' })
+}
+export const useSliceType = ({ isLSP }: { isLSP: boolean }) => {
   const { $t } = useIntl()
-  const [sliceType, setSliceType] = useState<SliceType>('property')
+  const [sliceType, setSliceType] = useState<SliceType>(isLSP ? 'property' : 'lsp')
   return {
     sliceType,
     SliceTypeDropdown: () => <Dropdown
@@ -24,7 +26,7 @@ export const useSliceType = () => {
           items={Object.entries(slices).map(([key, label]) => ({ key, label: $t(label) }))}
         />
       }>
-      {() => <Button><Space>{$t(slices[sliceType])}<CaretDownSolidIcon /></Space></Button>}
+      {() => <Button><Space>{$t(slices[sliceType]!)}<CaretDownSolidIcon /></Space></Button>}
     </Dropdown>
   }
 }

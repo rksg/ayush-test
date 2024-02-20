@@ -533,4 +533,78 @@ describe('Setup Azure Drawer', () => {
       expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
     })
   })
+  it('should render correctly for selected auth type', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Set Up SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={false}
+          setEditMode={jest.fn()}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true}
+          isGoogleWorkspaceEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set Up SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('SAML')).toBeVisible()
+    expect(screen.getByText('Google Workspace')).toBeVisible()
+    expect(screen.getAllByRole('radio')).toHaveLength(2)
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+
+    await userEvent.click(screen.getAllByRole('radio')[1])
+    expect(screen.getByText('Client ID')).toBeVisible()
+    expect(screen.getByText('Client secret')).toBeVisible()
+    expect(screen.queryByText('IdP Metadata')).toBeNull()
+
+    await userEvent.click(screen.getAllByRole('radio')[0])
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+  })
+  it('should not allow edit for auth type', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupAzureDrawer
+          title={'Edit SSO with 3rd Party Provider'}
+          visible={true}
+          isEditMode={true}
+          setEditMode={jest.fn()}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer}
+          maxSize={CsvSize['5MB']}
+          maxEntries={512}
+          acceptType={['xml']}
+          isGroupBasedLoginEnabled={true}
+          isGoogleWorkspaceEnabled={true} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit SSO with 3rd Party Provider')).toBeVisible()
+    expect(screen.getByText('SAML')).toBeVisible()
+    expect(screen.queryByText('Google Workspace')).toBeNull()
+    expect(screen.queryByRole('radio')).toBeNull()
+    expect(screen.getByText('IdP Metadata')).toBeVisible()
+    expect(screen.queryByText('Client ID')).toBeNull()
+    expect(screen.queryByText('Client secret')).toBeNull()
+    expect(screen.getByText('test123.xml')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
+    expect(screen.getByText('Allowed Domains')).toBeVisible()
+    expect(screen.queryByText('Please enter domains separated by comma')).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+  })
 })
