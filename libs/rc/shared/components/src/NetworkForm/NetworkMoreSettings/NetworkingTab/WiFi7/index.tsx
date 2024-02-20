@@ -32,6 +32,18 @@ interface Option {
   disabled: boolean
 }
 
+const shouldMLOBeDisable = (wlan: NetworkSaveData) : boolean => {
+  const isWlanInLimitedNetworkTypes = [
+    (wlan.type === NetworkTypeEnum.PSK),
+    (wlan.type === NetworkTypeEnum.AAA),
+    (wlan.type === NetworkTypeEnum.OPEN),
+    (wlan.type === NetworkTypeEnum.CAPTIVEPORTAL && wlan.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass),
+    (wlan.type === NetworkTypeEnum.CAPTIVEPORTAL && wlan.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr)
+  ].some(Boolean)
+
+  return !(isWlanInLimitedNetworkTypes && IsNetworkSupport6g(wlan))
+}
+
 export const getInitMloOptions =
         (mloOption: MultiLinkOperationOptions | undefined) : MultiLinkOperationOptions => {
           if (mloOption &&
@@ -310,23 +322,12 @@ function WiFi7 () {
   /* eslint-disable */
   useEffect(()=>{
     if(editMode && wlanData !== null){
-      const MLOEffectiveCondition = [
-        (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed),
-        (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
-        (wlanData.type === NetworkTypeEnum.AAA && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
-        (wlanData.type === NetworkTypeEnum.OPEN && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.OWE),
-        (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL && 
-          wlanData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass &&
-          wlanData.wlan?.wlanSecurity === WlanSecurityEnum.OWE),
-        (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL && 
-          wlanData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-          wlanData.wlan?.wlanSecurity === WlanSecurityEnum.OWE),
 
-      ].some(Boolean)
+      const mloState = shouldMLOBeDisable(wlanData)
 
-      disableMLO(!MLOEffectiveCondition)
+      disableMLO(mloState)
 
-      if (!MLOEffectiveCondition) {
+      if (mloState) {
         const cloneData = _.cloneDeep(wlanData)
         _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
         setData && setData(cloneData)
