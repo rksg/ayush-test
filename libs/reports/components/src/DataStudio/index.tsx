@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 
-import { getUserProfile }                              from '@acx-ui/analytics/utils'
-import { IFrame, showActionModal }                     from '@acx-ui/components'
-import { get }                                         from '@acx-ui/config'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { useAuthenticateMutation, DataStudioResponse } from '@acx-ui/reports/services'
-import { getUserProfile as getUserProfileR1 }          from '@acx-ui/user'
-import { useLocaleContext, getIntl }                   from '@acx-ui/utils'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
+import { IFrame, showActionModal }            from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
+import { useAuthenticateMutation }            from '@acx-ui/reports/services'
+import type { DataStudioResponse }            from '@acx-ui/reports/services'
+import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
+import { useLocaleContext, getIntl }          from '@acx-ui/utils'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
@@ -72,8 +73,21 @@ export function DataStudio () {
     })
       .unwrap()
       .then((resp: DataStudioResponse) => {
-        sessionStorage.setItem('user_info', JSON.stringify(resp.user_info))
-        setUrl(resp.redirect_url)
+        const { redirect_url, user_info } = resp
+        if (!user_info) { // TODO - Added for backward compatibility. Need to remove it
+          setUrl(redirect_url)
+        } else {
+          // store user info
+          sessionStorage.setItem('user_info', JSON.stringify(user_info))
+          const { tenant_id, is_franchisor, tenant_ids } = user_info
+          // Lets also set the params for the iframe
+          const searchParams = new URLSearchParams()
+          searchParams.append('mlisa_own_tenant_id', tenant_id)
+          searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
+          searchParams.append('is_franchisor', is_franchisor)
+
+          setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
+        }
       })
   }, [authenticate, locale])
 

@@ -28,7 +28,7 @@ import {
   NetworkTypeEnum,
   NetworkVenue,
   redirectPreviousPage,
-  useBreadcrumb,
+  useConfigTemplateBreadcrumb,
   useConfigTemplate,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
@@ -130,7 +130,7 @@ export function NetworkForm (props:{
 
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
-  const [MLOButtonDisable, setMLOButtonDisable] = useState(false)
+  const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
@@ -156,7 +156,7 @@ export function NetworkForm (props:{
 
   // Config Template related states
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useBreadcrumb([
+  const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
     { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
     { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }

@@ -14,14 +14,14 @@ const guestTokenReponse = {
 
 const userInfo = {
   tenant_id: 'ac940866-a6f3-4113-81c1-ffb82983ce51',
-  is_franchisor: false,
+  is_franchisor: 'false',
   tenant_ids: [
     'ac940866-a6f3-4113-81c1-ffb82983ce51'
   ]
 } as UserInfo
 
 const getEmbeddedReponse = {
-  dashboard_metadata: {
+  result: {
     allowed_domains: [
       'localhost:8088'
     ],
@@ -62,7 +62,7 @@ describe('reportsApi', () => {
     const response = await store.dispatch(reportsApi.endpoints.embeddedId.initiate({
       payload: { dashboard_title: 'some dashboard' }
     })).unwrap()
-    expect(response.dashboard_metadata.uuid).toEqual(getEmbeddedReponse.dashboard_metadata.uuid)
+    expect(response.result.uuid).toEqual(getEmbeddedReponse.result.uuid)
     expect(response.user_info).toEqual(getEmbeddedReponse.user_info)
   })
   it('should return guest token', async () => {
@@ -71,7 +71,7 @@ describe('reportsApi', () => {
         user: {},
         resources: [{
           type: 'dashboard',
-          id: getEmbeddedReponse.dashboard_metadata.uuid
+          id: getEmbeddedReponse.result.uuid
         }],
         rls: []
       }

@@ -122,11 +122,16 @@ export function APList ({
     }
   ]
 
+  const data = results.data?.aps?.map((item: AP, i) => ({
+    ...item,
+    rowId: i+1
+  }))
+
   return <Loader states={[results]}>
     <Table<AP>
-      rowKey='ipAddress'
+      rowKey='rowId'
       columns={apTablecolumnHeaders}
-      dataSource={(results.data)?.aps as AP[]}
+      dataSource={data as AP[]}
       pagination={pagination}
       settingsId='ap-search-table'
       onFilterChange={updateSearchString}

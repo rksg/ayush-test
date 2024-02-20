@@ -294,8 +294,11 @@ export function EmbeddedReport (props: ReportProps) {
     embeddedId({ payload: embeddedData })
       .unwrap()
       .then((resp: EmbeddedResponse) => {
-        sessionStorage.setItem('user_info', JSON.stringify(resp.user_info))
-        setDashboardEmbeddedId(resp.dashboard_metadata.uuid)
+        const { result, user_info } = resp
+        if (user_info) {
+          sessionStorage.setItem('user_info', JSON.stringify(user_info))
+        }
+        setDashboardEmbeddedId(result.uuid)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedDashboardName])

@@ -19,6 +19,7 @@ import {
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import {
+  AssociatedResource,
   EditPropertyConfigMessages,
   PropertyConfigStatus,
   PropertyConfigs,
@@ -214,6 +215,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
           updateRegistration({
             params: {
               templateScopeId: idArray[0],
+              associatedResource: AssociatedResource.VENUE,
+              associatedResourceId: venueId,
               registrationId: venueId
             },
             payload: {

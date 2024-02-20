@@ -123,9 +123,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        const apGroupListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
-          ...venueListReq,
+          ...apGroupListReq,
           body: payload
         }
       },
@@ -1052,6 +1052,7 @@ export const {
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
+  useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
   useResetApDirectedMulticastMutation,

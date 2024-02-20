@@ -60,8 +60,8 @@ const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
 
-const getEmbeddedReponse = {
-  dashboard_metadata: {
+const embeddedResponse1 = {
+  result: {
     allowed_domains: [
       'localhost:8088'
     ],
@@ -69,6 +69,25 @@ const getEmbeddedReponse = {
     changed_on: '2022-12-06T05:57:51.442545',
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
+  }
+} as EmbeddedResponse
+
+const embeddedResponse2 = {
+  result: {
+    allowed_domains: [
+      'localhost:8088'
+    ],
+    changed_by: null,
+    changed_on: '2022-12-06T05:57:51.442545',
+    dashboard_id: '6',
+    uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
+  },
+  user_info: {
+    is_franchisor: 'false',
+    tenant_ids: [
+      '1235'
+    ],
+    tenant_id: '1234'
   }
 } as EmbeddedResponse
 
@@ -89,7 +108,7 @@ describe('EmbeddedDashboard', () => {
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
         (_, res, ctx) => {
           embedDashboardSpy()
-          return res(ctx.json(getEmbeddedReponse))
+          return res(ctx.json(embeddedResponse1))
         }
       ),
       rest.post(
@@ -173,10 +192,11 @@ describe('EmbeddedDashboard', () => {
       setLang: () => {}
     })
 
-    rest.post(
-      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
-    )
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.getEmbeddedDashboardMeta.url,
+        (_, res, ctx) => res(ctx.json(embeddedResponse2))
+      ))
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL}

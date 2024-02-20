@@ -671,46 +671,48 @@ export const venuesApCompatibilitiesData = {
   ]
 }
 
+export const venueNetworkApGroupData = [
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+    apGroups: [
+      {
+        id: 'test',
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: 'Both',
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: 'Both'
+  },
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
+    apGroups: [
+      {
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: 'Both',
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: 'Both'
+  }
+]
 
 export const venueNetworkApGroup = {
-  response: [
-    {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'd556bb683e4248b7a911fdb40c307aa5',
-      apGroups: [
-        {
-          id: 'test',
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
-        }
-      ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
-    },
-    {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
-      apGroups: [
-        {
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
-        }
-      ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
-    }
-  ]
+  response: venueNetworkApGroupData
 }
+
 
 export const networkDeepList = {
   response: [
@@ -3130,6 +3132,13 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       dpsks: [],
       personaId: 'persona-1',
       vni: 0
+    }, {
+      id: 'unit-id-2',
+      name: 'unit-2',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-2',
+      vni: 1
     }
   ]
 }

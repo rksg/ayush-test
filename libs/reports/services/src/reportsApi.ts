@@ -13,7 +13,7 @@ export interface GuestToken {
 
 export interface UserInfo {
   tenant_id: string,
-  is_franchisor: boolean,
+  is_franchisor: string,
   tenant_ids: string[]
 }
 
@@ -23,7 +23,7 @@ export interface DataStudioResponse {
 }
 
 export interface EmbeddedResponse {
-  dashboard_metadata: {
+  result: {
     uuid: string,
     dashboard_id: string,
     allowed_domains: string[]
