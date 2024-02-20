@@ -111,13 +111,13 @@ import MdnsProxyDetail                      from './pages/Services/MdnsProxy/Mdn
 import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                           from './pages/Services/MyServices'
-import AddNetworkSegmentation               from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
-import EditNetworkSegmentation              from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
-import NetworkSegmentationDetail            from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
-import NetworkSegmentationTable             from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail                 from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm                   from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
+import AddPersonalIdentitNetwork            from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import EditPersonalIdentityNetwork          from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
+import PersonalIdentityNetworkDetail        from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkTable         from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
 import PortalServiceDetail                  from './pages/Services/Portal/PortalDetail'
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
@@ -407,22 +407,22 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<AddNetworkSegmentation />}
+        element={<AddPersonalIdentitNetwork />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.LIST })}
-        element={<NetworkSegmentationTable />}
+        element={<PersonalIdentityNetworkTable />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.DETAIL })}
-        element={<NetworkSegmentationDetail />}
+        element={<PersonalIdentityNetworkDetail />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<EditNetworkSegmentation />}
+        element={<EditPersonalIdentityNetwork />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
