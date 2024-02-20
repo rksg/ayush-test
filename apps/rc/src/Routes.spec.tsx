@@ -283,6 +283,9 @@ jest.mock('./pages/Services/EdgeSdLanP2/EditEdgeSdLan', () => () => {
 jest.mock('./pages/Services/EdgeSdLanP2/EdgeSdLanTable', () => () => {
   return <div data-testid='EdgeSdLanTableP2' />
 })
+jest.mock('./pages/Services/EdgeSdLanP2/EdgeSdLanDetail', () => () => {
+  return <div data-testid='EdgeSdLanDetailP2' />
+})
 
 describe('RcRoutes: Devices', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -681,6 +684,16 @@ describe('RcRoutes: Services', () => {
         }
       })
       expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+    })
+    test('should navigate to Edge SD-LAN Phase2 detail page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
     })
   })
 })
