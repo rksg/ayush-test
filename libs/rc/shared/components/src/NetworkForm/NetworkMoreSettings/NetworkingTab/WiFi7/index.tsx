@@ -314,7 +314,8 @@ function WiFi7 () {
         (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed),
         (wlanData.type === NetworkTypeEnum.PSK && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
         (wlanData.type === NetworkTypeEnum.AAA && wlanData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3),
-        (wlanData.type === NetworkTypeEnum.OPEN && wlanData.enableOwe === true),
+        (wlanData.type === NetworkTypeEnum.OPEN && 
+          wlanData.enableOwe === true && wlanData.wlan?.wlanSecurity !== WlanSecurityEnum.OWETransition),
         (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL && 
           wlanData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass &&
           wlanData.enableOwe === true),
