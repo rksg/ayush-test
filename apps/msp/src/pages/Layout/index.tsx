@@ -26,7 +26,7 @@ import { ConfigTemplateContext }                                                
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { PverName, getJwtTokenPayload, isDelegationMode, AccountType }              from '@acx-ui/utils'
+import { getJwtTokenPayload, isDelegationMode, AccountType }                        from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -58,8 +58,6 @@ function Layout () {
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
 
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
-  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
-    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -108,13 +106,7 @@ function Layout () {
             <LayoutUI.Icon children={<AdminSolid />} />
             {$t({ defaultMessage: 'My Account' })}
           </UI.Home></TenantLink>}
-        { showSupportHomeButton && (isBackToRC ?
-          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-            <UI.Home>
-              <LayoutUI.Icon children={<HomeSolid />} />
-              {$t({ defaultMessage: 'Support Home' })}
-            </UI.Home>
-          </a> :
+        { showSupportHomeButton && (
           <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
