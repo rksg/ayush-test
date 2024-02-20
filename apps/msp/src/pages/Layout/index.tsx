@@ -134,13 +134,6 @@ function Layout () {
   )
 }
 
-// function LayoutWithSplitProvider () {
-//   return <SplitProvider>
-//     <Layout />
-//   </SplitProvider>
-// }
-
-// export default LayoutWithSplitProvider
 export default Layout
 
 export function LayoutWithConfigTemplateContext () {
