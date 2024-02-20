@@ -22,7 +22,8 @@ import {
   networkDeepList,
   venueNetworkApGroup,
   venueData,
-  venueNetworkApCompatibilitiesData
+  venueNetworkApCompatibilitiesData,
+  venueNetworkApGroupData
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
@@ -88,7 +89,11 @@ describe('VenueNetworksTab', () => {
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
       ),
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
@@ -148,11 +153,17 @@ describe('VenueNetworksTab', () => {
 
     const requestSpy = jest.fn()
     const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
-    newApGroup.response[1].apGroups[0].id = 'test2'
+    const newApGroupData = newApGroup.response
+    newApGroupData[1].apGroups[0].id = 'test2'
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(newApGroup))
+        (req, res, ctx) => res(ctx.json({ response: newApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: newApGroupData }))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
@@ -181,11 +192,17 @@ describe('VenueNetworksTab', () => {
 
     const requestSpy = jest.fn()
     const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
-    newApGroup.response[0].apGroups[0].id = ''
+    const newApGroupData = newApGroup.response
+    newApGroupData[0].apGroups[0].id = ''
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(newApGroup))
+        (req, res, ctx) => res(ctx.json({ response: newApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: newApGroupData }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,

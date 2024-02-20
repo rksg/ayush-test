@@ -29,6 +29,8 @@ import {
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
   useVenueDetailsHeaderQuery,
+  useVenueNetworkTableV2Query,
+  useVenueNetworkListV2Query,
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation
@@ -88,9 +90,11 @@ export function VenueNetworksTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
     defaultPayload,
     pagination: { settingsId }
   })
