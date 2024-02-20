@@ -26,7 +26,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+
 import { usePersonaAsyncHeaders } from '../users/usePersonaAsyncHeaders'
+
 import { ConnectionMeteringSettingForm } from './ConnectionMeteringSetting/ConnectionMeteringSettingForm'
 
 
@@ -93,7 +95,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   const originData = useRef<ConnectionMetering>()
   const idAfterCreatedRef = useRef<string>()
   const { data: meteringList } = useGetConnectionMeteringListQuery(
-    { payload: { pageSize: '2147483647', page: '1' } }, 
+    { payload: { pageSize: '2147483647', page: '1' } },
     { skip: !useModalMode || mode === ConnectionMeteringFormMode.EDIT })
   const tablePath = mode === ConnectionMeteringFormMode.CREATE ?
     getPolicyRoutePath( { type: PolicyType.CONNECTION_METERING,
@@ -132,7 +134,9 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     })
 
     if (Object.keys(patchData).length === 0) return
-    return updateConnectionMetering({ params: { id: policyId }, payload: patchData, customHeaders }).unwrap()
+    return updateConnectionMetering(
+      { params: { id: policyId }, payload: patchData, customHeaders }
+    ).unwrap()
   }
 
   const onFinish = async (mode:ConnectionMeteringFormMode) => {
@@ -144,7 +148,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
       } else if (mode === ConnectionMeteringFormMode.CREATE) {
         result = await handleAddConnectionMetering(data)
       }
-      
+
       if (useModalMode) {
         idAfterCreatedRef.current = result?.id
       } else {
@@ -192,7 +196,8 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   useEffect(() => {
     if (!idAfterCreatedRef.current || !meteringList?.data) return
 
-    const targetmetering = meteringList.data.find(metering => metering.id === idAfterCreatedRef.current)
+    const targetmetering = meteringList.data.find(
+      metering => metering.id === idAfterCreatedRef.current)
     if (targetmetering) {
       modalCallback?.(targetmetering)
     }

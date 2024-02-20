@@ -10,7 +10,7 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
-import { 
+import {
   SimpleListTooltip,
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
