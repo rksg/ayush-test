@@ -14,7 +14,6 @@ const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
-  // const { tenantId } = useParams() as { tenantId: string }
   const tenantId = getTenantId()
   const { accountId } = getUserProfile()
 

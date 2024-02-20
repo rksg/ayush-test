@@ -4,7 +4,7 @@ import { RolesEnum as Role } from '@acx-ui/types'
 
 import { UserProfile } from './types'
 
-type Profile = {
+export type Profile = {
   profile: UserProfile
   allowedOperations: string []
   accountTier?: string

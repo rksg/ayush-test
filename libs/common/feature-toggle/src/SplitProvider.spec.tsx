@@ -91,8 +91,8 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   jest.doMock('@acx-ui/analytics/utils', () => ({
     getUserProfile: jest.fn().mockImplementation(() => ({ accountId: props.tenant }))
   }))
-  jest.doMock('react-router-dom', () => ({
-    useParams: () => ({ tenantId: props.tenant })
+  jest.doMock('@acx-ui/utils', () => ({
+    getTenantId: () => props.tenant
   }))
   jest.doMock('@splitsoftware/splitio-react', () => ({
     SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
