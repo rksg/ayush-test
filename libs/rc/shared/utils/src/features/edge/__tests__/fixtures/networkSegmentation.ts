@@ -176,7 +176,7 @@ export const mockNetworkSaveData = {
 export const mockDeepNetworkList = {
   requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',
   response: [
-    { name: 'Network 1', id: '1', type: 'dpsk' }
+    { name: 'Network 1', id: '1', type: 'dpsk', dpskServiceProfileId: 'testDpskId' }
   ]
 }
 
