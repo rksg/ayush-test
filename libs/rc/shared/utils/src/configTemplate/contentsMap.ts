@@ -1,4 +1,5 @@
-import { ConfigTemplateType, PolicyType } from '../types'
+import { ServiceType }                    from '../constants'
+import { PolicyType, ConfigTemplateType } from '../types'
 
 export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, PolicyType>> = {
   [ConfigTemplateType.RADIUS]: PolicyType.AAA,
@@ -7,4 +8,8 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
   [ConfigTemplateType.LAYER_3_POLICY]: PolicyType.LAYER_3_POLICY,
   [ConfigTemplateType.DEVICE_POLICY]: PolicyType.DEVICE_POLICY,
   [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY
+}
+
+export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {
+  [ConfigTemplateType.DPSK]: ServiceType.DPSK
 }
