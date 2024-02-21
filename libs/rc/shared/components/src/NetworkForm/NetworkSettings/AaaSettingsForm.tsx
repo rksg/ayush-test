@@ -25,6 +25,7 @@ import {
 
 import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -74,6 +75,7 @@ export function AaaSettingsForm () {
 function SettingsForm () {
   const { $t } = useIntl()
   const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
@@ -107,6 +109,13 @@ function SettingsForm () {
         // eslint-disable-next-line max-len
         form.setFieldValue(['wlan', 'managementFrameProtection'], ManagementFrameProtectionEnum.Disabled)
       }
+    }
+
+    if (wlanSecurity === WlanSecurityEnum.WPA3){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
 
   }, [cloneMode, editMode, form, wlanSecurity])

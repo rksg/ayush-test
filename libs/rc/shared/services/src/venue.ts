@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { cloneDeep, uniq }     from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -71,7 +72,8 @@ import {
   ApManagementVlan,
   ApCompatibility,
   ApCompatibilityResponse,
-  VeuneApAntennaTypeSettings
+  VeuneApAntennaTypeSettings,
+  NetworkApGroup
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -323,6 +325,96 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse: (result: CommonResult) => {
         return result.response as NetworkVenue[]
+      }
+    }),
+    getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = arg.payload as { venueId: string, networkId: string }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+        let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
+
+        for (let venueId of venueIds) {
+          // get apGroup list filter by venueId
+          const apGroupPayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: { venueId: [venueId] }
+          }
+
+          const apGroupListInfo = {
+            ...createHttpRequest(WifiUrlsInfo.getApGroupsList, arg.params),
+            body: apGroupPayload
+          }
+
+          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+          const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+            return {
+              apGroupId: d.id,
+              ...(d.name && { apGroupName: d.name }),
+              isDefault: !d.name,
+              radio: 'Both',
+              radioTypes: ['2.4-GHz', '5-GHz'],
+              validationError: false,
+              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+              validationErrorReachedMaxConnectedNetworksLimit: false,
+              validationErrorSsidAlreadyActivated: false
+            } as NetworkApGroup
+          })
+
+          venueApgroupMap.set(venueId, apgroupsDefaultValue)
+        }
+
+        const apiV2CustomHeader = {
+          'Content-Type': 'application/vnd.ruckus.v2+json',
+          'Accept': 'application/vnd.ruckus.v2+json'
+        }
+
+        const networkVenuesApGroupInfo = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+          body: JSON.stringify({ filters })
+        }
+
+        const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
+        networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
+
+        const aggregatedList = networkVenuesApGroupList.data.map(networkVenue => {
+          const { venueId, apGroups=[] } = networkVenue
+          const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+          const newApgroups = cloneDeep(apGroups)
+
+          currentApGroupsDefaultValue?.forEach(apGroup => {
+            const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+            if (!customApGroup) {
+              newApgroups.push(cloneDeep(apGroup))
+            }
+          })
+
+          return {
+            ...networkVenue,
+            apGroups: newApgroups
+          }
+        })
+
+        return networkVenuesApGroupQuery.data
+          ? { data: aggregatedList }
+          : { error: networkVenuesApGroupQuery.error as FetchBaseQueryError }
       }
     }),
     getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
@@ -1389,6 +1481,7 @@ export const {
   useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
+  useGetNetworkApGroupsV2Query,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,

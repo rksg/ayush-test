@@ -120,10 +120,6 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Services/NetworkSegmentation/NetworkSegmentationForm', () => () => {
-  return <div data-testid='NetworkSegmentationForm' />
-})
-
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthForm', () => () => {
   return <div data-testid='NetworkSegAuthForm' />
 })
@@ -282,6 +278,9 @@ jest.mock('./pages/Services/EdgeSdLanP2/EditEdgeSdLan', () => () => {
 })
 jest.mock('./pages/Services/EdgeSdLanP2/EdgeSdLanTable', () => () => {
   return <div data-testid='EdgeSdLanTableP2' />
+})
+jest.mock('./pages/Services/EdgeSdLanP2/EdgeSdLanDetail', () => () => {
+  return <div data-testid='EdgeSdLanDetailP2' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -681,6 +680,16 @@ describe('RcRoutes: Services', () => {
         }
       })
       expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+    })
+    test('should navigate to Edge SD-LAN Phase2 detail page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
     })
   })
 })
