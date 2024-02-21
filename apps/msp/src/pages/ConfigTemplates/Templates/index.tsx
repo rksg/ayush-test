@@ -5,31 +5,29 @@ import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 
 
-import {
-  Table,
-  TableProps,
-  Loader,
-  showActionModal,
-  Button
-} from '@acx-ui/components'
+import { Button, Loader, showActionModal, Table, TableProps }                                 from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }                                                 from '@acx-ui/formatter'
 import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsComponent } from '@acx-ui/rc/components'
 import {
   useDelAppPolicyMutation,
   useDelDevicePolicyMutation,
-  useDeleteAAAPolicyTemplateMutation, useDeleteAccessControlProfileMutation,
+  useDeleteAAAPolicyTemplateMutation,
+  useDeleteAccessControlProfileMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
+  useDeleteVenueTemplateMutation,
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
+  AccessControlPolicyType,
+  ConfigTemplate,
+  ConfigTemplateType,
+  getConfigTemplateEditPath,
   PolicyOperation,
   PolicyType,
   policyTypeLabelMapping,
-  useTableQuery,
-  ConfigTemplate,
-  ConfigTemplateType,
-  getConfigTemplateEditPath
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -37,13 +35,13 @@ import { getIntl }                                 from '@acx-ui/utils'
 
 import {
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, createAccessControlPolicyMenuItem,
+  AccessControlSubPolicyVisibility,
+  createAccessControlPolicyMenuItem, INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
 import * as UI                   from './styledComponents'
-
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -69,8 +67,17 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (selectedRow.type in AccessControlPolicyType) {
+          setAccessControlSubPolicyVisible({
+            ...INIT_STATE,
+            [selectedRow.type]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
@@ -152,6 +159,7 @@ interface templateColumnProps {
 
 function useColumns (props: templateColumnProps) {
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
