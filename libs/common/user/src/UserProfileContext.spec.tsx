@@ -18,7 +18,7 @@ import {
 const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getTenantId: () => tenantId
+  useTenantId: () => tenantId
 }))
 
 const mockedUserProfile = {

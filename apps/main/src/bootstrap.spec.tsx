@@ -20,13 +20,21 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   renderPendo: jest.fn(),
+  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
+}))
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
   />,
-  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
+  useUserProfileContext: () => ({
+    isUserProfileLoading: false,
+    data: { preferredLanguage: 'en-US' },
+    allowedOperations: ['some-operation'],
+    accountTier: 'Gold'
+  })
 }))
-
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 
 describe('bootstrap.init', () => {
