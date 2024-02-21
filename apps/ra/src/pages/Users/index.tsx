@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Menu, Button }           from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
@@ -6,12 +6,14 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   useGetUsersQuery,
   useRefreshUserDetailsMutation,
+  useGetTenantSettingsQuery,
   useDeleteUserResourceGroupMutation,
   useDeleteInvitationMutation
 } from '@acx-ui/analytics/services'
-import { ManagedUser }                                              from '@acx-ui/analytics/utils'
-import { PageHeader, Loader, showToast, showActionModal, Dropdown } from '@acx-ui/components'
+import type { Settings, ManagedUser }                                        from '@acx-ui/analytics/utils'
+import { PageHeader, Loader, showToast, showActionModal, Dropdown, Tooltip } from '@acx-ui/components'
 
+import { ImportSSOFileDrawer }    from './ImportSSOFileDrawer'
 import { UsersTable }             from './Table'
 import { UserDrawer, DrawerType } from './UserDrawer'
 
@@ -54,7 +56,21 @@ export const messages = {
   }),
   'deleteText': defineMessage({
     defaultMessage: 'Delete'
+  }),
+  'ssoDisclaimer': defineMessage({
+    defaultMessage: 'At this time, only Azure AD is officially supported'
   })
+}
+
+interface SSOValue {
+  type: 'saml2'
+  metadata: string
+  fileName: string
+}
+
+const getSSOsettings = (settings: Partial<Settings> | undefined): SSOValue | null => {
+  if (!settings || !settings.sso) return null
+  return JSON.parse(settings.sso)
 }
 
 const Users = () => {
@@ -69,7 +85,15 @@ const Users = () => {
   const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
   const [deleteInvitation] = useDeleteInvitationMutation()
 
-  const usersCount = usersQuery.data?.length || 0
+  const [visible, setVisible] = useState(false)
+  const settingsQuery = useGetTenantSettingsQuery()
+  const ssoConfig = getSSOsettings(settingsQuery.data)
+  const isEditMode = typeof ssoConfig?.metadata === 'string'
+  const [usersCount, setUsersCount] = useState(0)
+  useEffect(() => {
+    usersQuery.data && setUsersCount(usersQuery.data.length)
+  }, [usersQuery.data])
+
   useEffect(() => {
     if (retrieveUserDetails && selectedRow) {
       refreshUserDetails({ userId: selectedRow.id })
@@ -120,7 +144,7 @@ const Users = () => {
             }
             )
         })
-        .finally(() => setDeleteUser({ showModal: false ,deleteUser: false }))
+        .finally(() => setDeleteUser({ showModal: false, deleteUser: false }))
     }
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,10 +176,20 @@ const Users = () => {
       <PageHeader
         title={<>{$t(messages.title, { usersCount })} ({usersCount})</>}
         extra={[
+          <Loader states={[settingsQuery]}><Tooltip
+            title={$t(messages.ssoDisclaimer)}
+            placement='left'>
+            <Button
+              type={isEditMode ? 'primary' : 'default'}
+              onClick={() => setVisible(true)}>
+              {isEditMode
+                ? $t({ defaultMessage: 'Configure SSO' })
+                : $t({ defaultMessage: 'Setup SSO' })}
+            </Button>
+          </Tooltip></Loader>,
           <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>
-          }</Dropdown>
-        ]}
+          }</Dropdown>]}
       />
       <UsersTable
         data={usersQuery.data}
@@ -163,6 +197,7 @@ const Users = () => {
         setSelectedRow={setSelectedRow}
         getLatestUserDetails={() => setRetrieveUserDetails(true)}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
+        setUsersCount={setUsersCount}
         setDrawerType={setDrawerType}
       />
       <UserDrawer
@@ -170,6 +205,15 @@ const Users = () => {
         toggleDrawer={setOpenDrawer}
         type={drawerType}
         selectedRow={selectedRow}
+      />
+      <ImportSSOFileDrawer
+        title={isEditMode
+          ? $t({ defaultMessage: 'Configure SSO with 3rd Party Provider' })
+          : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
+        visible={visible}
+        isEditMode={isEditMode}
+        setVisible={setVisible}
+        samlFileName={ssoConfig?.fileName}
       />
     </Loader>
   )

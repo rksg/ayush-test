@@ -701,3 +701,7 @@ export const getAdminPassword = (
       : $t({ defaultMessage: 'Custom' })
     )
 }
+
+export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
+  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}

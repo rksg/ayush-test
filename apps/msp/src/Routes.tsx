@@ -1,7 +1,7 @@
 import { Brand360 }                                              from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { VenuesForm }                                            from '@acx-ui/main/components'
+import { VenueEdit, VenuesForm, VenueDetails }                   from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings }      from '@acx-ui/msp/components'
 import { AAAForm, AAAPolicyDetail, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
@@ -105,12 +105,13 @@ function ConfigTemplatesRoutes () {
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
-        <Route
-          path='networks/wireless/:networkId/network-details/:activeTab'
+        <Route path='networks/wireless/:networkId/network-details/:activeTab'
           element={<NetworkDetails />}
         />
         <Route path='venues/add' element={<VenuesForm />} />
-        <Route path='venues/:venueId/:action/:activeTab' element={<div>Venue Edit</div>} />
+        <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
+        <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
+        <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
       </Route>
     </Route>
   ) : null

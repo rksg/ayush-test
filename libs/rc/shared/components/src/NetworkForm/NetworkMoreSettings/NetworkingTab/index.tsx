@@ -446,8 +446,7 @@ export function NetworkingTab (props: {
         />
       </>}
 
-      { wifi6AndWifi7Flag && enableAP70 &&
-      <WiFi7 wlanData={wlanData} /> }
+      { wifi6AndWifi7Flag && enableAP70 && <WiFi7/> }
 
       {showRadiusOptions &&
       <>

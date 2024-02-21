@@ -42,6 +42,7 @@ export default function SnmpAgentInstancesTable () {
       dataIndex: 'venueName',
       searchable: true,
       sorter: true,
+      defaultSortOrder: 'descend',
       render: (_, row, __, highlightFn) => {
         const { venueName, venueId } = row
         return (

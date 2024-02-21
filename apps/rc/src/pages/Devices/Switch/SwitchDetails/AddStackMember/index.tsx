@@ -21,7 +21,8 @@ import {
   SwitchTable,
   getSwitchModel,
   checkVersionAtLeast09010h,
-  SwitchViewModel
+  SwitchViewModel,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -151,7 +152,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         ><Input
             data-testid={`serialNumber${row.key}`}
             onBlur={() => handleChange(row, index)}
-            style={{ textTransform: 'uppercase' }}
+            onInput={convertInputToUppercase}
             disabled={row.disabled}
           />
         </Form.Item>)
