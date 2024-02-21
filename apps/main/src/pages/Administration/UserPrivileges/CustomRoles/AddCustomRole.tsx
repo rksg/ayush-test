@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
-  Checkbox,
   Form,
   Input,
   Radio
@@ -43,6 +42,7 @@ export function AddCustomRole () {
   const [form] = Form.useForm()
   const [selectedPermission, setSelectedPermission] =
     useState(PermissionRadioButtonEnum.byTechnology)
+
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
@@ -73,10 +73,20 @@ export function AddCustomRole () {
     }
   }
 
-  if (isEditMode || action === 'clone') {
-    form.setFieldValue('name', location?.name)
-    form.setFieldValue('description', location?.description)
-  }
+  useEffect(() => {
+    if (location && (isEditMode || action === 'clone')) {
+      form.setFieldValue('name', location?.name)
+      form.setFieldValue('description', location?.description)
+    }
+
+    // form.resetFields()
+    // form.setFieldValue('webAuthPageType', editingWebAuthPageType)
+    // form.setFieldValue('templateId', editingTemplateId)
+    // setUplinkInfoOverwrite(!isMultipleEdit)
+    // setVlanIdOverwrite(!isMultipleEdit)
+    // setWebAuthPageOverwrite(!isMultipleEdit)
+  }, [form, location])
+
 
   const CustomRoleForm = () => {
     return <StepsForm
@@ -117,10 +127,8 @@ export function AddCustomRole () {
         name='permissions'
         key='permissions'
         title={intl.$t({ defaultMessage: 'Permissions' })}
-        // onFinish={async (data: CliConfiguration) => {
-        //   if (!data?.cliValid?.valid) {
-        //     showToast({ type: 'error', duration: 2, content: data?.cliValid?.tooltip })
-        //   }
+        // onFinish={async (data: unknown) => {
+        //   showToast({ type: 'error', duration: 2 })
         //   return true
         // }}
       ><PermissionsForm />
@@ -152,11 +160,80 @@ export function AddCustomRole () {
         {selectedPermission === PermissionRadioButtonEnum.byTechnology
           ? <PermissionsTechForm />
           : <PermissionsExpertiseForm />}
-
       </div></>
   }
 
   const PermissionsTechForm = () => {
+    const [wifiAttribute, setWifiAttribute] = useState(false)
+    const [wifiRead, setWifiRead] = useState(false)
+    const [wifiCreate, setWifiCreate] = useState(false)
+    const [wifiUpdate, setWifiUpdate] = useState(false)
+    const [wifiDelete, setWifiDelete] = useState(false)
+
+    const [wiredAttribute, setWiredAttribute] = useState(false)
+    const [wiredRead, setWiredRead] = useState(false)
+    const [wiredCreate, setWiredCreate] = useState(false)
+    const [wiredUpdate, setWiredUpdate] = useState(false)
+    const [wiredDelete, setWiredDelete] = useState(false)
+
+    const [smartedgeAttribute, setSmartedgeAttribute] = useState(false)
+    const [smartedgeRead, setSmartedgeRead] = useState(false)
+    const [smartedgeCreate, setSmartedgeCreate] = useState(false)
+    const [smartedgeUpdate, setSmartedgeUpdate] = useState(false)
+    const [smartedgeDelete, setSmartedgeDelete] = useState(false)
+
+
+    const OnWifiAttributeChange = (checked: boolean) => {
+      setWifiAttribute(checked)
+      setWifiRead(checked)
+      setWifiCreate(checked)
+      setWifiUpdate(checked)
+      setWifiDelete(checked)
+    }
+
+    const OnWifiReadChange = (checked: boolean) => {
+      setWifiRead(checked)
+      if (!checked) {
+        setWifiCreate(false)
+        setWifiUpdate(false)
+        setWifiDelete(false)
+      }
+    }
+
+    const OnWiredAttributeChange = (checked: boolean) => {
+      setWiredAttribute(checked)
+      setWiredRead(checked)
+      setWiredCreate(checked)
+      setWiredUpdate(checked)
+      setWiredDelete(checked)
+    }
+
+    const OnWiredReadChange = (checked: boolean) => {
+      setWiredRead(checked)
+      if (!checked) {
+        setWiredCreate(false)
+        setWiredUpdate(false)
+        setWiredDelete(false)
+      }
+    }
+
+    const OnSmartEdgeAttributeChange = (checked: boolean) => {
+      setSmartedgeAttribute(checked)
+      setSmartedgeRead(checked)
+      setSmartedgeCreate(checked)
+      setSmartedgeUpdate(checked)
+      setSmartedgeDelete(checked)
+    }
+
+    const OnSmartEdgeReadChange = (checked: boolean) => {
+      setSmartedgeRead(checked)
+      if (!checked) {
+        setSmartedgeCreate(false)
+        setSmartedgeUpdate(false)
+        setSmartedgeDelete(false)
+      }
+    }
+
     return <div >
       <UI.FieldLabelPermission width='270'>
         <label></label>
@@ -167,33 +244,152 @@ export function AddCustomRole () {
       </UI.FieldLabelPermission>
 
       <UI.FieldLabelAttributes width='660'>
-        <Checkbox style={{ width: 400 }}>
-          {intl.$t({ defaultMessage: 'Wi-Fi' })}
-        </Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
+        <div><Input type='checkbox'
+          style={{ width: 25 }}
+          onChange={(e)=>OnWifiAttributeChange(e.target.checked)}
+        />
+        <label>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
+        </div>
+
+        <Form.Item
+          name='wifiread'
+          noStyle
+          hidden={!wifiAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>OnWifiReadChange(e.target.checked)}
+            checked={wifiRead}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wificreate'
+          noStyle
+          hidden={!wifiAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWifiCreate(e.target.checked)}
+            checked={wifiCreate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wifiupdate'
+          noStyle
+          hidden={!wifiAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWifiUpdate(e.target.checked)}
+            checked={wifiUpdate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wifidelete'
+          noStyle
+          hidden={!wifiAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWifiDelete(e.target.checked)}
+            checked={wifiDelete}
+          />
+        </Form.Item>
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <Checkbox style={{ width: 400 }}>
-          {intl.$t({ defaultMessage: 'Wired' })}
-        </Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
+        <div><Input type='checkbox'
+          style={{ width: 25 }}
+          onChange={(e)=>OnWiredAttributeChange(e.target.checked)}
+        />
+        <label>{intl.$t({ defaultMessage: 'Wired' })}</label>
+        </div>
+
+        <Form.Item
+          name='wiredRead'
+          noStyle
+          hidden={!wiredAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>OnWiredReadChange(e.target.checked)}
+            checked={wiredRead}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wiredCreate'
+          noStyle
+          hidden={!wiredAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWiredCreate(e.target.checked)}
+            checked={wiredCreate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wiredUpdate'
+          noStyle
+          hidden={!wiredAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWiredUpdate(e.target.checked)}
+            checked={wiredUpdate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='wiredDelete'
+          noStyle
+          hidden={!wiredAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setWiredDelete(e.target.checked)}
+            checked={wiredDelete}
+          />
+        </Form.Item>
+
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <Checkbox style={{ width: 400 }}>
-          {intl.$t({ defaultMessage: 'SmartEdge' })}
-        </Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
-        <Checkbox></Checkbox>
+        <div><Input type='checkbox'
+          style={{ width: 25 }}
+          onChange={(e)=>OnSmartEdgeAttributeChange(e.target.checked)}
+        />
+        <label>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
+        </div>
+
+        <Form.Item
+          name='smartedgeRead'
+          noStyle
+          hidden={!smartedgeAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>OnSmartEdgeReadChange(e.target.checked)}
+            checked={smartedgeRead}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='smartedgeCreate'
+          noStyle
+          hidden={!smartedgeAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setSmartedgeCreate(e.target.checked)}
+            checked={smartedgeCreate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='smartedgeUpdate'
+          noStyle
+          hidden={!smartedgeAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setSmartedgeUpdate(e.target.checked)}
+            checked={smartedgeUpdate}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='smartedgeDelete'
+          noStyle
+          hidden={!smartedgeAttribute}>
+          <Input type='checkbox'
+            onChange={(e)=>setSmartedgeDelete(e.target.checked)}
+            checked={smartedgeDelete}
+          />
+        </Form.Item>
+
       </UI.FieldLabelAttributes>
     </div>
   }

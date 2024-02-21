@@ -1,4 +1,6 @@
 
+import { useEffect } from 'react'
+
 import {
   Checkbox,
   Col,
@@ -62,16 +64,16 @@ interface PrivilegeGroupData {
 }
 
 export function EditPrivilegeGroup () {
-  const intl = useIntl()
+  const { $t } = useIntl()
 
   const navigate = useNavigate()
-  const { action, groupId } = useParams()
+  const { groupId } = useParams()
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
 
-  const isEditMode = action === 'view' || action === 'edit'
+  // const isEditMode = action === 'view' || action === 'edit'
 
   const handleUpdatePrivilegeGroup = async () => {
     const formValues = form.getFieldsValue(true)
@@ -93,25 +95,30 @@ export function EditPrivilegeGroup () {
     }
   }
 
-  form.setFieldValue('name', location.name)
-  form.setFieldValue('description', location?.description)
-  form.setFieldValue('role', location?.roleName)
+  useEffect(() => {
+    if (location) {
+      form.setFieldValue('name', location.name)
+      form.setFieldValue('description', location?.description)
+      form.setFieldValue('role', location?.roleName)
+    }
+  }, [location])
 
   const PrivilegeGroupForm = () => {
     return <StepsForm
       form={form}
       onFinish={handleUpdatePrivilegeGroup}
       onCancel={() => navigate(linkToPrivilegeGroups)}
-      buttonLabel={{ submit: isEditMode
-        ? intl.$t({ defaultMessage: 'Save' })
-        : intl.$t({ defaultMessage: 'Add' }) }}
+      // buttonLabel={{ submit: isEditMode
+      //   ? intl.$t({ defaultMessage: 'Save' })
+      //   : intl.$t({ defaultMessage: 'Add' }) }}
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <Row gutter={12}>
           <Col span={4}>
             <Form.Item
               name='name'
-              label={intl.$t({ defaultMessage: 'Name' })}
+              label={$t({ defaultMessage: 'Name' })}
               rules={[
                 { required: true },
                 { min: 2 },
@@ -121,7 +128,7 @@ export function EditPrivilegeGroup () {
             />
             <Form.Item
               name='description'
-              label={intl.$t({ defaultMessage: 'Description' })}
+              label={$t({ defaultMessage: 'Description' })}
               rules={[
                 { min: 2 },
                 { max: 64 }
@@ -131,13 +138,13 @@ export function EditPrivilegeGroup () {
             <CustomRoleSelector />
             <Form.Item
               name='ownscope'
-              label={intl.$t({ defaultMessage: 'Scope' })}
+              label={$t({ defaultMessage: 'Scope' })}
               rules={[
                 { min: 2 },
                 { max: 64 }
               ]}
               children={
-                <Checkbox children={intl.$t({ defaultMessage: 'Own Account' })} />
+                <Checkbox checked={true} children={$t({ defaultMessage: 'Own Account' })} />
               }
             />
             <Form.Item
@@ -147,7 +154,7 @@ export function EditPrivilegeGroup () {
                 { max: 64 }
               ]}
               children={
-                <Checkbox children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+                <Checkbox checked={true} children={$t({ defaultMessage: 'MSP Customers' })} />
               }
             />
           </Col>
@@ -160,11 +167,11 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Administrators' })}
+      title={$t({ defaultMessage: 'Administrators' })}
       breadcrumb={[
-        { text: intl.$t({ defaultMessage: 'Administration' }) },
-        { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },
-        { text: intl.$t({ defaultMessage: 'Privilege Groups' }),
+        { text: $t({ defaultMessage: 'Administration' }) },
+        { text: $t({ defaultMessage: 'Users & Privileges' }) },
+        { text: $t({ defaultMessage: 'Privilege Groups' }),
           link: '/administration/userPrivileges/privilegeGroups' }
       ]}
       footer={<AdministrationTabs />}

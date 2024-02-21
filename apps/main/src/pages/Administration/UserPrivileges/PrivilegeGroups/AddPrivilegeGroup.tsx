@@ -21,9 +21,7 @@ import {
 import { useGetMspProfileQuery }        from '@acx-ui/msp/services'
 import { MSPUtils }                     from '@acx-ui/msp/utils'
 import { useAddPrivilegeGroupMutation } from '@acx-ui/rc/services'
-import { PrivilegeGroup }               from '@acx-ui/rc/utils'
 import {
-  useLocation,
   useNavigate,
   useParams,
   useTenantLink
@@ -50,16 +48,12 @@ export function AddPrivilegeGroup () {
 
   const mspUtils = MSPUtils()
   const navigate = useNavigate()
-  const { action } = useParams()
   const params = useParams()
-  const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
-
-  const isEditMode = action === 'view' || action === 'edit'
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -98,11 +92,6 @@ export function AddPrivilegeGroup () {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
-  }
-
-  if (isEditMode || action === 'clone') {
-    form.setFieldValue('name', location?.name)
-    form.setFieldValue('description', location?.description)
   }
 
   const ScopeForm = () => {
@@ -144,7 +133,7 @@ export function AddPrivilegeGroup () {
         { max: 64 }
       ]}
       children={
-        <Checkbox children={intl.$t({ defaultMessage: 'Own Account' })} />
+        <Checkbox checked={true} children={intl.$t({ defaultMessage: 'Own Account' })} />
       }
     />
     <Form.Item
@@ -181,7 +170,7 @@ export function AddPrivilegeGroup () {
         { max: 64 }
       ]}
       children={
-        <Checkbox children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+        <Checkbox checked={true} children={intl.$t({ defaultMessage: 'MSP Customers' })} />
       }
     />
     <Form.Item
@@ -195,7 +184,7 @@ export function AddPrivilegeGroup () {
           <Radio
             key={'AllCustomers'}
             value={'AllCustomers'}>
-            {intl.$t({ defaultMessage: 'All Customerss' })}
+            {intl.$t({ defaultMessage: 'All Customers' })}
           </Radio>
           <Radio
             key={'SpecificCustomers'}
