@@ -8,10 +8,10 @@ import { TenantLink }                                                           
 
 import { getEdgeServiceTypeString } from '../utils'
 
-import { DhcpDetails }                from './DhcpDetails'
-import { FirewallDetails }            from './FirewallDetails'
-import { NetworkSegmentationDetails } from './NetworkSegmentationDetails'
-import { SdLanDetails }               from './SdLanDetails'
+import { DhcpDetails }                    from './DhcpDetails'
+import { FirewallDetails }                from './FirewallDetails'
+import { PersonalIdentityNetworkDetails } from './PersonalIdentityNetworkDetails'
+import { SdLanDetails }                   from './SdLanDetails'
 
 interface ServiceDetailDrawerProps {
   visible: boolean
@@ -109,7 +109,7 @@ const getContentByType = (serviceData: EdgeService) => {
     case EdgeServiceTypeEnum.FIREWALL:
       return <FirewallDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
-      return <NetworkSegmentationDetails serviceData={serviceData} />
+      return <PersonalIdentityNetworkDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.SD_LAN:
       return <SdLanDetails serviceData={serviceData} />
     default:

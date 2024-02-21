@@ -4,14 +4,21 @@ import { Form } from 'antd'
 
 import {
   ConfigTemplateType,
+  DpskDetailsTabKey,
   LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,
   PolicyRoutePathProps,
   PolicyType,
+  ServiceDetailsLinkProps,
+  ServiceOperation,
+  ServiceRoutePathProps,
+  ServiceType,
   getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  getServiceDetailsLink,
+  getServiceRoutePath,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
@@ -70,6 +77,34 @@ export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDeta
   )
 }
 
+interface ServiceConfigTemplateLinkProps extends ServiceRoutePathProps {
+	children: ReactNode
+  attachCurrentPathToState?: boolean
+}
+export function ServiceConfigTemplateLink (props: ServiceConfigTemplateLinkProps) {
+  const { children, attachCurrentPathToState = true, ...rest } = props
+  return (
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getServiceRoutePath(rest)} attachCurrentPathToState={attachCurrentPathToState}>
+      {props.children}
+    </ConfigTemplateLink>
+  )
+}
+
+interface ServiceConfigTemplateDetailsLinkProps extends ServiceDetailsLinkProps {
+	children: ReactNode
+  attachCurrentPathToState?: boolean
+}
+export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDetailsLinkProps) {
+  const { children, attachCurrentPathToState = true, ...rest } = props
+  return (
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getServiceDetailsLink(rest)} attachCurrentPathToState={attachCurrentPathToState}>
+      {props.children}
+    </ConfigTemplateLink>
+  )
+}
+
 // eslint-disable-next-line max-len
 export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
   let activeTab = ''
@@ -77,6 +112,14 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     case ConfigTemplateType.RADIUS:
       // eslint-disable-next-line max-len
       return <PolicyConfigTemplateDetailsLink type={PolicyType.AAA} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
+    case ConfigTemplateType.DPSK:
+      return <ServiceConfigTemplateDetailsLink
+        type={ServiceType.DPSK}
+        oper={ServiceOperation.DETAIL}
+        activeTab={DpskDetailsTabKey.OVERVIEW}
+        serviceId={id}
+        children={name}
+      />
     case ConfigTemplateType.NETWORK:
       activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
       // eslint-disable-next-line max-len
