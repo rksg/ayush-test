@@ -11,6 +11,8 @@ import {
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
+import * as UI from './styledComponents'
+
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
   fields: [
@@ -88,16 +90,32 @@ export function VenueAlarmWidget () {
   })
 
   const data = getChartData(alarmQuery.data?.data!)
+
+  const onAlarmClick = () => {
+    const event = new CustomEvent('showAlarmDrawer',
+      { detail: { data: { name: 'all', venueId: params.venueId } } })
+    window.dispatchEvent(event)
+  }
+
   return (
     <Loader states={[alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.length > 0
-              ? <DonutChart
-                style={{ width, height }}
-                legend={'name-value'}
-                data={data}/>
+              ? <UI.Container onClick={onAlarmClick}>
+                <DonutChart
+                  style={{ width, height }}
+                  legend={'name-value'}
+                  data={data}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onClick={(e: any)=>{
+                    e.event.stop()
+                    const event = new CustomEvent('showAlarmDrawer',
+                      { detail: { data: { ...e.data, venueId: params.venueId } } })
+                    window.dispatchEvent(event)
+                  }}/>
+              </UI.Container>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })} />
           )}
         </AutoSizer>

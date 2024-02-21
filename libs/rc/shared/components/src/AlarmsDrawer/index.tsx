@@ -38,7 +38,8 @@ const defaultPayload: {
     fields: string[]
     filters?: {
       severity?: string[],
-      serialNumber?: string[]
+      serialNumber?: string[],
+      venueId?: string[]
     }
   } = {
     url: CommonUrlsInfo.getAlarmsList.url,
@@ -70,9 +71,16 @@ export function AlarmsDrawer (props: AlarmsType) {
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+
+    if(e.detail.data.venueId){
+      setVenueId(e.detail.data.venueId)
+    }else{
+      setVenueId('')
+    }
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
+  const [venueId, setVenueId] = useState('')
 
   const [
     clearAlarm,
@@ -113,8 +121,17 @@ export function AlarmsDrawer (props: AlarmsType) {
       })
     }
 
+    if(venueId){
+      if(venueId !== ''){
+        filters = { ...filters, ...{ venueId: [venueId] } }
+      }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, severity, data, serialNumber])
+  }, [tableQuery.data, severity, data, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -269,6 +286,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     visible={visible}
     onClose={() => {
       setVisible(false)
+      setVenueId('')
     }}
     children={alarmList}
   />

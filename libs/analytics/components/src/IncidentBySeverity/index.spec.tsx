@@ -1,3 +1,4 @@
+import { Provider }             from '@acx-ui/store'
 import { render, screen }       from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
@@ -20,12 +21,12 @@ describe('IncidentBySeverity', () => {
   }
 
   it('renders type=bar', async () => {
-    render(<IncidentBySeverity type='bar' filters={filters} />)
+    render(<Provider><IncidentBySeverity type='bar' filters={filters} /></Provider>)
 
     expect(await screen.findByTestId('IncidentBySeverityBarChart')).toBeVisible()
   })
   it('renders type=donut', async () => {
-    render(<IncidentBySeverity type='donut' filters={filters} />)
+    render(<Provider><IncidentBySeverity type='donut' filters={filters} /></Provider>)
 
     expect(await screen.findByTestId('IncidentBySeverityDonutChart')).toBeVisible()
   })
