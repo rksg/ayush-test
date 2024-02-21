@@ -1052,6 +1052,7 @@ export const {
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
+  useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
   useResetApDirectedMulticastMutation,

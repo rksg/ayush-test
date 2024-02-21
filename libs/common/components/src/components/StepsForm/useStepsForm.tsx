@@ -71,7 +71,7 @@ export function useStepsForm <T> ({
     return promise
       .catch((errorInfo: ValidateErrorEntity) => {
         // eslint-disable-next-line no-console
-        const errorHandler = currentStep?.props.onFinishFailed || console.error
+        const errorHandler = currentStep?.props.onFinishFailed || console.log
         errorHandler(errorInfo)
       })
       .finally(() => {
