@@ -271,6 +271,7 @@ function getAddTemplateMenuProps (props: {
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
+    subMenuCloseDelay: 0.2,
     items: [
       {
         key: 'add-wifi-network',
@@ -292,12 +293,9 @@ function getAddTemplateMenuProps (props: {
       }, {
         key: 'add-service',
         label: $t({ defaultMessage: 'Services' }),
-        children: [{
-          key: 'add-dpsk',
-          label: <ServiceConfigTemplateLink type={ServiceType.DPSK} oper={ServiceOperation.CREATE}>
-            {$t(serviceTypeLabelMapping[ServiceType.DPSK])}
-          </ServiceConfigTemplateLink>
-        }]
+        children: [
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
+        ]
       }
     ]
   }
@@ -311,5 +309,16 @@ export function createPolicyMenuItem (policyType: PolicyType, key: string) {
     label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
       {$t(policyTypeLabelMapping[policyType])}
     </PolicyConfigTemplateLink>
+  }
+}
+
+function createServiceMenuItem (serviceType: ServiceType, key: string) {
+  const { $t } = getIntl()
+
+  return {
+    key,
+    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
+      {$t(serviceTypeLabelMapping[serviceType])}
+    </ServiceConfigTemplateLink>
   }
 }
