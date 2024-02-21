@@ -20,7 +20,8 @@ import {
   WifiUrlsInfo,
   ExternalProviders,
   ApCompatibility,
-  ApCompatibilityResponse
+  ApCompatibilityResponse,
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1052,17 +1053,6 @@ export const {
   useLazyValidateRadiusQuery,
   useExternalProvidersQuery
 } = networkApi
-
-const transformNetwork = (item: Network) => {
-  return {
-    ...item,
-    activated: item.activated ?? { isActivated: false },
-    ...(item?.dsaeOnboardNetwork &&
-      { children: [{ ...item?.dsaeOnboardNetwork,
-        isOnBoarded: true,
-        id: item?.name + 'onboard' } as Network] })
-  }
-}
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
   apCompatibilities: { [key:string]: number }) => {
