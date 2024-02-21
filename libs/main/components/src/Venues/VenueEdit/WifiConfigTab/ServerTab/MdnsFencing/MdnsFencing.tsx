@@ -8,11 +8,14 @@ import { useParams }              from 'react-router-dom'
 import { AnchorContext, Loader, showActionModal, StepsFormLegacy } from '@acx-ui/components'
 import {
   useGetVenueMdnsFencingQuery,
-  useUpdateVenueMdnsFencingMutation
+  useGetVenueTemplateMdnsFencingQuery,
+  useUpdateVenueMdnsFencingMutation,
+  useUpdateVenueTemplateMdnsFencingMutation
 } from '@acx-ui/rc/services'
 import { MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext }                                                                from '../../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 
 import { MdnsFencingServiceTable } from './MdnsFencingServiceTable'
 import { updateRowIds }            from './utils'
@@ -39,9 +42,16 @@ export function MdnsFencing () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const getVenueMdnsFencing = useGetVenueMdnsFencingQuery({ params: { venueId } })
-  const [updateVenueMdnsFencing,
-    { isLoading: isUpdatingVenueMdnsFencing }] = useUpdateVenueMdnsFencingMutation()
+  const getVenueMdnsFencing = useVenueConfigTemplateQueryFnSwitcher<VenueMdnsFencingPolicy>(
+    useGetVenueMdnsFencingQuery,
+    useGetVenueTemplateMdnsFencingQuery
+  )
+
+  const [updateVenueMdnsFencing, { isLoading: isUpdatingVenueMdnsFencing }] =
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueMdnsFencingMutation,
+      useUpdateVenueTemplateMdnsFencingMutation
+    )
 
   const [enableMdnsFencing, setEnableMdnsFencing] = useState(false)
   const [mdnsFencingServices, setMdnsFencingServices]= useState([] as MdnsFencingService[])

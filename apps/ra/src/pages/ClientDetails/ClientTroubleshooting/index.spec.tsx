@@ -18,6 +18,15 @@ describe('ClientTroubleshootingTab', () => {
         client: {
           connectionDetailsByAp: [],
           connectionEvents: [],
+          connectionQualities: []
+        }
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp: [],
+          connectionEvents: [],
           connectionQualities: [],
           incidents: []
         }
@@ -36,7 +45,12 @@ describe('ClientTroubleshootingTab', () => {
       client: {
         connectionDetailsByAp: [],
         connectionEvents: [],
-        connectionQualities: [],
+        connectionQualities: []
+      }
+    } })
+
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', { data: {
+      client: {
         incidents: []
       }
     } })

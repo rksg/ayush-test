@@ -679,7 +679,7 @@ describe('ManageCustomer', () => {
       })
 
     expect(screen.getByRole('radio', { name: 'Professional' })).toBeEnabled()
-    const radioBtn = screen.getByRole('radio', { name: 'Essential' })
+    const radioBtn = screen.getByRole('radio', { name: 'Essentials' })
     await userEvent.click(radioBtn)
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toBeVisible()

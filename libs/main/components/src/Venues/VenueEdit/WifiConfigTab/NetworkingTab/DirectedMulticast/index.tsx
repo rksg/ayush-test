@@ -4,19 +4,22 @@ import { Col, Form, Row, Switch } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { AnchorContext, Loader }            from '@acx-ui/components'
+import { AnchorContext, Loader }                    from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
-  useUpdateVenueDirectedMulticastMutation
+  useGetVenueTemplateDirectedMulticastQuery,
+  useUpdateVenueDirectedMulticastMutation,
+  useUpdateVenueTemplateDirectedMulticastMutation
 } from '@acx-ui/rc/services'
+import { VenueDirectedMulticast } from '@acx-ui/rc/utils'
 
-
-import { VenueEditContext } from '../../../index'
-import { FieldLabel }       from '../../styledComponents'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
+import { FieldLabel }                                                                      from '../../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
 
   const {
     editContextData,
@@ -26,9 +29,16 @@ export function DirectedMulticast () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const directedMulticast = useGetVenueDirectedMulticastQuery({ params: { tenantId, venueId } })
+  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
+    useGetVenueDirectedMulticastQuery,
+    useGetVenueTemplateDirectedMulticastQuery
+  )
+
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
-    useUpdateVenueDirectedMulticastMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueDirectedMulticastMutation,
+      useUpdateVenueTemplateDirectedMulticastMutation
+    )
 
   const [isUserSetting, setIsUserSetting] = useState(false)
   const [isWiredEnabled, setIsWiredEnabled] = useState(true)
