@@ -119,7 +119,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
+          startDate: moment(lastActiveTime).subtract(8, 'hours').format(),
           endDate: lastActiveTime,
           range: DateRange.custom
         })

@@ -17,6 +17,7 @@ import {
   dhcpResponse,
   externalProviders
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { WISPrForm } from './WISPrForm'
@@ -73,8 +74,18 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
       value={{
         editMode: false, cloneMode: true, data: wisprDataWPA2
       }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><WISPrForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    >
+      <MLOContext.Provider value={{
+        isDisableMLO: false,
+        disableMLO: jest.fn()
+      }}>
+        <StepsFormLegacy>
+          <StepsFormLegacy.StepForm>
+            <WISPrForm />
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      </MLOContext.Provider>
+    </NetworkFormContext.Provider></Provider>, { route: { params } })
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
