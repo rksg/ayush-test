@@ -73,11 +73,11 @@ async function pendoInitalization (): Promise<PendoParameters> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const tenantId = getTenantId()
   const { data: userProfile, isUserProfileLoading } = useUserProfileContext()
 
-  const request = useGetPreferencesQuery({ tenantId: getTenantId() })
+  const request = useGetPreferencesQuery({ tenantId })
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
-  const tenantId = getTenantId()
 
   const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
   const [langLoading, setLangLoading] = useState(true)
@@ -131,9 +131,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter/>}
     states={[{
-      isLoading: isUserProfileLoading
-        || request.isLoading || request.isFetching
-        || langLoading
+      isLoading: isUserProfileLoading || request.isFetching || langLoading
     }]}
     children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
   />
@@ -161,19 +159,19 @@ export async function init (root: Root) {
   root.render(
     <React.StrictMode>
       <Provider>
-        <UserProfileProvider>
-          <SplitProvider>
-            <PreferredLangConfigProvider>
-              <BrowserRouter>
+        <BrowserRouter>
+          <UserProfileProvider>
+            <SplitProvider>
+              <PreferredLangConfigProvider>
                 <DataGuardLoader>
                   <React.Suspense fallback={null}>
                     <AllRoutes />
                   </React.Suspense>
                 </DataGuardLoader>
-              </BrowserRouter>
-            </PreferredLangConfigProvider>
-          </SplitProvider>
-        </UserProfileProvider>
+              </PreferredLangConfigProvider>
+            </SplitProvider>
+          </UserProfileProvider>
+        </BrowserRouter>
       </Provider>
     </React.StrictMode>
   )

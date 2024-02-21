@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
 import { RolesEnum }   from '@acx-ui/types'
-import { getTenantId } from '@acx-ui/utils'
+import { useTenantId } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -31,10 +31,9 @@ export const UserProfileContext = createContext<UserProfileContextProps>({} as U
 export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
-  const tenantId = getTenantId()
+  const tenantId = useTenantId()
   const {
     data: profile,
-    isLoading: isUserProfileLoading,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
   const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
@@ -51,7 +50,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   return <UserProfileContext.Provider
     value={{
       data: profile,
-      isUserProfileLoading: isUserProfileLoading || isUserProfileFetching,
+      isUserProfileLoading: isUserProfileFetching,
       allowedOperations: allowedOperations || [],
       hasRole,
       isPrimeAdmin,
