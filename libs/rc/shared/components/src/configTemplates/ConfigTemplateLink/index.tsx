@@ -12,7 +12,8 @@ import {
   getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath,
-  useConfigTemplate
+  useConfigTemplate,
+  useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -112,10 +113,6 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
         }}
       /></Form>
   }
-}
-
-export function useConfigTemplateTenantLink (to: string) {
-  return useTenantLink(getConfigTemplatePath(to), 'v')
 }
 
 // eslint-disable-next-line max-len
