@@ -13,8 +13,8 @@ import {
   venueDetailHeaderData,
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup,
-  serviceProfile
+  serviceProfile,
+  venueNetworkApGroupData
 } from '../__tests__/fixtures'
 
 import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
@@ -95,7 +95,11 @@ describe('VenueDetails', () => {
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
       ),
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,

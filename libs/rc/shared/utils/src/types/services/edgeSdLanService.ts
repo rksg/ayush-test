@@ -57,3 +57,7 @@ export interface EdgeSdLanViewDataP2 extends EdgeSdLanViewData {
 export interface EdgeSdLanActivateNetworkPayload {
   isGuestTunnelUtilized: boolean
 }
+
+export interface EdgeSdLanToggleDmzPayload {
+  isGuestTunnelEnabled: boolean
+}

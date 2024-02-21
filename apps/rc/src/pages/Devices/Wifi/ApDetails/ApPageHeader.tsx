@@ -31,7 +31,7 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -132,7 +132,7 @@ function ApPageHeader () {
       ]}
       footer={<>
         {
-          AFC_Featureflag &&
+          AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
           <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo}/>
         }

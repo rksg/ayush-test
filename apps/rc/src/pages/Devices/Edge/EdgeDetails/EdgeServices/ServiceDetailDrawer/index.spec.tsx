@@ -43,7 +43,7 @@ const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
-  NetworkSegmentationDetailTableGroup: () => <div data-testid='rc-NsgTableGroup' />
+  PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />
 }))
 
 const mockedSetVisible = jest.fn()
@@ -173,7 +173,7 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     expect(await screen.findByRole('link', { name: /tunnelProfile1/i })).toBeVisible()
     expect(await screen.findByText('Networks')).toBeVisible()
     expect(await screen.findByText('2')).toBeVisible()
-    expect(await screen.findByTestId('rc-NsgTableGroup')).toBeVisible()
+    expect(await screen.findByTestId('rc-PinTableGroup')).toBeVisible()
   })
 
   it('should render SD-LAN detail successfully', async () => {
