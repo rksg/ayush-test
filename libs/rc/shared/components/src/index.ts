@@ -183,9 +183,8 @@ export {
 } from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export {
-  useEdgeSdLanActions
-} from './EdgeSdLan/useEdgeSdLanActions'
+export { useEdgeSdLanActions } from './EdgeSdLan/useEdgeSdLanActions'
+export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
