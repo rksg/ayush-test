@@ -146,7 +146,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
       }
     }, {
       key: 'lastStatusUpdateTime',
-      title: $t({ defaultMessage: 'Last Update time' }),
+      title: $t({ defaultMessage: 'Last Update' }),
       dataIndex: 'lastStatusUpdateTime',
       sorter: false,
       render: function (_, row) {
