@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
 import { Col, Row, Space, Typography } from 'antd'
-import _                               from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { SummaryCard }                                                                                                   from '@acx-ui/components'
-import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram }                        from '@acx-ui/rc/components'
+import { Card, SummaryCard }                                                                                                   from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram }                                                       from '@acx-ui/rc/components'
 import { useActivateEdgeSdLanNetworkMutation, useDeactivateEdgeSdLanNetworkMutation, useUpdateEdgeSdLanPartialMutation } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -19,23 +18,6 @@ import {
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-// type NetworksTableProps = Omit<ActivatedNetworksTableP2Props, 'activated' | 'activatedGuest'> & {
-//   isGuestTunnelEnabled: boolean,
-//   data?: EdgeSdLanActivatedNetwork[],
-//   guestData?: EdgeSdLanActivatedNetwork[]
-// }
-
-// const NetworksTable = (props: NetworksTableProps) => {
-//   const { data, guestData, ...others } = props
-
-//   return <EdgeSdLanP2ActivatedNetworksTable
-//     {...others}
-//     activated={data?.map(i => i.id!) ?? []}
-//     activatedGuest={guestData?.map(i => i.id!) ?? []}
-//   />
-// }
-
 
 interface EdgeSdLanServiceProps {
   data: EdgeSdLanViewDataP2;
@@ -74,12 +56,20 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       {data.venueName}
     </TenantLink>
   }, {
-    title: $t({ defaultMessage: 'SmartEdge' }),
+    title: $t({ defaultMessage: 'Cluster' }),
     content: () => <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
       {data.edgeName}
     </TenantLink>
-  }, {
-    title: $t({ defaultMessage: 'Tunnel Profile' }),
+  }, ...(data.isGuestTunnelEnabled ? [{
+    title: $t({ defaultMessage: 'DMZ Cluster' }),
+    content: () => (
+      <TenantLink to={`/devices/edge/${data.guestEdgeId}/details/overview`}>
+        {data.guestEdgeName}
+      </TenantLink>
+    )
+  }] : []),{
+    title: $t({ defaultMessage: 'Tunnel Profile (AP- Cluster tunnel)' }),
+    colSpan: 6,
     content: () => <TenantLink to={getPolicyDetailsLink({
       type: PolicyType.TUNNEL_PROFILE,
       oper: PolicyOperation.DETAIL,
@@ -87,7 +77,19 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     })}>
       {data.tunnelProfileName}
     </TenantLink>
-  }]
+  }, ...(data.isGuestTunnelEnabled ? [{
+    title: $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }),
+    colSpan: 6,
+    content: () => (
+      <TenantLink to={getPolicyDetailsLink({
+        type: PolicyType.TUNNEL_PROFILE,
+        oper: PolicyOperation.DETAIL,
+        policyId: data.guestTunnelProfileId!
+      })}>
+        {data.guestTunnelProfileName}
+      </TenantLink>
+    )
+  }] : [])]
 
   const toggleGuestNetwork = async (networkId: string, activate: boolean) => {
     if (activate) {
@@ -148,11 +150,13 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
   return (
     <Space direction='vertical' size={30}>
+      <Card>
+        <SdLanTopologyDiagram
+          isGuestTunnelEnabled={data.isGuestTunnelEnabled}
+          vertical={false}
+        />
+      </Card>
       <SummaryCard data={infoFields} />
-      <SdLanTopologyDiagram
-        isGuestTunnelEnabled={data.isGuestTunnelEnabled}
-        vertical={false}
-      />
       <Row>
         <Col span={24}>
           <Typography.Text strong>

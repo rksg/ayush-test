@@ -1,16 +1,16 @@
 import { Row, Space, Badge } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr }       from '@acx-ui/components'
-import { SpaceWrapper } from '@acx-ui/rc/components'
+import { cssStr } from '@acx-ui/components'
 
-import DcDmzDiagramHorizontal        from './assets/images/edge-sd-lan-dc-dmz-horizontal.png'
-import DcDiagramHorizontal           from './assets/images/edge-sd-lan-dc-horizontal.png'
-import DcDmzDiagramVertical        from './assets/images/edge-sd-lan-dc-dmz.png'
-import DcDiagramVertical           from './assets/images/edge-sd-lan-dc.png'
-import { messageMappings } from './messageMappings'
+import { SpaceWrapper } from '../../SpaceWrapper'
 
-import * as UI from './styledComponents'
+import DcDmzDiagramHorizontal from './assets/images/edge-sd-lan-dc-dmz-horizontal.png'
+import DcDmzDiagramVertical   from './assets/images/edge-sd-lan-dc-dmz.png'
+import DcDiagramHorizontal    from './assets/images/edge-sd-lan-dc-horizontal.png'
+import DcDiagramVertical      from './assets/images/edge-sd-lan-dc.png'
+import { messageMappings }    from './messageMappings'
+import * as UI                from './styledComponents'
 
 const lineMap = [
   {
@@ -28,33 +28,41 @@ const lineMap = [
   }
 ]
 
-export const SdLanTopologyDiagram = (props: { isGuestTunnelEnabled: boolean, vertical: boolean }) => {
+export const SdLanTopologyDiagram = (props: {
+  isGuestTunnelEnabled: boolean,
+  vertical: boolean,
+  className?: string
+}) => {
   const { $t } = useIntl()
-  const { isGuestTunnelEnabled, vertical } = props
+  const { isGuestTunnelEnabled, vertical, className } = props
   const lines = lineMap.filter(item => isGuestTunnelEnabled || item.id !== 'se_dmz')
 
   return <SpaceWrapper
+    className={className}
     size={30}
-    direction={vertical?'vertical':'horizontal'}
+    direction='vertical'
     justifycontent='center'
   >
     <Row justify='center'>
       {
         isGuestTunnelEnabled
           ? <UI.Diagram
-              src={vertical ? DcDmzDiagramVertical : DcDmzDiagramHorizontal} 
-              alt={$t({ defaultMessage: 'SD-LAN with DMZ' })} 
-              $vertical={vertical}
-              />
-          : <UI.Diagram 
-              src={vertical ? DcDiagramVertical : DcDiagramHorizontal} 
-              alt={$t({ defaultMessage: 'SD-LAN' })}
-              $vertical={vertical}
-              />
+            src={vertical ? DcDmzDiagramVertical : DcDmzDiagramHorizontal}
+            alt={$t({ defaultMessage: 'SD-LAN with DMZ' })}
+            $vertical={vertical}
+          />
+          : <UI.Diagram
+            src={vertical ? DcDiagramVertical : DcDiagramHorizontal}
+            alt={$t({ defaultMessage: 'SD-LAN' })}
+            $vertical={vertical}
+          />
       }
     </Row>
     <Row justify='center'>
-      <Space size={30}>
+      <Space
+        size={vertical ? 5 : 30}
+        direction={vertical ? 'vertical' : 'horizontal'}
+      >
         {lines.map(item => {
           return <Badge
             key={item.id}

@@ -1,7 +1,7 @@
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { SummaryCard } from '@acx-ui/components'
+import { SummaryCard }  from '@acx-ui/components'
 import {
   ServiceOperation,
   ServiceType,
@@ -9,17 +9,20 @@ import {
   EdgeSdLanViewData,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useSearchParams } from '@acx-ui/react-router-dom'
+
+import EdgeSdLanP2 from '../SdLanP2'
 
 import { NetworkTable } from './NetworksTable'
 
 interface EdgeSdLanServiceProps {
-  data: EdgeSdLanViewData;
+  data: EdgeSdLanViewData | EdgeSdLanViewDataP2;
 }
 
-const EdgeSdLan = ({ data }: EdgeSdLanServiceProps) => {
+const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
   const { $t } = useIntl()
   const { id: serviceId } = data
 
@@ -77,4 +80,13 @@ const EdgeSdLan = ({ data }: EdgeSdLanServiceProps) => {
   )
 }
 
-export default EdgeSdLan
+const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
+  const [searchParams] = useSearchParams()
+  const isP2Page = searchParams.get('p2')
+
+  return isP2Page !== null
+    ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
+    : <EdgeSdLan {...props}/>
+}
+
+export default EdgeSdLanContainer

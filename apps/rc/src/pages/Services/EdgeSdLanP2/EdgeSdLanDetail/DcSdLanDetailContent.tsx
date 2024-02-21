@@ -2,6 +2,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card, SummaryCard, Tabs } from '@acx-ui/components'
+import { SdLanTopologyDiagram }    from '@acx-ui/rc/components'
 import {
   getPolicyDetailsLink,
   PolicyType,
@@ -67,7 +68,11 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
     <Space direction='vertical' size={30}>
       <SummaryCard data={sdLanInfo} />
       <Card>
-        <TopologyDiagram isGuestTunnelEnabled={false} />
+        {/*<TopologyDiagram isGuestTunnelEnabled={false} />*/}
+        <SdLanTopologyDiagram
+          isGuestTunnelEnabled={false}
+          vertical={false}
+        />
       </Card>
       <Card>
         <UI.InstancesContainer>
