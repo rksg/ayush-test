@@ -92,7 +92,10 @@ export function VenueNetworksTab () {
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
       : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)

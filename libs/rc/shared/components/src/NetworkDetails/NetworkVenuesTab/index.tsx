@@ -37,7 +37,7 @@ import {
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum
+  SchedulerTypeEnum, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -97,13 +97,17 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
       : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
