@@ -68,11 +68,11 @@ params = {
 }
 
 const mockedUseConfigTemplate = jest.fn()
-const mockedUsePolicyBreadcrumb = jest.fn()
+const mockedUsePolicyListBreadcrumb = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate(),
-  usePolicyBreadcrumb: () => mockedUsePolicyBreadcrumb()
+  usePolicyListBreadcrumb: () => mockedUsePolicyListBreadcrumb()
 }))
 
 describe('AAA Detail Page', () => {
@@ -104,7 +104,7 @@ describe('AAA Detail Page', () => {
       route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
     })
 
-    expect(mockedUsePolicyBreadcrumb).toHaveBeenCalled()
+    expect(mockedUsePolicyListBreadcrumb).toHaveBeenCalled()
   })
 
   it('should render aaa detail page', async () => {

@@ -15,12 +15,12 @@ export enum ServiceOperation {
   LIST
 }
 
-interface ServiceRoutePathProps {
+export interface ServiceRoutePathProps {
   type: ServiceType;
   oper: ServiceOperation;
 }
 
-interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
+export interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
   activeTab?: DpskDetailsTabKey; // Union the other services tab keys if needed

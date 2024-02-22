@@ -55,7 +55,7 @@ function ClientDetailPageHeader () {
         }]
         disconnectClient({ params: { tenantId }, payload: clientData }).then(()=>{
           const period = encodeParameter<DateFilter>({
-            startDate: moment().subtract(24, 'hours').format(),
+            startDate: moment().subtract(8, 'hours').format(),
             endDate: moment().format(),
             range: DateRange.custom
           })
