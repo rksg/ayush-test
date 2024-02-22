@@ -32,7 +32,8 @@ import {
   useGetVenueVersionListQuery,
   useLazyGetVenueApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
-  useLazyApViewModelQuery
+  useLazyApViewModelQuery,
+  useLazyGetApValidChannelQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -113,6 +114,7 @@ export function ApForm () {
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getCurrentApMgmtVlan] = useLazyApViewModelQuery()
+  const [getApValidChannel] = useLazyGetApValidChannelQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
@@ -127,6 +129,7 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
+  const [afcEnabled, setAfcEnabled] = useState(false)
   const location = useLocation()
 
   const venueFromNavigate = location.state as { venueId?: string }
@@ -219,6 +222,11 @@ export function ApForm () {
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
         setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })
+        // eslint-disable-next-line
+        const afcEnabled = (await getApValidChannel({ params: { tenantId, serialNumber: apDetails?.serialNumber } })).data?.afcEnabled
+        if (afcEnabled) {
+          setAfcEnabled(afcEnabled)
+        }
       }
 
       setData(apDetails)
@@ -435,7 +443,7 @@ export function ApForm () {
       apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
     }
 
-    if (!apInfo) {
+    if (!apInfo || !afcEnabled) {
       return false
     }
 
@@ -570,9 +578,12 @@ export function ApForm () {
               { getVenueInfos(venueFwVersion) }
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
-                    'Moving this device to a new venue will reset AFC geolocation.\
-                  6GHz operation will remain in low power mode \
-                  until geolocation information is reestablished.'}
+                    $t({ defaultMessage:
+                    'Moving this device to a new venue will reset AFC geolocation. '+
+                    '6GHz operation will remain in low power mode ' +
+                    'until geolocation information is reestablished.'
+                    })
+                  }
                   showIcon={true}
                   type={'warning'}
                   />
