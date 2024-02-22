@@ -5,13 +5,14 @@ import { replace }               from 'lodash'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }   from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   SwitchViewModel,
   getAdminPassword,
   getSwitchModel,
-  getStackMemberStatus
+  getStackMemberStatus,
+  isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -35,6 +36,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
 
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
 
   const parserUnitDetialsData = (count = 0) => {
     const unitDetails = switchDetail?.unitDetails && switchDetail?.unitDetails[count]
@@ -83,7 +85,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           children={switchDetail.venueDescription || $t({ defaultMessage: 'None' })}
         />
         <Divider/>
-        { enableSwitchAdminPassword && <Form.Item
+        { enableSwitchAdminPassword && isSupportAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
           children={getAdminPassword(switchDetail, PasswordInput)}
         />}
