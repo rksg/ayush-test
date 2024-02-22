@@ -45,7 +45,7 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
           }
         }
       },
-      transformResponse(result: NewAPITableResult<TemplateGroup>) {
+      transformResponse (result: NewAPITableResult<TemplateGroup>) {
         return transferNewResToTableResult<TemplateGroup>(result, { pageStartZero: true })
       },
       providesTags: (result, error, arg) => result && result.data ?
@@ -124,7 +124,7 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
       },
       providesTags: (result, error, arg) =>
         [{ type: 'Template', id: (arg.params?.templateId as string) }]
-    }),
+    })
   })
 })
 

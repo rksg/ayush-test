@@ -5,9 +5,9 @@ import { Col, Form, FormInstance, Input, Row, Select, Space, Switch, Typography 
 import { useIntl }                                                                from 'react-intl'
 import { useParams }                                                              from 'react-router-dom'
 
-import { Button, Card, Loader, StepsForm, Subtitle, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import { InformationSolid }                                         from '@acx-ui/icons'
+import { Button, Card, Loader, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { InformationSolid }                                   from '@acx-ui/icons'
 import {
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
@@ -195,6 +195,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
 
   const registerMessageTemplates = async () => {
     const registerPromises = [...msgCategoryIds]
+      // eslint-disable-next-line
       .flatMap((msgCategoryId):Promise<any>[] => {
         let selectedOption = form.getFieldValue(msgCategoryId)
 
@@ -202,13 +203,13 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
           return [Promise.resolve()]
         }
 
-        // 1 - emailTemplateScopeId 2 - g.emailTemplateId 3 - smsTemplateScopeId 4- g.smsTemplateId, 
+        // 1 - emailTemplateScopeId 2 - g.emailTemplateId 3 - smsTemplateScopeId 4- g.smsTemplateId,
         let idArray = selectedOption.split(',')
 
         if(idArray.length < 4) {
           return [Promise.resolve()]
-        }  
-  
+        }
+
         return [
           // email
           updateRegistration({
@@ -225,7 +226,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               usageDescriptionFieldOne: venueData?.name ?? venueId,
               usageDescriptionFieldTwo: venueId
             }
-          }), 
+          }),
           // sms
           updateRegistration({
             params: {
@@ -241,8 +242,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
               usageDescriptionFieldOne: venueData?.name ?? venueId,
               usageDescriptionFieldTwo: venueId
             }
-        })]
-        
+          })]
+
       })
 
     await Promise.all(registerPromises)

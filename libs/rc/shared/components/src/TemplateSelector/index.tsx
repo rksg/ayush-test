@@ -1,15 +1,14 @@
 import { useEffect, useMemo } from 'react'
 
 import { Form, FormItemProps } from 'antd'
-import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Loader }                            from '@acx-ui/components'
+import { Loader }               from '@acx-ui/components'
 import { useGetAllTemplateGroupsByCategoryIdQuery,
   useGetCategoryQuery,
   useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
 
-import { TemplateSelect }                     from './TemplateSelect'
+import { TemplateSelect } from './TemplateSelect'
 
 
 export interface TemplateSelectorProps {
@@ -26,18 +25,19 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   const {
     categoryId,
     emailRegistrationId,
+    // eslint-disable-next-line
     smsRegistrationId,
     placeholder = $t({ defaultMessage: 'Select Template...' })
   } = props
 
-  const msgCategoryData = useGetCategoryQuery({params: {categoryId: categoryId}})
-  const templateGroupData = 
-    useGetAllTemplateGroupsByCategoryIdQuery({params: {categoryId: categoryId}, payload: {}})
+  const msgCategoryData = useGetCategoryQuery({ params: { categoryId: categoryId } })
+  const templateGroupData =
+    useGetAllTemplateGroupsByCategoryIdQuery({ params: { categoryId: categoryId }, payload: {} })
 
-  const emailRegistrationData = useGetRegistrationByIdQuery({params:{
-    templateScopeId: msgCategoryData.data?.emailTemplateScopeId, 
-    registrationId: emailRegistrationId}}, {skip:!msgCategoryData.data?.emailTemplateScopeId})
-  
+  const emailRegistrationData = useGetRegistrationByIdQuery({ params: {
+    templateScopeId: msgCategoryData.data?.emailTemplateScopeId,
+    registrationId: emailRegistrationId } }, { skip: !msgCategoryData.data?.emailTemplateScopeId })
+
   const form = Form.useFormInstance()
 
   const formItemProps = {
@@ -47,7 +47,9 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   // Generate form data from data request
   const { groupOptions, categoryLabel, initialOptionValue } = useMemo(() => {
-    if(!msgCategoryData.data || !templateGroupData.data || (!emailRegistrationData.isError && !emailRegistrationData.isSuccess)) {
+    if(!msgCategoryData.data || !templateGroupData.data ||
+      (!emailRegistrationData.isError && !emailRegistrationData.isSuccess)) {
+
       return {
         groupOptions: [],
         categoryLabel: $t({ defaultMessage: 'Loading Templates...' }),
@@ -59,24 +61,27 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     const emailTemplateScopeId = msgCategoryData.data?.emailTemplateScopeId
     const smsTemplateScopeId = msgCategoryData.data?.smsTemplateScopeId
     // value contains necessary information to save registrations
-    const groupOptions = templateGroupData.data?.data.map((g) => ({ 
-      value: emailTemplateScopeId+','+g.emailTemplateId+','+smsTemplateScopeId+','+g.smsTemplateId, 
+    const groupOptions = templateGroupData.data?.data.map((g) => ({
+      value: emailTemplateScopeId+','+g.emailTemplateId+','+smsTemplateScopeId+','+g.smsTemplateId,
       label: g.name }))
 
-    const categoryLabel = msgCategoryData.data?.name ? 
+    const categoryLabel = msgCategoryData.data?.name ?
       msgCategoryData.data?.name : $t({ defaultMessage: 'Loading Templates...' })
-    
-    let selectedGroup = undefined;
+
+    let selectedGroup = undefined
     if(emailRegistrationData.data && emailRegistrationData.data?.templateId) {
-      selectedGroup = templateGroupData.data?.data.find(g => (emailRegistrationData.data && g.emailTemplateId === emailRegistrationData.data.templateId))
+      selectedGroup = templateGroupData.data?.data.find(g =>
+        (emailRegistrationData.data && g.emailTemplateId === emailRegistrationData.data.templateId))
     }
-    
+
     if(!selectedGroup) {
-      selectedGroup = templateGroupData.data.data.find(g => g.id === msgCategoryData.data?.defaultTemplateGroupId)
+      selectedGroup = templateGroupData.data.data.find(g =>
+        g.id === msgCategoryData.data?.defaultTemplateGroupId)
     }
 
     const initialOptionValue = selectedGroup ?
-      emailTemplateScopeId+','+selectedGroup.emailTemplateId+','+smsTemplateScopeId+','+selectedGroup.smsTemplateId 
+      emailTemplateScopeId+','+selectedGroup.emailTemplateId+','
+      +smsTemplateScopeId+','+selectedGroup.smsTemplateId
       : undefined
 
     return {
@@ -98,7 +103,9 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   // RENDER //////////////////////////////////////////////////////
   return (
     <Loader style={{ height: 'auto', minHeight: 45 }}
-      states={[templateGroupData, msgCategoryData, {isLoading: emailRegistrationData.isLoading, isFetching: emailRegistrationData.isFetching}]}>
+      states={[templateGroupData, msgCategoryData,
+        { isLoading: emailRegistrationData.isLoading,
+          isFetching: emailRegistrationData.isFetching }]}>
       <Form.Item {...formItemProps}
         label={categoryLabel}>
         <TemplateSelect

@@ -2,10 +2,9 @@ import { useState } from 'react'
 
 import { Select, Button, Row, Col } from 'antd'
 import { DefaultOptionType }        from 'antd/lib/select'
-import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
-import { Modal }                 from '@acx-ui/components'
+import { Modal }                      from '@acx-ui/components'
 import { MsgCategory, TemplateGroup } from '@acx-ui/rc/utils'
 
 import { TemplatePreview } from './TemplatePreview'
@@ -38,7 +37,8 @@ export function TemplateSelect (props: TemplateSelectorProps) {
 
   // Preview Modal Management ///////////////////////
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [previewTemplateGroup, setPreviewTemplateGroup] = useState<TemplateGroup | undefined>(undefined)
+  const [previewTemplateGroup, setPreviewTemplateGroup] =
+    useState<TemplateGroup | undefined>(undefined)
 
   const showModal = () => {
     if(value) {
@@ -46,7 +46,7 @@ export function TemplateSelect (props: TemplateSelectorProps) {
       // this works because a template can only belong to a single group
       let previewGroup = templateGroups?.find(g => g.emailTemplateId === selectedEmailTemplateId)
       setPreviewTemplateGroup(previewGroup)
-    } else { 
+    } else {
       setPreviewTemplateGroup(undefined)
     }
     setIsModalOpen(true)
@@ -59,7 +59,7 @@ export function TemplateSelect (props: TemplateSelectorProps) {
   const getTemplatePreviewTitle = () => {
     if(msgCategory) {
       if(msgCategory?.name) {
-        return msgCategory?.name 
+        return msgCategory?.name
       } else {
         return $t({ defaultMessage: 'Template Preview' })
       }
