@@ -336,7 +336,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
       sorter: false,
-      show: !!showAllColumns,
+      show: false,
       render: (_, row) => {
         return row.extIp || noDataDisplay
       }
