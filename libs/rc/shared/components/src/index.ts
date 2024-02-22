@@ -84,7 +84,6 @@ export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus, defaultSwitchPayload } from './SwitchTable'
 export type { SwitchTableRefType } from './SwitchTable'
 export { SwitchPortTable, isLAGMemberPort, getInactiveTooltip } from './SwitchPortTable'
-export { EditPortDrawer as EditPortDrawerLegacy } from './SwitchPortTable/editPortDrawerLegacy'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { SwitchLagModal } from './SwitchLagDrawer/SwitchLagModal'
 export { TimelineDrawer } from './TimelineDrawer'
@@ -101,6 +100,7 @@ export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
 export { ApFloorplan } from './ApFloorplan'
+export { ApSnmpMibsDownloadInfo } from './ApSnmpMibsDownloadInfo'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
 export { SwitchClientsTable } from './SwitchClientsTable'
@@ -147,15 +147,17 @@ export {
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
-export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
-export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
-export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { ApsTable } from './NetworkSegmentationDetailTableGroup/ApsTable'
-export { AssignedSegmentsTable } from './NetworkSegmentationDetailTableGroup/AssignedSegmentsTable'
-export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwitchesTable'
+export { PersonalIdentityNetworkServiceInfo } from './PersonalIdentityNetworkServiceInfo'
+export { PersonalIdentityNetworkDetailTableGroup } from './PersonalIdentityNetworkDetailTableGroup'
+export { AccessSwitchTable } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
+export { ApsTable } from './PersonalIdentityNetworkDetailTableGroup/ApsTable'
+export {
+  AssignedSegmentsTable
+} from './PersonalIdentityNetworkDetailTableGroup/AssignedSegmentsTable'
+export { DistSwitchesTable } from './PersonalIdentityNetworkDetailTableGroup/DistSwitchesTable'
 export type {
   AccessSwitchTableDataType
-} from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+} from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
   useIsEdgeFeatureReady,

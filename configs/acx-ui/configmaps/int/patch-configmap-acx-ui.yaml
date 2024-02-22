@@ -4,7 +4,7 @@ metadata:
   name: configmap-acx-ui
 data:
   captive.portal.domain.name: "int.ruckus.cloud"
-  google.maps.key: "AIzaSyB39cAm6pQ7R8xRtcJNDWUxLjWPKGT_jHQ"
+  google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   split.io.key: "54426nn43sd814m9drt1lg1jeupgr06jd9st"
   disable.pendo: "true"
   new.api.domain.name: "api.int.ruckus.cloud"

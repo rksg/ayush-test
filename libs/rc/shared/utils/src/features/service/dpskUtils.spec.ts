@@ -1,4 +1,6 @@
-import { displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
+import { setUpIntl } from '@acx-ui/utils'
+
+import { displayDefaultAccess, displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
 
 const mockedBaseDpskPassphrase = {
   id: '__PASSPHRASE_ID_3__',
@@ -8,6 +10,12 @@ const mockedBaseDpskPassphrase = {
 }
 
 describe('DPSK utils', () => {
+  beforeEach(() => {
+    setUpIntl({
+      locale: 'en-US',
+      messages: {}
+    })
+  })
   it('display device count limit', () => {
     const numberResult = displayDeviceCountLimit(1)
     expect(numberResult).toBe(1)
@@ -33,5 +41,16 @@ describe('DPSK utils', () => {
       ...mockedBaseDpskPassphrase
     }, true)
     expect(active).toBe('Active')
+  })
+
+  it('display default access', () => {
+    const acceptResult = displayDefaultAccess(true)
+    expect(acceptResult).toBe('ACCEPT')
+
+    const rejectResult = displayDefaultAccess(false)
+    expect(rejectResult).toBe('REJECT')
+
+    const undefinedResult = displayDefaultAccess(undefined)
+    expect(undefinedResult).toBe('ACCEPT')
   })
 })
