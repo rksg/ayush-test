@@ -111,7 +111,7 @@ export function useMenuConfig () {
     }]: []),
     {
       uri: '/venues',
-      label: $t({ defaultMessage: 'Venues' }),
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
     },

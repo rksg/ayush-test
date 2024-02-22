@@ -8,6 +8,7 @@ import {
 import moment                    from 'moment-timezone'
 import { useIntl, IntlProvider } from 'react-intl'
 
+import { get }  from '@acx-ui/config'
 import {
   LocaleProvider,
   LocaleContext,
@@ -34,11 +35,26 @@ function AntConfigProviders (props: ConfigProviderProps) {
 
 export function ConfigProvider (props: ConfigProviderProps) {
   moment.locale(props.lang)
+  const isMLISA = true //get('IS_MLISA_SA')
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {locale => (
-          <IntlProvider locale={locale.lang} messages={locale.messages} onError={onIntlError}>
+          <IntlProvider locale={locale.lang}
+            defaultRichTextElements={isMLISA ? {
+              venueSingular: () => 'zone',
+              venuePlural: () => 'zones',
+              VenueSingular: () => 'Zone',
+              VenuePlural: () => 'Zones'
+            } : {
+              venueSingular: () => 'venue',
+              venuePlural: () => 'venues',
+              VenueSingular: () => 'Venue',
+              VenuePlural: () => 'Venues'
+            }}
+            messages={locale.messages}
+            onError={onIntlError}
+          >
             <AntConfigProviders {...props} />
           </IntlProvider>
         )}

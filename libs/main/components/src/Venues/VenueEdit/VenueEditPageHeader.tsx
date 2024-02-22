@@ -23,7 +23,7 @@ function VenueEditPageHeader () {
     `/venues/${venueId}/venue-details/services`
   )
   // eslint-disable-next-line max-len
-  const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: 'Venues' }), link: '/venues' }])
+  const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }])
 
   return (
     <PageHeader

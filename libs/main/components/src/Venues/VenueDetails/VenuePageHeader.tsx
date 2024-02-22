@@ -47,7 +47,7 @@ function VenuePageHeader () {
   const templateBasePath = useTenantLink(getConfigTemplatePath(`venues/${venueId}`), 'v')
 
   const breadcrumb = useConfigTemplateBreadcrumb([
-    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+    { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
 
   return (

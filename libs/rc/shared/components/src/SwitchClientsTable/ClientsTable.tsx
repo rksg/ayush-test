@@ -146,7 +146,7 @@ export function ClientsTable (props: {
     },
     ...(params.switchId || params.venueId ? [] : [{
       key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       searchable: searchable,

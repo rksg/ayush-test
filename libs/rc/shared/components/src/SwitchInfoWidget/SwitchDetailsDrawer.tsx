@@ -71,7 +71,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
     children={
       <Form labelCol={{ span: 10 }} labelAlign='left'>
         <Form.Item
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           children={
             <TenantLink to={`/venues/${switchDetail.venueId}/venue-details/overview`}>
               {switchDetail.venueName}

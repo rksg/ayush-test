@@ -128,7 +128,7 @@ export function SwitchUpgradeNotification (props: {
         </UI.FirmwareDescription>
 
         {(getVenueFirmware()) && <UI.FirmwareDescription>
-          {$t({ defaultMessage: 'Venue firmware version for ICX {venueCategory} Series: ' }, {
+          {$t({ defaultMessage: '<VenueSingular></VenueSingular> firmware version for ICX {venueCategory} Series: ' }, {
             venueCategory: switchModel?.includes('8200') ? '8200' : '7000'
           })}
           <UI.MinFwVersion>{parseSwitchVersion(getVenueFirmware())}</UI.MinFwVersion>
