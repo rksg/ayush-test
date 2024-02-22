@@ -57,7 +57,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       render: (_, row : ClientByTraffic, __, highlightFn) => {
         const { lastSeen, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastSeen).subtract(24, 'hours').format(),
+          startDate: moment(lastSeen).subtract(8, 'hours').format(),
           endDate: moment(lastSeen).format(),
           range: DateRange.custom
         })

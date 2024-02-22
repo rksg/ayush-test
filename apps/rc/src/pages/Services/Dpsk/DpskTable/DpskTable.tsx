@@ -25,13 +25,12 @@ import {
   DpskDetailsTabKey,
   getServiceListRoutePath,
   PassphraseFormatEnum,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  displayDefaultAccess
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
-
-import { displayDefaultAccess } from '../utils'
 
 const defaultPayload = {
   filters: {}
