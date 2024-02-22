@@ -40,7 +40,7 @@ const AddEdgeCluster = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add Cluster' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
         ]}
       />
       <StepsForm
