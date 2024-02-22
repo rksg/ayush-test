@@ -552,12 +552,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         let networkDeepList = { response: [] } as { response: NetworkSaveData[] }
 
         if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
-          const networkDeepListInfo = {
-            ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
-            body: networkVenueList.data.map(item => item.networkId)
-          }
-          const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
-          networkDeepList = networkDeepListQuery.data as { response: NetworkSaveData[] }
+          const networkIds = networkVenueList.data.map(item => item.networkId!) || []
+          networkDeepList = await getNetworkDeepList(networkIds, fetchWithBQ)
         }
 
         return { data: networkDeepList.response }
@@ -840,12 +836,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const venueIds:string[] = []
   networkVenuesList.data.forEach(item => venueIds.push(item.id))
 
-  const networkDeepListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
-    body: [arg.params?.networkId]
-  }
-  const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
-  const networkDeepList = networkDeepListQuery.data as { response: NetworkDetail[] }
+  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
     networkDeepList?.response[0] : undefined
   let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
@@ -908,7 +899,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
 
   const networkIds = networkList?.data?.map(item => item.id) || []
 
-  if (networkList && networkList.data.length > 0) {
+  if (networkIds.length > 0) {
     const filters = networkList.data.map(item => ({
       networkId: item.id,
       venueId: arg.params?.venueId
@@ -920,13 +911,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
-
-    const networkDeepListInfo = {
-      ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
-      body: networkIds
-    }
-    const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
-    networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
   }
   return { venueNetworkListQuery,
     networkList,
@@ -987,6 +972,7 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
       networkId: item.id,
       venueId: arg.params?.venueId
     }))
+    const networkIds = networkList.data.map(item => item.id)
 
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
@@ -995,12 +981,7 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
 
-    const networkDeepListInfo = {
-      ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
-      body: networkList.data.map(item => item.id)
-    }
-    const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
-    networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
   }
 
   return { apGroupNetworkListQuery,
@@ -1008,6 +989,16 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     venueNetworkApGroupList,
     networkDeepListList
   }
+}
+
+const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any) => {
+  const networkDeepList: NetworkDetail[] = []
+  for (let i=0; i<networkIds.length; i++) {
+    const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, { networkId: networkIds[i] }))
+    networkDeepList.push(networkQuery.data)
+  }
+
+  return { response: networkDeepList }
 }
 
 
