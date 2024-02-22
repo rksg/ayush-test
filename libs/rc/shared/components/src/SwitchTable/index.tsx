@@ -103,7 +103,7 @@ export const defaultSwitchPayload = {
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
     'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword'
+    'syncedAdminPassword', 'adminPassword', 'extIp'
   ]
 }
 
@@ -147,7 +147,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ],
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
@@ -331,6 +331,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
+    }, {
+      key: 'extIp',
+      title: $t({ defaultMessage: 'Ext. IP Address' }),
+      dataIndex: 'extIp',
+      sorter: false,
+      show: !!showAllColumns,
+      render: (_, row) => {
+        return row.extIp || '--'
+      }
     }
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',

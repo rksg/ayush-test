@@ -101,6 +101,10 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           children={switchDetail.ipAddress || noDataDisplay}
         />
         <Form.Item
+          label={$t({ defaultMessage: 'Ext. IP Address' })}
+          children={switchDetail.extIp || noDataDisplay}
+        />
+        <Form.Item
           label={$t({ defaultMessage: 'Subnet Mask' })}
           children={switchDetail.subnetMask || noDataDisplay}
         />
