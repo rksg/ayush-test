@@ -165,6 +165,10 @@ function useColumns (props: templateColumnProps) {
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
+  const typeFilterOptions = Object.keys(ConfigTemplateType).map((key =>
+    ({ key, value: key })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -180,6 +184,7 @@ function useColumns (props: templateColumnProps) {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
