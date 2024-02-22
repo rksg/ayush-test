@@ -6,9 +6,9 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AdminSolid }                                              from '@acx-ui/icons'
-import { HomeSolid }                                               from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AdminSolid }                               from '@acx-ui/icons'
+import { HomeSolid }                                from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -134,13 +134,7 @@ function Layout () {
   )
 }
 
-function LayoutWithSplitProvider () {
-  return <SplitProvider>
-    <Layout />
-  </SplitProvider>
-}
-
-export default LayoutWithSplitProvider
+export default Layout
 
 export function LayoutWithConfigTemplateContext () {
   return <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
