@@ -338,7 +338,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: false,
       show: !!showAllColumns,
       render: (_, row) => {
-        return row.extIp || '--'
+        return row.extIp || noDataDisplay
       }
     }
       // { // TODO: Waiting for TAG feature support
