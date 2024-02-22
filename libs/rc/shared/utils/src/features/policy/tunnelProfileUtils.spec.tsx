@@ -6,7 +6,7 @@ import { TunnelProfile, TunnelProfileViewData }     from '../../types/policies/t
 import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile } from './tunnelProfileUtils'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-const defaultVxLANProfileName = 'Default'
+const defaultVxLANProfileName = 'Default tunnel profile (PIN)'
 const defaultVLANVxLANProfileName = 'Default tunnel profile (SD-LAN)'
 
 const mockedVxlanDefaultTunnelProfileViewData = {

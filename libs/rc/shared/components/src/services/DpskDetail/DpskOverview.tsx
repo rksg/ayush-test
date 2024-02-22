@@ -1,0 +1,71 @@
+
+import { Card, GridCol, GridRow, SummaryCard } from '@acx-ui/components'
+import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import {
+  DpskNetworkType,
+  DpskSaveData,
+  displayDefaultAccess,
+  displayDeviceCountLimit,
+  transformAdvancedDpskExpirationText,
+  transformDpskNetwork,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+import DpskInstancesTable from './DpskInstancesTable'
+
+interface DpskOverviewProps {
+  data?: DpskSaveData
+}
+
+export function DpskOverview (props: DpskOverviewProps) {
+  const intl = getIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
+  const { data } = props
+
+  const dpskInfo = [
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Format' }),
+      content: data && transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Length' }),
+      content: data && transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
+      content: data && transformAdvancedDpskExpirationText(
+        intl,
+        {
+          expirationType: data.expirationType,
+          expirationDate: data.expirationDate,
+          expirationOffset: data.expirationOffset
+        }
+      )
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+      content: data && displayDeviceCountLimit(data.deviceCountLimit),
+      visible: isCloudpathEnabled
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Default Access' }),
+      content: data && displayDefaultAccess(data.policyDefaultAccess),
+      visible: isCloudpathEnabled
+    }
+  ]
+
+  return (
+    <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <SummaryCard data={dpskInfo} />
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Card>
+          <DpskInstancesTable networkIds={data?.networkIds} />
+        </Card>
+      </GridCol>
+    </GridRow>
+  )
+}
