@@ -6,9 +6,10 @@ import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx
 import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import { ClusterDetails }  from './ClusterDetails'
-import { EdgeClusterDhcp } from './EdgeClusterDhcp'
-import { VirtualIp }       from './VirtualIp'
+import { ClusterDetails }   from './ClusterDetails'
+import { ClusterInterface } from './ClusterInterface'
+import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
+import { VirtualIp }        from './VirtualIp'
 
 
 const EditEdgeCluster = () => {
@@ -58,7 +59,9 @@ const EditEdgeCluster = () => {
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
-      content: <div children={'cluster-interface'} />
+      content: <ClusterInterface
+        edgeNodeList={currentCluster?.smartEdges}
+      />
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),

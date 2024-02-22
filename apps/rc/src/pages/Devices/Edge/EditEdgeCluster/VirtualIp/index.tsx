@@ -18,9 +18,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
+import * as CommUI from '../styledComponents'
+
 import { InterfaceTable }        from './InterfaceTable'
 import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
-import * as UI                   from './styledComponents'
 
 interface VirtualIpProps {
   currentCluster?: EdgeClusterTableDataType
@@ -136,12 +137,12 @@ export const VirtualIp = (props: VirtualIpProps) => {
     <Loader states={[{ isLoading: isLanInterfacesLoading }]}>
       <Row>
         <Col span={10}>
-          <UI.Mt15>
+          <CommUI.Mt15>
             {
               // eslint-disable-next-line max-len
               $t({ defaultMessage: 'Please select the node interfaces and assign virtual IPs for seamless failover :' })
             }
-          </UI.Mt15>
+          </CommUI.Mt15>
           <StepsForm
             form={form}
             onFinish={handleFinish}
@@ -149,7 +150,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
             buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
           >
             <StepsForm.StepForm>
-              <UI.Mt15>
+              <CommUI.Mt15>
                 <Row gutter={[16, 30]}>
                   <Col span={24}>
                     <Form.List
@@ -223,7 +224,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
                     </Form.Item>
                   </Col>
                 </Row>
-              </UI.Mt15>
+              </CommUI.Mt15>
             </StepsForm.StepForm>
           </StepsForm>
         </Col>
