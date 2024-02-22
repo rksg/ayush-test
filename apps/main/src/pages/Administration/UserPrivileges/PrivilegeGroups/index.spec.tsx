@@ -178,7 +178,7 @@ describe('Privilege Group Table', () => {
     const customRow = await screen.findByRole('row', { name: /privilege group/i })
     await userEvent.click(within(customRow).getByRole('radio'))
     expect(screen.queryByRole('button', { name: 'View' })).toBeNull()
-    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    const systemRow = await screen.findByRole('row', { name: /Prime Admin/i })
     await userEvent.click(within(systemRow).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: 'View' }))
 
@@ -204,7 +204,7 @@ describe('Privilege Group Table', () => {
         route: { params }
       })
 
-    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    const systemRow = await screen.findByRole('row', { name: /Prime Admin/i })
     await userEvent.click(within(systemRow).getByRole('radio'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
     const customRow = await screen.findByRole('row', { name: /privilege group/i })
@@ -235,7 +235,7 @@ describe('Privilege Group Table', () => {
         route: { params }
       })
 
-    const systemRow = await screen.findByRole('row', { name: /PRIME_ADMIN/i })
+    const systemRow = await screen.findByRole('row', { name: /Prime Admin/i })
     await userEvent.click(within(systemRow).getByRole('radio'))
     expect(screen.getByRole('button', { name: 'Clone' })).toBeVisible()
     const customRow = await screen.findByRole('row', { name: /privilege group/i })

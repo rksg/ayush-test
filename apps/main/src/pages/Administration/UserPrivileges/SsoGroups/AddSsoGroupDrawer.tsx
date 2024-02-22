@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
@@ -67,6 +69,11 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  useEffect(() => {
+    if (editData && visible)
+      form.setFieldsValue(editData)
+  }, [form, editData, visible])
 
   const formContent = <Form layout='vertical'form={form} >
     {isEditMode ?

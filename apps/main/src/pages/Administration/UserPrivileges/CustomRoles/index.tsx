@@ -13,10 +13,11 @@ import {
   useGetCustomRolesQuery,
   useDeleteCustomRoleMutation
 } from '@acx-ui/rc/services'
-import { sortProp, defaultSort, CustomRole, CustomGroupType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                      from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }              from '@acx-ui/user'
-import { AccountType }                                        from '@acx-ui/utils'
+import { sortProp, defaultSort, CustomRole, CustomGroupType }   from '@acx-ui/rc/utils'
+import { useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { RolesEnum }                                            from '@acx-ui/types'
+import { filterByAccess, roleStringMap, useUserProfileContext } from '@acx-ui/user'
+import { AccountType }                                          from '@acx-ui/utils'
 
 interface CustomRolesTableProps {
   isPrimeAdminUser: boolean;
@@ -55,7 +56,11 @@ const CustomRoles = (props: CustomRolesTableProps) => {
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('name', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) },
+      render: (_, row) => {
+        return roleStringMap[row.name as RolesEnum]
+          ? $t(roleStringMap[row.name as RolesEnum]) : row.name
+      }
     },
     {
       title: $t({ defaultMessage: 'Description' }),

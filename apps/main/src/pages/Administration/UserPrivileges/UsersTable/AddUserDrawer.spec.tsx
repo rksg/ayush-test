@@ -109,7 +109,7 @@ describe('Add user drawer component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText('READ_ONLY'))
+    await userEvent.click(await screen.findByText('Read Only'))
     await userEvent.click(await screen.findByText('Add User'))
     await waitFor(() => {
       expect(mockedAddAdminFn).toBeCalledWith({
@@ -168,7 +168,7 @@ describe('Add user drawer component', () => {
     const emailInput = await screen.findByPlaceholderText('Enter email address')
     await userEvent.type(emailInput, 'c123@email.com')
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText( 'READ_ONLY' ))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
     await userEvent.click(await screen.findByRole('radio', { name: 'Specific Customers' }))
     await userEvent.click((await screen.findAllByRole('combobox')).filter(p => p.id === 'delegatedEcs')[0])
     await userEvent.click(await screen.findByText( 'Customer1' ))
@@ -216,7 +216,7 @@ describe('Add user drawer component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText( 'READ_ONLY' ))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
     await userEvent.click(await screen.findByText('Add User'))
     await waitFor(async () => {
       expect(await screen.findByText('The email address belongs to a user of another Cloud Portal account.')).toBeVisible()
@@ -255,7 +255,7 @@ describe('Add user drawer component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText( 'DPSK_ADMIN' ))
+    await userEvent.click(await screen.findByText( 'DPSK Manager' ))
     await userEvent.click(await screen.findByText('Add User'))
     await waitFor(async () => {
       expect(await screen.findByText(/The email address belongs to a user of another RUCKUS One tenant./i)).toBeVisible()
@@ -294,7 +294,7 @@ describe('Add user drawer component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText( 'READ_ONLY' ))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
     await userEvent.click(await screen.findByText('Add User'))
     await waitFor(async () => {
       expect(await screen.findByText('The email address belongs to an administrator that already exists.')).toBeVisible()
@@ -331,7 +331,7 @@ describe('Add user drawer component', () => {
     const emailInput = await screen.findByPlaceholderText('Enter email address')
     await userEvent.type(emailInput, 'c123@email.com')
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(await screen.findByText( 'OFFICE_ADMIN' ))
+    await userEvent.click(await screen.findByText( 'Guest Manager' ))
     await userEvent.click(await screen.findByText('Add User'))
   })
 })

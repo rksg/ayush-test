@@ -20,9 +20,10 @@ import { sortProp,
   PrivilegeGroup,
   CustomGroupType
 } from '@acx-ui/rc/utils'
-import { useTenantLink }                         from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
-import { AccountType }                           from '@acx-ui/utils'
+import { useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { RolesEnum }                                            from '@acx-ui/types'
+import { filterByAccess, roleStringMap, useUserProfileContext } from '@acx-ui/user'
+import { AccountType }                                          from '@acx-ui/utils'
 
 interface PrivilegeGroupsTableProps {
   isPrimeAdminUser: boolean;
@@ -80,7 +81,11 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('name', defaultSort) }
+      sorter: { compare: sortProp('name', defaultSort) },
+      render: (_, row) => {
+        return roleStringMap[row.name as RolesEnum]
+          ? $t(roleStringMap[row.name as RolesEnum]) : row.name
+      }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
@@ -91,7 +96,11 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleName',
       dataIndex: 'roleName',
-      filterable: true
+      filterable: true,
+      render: (_, row) => {
+        return roleStringMap[row.roleName as RolesEnum]
+          ? $t(roleStringMap[row.roleName as RolesEnum]) : row.roleName
+      }
     },
     {
       title: $t({ defaultMessage: 'Scope' }),

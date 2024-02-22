@@ -23,31 +23,31 @@ import { fakeUserProfile, fakedAdminLsit, fakeNonPrimeAdminUserProfile } from '.
 
 import UsersTable from './index'
 
-// jest.mock('./AddAdministratorDialog', () => ({
-//   ...jest.requireActual('./AddAdministratorDialog'),
-//   __esModule: true,
-//   default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
-//     return visible ?
-//       <div data-testid='mocked-AddAdministratorDialog'>
-//         Add New Administrator
-//         <button onClick={() => setVisible}>Cancel</button>
-//       </div>
-//       : ''
-//   }
-// }))
+jest.mock('./AddUserDrawer', () => ({
+  ...jest.requireActual('./AddUserDrawer'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-AddAdministratorDialog'>
+        Add New User
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
 
-// jest.mock('./EditAdministratorDialog', () => ({
-//   ...jest.requireActual('./EditAdministratorDialog'),
-//   __esModule: true,
-//   default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
-//     return visible ?
-//       <div data-testid='mocked-EditAdministratorDialog'>
-//         Edit Administrator
-//         <button onClick={() => setVisible}>Cancel</button>
-//       </div>
-//       : ''
-//   }
-// }))
+jest.mock('./EditUserDrawer', () => ({
+  ...jest.requireActual('./EditUserDrawer'),
+  __esModule: true,
+  default: ({ visible, setVisible }: { visible: boolean, setVisible: (open:boolean) => void }) => {
+    return visible ?
+      <div data-testid='mocked-EditAdministratorDialog'>
+        Edit User
+        <button onClick={() => setVisible}>Cancel</button>
+      </div>
+      : ''
+  }
+}))
 
 const isPrimeAdmin : () => boolean = jest.fn().mockReturnValue(true)
 const userProfileContextValues = {

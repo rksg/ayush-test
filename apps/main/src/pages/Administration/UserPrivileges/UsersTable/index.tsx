@@ -154,7 +154,7 @@ const UsersTable = (props: UsersTableProps) => {
       filterable: true,
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
-        return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
+        return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : row.role
       }
     }
   ]

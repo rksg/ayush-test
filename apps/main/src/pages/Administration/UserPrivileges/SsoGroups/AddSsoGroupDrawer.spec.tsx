@@ -199,7 +199,7 @@ describe('Add SSO Group Drawer', () => {
     const inputGroupId = screen.getByLabelText('Group ID')
     fireEvent.change(inputGroupId, { target: { value: 'testGroupId' } })
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(screen.getAllByText('PRIME_ADMIN')[1])
+    await userEvent.click(screen.getAllByText('Prime Admin')[1])
     await userEvent.click(screen.getByRole('button', { name: 'Add Group' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
@@ -228,7 +228,7 @@ describe('Add SSO Group Drawer', () => {
 
     expect(screen.getByText('Edit SSO User Group')).toBeVisible()
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Privilege Group' }))
-    await userEvent.click(screen.getAllByText('PRIME_ADMIN')[1])
+    await userEvent.click(screen.getAllByText('Prime Admin')[1])
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({

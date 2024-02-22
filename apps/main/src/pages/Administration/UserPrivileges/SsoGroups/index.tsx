@@ -88,7 +88,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
       key: 'role',
       dataIndex: 'role',
       render: function (_, row) {
-        return row.role ? $t(roleStringMap[row.role]) : ''
+        return roleStringMap[row.role as RolesEnum]
+          ? $t(roleStringMap[row.role as RolesEnum]) : row.role
       }
     },
     {

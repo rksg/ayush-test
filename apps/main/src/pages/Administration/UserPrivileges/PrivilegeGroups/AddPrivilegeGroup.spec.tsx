@@ -99,7 +99,7 @@ describe('Add Privilege Group', () => {
     })
     expect(screen.getByText('Please enter Role')).toBeVisible()
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
-    await userEvent.click(screen.getAllByText('PRIME_ADMIN')[1])
+    await userEvent.click(screen.getAllByText('Prime Admin')[1])
     await waitFor(() => {
       expect(screen.queryByText('Please enter Role')).toBeNull()
     })

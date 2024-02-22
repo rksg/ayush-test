@@ -6,6 +6,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { useGetCustomRolesQuery } from '@acx-ui/rc/services'
+import { RolesEnum }              from '@acx-ui/types'
+import { roleStringMap }          from '@acx-ui/user'
 
 export interface CustomRoleSelectorProps {
     disabled?: boolean;
@@ -18,7 +20,8 @@ const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
   const { data: roleList } = useGetCustomRolesQuery({ params })
 
   const rolesList = roleList?.map((item) => ({
-    label: item.name,
+    label: roleStringMap[item.name as RolesEnum]
+      ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.name
   }))
 

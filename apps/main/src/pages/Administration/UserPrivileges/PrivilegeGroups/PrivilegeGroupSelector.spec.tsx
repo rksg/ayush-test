@@ -40,7 +40,7 @@ describe('Role selector component', () => {
     const selector = await screen.findByRole('combobox')
     expect(selector).not.toBeDisabled()
     await userEvent.click(selector)
-    await userEvent.click(await screen.findByRole('option', { name: 'PRIME_ADMIN' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'Prime Admin' }))
   })
 
   it('should unclickable the selector', async () => {
