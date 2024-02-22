@@ -192,6 +192,11 @@ export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
   }
 }
 
+// eslint-disable-next-line max-len
+export const useCasesToRefreshDhcpTemplateList = ['AddDhcpConfigServiceProfileTemplate', 'UpdateDhcpConfigServiceProfileTemplate', 'DeleteDhcpConfigServiceProfileTemplate']
+// eslint-disable-next-line max-len
+export const useCasesToRefreshDpskTemplateList = ['CREATE_POOL_TEMPLATE_RECORD', 'UPDATE_POOL_TEMPLATE_RECORD', 'DELETE_POOL_TEMPLATE_RECORD']
+
 const useCasesToRefreshTemplateList = [
   'AddRadiusServerProfileTemplateRecord',
   'UpdateRadiusServerProfileTemplateRecord',
@@ -203,7 +208,6 @@ const useCasesToRefreshTemplateList = [
   'AddVenueTemplateRecord',
   'UpdateVenueTemplateRecord',
   'DeleteVenueTemplateRecord',
-  'CREATE_POOL_TEMPLATE_RECORD',
-  'UPDATE_POOL_TEMPLATE_RECORD',
-  'DELETE_POOL_TEMPLATE_RECORD'
+  ...useCasesToRefreshDpskTemplateList,
+  ...useCasesToRefreshDhcpTemplateList
 ]

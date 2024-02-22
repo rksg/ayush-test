@@ -27,7 +27,8 @@ import {
   useDeleteDpskTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
-  useGetConfigTemplateListQuery
+  useGetConfigTemplateListQuery,
+  useDeleteDhcpTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -249,6 +250,7 @@ function useDeleteMutation () {
   const [ deleteDevice ] = useDelDevicePolicyMutation()
   const [ deleteApplication ] = useDelAppPolicyMutation()
   const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -259,7 +261,8 @@ function useDeleteMutation () {
     [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet
+    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }
 
@@ -294,7 +297,8 @@ function getAddTemplateMenuProps (props: {
         key: 'add-service',
         label: $t({ defaultMessage: 'Services' }),
         children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
+          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
         ]
       }
     ]

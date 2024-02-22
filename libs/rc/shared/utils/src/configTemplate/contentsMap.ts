@@ -6,5 +6,6 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {
-  [ConfigTemplateType.DPSK]: ServiceType.DPSK
+  [ConfigTemplateType.DPSK]: ServiceType.DPSK,
+  [ConfigTemplateType.DHCP]: ServiceType.DHCP
 }

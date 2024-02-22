@@ -120,6 +120,9 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
         serviceId={id}
         children={name}
       />
+    case ConfigTemplateType.DHCP:
+      // eslint-disable-next-line max-len
+      return <ServiceConfigTemplateDetailsLink type={ServiceType.DHCP} oper={ServiceOperation.DETAIL} serviceId={id} children={name} />
     case ConfigTemplateType.NETWORK:
       activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
       // eslint-disable-next-line max-len
@@ -154,6 +157,8 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
           viewText: name
         }}
       /></Form>
+    default:
+      return name
   }
 }
 

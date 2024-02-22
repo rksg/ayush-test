@@ -9,9 +9,16 @@ import {
   StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
-import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }                                       from '@acx-ui/rc/services'
-import { DHCPSaveData, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate, useLocation }                                        from '@acx-ui/react-router-dom'
+import { useCreateOrUpdateDhcpTemplateMutation, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
+import {
+  DHCPSaveData,
+  generateServicePageHeaderTitle,
+  ServiceOperation, ServiceType,
+  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
+  useServicePreviousPath
+} from '@acx-ui/rc/utils'
+import { useParams, useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -21,33 +28,35 @@ interface DHCPFormProps {
   editMode?: boolean
 }
 
+type LocationState = {
+  origin: { pathname: string },
+  param: object
+}
+
 export function DHCPForm (props: DHCPFormProps) {
   const { $t } = useIntl()
 
   const params = useParams()
-  type LocationState = {
-    origin: { pathname: string },
-    param: object
-  }
+
   const locationState:LocationState = useLocation().state as LocationState
 
-  const { editMode } = props
+  const { editMode = false } = props
 
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
-  const linkToServices = useTenantLink(tablePath)
-  const {
-    data,
-    isFetching,
-    isLoading
-  } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
+  const linkToInstances = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
+  // eslint-disable-next-line max-len
+  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
+    useGetDHCPProfileQuery, useGetDhcpTemplateQuery, !editMode
+  )
 
-  const [
-    saveOrUpdateDHCP,
-    { isLoading: isFormSubmitting }
-  ] = useSaveOrUpdateDHCPMutation()
+  const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher(
+    useSaveOrUpdateDHCPMutation, useCreateOrUpdateDhcpTemplateMutation
+  )
+
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
 
 
   useEffect(() => {
@@ -93,26 +102,21 @@ export function DHCPForm (props: DHCPFormProps) {
   return (
     <>
       <PageHeader
-        title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
-          $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'DHCP' }), link: tablePath }
-        ]}
+        title={generateServicePageHeaderTitle(editMode, isTemplate, ServiceType.DHCP)}
+        breadcrumb={breadcrumb}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
         <StepsFormLegacy<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => navigate(linkToServices)}
+          onCancel={() => navigate(linkToInstances)}
           onFinish={
             async (data)=>{
               await handleAddOrUpdateDHCP(data)
               if(locationState?.origin){
                 navigate(locationState.origin.pathname, { state: locationState.param })
               }else{
-                navigate(linkToServices, { replace: true })
+                navigate(linkToInstances, { replace: true })
               }
             }
           }
