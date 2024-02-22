@@ -25,7 +25,7 @@ export interface EdgeClusterSettingFormType {
   }[]
   venueId: string
   name: string
-  description: string
+  description?: string
 }
 
 const venueOptionsDefaultPayload = {
