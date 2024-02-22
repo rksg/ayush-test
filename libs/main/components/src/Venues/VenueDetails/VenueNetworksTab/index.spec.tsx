@@ -72,7 +72,7 @@ describe('VenueNetworksTab', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(

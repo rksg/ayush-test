@@ -719,7 +719,7 @@ export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVenueNetworkList, arg.params),
+      : CommonUrlsInfo.getVenuesList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
@@ -840,7 +840,7 @@ const apiV2CustomHeader = {
 export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const networkVenuesListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
-      ? CommonUrlsInfo.getNetworksVenuesList
+      ? ConfigTemplateUrlsInfo.getVenuesTemplateList
       : CommonUrlsInfo.getVenuesList
     , arg.params),
     body: arg.payload
@@ -909,7 +909,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVenueNetworkList, arg.params),
+      : CommonUrlsInfo.getVenuesList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
