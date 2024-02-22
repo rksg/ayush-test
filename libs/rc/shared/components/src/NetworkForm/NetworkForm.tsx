@@ -130,7 +130,7 @@ export function NetworkForm (props:{
 
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
-  const [MLOButtonDisable, setMLOButtonDisable] = useState(false)
+  const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){

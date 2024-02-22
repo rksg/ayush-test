@@ -639,6 +639,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
     it('should handle error occurred', async () => {
       const spyLog = jest.spyOn(console, 'log')
+      spyLog.mockReset()
       mockServer.use(
         rest.put(SwitchUrlsInfo.updateCliTemplate.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))

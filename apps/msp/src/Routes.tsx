@@ -1,20 +1,24 @@
-import { Brand360 }                                              from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                   from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }      from '@acx-ui/msp/components'
-import { AAAForm, AAAPolicyDetail, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
+import { Brand360 }                                                        from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                             from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings }                from '@acx-ui/msp/components'
+import { AAAForm, AAAPolicyDetail, DpskForm, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   PolicyOperation,
   PolicyType,
+  ServiceOperation,
+  ServiceType,
   getConfigTemplatePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
+import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -112,6 +116,18 @@ function ConfigTemplatesRoutes () {
         <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
         <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
         <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+          element={<DpskForm />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+          element={<DpskForm editMode={true} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+          element={<DpskDetails />}
+        />
       </Route>
     </Route>
   ) : null

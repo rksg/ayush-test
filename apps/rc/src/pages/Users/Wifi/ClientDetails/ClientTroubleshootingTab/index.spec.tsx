@@ -19,7 +19,13 @@ describe('ClientTroubleshootingTab', () => {
         client: {
           connectionDetailsByAp: [],
           connectionEvents: [],
-          connectionQualities: [],
+          connectionQualities: []
+        }
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
           incidents: []
         }
       }
@@ -37,10 +43,17 @@ describe('ClientTroubleshootingTab', () => {
       client: {
         connectionDetailsByAp: [],
         connectionEvents: [],
-        connectionQualities: [],
-        incidents: []
+        connectionQualities: []
       }
     } })
+
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
+          incidents: []
+        }
+      }
+    })
 
     const TestWrapper = () => {
       const { setDateFilter } = useDateFilter()
