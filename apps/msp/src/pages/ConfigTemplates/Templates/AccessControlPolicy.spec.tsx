@@ -19,7 +19,7 @@ import {
   mockedMSPCustomerList
 } from '../__tests__/fixtures'
 
-import { AccessControlSubPolicyDrawers, INIT_STATE } from './AccessControlPolicy'
+import { AccessControlSubPolicyDrawers, createAccessControlPolicyMenuItem, INIT_STATE } from './AccessControlPolicy'
 
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
@@ -190,5 +190,13 @@ describe('AccessControlPolicy component', () => {
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelButton)
     expect(screen.queryByText(/Application Access Settings/i)).toBeNull()
+  })
+
+  it('render createAccessControlPolicyMenuItem correctly', async () => {
+    const mockedSetAccessControlSubPolicyVisible = jest.fn()
+    const menuItem = createAccessControlPolicyMenuItem(mockedSetAccessControlSubPolicyVisible)
+    expect(menuItem).toHaveProperty('children')
+    // @ts-ignore
+    expect(menuItem['children']).toHaveLength(5)
   })
 })

@@ -33,6 +33,14 @@ export const mockedConfigTemplateList = {
       templateType: 'RADIUS',
       lastModified: 1690598500000,
       lastApplied: 1690598510000
+    },
+    {
+      id: '4',
+      name: 'Template 4',
+      createdOn: 1690598500000,
+      createdBy: 'Author 4',
+      templateType: 'Layer 2 Policy',
+      lastModified: 1690598500000
     }
   ] as ConfigTemplate[]
 }

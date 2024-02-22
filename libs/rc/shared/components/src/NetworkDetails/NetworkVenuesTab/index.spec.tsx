@@ -90,6 +90,10 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
