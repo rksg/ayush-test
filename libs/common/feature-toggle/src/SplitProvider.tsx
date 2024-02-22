@@ -5,7 +5,7 @@ import SplitIO                    from '@splitsoftware/splitio-react/types/split
 
 import { getUserProfile } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
-import { useParams }      from '@acx-ui/react-router-dom'
+import { useTenantId }    from '@acx-ui/utils'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
@@ -14,8 +14,9 @@ const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
-  const { tenantId } = useParams() as { tenantId: string }
+  const tenantId = useTenantId()
   const { accountId } = getUserProfile()
+
   const prefixKey = isMLISA ? 'MLISA' : 'ACX'
   const tenantKey = isMLISA ? accountId : tenantId
 
