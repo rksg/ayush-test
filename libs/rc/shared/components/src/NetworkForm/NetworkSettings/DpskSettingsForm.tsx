@@ -10,15 +10,17 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, Modal, ModalType, StepsFormLegacy }              from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useGetDpskListQuery }                                    from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, StepsFormLegacy }                from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   DpskSaveData,
   transformDpskNetwork,
   DpskNetworkType,
-  transformAdvancedDpskExpirationText
+  transformAdvancedDpskExpirationText,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -157,7 +159,10 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const { data: dpskList } = useGetDpskListQuery({})
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery
+  )
+
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {

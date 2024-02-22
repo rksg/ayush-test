@@ -2,16 +2,18 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Card }                      from '@acx-ui/components'
-import { useNetworkListQuery }                                  from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                           from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps, Card }                                         from '@acx-ui/components'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery }                     from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                              from '@acx-ui/react-router-dom'
 
 export default function DpskInstancesTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
   const { networkIds } = props
-  const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+  const { isTemplate } = useConfigTemplate()
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const tableQuery = useTableQuery<Network>({
+    useQuery,
     defaultPayload: {
       fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id'],
       filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
