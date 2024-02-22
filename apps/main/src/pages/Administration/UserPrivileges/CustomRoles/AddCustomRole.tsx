@@ -56,8 +56,8 @@ export function AddCustomRole () {
         name: name,
         description: description,
         scopes: [
-          'wifi-profile-u',
-          'wifi-profile-r'
+          'wifi-u',
+          'wifi-r'
         ]
       }
       if(isEditMode) {

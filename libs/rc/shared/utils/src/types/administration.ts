@@ -294,7 +294,8 @@ export interface PrivilegeGroup {
   allCustomers?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
-  policyEntityDTOS?: PrivilegePolicyEntity[]
+  policyEntityDTOS?: PrivilegePolicyEntity[],
+  isOnboardedMsp?: boolean
 }
 
 export enum PrivilegePolicyObjectType {
@@ -307,24 +308,24 @@ export enum CustomGroupType {
 }
 
 export enum WifiAttributeProfile {
-  READ = 'wifi-profile-r',
-  CREATE = 'wifi-profile-c',
-  UPDATE = 'wifi-profile-u',
-  DELETE = 'wifi-profile-d'
+  READ = 'wifi-r',
+  CREATE = 'wifi-c',
+  UPDATE = 'wifi-u',
+  DELETE = 'wifi-d'
 }
 
 export enum SwitchAttributeProfile {
-  READ = 'switch-profile-r',
-  CREATE = 'switch-profile-c',
-  UPDATE = 'switch-profile-u',
-  DELETE = 'switch-profile-d'
+  READ = 'switch-r',
+  CREATE = 'switch-c',
+  UPDATE = 'switch-u',
+  DELETE = 'switch-d'
 }
 
 export enum SmartedgeAttributeProfile {
-  READ = 'smartedge-profile-r',
-  CREATE = 'smartedge-profile-c',
-  UPDATE = 'smartedge-profile-u',
-  DELETE = 'smartedge-profile-d'
+  READ = 'smartedge-r',
+  CREATE = 'smartedge-c',
+  UPDATE = 'smartedge-u',
+  DELETE = 'smartedge-d'
 }
 
 export interface PrivilegePolicy

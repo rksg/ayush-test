@@ -18,12 +18,11 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useGetMspProfileQuery }        from '@acx-ui/msp/services'
-import { MSPUtils }                     from '@acx-ui/msp/utils'
-import { useAddPrivilegeGroupMutation } from '@acx-ui/rc/services'
+import { useAddPrivilegeGroupMutation }                                      from '@acx-ui/rc/services'
+import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
-  useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
@@ -37,6 +36,8 @@ interface PrivilegeGroupData {
   description?: string,
   roleName?: string,
   delegation?: boolean
+  policies?: PrivilegePolicy[],
+  policyEntityDTOS?: PrivilegePolicyEntity[]
 }
 
 export function AddPrivilegeGroup () {
@@ -46,14 +47,13 @@ export function AddPrivilegeGroup () {
   const [selectedScope, setSelectedScope ] = useState('AllVenues')
   const [selectedCustomer, setSelectedCustomer ] = useState('AllCustomers')
 
-  const mspUtils = MSPUtils()
   const navigate = useNavigate()
-  const params = useParams()
+  const location = useLocation().state as boolean
+
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
-  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const isOnboardedMsp = location ?? false
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -86,6 +86,12 @@ export function AddPrivilegeGroup () {
         roleName: formValues.role,
         delegation: false
       }
+      privilegeGroupData.policies = [
+        {
+          entityInstanceId: '94a7c646c63c477782c63f6c1a0f25dd',
+          objectType: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
+        }
+      ]
       await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
 
       navigate(linkToPrivilegeGroups)

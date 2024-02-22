@@ -235,12 +235,12 @@ export let fakedCustomRoleList = [
   },
   {
     id: '1515527522da4b4f999e76231cbba43d',
-    name: 'Wifi-Profile-Admin2',
+    name: 'Wifi-Admin2',
     description: 'This is Wifi-Profile-Admin created using feature AP-Profile-Management ',
     type: 'Custom',
     scopes: [
-      'wifi-profile-r',
-      'wifi-profile-u'
+      'wifi-r',
+      'wifi-u'
     ]
   }
 ]

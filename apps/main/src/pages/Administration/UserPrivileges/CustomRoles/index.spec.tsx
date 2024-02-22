@@ -71,8 +71,8 @@ export const fakedCustomRoleLsit = [
     name: 'new wi-fi custom role',
     type: 'Custom',
     scope: [
-      'wifi-profile-r',
-      'wifi-profile-u'
+      'wifi-r',
+      'wifi-u'
     ]
   }
 ]
@@ -252,7 +252,7 @@ describe('Custom Roles Table', () => {
       search: ''
     }, { state: {
       description: 'this is new custom role for wi-fi', id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
-      name: 'new wi-fi custom role', scope: [ 'wifi-profile-r', 'wifi-profile-u' ], type: 'Custom'
+      name: 'new wi-fi custom role', scope: [ 'wifi-r', 'wifi-u' ], type: 'Custom'
     } })
   })
   it('should clone selected row', async () => {
@@ -283,7 +283,7 @@ describe('Custom Roles Table', () => {
       search: ''
     }, { state: {
       description: 'this is new custom role for wi-fi', id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
-      name: 'new wi-fi custom role', scope: [ 'wifi-profile-r', 'wifi-profile-u' ], type: 'Custom'
+      name: 'new wi-fi custom role', scope: [ 'wifi-r', 'wifi-u' ], type: 'Custom'
     } })
   })
 })

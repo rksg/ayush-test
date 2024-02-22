@@ -59,7 +59,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     navigate({
       ...linkAddPriviledgePath,
       pathname: `${linkAddPriviledgePath.pathname}/create`
-    })
+    }, { state: isOnboardedMsp })
   }
 
   const getPrivilegeScopes = (data: PrivilegeGroup) => {
@@ -130,6 +130,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
+        selectedRows[0].isOnboardedMsp = isOnboardedMsp
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/view/${selectedRows[0].id}`
@@ -142,6 +143,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
+        selectedRows[0].isOnboardedMsp = isOnboardedMsp
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
@@ -154,6 +156,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return selectedRows.length === 1
       },
       onClick: (selectedRows) => {
+        selectedRows[0].isOnboardedMsp = isOnboardedMsp
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
