@@ -188,21 +188,21 @@ function useColumns (props: templateColumnProps) {
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },
