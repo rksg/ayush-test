@@ -5,12 +5,12 @@ import {
   Template,
   Registration,
   MsgCategory,
-  TemplateGroup
-} from '@acx-ui/rc/utils'
-import {
+  TemplateGroup,
+  transferToNewTablePaginationParams,
+  NewAPITableResult,
   TableResult,
-  NewTableResult,
-  transferToTableResult,
+  TableChangePayload,
+  transferNewResToTableResult
 } from '@acx-ui/rc/utils'
 import { baseMsgTemplateApi } from '@acx-ui/store'
 import { RequestPayload }     from '@acx-ui/types'
@@ -34,34 +34,24 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
     }),
 
     // Template Groups /////////////////////////////////////
-    // TODO: will need this later but not for templateSelector
-    // getTemplateGroup: build.query<TemplateGroup, RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(MsgTemplateUrls.getTemplateGroupById, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   },
-    //   providesTags: (result, error, arg) =>
-    //     [{ type: 'TemplateGroup', id: (arg.params?.templateGroupId as string) }]
-    // }),
-    // simplified Get all that isn't meant for use in tables
     getAllTemplateGroupsByCategoryId: build.query<TableResult<TemplateGroup>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MsgTemplateUrls.getAllTemplateGroupsByCategoryId, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
-      transformResponse (result: NewTableResult<TemplateGroup>) {
-        return transferToTableResult<TemplateGroup>(result)
+      transformResponse(result: NewAPITableResult<TemplateGroup>) {
+        return transferNewResToTableResult<TemplateGroup>(result, { pageStartZero: true })
       },
       providesTags: (result, error, arg) => result && result.data ?
         [...result.data.map(({ id }) => ({ type: 'TemplateGroup' as const, id })),
-          { type: 'TemplateGroup', id: 'LIST' + arg.params?.templateGroupId }] :
-        [{ type: 'TemplateGroup', id: 'LIST' + arg.params?.templateGroupId }]
+          { type: 'TemplateGroup', id: 'LIST' + arg.params?.categoryId }] :
+        [{ type: 'TemplateGroup', id: 'LIST' + arg.params?.categoryId }]
     }),
 
     // Template Scopes /////////////////////////////////////

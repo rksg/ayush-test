@@ -32,9 +32,8 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   const msgCategoryData = useGetCategoryQuery({params: {categoryId: categoryId}})
   const templateGroupData = 
-    useGetAllTemplateGroupsByCategoryIdQuery({params: {categoryId: categoryId}})
+    useGetAllTemplateGroupsByCategoryIdQuery({params: {categoryId: categoryId}, payload: {}})
 
-  //TODO: verify this is not called until we have the msgCategoryData
   const emailRegistrationData = useGetRegistrationByIdQuery({params:{
     templateScopeId: msgCategoryData.data?.emailTemplateScopeId, 
     registrationId: emailRegistrationId}}, {skip:!msgCategoryData.data?.emailTemplateScopeId})
@@ -56,6 +55,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
       }
     }
 
+
     const emailTemplateScopeId = msgCategoryData.data?.emailTemplateScopeId
     const smsTemplateScopeId = msgCategoryData.data?.smsTemplateScopeId
     // value contains necessary information to save registrations
@@ -67,15 +67,13 @@ export function TemplateSelector (props: TemplateSelectorProps) {
       msgCategoryData.data?.name : $t({ defaultMessage: 'Loading Templates...' })
     
     let selectedGroup = undefined;
-    // TODO: should I link up registrations template scopes with template groups in the front end or back? -- if this is inefficient add the group ont eh backend
-    if(emailRegistrationData.isSuccess) {
-      selectedGroup = templateGroupData.data?.data.find(g => g.emailTemplateId === emailRegistrationData.data.templateId)
+    if(emailRegistrationData.data && emailRegistrationData.data?.templateId) {
+      selectedGroup = templateGroupData.data?.data.find(g => (emailRegistrationData.data && g.emailTemplateId === emailRegistrationData.data.templateId))
     }
-
+    
     if(!selectedGroup) {
       selectedGroup = templateGroupData.data.data.find(g => g.id === msgCategoryData.data?.defaultTemplateGroupId)
     }
-    
 
     const initialOptionValue = selectedGroup ?
       emailTemplateScopeId+','+selectedGroup.emailTemplateId+','+smsTemplateScopeId+','+selectedGroup.smsTemplateId 
@@ -86,13 +84,12 @@ export function TemplateSelector (props: TemplateSelectorProps) {
       categoryLabel,
       initialOptionValue
     }
-  }, [msgCategoryData.data, templateGroupData.data])
+  }, [msgCategoryData.data, templateGroupData.data, emailRegistrationData])
 
   // Set initial selected value
   useEffect(() => {
     let currentFormValue = form.getFieldValue(formItemProps.name)
 
-    // TODO: need to functionally test and make sure this is being set correctly
     if(!currentFormValue && initialOptionValue) {
       form.setFieldValue(formItemProps.name, initialOptionValue)
     }
@@ -101,7 +98,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
   // RENDER //////////////////////////////////////////////////////
   return (
     <Loader style={{ height: 'auto', minHeight: 45 }}
-      states={[templateGroupData, msgCategoryData]}>
+      states={[templateGroupData, msgCategoryData, {isLoading: emailRegistrationData.isLoading, isFetching: emailRegistrationData.isFetching}]}>
       <Form.Item {...formItemProps}
         label={categoryLabel}>
         <TemplateSelect

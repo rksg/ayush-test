@@ -19,10 +19,8 @@ export function TemplatePreview (props: TemplatePreviewProps) {
     templateGroup
   } = props
 
-  const emailTemplateRequest = useGetTemplateByIdQuery({templateScopeId: emailTemplateScopeId, templateId: templateGroup?.emailTemplateId})
-  const smsTemplateRequest = useGetTemplateByIdQuery({templateScopeId: smsTemplateScopeId, templateId: templateGroup?.smsTemplateId})
-
-  // TODO: verify template changes and tab selection is reset when closing and changing templateGroup
+  const emailTemplateRequest = useGetTemplateByIdQuery({params: {templateScopeId: emailTemplateScopeId, templateId: templateGroup?.emailTemplateId}}, {skip:!templateGroup})
+  const smsTemplateRequest = useGetTemplateByIdQuery({params: {templateScopeId: smsTemplateScopeId, templateId: templateGroup?.smsTemplateId}}, {skip:!templateGroup})
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -40,7 +38,7 @@ export function TemplatePreview (props: TemplatePreviewProps) {
                     by the customer using the UI, however we could consider sanitizing it with
                     DOMPurify or something similar to be extra careful. */}
             <div dangerouslySetInnerHTML={{ __html:
-              emailTemplateRequest.data?.messageTemplate ? emailTemplateRequest.data?.messageTemplate : '' }} />
+              emailTemplateRequest.data?.messageTemplate ?? $t({defaultMessage: 'Template Not Found'}) }} />
           </Loader>  
         </>
     },
@@ -49,7 +47,7 @@ export function TemplatePreview (props: TemplatePreviewProps) {
       value: 'sms',
       children: <>
         <Loader style={{ height: 'auto', minHeight: 45 }} states={[smsTemplateRequest]}>
-          <p>{smsTemplateRequest.data?.messageTemplate}</p>
+          <p>{smsTemplateRequest.data?.messageTemplate ?? $t({defaultMessage: 'Template Not Found'})}</p>
         </Loader>
       </>
     }]

@@ -41,8 +41,14 @@ export function TemplateSelect (props: TemplateSelectorProps) {
   const [previewTemplateGroup, setPreviewTemplateGroup] = useState<TemplateGroup | undefined>(undefined)
 
   const showModal = () => {
-    let previewGroup = templateGroups?.find(g => g.id === value)
-    setPreviewTemplateGroup(previewGroup)
+    if(value) {
+      let selectedEmailTemplateId = value.split(',')[1]
+      // this works because a template can only belong to a single group
+      let previewGroup = templateGroups?.find(g => g.emailTemplateId === selectedEmailTemplateId)
+      setPreviewTemplateGroup(previewGroup)
+    } else { 
+      setPreviewTemplateGroup(undefined)
+    }
     setIsModalOpen(true)
   }
 

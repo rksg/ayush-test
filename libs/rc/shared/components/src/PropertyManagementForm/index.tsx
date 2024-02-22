@@ -208,8 +208,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         if(idArray.length < 4) {
           return [Promise.resolve()]
         }  
-
-        // TODO: will need to update this to use the newer registration endpoint before merging.
+  
         return [
           // email
           updateRegistration({
@@ -231,6 +230,8 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
           updateRegistration({
             params: {
               templateScopeId: idArray[2],
+              associatedResource: AssociatedResource.VENUE,
+              associatedResourceId: venueId,
               registrationId: venueId
             },
             payload: {
