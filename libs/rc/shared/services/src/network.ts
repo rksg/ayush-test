@@ -16,7 +16,6 @@ import {
   NetworkDetailHeader,
   CommonResult,
   NetworkDetail,
-  RadiusValidate,
   WifiUrlsInfo,
   ExternalProviders,
   ApCompatibility,
@@ -589,15 +588,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
-    validateRadius: build.query<RadiusValidate, RequestPayload>({
-      query: ({ params, payload }) => {
-        const validateRadiusReq = createHttpRequest(CommonUrlsInfo.validateRadius, params)
-        return {
-          ...validateRadiusReq,
-          body: payload
-        }
-      }
-    }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
       query: ({ params }) => {
         const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
@@ -1040,8 +1030,6 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
-  useValidateRadiusQuery,
-  useLazyValidateRadiusQuery,
   useExternalProvidersQuery
 } = networkApi
 
