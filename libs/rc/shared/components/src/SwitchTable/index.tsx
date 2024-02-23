@@ -48,7 +48,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
+import { exportMessageMapping, getIntl, noDataDisplay }                     from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
