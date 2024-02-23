@@ -194,7 +194,7 @@ const airtimeRxAllFalseChecks = [
   'isCRRMRaised',
   'isHighLegacyWifiDevicesCount'
 ]
-const propertiesToCheckRx = ['isLargeMgmtFrameCount', 'isChannelFlyEnabled']
+const propertiesToCheckRx = ['isLargeMgmtFrameCount', 'isChannelFlyEnabled', 'isAclbRaised']
 
 const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)

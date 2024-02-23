@@ -2150,6 +2150,446 @@ Array [
 ]
 `;
 
+exports[`getRootCauseAndRecommendations airtime Rx Incident should return correct data when isLargeMgmtFrameCount and isAclbRaised true 1`] = `
+Array [
+  Object {
+    "recommendations": Object {
+      "recommendationsText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Based on the root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " identified, the recommended ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolution",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "resolutions",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ru+scw",
+      },
+      "recommendationsValues": Object {
+        "count": 3,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Click ",
+                    },
+                    Object {
+                      "type": 1,
+                      "value": "aiOpsLink",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": " to enable client load balancing AI Ops recommendation.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="OHOWDL"
+            values={
+              Object {
+                "aiOpsLink": <TenantLink
+                  to="/recommendations/aiOps/undefined"
+                >
+                  <Memo(MemoizedFormattedMessage)
+                    defaultMessage={
+                      Array [
+                        Object {
+                          "type": 0,
+                          "value": "here",
+                        },
+                      ]
+                    }
+                    id="hniz8Z"
+                  />
+                </TenantLink>,
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          "",
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Enable ChannelFly for the zone.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="wM9D1i"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="pBd7xL"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+    "rootCauses": Object {
+      "rootCauseText": Object {
+        "defaultMessage": Array [
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "Airtime Rx is unusually high, and this can be a result from various factors, such as a high density of Wi-Fi devices, channel congestion due to co-channel interference, excessive number of management frames, and sub-optimal configurations.",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": "The most likely root ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "cause",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "causes",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": " here ",
+              },
+              Object {
+                "offset": 0,
+                "options": Object {
+                  "one": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "is",
+                      },
+                    ],
+                  },
+                  "other": Object {
+                    "value": Array [
+                      Object {
+                        "type": 0,
+                        "value": "are",
+                      },
+                    ],
+                  },
+                },
+                "pluralType": "cardinal",
+                "type": 6,
+                "value": "count",
+              },
+              Object {
+                "type": 0,
+                "value": ":",
+              },
+            ],
+            "type": 8,
+            "value": "p",
+          },
+          Object {
+            "type": 0,
+            "value": " ",
+          },
+          Object {
+            "children": Array [
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+              Object {
+                "type": 1,
+                "value": "params",
+              },
+              Object {
+                "type": 0,
+                "value": " ",
+              },
+            ],
+            "type": 8,
+            "value": "ol",
+          },
+        ],
+        "id": "ZbUSVU",
+      },
+      "rootCauseValues": Object {
+        "count": 3,
+        "params": Array [
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High density of Wi-Fi devices in the network.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="wdFloM"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          "",
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High co-channel interference.",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="p0KsdC"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+          <Memo(MemoizedFormattedMessage)
+            defaultMessage={
+              Array [
+                Object {
+                  "children": Array [
+                    Object {
+                      "type": 0,
+                      "value": "High number of legacy Wi-Fi devices.",
+                    },
+                    Object {
+                      "children": Array [
+                        Object {
+                          "children": Array [
+                            Object {
+                              "type": 0,
+                              "value": "Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.",
+                            },
+                          ],
+                          "type": 8,
+                          "value": "li",
+                        },
+                      ],
+                      "type": 8,
+                      "value": "ul",
+                    },
+                  ],
+                  "type": 8,
+                  "value": "li",
+                },
+              ]
+            }
+            id="hp3B+1"
+            values={
+              Object {
+                "li": [Function],
+                "ol": [Function],
+                "p": [Function],
+                "ul": [Function],
+              }
+            }
+          />,
+        ],
+      },
+    },
+  },
+]
+`;
+
 exports[`getRootCauseAndRecommendations airtime Rx Incident should return correct data when isLargeMgmtFrameCount and isChannelFlyEnabled true 1`] = `
 Array [
   Object {
