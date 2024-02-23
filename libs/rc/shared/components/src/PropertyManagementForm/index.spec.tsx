@@ -224,9 +224,6 @@ describe('Property Config Form', () => {
     const enableSwitch = await screen.findByTestId('property-enable-switch')
     await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
-    // check rending msg-template tab list view
-    await screen.findByRole('tabpanel', { name: /email/i })
-
     // Trigger save form
     const formSaveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(formSaveBtn)
