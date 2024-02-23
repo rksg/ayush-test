@@ -34,7 +34,7 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
   const mspEcTenantsPayload = {
     filters: {
       ...ecFilters,
-      id: [...selectedTemplates[0].ecTenants]
+      id: [...selectedTemplates[0].appliedOnTenants]
     },
     fields: [
       'check-all',
