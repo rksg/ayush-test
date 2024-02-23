@@ -629,9 +629,9 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }
