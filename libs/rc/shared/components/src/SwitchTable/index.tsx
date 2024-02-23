@@ -159,6 +159,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -331,16 +332,17 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
-    }, {
+    },
+    ...( enableSwitchExternalIp ? [{
       key: 'extIp',
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
       sorter: false,
       show: false,
-      render: (_, row) => {
+      render: (_: React.ReactNode, row: SwitchRow) => {
         return row.extIp || noDataDisplay
       }
-    }
+    }] : [])
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',
       //   title: $t({ defaultMessage: 'Tags' }),
