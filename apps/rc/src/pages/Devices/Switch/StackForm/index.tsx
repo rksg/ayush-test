@@ -32,11 +32,13 @@ import {
   Table,
   Tabs,
   Tooltip,
-  Alert
+  Alert,
+  showToast
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
 import {
+  switchApi,
   useGetSwitchQuery,
   useConvertToStackMutation,
   useSaveSwitchMutation,
@@ -61,6 +63,7 @@ import {
   SwitchRow,
   StackMember,
   isSameModelFamily,
+  checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
   getStackUnitsMinLimitation,
   convertInputToUppercase
@@ -71,6 +74,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
@@ -437,14 +441,38 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId }, payload })
+        .unwrap()
+        .then(() => {
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
+          const noChange = updatedFields.length === 0
+          // TODO: should disable apply button while no changes
+          const onlyChangeDescription
+            = updatedFields.includes('description') && updatedFields.length === 1
+
+          // These cases won't trigger activity service: UpdateSwitch
+          if (noChange || onlyChangeDescription) {
+            store.dispatch(
+              switchApi.util.invalidateTags([
+                { type: 'Switch', id: 'DETAIL' },
+                { type: 'Switch', id: 'SWITCH' }
+              ])
+            )
+            showToast({
+              type: 'success',
+              content: $t(
+                { defaultMessage: 'Update switch {switchName} configuration success' },
+                { switchName: payload?.name }
+              )
+            })
+          }
+        })
 
       dataFetchedRef.current = false
 
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
+      if (!deviceOnline) { // only one tab
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

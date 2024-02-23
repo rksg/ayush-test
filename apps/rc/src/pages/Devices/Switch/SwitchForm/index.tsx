@@ -41,6 +41,7 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
+  checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
   convertInputToUppercase
 } from '@acx-ui/rc/utils'
@@ -276,7 +277,7 @@ export function SwitchForm () {
       await updateSwitch({ params: { tenantId, switchId } , payload })
         .unwrap()
         .then(() => {
-          const updatedFields = checkUpdateFields(values)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription
@@ -308,19 +309,6 @@ export function SwitchForm () {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
-  }
-
-  const checkUpdateFields = function (values: Switch) {
-    const fields = Object.keys(values ?? {})
-    const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-    const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
-
-    return Object.keys(originalValues ?? {}).reduce((result: string[], key) => {
-      if ((originalValues[key as keyof Switch]) !== currentValues[key as keyof Switch]) {
-        return [ ...result, key ]
-      }
-      return result
-    }, [])
   }
 
   const setFirmwareType = function (value: string) {
