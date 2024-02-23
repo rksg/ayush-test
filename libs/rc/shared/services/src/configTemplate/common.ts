@@ -18,9 +18,6 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { networkApi } from '../network'
-
-
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
@@ -165,7 +162,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'AddNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
         })
       },
@@ -179,7 +177,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'DeleteNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
         })
       },
@@ -193,7 +192,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'UpdateNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
         })
       },

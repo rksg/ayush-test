@@ -49,7 +49,8 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate, useConfigTemplateTenantLink
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -113,17 +114,17 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useUpdateInstance()
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddInstance()
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteInstance()
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
   const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
 
   useEffect(()=>{
@@ -463,28 +464,4 @@ export function VenueNetworksTab () {
       </Form.Provider>
     </Loader>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const addNetworkVenue = useAddNetworkVenueMutation()
-  const addNetworkVenueTemplate = useAddNetworkVenueTemplateMutation()
-
-  return isTemplate ? addNetworkVenueTemplate : addNetworkVenue
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const updateNetworkVenue = useUpdateNetworkVenueMutation()
-  const updateNetworkVenueTemplate = useUpdateNetworkVenueTemplateMutation()
-
-  return isTemplate ? updateNetworkVenueTemplate : updateNetworkVenue
-}
-
-function useDeleteInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const deleteNetworkVenue = useDeleteNetworkVenueMutation()
-  const deleteNetworkVenueTemplate = useDeleteNetworkVenueTemplateMutation()
-
-  return isTemplate ? deleteNetworkVenueTemplate : deleteNetworkVenue
 }
