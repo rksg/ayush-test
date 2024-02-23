@@ -17,7 +17,11 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
+import {
+  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
+  ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
+  getServiceRoutePath, ServiceOperation, ServiceType
+} from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -301,10 +305,13 @@ const VenueDHCPForm = (props: {
             e.stopPropagation()
           }
         }}
-        to={useTenantLink('/services/dhcp/create')}
+        // eslint-disable-next-line max-len
+        to={useTenantLink(getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }))}
         state={{
-          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-          param: { showConfig: true }
+          from: {
+            pathname: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+            returnParams: { showConfig: true }
+          }
         }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>

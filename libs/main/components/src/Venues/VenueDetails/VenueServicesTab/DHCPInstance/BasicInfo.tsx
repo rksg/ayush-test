@@ -5,14 +5,14 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }         from '@acx-ui/components'
+import { Modal, SummaryCard }          from '@acx-ui/components'
 import {
   useGetDHCPProfileListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueDHCPProfileMutation
 } from '@acx-ui/rc/services'
-import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
-import { TenantLink }         from '@acx-ui/react-router-dom'
+import { DHCPConfigTypeEnum, LocationExtended } from '@acx-ui/rc/utils'
+import { TenantLink }                           from '@acx-ui/react-router-dom'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
@@ -21,15 +21,12 @@ interface DHCPFormRefType {
   resetForm: Function,
 }
 export default function BasicInfo () {
-  type LocationState = {
-    showConfig?: boolean
-  }
   const params = useParams()
-  const locationState:LocationState = useLocation().state as LocationState
+  const locationState = (useLocation() as LocationExtended)?.state
 
   const [updateVenueDHCPProfile] = useUpdateVenueDHCPProfileMutation()
 
-  const [visible, setVisible] = useState(locationState?.showConfig ? true : false)
+  const [visible, setVisible] = useState(!!locationState?.from?.returnParams?.showConfig)
   const { $t } = useIntl()
   const DISPLAY_GATEWAY_MAX_NUM = 2
   const dhcpInfo = useDHCPInfo()

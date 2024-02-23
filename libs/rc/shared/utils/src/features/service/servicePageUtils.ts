@@ -45,9 +45,10 @@ export function useServiceListBreadcrumb (type: ServiceType) {
   return breadcrumb
 }
 
-export function useServicePreviousPath (type: ServiceType, oper: ServiceOperation) {
+// eslint-disable-next-line max-len
+export function useServicePreviousPath (type: ServiceType, oper: ServiceOperation): LocationExtended['state']['from'] {
   const fallbackPath = useTenantLink(getServiceRoutePath({ type, oper }), 't')
   const location = useLocation()
 
-  return (location as LocationExtended)?.state?.from?.pathname ?? fallbackPath
+  return (location as LocationExtended)?.state?.from ?? { pathname: fallbackPath }
 }

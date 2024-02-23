@@ -18,7 +18,7 @@ import {
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useParams, useNavigate, useLocation } from '@acx-ui/react-router-dom'
+import { useParams, useNavigate } from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -28,25 +28,14 @@ interface DHCPFormProps {
   editMode?: boolean
 }
 
-type LocationState = {
-  origin: { pathname: string },
-  param: object
-}
-
 export function DHCPForm (props: DHCPFormProps) {
   const { $t } = useIntl()
-
   const params = useParams()
-
-  const locationState:LocationState = useLocation().state as LocationState
-
   const { editMode = false } = props
-
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
-
   const navigate = useNavigate()
-  const linkToInstances = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   // eslint-disable-next-line max-len
+  const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
     useGetDHCPProfileQuery, useGetDhcpTemplateQuery, !editMode
   )
@@ -98,6 +87,12 @@ export function DHCPForm (props: DHCPFormProps) {
     })
   }
 
+  const navigateToPreviousPage = (replaceCurrentPath = false) => {
+    navigate(previousPath, {
+      replace: replaceCurrentPath,
+      ...(returnParams ? { state: { from: { returnParams } } } : {})
+    })
+  }
 
   return (
     <>
@@ -109,15 +104,11 @@ export function DHCPForm (props: DHCPFormProps) {
         <StepsFormLegacy<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => navigate(linkToInstances)}
+          onCancel={navigateToPreviousPage}
           onFinish={
             async (data)=>{
               await handleAddOrUpdateDHCP(data)
-              if(locationState?.origin){
-                navigate(locationState.origin.pathname, { state: locationState.param })
-              }else{
-                navigate(linkToInstances, { replace: true })
-              }
+              navigateToPreviousPage(true)
             }
           }
         >
