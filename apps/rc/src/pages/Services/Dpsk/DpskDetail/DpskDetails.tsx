@@ -2,6 +2,7 @@ import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                               from '@acx-ui/components'
+import { DpskOverview }                                           from '@acx-ui/rc/components'
 import { useGetDpskQuery, useGetEnhancedDpskPassphraseListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -16,14 +17,12 @@ import { filterByAccess }                         from '@acx-ui/user'
 
 
 import { dpskTabNameMapping }   from './contentsMap'
-import DpskOverview             from './DpskOverview'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
 export default function DpskDetails () {
   const { tenantId, activeTab, serviceId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  // eslint-disable-next-line max-len
   const { data: dpskDetail } = useGetDpskQuery({ params: { tenantId, serviceId } })
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
     params: { tenantId, serviceId },

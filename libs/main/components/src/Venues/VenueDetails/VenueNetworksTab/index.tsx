@@ -11,7 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   transformVLAN,
   transformAps,
@@ -20,7 +20,8 @@ import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
   useSdLanScopedNetworks,
-  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsComponent
+  checkSdLanScopedNetworkDeactivateAction,
+  renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -28,7 +29,9 @@ import {
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useVenueNetworkTableV2Query,
+  useVenueNetworkListV2Query
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -43,7 +46,7 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate, getConfigTemplatePath
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate, useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -85,9 +88,11 @@ export function VenueNetworksTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
     defaultPayload,
     pagination: { settingsId }
   })
@@ -144,7 +149,7 @@ export function VenueNetworksTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
-  const linkToAddNetworkTemplate = useTenantLink(getConfigTemplatePath('networks/wireless/add'), 'v')
+  const linkToAddNetworkTemplate = useConfigTemplateTenantLink('networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {

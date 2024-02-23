@@ -2,6 +2,7 @@ export enum ConfigTemplateType {
   NETWORK = 'NETWORK',
   RADIUS = 'RADIUS',
   VENUE = 'VENUE',
+  DPSK = 'DPSK',
   ACCESS_CONTROL_SET = 'ACCESS_CONTROL_SET',
   LAYER_2_POLICY = 'LAYER_2_POLICY',
   LAYER_3_POLICY = 'LAYER_3_POLICY',
@@ -14,7 +15,7 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  ecTenants: string[],
+  appliedOnTenants: string[],
   type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
