@@ -32,7 +32,6 @@ import {
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlPolicyType,
   PolicyOperation,
   PolicyType,
   policyTypeLabelMapping,
@@ -42,7 +41,8 @@ import {
   getConfigTemplateEditPath,
   ServiceType,
   ServiceOperation,
-  serviceTypeLabelMapping
+  serviceTypeLabelMapping,
+  AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -82,7 +82,7 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        if (selectedRow.type in AccessControlPolicyType) {
+        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
           setAccessControlSubPolicyVisible({
             ...INIT_STATE,
             [selectedRow.type]: {
@@ -174,7 +174,6 @@ interface templateColumnProps {
 
 function useColumns (props: templateColumnProps) {
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
