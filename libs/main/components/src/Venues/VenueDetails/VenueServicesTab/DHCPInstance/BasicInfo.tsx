@@ -5,7 +5,7 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }          from '@acx-ui/components'
+import { Modal, SummaryCard }         from '@acx-ui/components'
 import {
   useGetDHCPProfileListQuery,
   useGetVenueSettingsQuery,
