@@ -54,7 +54,9 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         fields: [
           'id',
           'name',
-          'type'
+          'type',
+          'owePairNetworkId',
+          'dsaeOnboardNetwork'
         ]
       }
     }, {

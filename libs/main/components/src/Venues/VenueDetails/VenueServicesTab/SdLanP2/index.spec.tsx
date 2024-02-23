@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                      from '@acx-ui/store'
+import { EdgeSdLanFixtures, EdgeSdLanUrls, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -10,15 +11,66 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import { mockNetworkSaveData, mockDeepNetworkList } from './__tests__/fixtures'
+import { mockDeepNetworkList } from './__tests__/fixtures'
 
 import EdgeSdLan from '.'
 
-const mockedEditFn = jest.fn()
-const mockedGetNetworkDeepList = jest.fn()
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const mockedEdgeSdLanDmz = mockedSdLanDataListP2[0]
+const mockedEdgeSdLanDc = mockedSdLanDataListP2[1]
+const guestNetwork = _.find(mockDeepNetworkList.response, { type: NetworkTypeEnum.CAPTIVEPORTAL })
 
-describe('Venue Edge SD-LAN Service', () => {
+const mockedEditFn = jest.fn()
+const mockedEditIsSucceed = jest.fn()
+const mockedActivateNetworkReq = jest.fn()
+const mockedDeactivateNetworkReq = jest.fn()
+const mockedGetData = jest.fn()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  EdgeSdLanP2ActivatedNetworksTable: (props:
+    { isUpdating: boolean,
+      onActivateChange: (fieldName: string,
+      rowData: NetworkSaveData,
+      checked: boolean,
+      activated: NetworkSaveData[])=> void }) => {
+
+    const mockedData = mockedGetData()
+    const onClick = () => {
+      props.onActivateChange.apply(null, mockedData)
+    }
+    return <div data-testid='EdgeSdLanP2ActivatedNetworksTable'>
+      {
+        props.isUpdating
+          ? <div data-testid='rc-loading'/>
+          :<button onClick={onClick}>toggle</button>
+      }
+    </div>
+  }
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useUpdateEdgeSdLanPartialP2Mutation: () => {
+    return [(req: RequestPayload) => {
+      mockedEditFn(req.payload)
+      const isSucceed = mockedEditIsSucceed()
+      return { unwrap: () => new Promise((resolve, reject) => {
+        setTimeout(isSucceed ? resolve : reject, 100)
+
+        if (isSucceed) {
+          setTimeout(() => {
+            (req.callback as Function)()
+          }, 300)
+        }
+      }) }
+    }, { isLoading: false }]
+  }
+}))
+
+describe('Venue Edge SD-LAN Service Phase2', () => {
   let params: { tenantId: string, venueId: string }
 
   beforeEach(() => {
@@ -28,25 +80,24 @@ describe('Venue Edge SD-LAN Service', () => {
     }
 
     mockedEditFn.mockReset()
-    mockedGetNetworkDeepList.mockReset()
+    mockedEditIsSucceed.mockReset().mockReturnValue(true)
+    mockedActivateNetworkReq.mockReset()
+    mockedDeactivateNetworkReq.mockReset()
+    mockedGetData.mockReset()
 
     mockServer.use(
-      rest.patch(
-        EdgeSdLanUrls.updateEdgeSdLanPartial.url,
+      rest.put(
+        EdgeSdLanUrls.activateEdgeSdLanNetwork.url,
         (req, res, ctx) => {
-          mockedEditFn(req.body)
+          mockedActivateNetworkReq(req.params, req.body)
           return res(ctx.status(202))
         }
       ),
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => {
-          mockedGetNetworkDeepList()
-          return res(ctx.json(mockDeepNetworkList))
+      rest.delete(
+        EdgeSdLanUrls.deactivateEdgeSdLanNetwork.url,
+        (req, res, ctx) => {
+          mockedDeactivateNetworkReq(req.params)
+          return res(ctx.status(202))
         }
       )
     )
@@ -55,73 +106,319 @@ describe('Venue Edge SD-LAN Service', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <EdgeSdLan data={mockedEdgeSdLan} />
+        <EdgeSdLan data={mockedEdgeSdLanDc} />
       </Provider>, {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedGetNetworkDeepList).toBeCalled()
-    })
     // display config data
-    expect(await screen.findByRole('link', { name: 'mocked_SD-LAN_1' })).toBeVisible()
-    expect(await screen.findByRole('link', { name: 'mocked-Venue-1' })).toBeVisible()
-    expect(await screen.findByRole('link', { name: 'mocked-vSE-b490' })).toBeVisible()
-    expect(await screen.findByRole('link', { name: 'mockedTunnel' })).toBeVisible()
-
-    const networks = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(networks.length).toBe(3)
-    const network1 = screen.getByRole('row', { name: /MockedNetwork 1/i })
-    expect(within(network1).getByRole('switch')).toBeChecked()
-    const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
-    expect(within(network2).getByRole('switch')).not.toBeChecked()
-    expect(within(network2).getByRole('switch')).not.toBeDisabled()
+    expect(await screen.findByRole('link', { name: 'Mocked_SDLAN_2' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Mocked-Venue-2' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'vSE-b491' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Mocked_tunnel-2' })).toBeVisible()
+    screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
   })
 
-  it('should correctly deactivate network', async () => {
+  it('should render DMZ scenario correctly', async () => {
     render(
       <Provider>
-        <EdgeSdLan data={mockedEdgeSdLan} />
+        <EdgeSdLan data={mockedEdgeSdLanDmz} />
       </Provider>, {
         route: { params }
       })
 
-    await waitFor(() => {
-      expect(mockedGetNetworkDeepList).toBeCalled()
-    })
-
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    const network1 = await screen.findByRole('row', { name: /MockedNetwork 1/i })
-    const switchBtn = within(network1).getByRole('switch')
-    expect(switchBtn).toBeChecked()
-    await userEvent.click(switchBtn)
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledWith({
-        networkIds: ['network_3']
-      })
-    })
+    // display config data
+    expect(await screen.findByRole('link', { name: 'Mocked_SDLAN_1' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Mocked-Venue-1' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'vSE-b490' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
+    screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
   })
-  it('should be able to activate network', async () => {
-    render(
-      <Provider>
-        <EdgeSdLan data={mockedEdgeSdLan} />
-      </Provider>, {
-        route: { params }
-      })
 
-    await waitFor(() => {
-      expect(mockedGetNetworkDeepList).toBeCalled()
+  describe('toggle traffic network', () => {
+    it('deactivate non-guest network tunneled to DC', async () => {
+      mockedGetData.mockReturnValue([
+        'activatedNetworks',
+        _.find(mockDeepNetworkList.response, { id: 'network_1' }),
+        false,
+        mockDeepNetworkList.response.filter(item => item.id === 'network_4')
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedEdgeSdLanDmz} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: ['network_4']
+        })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+    })
+    it('activate non-guest network tunneled to DC', async () => {
+      mockedGetData.mockReturnValue([
+        'activatedNetworks',
+        _.find(mockDeepNetworkList.response, { id: 'network_2' }),
+        true,
+        mockDeepNetworkList.response.filter(item => item.id !== 'network_3')
+
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedEdgeSdLanDmz} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: ['network_1', 'network_2', 'network_4']
+        })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
     })
 
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    const network2 = await screen.findByRole('row', { name: /MockedNetwork 2/i })
-    const switchBtn = within(network2).getByRole('switch')
-    expect(switchBtn).not.toBeChecked()
-    await userEvent.click(switchBtn)
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledWith({
-        networkIds: ['network_1', 'network_3', 'network_2']
+    it('deactivate DMZ network', async () => {
+      mockedGetData.mockReturnValue([
+        'activatedGuestNetworks',
+        guestNetwork,
+        false,
+        []
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedEdgeSdLanDmz} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedDeactivateNetworkReq).toBeCalledWith({
+          wifiNetworkId: 'network_4',
+          serviceId: 'mocked-sd-lan-1'
+        })
       })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedEditFn).toBeCalledTimes(0)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+    })
+    it('activate DMZ network and its DC network is activated', async () => {
+      const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedNoGuestTraffic.guestNetworkIds = []
+
+      mockedGetData.mockReturnValue([
+        'activatedGuestNetworks',
+        guestNetwork,
+        true,
+        [guestNetwork]
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedNoGuestTraffic} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedActivateNetworkReq).toBeCalledWith({
+          wifiNetworkId: 'network_4',
+          serviceId: 'mocked-sd-lan-1'
+        }, { isGuestTunnelUtilized: true })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedEditFn).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('activate DMZ network and its DC network is Not activated', async () => {
+      const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedNoGuestTraffic.networkIds = mockedNoGuestTraffic.networkIds
+        .filter(item => item !== guestNetwork?.id)
+      mockedNoGuestTraffic.guestNetworkIds = []
+
+      mockedGetData.mockReturnValue([
+        'activatedGuestNetworks',
+        guestNetwork,
+        true,
+        [guestNetwork]
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedNoGuestTraffic} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: mockedNoGuestTraffic.networkIds.concat([
+            'network_4'
+          ])
+        })
+      })
+      await waitFor(() => {
+        expect(mockedActivateNetworkReq).toBeCalledWith({
+          wifiNetworkId: 'network_4',
+          serviceId: 'mocked-sd-lan-1'
+        }, { isGuestTunnelUtilized: true })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+    })
+    it('activate DC guest network and its DMZ network is Not activated', async () => {
+      const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedNoGuestTraffic.networkIds = mockedNoGuestTraffic.networkIds
+        .filter(item => item !== guestNetwork?.id)
+      mockedNoGuestTraffic.guestNetworkIds = []
+
+      mockedGetData.mockReturnValue([
+        'activatedNetworks',
+        guestNetwork,
+        true,
+        // network1,4
+        mockDeepNetworkList.response.filter(item =>
+          item.id === 'network_1' || item.id === 'network_4')
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedNoGuestTraffic} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: mockedEdgeSdLanDmz.networkIds
+        })
+      })
+      await waitFor(() => {
+        expect(mockedActivateNetworkReq).toBeCalledWith({
+          wifiNetworkId: 'network_4',
+          serviceId: 'mocked-sd-lan-1'
+        }, { isGuestTunnelUtilized: true })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+    })
+    it('deactivate DC guest network and its DMZ network is activated', async () => {
+      const mockedHasGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedHasGuestTraffic.networkIds.push('network_4')
+
+      mockedGetData.mockReturnValue([
+        'activatedNetworks',
+        guestNetwork,
+        false,
+        mockDeepNetworkList.response.filter(item => item.id === 'network_1')
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedEdgeSdLanDmz} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: mockedEdgeSdLanDmz.networkIds.filter(item => item !== 'network_4')
+        })
+      })
+      await waitFor(() => {
+        expect(mockedDeactivateNetworkReq).toBeCalledWith({
+          wifiNetworkId: 'network_4',
+          serviceId: 'mocked-sd-lan-1'
+        })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+    })
+    it('deactivate DC guest network and DMZ network is Not activated', async () => {
+      const mockedNoDMZGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedNoDMZGuestTraffic.guestNetworkIds = []
+
+      mockedGetData.mockReturnValue([
+        'activatedNetworks',
+        guestNetwork,
+        false,
+        mockDeepNetworkList.response.filter(item => item.id === 'network_1')
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedNoDMZGuestTraffic} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: mockedEdgeSdLanDmz.networkIds.filter(item => item !== 'network_4')
+        })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('update sdlan profile failed', async () => {
+      mockedEditIsSucceed.mockReturnValue(false)
+      const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      mockedNoGuestTraffic.networkIds = mockedNoGuestTraffic.networkIds
+        .filter(item => item !== guestNetwork?.id)
+      mockedNoGuestTraffic.guestNetworkIds = []
+
+      mockedGetData.mockReturnValue([
+        'activatedGuestNetworks',
+        guestNetwork,
+        true,
+        [guestNetwork]
+      ])
+
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedNoGuestTraffic} />
+        </Provider>, {
+          route: { params }
+        })
+
+      const loadingText = await basicActsTestToggleNetwork()
+      await waitFor(() => {
+        expect(mockedEditFn).toBeCalledWith({
+          networkIds: mockedNoGuestTraffic.networkIds.concat([
+            'network_4'
+          ])
+        })
+      })
+      await waitFor(() => expect(loadingText).not.toBeVisible())
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
     })
   })
 })
+
+const basicActsTestToggleNetwork = async (): Promise<HTMLElement> => {
+  await screen.findByRole('link', { name: 'Mocked_SDLAN_1' })
+  const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+  await userEvent.click(within(networkTable).getByRole('button'))
+  return within(networkTable).getByTestId('rc-loading')
+}

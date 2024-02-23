@@ -15,7 +15,6 @@ import { noDataDisplay } from '@acx-ui/utils'
 import { NetworkTable }    from './NetworkTable'
 import { SmartEdgesTable } from './SmartEdgesTable'
 import * as UI             from './styledComponents'
-import { TopologyDiagram } from './TopologyDiagram'
 
 export const DmzSdLanDetailContent = (props: {
   data: EdgeSdLanViewDataP2
@@ -74,7 +73,6 @@ export const DmzSdLanDetailContent = (props: {
   return <Space direction='vertical' size={30}>
     <SummaryCard data={sdLanInfo} />
     <Card>
-      {/* <TopologyDiagram isGuestTunnelEnabled={true} />*/}
       <SdLanTopologyDiagram
         isGuestTunnelEnabled={true}
         vertical={false}

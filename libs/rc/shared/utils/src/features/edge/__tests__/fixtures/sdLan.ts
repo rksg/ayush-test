@@ -86,18 +86,18 @@ export const mockedSdLanDataListP2 = [{
   guestTunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b845',
   guestTunnelProfileName: 'Mocked_tunnel-3',
   isGuestTunnelEnabled: true,
-  networkIds: ['8e22159cfe264ac18d591ea492fbc05a', '8e22159cfe264ac18d591ea492fbc050'],
+  networkIds: ['network_1', 'network_4'],
   networkInfos: [{
-    networkId: '8e22159cfe264ac18d591ea492fbc05a',
+    networkId: 'network_1',
     networkName: 'Mocked_network'
   }, {
-    networkId: '8e22159cfe264ac18d591ea492fbc050',
-    networkName: 'Mocked_network_3'
+    networkId: 'network_4',
+    networkName: 'Mocked_network_4'
   }],
-  guestNetworkIds: ['8e22159cfe264ac18d591ea492fbc050'],
+  guestNetworkIds: ['network_4'],
   guestNetworkInfos: [{
-    networkId: '8e22159cfe264ac18d591ea492fbc050',
-    networkName: 'Mocked_network_3'
+    networkId: 'network_4',
+    networkName: 'Mocked_network_4'
   }],
   corePortMac: 'p0',
   edgeAlarmSummary: {
@@ -125,9 +125,9 @@ export const mockedSdLanDataListP2 = [{
   guestTunnelProfileId: '',
   guestTunnelProfileName: '',
   isGuestTunnelEnabled: false,
-  networkIds: ['8e22159cfe264ac18d591ea492fbc050'],
+  networkIds: ['network_2'],
   networkInfos: [{
-    networkId: '8e22159cfe264ac18d591ea492fbc050',
+    networkId: 'network_2',
     networkName: 'Mocked_network_2'
   }],
   guestNetworkIds: [],

@@ -3,9 +3,13 @@ import { useState } from 'react'
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { Card, SummaryCard }                                                                                                   from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram }                                                       from '@acx-ui/rc/components'
-import { useActivateEdgeSdLanNetworkMutation, useDeactivateEdgeSdLanNetworkMutation, useUpdateEdgeSdLanPartialMutation } from '@acx-ui/rc/services'
+import { Card, SummaryCard }                                       from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram } from '@acx-ui/rc/components'
+import {
+  useActivateEdgeSdLanNetworkMutation,
+  useDeactivateEdgeSdLanNetworkMutation,
+  useUpdateEdgeSdLanPartialP2Mutation
+} from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -15,8 +19,7 @@ import {
   PolicyType,
   PolicyOperation,
   NetworkSaveData,
-  NetworkTypeEnum
-} from '@acx-ui/rc/utils'
+  NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeSdLanServiceProps {
@@ -30,7 +33,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const [
     updateEdgeSdLan,
     { isLoading: isUpdateRequesting }
-  ] = useUpdateEdgeSdLanPartialMutation()
+  ] = useUpdateEdgeSdLanPartialP2Mutation()
   const [
     activateNetwork,
     { isLoading: isActivateRequesting }
@@ -39,7 +42,6 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     deactivateNetwork,
     { isLoading: isDeactivateRequesting }
   ] = useDeactivateEdgeSdLanNetworkMutation()
-
 
   const infoFields = [{
     title: $t({ defaultMessage: 'Service Name' }),
@@ -91,7 +93,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     )
   }] : [])]
 
-  const toggleGuestNetwork = async (networkId: string, activate: boolean) => {
+  const toggleGuestNetwork = async (networkId: string, activate: boolean, cb?: () => void) => {
     if (activate) {
       await activateNetwork({
         params: {
@@ -100,13 +102,14 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
         },
         payload: {
           isGuestTunnelUtilized: true
-        }
+        },
+        callback: cb
       }).unwrap()
     } else {
       await deactivateNetwork({ params: {
         serviceId,
         wifiNetworkId: networkId
-      } }).unwrap()
+      }, callback: cb }).unwrap()
     }
   }
 
@@ -121,18 +124,50 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     const payload = {
       networkIds: newNetworkIds
     }
+    setIsActivateUpdating(true)
 
     try {
       if (data.isGuestTunnelEnabled
       && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
-        if (fieldName === 'activatedNetworks') {
+        if (fieldName === 'activatedNetworks'
+        // eslint-disable-next-line max-len
+        || (fieldName === 'activatedGuestNetworks' && checked && !data.networkIds.includes(networkId))) {
+
+          let updateGuestNetwork = true
+          // directly activated guest network should also activated network tunneled to DC edge
+          if (fieldName === 'activatedGuestNetworks') {
+            payload.networkIds = data.networkIds.concat(networkId)
+          } else {
+            // check diff on guestNetwork when toggle network
+            if ((checked && data.guestNetworkIds.includes(networkId))
+            || (!checked && !data.guestNetworkIds.includes(networkId))) {
+              updateGuestNetwork = false
+            }
+          }
+
+          //Activate network
           await updateEdgeSdLan({
             params: { serviceId },
             payload,
             callback: async () => {
-              await toggleGuestNetwork(networkId, checked)
+              if (updateGuestNetwork) {
+                // TODO: should be blocking after activity fixed
+                // await toggleGuestNetwork(networkId, checked, () => {
+                //   setIsActivateUpdating(false)
+                // })
+                await toggleGuestNetwork(networkId, checked)
+              }
+
               setIsActivateUpdating(false)
             } }).unwrap()
+        } else {
+          // deactivate guest network
+          // TODO: should be blocking after activity fixed
+          // await toggleGuestNetwork(networkId, checked, () => {
+          //   setIsActivateUpdating(false)
+          // })
+          await toggleGuestNetwork(networkId, checked)
+          setIsActivateUpdating(false)
         }
       } else {
         await updateEdgeSdLan({
@@ -143,6 +178,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
           } }).unwrap()
       }
     } catch(err) {
+      setIsActivateUpdating(false)
       // eslint-disable-next-line no-console
       console.error(err)
     }

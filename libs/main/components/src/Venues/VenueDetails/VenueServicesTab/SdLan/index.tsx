@@ -82,7 +82,7 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
 
 const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
   const [searchParams] = useSearchParams()
-  const isP2Page = searchParams.get('p2')
+  const isP2Page = searchParams.get('sdlanp2')
 
   return isP2Page !== null
     ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>

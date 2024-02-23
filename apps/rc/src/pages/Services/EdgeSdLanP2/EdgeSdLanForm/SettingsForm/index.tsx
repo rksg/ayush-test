@@ -7,7 +7,7 @@ import { useParams }                            from 'react-router-dom'
 import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
 import { InformationSolid }                        from '@acx-ui/icons'
-import { SdLanTopologyDiagram, SpaceWrapper }      from '@acx-ui/rc/components'
+import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
   useGetEdgeLagListQuery,
   useGetEdgeListQuery,
@@ -23,8 +23,7 @@ import {
 import { EdgeSdLanFormModelP2 } from '..'
 import { messageMappings }      from '../messageMappings'
 
-import * as UI             from './styledComponents'
-import { TopologyDiagram } from './TopologyDiagram'
+import * as UI from './styledComponents'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
@@ -325,11 +324,10 @@ export const SettingsForm = () => {
           dependencies={['isGuestTunnelEnabled']}
         >
           {({ getFieldValue }) => {
-            return <SdLanTopologyDiagram
+            return <UI.StyledDiagram
               isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')}
               vertical={true}
             />
-            // return <TopologyDiagram isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')} />
           }}
         </Form.Item>
       </Col>
