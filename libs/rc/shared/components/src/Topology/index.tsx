@@ -141,9 +141,9 @@ export function TopologyGraph (props:{ venueId?: string,
 
       // if 2 switches are interconnected with 2 edges then it needs to
       // find if any / both nodes connected to cloud. For this purpose we are using
-      // cloudPort check
+      // check cloudPort and node is connected to cloud
       uiNodes.forEach(node => {
-        if(node.config?.cloudPort)
+        if(node.config?.cloudPort && node.config?.isConnectedCloud)
           rootNodes.push(node)
       })
 
