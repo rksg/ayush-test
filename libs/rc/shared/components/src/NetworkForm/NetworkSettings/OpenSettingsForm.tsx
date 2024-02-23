@@ -13,6 +13,7 @@ import { Features, useIsSplitOn, useIsTierAllowed }                             
 import { MacAuthMacFormatEnum, macAuthMacFormatOptions, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -70,13 +71,16 @@ function SettingsForm () {
   const [
     macAddressAuthentication,
     isMacRegistrationList,
-    enableOwe
+    enableOwe,
+    enableOweTransition
   ] = [
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
     useWatch(['wlan', 'isMacRegistrationList']),
-    useWatch('enableOwe')
+    useWatch('enableOwe'),
+    useWatch('enableOweTransition')
   ]
   const { editMode, data, setData } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -85,6 +89,17 @@ function SettingsForm () {
         wlan: {
           ...data?.wlan,
           macAddressAuthentication: checked
+        }
+      }
+    })
+  }
+  const onMacAuthTypeChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          isMacRegistrationList: checked
         }
       }
     })
@@ -107,6 +122,14 @@ function SettingsForm () {
       }
     })
   }
+  useEffect(()=> {
+    if (enableOwe === true && enableOweTransition === false) {
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  },[enableOwe,enableOweTransition])
   useEffect(()=>{
     if (data && 'enableOwe' in data) {
       delete data['enableOwe']
@@ -190,7 +213,9 @@ function SettingsForm () {
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!isMacRegistrationList}
           >
-            <Radio.Group disabled={editMode}>
+            <Radio.Group
+              disabled={editMode}
+              onChange={e => onMacAuthTypeChange(e.target.value)}>
               <Space direction='vertical'>
                 <Radio value={true} disabled={!isCloudpathBetaEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }

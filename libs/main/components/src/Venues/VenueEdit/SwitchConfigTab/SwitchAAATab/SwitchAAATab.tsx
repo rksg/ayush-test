@@ -4,9 +4,10 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
 import { useUpdateAAASettingMutation, useVenueSwitchSettingQuery }       from '@acx-ui/rc/services'
 import { redirectPreviousPage, VenueMessages }                           from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                                        from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -17,7 +18,7 @@ export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)

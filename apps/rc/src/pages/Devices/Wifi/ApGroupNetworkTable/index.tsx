@@ -3,8 +3,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { transformApGroupRadios, transformApGroupVlan }                          from '@acx-ui/rc/components'
-import { useApGroupNetworkListQuery }                                            from '@acx-ui/rc/services'
+import { useApGroupNetworkListQuery, useApGroupNetworkListV2Query }              from '@acx-ui/rc/services'
 import { Network, NetworkExtended, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                            from '@acx-ui/react-router-dom'
 
@@ -40,13 +41,14 @@ export interface ApGroupNetworksTableProps {
 }
 
 export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const { venueId, apGroupId } = props
 
   const [tableData, setTableData] = useState(defaultArray)
 
   const settingsId = 'apgroup-network-table'
   const tableQuery = useTableQuery({
-    useQuery: useApGroupNetworkListQuery,
+    useQuery: isUseWifiApiV2? useApGroupNetworkListV2Query : useApGroupNetworkListQuery,
     apiParams: { venueId: venueId || '' },
     defaultPayload: defaultApGroupNetworkPayload,
     pagination: { settingsId }

@@ -2,9 +2,9 @@
 import { Space }     from 'antd'
 import { useParams } from 'react-router-dom'
 
-import { Loader }                                                              from '@acx-ui/components'
-import { NetworkSegmentationDetailTableGroup, NetworkSegmentationServiceInfo } from '@acx-ui/rc/components'
-import { useGetNetworkSegmentationViewDataListQuery }                          from '@acx-ui/rc/services'
+import { Loader }                                                                      from '@acx-ui/components'
+import { PersonalIdentityNetworkDetailTableGroup, PersonalIdentityNetworkServiceInfo } from '@acx-ui/rc/components'
+import { useGetNetworkSegmentationViewDataListQuery }                                  from '@acx-ui/rc/services'
 
 export const NetworkSegmentation = () => {
 
@@ -35,8 +35,8 @@ export const NetworkSegmentation = () => {
       {
         nsgId &&
           <Space direction='vertical'>
-            <NetworkSegmentationServiceInfo nsgId={nsgId || ''} />
-            <NetworkSegmentationDetailTableGroup nsgId={nsgId || ''} />
+            <PersonalIdentityNetworkServiceInfo nsgId={nsgId || ''} />
+            <PersonalIdentityNetworkDetailTableGroup nsgId={nsgId || ''} />
           </Space>
       }
     </Loader>

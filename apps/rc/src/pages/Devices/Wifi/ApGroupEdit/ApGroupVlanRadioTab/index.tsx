@@ -4,10 +4,17 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                                                                                          from '@acx-ui/components'
-import { useGetApGroupQuery, useLazyApGroupNetworkListQuery, useUpdateNetworkVenuesMutation, useVlanPoolListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkVenue, VlanPool }                                                                          from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                            from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useGetApGroupQuery,
+  useLazyApGroupNetworkListQuery,
+  useLazyApGroupNetworkListV2Query,
+  useUpdateNetworkVenuesMutation,
+  useVlanPoolListQuery
+} from '@acx-ui/rc/services'
+import { Network, NetworkVenue, VlanPool } from '@acx-ui/rc/utils'
+import { useTenantLink }                   from '@acx-ui/react-router-dom'
 
 import { ApGroupEditContext }                            from '..'
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
@@ -35,6 +42,7 @@ export const ApGroupVlanRadioContext = createContext({} as {
 
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const {
     isEditMode,
     isApGroupTableFlag,
@@ -56,7 +64,9 @@ export function ApGroupVlanRadioTab () {
     { params: { tenantId, apGroupId } },
     { skip: !(isApGroupTableFlag && isEditMode) })
 
+
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
+  const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
 
   const { vlanPoolOptions } = useVlanPoolListQuery({ params: useParams() }, {
@@ -78,12 +88,25 @@ export function ApGroupVlanRadioTab () {
         filters: { isAllApGroups: [false] }
       })
 
-      const getInitTableData = async () => {
-        const venueId = apGroupData.venueId
+      const getApGroupNetworkData = async (isUseWifiApiV2: boolean, venueId: string) => {
+        if (isUseWifiApiV2) {
+          const { data } = await getApGroupNetworkListV2({
+            params: { tenantId, venueId, apGroupId },
+            payload
+          })
+
+          return data
+        }
         const { data } = await getApGroupNetworkList({
           params: { tenantId, venueId, apGroupId },
           payload
         })
+        return data
+      }
+
+      const getInitTableData = async () => {
+        const venueId = apGroupData.venueId
+        const data = await getApGroupNetworkData(isUseWifiApiV2, venueId)
 
         setVenueId(venueId)
         const initData = data?.data || [] as Network[]
@@ -92,7 +115,9 @@ export function ApGroupVlanRadioTab () {
 
       getInitTableData()
     }
-  }, [apGroupData, isApGroupDataLoading, getApGroupNetworkList])
+  }, [apGroupData, isApGroupDataLoading,
+    isUseWifiApiV2, getApGroupNetworkList, getApGroupNetworkListV2,
+    tenantId, apGroupId])
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current

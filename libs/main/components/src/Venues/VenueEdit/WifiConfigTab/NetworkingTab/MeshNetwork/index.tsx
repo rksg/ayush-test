@@ -10,12 +10,15 @@ import { Features, useIsSplitOn }                                           from
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
-  useUpdateVenueMeshMutation
+  useUpdateVenueMeshMutation,
+  useGetVenueTemplateSettingsQuery,
+  useUpdateVenueTemplateMeshMutation
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                           from '@acx-ui/utils'
+import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
+import { validationMessages }                                          from '@acx-ui/utils'
 
-import { VenueEditContext } from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
@@ -48,7 +51,10 @@ export function MeshNetwork () {
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
-  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
+  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueMeshMutation,
+    useUpdateVenueTemplateMeshMutation
+  )
 
   const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
@@ -72,7 +78,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useGetVenueSettingsQuery({ params })
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery,
+    useGetVenueTemplateSettingsQuery
+  )
 
   useEffect(() => {
     if (data) {

@@ -13,7 +13,7 @@ import {
   ConfigTemplateLink,
   PolicyConfigTemplateDetailsLink,
   PolicyConfigTemplateLink,
-  renderConfigTemplateDetailsLink
+  renderConfigTemplateDetailsComponent
 } from '.'
 
 const mockedMspTenantLinkStateFn = jest.fn()
@@ -70,7 +70,7 @@ describe('ConfigTemplateLink', () => {
 
   it('renderConfigTemplateDetailsLink for venue with default activeTab', () => {
     render(
-      renderConfigTemplateDetailsLink(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
     )
 
     // default activeTab : networks
@@ -80,7 +80,7 @@ describe('ConfigTemplateLink', () => {
 
   it('renderConfigTemplateDetailsLink for venue with services activeTab', () => {
     render(
-      renderConfigTemplateDetailsLink(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
         [ConfigTemplateType.VENUE]: { activeTab: 'services' }
       })
     )
