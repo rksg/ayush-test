@@ -31,12 +31,25 @@ const mockedDownloadReq = jest.fn()
 const mockedGetNetworkReq = jest.fn()
 const mockedPatchReq = jest.fn()
 const mockedDownloadFileReq = jest.fn()
+const mockedGetVMNetworksReq = jest.fn()
 jest.mock('socket.io-client')
 jest.spyOn(window, 'print').mockImplementation(jest.fn())
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   downloadFile: jest.fn().mockImplementation(() => mockedDownloadFileReq)
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  NetworkForm: () => <div data-testid='network-form' />
+}))
+
+jest.mock('./addGuestDrawer', () => ({
+  ...jest.requireActual('./addGuestDrawer'),
+  AddGuestDrawer: () => {
+    return <div data-testid='add-guest-drawer' />
+  }
 }))
 
 const openGuestDetailsAndClickAction = async (guestName: string) => {
@@ -62,6 +75,7 @@ describe('Guest Table', () => {
     mockedGetNetworkReq.mockClear()
     mockedPatchReq.mockClear()
     mockedDownloadFileReq.mockClear()
+    mockedGetVMNetworksReq.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
@@ -77,7 +91,10 @@ describe('Guest Table', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
+        (req, res, ctx) => {
+          mockedGetVMNetworksReq()
+          return res(ctx.json(AllowedNetworkList))
+        }
       ),
       rest.patch(
         ClientUrlsInfo.generateGuestPassword.url,
@@ -128,6 +145,62 @@ describe('Guest Table', () => {
     jest.useRealTimers()
   })
 
+  it('should render Add Guest drawer correctly', async () => {
+    const userProfile = getUserProfile()
+    setUserProfile({
+      ...userProfile,
+      allowedOperations: ['POST:/guestUsers']
+    })
+
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await waitFor(async () => expect(mockedGetVMNetworksReq).toBeCalledTimes(1))
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
+    )
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test1')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
+    expect(await screen.findByTestId('add-guest-drawer')).toBeVisible()
+  })
+
+  it('should render Add Guest Pass Network modal correctly', async () => {
+    const userProfile = getUserProfile()
+    setUserProfile({
+      ...userProfile,
+      allowedOperations: ['POST:/networks']
+    })
+
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const addNetworkBtn = await screen.findByRole('button', { name: /Add Guest Pass Network/ })
+    await waitFor(async () => expect(addNetworkBtn).toBeEnabled())
+
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test1')).toBeVisible()
+
+    await userEvent.click(addNetworkBtn)
+    await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
+    const modal = await screen.findByRole('dialog')
+    expect(await within(modal).findByText('Add Guest Pass Network')).toBeVisible()
+    expect(await within(modal).findByTestId('network-form')).toBeVisible()
+  })
+
   it('should delete guest correctly from the action bar', async () => {
     render(
       <Provider>
@@ -151,7 +224,28 @@ describe('Guest Table', () => {
   })
 
   it.todo('should download guest information correctly from the action bar')
-  it.todo('should generate new password correctly from the action bar')
+
+  it('should generate new password correctly from the action bar', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550321'))
+    await userEvent.click( await screen.findByRole('button', { name: 'Generate New Password' }))
+
+    const dialog = await screen.findByTestId('generate-password-modal')
+    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
+    await userEvent.click(within(dialog).getByRole('checkbox', { name: /send to phone/i }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Generate' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    expect(mockedPatchReq).toBeCalledTimes(1)
+  })
 
   it('should disable guest correctly from the action bar', async () => {
     render(
@@ -540,7 +634,13 @@ describe('Guest Table', () => {
     })
   })
 
-  it.skip('should show "Import from file" correctly', async () => {
+  it('should show "Import from file" correctly', async () => {
+    const userProfile = getUserProfile()
+    setUserProfile({
+      ...userProfile,
+      allowedOperations: ['POST:/networks/{networkId}/guestUsers']
+    })
+
     mockServer.use(
       rest.post(
         ClientUrlsInfo.importGuestPass.url,
@@ -565,11 +665,14 @@ describe('Guest Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Import from file' })).toBeEnabled())
+
+    await waitFor(async () => expect(mockedGetVMNetworksReq).toBeCalledTimes(1))
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: /Import from file/ })).toBeEnabled()
+    )
 
     const importBtn = await screen.findByRole('button', { name: 'Import from file' })
-    fireEvent.click(importBtn)
+    await userEvent.click(importBtn)
     const dialog = await screen.findByRole('dialog')
     const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
     // eslint-disable-next-line testing-library/no-node-access
@@ -579,13 +682,15 @@ describe('Guest Table', () => {
       await within(dialog).findByLabelText('Allowed Network', { exact: false })
     fireEvent.mouseDown(allowedNetworkCombo)
     const option = await screen.findByText('guest pass wlan1')
-    fireEvent.click(option)
+    await userEvent.click(option)
 
-    fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
+    await userEvent.click(
+      await within(dialog).findByLabelText('Print Guest pass', { exact: false })
+    )
 
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
 
     await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
