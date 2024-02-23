@@ -1,9 +1,12 @@
-import { Form }                   from 'antd'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
+import { Form }        from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 import { Loader, StepsForm, Table, TableProps } from '@acx-ui/components'
-import { useGetEdgePortsStatusListQuery }       from '@acx-ui/rc/services'
+import { useGetAllInterfacesByTypeQuery }       from '@acx-ui/rc/services'
 import { EdgePortTypeEnum }                     from '@acx-ui/rc/utils'
 import { useTenantLink }                        from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }            from '@acx-ui/user'
@@ -18,38 +21,47 @@ interface ClusterInterfaceProps {
 }
 
 type ClusterInterfaceTableType = {
-  name: string
+  nodeName: string
   serialNumber: string
-}
-
-const defaultPortStatusPayload = {
-  fields: [
-    'id',
-    'serialNumber',
-    'ip',
-    'subnet'
-  ]
+  clusterInterfaceName?: string
+  clusterInterfaceId?: string
+  ip?: string
+  subnet?: string
 }
 
 export const ClusterInterface = (props: ClusterInterfaceProps) => {
   const { edgeNodeList } = props
-  const params = useParams()
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
-  const { data: PortData, isLoading: isPortDataLoading } = useGetEdgePortsStatusListQuery({
-    params,
+  const [tableData, setTableData] = useState<ClusterInterfaceTableType[]>()
+  const {
+    data: clusterInterfaceData,
+    isLoading: isclusterInterfaceDataLoading
+  } = useGetAllInterfacesByTypeQuery({
     payload: {
-      ...defaultPortStatusPayload,
-      filters: {
-        serialNumber: edgeNodeList?.map(item => item.serialNumber),
-        type: [EdgePortTypeEnum.CLUSTER]
-      }
+      edgeIds: edgeNodeList?.map(item => item.serialNumber),
+      portTypes: [EdgePortTypeEnum.CLUSTER]
     }
   },{
     skip: !Boolean(edgeNodeList) || edgeNodeList?.length === 0
   })
+
+  useEffect(() => {
+    if(!edgeNodeList || (isclusterInterfaceDataLoading && !clusterInterfaceData)) return
+    if(tableData) return
+    setTableData(edgeNodeList.map(item => {
+      const currentPortData = clusterInterfaceData?.[item.serialNumber]?.[0]
+      return {
+        nodeName: item.name,
+        serialNumber: item.serialNumber,
+        clusterInterfaceName: _.capitalize(currentPortData?.portName),
+        ip: currentPortData?.ip,
+        subnet: currentPortData?.subnet
+      }
+    }))
+  }, [edgeNodeList, clusterInterfaceData, tableData])
 
   const handleFinish = async () => {}
 
@@ -60,23 +72,23 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   const columns: TableProps<ClusterInterfaceTableType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Node Name' }),
-      key: 'name',
-      dataIndex: 'name'
+      key: 'nodeName',
+      dataIndex: 'nodeName'
     },
     {
       title: $t({ defaultMessage: 'Cluster Interface' }),
-      key: 'destSubnet',
-      dataIndex: 'destSubnet'
+      key: 'clusterInterfaceName',
+      dataIndex: 'clusterInterfaceName'
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
-      key: 'nextHop',
-      dataIndex: 'nextHop'
+      key: 'ip',
+      dataIndex: 'ip'
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
-      key: 'nextHop',
-      dataIndex: 'nextHop'
+      key: 'subnet',
+      dataIndex: 'subnet'
     }
   ]
 
@@ -91,7 +103,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   ]
 
   return (
-    <Loader states={[{ isLoading: isPortDataLoading }]}>
+    <Loader states={[{ isLoading: isclusterInterfaceDataLoading }]}>
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
@@ -108,7 +120,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
           <Table
             rowKey='serialNumber'
             columns={columns}
-            dataSource={edgeNodeList}
+            dataSource={tableData}
             rowActions={filterByAccess(rowActions)}
             rowSelection={hasAccess() && { type: 'radio' }}
           />
