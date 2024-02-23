@@ -5,35 +5,26 @@ import {
   useGetVenueQuery,
   useGetVenueTemplateQuery
 } from '@acx-ui/rc/services'
-import { VenueExtended, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
-import { RequestPayload, UseQuery }         from '@acx-ui/types'
+import { VenueExtended, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { useParams }                                                                            from '@acx-ui/react-router-dom'
+import { RequestPayload, UseQuery }                                                             from '@acx-ui/types'
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
   useQueryFn: UseQuery<ResultType, RequestPayload>,
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
 ): ReturnType<typeof useQueryFn> {
-  const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId } = useParams()
-  const params = { tenantId, venueId }
-  const result = useQueryFn({ params }, { skip: !venueId || isTemplate })
-  const templateResult = useTemplateQueryFn({ params }, { skip: !venueId || !isTemplate })
+  const { venueId } = useParams()
 
-  return isTemplate ? templateResult : result
+  return useConfigTemplateQueryFnSwitcher(useQueryFn, useTemplateQueryFn, !venueId)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type VenueMutationDefinition = MutationDefinition<any, any, any, any>
-
 export function useVenueConfigTemplateMutationFnSwitcher (
   useMutationFn: UseMutation<VenueMutationDefinition>,
   useTemplateMutationFn: UseMutation<VenueMutationDefinition>
 ) {
-  const { isTemplate } = useConfigTemplate()
-  const result = useMutationFn()
-  const templateResult = useTemplateMutationFn()
-
-  return isTemplate ? templateResult : result
+  return useConfigTemplateMutationFnSwitcher(useMutationFn, useTemplateMutationFn)
 }
 
 export function useGetVenueInstance () {

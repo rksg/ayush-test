@@ -4,23 +4,24 @@ import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
+  displayDefaultAccess,
   displayDeviceCountLimit,
   transformAdvancedDpskExpirationText,
-  transformDpskNetwork
+  transformDpskNetwork,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { displayDefaultAccess } from '../utils'
-
 import DpskInstancesTable from './DpskInstancesTable'
 
-export interface DpskOverviewProps {
+interface DpskOverviewProps {
   data?: DpskSaveData
 }
 
-export default function DpskOverview (props: DpskOverviewProps) {
+export function DpskOverview (props: DpskOverviewProps) {
   const intl = getIntl()
-  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { isTemplate } = useConfigTemplate()
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
   const { data } = props
 
   const dpskInfo = [

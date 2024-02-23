@@ -5,7 +5,6 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
@@ -24,9 +23,8 @@ import { getIntl }                   from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
-import { EditPortDrawer }                         from './editPortDrawer'
-import { EditPortDrawer as EditPortDrawerLegacy } from './editPortDrawerLegacy'
-import * as UI                                    from './styledComponents'
+import { EditPortDrawer } from './editPortDrawer'
+import * as UI            from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
@@ -39,7 +37,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
-  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
@@ -331,17 +328,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       setVisible={setLagDrawerVisible}
     />}
 
-    { drawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawerLegacy
-      key='edit-port'
-      visible={drawerVisible}
-      setDrawerVisible={setDrawerVisible}
-      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
-      isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={isVenueLevel}
-      selectedPorts={selectedPorts}
-    />}
-
-    { drawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawer
+    { drawerVisible && <EditPortDrawer
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
