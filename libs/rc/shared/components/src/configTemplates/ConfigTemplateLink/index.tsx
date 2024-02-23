@@ -15,9 +15,10 @@ import {
   getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  useConfigTemplate,
+  useConfigTemplateTenantLink,
   getServiceDetailsLink,
-  getServiceRoutePath,
-  useConfigTemplate
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -130,10 +131,6 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     default:
       return
   }
-}
-
-export function useConfigTemplateTenantLink (to: string) {
-  return useTenantLink(getConfigTemplatePath(to), 'v')
 }
 
 // eslint-disable-next-line max-len

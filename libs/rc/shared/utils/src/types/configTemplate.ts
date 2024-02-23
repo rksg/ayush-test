@@ -22,7 +22,7 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  ecTenants: string[],
+  appliedOnTenants: string[],
   type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
