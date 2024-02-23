@@ -197,12 +197,18 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
         <Col span={24}>
           <Typography.Text strong>
             {$t({
-              defaultMessage: 'Networks that will tunnel the traffic to the clusters:'
-            })}
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Networks that will tunnel the traffic to the {value, select, true {clusters} other {cluster}}:'
+            }, { value: data.isGuestTunnelEnabled })}
           </Typography.Text>
         </Col>
         <Col span={24}>
           <EdgeSdLanP2ActivatedNetworksTable
+            columnsSetting={[{
+              key: 'name',
+              title: $t({ defaultMessage: 'Network' }),
+              tooltip: undefined
+            }]}
             venueId={data.venueId}
             isGuestTunnelEnabled={data.isGuestTunnelEnabled}
             activated={data.networkIds}
