@@ -9,12 +9,14 @@ import { WarningTriangleOutlined }                      from '@acx-ui/icons'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { useIncidentToggles } from '../useIncidentToggles'
-
-import { LabelledQuality }                                       from './config'
-import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
-import { ErrorContainer }                                        from './styledComponents'
-import { transformConnectionQualities }                          from './util'
+import { LabelledQuality }            from './config'
+import {
+  ClientConnectionQualities,
+  ConnectionQuality,
+  useClientConnectionQualitiesQuery
+} from './services'
+import { ErrorContainer }               from './styledComponents'
+import { transformConnectionQualities } from './util'
 
 import { maxEventsMsg } from '.'
 
@@ -26,7 +28,7 @@ export const durations = (items: ConnectionQuality[] | LabelledQuality[] | undef
     .reduce((a, b) => a + b, 0)
 }
 
-const calculateHealthSummary = (data: ClientInfoData | undefined) => {
+const calculateHealthSummary = (data: ClientConnectionQualities | undefined) => {
   const emptyData = {
     totalConnectedTime: 0,
     goodConnectionPercent: 0,
@@ -61,7 +63,6 @@ export function ClientHealth (
   })
 {
   const intl = useIntl()
-  const toggles = useIncidentToggles()
   const { $t } = intl
   const { startDate, endDate, range } = filter
 
@@ -87,8 +88,8 @@ export function ClientHealth (
     }
   }
 
-  const result = useClientInfoQuery(
-    { startDate, endDate, range, clientMac: clientMac.toUpperCase(), toggles }
+  const result = useClientConnectionQualitiesQuery(
+    { startDate, endDate, range, clientMac: clientMac.toUpperCase() }
   )
   const { data, error } = result
   const parsedData = calculateHealthSummary(data)
