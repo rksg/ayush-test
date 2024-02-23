@@ -1,30 +1,26 @@
-import { useState } from 'react'
-import React        from 'react'
+import { Key, useEffect, useState } from 'react'
 
-import { Checkbox, Space } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Space }     from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Button,
-  Drawer
+  Drawer,
+  Loader,
+  Table,
+  TableProps
 } from '@acx-ui/components'
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-// import { useVenuesListQuery } from '@acx-ui/rc/services'
+import { MspEc }                   from '@acx-ui/msp/utils'
 
 interface SelectCustomerDrawerProps {
   visible: boolean
+  selected: MspEc[]
   tenantIds?: string[]
   setVisible: (visible: boolean) => void
-  // setSelected?: (selected: MspAdministrator[]) => void
+  setSelected: (selected: MspEc[]) => void
 }
-
-// const venuesListPayload = {
-//   fields: ['name', 'country', 'id'],
-//   pageSize: 10000,
-//   sortField: 'name',
-//   sortOrder: 'ASC'
-// }
 
 const customerListPayload = {
   fields: ['name', 'id'],
@@ -37,21 +33,26 @@ const customerListPayload = {
 export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible } = props
+  const { visible, selected, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
-  // const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
-  //   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
-  //   const params = useParams()
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const [selectedRows, setSelectedRows] = useState<MspEc[]>([])
 
-  // const { data: venuesList }
-  // = useVenuesListQuery({ params: useParams(), payload: venuesListPayload })
+  function getSelectedKeys (mspEcs: MspEc[], ecId: string[]) {
+    return mspEcs.filter(rec => ecId.includes(rec.id)).map(rec => rec.id)
+  }
+
+  function getSelectedRows (mspEcs: MspEc[], ecId: string[]) {
+    return mspEcs.filter(rec => ecId.includes(rec.id))
+  }
 
   const { data: customerList }
   = useMspCustomerListQuery({ params: useParams(), payload: customerListPayload })
 
   const onClose = () => {
     setVisible(false)
-    // setSelectedRows([])
+    setSelectedRows([])
+    setSelectedKeys([])
   }
 
   const resetFields = () => {
@@ -60,49 +61,54 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const handleSave = () => {
-    // let selMspAdmins: SelectedMspMspAdmins[] = []
-    // selectedRows.forEach((element:MspAdministrator) => {
-    //   const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-    //   selMspAdmins.push ({
-    //     mspAdminId: element.id,
-    //     mspAdminRole: role as RolesEnum
-    //   })
-    // })
-    // let assignedEcMspAdmins: AssignedMultiEcMspAdmins[] = []
-    // tenantIds.forEach((id: string) => {
-    //   assignedEcMspAdmins.push ({
-    //     operation: 'ADD',
-    //     mspEcId: id,
-    //     mspAdminRoles: selMspAdmins
-    //   })
-    // })
-
-    // saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins } })
-    //   .then(() => {
-    //     setSelected(selectedRows)
-    //     setVisible(false)
-    //     resetFields()
-    //   })
+    setSelected(selectedRows ?? [])
     resetFields()
     setVisible(false)
   }
 
+  const columns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      sorter: true,
+      searchable: true,
+      defaultSortOrder: 'ascend'
+    }
+  ]
+
+  useEffect(() => {
+    if (customerList?.data) {
+      const ecIds = selected?.map((ec: MspEc)=> ec.id)
+      const selectKeys = getSelectedKeys(customerList?.data as MspEc[], ecIds)
+      setSelectedKeys(selectKeys)
+      const selRows = getSelectedRows(customerList?.data as MspEc[], ecIds)
+      setSelectedRows(selRows)
+    }
+    // setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
+  }, [customerList?.data])
+
   const content =
-    <Space direction='vertical'>
-      <Checkbox>All Customers</Checkbox>
-      <div style={{ marginLeft: '22px' }}>
-        <Space direction='vertical'>
-          {customerList?.data?.map((item) => {
-            return (<Checkbox>{item.name}
-            </Checkbox>
-            )})}
-        </Space>
-      </div>
-    </Space>
+  <Space direction='vertical'>
+    <Loader >
+      <Table
+        columns={columns}
+        dataSource={customerList?.data}
+        rowKey='id'
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys: selectedKeys,
+          onChange (selectedRowKeys, selRows) {
+            setSelectedRows(selRows)
+          }
+        }}
+      />
+    </Loader>
+  </Space>
 
   const footer =<div>
     <Button
-    //   disabled={selectedRows.length === 0}
+      disabled={selectedRows.length === 0}
       onClick={() => handleSave()}
       type='primary'
     >

@@ -46,3 +46,10 @@ export const FieldLabel2Attributes = styled.div<{ width: string }>`
   margin: 2px 2px 2px 20px;
   background-color: var(--acx-neutrals-30);
 `
+export const VenueList = styled.div`
+  margin-left: 35px;
+  padding-right: 5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+ `

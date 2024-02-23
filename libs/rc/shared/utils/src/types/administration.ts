@@ -314,18 +314,18 @@ export enum WifiAttributeProfile {
   DELETE = 'wifi-d'
 }
 
-export enum SwitchAttributeProfile {
-  READ = 'switch-r',
-  CREATE = 'switch-c',
-  UPDATE = 'switch-u',
-  DELETE = 'switch-d'
+export enum WiredAttributeProfile {
+  READ = 'wired-r',
+  CREATE = 'wired-c',
+  UPDATE = 'wired-u',
+  DELETE = 'wired-d'
 }
 
-export enum SmartedgeAttributeProfile {
-  READ = 'smartedge-r',
-  CREATE = 'smartedge-c',
-  UPDATE = 'smartedge-u',
-  DELETE = 'smartedge-d'
+export enum EdgeAttributeProfile {
+  READ = 'edge-r',
+  CREATE = 'edge-c',
+  UPDATE = 'edge-u',
+  DELETE = 'edge-d'
 }
 
 export interface PrivilegePolicy

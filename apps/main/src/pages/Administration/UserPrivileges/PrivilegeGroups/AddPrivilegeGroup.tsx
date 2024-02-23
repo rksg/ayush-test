@@ -18,8 +18,9 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useAddPrivilegeGroupMutation }                                      from '@acx-ui/rc/services'
-import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType } from '@acx-ui/rc/utils'
+import { MspEc }                                                                    from '@acx-ui/msp/utils'
+import { useAddPrivilegeGroupMutation }                                             from '@acx-ui/rc/services'
+import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType, Venue } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -27,6 +28,8 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
+import * as UI            from '../styledComponents'
+
 
 import { SelectCustomerDrawer } from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }   from './SelectVenuesDrawer'
@@ -35,17 +38,30 @@ interface PrivilegeGroupData {
   name?: string,
   description?: string,
   roleName?: string,
-  delegation?: boolean
+  delegation?: boolean,
+  allCustomers?: boolean,
   policies?: PrivilegePolicy[],
   policyEntityDTOS?: PrivilegePolicyEntity[]
+}
+
+export enum choiceScopeEnum {
+  ALL_VENUES = 'ALL_VENUES',
+  SPECIFIC_VENUE = 'SPECIFIC_VENUE'
+}
+
+export enum choiceCustomerEnum {
+  ALL_CUSTOMERS = 'ALL_CUSTOMERS',
+  SPECIFIC_CUSTOMER = 'SPECIFIC_CUSTOMER'
 }
 
 export function AddPrivilegeGroup () {
   const intl = useIntl()
   const [selectVenueDrawer, setSelectVenueDrawer] = useState(false)
   const [selectCustomerDrawer, setSelectCustomerDrawer] = useState(false)
-  const [selectedScope, setSelectedScope ] = useState('AllVenues')
-  const [selectedCustomer, setSelectedCustomer ] = useState('AllCustomers')
+  const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
+  const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
+  const [selectedVenus, setVenues] = useState([] as Venue[])
+  const [selectedCustomers, setCustomers] = useState([] as MspEc[])
 
   const navigate = useNavigate()
   const location = useLocation().state as boolean
@@ -63,15 +79,23 @@ export function AddPrivilegeGroup () {
     setSelectCustomerDrawer(true)
   }
 
+  const setSelectedVenus = (selected: Venue[]) => {
+    setVenues(selected)
+  }
+
+  const setSelectedCustomers = (selected: MspEc[]) => {
+    setCustomers(selected)
+  }
+
   const onScopeChange = (e: RadioChangeEvent) => {
     setSelectedScope(e.target.value)
-    if (e.target.value === 'AllVenues')
+    if (e.target.value === choiceScopeEnum.ALL_VENUES)
       setSelectVenueDrawer(false)
   }
 
   const onCustomerChange = (e: RadioChangeEvent) => {
-    setSelectedCustomer(e.target.value)
-    if (e.target.value === 'AllCustomers')
+    setSelectedMspScope(e.target.value)
+    if (e.target.value === choiceCustomerEnum.ALL_CUSTOMERS)
       setSelectCustomerDrawer(false)
   }
 
@@ -86,47 +110,110 @@ export function AddPrivilegeGroup () {
         roleName: formValues.role,
         delegation: false
       }
-      privilegeGroupData.policies = [
-        {
-          entityInstanceId: '94a7c646c63c477782c63f6c1a0f25dd',
+      const policies = [] as PrivilegePolicy[]
+      selectedVenus.forEach((venue: Venue) => {
+        policies.push({
+          entityInstanceId: venue.id,
           objectType: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
-        }
-      ]
+        })
+      })
+      privilegeGroupData.policies =
+        (selectedScope === choiceScopeEnum.SPECIFIC_VENUE && policies.length > 0)
+          ? policies : undefined
+
+      if (isOnboardedMsp) {
+        const policyEntities = [] as PrivilegePolicyEntity[]
+        selectedCustomers.forEach((ec: MspEc) => {
+          policyEntities.push({
+            tenantId: ec.id//,
+            // objectList: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
+          })
+        })
+        privilegeGroupData.delegation = true
+        privilegeGroupData.allCustomers = false
+        privilegeGroupData.policyEntityDTOS =
+        (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
+          ? policyEntities : undefined
+      }
+
       await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
 
-      navigate(linkToPrivilegeGroups)
+      navigate(linkToPrivilegeGroups )
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const DisplaySelectedVenues = () => {
+    const fisrtVenue = selectedVenus[0]
+    const restVenue = selectedVenus.slice(1)
+    return <>
+      <UI.VenueList key={fisrtVenue.id}>
+        {fisrtVenue.name}
+        <Button
+          type='link'
+          style={{ marginLeft: '40px' }}
+          onClick={onClickSelectVenue}
+        >Change</Button>
+      </UI.VenueList>
+      {restVenue.map(venue =>
+        <UI.VenueList key={venue.id}>
+          {venue.name}
+        </UI.VenueList>
+      )}
+    </>
+  }
+
+  const DisplaySelectedCustomers = () => {
+    const fisrtCustomer = selectedCustomers[0]
+    const restCustomer = selectedCustomers.slice(1)
+    return <>
+      <UI.VenueList key={fisrtCustomer.id}>
+        {fisrtCustomer.name}
+        <Button
+          type='link'
+          style={{ marginLeft: '40px' }}
+          onClick={onClickSelectCustomer}
+        >Change</Button>
+      </UI.VenueList>
+      {restCustomer.map(ec =>
+        <UI.VenueList key={ec.id}>
+          {ec.name}
+        </UI.VenueList>
+      )}
+    </>
   }
 
   const ScopeForm = () => {
     return <Form.Item
       name='scope'
       label={intl.$t({ defaultMessage: 'Scope' })}
-      initialValue={'AllVenues'}>
+      initialValue={choiceScopeEnum.ALL_VENUES}>
       <Radio.Group
-        style={{ margin: 12 }}
+        value={selectedScope}
         onChange={onScopeChange}
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={'AllVenues'}
-            value={'AllVenues'}>
+            key={choiceScopeEnum.ALL_VENUES}
+            value={choiceScopeEnum.ALL_VENUES}>
             {intl.$t({ defaultMessage: 'All Venues' })}
           </Radio>
           <Radio
-            key={'SpecificVenues'}
-            value={'SpecificVenues'}>
+            key={choiceScopeEnum.SPECIFIC_VENUE}
+            value={choiceScopeEnum.SPECIFIC_VENUE}>
             {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
           </Radio>
-          {selectedScope === 'SpecificVenues' && <Button
+          <Button
             style={{ marginLeft: '22px' }}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
             type='link'
             onClick={onClickSelectVenue}
-          >Select venues</Button>}
+          >Select venues</Button>
         </Space>
       </Radio.Group>
+      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+        <DisplaySelectedVenues />}
     </Form.Item>
   }
 
@@ -134,78 +221,80 @@ export function AddPrivilegeGroup () {
     return <><Form.Item
       name='ownscope'
       label={intl.$t({ defaultMessage: 'Scope' })}
-      rules={[
-        { min: 2 },
-        { max: 64 }
-      ]}
       children={
         <Checkbox checked={true} children={intl.$t({ defaultMessage: 'Own Account' })} />
       }
     />
     <Form.Item
       name='scope'
-      initialValue={'AllVenues'}>
+      initialValue={choiceScopeEnum.ALL_VENUES}>
       <Radio.Group
         style={{ marginLeft: 22 }}
+        value={selectedScope}
         onChange={onScopeChange}
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={'AllVenues'}
-            value={'AllVenues'}>
+            key={choiceScopeEnum.ALL_VENUES}
+            value={choiceScopeEnum.ALL_VENUES}>
             {intl.$t({ defaultMessage: 'All Venues' })}
           </Radio>
           <Radio
-            key={'SpecificVenues'}
-            value={'SpecificVenues'}>
+            key={choiceScopeEnum.SPECIFIC_VENUE}
+            value={choiceScopeEnum.SPECIFIC_VENUE}>
             {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
           </Radio>
-          {selectedScope === 'SpecificVenues' && <Button
+          <Button
             style={{ marginLeft: '22px' }}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
             type='link'
             onClick={onClickSelectVenue}
-          >Select venues</Button>}
+          >Select venues</Button>
         </Space>
       </Radio.Group>
+      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+        <DisplaySelectedVenues />}
     </Form.Item>
 
     <Form.Item
       name='mspscope'
-      rules={[
-        { min: 2 },
-        { max: 64 }
-      ]}
       children={
         <Checkbox checked={true} children={intl.$t({ defaultMessage: 'MSP Customers' })} />
       }
     />
     <Form.Item
       name='customers'
-      initialValue={'AllCustomers'}>
+      initialValue={choiceCustomerEnum.ALL_CUSTOMERS}>
       <Radio.Group
         style={{ marginLeft: 22 }}
+        value={selectedMspScope}
         onChange={onCustomerChange}
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={'AllCustomers'}
-            value={'AllCustomers'}>
+            key={choiceCustomerEnum.ALL_CUSTOMERS}
+            value={choiceCustomerEnum.ALL_CUSTOMERS}>
             {intl.$t({ defaultMessage: 'All Customers' })}
           </Radio>
           <Radio
-            key={'SpecificCustomers'}
-            value={'SpecificCustomers'}>
+            key={choiceCustomerEnum.SPECIFIC_CUSTOMER}
+            value={choiceCustomerEnum.SPECIFIC_CUSTOMER}>
             {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
           </Radio>
-          {selectedCustomer === 'SpecificCustomers' && <Button
+          <Button
             style={{ marginLeft: '22px' }}
+            hidden={selectedMspScope ===
+              choiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
             type='link'
             onClick={onClickSelectCustomer}
-          >Select customers</Button>}
+          >Select customers</Button>
         </Space>
       </Radio.Group>
-    </Form.Item></>
 
+      {selectedCustomers.length > 0 && selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER &&
+        <DisplaySelectedCustomers />}
+
+    </Form.Item></>
   }
 
   const PrivilegeGroupForm = () => {
@@ -237,16 +326,24 @@ export function AddPrivilegeGroup () {
               children={<Input />}
             />
             <CustomRoleSelector />
+          </Col>
+        </Row>
+        <Row gutter={12}>
+          <Col span={8}>
             {isOnboardedMsp ? <MspScopeForm /> : <ScopeForm />}
           </Col>
         </Row>
         <SelectVenuesDrawer
           visible={selectVenueDrawer}
+          selected={selectedVenus}
           setVisible={setSelectVenueDrawer}
+          setSelected={setSelectedVenus}
         />
         <SelectCustomerDrawer
           visible={selectCustomerDrawer}
+          selected={selectedCustomers}
           setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}
         />
 
       </StepsForm.StepForm>

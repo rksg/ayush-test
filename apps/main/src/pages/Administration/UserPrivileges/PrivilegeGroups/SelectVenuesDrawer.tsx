@@ -1,21 +1,25 @@
-import { useState } from 'react'
-import React        from 'react'
+import { Key, useEffect, useState } from 'react'
 
-import { Checkbox, Space } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Space }     from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Button,
-  Drawer
+  Drawer,
+  Loader,
+  Table,
+  TableProps
 } from '@acx-ui/components'
 import { useVenuesListQuery } from '@acx-ui/rc/services'
+import { Venue }              from '@acx-ui/rc/utils'
 
 interface SelectVenuesDrawerProps {
   visible: boolean
+  selected: Venue[]
   tenantIds?: string[]
   setVisible: (visible: boolean) => void
-//   setSelected?: (selected: MspAdministrator[]) => void
+  setSelected: (selected: Venue[]) => void
 }
 
 const venuesListPayload = {
@@ -28,17 +32,26 @@ const venuesListPayload = {
 export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible } = props
+  const { visible, selected, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
-  //   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const [selectedRows, setSelectedRows] = useState<Venue[]>([])
+
+  function getSelectedKeys (venues: Venue[], venueId: string[]) {
+    return venues.filter(rec => venueId.includes(rec.id)).map(rec => rec.id)
+  }
+
+  function getSelectedRows (venues: Venue[], venueId: string[]) {
+    return venues.filter(rec => venueId.includes(rec.id))
+  }
 
   const { data: venuesList }
   = useVenuesListQuery({ params: useParams(), payload: venuesListPayload })
 
-
   const onClose = () => {
     setVisible(false)
-    // setSelectedRows([])
+    setSelectedRows([])
+    setSelectedKeys([])
   }
 
   const resetFields = () => {
@@ -47,55 +60,59 @@ export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
   }
 
   const handleSave = () => {
-    // let selMspAdmins: SelectedMspMspAdmins[] = []
-    // selectedRows.forEach((element:MspAdministrator) => {
-    //   const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-    //   selMspAdmins.push ({
-    //     mspAdminId: element.id,
-    //     mspAdminRole: role as RolesEnum
-    //   })
-    // })
-    // let assignedEcMspAdmins: AssignedMultiEcMspAdmins[] = []
-    // tenantIds.forEach((id: string) => {
-    //   assignedEcMspAdmins.push ({
-    //     operation: 'ADD',
-    //     mspEcId: id,
-    //     mspAdminRoles: selMspAdmins
-    //   })
-    // })
-
-    // saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins } })
-    //   .then(() => {
-    //     setSelected(selectedRows)
-    //     setVisible(false)
-    //     resetFields()
-    //   })
+    setSelected(selectedRows)
     resetFields()
     setVisible(false)
   }
 
-  const content =
-    <Space direction='vertical'>
-      <Checkbox>Select All</Checkbox>
-      <div style={{ marginLeft: '22px' }}>
-        <Space direction='vertical'>
-          {venuesList?.data?.map((item) => {
-            return (<Checkbox>{item.name}
-            </Checkbox>
-            )})}
-        </Space>
-      </div>
-    </Space>
+  const columns: TableProps<Venue>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      sorter: true,
+      searchable: true,
+      defaultSortOrder: 'ascend'
+    }
+  ]
 
-  const footer =<div>
+  useEffect(() => {
+    if (venuesList?.data) {
+      const venueIds = selected?.map((venue: Venue)=> venue.id)
+      const selectKeys = getSelectedKeys(venuesList?.data as Venue[], venueIds)
+      setSelectedKeys(selectKeys)
+      const selRows = getSelectedRows(venuesList?.data as Venue[], venueIds)
+      setSelectedRows(selRows)
+    }
+    // setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
+  }, [venuesList?.data])
+
+  const content =
+  <Space direction='vertical'>
+    <Loader >
+      <Table
+        columns={columns}
+        dataSource={venuesList?.data}
+        rowKey='id'
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys: selectedKeys,
+          onChange (selectedRowKeys, selRows) {
+            setSelectedRows(selRows)
+          }
+        }}
+      />
+    </Loader>
+  </Space>
+
+  const footer = <div>
     <Button
-    //   disabled={selectedRows.length === 0}
+      disabled={selectedRows.length === 0}
       onClick={() => handleSave()}
       type='primary'
     >
       {$t({ defaultMessage: 'Save Selection' })}
     </Button>
-
     <Button onClick={() => {
       setVisible(false)
     }}>
@@ -116,3 +133,4 @@ export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
     </Drawer>
   )
 }
+
