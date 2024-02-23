@@ -764,7 +764,6 @@ export interface Node {
 	status?: DeviceStatus;
 	label?: string;
 	cloudPort?: string;
-	isConnectedCloud?: boolean;
 }
 
 export interface UINode {
