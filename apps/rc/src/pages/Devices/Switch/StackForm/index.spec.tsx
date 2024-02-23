@@ -16,7 +16,6 @@ import {
   render,
   screen,
   fireEvent,
-  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -294,8 +293,9 @@ describe('Switch Stack Form - Edit', () => {
       route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
     })
 
-    await waitFor(async ()=>{
-      expect(await screen.findByRole('button', { name: /OK/i })).toBeVisible()
-    })
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeVisible()
+    expect(await screen.findByLabelText(/Stack Name/)).not.toBeDisabled()
+    expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()
   })
 })

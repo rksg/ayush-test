@@ -254,14 +254,6 @@ export function SwitchForm () {
   }
 
   const handleEditSwitch = async (values: Switch) => {
-    if(readOnly){
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
-    }
-
     try {
       let payload = {
         ...values,
@@ -396,10 +388,9 @@ export function SwitchForm () {
         redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
       }
       buttonLabel={{
-        submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-          editMode ?
-            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-        cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+        submit: editMode ?
+          $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+        cancel: $t({ defaultMessage: 'Cancel' })
       }}
     >
       <StepsFormLegacy.StepForm>
@@ -535,7 +526,7 @@ export function SwitchForm () {
                       { min: 1, transform: (value) => value.trim() },
                       { max: 255, transform: (value) => value.trim() }
                     ]}
-                    children={<Input disabled={readOnly} />}
+                    children={<Input />}
                   />
 
                   <Form.Item
@@ -549,7 +540,7 @@ export function SwitchForm () {
                     children={<Input.TextArea
                       rows={4}
                       maxLength={180}
-                      disabled={readOnly}/>}
+                    />}
                   />
 
                   <Form.Item

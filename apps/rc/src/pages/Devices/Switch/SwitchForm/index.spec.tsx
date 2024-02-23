@@ -358,5 +358,21 @@ describe('Edit switch form', () => {
     const applyButton = screen.getByRole('button', { name: /apply/i })
     await userEvent.click(applyButton)
   })
+
+  it('should render edit switch form with readonly mode correctly', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({ ...switchDetailHeader, cliApplied: true })))
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeVisible()
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    expect(await screen.findByLabelText(/Switch Name/)).not.toBeDisabled()
+    expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()
+  })
 })
 

@@ -416,13 +416,6 @@ export function StackForm () {
         return
       }
     }
-    if (readOnly) {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
-    }
 
     try {
       let payload = {
@@ -745,10 +738,9 @@ export function StackForm () {
           redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
         }
         buttonLabel={{
-          submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-            editMode ?
-              $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-          cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+          submit: editMode ?
+            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+          cancel: $t({ defaultMessage: 'Cancel' })
         }}
       >
         <StepsFormLegacy.StepForm>
@@ -797,14 +789,15 @@ export function StackForm () {
                       label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
                       rules={[{ max: 255 }]}
                     >
-                      <Input disabled={readOnly} />
+                      <Input />
                     </Form.Item>
                     {!isStackSwitches && <Form.Item
                       name='description'
                       label={$t({ defaultMessage: 'Description' })}
                       rules={[{ max: 64 }]}
                       initialValue={''}
-                    ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
+                    ><Input.TextArea rows={4} maxLength={180} />
+                    </Form.Item>}
                     {!editMode && !isStackSwitches && <Form.Item
                       name='initialVlanId'
                       label={
