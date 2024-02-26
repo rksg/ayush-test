@@ -63,7 +63,7 @@ describe('ComplianceSetting Drawer', () => {
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc(' } })
     await userEvent.click(await screen.findByText('Save'))
-    expect(await screen.findByText('Input is not a valid Java Regular Expression!'))
+    expect(await screen.findByText('Line: 1 is not a valid Java Regular Expression!'))
       .toBeVisible()
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })
