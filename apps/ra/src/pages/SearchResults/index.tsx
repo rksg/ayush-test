@@ -1,4 +1,3 @@
-import { minBy }   from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -121,9 +120,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
           startDate: moment(lastActiveTime).subtract(4, 'hours').format(),
-          endDate: minBy([moment(), moment(lastActiveTime).add(4, 'hours')], (time) =>
-            time.valueOf()
-          )?.format() as string,
+          endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
         const link = isReportOnly
