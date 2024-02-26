@@ -432,11 +432,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
-  resetApBandModeSettings: {
-    method: 'delete',
-    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
-    newApi: true
-  },
   getApAntennaTypeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
