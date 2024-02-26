@@ -3,11 +3,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks }       from '@acx-ui/rc/components'
-import { networkApi, venueApi }         from '@acx-ui/rc/services'
-import {CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo} from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useSdLanScopedNetworks }                               from '@acx-ui/rc/components'
+import { networkApi, venueApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                      from '@acx-ui/store'
 import {
   act,
   mockServer,
