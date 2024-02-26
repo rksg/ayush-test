@@ -1,6 +1,6 @@
 import { useImperativeHandle, useMemo, forwardRef, useState } from 'react'
 
-import { isNil, mergeWith }       from 'lodash'
+import { isNil, merge, find }     from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -53,9 +53,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         fields: [
           'id',
           'name',
-          'type',
-          'owePairNetworkId',
-          'dsaeOnboardNetwork'
+          'type'
         ]
       }
     }, {
@@ -152,12 +150,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         ]}>
           <Table
             rowKey='id'
-            columns={mergeWith(defaultColumns, columnsSetting, (obj, src) => {
-              const { key, ...srcOtherProps } = src
-              if(obj.key === src.key) {
-                return { ...obj, ...srcOtherProps }
-              }
-            })}
+            columns={defaultColumns.map(item => merge(item,
+              find(columnsSetting, { key: item.key })))}
             dataSource={networkList}
             actions={filterByAccess(actions)}
           />
