@@ -12,6 +12,7 @@ import { ComplianceSetting as UI } from './styledComponents'
 
 const isRegex = (input: string) => {
   try {
+    if (input === '') return false
     // eslint-disable-next-line no-new
     new RegExp(input)
     return true
