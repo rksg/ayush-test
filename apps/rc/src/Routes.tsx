@@ -14,7 +14,7 @@ import {
   VLANPoolForm,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
-  NetworkForm,
+  NetworkForm, DHCPDetail,
   AccessControlDetail, AccessControlTable
 } from '@acx-ui/rc/components'
 import {
@@ -87,7 +87,6 @@ import TunnelProfileDetail                  from './pages/Policies/TunnelProfile
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
-import DHCPDetail                           from './pages/Services/DHCP/DHCPDetail'
 import DHCPTable                            from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                              from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHCPDetail'

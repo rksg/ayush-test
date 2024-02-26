@@ -9,7 +9,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import DHCPServiceDetail from '.'
+import { DHCPDetail } from '.'
 
 const list = {
   fields: ['name', 'switches', 'id', 'aggregatedApStatus'],
@@ -70,7 +70,7 @@ describe('DHCP Detail Page', () => {
   it.skip('should render detail page', async () => {
     render(
       <Provider>
-        <DHCPServiceDetail />
+        <DHCPDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
@@ -83,7 +83,7 @@ describe('DHCP Detail Page', () => {
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <DHCPServiceDetail />
+        <DHCPDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })

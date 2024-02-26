@@ -21,7 +21,7 @@ import { filterByAccess } from '@acx-ui/user'
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
 
-export default function DHCPServiceDetail () {
+export function DHCPDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
@@ -76,8 +76,6 @@ export default function DHCPServiceDetail () {
           </GridRow>
         </Tabs.TabPane>
       </Tabs>
-
-
     </>
   )
 }
