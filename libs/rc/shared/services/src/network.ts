@@ -20,7 +20,8 @@ import {
   ExternalProviders,
   ApCompatibility,
   ApCompatibilityResponse,
-  transformNetwork
+  transformNetwork,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -636,7 +637,10 @@ const calculateNetworkActivated = (res?: NetworkVenue) => {
 // it will be removed after the wifi-consumer is closed
 export const fetchNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const networkVenuesListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? ConfigTemplateUrlsInfo.getVenuesTemplateList
+      : CommonUrlsInfo.getVenuesList
+    , arg.params),
     body: arg.payload
   }
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
@@ -699,7 +703,9 @@ export const aggregatedNetworksVenueData = (venueList: TableResult<Venue>,
 
 export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
+      : CommonUrlsInfo.getVenuesList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
@@ -819,7 +825,10 @@ const apiV2CustomHeader = {
 
 export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const networkVenuesListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? ConfigTemplateUrlsInfo.getVenuesTemplateList
+      : CommonUrlsInfo.getVenuesList
+    , arg.params),
     body: arg.payload
   }
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
@@ -879,7 +888,9 @@ export const aggregatedNetworksVenueDataV2 = (venueList: TableResult<Venue>,
 
 export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
+      : CommonUrlsInfo.getVenuesList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)

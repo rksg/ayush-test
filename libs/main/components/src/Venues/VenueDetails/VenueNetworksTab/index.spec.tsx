@@ -11,8 +11,8 @@ import {
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                      from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -66,16 +66,6 @@ venueNetworkApCompatibilitiesData.apCompatibilities.forEach((item: ApCompatibili
 const mockVenueNetworkData2 = aggregatedVenueNetworksDataV2(venueNetworkList, { data: venueNetworkApGroupData }, networkDeepList, networkIdsToIncompatible)
 
 const services = require('@acx-ui/rc/services')
-/*
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useVenueNetworkTableQuery: () => ({ data: mockVenueNetworkData2 }),
-  useVenueNetworkListQuery: () => ({ data: mockVenueNetworkData1 }),
-  useVenueNetworkTableV2Query: () => ({ data: mockVenueNetworkData2 }),
-  useVenueNetworkListV2Query: () => ({ data: mockVenueNetworkData1 })
-}))
-*/
-
 
 const params = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
@@ -121,6 +111,26 @@ describe('VenueNetworksTab', () => {
     })
 
     mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json(networkDeepList))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
+      ),
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json({ venue: venueData }))

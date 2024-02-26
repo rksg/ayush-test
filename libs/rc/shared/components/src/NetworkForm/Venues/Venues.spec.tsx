@@ -72,7 +72,7 @@ describe('Create Network: Venues Step', () => {
     })
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
