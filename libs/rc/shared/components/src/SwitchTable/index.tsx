@@ -340,7 +340,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: false,
       show: false,
       render: (_: React.ReactNode, row: SwitchRow) => {
-        return row.extIp || noDataDisplay
+        return row.isFirstLevel ? row.extIp || noDataDisplay : ''
       }
     }] : [])
       // { // TODO: Waiting for TAG feature support
