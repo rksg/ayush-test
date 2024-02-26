@@ -200,7 +200,8 @@ export const unknownStates = [
   CRRMStates.verificationError,
   CRRMStates.verified,
   CRRMStates.unqualifiedZone,
-  CRRMStates.noAps
+  CRRMStates.noAps,
+  CRRMStates.unknown
 ]
 
 export const getCrrmOptimizedState = (state: StateType) => {

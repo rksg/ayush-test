@@ -79,14 +79,14 @@ export const mockedNetworkViewData = {
   page: 1,
   data: [
     {
-      id: '8e22159cfe264ac18d591ea492fbc05a',
+      id: 'network_1',
       name: 'dpskNetwork',
-      nwSubType: 'dpsk'
+      nwSubType: NetworkTypeEnum.DPSK
     },
     {
-      id: '8e22159cfe264ac18d591ea492fbc050',
+      id: 'network_4',
       name: 'guestNetwork1',
-      nwSubType: 'guest'
+      nwSubType: NetworkTypeEnum.CAPTIVEPORTAL
     }
   ]
 }

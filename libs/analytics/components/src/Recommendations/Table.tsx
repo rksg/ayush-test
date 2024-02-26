@@ -36,19 +36,6 @@ type RecommendationWithUpdatedMetadata = RecommendationListItem & {
   metadata: Metadata;
 }
 
-const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled: boolean }) => {
-  const { activeTab } = useParams()
-  const text = formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)
-  return disabled
-    ? <Tooltip
-      title={<FormattedMessage defaultMessage='Not available' />}
-      children={<Typography.Text disabled children={text} />}
-    />
-    : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
-      {text}
-    </TenantLink>
-}
-
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row-key': string }
 
 function RowTooltip (props: RowProps) {
@@ -97,12 +84,41 @@ function RowTooltip (props: RowProps) {
   )
 }
 
-export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
+const Link = (
+  { text, to, disabled }: { text: string, to: string, disabled: boolean }
+) => {
+  return disabled
+    ? <Tooltip
+      title={<FormattedMessage defaultMessage='Not available' />}
+      children={<Typography.Text disabled children={text} />}
+    />
+    : <TenantLink to={to} children={text} />
+}
+
+const DateLink = (
+  { value, disabled }: { value: RecommendationListItem, disabled: boolean }
+) => {
+  const { updatedAt, id } = value
+  const { activeTab } = useParams()
+  const text = formatter(DateFormatEnum.DateTimeFormat)(updatedAt)
+  return <Link
+    disabled={disabled}
+    text={text}
+    to={`analytics/recommendations/${activeTab}/${id}`}
+  />
+}
+
+export const UnknownLink = (
+  { value, disabled }: { value: RecommendationWithUpdatedMetadata, disabled: boolean }
+) => {
   const { metadata, statusEnum, updatedAt, sliceValue } = value
   const paramString = getParamString(metadata, statusEnum, updatedAt, sliceValue)
-  return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
-    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
-  </TenantLink>
+  const text = formatter(DateFormatEnum.DateTimeFormat)(updatedAt)
+  return <Link
+    disabled={disabled}
+    text={text}
+    to={`analytics/recommendations/crrm/unknown?${paramString}`}
+  />
 }
 
 const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
@@ -221,7 +237,10 @@ export function RecommendationTable (
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (_, value) => (value.code === 'unknown')
-        ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
+        ? <UnknownLink
+          value={value as RecommendationWithUpdatedMetadata}
+          disabled={value.statusEnum === 'unknown'}
+        />
         : <DateLink
           value={value}
           disabled={!isCrrmOptimizationMatched(value.code, value.metadata, value.preferences)}

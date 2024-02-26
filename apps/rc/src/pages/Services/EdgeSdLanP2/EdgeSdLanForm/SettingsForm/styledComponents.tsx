@@ -1,8 +1,9 @@
 import { Col } from 'antd'
 import styled  from 'styled-components/macro'
 
-export const Diagram = styled.img`
-  width: 220px;
+import { SdLanTopologyDiagram } from '@acx-ui/rc/components'
+
+export const StyledDiagram = styled(SdLanTopologyDiagram)`
   margin-top: 40px;
 `
 

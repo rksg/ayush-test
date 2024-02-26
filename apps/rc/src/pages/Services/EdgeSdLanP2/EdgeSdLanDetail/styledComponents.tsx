@@ -15,7 +15,3 @@ export const InstancesTitle = styled(Typography.Title)`
    margin-bottom: 0px;
  }
 `
-
-export const Diagram = styled.img`
-  height: 200px;
-`
