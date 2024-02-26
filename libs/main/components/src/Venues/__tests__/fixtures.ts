@@ -602,7 +602,9 @@ export const venueNetworkList = {
       },
       aps: 0,
       description: '',
-      clients: 0
+      clients: 0,
+      captiveType: GuestNetworkTypeEnum.ClickThrough,
+      activated: { isActivated: false }
     },
     {
       name: 'test_2',
@@ -617,7 +619,9 @@ export const venueNetworkList = {
       },
       aps: 0,
       description: '',
-      clients: 0
+      clients: 0,
+      captiveType: GuestNetworkTypeEnum.ClickThrough,
+      activated: { isActivated: false }
     }
   ]
 }
