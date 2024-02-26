@@ -119,8 +119,8 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(8, 'hours').format(),
-          endDate: lastActiveTime,
+          startDate: moment(lastActiveTime).subtract(4, 'hours').format(),
+          endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
         const link = isReportOnly
