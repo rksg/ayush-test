@@ -5,7 +5,8 @@ export enum CRRMStates {
   insufficientLicenses = 'insufficientLicenses',
   unqualifiedZone = 'unqualifiedZone',
   noAps = 'noAps',
-  verificationError = 'verificationError'
+  verificationError = 'verificationError',
+  unknown = 'unknown'
 }
 
 export const states = {
