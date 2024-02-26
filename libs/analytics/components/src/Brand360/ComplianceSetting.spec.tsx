@@ -47,10 +47,11 @@ describe('ComplianceSetting Drawer', () => {
     await userEvent.click(await screen.findByTestId('ssidSettings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
-    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc' } })
+    const target = '  ssidRegex1  \n ssidRegex2 '
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: target } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).toBeCalledWith({
-      'brand-ssid-compliance-matcher': 'abc'
+      'brand-ssid-compliance-matcher': 'ssidRegex1\nssidRegex2'
     })
   })
   it('should not save if invalid ssid regex', async () => {
