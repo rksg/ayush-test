@@ -293,10 +293,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings'
   },
-  resetApBandModeSettings: {
-    method: 'delete',
-    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings'
-  },
   getApAntennaTypeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings'

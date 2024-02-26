@@ -137,7 +137,7 @@ describe('EditEdgeDhcp', () => {
     mockServer.use(
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockFn()
           return res(ctx.json(mockEdgeDhcpData2))
         }
@@ -153,8 +153,7 @@ describe('EditEdgeDhcp', () => {
 
     await waitFor(() => expect(mockFn).toBeCalled())
     await screen.findByRole('row', { name: /PoolTest1/ })
-    await screen.findByRole('radio', { name: 'Infinite' })
-    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData2.serviceName))
     await userEvent.clear(serviceNameInput)
     expect(screen.getByRole('radio', { name: 'Infinite' })).toBeChecked()

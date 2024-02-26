@@ -1,5 +1,5 @@
-import { Switch } from 'antd'
-import _          from 'lodash'
+import { Switch, Tooltip } from 'antd'
+import _                   from 'lodash'
 
 import { NetworkSaveData } from '@acx-ui/rc/utils'
 
@@ -13,16 +13,17 @@ export interface ActivateNetworkSwitchButtonP2Props
       data: NetworkSaveData,
       checked: boolean,
       activated: NetworkSaveData[]
-      ) => void
+      ) => void,
+    tooltip?: string
 }
 
 export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButtonP2Props) => {
-  const { fieldName, row, rows, activated, disabled, onChange } = props
+  const { fieldName, row, rows, activated, disabled, onChange, tooltip } = props
 
   const isActivated = _.findIndex(activated, i => i === row.id)
   let newSelected = rows.filter(item => activated.includes(item.id!))
 
-  return <Switch
+  const switchComponent = <Switch
     checked={isActivated !== -1}
     disabled={!!disabled}
     onChange={(checked: boolean) => {
@@ -36,4 +37,9 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
       onChange?.(fieldName, _.omit(row, 'children'), checked, newSelected)
     }}
   />
+  return tooltip
+    ? <Tooltip title={tooltip}>
+      {switchComponent}
+    </Tooltip>
+    : switchComponent
 }
