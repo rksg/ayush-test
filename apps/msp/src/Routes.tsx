@@ -5,6 +5,7 @@ import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/c
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
   AAAForm, AAAPolicyDetail,
+  DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm
 } from '@acx-ui/rc/components'
@@ -139,6 +140,10 @@ function ConfigTemplatesRoutes () {
         <Route
           path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
           element={<DHCPForm editMode={true}/>}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
+          element={<DHCPDetail/>}
         />
       </Route>
     </Route>

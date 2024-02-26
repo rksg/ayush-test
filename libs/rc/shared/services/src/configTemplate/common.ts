@@ -176,6 +176,7 @@ export const {
   useDeleteVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
   useGetVenueTemplateQuery,
+  useGetVenuesTemplateListQuery,
   useLazyGetVenuesTemplateListQuery
 } = configTemplateApi
 

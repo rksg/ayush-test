@@ -1,23 +1,26 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
+import { PageHeader, GridRow, GridCol, Tabs } from '@acx-ui/components'
 import {
   useGetDHCPProfileQuery,
+  useGetDhcpTemplateQuery,
+  useGetVenuesTemplateListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation,
-  ServiceType
+  DHCPSaveData,
+  ServiceType,
+  TableResult,
+  useConfigTemplateQueryFnSwitcher,
+  useServiceListBreadcrumb,
+  Venue
 } from '@acx-ui/rc/utils'
 import { DHCPUsage }      from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { PoolTable } from '../DHCPForm'
+import { ServiceConfigTemplateConfigureLinkSwitcher } from '../../../configTemplates'
+import { PoolTable }                                  from '../DHCPForm'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
@@ -25,37 +28,31 @@ import DHCPOverview       from './DHCPOverview'
 export function DHCPDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
 
-  const { data } = useGetDHCPProfileQuery({ params })
-  const venuesList = useVenuesListQuery({ params, payload: {
-    fields: ['name', 'id'],
-    filters: {
-      id: data?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
+  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
+    useGetDHCPProfileQuery, useGetDhcpTemplateQuery
+  )
+  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
+    useVenuesListQuery, useGetVenuesTemplateListQuery, !data, {
+      fields: ['name', 'id'],
+      filters: {
+        id: data?.usage?.map((usage: DHCPUsage) => usage.venueId) || ['none']
+      }
     }
-  } })
+  )
 
   return (
     <>
       <PageHeader
         title={data?.serviceName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DHCP' }),
-            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.DHCP,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId!
-          })}>
-            <Button key='configure'
-              disabled={(venuesList.data && venuesList.data.data.length>0)}
-              type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-          </TenantLink>
+          <ServiceConfigTemplateConfigureLinkSwitcher
+            type={ServiceType.DHCP}
+            serviceId={params.serviceId!}
+            disabled={(venuesList.data && venuesList.data.data.length > 0)}
+          />
         ])}
       />
       <Tabs defaultActiveKey={'OVERVIEW'}>

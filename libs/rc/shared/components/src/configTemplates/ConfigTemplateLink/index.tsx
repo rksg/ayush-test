@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 
-import { Form } from 'antd'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
+import { Button }        from '@acx-ui/components'
 import {
   ConfigTemplateType,
   DpskDetailsTabKey,
@@ -22,7 +24,7 @@ import {
   getServiceDetailsLink,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApplicationDrawer, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '../../policies'
 
@@ -104,6 +106,31 @@ export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDe
       {props.children}
     </ConfigTemplateLink>
   )
+}
+
+// eslint-disable-next-line max-len
+export function ServiceConfigTemplateConfigureLinkSwitcher (props: { type: ServiceType, serviceId: string, disabled?: boolean }) {
+  const { isTemplate } = useConfigTemplate()
+  const { type, serviceId, disabled = false } = props
+  const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const button = <Button key='configure' disabled={disabled} type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+
+  return isTemplate
+    ? <ServiceConfigTemplateDetailsLink
+      type={type}
+      oper={ServiceOperation.EDIT}
+      serviceId={serviceId}
+    >
+      {button}
+    </ServiceConfigTemplateDetailsLink>
+    : <TenantLink to={getServiceDetailsLink({
+      type,
+      oper: ServiceOperation.EDIT,
+      serviceId
+    })}>
+      {button}
+    </TenantLink>
 }
 
 // eslint-disable-next-line max-len

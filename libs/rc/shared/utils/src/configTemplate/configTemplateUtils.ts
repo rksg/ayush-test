@@ -29,15 +29,20 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 
-export function useConfigTemplateQueryFnSwitcher<ResultType> (
+export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
   useQueryFn: UseQuery<ResultType, RequestPayload>,
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
-  skip = false
+  skip = false,
+  payload?: Payload
 ): ReturnType<typeof useQueryFn> {
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const result = useQueryFn({ params }, { skip: skip || isTemplate })
-  const templateResult = useTemplateQueryFn({ params }, { skip: skip || !isTemplate })
+  const requestPayload = {
+    params,
+    ...(payload ? ({ payload }) : {})
+  }
+  const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
+  const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })
 
   return isTemplate ? templateResult : result
 }

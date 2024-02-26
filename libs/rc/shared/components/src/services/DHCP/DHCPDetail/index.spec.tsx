@@ -88,12 +88,7 @@ describe('DHCP Detail Page', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'DHCP'
-    })).toBeVisible()
-
+    expect(screen.getByRole('link', { name: 'My Services' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'DHCP for Wi-Fi' })).toBeVisible()
   })
 })
