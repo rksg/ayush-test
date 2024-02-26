@@ -165,6 +165,10 @@ function useColumns (props: templateColumnProps) {
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
+  const typeFilterOptions = Object.keys(ConfigTemplateType).map((key =>
+    ({ key, value: key })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -180,24 +184,25 @@ function useColumns (props: templateColumnProps) {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },
