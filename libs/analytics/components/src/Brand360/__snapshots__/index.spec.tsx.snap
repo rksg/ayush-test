@@ -65,7 +65,7 @@ exports[`Brand360 resets SLAs 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 jndHDU flbuMf"
+                  class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 jndHDU cGJIri"
                 >
                   <div
                     class="ant-picker ant-picker-range"
@@ -77,8 +77,8 @@ exports[`Brand360 resets SLAs 1`] = `
                         autocomplete="off"
                         placeholder="Start date"
                         readonly=""
-                        size="17"
-                        value="Last 24 Hours"
+                        size="16"
+                        value="Last 8 Hours"
                       />
                     </div>
                     <div
@@ -116,8 +116,8 @@ exports[`Brand360 resets SLAs 1`] = `
                         autocomplete="off"
                         placeholder="End date"
                         readonly=""
-                        size="17"
-                        value="Last 24 Hours"
+                        size="16"
+                        value="Last 8 Hours"
                       />
                     </div>
                     <div
