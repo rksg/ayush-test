@@ -24,7 +24,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
-  const pColor = 'var(--acx-accents-blue-50)'
+  const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
 
