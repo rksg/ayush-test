@@ -22,7 +22,7 @@ const dmzTunnelColumnHeaderTooltip = defineMessage({
 export interface ActivatedNetworksTableP2Props {
   venueId: string,
   isGuestTunnelEnabled: boolean
-  columnsSetting?: Pick<TableColumn<NetworkSaveData, 'text'>, 'key' | 'title'>[],
+  columnsSetting?: Partial<Omit<TableColumn<NetworkSaveData, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
@@ -54,7 +54,9 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         fields: [
           'id',
           'name',
-          'type'
+          'type',
+          'owePairNetworkId',
+          'dsaeOnboardNetwork'
         ]
       }
     }, {
