@@ -9,7 +9,7 @@ import { Drawer, Button, Tooltip, Loader } from '@acx-ui/components'
 
 import { ComplianceSetting as UI } from './styledComponents'
 
-export const isRegExp = (input: string) => {
+const isRegExp = (input: string) => {
   try {
     // eslint-disable-next-line no-new
     new RegExp(input)
