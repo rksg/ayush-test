@@ -6,10 +6,11 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import { Settings }                        from '@acx-ui/analytics/utils'
 import { Drawer, Button, Tooltip, Loader } from '@acx-ui/components'
+import { truthy }                          from '@acx-ui/utils'
 
 import { ComplianceSetting as UI } from './styledComponents'
 
-const isRegExp = (input: string) => {
+const isRegex = (input: string) => {
   try {
     // eslint-disable-next-line no-new
     new RegExp(input)
@@ -17,6 +18,21 @@ const isRegExp = (input: string) => {
   } catch (e) {
     return false
   }
+}
+
+const getRegexesArray = (input: string | undefined) => {
+  if (!input) return []
+  const ret = input
+    .split('\n')
+    .map(reg => reg.trim())
+  return ret
+}
+
+const getFailureLines = (input: string | undefined) => {
+  const ret = getRegexesArray(input)
+    .map((regex, ind) => !isRegex(regex) ? (ind + 1).toString() : null)
+    .filter(truthy)
+  return ret
 }
 
 const ssidField = 'ssidPattern'
@@ -41,10 +57,11 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const ssidValue = Form.useWatch(ssidField, form)
+  const failureLines = getFailureLines(ssidValue)
   const isDisabled = ssidValue === ''
     || ssidValue === ssidRegex
-    || !isRegExp(ssidValue)
     || ssidValue?.length >= maxLength
+    || failureLines.length > 0
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const saveSSIDRegex = useCallback(() => {
     updateSlas({
@@ -93,18 +110,18 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
               message: $t({ defaultMessage: 'SSID Regular Expression is required!' })
             },
             {
-              validator (_, value) {
-                //TODO: split by space / carriage return and check line by line
-                const check = isRegExp(value)
-                return check ? Promise.resolve() : Promise.reject()
-              },
-              message: $t({ defaultMessage: 'Input is not a valid Java Regular Expression!' })
-            },
-            {
               type: 'string',
               min: 1,
               max: maxLength,
               message: $t({ defaultMessage: 'Input exceeds 1000 characters!' })
+            },
+            {
+              validator: () => !failureLines.length ? Promise.resolve() : Promise.reject(),
+              message: $t(
+                { defaultMessage: `{linesCount, plural, one {Line} other {Lines}}:
+                {msg} {linesCount, plural, one {is} other { are }} not
+                {linesCount, plural, one {a} other {}} valid Java Regular Expression!` },
+                { msg: failureLines.join(','), linesCount: failureLines.length })
             }]}
             children={<Input.TextArea data-testid='ssidRegex' />}
           />
