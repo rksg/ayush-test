@@ -35,6 +35,10 @@ const getFailureLines = (input: string | undefined) => {
   return ret
 }
 
+const cleanInput = (input: string) => {
+  return getRegexesArray(input).join('\n')
+}
+
 const ssidField = 'ssidPattern'
 const maxLength = 1000
 
@@ -66,7 +70,7 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const saveSSIDRegex = useCallback(() => {
     updateSlas({
       ...settings,
-      'brand-ssid-compliance-matcher': ssidValue
+      'brand-ssid-compliance-matcher': cleanInput(ssidValue)
     })
   }, [settings, ssidValue])
 
