@@ -11,8 +11,8 @@ import {
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                      from '@acx-ui/store'
+import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
 import {
   act,
   mockServer,
