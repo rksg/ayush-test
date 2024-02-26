@@ -85,5 +85,20 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/venues/query',
     newApi: true
+  },
+  addNetworkVenueTemplate: {
+    method: 'post',
+    url: '/templates/networkActivations',
+    newApi: true
+  },
+  deleteNetworkVenueTemplate: {
+    method: 'delete',
+    url: '/templates/networkActivations/:networkVenueId',
+    newApi: true
+  },
+  updateNetworkVenueTemplate: {
+    method: 'put',
+    url: '/templates/networkActivations/:networkVenueId?quickAck=true',
+    newApi: true
   }
 }
