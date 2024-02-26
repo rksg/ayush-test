@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, nsgApi, personaApi }                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }           from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, nsgApi, personaApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, NetworkSegmentationUrls, PersonaUrls }  from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockedApList,
   mockedNsgData,
@@ -15,7 +15,6 @@ import { mockedApList,
 
 import { PersonalIdentityNetworkDetailTableGroup } from '.'
 
-const mockedPersonaGroupReq = jest.fn()
 jest.mock('./ApsTable', () => ({
   ApsTable: () => <div data-testid='ApsTable' />
 }))
@@ -35,7 +34,6 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     store.dispatch(nsgApi.util.resetApiState())
     store.dispatch(personaApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
-    mockedPersonaGroupReq.mockReset()
 
     mockServer.use(
       rest.get(
@@ -61,13 +59,6 @@ describe('NetworkSegmentationDetailTableGroup', () => {
       rest.get(
         NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
         (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
-      ),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (_req, res, ctx) => {
-          mockedPersonaGroupReq()
-          return res(ctx.json({}))
-        }
       )
     )
   })
@@ -81,7 +72,6 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockedPersonaGroupReq).toBeCalled())
     await screen.findByTestId('ApsTable')
     await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await screen.findByTestId('DistSwitchesTable')

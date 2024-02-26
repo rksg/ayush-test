@@ -1,5 +1,6 @@
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
+import _                   from 'lodash'
 import { rest }            from 'msw'
 
 import { networkApi }                      from '@acx-ui/rc/services'
@@ -184,6 +185,50 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         },
         false,
         [])
+    })
+
+    it('should grey out vlan pooling network tunnel to DMZ', async () => {
+      const withVlanPoolEnabled = _.cloneDeep(mockDeepNetworkList)
+      withVlanPoolEnabled.response.forEach((item) => {
+        if (item.type === NetworkTypeEnum.CAPTIVEPORTAL) {
+          item.wlan = {
+            advancedCustomization: {
+              vlanPool: {
+                name: '',
+                vlanMembers: []
+              }
+            }
+          }
+        }
+      })
+
+      mockServer.use(
+        rest.post(
+          CommonUrlsInfo.getNetworkDeepList.url,
+          (_req, res, ctx) => {
+            mockedGetNetworkDeepList()
+            return res(ctx.json(withVlanPoolEnabled))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeSdLanP2ActivatedNetworksTable
+            venueId='mocked-venue-2'
+            isGuestTunnelEnabled={true}
+            activated={['network_1', 'network_4']}
+            activatedGuest={['network_4']}
+            onActivateChange={mockedOnChangeFn}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded()
+      await screen.findByRole('columnheader', { name: /Forward Guest Traffic to DMZ/i })
+
+      const switchBtns = within(await screen.findByRole('row', { name: /MockedNetwork 4/i }))
+        .getAllByRole('switch')
+      expect(switchBtns[1]).toBeDisabled()
     })
   })
 })
