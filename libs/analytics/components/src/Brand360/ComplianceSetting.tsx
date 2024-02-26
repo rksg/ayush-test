@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input }            from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import { Settings }                        from '@acx-ui/analytics/utils'
@@ -20,6 +20,19 @@ export const isRegExp = (input: string) => {
 }
 
 const ssidField = 'ssidPattern'
+
+const tooltipMsg = defineMessage({
+  defaultMessage: `
+    Regular expression should be compatible with Java standards.
+    You can add one rule per line, i.e :
+    {br}
+    {br}
+    ^[a-zA-Z0-9]'{5}'_GUEST$
+    {br}
+    {br}
+    ^[a-zA-Z0-9]'{5}'_STAFF$
+  `
+})
 
 export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const { $t } = useIntl()
@@ -70,9 +83,7 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
             label={<>
               {$t({ defaultMessage: 'Choose a pattern to validate Brand SSID compliance' })}
               <Tooltip.Question
-                title={$t(
-                  { defaultMessage:
-                      'Regular expression should be compatible with Java standards' })}
+                title={$t(tooltipMsg, { br: <br/> })}
                 placement='top' />
             </>}
             rules={[{
