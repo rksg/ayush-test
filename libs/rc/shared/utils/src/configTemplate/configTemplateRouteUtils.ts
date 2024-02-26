@@ -1,3 +1,5 @@
+import { useTenantLink } from '@acx-ui/react-router-dom'
+
 import { PolicyOperation, ServiceOperation, getPolicyDetailsLink, getServiceDetailsLink } from '../features'
 import { ConfigTemplateType }                                                             from '../types'
 
@@ -32,4 +34,8 @@ export function getConfigTemplateEditPath (type: ConfigTemplateType, id: string)
   }
 
   return getConfigTemplatePath(path)
+}
+
+export function useConfigTemplateTenantLink (to: string) {
+  return useTenantLink(getConfigTemplatePath(to), 'v')
 }
