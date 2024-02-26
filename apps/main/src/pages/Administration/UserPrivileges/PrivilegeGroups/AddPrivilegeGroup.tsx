@@ -226,7 +226,6 @@ export function AddPrivilegeGroup () {
       }
     />
     <Form.Item
-      name='scope'
       initialValue={choiceScopeEnum.ALL_VENUES}>
       <Radio.Group
         style={{ marginLeft: 22 }}
@@ -263,7 +262,6 @@ export function AddPrivilegeGroup () {
       }
     />
     <Form.Item
-      name='customers'
       initialValue={choiceCustomerEnum.ALL_CUSTOMERS}>
       <Radio.Group
         style={{ marginLeft: 22 }}

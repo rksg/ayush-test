@@ -69,7 +69,6 @@ describe('Add Privilege Group', () => {
     expect(screen.getByText('Name')).toBeVisible()
     expect(screen.getByText('Description')).toBeVisible()
     expect(screen.getByText('Role')).toBeVisible()
-    expect(screen.getByText('Scope')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
@@ -99,7 +98,7 @@ describe('Add Privilege Group', () => {
     })
     expect(screen.getByText('Please enter Role')).toBeVisible()
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
-    await userEvent.click(screen.getAllByText('Prime Admin')[1])
+    await userEvent.click(screen.getByText('Prime Admin'))
     await waitFor(() => {
       expect(screen.queryByText('Please enter Role')).toBeNull()
     })

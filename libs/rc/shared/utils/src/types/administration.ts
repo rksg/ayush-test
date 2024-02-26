@@ -294,8 +294,7 @@ export interface PrivilegeGroup {
   allCustomers?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
-  policyEntityDTOS?: PrivilegePolicyEntity[],
-  isOnboardedMsp?: boolean
+  policyEntityDTOS?: PrivilegePolicyEntity[]
 }
 
 export enum PrivilegePolicyObjectType {
