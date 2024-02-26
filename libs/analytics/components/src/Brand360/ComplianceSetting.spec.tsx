@@ -107,4 +107,17 @@ describe('ComplianceSetting Drawer', () => {
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })
+  it('should not save if ssid regex has blanks', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    const spaceRegex = 'brand360\n\nxd'
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: spaceRegex } })
+    await userEvent.click(await screen.findByText('Save'))
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
 })
