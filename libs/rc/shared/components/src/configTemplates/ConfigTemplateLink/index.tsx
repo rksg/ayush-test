@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
+import { Button }       from '@acx-ui/components'
 import {
   ConfigTemplateType,
   DpskDetailsTabKey,
