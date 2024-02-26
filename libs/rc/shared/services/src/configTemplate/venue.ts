@@ -1,9 +1,10 @@
 import {
-  CapabilitiesApModel, CommonResult, ExternalAntenna, TriBandSettings,
+  CapabilitiesApModel, CommonResult, ExternalAntenna, TableResult, TriBandSettings,
+  Venue,
   VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
   VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
-  VenueDosProtection, VenueLanPorts, VenueLoadBalancing,
+  VenueDosProtection, VenueExtended, VenueLanPorts, VenueLoadBalancing,
   VenueMdnsFencingPolicy,
   VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
   onActivityMessageReceived, onSocketActivityChanged
@@ -13,10 +14,48 @@ import { RequestPayload }        from '@acx-ui/types'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn } from './common'
+import { commonQueryFn, configTemplateApi } from './common'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
+    addVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.addVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    deleteVenueTemplate: build.mutation<Venue, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    updateVenueTemplate: build.mutation<VenueExtended, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueTemplate),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    getVenueTemplate: build.query<VenueExtended, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueTemplate),
+      providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenuesTemplateList),
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddVenueTemplateRecord',
+            'UpdateVenueTemplateRecord',
+            'DeleteVenueTemplateRecord'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     // eslint-disable-next-line max-len
     getVenueTemplateApCapabilities: build.query<{ version: string, apModels: CapabilitiesApModel[] }, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueApCapabilities)
@@ -193,6 +232,12 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 })
 
 export const {
+  useAddVenueTemplateMutation,
+  useDeleteVenueTemplateMutation,
+  useUpdateVenueTemplateMutation,
+  useGetVenueTemplateQuery,
+  useGetVenuesTemplateListQuery,
+  useLazyGetVenuesTemplateListQuery,
   useGetVenueTemplateApCapabilitiesQuery,
   useGetVenueTemplateTripleBandRadioSettingsQuery,
   useUpdateVenueTemplateTripleBandRadioSettingsMutation,

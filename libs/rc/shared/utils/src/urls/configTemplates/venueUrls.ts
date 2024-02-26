@@ -1,6 +1,31 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
+  addVenueTemplate: {
+    method: 'post',
+    url: '/templates/venues',
+    newApi: true
+  },
+  deleteVenueTemplate: {
+    method: 'delete',
+    url: '/templates/venues/:templateId',
+    newApi: true
+  },
+  updateVenueTemplate: {
+    method: 'put',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenueTemplate: {
+    method: 'get',
+    url: '/templates/venues/:venueId',
+    newApi: true
+  },
+  getVenuesTemplateList: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true
+  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/templates/venues/:venueId/aps/capabilities',

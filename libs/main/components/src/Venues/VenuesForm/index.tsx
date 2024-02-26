@@ -11,9 +11,9 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { get }                                                              from '@acx-ui/config'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                                   from '@acx-ui/icons'
+import { get }                                                               from '@acx-ui/config'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { SearchOutlined }                                                    from '@acx-ui/icons'
 import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
 } from '@acx-ui/rc/components'
 import {
@@ -33,7 +33,11 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  useConfigTemplateLazyQueryFnSwitcher,
+  Venue,
+  TableResult,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -146,8 +150,10 @@ export function VenuesForm () {
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
-  const addVenue = useAddInstance()
-  const updateVenue = useUpdateInstance()
+  // eslint-disable-next-line max-len
+  const [ addVenue ] = useConfigTemplateMutationFnSwitcher(useAddVenueMutation, useAddVenueTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateVenue ] = useConfigTemplateMutationFnSwitcher(useUpdateVenueMutation, useUpdateVenueTemplateMutation)
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -229,7 +235,10 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const venuesList = useGetLazyInstances()
+  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>(
+    useLazyVenuesListQuery, useLazyGetVenuesTemplateListQuery
+  )
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject(intl.$t(validationMessages.name))
@@ -428,30 +437,6 @@ export function VenuesForm () {
       </StepsFormLegacy>
     </>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ addVenue ] = useAddVenueMutation()
-  const [ addVenueTemplate ] = useAddVenueTemplateMutation()
-
-  return isTemplate ? addVenueTemplate : addVenue
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ updateVenue ] = useUpdateVenueMutation()
-  const [ updateVenueTemplate ] = useUpdateVenueTemplateMutation()
-
-  return isTemplate ? updateVenueTemplate : updateVenue
-}
-
-function useGetLazyInstances () {
-  const { isTemplate } = useConfigTemplate()
-  const [ venuesList ] = useLazyVenuesListQuery()
-  const [ venuesTemplateList ] = useLazyGetVenuesTemplateListQuery()
-
-  return isTemplate ? venuesTemplateList : venuesList
 }
 
 function usePreviousPath (): string {
