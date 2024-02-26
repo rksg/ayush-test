@@ -116,6 +116,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       dataIndex: 'lsp',
       key: 'lsp',
       searchable: true,
+      fixed: 'left',
       sorter: { compare: sortProp('lsp', defaultSort) },
       render: (_, row: Pick<Lsp,'lsp' | 'propertyCount'>, __, highlightFn: CallableFunction) =>
         <span>{highlightFn(row?.lsp)}</span>
@@ -141,6 +142,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
     title: $t({ defaultMessage: 'LSP' }),
     dataIndex: 'lsp',
     key: 'lsp',
+    fixed: 'left',
     searchable: true,
     sorter: { compare: sortProp('lsp', defaultSort) },
     render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
