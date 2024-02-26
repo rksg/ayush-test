@@ -316,14 +316,14 @@ export function RecommendationTable (
         const tooltipText = !canToggle && !record.isMuted
           ? get('IS_MLISA_SA')
             ? $t({ defaultMessage: `
-              Optimization option cannot be changed while recommendation(s) of the zone
-              is in Applied status. Please revert all to New status before changing the
-              optimization option.
+              Optimization option cannot be modified when RRM recommendations are applied across any
+              of the radios of the same zone. Please revert them in case you still prefer to change
+              the optimization option for current recommendation.
             ` })
             : $t({ defaultMessage: `
-              Optimization option cannot be changed while recommendation(s) of the venue
-              is in Applied status. Please revert all to New status before changing the
-              optimization option.
+              Optimization option cannot be modified when RRM recommendations are applied across any
+              of the radios of the same venue. Please revert them in case you still prefer to change
+              the optimization option for current recommendation.
             ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>
