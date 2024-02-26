@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import userEvent from '@testing-library/user-event'
+
 import { showToast }    from '@acx-ui/components'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -159,12 +161,12 @@ describe('IncidentNotificationDrawer', () => {
     expect(inputs).toHaveLength(6)
     await waitFor(() => { expect(inputs[0]).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.click(inputs[0])
-      fireEvent.click(inputs[1])
-      fireEvent.click(inputs[2])
-      fireEvent.click(inputs[4])
-      fireEvent.click(inputs[5])
+    await act(async () => {
+      userEvent.click(inputs[0])
+      userEvent.click(inputs[1])
+      userEvent.click(inputs[2])
+      userEvent.click(inputs[4])
+      userEvent.click(inputs[5])
     })
     await waitFor(async () => {
       expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked() })
@@ -218,11 +220,11 @@ describe('IncidentNotificationDrawer', () => {
     await waitFor(() => { expect(inputs[0]).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      fireEvent.click(inputs[0])
-      fireEvent.click(inputs[1])
-      fireEvent.click(inputs[2])
-      fireEvent.click(inputs[4])
-      fireEvent.click(inputs[5])
+      userEvent.click(inputs[0])
+      userEvent.click(inputs[1])
+      userEvent.click(inputs[2])
+      userEvent.click(inputs[4])
+      userEvent.click(inputs[5])
     })
     await waitFor(() => {
       expect(screen.getByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked()})
@@ -254,11 +256,7 @@ describe('IncidentNotificationDrawer', () => {
     })
   })
   it('should handle error notification preference update', async () => {
-    const mockedPref = {
-      configRecommendation: {
-        aiOps: ['email']
-      }
-    }
+    const mockedPref = {}
     mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
       data: mockedPref
     }, true)
@@ -280,7 +278,7 @@ describe('IncidentNotificationDrawer', () => {
     })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      fireEvent.click(inputs[5])
+      userEvent.click(inputs[5])
     })
     await waitFor(async () => {
       expect(inputs[5]).toBeChecked()
