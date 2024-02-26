@@ -6,7 +6,7 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useSdLanScopedNetworks }       from '@acx-ui/rc/components'
 import { networkApi, venueApi }         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import {CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo} from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
 import {
   act,
@@ -81,6 +81,10 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
