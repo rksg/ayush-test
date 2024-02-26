@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { range } from 'lodash'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import type { Settings }                   from '@acx-ui/analytics/utils'
@@ -89,6 +90,19 @@ describe('ComplianceSetting Drawer', () => {
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'test' } })
+    await userEvent.click(await screen.findByText('Save'))
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+  it('should not save if ssid regex exceeds 1000 characters', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    const thousandChar = range(1001).map(() => '1').join('')
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: thousandChar } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })

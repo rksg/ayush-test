@@ -20,6 +20,7 @@ export const isRegExp = (input: string) => {
 }
 
 const ssidField = 'ssidPattern'
+const maxLength = 1000
 
 const tooltipMsg = defineMessage({
   defaultMessage: `
@@ -43,6 +44,7 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const isDisabled = ssidValue === ''
     || ssidValue === ssidRegex
     || !isRegExp(ssidValue)
+    || ssidValue?.length >= maxLength
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const saveSSIDRegex = useCallback(() => {
     updateSlas({
@@ -92,10 +94,17 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
             },
             {
               validator (_, value) {
+                //TODO: split by space / carriage return and check line by line
                 const check = isRegExp(value)
                 return check ? Promise.resolve() : Promise.reject()
               },
               message: $t({ defaultMessage: 'Input is not a valid Java Regular Expression!' })
+            },
+            {
+              type: 'string',
+              min: 1,
+              max: maxLength,
+              message: $t({ defaultMessage: 'Input exceeds 1000 characters!' })
             }]}
             children={<Input.TextArea data-testid='ssidRegex' />}
           />
