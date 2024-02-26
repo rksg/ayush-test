@@ -578,6 +578,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         children={<></>}
       />
       {isOnlyViewMode && !editMode.isEdit ? <Table
+        rowKey='ruleName'
         columns={basicColumns}
         dataSource={applicationsRuleList as ApplicationsRule[]}
       /> : <Table

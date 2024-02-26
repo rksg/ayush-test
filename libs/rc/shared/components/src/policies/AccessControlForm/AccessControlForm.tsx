@@ -21,8 +21,8 @@ import {
   AccessControlFormFields,
   getPolicyListRoutePath,
   useConfigTemplate,
-  getConfigTemplatePath,
-  useConfigTemplateBreadcrumb
+  useConfigTemplateBreadcrumb,
+  useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -139,7 +139,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
-  const templateBasePath = useTenantLink(getConfigTemplatePath(), 'v')
+  const templateBasePath = useConfigTemplateTenantLink('')
   const { editMode } = props
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
