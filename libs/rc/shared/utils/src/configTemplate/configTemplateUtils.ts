@@ -1,7 +1,7 @@
 import { UseLazyQuery, UseMutation }           from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { MutationDefinition, QueryDefinition } from '@reduxjs/toolkit/query'
 
-import { TenantType, useParams }               from '@acx-ui/react-router-dom'
+import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
 import { hasRoles }                            from '@acx-ui/user'
 import { AccountType, getIntl }                from '@acx-ui/utils'
@@ -33,12 +33,13 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
   useQueryFn: UseQuery<ResultType, RequestPayload>,
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
   skip = false,
-  payload?: Payload
+  payload?: Payload,
+  extraParams?: Params<string>
 ): ReturnType<typeof useQueryFn> {
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const requestPayload = {
-    params,
+    params: { ...params, ...(extraParams ?? {}) },
     ...(payload ? ({ payload }) : {})
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })

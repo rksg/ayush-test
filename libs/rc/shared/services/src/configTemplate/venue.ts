@@ -3,6 +3,8 @@ import {
   Venue,
   VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
+  VenueDHCPPoolInst,
+  VenueDHCPProfile,
   VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
   VenueDosProtection, VenueExtended, VenueLanPorts, VenueLoadBalancing,
   VenueMdnsFencingPolicy,
@@ -227,6 +229,46 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     updateVenueTemplateBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueBssColoring)
+    }),
+    getVenueTemplateDhcpProfile: build.query<VenueDHCPProfile, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpProfile),
+      providesTags: [{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // eslint-disable-next-line max-len
+          onActivityMessageReceived(msg, ['UpdateVenueTemplateDhcpConfigServiceProfileSetting'], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }]))
+          })
+        })
+      }
+
+    }),
+    updateVenueTemplateDhcpProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile)
+    }),
+    getVenueTemplateDhcpPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpActivePools),
+      providesTags: [{ type: 'VenueTemplate', id: 'DHCP_POOL_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'DeactivateVenueTemplateDhcpPool',
+            'ActivateVenueTemplateDhcpPool',
+            'UpdateVenueTemplateDhcpConfigServiceProfileSetting'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_POOL_LIST' }]))
+          })
+        })
+      }
+    }),
+    activateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.activateVenueDhcpPool)
+    }),
+    deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
     })
   })
 })
@@ -264,5 +306,10 @@ export const {
   useGetVenueTemplateMdnsFencingQuery,
   useUpdateVenueTemplateMdnsFencingMutation,
   useGetVenueTemplateBssColoringQuery,
-  useUpdateVenueTemplateBssColoringMutation
+  useUpdateVenueTemplateBssColoringMutation,
+  useGetVenueTemplateDhcpProfileQuery,
+  useGetVenueTemplateDhcpPoolsQuery,
+  useActivateVenueTemplateDhcpPoolMutation,
+  useDeactivateVenueTemplateDhcpPoolMutation,
+  useUpdateVenueTemplateDhcpProfileMutation
 } = venueConfigTemplateApi

@@ -160,5 +160,30 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/venues/:venueId/bssColoringSettings',
     newApi: true
+  },
+  getVenueDhcpProfile: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
+    newApi: true
+  },
+  updateVenueDhcpProfile: {
+    method: 'post',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
+    newApi: true
+  },
+  getVenueDhcpActivePools: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dhcpPools',
+    newApi: true
+  },
+  activateVenueDhcpPool: {
+    method: 'post',
+    url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
+    newApi: true
+  },
+  deactivateVenueDhcpPool: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
+    newApi: true
   }
 }

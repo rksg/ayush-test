@@ -1,7 +1,7 @@
 import { renderHook }     from '@acx-ui/test-utils'
 import { UseQueryResult } from '@acx-ui/types'
 
-import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
+import { CONFIG_TEMPLATE_LIST_PATH }  from './configTemplateRouteUtils'
 import {
   generateConfigTemplateBreadcrumb,
   hasConfigTemplateAccess,
@@ -92,6 +92,27 @@ describe('config-template-utils', () => {
       expect(result.current).toEqual(expect.objectContaining({ data: 'regular data' }))
       expect(mockedTemplateQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: true })
       expect(mockedRegularQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: false })
+    })
+
+    it('should return correct query result when the payload and extraParams are present', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>(
+        mockedRegularQueryFn,
+        mockedTemplateQueryFn,
+        false,
+        { fakePayload: '123' },
+        { venueId: 'overrideVenueId' }
+      ))
+
+      const customRequestPayload = {
+        params: { ...mockedParams, venueId: 'overrideVenueId' },
+        payload: { fakePayload: '123' }
+      }
+
+      expect(result.current).toEqual(expect.objectContaining({ data: 'template data' }))
+      expect(mockedTemplateQueryFn).toHaveBeenCalledWith(customRequestPayload, { skip: false })
+      expect(mockedRegularQueryFn).toHaveBeenCalledWith(customRequestPayload, { skip: true })
     })
   })
 

@@ -5,17 +5,25 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }         from '@acx-ui/components'
+import { Modal, SummaryCard }                  from '@acx-ui/components'
 import {
   useGetDHCPProfileListQuery,
+  useGetDhcpTemplateListQuery,
   useGetVenueSettingsQuery,
-  useUpdateVenueDHCPProfileMutation
+  useGetVenueTemplateSettingsQuery,
+  useUpdateVenueDHCPProfileMutation,
+  useUpdateVenueTemplateDhcpProfileMutation
 } from '@acx-ui/rc/services'
-import { DHCPConfigTypeEnum, LocationExtended } from '@acx-ui/rc/utils'
-import { TenantLink }                           from '@acx-ui/react-router-dom'
+import {
+  DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
+  useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+
+import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
+import { ServiceConfigTemplateLinkSwitcher } from '@acx-ui/rc/components'
 
 interface DHCPFormRefType {
   resetForm: Function,
@@ -24,7 +32,9 @@ export default function BasicInfo () {
   const params = useParams()
   const locationState = (useLocation() as LocationExtended)?.state
 
-  const [updateVenueDHCPProfile] = useUpdateVenueDHCPProfileMutation()
+  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher(
+    useUpdateVenueDHCPProfileMutation, useUpdateVenueTemplateDhcpProfileMutation
+  )
 
   const [visible, setVisible] = useState(!!locationState?.from?.returnParams?.showConfig)
   const { $t } = useIntl()
@@ -33,8 +43,14 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-  const { data: venue } = useGetVenueSettingsQuery({ params })
-  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery, useGetVenueTemplateSettingsQuery
+  )
+
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
+    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
+  )
+
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
     if(dhcpProfileList && dhcpServiceID){
       return _.find(dhcpProfileList, { id: dhcpServiceID })?.dhcpMode
@@ -97,9 +113,12 @@ export default function BasicInfo () {
   const dhcpData = [
     {
       title: $t({ defaultMessage: 'Service Name' }),
-      content: <TenantLink
-        to={`/services/dhcp/${dhcpInfo?.id}/detail`}>{dhcpInfo.name}
-      </TenantLink>,
+      content: dhcpInfo.id && <ServiceConfigTemplateLinkSwitcher
+        type={ServiceType.DHCP}
+        oper={ServiceOperation.DETAIL}
+        serviceId={dhcpInfo.id}
+        children={dhcpInfo.name}
+      />,
       visible: dhcpInfo.status
     },
     {
@@ -136,16 +155,15 @@ export default function BasicInfo () {
     },
     {
       custom: <Button style={{ paddingLeft: 0, margin: 'auto' }}
-        onClick={()=>{
-          setVisible(true)
-        }}
+        onClick={() => setVisible(true)}
         type='link'
+        block
         disabled={meshEnable}
-        title={meshEnable?$t({ defaultMessage: 'You cannot activate the DHCP service on this'+
-        ' venue because it already enabled mesh setting' }):''}
-        block>
-        {$t({ defaultMessage: 'Manage Local Service' })}
-      </Button>,
+        title={meshEnable
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+          : ''
+        }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
       visible: true
     }
   ]

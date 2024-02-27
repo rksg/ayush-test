@@ -1,7 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, GridRow, GridCol, Tabs } from '@acx-ui/components'
+import { PageHeader, GridRow, GridCol, Tabs, Button } from '@acx-ui/components'
 import {
   useGetDHCPProfileQuery,
   useGetDhcpTemplateQuery,
@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
+  ServiceOperation,
   ServiceType,
   TableResult,
   useConfigTemplateQueryFnSwitcher,
@@ -19,7 +20,7 @@ import {
 import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { ServiceConfigTemplateConfigureLinkSwitcher } from '../../../configTemplates'
+import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { PoolTable }                                  from '../DHCPForm'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
@@ -48,10 +49,16 @@ export function DHCPDetail () {
         title={data?.serviceName}
         breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <ServiceConfigTemplateConfigureLinkSwitcher
+          <ServiceConfigTemplateLinkSwitcher
             type={ServiceType.DHCP}
+            oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}
-            disabled={(venuesList.data && venuesList.data.data.length > 0)}
+            children={
+              <Button key='configure'
+                disabled={(venuesList.data && venuesList.data.data.length > 0)}
+                type='primary'
+              >{$t({ defaultMessage: 'Configure' })}</Button>
+            }
           />
         ])}
       />
