@@ -22,20 +22,40 @@ export const TableTitleWrapper = styled(Space)`
 export const FieldLabelPermission = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 425px 42px 48px 48px 48px;
+  grid-template-columns: 396px 48px 48px 48px 48px;
+  grid-column-gap: 2px;
   align-items: baseline;
-  padding: 0 10px 0px 10px;
+  padding: 0 20px 0px 20px;
   // margin: 2px;
   background-color: #F2F2F2;
+  label {
+    display: flex;
+    justify-content: center;
+  }
 `
 export const FieldLabelAttributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   grid-template-columns: 396px 48px 48px 48px 48px 48px;
-  align-items: baseline;
-  padding: 10px;
+  grid-template-rows: 40px;
+  grid-column-gap: 2px;
+  align-items: center;
   margin: 2px 2px 2px 20px;
-  background-color: var(--acx-neutrals-30);
+  .grid-item {
+    background-color: var(--acx-neutrals-30);
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
+  }
+  .grid-item > .ant-input {
+    width: 13px;
+    margin: 13px 6px;
+  }
+  .grid-item.ant-form-item {
+    justify-content: center;
+  }
 `
 export const FieldLabel2Attributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 
 import {
   Form,
-  Input,
-  Radio
+  Input
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -11,7 +10,8 @@ import {
   Descriptions,
   PageHeader,
   StepsForm,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
 import { useAddCustomRoleMutation, useUpdateCustomRoleMutation } from '@acx-ui/rc/services'
 import { CustomRole }                                            from '@acx-ui/rc/utils'
@@ -23,8 +23,6 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import * as UI from '../styledComponents'
-
-import PermissionSelector, { PermissionRadioButtonEnum } from './PermissionSelector'
 
 interface CustomRoleData {
   name?: string,
@@ -40,25 +38,36 @@ export function AddCustomRole () {
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
-  const [selectedPermission, setSelectedPermission] =
-    useState(PermissionRadioButtonEnum.byTechnology)
 
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
   const isEditMode = action === 'view' || action === 'edit'
+
+  const permissions = [ 'wifi', 'wired', 'smartEdge' ]
+  let scopes: Array<string> = []
+  permissions.forEach(p => {
+    scopes.push(p + '-read')
+    scopes.push(p + '-create')
+    scopes.push(p + '-update')
+    scopes.push(p + '-delete')
+  })
+
   const handleAddRole = async () => {
     const name = form.getFieldValue('name')
     const description = form.getFieldValue('description')
     try {
       await form.validateFields()
+      const checkedScopes: Array<string> = []
+      scopes.forEach(s => {
+        if (form.getFieldValue(s)) {
+          checkedScopes.push(s.slice(0, s.indexOf('-') + 2))
+        }
+      })
       const roleData: CustomRoleData = {
         name: name,
         description: description,
-        scopes: [
-          'wifi-u',
-          'wifi-r'
-        ]
+        scopes: checkedScopes
       }
       if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },
@@ -78,15 +87,7 @@ export function AddCustomRole () {
       form.setFieldValue('name', location?.name)
       form.setFieldValue('description', location?.description)
     }
-
-    // form.resetFields()
-    // form.setFieldValue('webAuthPageType', editingWebAuthPageType)
-    // form.setFieldValue('templateId', editingTemplateId)
-    // setUplinkInfoOverwrite(!isMultipleEdit)
-    // setVlanIdOverwrite(!isMultipleEdit)
-    // setWebAuthPageOverwrite(!isMultipleEdit)
   }, [form, location])
-
 
   const CustomRoleForm = () => {
     return <StepsForm
@@ -106,8 +107,7 @@ export function AddCustomRole () {
           label={intl.$t({ defaultMessage: 'Role Name' })}
           style={{ width: '300px' }}
           rules={[
-            { required: true }//,
-            // { validator: (_, value) => whitespaceOnlyRegExp(value) }
+            { required: true }
           ]}
           validateFirst
           hasFeedback
@@ -127,10 +127,6 @@ export function AddCustomRole () {
         name='permissions'
         key='permissions'
         title={intl.$t({ defaultMessage: 'Permissions' })}
-        // onFinish={async (data: unknown) => {
-        //   showToast({ type: 'error', duration: 2 })
-        //   return true
-        // }}
       ><PermissionsForm />
       </StepsForm.StepForm>
 
@@ -145,7 +141,6 @@ export function AddCustomRole () {
   }
 
   const PermissionsForm = () => {
-
     return <>
       <Subtitle level={3}>{ intl.$t({ defaultMessage: 'Permissions' }) }</Subtitle>
       <h5>
@@ -154,83 +149,63 @@ export function AddCustomRole () {
       <div style={{ width: 758, height: 432, backgroundColor: '#F2F2F2',
         padding: '20px 40px 20px 20px' }}>
 
-        <PermissionSelector
-          setSelected={setSelectedPermission}
-        />
-        {selectedPermission === PermissionRadioButtonEnum.byTechnology
-          ? <PermissionsTechForm />
-          : <PermissionsExpertiseForm />}
+        <PermissionsTechForm />
       </div></>
   }
 
   const PermissionsTechForm = () => {
     const [wifiAttribute, setWifiAttribute] = useState(false)
-    const [wifiRead, setWifiRead] = useState(false)
-    const [wifiCreate, setWifiCreate] = useState(false)
-    const [wifiUpdate, setWifiUpdate] = useState(false)
-    const [wifiDelete, setWifiDelete] = useState(false)
-
     const [wiredAttribute, setWiredAttribute] = useState(false)
-    const [wiredRead, setWiredRead] = useState(false)
-    const [wiredCreate, setWiredCreate] = useState(false)
-    const [wiredUpdate, setWiredUpdate] = useState(false)
-    const [wiredDelete, setWiredDelete] = useState(false)
-
     const [smartedgeAttribute, setSmartedgeAttribute] = useState(false)
-    const [smartedgeRead, setSmartedgeRead] = useState(false)
-    const [smartedgeCreate, setSmartedgeCreate] = useState(false)
-    const [smartedgeUpdate, setSmartedgeUpdate] = useState(false)
-    const [smartedgeDelete, setSmartedgeDelete] = useState(false)
-
 
     const OnWifiAttributeChange = (checked: boolean) => {
       setWifiAttribute(checked)
-      setWifiRead(checked)
-      setWifiCreate(checked)
-      setWifiUpdate(checked)
-      setWifiDelete(checked)
+      form.setFieldValue('wifi-read', checked)
+      form.setFieldValue('wifi-create', checked)
+      form.setFieldValue('wifi-update', checked)
+      form.setFieldValue('wifi-delete', checked)
     }
 
     const OnWifiReadChange = (checked: boolean) => {
-      setWifiRead(checked)
+      form.setFieldValue('wifi-read', checked)
       if (!checked) {
-        setWifiCreate(false)
-        setWifiUpdate(false)
-        setWifiDelete(false)
+        form.setFieldValue('wifi-create', false)
+        form.setFieldValue('wifi-update', false)
+        form.setFieldValue('wifi-delete', false)
       }
     }
 
     const OnWiredAttributeChange = (checked: boolean) => {
       setWiredAttribute(checked)
-      setWiredRead(checked)
-      setWiredCreate(checked)
-      setWiredUpdate(checked)
-      setWiredDelete(checked)
+      form.setFieldValue('wired-read', checked)
+      form.setFieldValue('wired-create', checked)
+      form.setFieldValue('wired-update', checked)
+      form.setFieldValue('wired-delete', checked)
     }
 
     const OnWiredReadChange = (checked: boolean) => {
-      setWiredRead(checked)
+      form.setFieldValue('wired-read', checked)
       if (!checked) {
-        setWiredCreate(false)
-        setWiredUpdate(false)
-        setWiredDelete(false)
+        form.setFieldValue('wired-create', false)
+        form.setFieldValue('wired-update', false)
+        form.setFieldValue('wired-delete', false)
       }
     }
 
     const OnSmartEdgeAttributeChange = (checked: boolean) => {
       setSmartedgeAttribute(checked)
-      setSmartedgeRead(checked)
-      setSmartedgeCreate(checked)
-      setSmartedgeUpdate(checked)
-      setSmartedgeDelete(checked)
+      form.setFieldValue('smartEdge-read', checked)
+      form.setFieldValue('smartEdge-create', checked)
+      form.setFieldValue('smartEdge-update', checked)
+      form.setFieldValue('smartEdge-delete', checked)
     }
 
     const OnSmartEdgeReadChange = (checked: boolean) => {
-      setSmartedgeRead(checked)
+      form.setFieldValue('smartEdge-read', checked)
       if (!checked) {
-        setSmartedgeCreate(false)
-        setSmartedgeUpdate(false)
-        setSmartedgeDelete(false)
+        form.setFieldValue('smartEdge-create', false)
+        form.setFieldValue('smartEdge-update', false)
+        form.setFieldValue('smartEdge-delete', false)
       }
     }
 
@@ -244,149 +219,142 @@ export function AddCustomRole () {
       </UI.FieldLabelPermission>
 
       <UI.FieldLabelAttributes width='660'>
-        <div><Input type='checkbox'
-          style={{ width: 25 }}
+        <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnWifiAttributeChange(e.target.checked)}
         />
         <label>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
+        <Tooltip.Question style={{ marginLeft: '40px' }}
+          // eslint-disable-next-line max-len
+          title={intl.$t({ defaultMessage: 'What is included?\b Access Points\nVenue Management\nAI Assurance\nAI Assurance\nWi-Fi Networks\nWireless Clients\nWi-Fi Network Control\nWi-Fi Reports\nWi-Fi Version Management' })}
+          placement='right'
+        />
         </div>
 
         <Form.Item
-          name='wifiread'
-          noStyle
-          hidden={!wifiAttribute}>
+          name='wifi-read'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
+            hidden={!wifiAttribute}
             onChange={(e)=>OnWifiReadChange(e.target.checked)}
-            checked={wifiRead}
           />
         </Form.Item>
 
         <Form.Item
-          name='wificreate'
-          noStyle
-          hidden={!wifiAttribute}>
+          name='wifi-create'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWifiCreate(e.target.checked)}
-            checked={wifiCreate}
+            hidden={!wifiAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='wifiupdate'
-          noStyle
-          hidden={!wifiAttribute}>
+          name='wifi-update'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWifiUpdate(e.target.checked)}
-            checked={wifiUpdate}
+            hidden={!wifiAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='wifidelete'
-          noStyle
-          hidden={!wifiAttribute}>
+          name='wifi-delete'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWifiDelete(e.target.checked)}
-            checked={wifiDelete}
+            hidden={!wifiAttribute}
           />
         </Form.Item>
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <div><Input type='checkbox'
-          style={{ width: 25 }}
+        <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnWiredAttributeChange(e.target.checked)}
         />
         <label>{intl.$t({ defaultMessage: 'Wired' })}</label>
         </div>
 
         <Form.Item
-          name='wiredRead'
-          noStyle
-          hidden={!wiredAttribute}>
+          name='wired-read'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
+            hidden={!wiredAttribute}
             onChange={(e)=>OnWiredReadChange(e.target.checked)}
-            checked={wiredRead}
           />
         </Form.Item>
 
         <Form.Item
-          name='wiredCreate'
-          noStyle
-          hidden={!wiredAttribute}>
+          name='wired-create'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWiredCreate(e.target.checked)}
-            checked={wiredCreate}
+            hidden={!wiredAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='wiredUpdate'
-          noStyle
-          hidden={!wiredAttribute}>
+          name='wired-update'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWiredUpdate(e.target.checked)}
-            checked={wiredUpdate}
+            hidden={!wiredAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='wiredDelete'
-          noStyle
-          hidden={!wiredAttribute}>
+          name='wired-delete'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setWiredDelete(e.target.checked)}
-            checked={wiredDelete}
+            hidden={!wiredAttribute}
           />
         </Form.Item>
 
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <div><Input type='checkbox'
-          style={{ width: 25 }}
+        <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnSmartEdgeAttributeChange(e.target.checked)}
         />
         <label>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
         </div>
 
         <Form.Item
-          name='smartedgeRead'
-          noStyle
-          hidden={!smartedgeAttribute}>
+          name='smartEdge-read'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
+            hidden={!smartedgeAttribute}
             onChange={(e)=>OnSmartEdgeReadChange(e.target.checked)}
-            checked={smartedgeRead}
           />
         </Form.Item>
 
         <Form.Item
-          name='smartedgeCreate'
-          noStyle
-          hidden={!smartedgeAttribute}>
+          name='smartEdge-create'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setSmartedgeCreate(e.target.checked)}
-            checked={smartedgeCreate}
+            hidden={!smartedgeAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='smartedgeUpdate'
-          noStyle
-          hidden={!smartedgeAttribute}>
+          name='smartEdge-update'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setSmartedgeUpdate(e.target.checked)}
-            checked={smartedgeUpdate}
+            hidden={!smartedgeAttribute}
           />
         </Form.Item>
 
         <Form.Item
-          name='smartedgeDelete'
-          noStyle
-          hidden={!smartedgeAttribute}>
+          name='smartEdge-delete'
+          className='grid-item'
+          valuePropName='checked'>
           <Input type='checkbox'
-            onChange={(e)=>setSmartedgeDelete(e.target.checked)}
-            checked={smartedgeDelete}
+            hidden={!smartedgeAttribute}
           />
         </Form.Item>
 
@@ -394,54 +362,37 @@ export function AddCustomRole () {
     </div>
   }
 
-  const PermissionsExpertiseForm = () => {
-    return <div style={{ marginTop: '15px' }}>
-
-      <UI.FieldLabel2Attributes width='660'>
-        <Radio>
-          <div>{intl.$t({ defaultMessage: 'Guests Experience' })}</div>
-          <div>
-            {intl.$t({ defaultMessage:
-            'Has full control access to guest pass credentials list, all other areas are hidden' })}
-          </div>
-        </Radio>
-      </UI.FieldLabel2Attributes>
-
-      <UI.FieldLabel2Attributes width='660'>
-        <Radio>
-          <div>{intl.$t({ defaultMessage: 'Reports' })}</div>
-          <div>
-            {intl.$t({ defaultMessage:
-            'Has full control access to the reports area, all other areas are hidden' })}
-          </div>
-        </Radio>
-      </UI.FieldLabel2Attributes>
-
-      <UI.FieldLabel2Attributes width='660'>
-        <Radio>
-          <div>{intl.$t({ defaultMessage: 'DPSK Management' })}</div>
-          <div>
-            {intl.$t({ defaultMessage:
-            'Has full control access to DPSK  credentials list, all other areas are hidden' })}
-          </div>
-        </Radio>
-      </UI.FieldLabel2Attributes>
-
-      <UI.FieldLabel2Attributes width='660'>
-        <Radio>
-          <div>{intl.$t({ defaultMessage: 'Templates Management' })}</div>
-          <div>
-            {intl.$t({ defaultMessage:
-            'Has full control access to templates, all other areas are Read-Only' })}
-          </div>
-        </Radio>
-      </UI.FieldLabel2Attributes>
-
-    </div>
+  const GetPermissionList = (prefix: string) => {
+    let permissions: Array<string> = []
+    const filteredScopes = scopes.filter(s => s.includes(prefix))
+    filteredScopes.forEach(s => {
+      if(form.getFieldValue(s)) {
+        switch(s.charAt(s.indexOf('-') + 1)) {
+          case 'r':
+            permissions.push('Read')
+            break
+          case 'c':
+            permissions.push('Create')
+            break
+          case 'u':
+            permissions.push('Update')
+            break
+          case 'd':
+            permissions.push('Delete')
+            break
+          default:
+            return
+        }
+      }
+    })
+    return permissions.join(', ')
   }
 
   const SummaryForm = () => {
     const formValues = form.getFieldsValue(true)
+    const wifiPermissions = GetPermissionList('wifi')
+    const wiredPermissions = GetPermissionList('wired')
+    const smartEdgePermissions = GetPermissionList('smartEdge')
 
     return <>
       <Subtitle level={3}>{ intl.$t({ defaultMessage: 'Summary' }) }</Subtitle>
@@ -463,17 +414,17 @@ export function AddCustomRole () {
             <Descriptions.Item
               label={intl.$t({ defaultMessage: 'Wi-Fi' })}
               labelStyle={{ fontWeight: 800, overflow: 'hidden', width: '200' }}
-              children={'Create, Update, Delete, Read'} />
+              children={wifiPermissions} />
 
             <Descriptions.Item
               label={intl.$t({ defaultMessage: 'Wired' })}
               labelStyle={{ fontWeight: 800 }}
-              children={'Create, Update, Delete, Read'} />
+              children={wiredPermissions} />
 
             <Descriptions.Item
               label={intl.$t({ defaultMessage: 'SmartEdge' })}
               labelStyle={{ fontWeight: 800 }}
-              children={'Create, Update, Delete, Read'} />
+              children={smartEdgePermissions} />
 
           </Descriptions>
         }/>
