@@ -72,7 +72,7 @@ describe('NetworkForm', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -82,8 +82,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
