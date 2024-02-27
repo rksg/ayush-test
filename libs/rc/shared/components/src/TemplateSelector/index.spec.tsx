@@ -18,10 +18,9 @@ import {
 }    from '@acx-ui/test-utils'
 
 import { mockedRegistration,
-  mockedTemplates,
-  mockedTemplateScope,
-  mockedTemplateScopeNoDefault,
-  mockedTemplateScopeWithRegistration } from './__tests__/fixtures'
+  mockedCategory,
+  mockedTemplateGroups,
+  mockedCategoryNoDefault } from './__tests__/fixtures'
 
 import { TemplateSelector } from '.'
 
@@ -35,21 +34,25 @@ describe('TemplateSelector', () => {
     store.dispatch(msgTemplateApi.util.resetApiState())
   })
 
-  it('should render the selector with template scope default template', async () => {
+  it('should render the selector with msgCategory default template group', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScope }))
+        MsgTemplateUrls.getCategoryById.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCategory }))
+
+      ),
+      rest.post(
+        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplateGroups }))
       ),
       rest.get(
-        // Remove the query parameter to make MSW happy
-        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
+        MsgTemplateUrls.getRegistrationById.url,
+        (req, res, ctx) => res(ctx.status(404))
       )
     )
 
     const formItemName = 'templateSelectorTest'
-    const scopeId = mockedTemplateScope.id
+    const categoryId = mockedCategory.id
     const registrationId = mockedRegistration.id
 
     const { result: formRef } = renderHook(() => {
@@ -61,8 +64,9 @@ describe('TemplateSelector', () => {
       <Provider>
         <Form form={formRef.current}>
           <TemplateSelector
-            scopeId={scopeId}
-            registrationId={registrationId}
+            categoryId={categoryId}
+            emailRegistrationId={registrationId}
+            smsRegistrationId=''
             formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
@@ -72,8 +76,11 @@ describe('TemplateSelector', () => {
 
     await waitFor(() => {
       expect(formRef.current.getFieldValue(formItemName))
-        .toEqual(mockedTemplateScope.defaultTemplateId)
+        .toEqual(mockedCategory.emailTemplateScopeId+','+
+          mockedTemplateGroups.content[0].emailTemplateId+','+mockedCategory.smsTemplateScopeId+
+          ','+mockedTemplateGroups.content[0].smsTemplateId)
     })
+
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Preview/i })).toBeEnabled()
     })
@@ -81,25 +88,29 @@ describe('TemplateSelector', () => {
     // Opens modal with correct content
     await userEvent.click(screen.getByRole('button', { name: /Preview/i }))
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText(mockedTemplates.content[0].extraFieldOneTemplate)).toBeVisible()
+    expect(screen.getByText(mockedTemplateGroups.content[0].name)).toBeVisible()
 
   })
 
-  it('should render the selector with registration template', async () => {
+  it('should render the selector with registration template group', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScopeWithRegistration }))
+        MsgTemplateUrls.getCategoryById.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCategory }))
+
+      ),
+      rest.post(
+        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplateGroups }))
       ),
       rest.get(
-        // Remove the query parameter to make MSW happy
-        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
+        MsgTemplateUrls.getRegistrationById.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedRegistration }))
       )
     )
 
     const formItemName = 'templateSelectorTest'
-    const scopeId = mockedTemplateScope.id
+    const categoryId = mockedCategory.id
     const registrationId = mockedRegistration.id
 
     const { result: formRef } = renderHook(() => {
@@ -111,8 +122,9 @@ describe('TemplateSelector', () => {
       <Provider>
         <Form form={formRef.current}>
           <TemplateSelector
-            scopeId={scopeId}
-            registrationId={registrationId}
+            categoryId={categoryId}
+            emailRegistrationId={registrationId}
+            smsRegistrationId=''
             formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
@@ -122,7 +134,9 @@ describe('TemplateSelector', () => {
 
     await waitFor(() => {
       expect(formRef.current.getFieldValue(formItemName))
-        .toEqual(mockedRegistration.templateId)
+        .toEqual(mockedCategory.emailTemplateScopeId+','+
+          mockedTemplateGroups.content[1].emailTemplateId+','+mockedCategory.smsTemplateScopeId+
+          ','+mockedTemplateGroups.content[1].smsTemplateId)
     })
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Preview/i })).toBeEnabled()
@@ -131,24 +145,28 @@ describe('TemplateSelector', () => {
     // Opens modal with correct content
     await userEvent.click(screen.getByRole('button', { name: /Preview/i }))
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText(mockedTemplates.content[1].extraFieldOneTemplate)).toBeVisible()
+    expect(screen.getByText(mockedTemplateGroups.content[1].name)).toBeVisible()
   })
 
-  it('should render the selector with no selected template', async () => {
+  it('should render the selector with no selected template group', async () => {
     mockServer.use(
       rest.get(
-        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScopeNoDefault }))
+        MsgTemplateUrls.getCategoryById.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCategoryNoDefault }))
+
+      ),
+      rest.post(
+        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplateGroups }))
       ),
       rest.get(
-        // Remove the query parameter to make MSW happy
-        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
+        MsgTemplateUrls.getRegistrationById.url,
+        (req, res, ctx) => res(ctx.status(404))
       )
     )
 
     const formItemName = 'templateSelectorTest'
-    const scopeId = mockedTemplateScope.id
+    const categoryId = mockedCategoryNoDefault.id
     const registrationId = mockedRegistration.id
 
     const { result: formRef } = renderHook(() => {
@@ -160,8 +178,9 @@ describe('TemplateSelector', () => {
       <Provider>
         <Form form={formRef.current}>
           <TemplateSelector
-            scopeId={scopeId}
-            registrationId={registrationId}
+            categoryId={categoryId}
+            emailRegistrationId={registrationId}
+            smsRegistrationId=''
             formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
