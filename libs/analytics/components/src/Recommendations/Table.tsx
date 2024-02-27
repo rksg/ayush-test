@@ -268,7 +268,11 @@ export function RecommendationTable (
       key: 'status',
       render: (_, value: RecommendationListItem ) => {
         const { code, statusEnum, status, statusTooltip } = value
-        return <Tooltip placement='top' title={code === 'unknown' ? '' : statusTooltip}>
+        return <Tooltip
+          placement='top'
+          title={code === 'unknown' ? '' : statusTooltip}
+          showStyle={true}
+        >
           <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },

@@ -13,11 +13,15 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip (props: TooltipProps) {
-  return <>
+type ExtendedTooltipProps = TooltipProps &{
+  showStyle?: boolean
+}
+
+function Tooltip (props: ExtendedTooltipProps) {
+  return <UI.TooltipHeader $tooltip={props.showStyle ? true : false} >
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
-  </>
+  </UI.TooltipHeader>
 }
 
 export { Tooltip, TooltipProps }

@@ -241,7 +241,11 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
+        return <Tooltip
+          placement='top'
+          title={formattedPath(value.path, value.sliceValue)}
+          showStyle={true}
+        >
           {highlightFn(value.scope)}
         </Tooltip>
       },

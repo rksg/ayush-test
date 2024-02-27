@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components/macro'
+import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
 export const TooltipGlobalStyle = createGlobalStyle`
   .ant-tooltip {
@@ -31,4 +31,18 @@ export const TooltipGlobalStyle = createGlobalStyle`
       }
     }
   }
+`
+
+const withDottedUnderline = css`
+  cursor: pointer;
+  text-decoration: dotted underline;
+  // below css will hide the default safari tooltip
+  :after {
+    content: '';
+    display: block;
+  }
+`
+
+export const TooltipHeader = styled.div<{ $tooltip: boolean }>`
+  ${props => props.$tooltip && withDottedUnderline}
 `

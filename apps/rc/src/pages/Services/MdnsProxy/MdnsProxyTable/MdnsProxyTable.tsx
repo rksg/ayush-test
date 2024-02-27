@@ -165,6 +165,7 @@ function useColumns () {
               rules={rules}
             />}
             children={rules.length}
+            showStyle={true}
           />
           : 0
         )
