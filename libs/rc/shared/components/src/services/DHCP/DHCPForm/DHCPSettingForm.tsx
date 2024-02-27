@@ -8,6 +8,7 @@ import { useGetDHCPProfileQuery }                                               
 import {
   DHCPPool, DHCPSaveData,
   servicePolicyNameRegExp,
+  useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -54,9 +55,10 @@ const { useWatch } = Form
 export function SettingForm (props: DHCPFormProps) {
   const { $t } = useIntl()
   const { editMode } = props
+  const { isTemplate } = useConfigTemplate()
   const type = useWatch<DHCPConfigTypeEnum>('dhcpMode')
 
-  const types = Object.values(DHCPConfigTypeEnum)
+  const types = isTemplate ? [DHCPConfigTypeEnum.SIMPLE] : Object.values(DHCPConfigTypeEnum)
   const params = useParams()
   const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>(
     useLazyGetDHCPProfileListQuery, useLazyGetDhcpTemplateListQuery
