@@ -15,14 +15,19 @@ type AccessControlSubPolicyType =
   PolicyType.DEVICE_POLICY |
   PolicyType.APPLICATION_POLICY
 
+type SubPolicyStatus = {
+  visible: boolean,
+  id: string
+}
+
 export const INIT_STATE = {
-  [PolicyType.LAYER_2_POLICY]: false,
-  [PolicyType.LAYER_3_POLICY]: false,
-  [PolicyType.DEVICE_POLICY]: false,
-  [PolicyType.APPLICATION_POLICY]: false
+  [PolicyType.LAYER_2_POLICY]: { visible: false, id: '' },
+  [PolicyType.LAYER_3_POLICY]: { visible: false, id: '' },
+  [PolicyType.DEVICE_POLICY]: { visible: false, id: '' },
+  [PolicyType.APPLICATION_POLICY]: { visible: false, id: '' }
 } as AccessControlSubPolicyVisibility
 
-export type AccessControlSubPolicyVisibility = Record<AccessControlSubPolicyType, boolean>
+export type AccessControlSubPolicyVisibility = Record<AccessControlSubPolicyType, SubPolicyStatus>
 
 export function AccessControlSubPolicyDrawers (
   props: {
@@ -33,25 +38,44 @@ export function AccessControlSubPolicyDrawers (
 ) {
   const { accessControlSubPolicyVisible, setAccessControlSubPolicyVisible } = props
 
+  const convertProps = (subPolicyStatus: SubPolicyStatus) => {
+    if (subPolicyStatus.id) {
+      return {
+        editMode: {
+          id: subPolicyStatus.id, isEdit: true
+        },
+        isOnlyViewMode: true,
+        onlyViewMode: {
+          id: subPolicyStatus.id, viewText: ''
+        }
+      }
+    }
+    return {
+      onlyAddMode: {
+        enable: true,
+        visible: subPolicyStatus.visible
+      },
+      editMode: {
+        id: '', isEdit: false
+      }
+    }
+  }
+
   return <Form >
     <Layer2Drawer
-      onlyAddMode={{
-        enable: true, visible: accessControlSubPolicyVisible[PolicyType.LAYER_2_POLICY] }}
+      {...convertProps(accessControlSubPolicyVisible[PolicyType.LAYER_2_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(INIT_STATE)}
     />
     <Layer3Drawer
-      onlyAddMode={{
-        enable: true, visible: accessControlSubPolicyVisible[PolicyType.LAYER_3_POLICY] }}
+      {...convertProps(accessControlSubPolicyVisible[PolicyType.LAYER_3_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(INIT_STATE)}
     />
     <DeviceOSDrawer
-      onlyAddMode={{
-        enable: true, visible: accessControlSubPolicyVisible[PolicyType.DEVICE_POLICY] }}
+      {...convertProps(accessControlSubPolicyVisible[PolicyType.DEVICE_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(INIT_STATE)}
     />
     <ApplicationDrawer
-      onlyAddMode={{
-        enable: true, visible: accessControlSubPolicyVisible[PolicyType.APPLICATION_POLICY] }}
+      {...convertProps(accessControlSubPolicyVisible[PolicyType.APPLICATION_POLICY])}
       callBack={() => setAccessControlSubPolicyVisible(INIT_STATE)}
     />
   </Form>
@@ -106,7 +130,7 @@ function createAccessControlSubPolicyMenuItem (
     key,
     label: <div onClick={() => setAccessControlVisible({
       ...INIT_STATE,
-      [accessControlSubPolicyType]: true
+      [accessControlSubPolicyType]: { visible: true, id: '' }
     })}>
       {$t(policyTypeLabelMapping[accessControlSubPolicyType])}
     </div>
