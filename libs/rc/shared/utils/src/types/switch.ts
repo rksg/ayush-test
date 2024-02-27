@@ -237,6 +237,7 @@ export class SwitchViewModel extends Switch {
   position?: NetworkDevicePosition
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface SwitchRow {
@@ -274,6 +275,7 @@ export interface SwitchRow {
   clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface StackMember {

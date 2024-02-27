@@ -32,6 +32,18 @@ export const network = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 
+export const mockNetworkSaveData = {
+  fields: ['venueId', 'networkId'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { networkId: 'network_1', venueId: 'venue_00002' },
+    { networkId: 'network_2', venueId: 'venue_00002' },
+    { networkId: 'network_3', venueId: 'venue_00005' },
+    { networkId: 'network_4', venueId: 'venue_00005' }
+  ]
+}
+
 export const user = { COMMON: '{"supportTriRadio":true,"tab-venue-clients":"wifi"}' }
 
 export const list = {
