@@ -1,6 +1,6 @@
 
-import { isNaN }   from 'lodash'
-import { useIntl } from 'react-intl'
+import { isNaN, isNull } from 'lodash'
+import { useIntl }       from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
@@ -27,7 +27,6 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   const pColor = 'var(--acx-accents-blue-50)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
-
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
     : transformToPropertyView(data)
@@ -72,7 +71,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       >
         <span
           style={{
-            color: !isNaN(row?.guestExp)
+            color: !isNaN(row?.guestExp) && !isNull(row?.guestExp)
               ? row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
                 ? pColor
                 : nColor
@@ -151,7 +150,6 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   if(isLSP){
     propertyCols.splice(-1)
   }
-
   return <Table<Property | Lsp>
     columns={[
       ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols

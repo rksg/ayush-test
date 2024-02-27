@@ -17,7 +17,7 @@ type SortResult = -1 | 0 | 1
 export interface Common {
   lsp: string
   p1Incidents: number
-  guestExp: number
+  guestExp: number | null
   ssidCompliance: number
   deviceCount: number
   avgConnSuccess: number,
@@ -62,7 +62,7 @@ const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) =
     const sum = validValues?.reduce((acc, value) =>(acc as number) + (value as number), 0)
     return (sum as number) / validValues.length
   } else {
-    return 0
+    return null
   }
 }
 export const transformToLspView = (properties: Response[]): Lsp[] => {
