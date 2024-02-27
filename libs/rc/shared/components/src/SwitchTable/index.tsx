@@ -38,6 +38,7 @@ import {
   TableQuery,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
+  isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
   FILTER,
   SEARCH,
@@ -204,7 +205,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
-        const switchIdList = rows.map(row => row.id)
+        const switchIdList = rows
+          .filter(row => isFirmwareSupportAdminPassword(row?.firmware ?? ''))
+          .map(row => row.id)
+
         const callback = () => {
           clearSelection?.()
           showToast({
@@ -269,12 +273,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       disabled: true,
       show: false,
       render: (data:boolean, row:SwitchRow) => {
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
         const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
-        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
-          <Tooltip title={getPasswordTooltip(row)}>{
-            getAdminPassword(row, PasswordInput)
-          }</Tooltip>
-        </div>
+        return isSupportAdminPassword
+          ? <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+            <Tooltip title={getPasswordTooltip(row)}>{
+              getAdminPassword(row, PasswordInput)
+            }</Tooltip>
+          </div>
+          : noDataDisplay
       }
     }] : []),
     {
@@ -408,7 +415,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
         const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
           row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
-        return !row?.syncedAdminPassword && isConfigSynced && isOperational
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational && isSupportAdminPassword
       }).length === 0
     },
     onClick: handleClickMatchPassword
