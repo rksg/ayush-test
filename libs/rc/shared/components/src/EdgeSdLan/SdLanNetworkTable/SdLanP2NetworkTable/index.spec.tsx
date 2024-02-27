@@ -26,6 +26,8 @@ jest.mock('../../../NetworkForm/AddNetworkModal', () => ({
   AddNetworkModal: () => <div data-testid='AddNetworkModal' />
 }))
 
+const services = require('@acx-ui/rc/services')
+
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
@@ -33,6 +35,16 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     mockedOnChangeFn.mockReset()
     store.dispatch(networkApi.util.resetApiState())
 
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
+
+    // mockServer can be removed
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
@@ -241,6 +253,16 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         }
       })
 
+      services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+        mockedGetNetworkDeepList()
+        return {
+          networkList: withVlanPoolEnabled.response,
+          isLoading: false,
+          isFetching: false
+        }
+      })
+
+      /*
       mockServer.use(
         rest.post(
           CommonUrlsInfo.getNetworkDeepList.url,
@@ -250,6 +272,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
           }
         )
       )
+      */
 
       render(
         <Provider>

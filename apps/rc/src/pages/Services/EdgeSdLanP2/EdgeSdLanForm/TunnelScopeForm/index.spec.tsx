@@ -1,8 +1,13 @@
 /* eslint-disable max-len */
-import { renderHook, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                                                  from '@testing-library/user-event'
-import { Form }                                                   from 'antd'
-import { rest }                                                   from 'msw'
+import {
+  renderHook,
+  waitFor,
+  //waitForElementToBeRemoved,
+  within
+} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
 import { networkApi, tunnelProfileApi }                                                 from '@acx-ui/rc/services'
@@ -90,6 +95,8 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
+const services = require('@acx-ui/rc/services')
+
 describe('Tunnel Scope Form', () => {
   const mockedGetNetworkDeepList = jest.fn()
 
@@ -99,6 +106,15 @@ describe('Tunnel Scope Form', () => {
 
     store.dispatch(tunnelProfileApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
 
     mockServer.use(
       rest.post(
@@ -204,7 +220,7 @@ describe('Tunnel Scope Form', () => {
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
     expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
