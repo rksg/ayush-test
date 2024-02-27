@@ -10,6 +10,13 @@ export enum ConfigTemplateType {
   APPLICATION_POLICY = 'APPLICATION_POLICY'
 }
 
+export enum AccessControlPolicyForTemplateCheckType {
+  LAYER_2_POLICY = 'LAYER_2_POLICY',
+  LAYER_3_POLICY = 'LAYER_3_POLICY',
+  DEVICE_POLICY = 'DEVICE_POLICY',
+  APPLICATION_POLICY = 'APPLICATION_POLICY'
+}
+
 export interface ConfigTemplate {
   id?: string,
   name: string,

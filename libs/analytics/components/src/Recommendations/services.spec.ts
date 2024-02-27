@@ -370,6 +370,27 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[9],
+        id: '6', // _.uniqueId()
+        scope: `vsz-h-bdc-home-network-05 (SZ Cluster)
+> 22-US-CA-Z22-Aaron-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Unknown',
+        summary: 'Unknown',
+        status: 'Unknown',
+        statusTooltip: 'Unknown',
+        statusEnum: 'unknown',
+        crrmOptimizedState: {
+          ...crrmStates.unknown,
+          text: 'Unknown'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[10],
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
