@@ -87,14 +87,6 @@ describe('RecommendationActions', () => {
       },
       {
         statusEnum: 'applyscheduled' as 'applyscheduled',
-        icons: ['CalendarOutlined', 'CancelCircleOutlined', 'Reload'],
-        statusTrail: [
-          { status: 'new' },
-          { status: 'applyscheduled' }
-        ]
-      },
-      {
-        statusEnum: 'applyscheduled' as 'applyscheduled',
         icons: ['CalendarOutlined', 'Reload'],
         statusTrail: [
           { status: 'new' },
