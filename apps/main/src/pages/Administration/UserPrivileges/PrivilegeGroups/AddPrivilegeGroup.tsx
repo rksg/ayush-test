@@ -18,9 +18,9 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { MspEc }                                                                    from '@acx-ui/msp/utils'
-import { useAddPrivilegeGroupMutation }                                             from '@acx-ui/rc/services'
-import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType, Venue } from '@acx-ui/rc/utils'
+import { MspEc }                                                                                     from '@acx-ui/msp/utils'
+import { useAddPrivilegeGroupMutation }                                                              from '@acx-ui/rc/services'
+import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType, Venue, VenueObjectList } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -123,14 +123,16 @@ export function AddPrivilegeGroup () {
 
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
+        let venueList = {} as VenueObjectList
+        venueList['com.ruckus.cloud.venue.model.venue'] = ['a2dd0f3bff004927aec1947ca138b1da']
         selectedCustomers.forEach((ec: MspEc) => {
           policyEntities.push({
-            tenantId: ec.id//,
-            // objectList: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
+            tenantId: ec.id,
+            objectList: venueList
           })
         })
         privilegeGroupData.delegation = true
-        privilegeGroupData.allCustomers = false
+        // privilegeGroupData.allCustomers = false
         privilegeGroupData.policyEntityDTOS =
         (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
           ? policyEntities : undefined

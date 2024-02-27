@@ -330,12 +330,16 @@ export enum EdgeAttributeProfile {
 export interface PrivilegePolicy
 {
   entityInstanceId?: string,
-  objectType?: PrivilegePolicyObjectType
+  objectType?: string
 }
 
 export interface PrivilegePolicyEntity
 {
   tenantId?: string,
-  objectList?: string[]
+  objectList?: VenueObjectList
 }
 
+export interface VenueObjectList
+{
+  'com.ruckus.cloud.venue.model.venue'?: string[]
+}

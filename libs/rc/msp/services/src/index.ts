@@ -36,7 +36,9 @@ import {
   onActivityMessageReceived,
   EntitlementBanner,
   MspEntitlement,
-  downloadFile
+  downloadFile,
+  Venue,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -823,6 +825,21 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcVenuesList: build.query<TableResult<Venue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.includeTenantId
+        }
+        const venueListReq = createHttpRequest(
+          CommonUrlsInfo.getVenuesList,
+          params, CUSTOM_HEADER, true
+        )
+        return {
+          ...venueListReq,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -890,5 +907,7 @@ export const {
   useGetAvailableMspRecCustomersQuery,
   useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
-  useAssignMspEcToIntegrator_v1Mutation
+  useAssignMspEcToIntegrator_v1Mutation,
+  useGetMspEcVenuesListQuery,
+  useLazyGetMspEcVenuesListQuery
 } = mspApi
