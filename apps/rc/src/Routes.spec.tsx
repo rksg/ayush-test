@@ -120,10 +120,6 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Services/NetworkSegmentation/NetworkSegmentationForm', () => () => {
-  return <div data-testid='NetworkSegmentationForm' />
-})
-
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthForm', () => () => {
   return <div data-testid='NetworkSegAuthForm' />
 })

@@ -5,7 +5,6 @@ import { Loader, Subtitle }                                               from '
 import { useGetEdgeSdLanViewDataListQuery }                               from '@acx-ui/rc/services'
 import { EdgeService, getPolicyDetailsLink, PolicyType, PolicyOperation } from '@acx-ui/rc/utils'
 import { TenantLink }                                                     from '@acx-ui/react-router-dom'
-import { useTenantId }                                                    from '@acx-ui/utils'
 
 interface SdLanDetailsProps {
   serviceData: EdgeService
@@ -14,7 +13,6 @@ interface SdLanDetailsProps {
 export const SdLanDetails = (props: SdLanDetailsProps) => {
   const { serviceData } = props
   const { $t } = useIntl()
-  const tenantId = useTenantId()
 
   const { edgeSdLanData, isLoading } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
@@ -41,11 +39,7 @@ export const SdLanDetails = (props: SdLanDetailsProps) => {
             oper: PolicyOperation.DETAIL,
             policyId: edgeSdLanData?.tunnelProfileId!
           })}>
-            {
-              edgeSdLanData?.tunnelProfileId === tenantId
-                ? $t({ defaultMessage: 'Default' })
-                : edgeSdLanData?.tunnelProfileName!
-            }
+            { edgeSdLanData?.tunnelProfileName! }
           </TenantLink>
         }
       />

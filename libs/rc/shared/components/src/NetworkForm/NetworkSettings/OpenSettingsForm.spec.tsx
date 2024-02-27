@@ -17,6 +17,7 @@ import {
   venueListResponse,
   venuesResponse
 } from '../__tests__/fixtures'
+import { MLOContext } from '../NetworkForm'
 
 import { OpenSettingsForm } from './OpenSettingsForm'
 
@@ -44,7 +45,7 @@ describe('OpenNetwork form', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -68,9 +69,14 @@ describe('OpenNetwork form', () => {
 
   it('should render OpenNetwork successfully with mac address format', async () => {
     render(<Provider>
-      <Form>
-        <OpenSettingsForm />
-      </Form>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <OpenSettingsForm />
+        </Form>
+      </MLOContext.Provider>
     </Provider>, { route: { params } })
 
     await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))

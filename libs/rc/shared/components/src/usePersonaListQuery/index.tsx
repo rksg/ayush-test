@@ -78,9 +78,9 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
   )
 
   return {
-    data: dataSource.length === 0 ?
-      data :
-      {
+    data: dataSource.length === 0
+      ? data
+      : {
         ...data,
         data: dataSource
       },

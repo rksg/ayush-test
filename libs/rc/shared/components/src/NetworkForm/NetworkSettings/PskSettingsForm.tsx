@@ -187,7 +187,6 @@ function SettingsForm () {
         }
       }
     })
-    disableMLO(false)
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -212,6 +211,15 @@ function SettingsForm () {
       })
     }
   },[data])
+
+  useEffect(() => {
+    if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity])
 
   useEffect(() => {
     if (!editMode && !cloneMode) {
