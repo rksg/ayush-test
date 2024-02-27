@@ -240,7 +240,8 @@ describe('SwitchTable', () => {
     expect(await within(tbody).findByText('stack-member (Member)')).toBeVisible()
   })
 
-  it('should render correctly when feature flag is on', async () => {
+  it(`should disable Match Admin Password button
+    when switch firmware does not support Admin Password feature`, async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
@@ -248,6 +249,36 @@ describe('SwitchTable', () => {
         (req, res, ctx) => res(ctx.json({
           ...switchList,
           data: switchList.data.slice(3, 4)
+        }))
+      )
+    )
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const table = await screen.findByTestId('switch-table')
+    const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await within(table).findByText(/1 selected/)
+    const matchButton = await within(table)
+      .findByRole('button', { name: 'Match Admin Password to Venue' })
+    expect(matchButton).toBeVisible()
+    expect(matchButton).toBeDisabled()
+  })
+
+  it('should render correctly when feature flag is on', async () => {
+    const switchData = switchList.data.slice(3, 4)?.[0]
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({
+          ...switchList,
+          data: [{
+            ...switchData,
+            firmware: 'SPR09010j_cd1'
+          }]
         }))
       )
     )
@@ -484,7 +515,13 @@ describe('SwitchTable', () => {
         SwitchUrlsInfo.getSwitchList.url,
         (req, res, ctx) => res(ctx.json({
           ...switchList,
-          data: switchList.data.slice(2)
+          data: [
+            switchList.data[2],
+            {
+              ...switchList.data[3],
+              firmware: 'SPR09010j_cd1'
+            }
+          ]
         }))
       )
     )
