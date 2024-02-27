@@ -14,6 +14,7 @@ export enum Features {
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_SNMP = 'wifi-consumer-ap-snmp-toggle',
   AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
+  AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
