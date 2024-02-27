@@ -398,7 +398,6 @@ export function StackForm () {
         igmpSnooping: 'none',
         spanningTreePriority: '',
         initialVlanId: values?.initialVlanId,
-        ...(isIcx7650 && values.rearModuleOption && { model: getSwitchModel(activeSerialNumber) }),
         ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
       }
       await saveSwitch({ params: { tenantId } , payload }).unwrap()
