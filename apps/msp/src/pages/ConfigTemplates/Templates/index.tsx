@@ -20,13 +20,15 @@ import {
   renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
-  useDeleteAAAPolicyTemplateMutation,
   useDelAppPolicyMutation,
   useDelDevicePolicyMutation,
   useDeleteAccessControlProfileMutation,
   useDeleteDpskTemplateMutation,
+  useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
+  useDeleteVenueTemplateMutation,
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -39,7 +41,8 @@ import {
   getConfigTemplateEditPath,
   ServiceType,
   ServiceOperation,
-  serviceTypeLabelMapping
+  serviceTypeLabelMapping,
+  AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -47,13 +50,13 @@ import { getIntl }                                 from '@acx-ui/utils'
 
 import {
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, createAccessControlPolicyMenuItem,
+  AccessControlSubPolicyVisibility,
+  createAccessControlPolicyMenuItem, INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
 import * as UI                   from './styledComponents'
-
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -79,8 +82,17 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
+          setAccessControlSubPolicyVisible({
+            ...INIT_STATE,
+            [selectedRow.type]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
@@ -165,6 +177,10 @@ function useColumns (props: templateColumnProps) {
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
+  const typeFilterOptions = Object.keys(ConfigTemplateType).map((key =>
+    ({ key, value: key })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -180,24 +196,25 @@ function useColumns (props: templateColumnProps) {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },

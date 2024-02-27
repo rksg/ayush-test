@@ -181,7 +181,7 @@ export const tooltipFormatter = (
   const name = param.seriesName?.replace(/<\d+>/,'')
   let toolTipValue = value[0]
   if(total){
-    toolTipValue = (Number(value[0]) * total).toString()
+    toolTipValue = Math.round(Number(value[0]) * total).toString()
   }
   const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({
