@@ -27,6 +27,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
+
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
     : transformToPropertyView(data)
@@ -152,6 +153,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   if(isLSP){
     propertyCols.splice(-1)
   }
+
   return <Table<Property | Lsp>
     columns={[
       ...(sliceType === 'lsp' ? lspCols : propertyCols), ...commonCols
