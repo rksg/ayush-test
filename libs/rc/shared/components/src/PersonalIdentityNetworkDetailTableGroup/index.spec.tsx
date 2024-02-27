@@ -38,7 +38,7 @@ describe('NetworkSegmentationDetailTableGroup', () => {
     mockServer.use(
       rest.get(
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgData))
+        (_req, res, ctx) => res(ctx.json(mockedNsgData))
       ),
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
@@ -46,19 +46,19 @@ describe('NetworkSegmentationDetailTableGroup', () => {
       ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgStatsList))
+        (_req, res, ctx) => res(ctx.json(mockedNsgStatsList))
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(mockedApList))
+        (_req, res, ctx) => res(ctx.json(mockedApList))
       ),
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
-        (req, res, ctx) => res(ctx.json(mockedPersonaList))
+        (_req, res, ctx) => res(ctx.json(mockedPersonaList))
       ),
       rest.get(
         NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
+        (_req, res, ctx) => res(ctx.json(mockedNsgSwitchInfoData))
       )
     )
   })

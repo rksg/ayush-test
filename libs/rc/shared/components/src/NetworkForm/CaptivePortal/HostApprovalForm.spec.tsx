@@ -15,7 +15,6 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse,
   hostapprovalData
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
@@ -37,17 +36,13 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),

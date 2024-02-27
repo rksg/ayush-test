@@ -1,13 +1,16 @@
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { rest } from 'msw'
+
+import { useIsTierAllowed }          from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -30,6 +33,15 @@ describe('DpskDetails', () => {
   }
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+  })
 
   it('should render the overview page with cloudpath settings', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
