@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button }       from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
 import {
   ConfigTemplateType,
   DpskDetailsTabKey,
@@ -26,11 +25,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { ApplicationDrawer, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '../../policies'
-
 type OptionProps = {
   [key in ConfigTemplateType]?: {
-    [subKey: string]: string
+    activeTab?: string
   }
 }
 
@@ -162,31 +159,8 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     case ConfigTemplateType.ACCESS_CONTROL_SET:
       // eslint-disable-next-line max-len
       return <PolicyConfigTemplateDetailsLink type={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
-    case ConfigTemplateType.LAYER_2_POLICY:
-      return <Form><Layer2Drawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.LAYER_3_POLICY:
-      return <Form><Layer3Drawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.DEVICE_POLICY:
-      return <Form><DeviceOSDrawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.APPLICATION_POLICY:
-      return <Form><ApplicationDrawer
-        isOnlyViewMode={true}
-        onlyViewMode={{
-          id: id,
-          viewText: name
-        }}
-      /></Form>
     default:
-      return name
+      return
   }
 }
 

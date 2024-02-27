@@ -36,6 +36,7 @@ import { Provider }                                    from '@acx-ui/store'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
+import AddEdgeCluster                               from './pages/Devices/Edge/AddEdgeCluster'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
@@ -196,6 +197,7 @@ function DeviceRoutes () {
         element={<SwitchDetails />}
       />
       <Route path='devices/edge/add' element={<AddEdge />} />
+      <Route path='devices/edge/cluster/add' element={<AddEdgeCluster />} />
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
         element={<EditEdge />} />

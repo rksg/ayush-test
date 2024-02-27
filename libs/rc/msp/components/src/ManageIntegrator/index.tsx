@@ -64,9 +64,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType  }           from '@acx-ui/utils'
+import { RolesEnum }             from '@acx-ui/types'
+import { useUserProfileContext } from '@acx-ui/user'
+import { AccountType  }          from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
@@ -191,7 +191,7 @@ export function ManageIntegrator () {
   const isEditMode = action === 'edit'
   const tenantType = type
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
