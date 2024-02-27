@@ -5,7 +5,8 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }                  from '@acx-ui/components'
+import { Modal, SummaryCard }                 from '@acx-ui/components'
+import { ServiceConfigTemplateLinkSwitcher }  from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
@@ -23,7 +24,6 @@ import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTempl
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
-import { ServiceConfigTemplateLinkSwitcher } from '@acx-ui/rc/components'
 
 interface DHCPFormRefType {
   resetForm: Function,
