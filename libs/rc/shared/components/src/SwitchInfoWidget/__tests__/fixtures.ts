@@ -28,7 +28,8 @@ export const switchDetail = {
   activeSerial: 'FMF2249Q0JT',
   configReady: true,
   syncedAdminPassword: true,
-  syncedSwitchConfig: true
+  syncedSwitchConfig: true,
+  firmware: 'SPR09010j_cd1'
 }
 
 export const stackDetailData = {
