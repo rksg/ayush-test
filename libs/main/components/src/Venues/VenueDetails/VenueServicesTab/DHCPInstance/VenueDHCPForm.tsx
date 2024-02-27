@@ -10,8 +10,8 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
-import { GridRow, Button }       from '@acx-ui/components'
-import { DeleteOutlinedIcon }    from '@acx-ui/icons'
+import { GridRow, Button }      from '@acx-ui/components'
+import { DeleteOutlinedIcon }   from '@acx-ui/icons'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,

@@ -21,7 +21,7 @@ import { DHCPUsage }      from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
-import { PoolTable }                                  from '../DHCPForm'
+import { PoolTable }                         from '../DHCPForm'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
