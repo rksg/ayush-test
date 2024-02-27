@@ -137,7 +137,7 @@ const EditEdge = () => {
         title={edgeInfoData?.name}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'SmartEdge' }),
+            text: $t({ defaultMessage: 'SmartEdges' }),
             link: '/devices/edge'
           }
         ]}
