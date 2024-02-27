@@ -115,6 +115,7 @@ export interface MutationResponse {
 
 interface SchedulePayload {
   id: string
+  type: string
   scheduledAt: string
 }
 interface ScheduleResponse {
@@ -475,6 +476,7 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           id: payload.id,
+          actionType: payload.type,
           scheduledAt: payload.scheduledAt
         }
       }),

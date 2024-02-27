@@ -87,6 +87,14 @@ describe('RecommendationActions', () => {
       },
       {
         statusEnum: 'applyscheduled' as 'applyscheduled',
+        icons: ['CalendarOutlined', 'CancelCircleOutlined', 'Reload'],
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' }
+        ]
+      },
+      {
+        statusEnum: 'applyscheduled' as 'applyscheduled',
         icons: ['CalendarOutlined', 'Reload'],
         statusTrail: [
           { status: 'new' },
@@ -237,7 +245,6 @@ describe('RecommendationActions', () => {
   })
   it('does not allow scheduling', async () => {
     [
-      'applyfailed',
       'beforeapplyinterrupted',
       'afterapplyinterrupted',
       'reverted',
@@ -253,6 +260,56 @@ describe('RecommendationActions', () => {
       const inputs = await within(container).findAllByPlaceholderText('Select date')
       const input = inputs.find(input => input.getAttribute('disabled') === null)
       expect(input).toBeUndefined()
+    })
+  })
+  describe('should allow revert scheduling based on regular/continuous recommendation', () => {
+    it('applyscheduled with regular recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyscheduled', code: 'c-txpower-same' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
+    it('applyscheduled with continuous recommendation', async () => {
+      const recommendation = {
+        ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(2)
+    })
+    it('applyfailed with regular recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyfailed', code: 'c-txpower-same' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(0)
+    })
+    it('applyfailed with continuous recommendation', async () => {
+      const recommendation = {
+        ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
     })
   })
   it('should handle cancel mutation correctly', async () => {

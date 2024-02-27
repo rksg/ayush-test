@@ -73,7 +73,7 @@ function ApplyCalendar ({
   const onApply = (date: Moment) => {
     const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
     if (futureTime <= date){
-      scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+      scheduleRecommendation({ id, type, scheduledAt: date.toISOString() })
     } else {
       showToast({
         type: 'error',
@@ -215,7 +215,10 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
           && { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
-            ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+            ...props,
+            disabled: !recommendation.code.startsWith('c-crrm'),
+            type: 'Revert',
+            initialDate: 'futureDate'
           })
         }
       ].filter(Boolean) as { icon: JSX.Element }[]
@@ -249,6 +252,21 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
         }
       ]
     case 'applyfailed':
+      return [
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+          })
+        },
+        {
+          icon: actions.schedule({
+            ...props,
+            disabled: !recommendation.code.startsWith('c-crrm'),
+            type: 'Revert',
+            initialDate: 'futureDate'
+          })
+        }
+      ]
     case 'beforeapplyinterrupted':
     case 'afterapplyinterrupted':
     case 'reverted':
