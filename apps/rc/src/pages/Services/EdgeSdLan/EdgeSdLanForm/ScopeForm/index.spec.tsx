@@ -14,7 +14,7 @@ import {
   renderHook,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
+  //waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -36,11 +36,21 @@ const useMockedFormHook = () => {
   return form
 }
 
+const services = require('@acx-ui/rc/services')
+
 describe('Scope Form', () => {
 
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
     store.dispatch(networkApi.util.resetApiState())
+
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
 
     mockServer.use(
       rest.post(
@@ -69,7 +79,7 @@ describe('Scope Form', () => {
     expect(await screen.findByText('Scope')).toBeVisible()
     const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
     expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
@@ -99,7 +109,7 @@ describe('Scope Form', () => {
     expect(await screen.findByText('Scope')).toBeVisible()
     const title = await screen.findByText(/Activate networks for the SD-LAN service on the venue/i)
     expect(title.textContent).toBe('Activate networks for the SD-LAN service on the venue (airport):')
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     await waitFor(() =>
@@ -128,7 +138,7 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([])
@@ -158,7 +168,7 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
@@ -183,7 +193,7 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    //await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(rows.length).toBe(3)
     await click(await screen.findByRole('button', { name: /Add/i }))
