@@ -345,11 +345,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
-  validateRadius: {
-    // [New API] no mapping found
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/venues/:venueId/dosProtectionSettings',
