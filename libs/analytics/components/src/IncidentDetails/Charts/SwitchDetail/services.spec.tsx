@@ -16,7 +16,7 @@ describe('incidentDetailsApi', () => {
     it('should return correct data', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitches)
       const { status, data, error } = await store.dispatch(
-        api.endpoints.impactedSwitches.initiate({ id: fakeIncident1.id, n: 100, search: '' })
+        api.endpoints.impactedSwitch.initiate({ id: fakeIncident1.id, n: 100, search: '' })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual({
@@ -32,7 +32,7 @@ describe('incidentDetailsApi', () => {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.impactedSwitches.initiate({ id: 'xxx', n: 100, search: '' })
+        api.endpoints.impactedSwitch.initiate({ id: 'xxx', n: 100, search: '' })
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)

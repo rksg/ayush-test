@@ -9,12 +9,12 @@ import { noDataDisplay }                       from '@acx-ui/utils'
 import switchImg      from '../../../../../assets/switch.png'
 import { ChartProps } from '../types'
 
-import { useImpactedSwitchesQuery, useMemoryUtilizationQuery } from './services'
-import { DetailsContainer, Image, Statistic }                  from './styledComponents'
+import { useImpactedSwitchQuery, useMemoryUtilizationQuery } from './services'
+import { DetailsContainer, Image, Statistic }                from './styledComponents'
 
 export function SwitchDetail ({ incident }: ChartProps) {
   const { $t } = useIntl()
-  const impactedSwitches = useImpactedSwitchesQuery({ id: incident.id, n: 100, search: '' })
+  const impactedSwitch = useImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
   const memoryUtilization = useMemoryUtilizationQuery({
     start: moment(incident.endTime).subtract(10, 'second').toISOString(),
     end: moment(incident.endTime).toISOString(),
@@ -43,12 +43,12 @@ export function SwitchDetail ({ incident }: ChartProps) {
     },
     { key: 'apCount',
       title: defineMessage({ defaultMessage: 'Number of APs' }),
-      valueFormatter: (value: number) => value > 0 ? formatter('countFormat')(value) : noDataDisplay
+      valueFormatter: (value: number) => formatter('countFormat')(value)
     }
   ]
 
   const data = {
-    ...impactedSwitches.data,
+    ...impactedSwitch.data,
     utilization: {
       info: get(memoryUtilization.data, 'memoryTime'),
       value: get(memoryUtilization.data, 'memoryValue')
@@ -56,7 +56,7 @@ export function SwitchDetail ({ incident }: ChartProps) {
     apCount: incident.apCount
   }
 
-  return <Loader states={[impactedSwitches, memoryUtilization]}>
+  return <Loader states={[impactedSwitch, memoryUtilization]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
       <DetailsContainer>
         <Image src={switchImg} alt={$t({ defaultMessage: 'switch image' })} />
@@ -69,7 +69,10 @@ export function SwitchDetail ({ incident }: ChartProps) {
             prefix={Component && <Component value={value} />}
             value={Component
               ? undefined
-              : (valueFormatter ? valueFormatter(value): (value || noDataDisplay))}
+              : impactedSwitch.data
+                ? valueFormatter ? valueFormatter(value) : value
+                : noDataDisplay
+            }
           />
         })}
       </DetailsContainer>
