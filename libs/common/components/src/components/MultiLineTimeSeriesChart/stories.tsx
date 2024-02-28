@@ -27,7 +27,8 @@ export const getData = () => {
 }
 const seriesNames = [
   ['New Client Associations', 'Impacted Clients', 'Connected Clients'],
-  ['Total Failures', 'EAP Failures', 'EAP Attempts']
+  ['Total Failures', 'EAP Failures', 'EAP Attempts'],
+  ['Connected Clients', 'Wireless Clients', 'Wired Clients']
 ]
 export const getSeriesData = (index = 0) => {
   const series = []
@@ -124,7 +125,7 @@ storiesOf('MultiLineTimeSeriesChart', module)
 
   .add('with Dual Y-Axis', () => <MultiLineTimeSeriesChart
     style={{ width: 904, height: 300 }}
-    data={getSeriesData()}
+    data={getSeriesData(2)}
     lineColors={[
       cssStr('--acx-neutrals-30'),
       cssStr('--acx-viz-qualitative-1'),
