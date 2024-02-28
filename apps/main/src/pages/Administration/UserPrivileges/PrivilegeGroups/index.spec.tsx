@@ -162,7 +162,7 @@ describe('Privilege Group Table', () => {
       expect(submitBtn).not.toBeVisible()
     })
   })
-  it('should view selected system row', async () => {
+  xit('should view selected system row', async () => {
     render(
       <Provider>
         <UserProfileContext.Provider

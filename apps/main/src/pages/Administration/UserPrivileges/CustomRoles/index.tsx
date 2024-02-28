@@ -75,27 +75,24 @@ const CustomRoles = (props: CustomRolesTableProps) => {
   ]
 
   const rowActions: TableProps<CustomRole>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'View' }),
-      visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
-      },
-      onClick: (selectedRows) => {
-        navigate({
-          ...linkAddCustomRolePath,
-          pathname: `${linkAddCustomRolePath.pathname}/view/${selectedRows[0].id}`
-        }, { state: selectedRows[0] })
-      }
-    },
+    // {
+    //   label: $t({ defaultMessage: 'View' }),
+    //   visible: (selectedRows) => {
+    //     return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
+    //   },
+    //   onClick: (selectedRows) => {
+    //     navigate({
+    //       ...linkAddCustomRolePath,
+    //       pathname: `${linkAddCustomRolePath.pathname}/view/${selectedRows[0].id}`
+    //     }, { state: selectedRows[0] })
+    //   }
+    // },
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
-        // show edit dialog
-        // setEditData(selectedRows[0])
-        // setEditMode(true)
         navigate({
           ...linkAddCustomRolePath,
           pathname: `${linkAddCustomRolePath.pathname}/edit/${selectedRows[0].id}`
@@ -125,9 +122,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Role' }),
-            entityValue: rows.length === 1
-              ? rows[0].name
-              : undefined,
+            entityValue: rows[0].name,
             numOfEntities: rows.length
           },
           onOk: () => {

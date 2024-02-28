@@ -22,11 +22,10 @@ export const TableTitleWrapper = styled(Space)`
 export const FieldLabelPermission = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 396px 48px 48px 48px 48px;
+  grid-template-columns: 465px 48px 48px 48px 48px;
   grid-column-gap: 2px;
   align-items: baseline;
-  padding: 0 20px 0px 20px;
-  // margin: 2px;
+  padding: 0 20px 5px 12px;
   background-color: #F2F2F2;
   label {
     display: flex;
@@ -36,11 +35,11 @@ export const FieldLabelPermission = styled.div<{ width: string }>`
 export const FieldLabelAttributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 396px 48px 48px 48px 48px 48px;
+  grid-template-columns: 465px 48px 48px 48px 48px 48px;
   grid-template-rows: 40px;
   grid-column-gap: 2px;
   align-items: center;
-  margin: 2px 2px 2px 20px;
+  margin: 2px 2px 2px 16px;
   .grid-item {
     background-color: var(--acx-neutrals-30);
     height: 40px;

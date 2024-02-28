@@ -42,7 +42,7 @@ export function AddCustomRole () {
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
-  const isEditMode = action === 'view' || action === 'edit'
+  const isEditMode = action === 'edit'
 
   const permissions = [ 'wifi', 'wired', 'smartEdge' ]
   let scopes: Array<string> = []
@@ -146,8 +146,8 @@ export function AddCustomRole () {
       <h5>
         {intl.$t({ defaultMessage: 'Set the permissions for this role:' })}
       </h5>
-      <div style={{ width: 758, height: 432, backgroundColor: '#F2F2F2',
-        padding: '20px 40px 20px 20px' }}>
+      <div style={{ width: 697, height: 432, backgroundColor: '#F2F2F2',
+        padding: '20px 0px 16px 0px' }}>
 
         <PermissionsTechForm />
       </div></>
@@ -222,10 +222,20 @@ export function AddCustomRole () {
         <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnWifiAttributeChange(e.target.checked)}
         />
-        <label>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
-        <Tooltip.Question style={{ marginLeft: '40px' }}
-          // eslint-disable-next-line max-len
-          title={intl.$t({ defaultMessage: 'What is included?\b Access Points\nVenue Management\nAI Assurance\nAI Assurance\nWi-Fi Networks\nWireless Clients\nWi-Fi Network Control\nWi-Fi Reports\nWi-Fi Version Management' })}
+        <label style={{ width: '36px' }}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
+        <Tooltip.Question iconStyle={{ width: '20px' }}
+          title={<>
+            <div style={{ fontWeight: 800 }}>
+              {intl.$t({ defaultMessage: 'What is included?' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+            <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Reports' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Version Management' })}</div>
+          </>}
           placement='right'
         />
         </div>
@@ -272,7 +282,20 @@ export function AddCustomRole () {
         <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnWiredAttributeChange(e.target.checked)}
         />
-        <label>{intl.$t({ defaultMessage: 'Wired' })}</label>
+        <label style={{ width: '42px' }}>{intl.$t({ defaultMessage: 'Wired' })}</label>
+        <Tooltip.Question iconStyle={{ width: '20px' }}
+          title={<>
+            <div style={{ fontWeight: 800 }}>
+              {intl.$t({ defaultMessage: 'What is included?' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Switches' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wired Clients' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Switch Network Control' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Switch Reports' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Switch Version Management' })}</div>
+          </>}
+          placement='right'
+        />
         </div>
 
         <Form.Item
@@ -318,7 +341,23 @@ export function AddCustomRole () {
         <div className='grid-item'><Input type='checkbox'
           onChange={(e)=>OnSmartEdgeAttributeChange(e.target.checked)}
         />
-        <label>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
+        <label style={{ width: '68px' }}>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
+        <Tooltip.Question iconStyle={{ width: '20px' }}
+          // eslint-disable-next-line max-len
+          title={<>
+            <div style={{ fontWeight: 800 }}>
+              {intl.$t({ defaultMessage: 'What is included?' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+            <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Reports' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Wi-Fi Version Management' })}</div>
+          </>}
+          placement='right'
+        />
         </div>
 
         <Form.Item
@@ -385,7 +424,7 @@ export function AddCustomRole () {
         }
       }
     })
-    return permissions.join(', ')
+    return permissions.length === 0 ? 'No Access' : permissions.join(', ')
   }
 
   const SummaryForm = () => {
