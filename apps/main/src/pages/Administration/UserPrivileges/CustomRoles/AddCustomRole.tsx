@@ -13,8 +13,16 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { useAddCustomRoleMutation, useUpdateCustomRoleMutation } from '@acx-ui/rc/services'
-import { CustomRole }                                            from '@acx-ui/rc/utils'
+import {
+  useAddCustomRoleMutation,
+  useUpdateCustomRoleMutation
+} from '@acx-ui/rc/services'
+import {
+  CustomRole,
+  EdgeAttributeProfile,
+  SwitchAttributeProfile,
+  WifiAttributeProfile
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -44,14 +52,23 @@ export function AddCustomRole () {
 
   const isEditMode = action === 'edit'
 
-  const permissions = [ 'wifi', 'wired', 'smartEdge' ]
+  const wifiScopes = [
+    WifiAttributeProfile.READ, WifiAttributeProfile.CREATE,
+    WifiAttributeProfile.UPDATE, WifiAttributeProfile.DELETE
+  ]
+  const switchScopes = [
+    SwitchAttributeProfile.READ, SwitchAttributeProfile.CREATE,
+    SwitchAttributeProfile.UPDATE, SwitchAttributeProfile.DELETE
+  ]
+  const edgeScopes = [
+    EdgeAttributeProfile.READ, EdgeAttributeProfile.CREATE,
+    EdgeAttributeProfile.UPDATE, EdgeAttributeProfile.DELETE
+  ]
+
   let scopes: Array<string> = []
-  permissions.forEach(p => {
-    scopes.push(p + '-read')
-    scopes.push(p + '-create')
-    scopes.push(p + '-update')
-    scopes.push(p + '-delete')
-  })
+  wifiScopes.map(item => scopes.push(item))
+  switchScopes.map(item => scopes.push(item))
+  edgeScopes.map(item => scopes.push(item))
 
   const handleAddRole = async () => {
     const name = form.getFieldValue('name')
@@ -158,56 +175,69 @@ export function AddCustomRole () {
     const [wiredAttribute, setWiredAttribute] = useState(false)
     const [smartedgeAttribute, setSmartedgeAttribute] = useState(false)
 
+    // wi-fi
     const OnWifiAttributeChange = (checked: boolean) => {
       setWifiAttribute(checked)
-      form.setFieldValue('wifi-read', checked)
-      form.setFieldValue('wifi-create', checked)
-      form.setFieldValue('wifi-update', checked)
-      form.setFieldValue('wifi-delete', checked)
+      wifiScopes.map(item => form.setFieldValue(item, checked))
     }
 
     const OnWifiReadChange = (checked: boolean) => {
-      form.setFieldValue('wifi-read', checked)
+      form.setFieldValue(WifiAttributeProfile.READ, checked)
       if (!checked) {
-        form.setFieldValue('wifi-create', false)
-        form.setFieldValue('wifi-update', false)
-        form.setFieldValue('wifi-delete', false)
+        wifiScopes.map(item =>
+          item !== WifiAttributeProfile.READ ? form.setFieldValue(item, false) : null
+        )
       }
     }
 
+    const OnWifiNonReadChange = (checked: boolean) => {
+      if (checked) {
+        form.setFieldValue(WifiAttributeProfile.READ, true)
+      }
+    }
+
+    // switch
     const OnWiredAttributeChange = (checked: boolean) => {
       setWiredAttribute(checked)
-      form.setFieldValue('wired-read', checked)
-      form.setFieldValue('wired-create', checked)
-      form.setFieldValue('wired-update', checked)
-      form.setFieldValue('wired-delete', checked)
+      switchScopes.map(item => form.setFieldValue(item, checked))
     }
 
     const OnWiredReadChange = (checked: boolean) => {
-      form.setFieldValue('wired-read', checked)
+      form.setFieldValue(SwitchAttributeProfile.READ, checked)
       if (!checked) {
-        form.setFieldValue('wired-create', false)
-        form.setFieldValue('wired-update', false)
-        form.setFieldValue('wired-delete', false)
+        switchScopes.map(item =>
+          item !== SwitchAttributeProfile.READ ? form.setFieldValue(item, false) : null
+        )
       }
     }
 
+    const OnWiredNonReadChange = (checked: boolean) => {
+      if (checked) {
+        form.setFieldValue(SwitchAttributeProfile.READ, true)
+      }
+    }
+
+    // smart edge
     const OnSmartEdgeAttributeChange = (checked: boolean) => {
       setSmartedgeAttribute(checked)
-      form.setFieldValue('smartEdge-read', checked)
-      form.setFieldValue('smartEdge-create', checked)
-      form.setFieldValue('smartEdge-update', checked)
-      form.setFieldValue('smartEdge-delete', checked)
+      edgeScopes.map(item => form.setFieldValue(item, checked))
     }
 
     const OnSmartEdgeReadChange = (checked: boolean) => {
-      form.setFieldValue('smartEdge-read', checked)
+      form.setFieldValue(EdgeAttributeProfile.READ, checked)
       if (!checked) {
-        form.setFieldValue('smartEdge-create', false)
-        form.setFieldValue('smartEdge-update', false)
-        form.setFieldValue('smartEdge-delete', false)
+        edgeScopes.map(item =>
+          item !== EdgeAttributeProfile.READ ? form.setFieldValue(item, false) : null
+        )
       }
     }
+
+    const OnSmartEdgeNonReadChange = (checked: boolean) => {
+      if (checked) {
+        form.setFieldValue(EdgeAttributeProfile.READ, true)
+      }
+    }
+
 
     return <div >
       <UI.FieldLabelPermission width='270'>
@@ -227,9 +257,9 @@ export function AddCustomRole () {
           title={<>
             <div style={{ fontWeight: 800 }}>
               {intl.$t({ defaultMessage: 'What is included?' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
             <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
             <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
+            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
             <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
             <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
             <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
@@ -241,7 +271,7 @@ export function AddCustomRole () {
         </div>
 
         <Form.Item
-          name='wifi-read'
+          name={WifiAttributeProfile.READ}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
@@ -251,29 +281,32 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name='wifi-create'
+          name={WifiAttributeProfile.CREATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wifiAttribute}
+            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='wifi-update'
+          name={WifiAttributeProfile.UPDATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wifiAttribute}
+            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='wifi-delete'
+          name={WifiAttributeProfile.DELETE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wifiAttribute}
+            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
           />
         </Form.Item>
       </UI.FieldLabelAttributes>
@@ -299,7 +332,7 @@ export function AddCustomRole () {
         </div>
 
         <Form.Item
-          name='wired-read'
+          name={SwitchAttributeProfile.READ}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
@@ -309,29 +342,32 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name='wired-create'
+          name={SwitchAttributeProfile.CREATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wiredAttribute}
+            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='wired-update'
+          name={SwitchAttributeProfile.UPDATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wiredAttribute}
+            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='wired-delete'
+          name={SwitchAttributeProfile.DELETE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!wiredAttribute}
+            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
@@ -347,21 +383,17 @@ export function AddCustomRole () {
           title={<>
             <div style={{ fontWeight: 800 }}>
               {intl.$t({ defaultMessage: 'What is included?' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
             <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
-            <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Reports' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Version Management' })}</div>
+            <div >{intl.$t({ defaultMessage: 'SmartEdge Devices' })}</div>
+            <div >{intl.$t({ defaultMessage: 'SmartEdge Network Control' })}</div>
+            <div >{intl.$t({ defaultMessage: 'SmartEdge Version Management' })}</div>
           </>}
           placement='right'
         />
         </div>
 
         <Form.Item
-          name='smartEdge-read'
+          name={EdgeAttributeProfile.READ}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
@@ -371,29 +403,32 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name='smartEdge-create'
+          name={EdgeAttributeProfile.CREATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
+            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='smartEdge-update'
+          name={EdgeAttributeProfile.UPDATE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
+            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
         <Form.Item
-          name='smartEdge-delete'
+          name={EdgeAttributeProfile.DELETE}
           className='grid-item'
           valuePropName='checked'>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
+            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
           />
         </Form.Item>
 
@@ -430,8 +465,8 @@ export function AddCustomRole () {
   const SummaryForm = () => {
     const formValues = form.getFieldsValue(true)
     const wifiPermissions = GetPermissionList('wifi')
-    const wiredPermissions = GetPermissionList('wired')
-    const smartEdgePermissions = GetPermissionList('smartEdge')
+    const wiredPermissions = GetPermissionList('switch')
+    const smartEdgePermissions = GetPermissionList('edge')
 
     return <>
       <Subtitle level={3}>{ intl.$t({ defaultMessage: 'Summary' }) }</Subtitle>
@@ -469,7 +504,6 @@ export function AddCustomRole () {
         }/>
     </>
   }
-
 
   return (<>
     <PageHeader
