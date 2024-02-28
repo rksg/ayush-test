@@ -267,9 +267,29 @@ describe('RecommendationActions', () => {
       const input = inputs.filter(input => input.getAttribute('disabled') === null)
       expect(input).toHaveLength(1)
     })
-    it('applyscheduled with continuous recommendation', async () => {
+    it('1st applyscheduled with continuous recommendation', async () => {
       const recommendation = {
         ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
+    it('2st applyscheduled with continuous recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyscheduled',
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'applyscheduled' }
+        ]
+      } as unknown as RecommendationListItem
       const div = document.createElement('div')
       const { container } = render(
         <RecommendationActions {...{ recommendation }} />,

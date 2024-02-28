@@ -205,18 +205,19 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
         }
       ]
     case 'applyscheduled':
+      const appliedOnce = recommendation?.statusTrail?.filter(
+        ({ status }) => status === 'applied').length !== 0
       return [
         {
           icon: actions.schedule({
             ...props, disabled: false, type: 'ApplyScheduled', initialDate: 'scheduledAt'
           })
         },
-        recommendation?.statusTrail?.filter(trail => trail.status === 'applied').length === 0
-          && { icon: actions.cancel({ ...props, disabled: false }) },
+        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
             ...props,
-            disabled: !recommendation.code.startsWith('c-crrm'),
+            disabled: !(appliedOnce && recommendation.code.startsWith('c-crrm')),
             type: 'Revert',
             initialDate: 'futureDate'
           })
