@@ -12,9 +12,9 @@ import { GridOption } from 'echarts/types/dist/shared'
 import { isEmpty }    from 'lodash'
 import { useIntl }    from 'react-intl'
 
-import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
-import { formatter }                      from '@acx-ui/formatter'
-import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
+import type { TimeSeriesChartData, YAxisData } from '@acx-ui/analytics/utils'
+import { formatter }                           from '@acx-ui/formatter'
+import type { TimeStamp, TimeStampRange }      from '@acx-ui/types'
 
 import {
   gridOptions,
@@ -23,6 +23,7 @@ import {
   dataZoomOptions,
   xAxisOptions,
   yAxisOptions,
+  yAxisNameOptions,
   axisLabelOptions,
   dateAxisFormatter,
   tooltipOptions,
@@ -40,7 +41,6 @@ import * as UI from './styledComponents'
 
 import type { ECharts, EChartsOption, MarkAreaComponentOption, MarkLineComponentOption  } from 'echarts'
 import type { EChartsReactProps }                                                         from 'echarts-for-react'
-
 
 type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
 
@@ -88,6 +88,9 @@ export interface MultiLineTimeSeriesChartProps <
       max?: number
       min?: number
     }
+    yAxisConfig?: YAxisData[]
+    seriesYAxisIndexes?: number[]
+    seriesChartTypes?: string[]
     disableLegend?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
@@ -169,6 +172,9 @@ export function MultiLineTimeSeriesChart <
   legendFormatter,
   dataFormatter = formatter('countFormat'),
   seriesFormatters,
+  yAxisConfig,
+  seriesYAxisIndexes,
+  seriesChartTypes,
   yAxisProps,
   disableLegend,
   onMarkAreaClick,
@@ -219,17 +225,33 @@ export function MultiLineTimeSeriesChart <
         formatter: dateAxisFormatter()
       }
     },
-    yAxis: {
-      ...yAxisOptions(),
-      ...(yAxisProps || { minInterval: 1 }),
-      type: 'value',
-      axisLabel: {
-        ...axisLabelOptions(),
-        formatter: function (value: number) {
-          return (dataFormatter && dataFormatter(value)) || `${value}`
+    yAxis: yAxisConfig && yAxisConfig.length
+      ? yAxisConfig.map(({
+        axisName, color, nameRotate, showLabel
+      }) => ({
+        ...yAxisOptions(),
+        ...(yAxisProps || { minInterval: 1 }),
+        ...(showLabel
+          ? { ...yAxisNameOptions(axisName, color), nameRotate }: {}),
+        type: 'value',
+        axisLabel: {
+          ...axisLabelOptions(color),
+          formatter: function (value: number) {
+            return (dataFormatter && dataFormatter(value)) || `${value}`
+          }
         }
-      }
-    },
+      }))
+      : {
+        ...yAxisOptions(),
+        ...(yAxisProps || { minInterval: 1 }),
+        type: 'value',
+        axisLabel: {
+          ...axisLabelOptions(),
+          formatter: function (value: number) {
+            return (dataFormatter && dataFormatter(value)) || `${value}`
+          }
+        }
+      },
     series: data
       .filter(datum=> datum.show !== false )
       .map((datum, i) => ({
@@ -241,6 +263,10 @@ export function MultiLineTimeSeriesChart <
         z: 1,
         zlevel: 1,
         lineStyle: { width: 1.2 },
+        yAxisIndex: seriesYAxisIndexes ? seriesYAxisIndexes[i] : 0,
+        ...(seriesChartTypes && seriesChartTypes[i] === 'area'
+          ? { areaStyle: {}, lineStyle: { width: 0 } }
+          : {}),
         ...(i === 0 ? {
           markArea: props.markers ? {
             data: props.markers?.map(marker => [

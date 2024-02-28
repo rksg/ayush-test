@@ -122,6 +122,35 @@ storiesOf('MultiLineTimeSeriesChart', module)
     }}
   />)
 
+  .add('with Dual Y-Axis', () => <MultiLineTimeSeriesChart
+    style={{ width: 904, height: 300 }}
+    data={getSeriesData()}
+    lineColors={[
+      cssStr('--acx-neutrals-30'),
+      cssStr('--acx-viz-qualitative-1'),
+      cssStr('--acx-viz-qualitative-2')
+    ]}
+    grid={{
+      left: 40,
+      right: 40
+    }}
+    yAxisConfig={[{
+      axisName: 'Wireless Clients Count',
+      nameRotate: 90,
+      showLabel: true,
+      color: cssStr('--acx-viz-qualitative-1')
+    }, {
+      axisName: 'Wired Clients Count',
+      nameRotate: 270,
+      showLabel: true,
+      color: cssStr('--acx-viz-qualitative-2')
+    }]}
+    seriesYAxisIndexes={[0, 0, 1]}
+    seriesChartTypes={['area', 'line', 'line']}
+    // eslint-disable-next-line no-console
+    onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
+  />)
+
   .add('With Mark Areas', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
