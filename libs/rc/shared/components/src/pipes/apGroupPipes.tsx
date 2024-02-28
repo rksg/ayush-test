@@ -284,7 +284,7 @@ export const transformApGroupVlan = (
     const findApGroup = apGroups.find((apGroup) => apGroup.apGroupId === apGroupId)
     if (findApGroup) {
       const vlanPoolId = findApGroup?.vlanPoolId
-      const isVlanPool = vlanPoolId !== undefined
+      const isVlanPool = (vlanPoolId !== undefined && vlanPoolId !== null)
       if (isVlanPool) {
         const defaultValue = wlan?.advancedCustomization?.vlanPool?.id || ''
         displayText = $t(vlanContents.vlanPool, {
