@@ -37,10 +37,14 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
-                    data-testid="HistoricalOutlined"
-                  />
+                  <div
+                    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                  >
+                    <svg
+                      class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                      data-testid="HistoricalOutlined"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

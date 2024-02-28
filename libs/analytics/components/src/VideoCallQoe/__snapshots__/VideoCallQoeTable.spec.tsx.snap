@@ -1473,11 +1473,15 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
                                 style="text-align: center;"
                               >
-                                <span
-                                  class="sc-ftvSup cYsZHL"
+                                <div
+                                  class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
                                 >
-                                  Invalid
-                                </span>
+                                  <span
+                                    class="sc-ftvSup cYsZHL"
+                                  >
+                                    Invalid
+                                  </span>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis ant-table-cell-row-hover"
@@ -1546,11 +1550,15 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 style="text-align: center;"
                               >
-                                <span
-                                  class="sc-ftvSup cYsZHL"
+                                <div
+                                  class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
                                 >
-                                  Invalid
-                                </span>
+                                  <span
+                                    class="sc-ftvSup cYsZHL"
+                                  >
+                                    Invalid
+                                  </span>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
