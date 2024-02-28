@@ -66,8 +66,6 @@ const defaultPropertyConfigs: PropertyConfigs = {
 const msgCategoryIds = [
   // Unit assigned
   '96672ee0-86df-4819-bca4-3b39ef611e37',
-  // Passphrase Reset
-  'f262b187-9e4e-4424-be20-19942eb358d1',
   // Guest Passphrase Reset
   '8817c288-7e8e-4125-8a73-531c205a9e16',
   // Port Assigned
