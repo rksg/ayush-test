@@ -14695,7 +14695,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-        style="min-height: 129px;"
+        style="min-height: 203px;"
       >
         <div
           data-testid="switchDetail"

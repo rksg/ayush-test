@@ -18,7 +18,7 @@ interface MemoryUtilization {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedSwitches: build.query<
+    impactedSwitch: build.query<
       ImpactedSwitch, { id: Incident['id'], n: number,search: String }
     >({
       query: (variables) => ({
@@ -66,6 +66,6 @@ export const api = dataApi.injectEndpoints({
 })
 
 export const {
-  useImpactedSwitchesQuery,
+  useImpactedSwitchQuery,
   useMemoryUtilizationQuery
 } = api
