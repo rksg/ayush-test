@@ -39,8 +39,13 @@ import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import * as UI from './styledComponents'
 
-import type { ECharts, EChartsOption, MarkAreaComponentOption, MarkLineComponentOption  } from 'echarts'
-import type { EChartsReactProps }                                                         from 'echarts-for-react'
+import type { ECharts,
+  EChartsOption,
+  MarkAreaComponentOption,
+  MarkLineComponentOption,
+  YAXisComponentOption
+} from 'echarts'
+import type { EChartsReactProps } from 'echarts-for-react'
 
 type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
 
@@ -195,6 +200,18 @@ export function MultiLineTimeSeriesChart <
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
   useLegendSelectChanged(eChartsRef)
 
+  const baseYaxisOptions = {
+    ...yAxisOptions(),
+    ...(yAxisProps || { minInterval: 1 }),
+    type: 'value',
+    axisLabel: {
+      ...axisLabelOptions(),
+      formatter: function (value: number) {
+        return (dataFormatter && dataFormatter(value)) || `${value}`
+      }
+    }
+  } as YAXisComponentOption
+
   const defaultOption: EChartsOption = {
     animation: false,
     color: props.lineColors || qualitativeColorSet(),
@@ -229,28 +246,12 @@ export function MultiLineTimeSeriesChart <
       ? yAxisConfig.map(({
         axisName, color, nameRotate, showLabel
       }) => ({
-        ...yAxisOptions(),
-        ...(yAxisProps || { minInterval: 1 }),
+        ...baseYaxisOptions,
         ...(showLabel
-          ? { ...yAxisNameOptions(axisName, color), nameRotate }: {}),
-        type: 'value',
-        axisLabel: {
-          ...axisLabelOptions(color),
-          formatter: function (value: number) {
-            return (dataFormatter && dataFormatter(value)) || `${value}`
-          }
-        }
+          ? { ...yAxisNameOptions(axisName, color), nameRotate }: {})
       }))
       : {
-        ...yAxisOptions(),
-        ...(yAxisProps || { minInterval: 1 }),
-        type: 'value',
-        axisLabel: {
-          ...axisLabelOptions(),
-          formatter: function (value: number) {
-            return (dataFormatter && dataFormatter(value)) || `${value}`
-          }
-        }
+        ...baseYaxisOptions
       },
     series: data
       .filter(datum=> datum.show !== false )
