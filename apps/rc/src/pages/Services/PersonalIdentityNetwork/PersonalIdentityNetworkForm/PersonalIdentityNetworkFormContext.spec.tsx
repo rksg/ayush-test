@@ -49,6 +49,8 @@ const pinTunnelData = {
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
 }
 
+const services = require('@acx-ui/rc/services')
+
 describe('PersonalIdentityNetworkFormContext', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
@@ -56,6 +58,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
       tenantId,
       serviceId: 'testServiceId'
     }
+
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      return { dpskNetworkList: mockDeepNetworkList.response, isLoading: false }
+    })
 
     mockServer.use(
       rest.post(

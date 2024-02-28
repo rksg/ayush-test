@@ -78,7 +78,7 @@ describe('helpers', () => {
           avgClientThroughput: null,
           avgConnSuccess: null,
           avgTTC: null,
-          guestExp: 0,
+          guestExp: null,
           ssidCompliance: null
         }
       ])
