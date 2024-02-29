@@ -1,9 +1,9 @@
-import { Brand360 }                                                        from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                             from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }                from '@acx-ui/msp/components'
-import { AAAForm, AAAPolicyDetail, DpskForm, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
+import { Brand360 }                                                                           from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                                                from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings }                                   from '@acx-ui/msp/components'
+import { AAAForm, AAAPolicyDetail, AccessControlForm, DpskForm, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
   PolicyOperation,
@@ -106,6 +106,12 @@ function ConfigTemplatesRoutes () {
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
           element={<AAAPolicyDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
+          })}
+          element={<AccessControlForm editMode={false}/>}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
