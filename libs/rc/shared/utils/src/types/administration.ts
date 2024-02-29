@@ -307,24 +307,24 @@ export enum CustomGroupType {
 }
 
 export enum WifiAttributeProfile {
-  READ = 'wifi-read',
-  CREATE = 'wifi-create',
-  UPDATE = 'wifi-update',
-  DELETE = 'wifi-delete'
+  READ = 'wifi-r',
+  CREATE = 'wifi-c',
+  UPDATE = 'wifi-u',
+  DELETE = 'wifi-d'
 }
 
 export enum SwitchAttributeProfile {
-  READ = 'switch-read',
-  CREATE = 'switch-create',
-  UPDATE = 'switch-update',
-  DELETE = 'switch-delete'
+  READ = 'switch-r',
+  CREATE = 'switch-c',
+  UPDATE = 'switch-u',
+  DELETE = 'switch-d'
 }
 
 export enum EdgeAttributeProfile {
-  READ = 'edge-read',
-  CREATE = 'edge-create',
-  UPDATE = 'edge-update',
-  DELETE = 'edge-delete'
+  READ = 'edge-r',
+  CREATE = 'edge-c',
+  UPDATE = 'edge-u',
+  DELETE = 'edge-d'
 }
 
 export interface PrivilegePolicy

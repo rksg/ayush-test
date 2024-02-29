@@ -78,7 +78,7 @@ export function AddCustomRole () {
       const checkedScopes: Array<string> = []
       scopes.forEach(s => {
         if (form.getFieldValue(s)) {
-          checkedScopes.push(s.slice(0, s.indexOf('-') + 2))
+          checkedScopes.push(s)
         }
       })
       const roleData: CustomRoleData = {
@@ -175,6 +175,16 @@ export function AddCustomRole () {
     const [wiredAttribute, setWiredAttribute] = useState(false)
     const [smartedgeAttribute, setSmartedgeAttribute] = useState(false)
 
+    useEffect(() => {
+      if (location && location?.scopes && (isEditMode || action === 'clone')) {
+        const scopes = location.scopes
+        scopes.map(s => form.setFieldValue(s, true))
+        setWifiAttribute(scopes.find(a =>a.includes('wifi')) ? true : false )
+        setWiredAttribute(scopes.find(a =>a.includes('switch')) ? true : false)
+        setSmartedgeAttribute(scopes.find(a =>a.includes('edge')) ? true : false)
+      }
+    }, [form, location])
+
     // wi-fi
     const OnWifiAttributeChange = (checked: boolean) => {
       setWifiAttribute(checked)
@@ -238,7 +248,6 @@ export function AddCustomRole () {
       }
     }
 
-
     return <div >
       <UI.FieldLabelPermission width='270'>
         <label></label>
@@ -250,6 +259,7 @@ export function AddCustomRole () {
 
       <UI.FieldLabelAttributes width='660'>
         <div className='grid-item'><Input type='checkbox'
+          checked={wifiAttribute}
           onChange={(e)=>OnWifiAttributeChange(e.target.checked)}
         />
         <label style={{ width: '36px' }}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
@@ -313,6 +323,7 @@ export function AddCustomRole () {
 
       <UI.FieldLabelAttributes width='660'>
         <div className='grid-item'><Input type='checkbox'
+          checked={wiredAttribute}
           onChange={(e)=>OnWiredAttributeChange(e.target.checked)}
         />
         <label style={{ width: '42px' }}>{intl.$t({ defaultMessage: 'Wired' })}</label>
@@ -375,6 +386,7 @@ export function AddCustomRole () {
 
       <UI.FieldLabelAttributes width='660'>
         <div className='grid-item'><Input type='checkbox'
+          checked={smartedgeAttribute}
           onChange={(e)=>OnSmartEdgeAttributeChange(e.target.checked)}
         />
         <label style={{ width: '68px' }}>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
