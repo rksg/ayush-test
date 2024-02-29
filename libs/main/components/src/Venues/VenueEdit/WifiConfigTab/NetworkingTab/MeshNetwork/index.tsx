@@ -310,7 +310,7 @@ export function MeshNetwork () {
     isLoading: !data || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
-    <StepsFormLegacy.FieldLabel width={'160px'}>
+    <StepsFormLegacy.FieldLabel width={'180px'}>
       {$t({ defaultMessage: 'Mesh Network' })}
       {(hasMeshAPs && meshEnabled)?
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
@@ -348,7 +348,7 @@ export function MeshNetwork () {
           </li>
         </ul>
       </MeshInfoBlock>
-      <MeshSsidDiv labelWidth={'160px'} isEditMode={isSsidEditMode}>
+      <MeshSsidDiv labelWidth={'180px'} isEditMode={isSsidEditMode}>
         {$t({ defaultMessage: 'Mesh Network Name' })}
         <Form.Item children={
           <Input
@@ -374,14 +374,14 @@ export function MeshNetwork () {
         }
       </MeshSsidDiv>
       {ssidError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={'180px'}>
           <div />
           <ErrorMessageDiv>
             {ssidError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <MeshPassphraseDiv labelWidth={'160px'} isEditMode={isPassphraseEditMode}>
+      <MeshPassphraseDiv labelWidth={'180px'} isEditMode={isPassphraseEditMode}>
         {$t({ defaultMessage: 'Mesh PSK' })}
         <Form.Item children={
           <Input.TextArea
@@ -411,14 +411,14 @@ export function MeshNetwork () {
         }
       </MeshPassphraseDiv>
       {passphraseError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={'180px'}>
           <div />
           <ErrorMessageDiv>
             {passphraseError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <StepsFormLegacy.FieldLabel width={'160px'}>
+      <StepsFormLegacy.FieldLabel width={'180px'}>
         {$t({ defaultMessage: 'Mesh Radio' })}
         <Form.Item >
           <Radio.Group
@@ -433,7 +433,7 @@ export function MeshNetwork () {
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       { supportZeroTouchMesh &&
-        <ZeroTouchMeshDiv labelWidth={'160px'}>
+        <ZeroTouchMeshDiv labelWidth={'180px'}>
           {$t({ defaultMessage: 'Zero Touch Mesh' })}
           <Form.Item
             valuePropName='checked'
