@@ -187,9 +187,9 @@ export function NetworkingTab (props: {
           label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
           rules={[{
-            type: 'number', max: 4200, min: 60,
+            type: 'number', max: 86400, min: 60,
             message: $t({
-              defaultMessage: 'Client Inactivity Timeout must be between 60 and 4200'
+              defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
             })
           }]}
           style={{ marginBottom: '15px' }}
