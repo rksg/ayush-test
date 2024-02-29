@@ -465,9 +465,10 @@ export const api = recommendationApi.injectEndpoints({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
+            $actionType: String,
             $scheduledAt: DateTime
           ) {
-            schedule(id: $id, scheduledAt: $scheduledAt) {
+            schedule(id: $id, actionType: $actionType, scheduledAt: $scheduledAt) {
               success
               errorMsg
               errorCode
