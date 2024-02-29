@@ -118,3 +118,54 @@ export const mockEdgeLagStatusList = {
     }
   ]
 }
+
+export const mockedEdgeLagListWithClusterType = {
+  content: [
+    {
+      id: 0,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [
+        {
+          portId: '00:0c:29:b6:ad:04',
+          portEnabled: true
+        },
+        {
+          portId: '00:00:00:00:00:00',
+          portEnabled: true
+        }
+      ],
+      portType: 'CLUSTER',
+      ipMode: 'STATIC',
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '',
+      corePortEnabled: true,
+      natEnabled: true,
+      lagEnabled: true
+    },
+    {
+      id: 1,
+      description: 'string',
+      lagType: 'LACP',
+      lacpMode: 'ACTIVE',
+      lacpTimeout: 'SHORT',
+      lagMembers: [],
+      portType: 'LAN',
+      ipMode: 'STATIC',
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.0.0.0',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }
+  ],
+  paging: {
+    page: 1,
+    pageSize: 10,
+    totalCount: 2
+  }
+}

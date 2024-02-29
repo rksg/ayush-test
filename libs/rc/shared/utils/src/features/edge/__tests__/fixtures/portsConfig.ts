@@ -158,3 +158,117 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   subnet: '',
   interfaceName: 'port2'
 }]
+
+export const mockLanInterfaces = {
+  'serialNumber-1': [
+    {
+      serialNumber: 'serialNumber-1',
+      portName: 'port3',
+      ip: '192.168.14.135',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-1',
+      portName: 'port2',
+      ip: '192.168.13.136',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    }
+  ],
+  'serialNumber-2': [
+    {
+      serialNumber: 'serialNumber-2',
+      portName: 'port3',
+      ip: '192.168.14.135',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      portName: 'port2',
+      ip: '192.168.13.134',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    }
+  ]
+}
+
+export const mockClusterInterfaceOptionData = {
+  'serialNumber-1': [
+    {
+      serialNumber: 'serialNumber-1',
+      portName: 'port3',
+      ip: '192.168.14.135',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-1',
+      portName: 'port2',
+      ip: '192.168.13.136',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.UNCONFIGURED,
+      isCorePort: false,
+      isLagMember: true,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-1',
+      portName: 'lag0',
+      ip: '192.168.11.136',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.CLUSTER,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    }
+  ],
+  'serialNumber-2': [
+    {
+      serialNumber: 'serialNumber-2',
+      portName: 'port3',
+      ip: '192.168.9.135',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      portName: 'port2',
+      ip: '192.168.13.134',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.UNCONFIGURED,
+      isCorePort: false,
+      isLagMember: true,
+      portEnabled: true
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      portName: 'lag0',
+      ip: '192.168.12.136',
+      subnet: '255.255.255.0',
+      portType: EdgePortTypeEnum.CLUSTER,
+      isCorePort: false,
+      isLagMember: false,
+      portEnabled: true
+    }
+  ]
+}

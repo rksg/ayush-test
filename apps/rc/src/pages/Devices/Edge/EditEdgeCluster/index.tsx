@@ -53,14 +53,14 @@ const EditEdgeCluster = () => {
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
       content: <VirtualIp
-        currentCluster={currentClusterStatus}
+        currentClusterStatus={currentClusterStatus}
         currentVipConfig={currentCluster?.virtualIpSettings}
       />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       content: <ClusterInterface
-        edgeNodeList={currentCluster?.smartEdges}
+        currentClusterStatus={currentClusterStatus}
       />
     },
     'dhcp': {

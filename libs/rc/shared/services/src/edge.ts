@@ -816,6 +816,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    patchEdgeClusterNetworkSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterNetworkSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     })
   })
 })
@@ -837,16 +847,28 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
 const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[]) => {
   return interfaces.map(item => {
     let portName = ''
+    let portType: EdgePortTypeEnum
+    let isLagMember = false
+    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
     if (item.hasOwnProperty('interfaceName')) {
       portName = (item as EdgePortStatus).interfaceName ?? ''
+      portType = (item as EdgePortStatus).type ?? ''
+      isLagMember = lagList.some(lag =>
+        (lag as EdgeLagStatus).lagMembers.some(member =>
+          member.name === (item as EdgePortStatus).interfaceName))
     } else {
       portName = (item as EdgeLagStatus).name
+      portType = (item as EdgeLagStatus).portType
     }
     return {
       serialNumber: item.serialNumber ?? '',
       portName,
+      portType,
+      isLagMember,
       ip: item.ip ?? '',
-      subnet: item.subnet ?? ''
+      subnet: item.subnet ?? '',
+      isCorePort: item.isCorePort === 'Enabled',
+      portEnabled: item.adminStatus === 'Enabled'
     }
   })
 }
@@ -864,6 +886,7 @@ export const {
   useGetDnsServersQuery,
   useUpdateDnsServersMutation,
   useGetPortConfigQuery,
+  useLazyGetPortConfigQuery,
   useUpdatePortConfigMutation,
   useGetSubInterfacesQuery,
   useAddSubInterfacesMutation,
@@ -891,6 +914,7 @@ export const {
   useAddEdgeLagMutation,
   useDeleteEdgeLagMutation,
   useGetEdgeLagListQuery,
+  useLazyGetEdgeLagListQuery,
   useAddLagSubInterfacesMutation,
   useGetLagSubInterfacesQuery,
   useDeleteLagSubInterfacesMutation,
@@ -905,5 +929,6 @@ export const {
   useDeleteEdgeClusterMutation,
   useGetAllInterfacesByTypeQuery,
   usePatchEdgeClusterMutation,
-  useGetEdgeClusterQuery
+  useGetEdgeClusterQuery,
+  usePatchEdgeClusterNetworkSettingsMutation
 } = edgeApi
