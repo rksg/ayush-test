@@ -18,6 +18,8 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
+import { networkApi } from '../network'
+
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
@@ -162,8 +164,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'AddNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            // eslint-disable-next-line max-len
-            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
           })
         })
       },
@@ -177,8 +181,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'DeleteNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            // eslint-disable-next-line max-len
-            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
           })
         })
       },
@@ -192,8 +198,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'UpdateNetworkVenueTemplate'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            // eslint-disable-next-line max-len
-            api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
           })
         })
       },
