@@ -165,6 +165,7 @@ function SettingsForm () {
     const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = useWatch('enableAccountingService', form)
+    const enableMacAuthentication = useWatch('macAddressAuthentication', form)
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
@@ -175,6 +176,14 @@ function SettingsForm () {
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+      })}
+    />
+    const macAuthenticationTooltip = <Tooltip
+      placement='bottom'
+      children={<QuestionMarkCircleOutlined />}
+      title={$t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
       })}
     />
     return (
@@ -221,6 +230,16 @@ function SettingsForm () {
               </Form.Item>
             </>
           )}
+        </div>
+        <div>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'MAC Authentication' }) }</Subtitle>
+          {macAuthenticationTooltip}
+          <Form.Item
+            name='macAddressAuthentication'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch onChange={(value)=>onProxyChange(value,'macAddressAuthentication')}/>}
+          />
         </div>
       </Space>
     )
