@@ -49,6 +49,10 @@ export const ListWrapper = styled.div<{ $showCursor: boolean }>`
   min-height: 48px;
 `
 
+export const ListContainer = styled.div`
+  overflow: hidden;
+`
+
 export const HighlightedIcon = styled.div<{ $highlight?: boolean }>`
   ${props => props.$highlight
     ? 'color: var(--acx-neutrals-60);'
