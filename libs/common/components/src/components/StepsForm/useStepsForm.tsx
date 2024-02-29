@@ -37,6 +37,12 @@ type UseStepsFormParam <T> = Omit<
     submit?: string
     pre?: string
     cancel?: string
+    apply?: string
+  }
+
+  customSubmit?: {
+    label: string,
+    onFinish: (values: T) => Promise<boolean | void>
   }
 }
 
@@ -47,6 +53,7 @@ export function useStepsForm <T> ({
   onFinish,
   onCancel,
   onFinishFailed,
+  customSubmit,
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
@@ -109,12 +116,16 @@ export function useStepsForm <T> ({
     })
   }
 
-  const submit = () => {
+  const submit = (isCustom?: boolean) => {
     const values = form.getFieldsValue(true)
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
-        handleAsyncSubmit(formConfig.submit())
-          .finally(done)
+        const promise = handleAsyncSubmit(formConfig.submit())
+        if (isCustom) {
+          promise.then(() => customSubmit?.onFinish(values))
+            .catch(() => {/* mute validation error on last step */})
+        }
+        promise.finally(done)
       })
     })
   }
@@ -196,7 +207,15 @@ export function useStepsForm <T> ({
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}
+      />,
+    customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
+      ? <Button
+        type='primary'
+        loading={loading}
+        onClick={() => submit()}
+        children={customSubmit.label}
       />
+      : undefined
   }
 
   let buttonsLayout: React.ReactNode
@@ -205,10 +224,12 @@ export function useStepsForm <T> ({
       {buttons.cancel}
       <Space align='center' size={12}>
         {buttons.pre}
+        {buttons.customSubmit}
         {buttons.submit}
       </Space>
     </>
   } else buttonsLayout = <>
+    {buttons.customSubmit}
     {editMode ? buttons.apply : buttons.submit}
     {buttons.cancel}
   </>
