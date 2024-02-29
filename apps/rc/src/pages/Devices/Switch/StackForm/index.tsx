@@ -265,7 +265,6 @@ export function StackForm () {
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
-                !!switchDetail.cliApplied ||
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
                 switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
@@ -382,6 +381,18 @@ export function StackForm () {
 
   }
 
+  const transformSwitchData = (switchData: Switch) => {
+    // transform stack member data for compare data
+    const members = switchData?.stackMembers?.reduce((result, current, index) => ({
+      ...result,
+      [`serialNumber${index+1}`]: current.id
+    }), {})
+    return {
+      ...switchData,
+      ...members
+    }
+  }
+
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
     if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
@@ -446,7 +457,8 @@ export function StackForm () {
       await updateSwitch({ params: { tenantId, switchId }, payload })
         .unwrap()
         .then(() => {
-          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
+          const transformedSwitchData = transformSwitchData(switchData as Switch)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription
@@ -794,8 +806,6 @@ export function StackForm () {
                     <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />}
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                  {readOnly &&
-                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Col span={14} style={{ padding: '0' }}>
                     <Form.Item
                       name='venueId'
@@ -938,6 +948,8 @@ export function StackForm () {
                   <Input /></Form.Item>
                 {editMode &&
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                    {readOnly &&
+                      <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                     <SwitchStackSetting
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}

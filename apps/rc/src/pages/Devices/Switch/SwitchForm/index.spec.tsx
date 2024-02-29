@@ -369,7 +369,7 @@ describe('Edit switch form', () => {
     })
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeVisible()
+    expect(screen.queryByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeNull()
     expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
     expect(await screen.findByLabelText(/Switch Name/)).not.toBeDisabled()
     expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()

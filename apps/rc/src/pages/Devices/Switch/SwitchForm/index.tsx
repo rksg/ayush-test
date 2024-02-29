@@ -398,8 +398,6 @@ export function SwitchForm () {
                 }
               </Tabs>
               <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                {readOnly &&
-                  <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                 <Form.Item
                   name='venueId'
                   label={<>
@@ -587,6 +585,7 @@ export function SwitchForm () {
               <Form.Item name='enableStack' initialValue={false} hidden={true}><Input /></Form.Item>
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                  {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <SwitchStackSetting
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}
