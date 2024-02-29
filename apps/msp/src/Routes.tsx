@@ -7,7 +7,8 @@ import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
   DHCPForm, DpskForm,
-  NetworkDetails, NetworkForm
+  NetworkDetails, NetworkForm,
+  AccessControlForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -111,6 +112,12 @@ function ConfigTemplatesRoutes () {
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
           element={<AAAPolicyDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
+          })}
+          element={<AccessControlForm editMode={false}/>}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
