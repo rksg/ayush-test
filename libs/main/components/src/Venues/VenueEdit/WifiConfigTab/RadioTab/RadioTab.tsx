@@ -5,10 +5,11 @@ import { useIntl } from 'react-intl'
 import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                 from '@acx-ui/react-router-dom'
 
-import { getExternalAntennaPayload, VenueEditContext } from '../../index'
+import { getAntennaTypePayload, getExternalAntennaPayload, VenueEditContext } from '../../index'
 
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings'
 import { ExternalAntennaSection }         from './ExternalAntennaSection'
@@ -29,14 +30,17 @@ export function RadioTab () {
   } = useContext(VenueEditContext)
 
   const [isLoadOrBandBalaningEnabled, setIsLoadOrBandBalaningEnabled] = useState<boolean>(false)
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
   const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
+  const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
-  const externalTitle = $t({ defaultMessage: 'External Antenna' })
+  const externalTitle = supportAntennaTypeSelection?
+    $t({ defaultMessage: 'Antenna' }) :
+    $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
   const clientAdmissionControlTitle = $t({ defaultMessage: 'Client Admission Control' })
 
@@ -97,6 +101,9 @@ export function RadioTab () {
     try {
       const {
         apModels,
+        updateExternalAntenna,
+        apModelAntennaTypes,
+        updateAntennaType,
         radioData,
         isLoadBalancingDataChanged,
         isClientAdmissionControlDataChanged
@@ -106,6 +113,12 @@ export function RadioTab () {
         const extPayload = getExternalAntennaPayload(apModels)
         await editRadioContextData.updateExternalAntenna?.(extPayload)
       }
+
+      if (apModelAntennaTypes) {
+        const antTypePayload = getAntennaTypePayload(apModelAntennaTypes)
+        await editRadioContextData.updateAntennaType?.(antTypePayload)
+      }
+
       if (radioData) {
         await editRadioContextData.updateWifiRadio?.(radioData)
       }
@@ -131,8 +144,7 @@ export function RadioTab () {
         }
       }
 
-      if (
-        apModels ||
+      if (apModels || updateExternalAntenna || updateAntennaType ||
         radioData ||
         isLoadBalancingDataChanged ||
         isClientAdmissionControlDataChanged) {
@@ -147,7 +159,8 @@ export function RadioTab () {
           isLoadBalancingDataChanged: false,
           isClientAdmissionControlDataChanged: false
         }
-        delete newRadioContextData.apModels
+        delete newRadioContextData.updateExternalAntenna
+        delete newRadioContextData.updateAntennaType
         delete newRadioContextData.radioData
 
         setEditRadioContextData(newRadioContextData)

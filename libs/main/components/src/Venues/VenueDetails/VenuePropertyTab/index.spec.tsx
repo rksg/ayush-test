@@ -1,7 +1,6 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import moment              from 'moment-timezone'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import moment    from 'moment-timezone'
+import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -12,8 +11,8 @@ import {
   PropertyUrlsInfo,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import {
   mockEnabledNoNSGPropertyConfig,
@@ -207,7 +206,7 @@ describe('Property Unit Page', () => {
     // select one of row and open edit drawer
     const firstRowName = mockPropertyUnitList.content[0].name
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
-    await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
+    await screen.findAllByRole('link', { name: mockConnectionMeterings[0].name })
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
@@ -333,40 +332,68 @@ describe('Property Unit Page', () => {
     await waitFor(() => expect(importFn).toHaveBeenCalled())
   })
 
-  it('should export Units to CSV', async () => {
-    const exportFn = jest.fn()
+  it('should support edit multiple units', async () => {
+    render(<Provider><VenuePropertyTab /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
 
-    mockServer.use(
-      rest.post(
-        PropertyUrlsInfo.exportPropertyUnits.url,
-        (req, res, ctx) => {
-          const headers = req['headers']
+    await waitFor(() => expect(getPersonaGroupSpy).toHaveBeenCalled())
 
-          if (headers.get('accept') !== 'text/csv') {
-            return res(ctx.json(mockPropertyUnitList))
-          } else {
-            exportFn()
+    await waitFor(() => {
+      expect(screen.queryByText(/Access Point/i)).toBeNull()
+    })
+    expect(await screen.findByText(/unit name/i)).toBeInTheDocument()
 
-            return res(ctx.set({
-              'content-disposition': 'attachment; filename=Units_20230118100829.csv',
-              'content-type': 'text/csv;charset=ISO-8859-1'
-            }), ctx.text('Property'))
-          }
-        }
-      )
-    )
+    // Find rows for editing
+    const firstRowName = mockPropertyUnitList.content[0].name
+    const firstRow = await screen.findByRole('cell', { name: firstRowName })
+    const secondRowName = mockPropertyUnitList.content[1].name
+    const secondRow = await screen.findByRole('cell', { name: secondRowName })
 
-    render(
-      <Provider><VenuePropertyTab /></Provider>,
-      {
-        route: {
-          params,
-          path: '/:tenantId/t/venues/:venueId/venue-details/units'
-        }
-      })
-
-    const exportBtn = await screen.findByTestId('export-unit')
-    await userEvent.click(exportBtn)
-    await waitFor(() => expect(exportFn).toHaveBeenCalled())
+    await userEvent.click(firstRow)
+    await userEvent.click(secondRow)
+    await screen.findByRole('button', { name: /edit/i })
   })
 })
+
+
+it('should export Units to CSV', async () => {
+  const exportFn = jest.fn()
+
+  mockServer.use(
+    rest.post(
+      PropertyUrlsInfo.exportPropertyUnits.url,
+      (req, res, ctx) => {
+        const headers = req['headers']
+
+        if (headers.get('accept') !== 'text/csv') {
+          return res(ctx.json(mockPropertyUnitList))
+        } else {
+          exportFn()
+
+          return res(ctx.set({
+            'content-disposition': 'attachment; filename=Units_20230118100829.csv',
+            'content-type': 'text/csv;charset=ISO-8859-1'
+          }), ctx.text('Property'))
+        }
+      }
+    )
+  )
+
+  render(
+    <Provider><VenuePropertyTab /></Provider>,
+    {
+      route: {
+        params,
+        path: '/:tenantId/t/venues/:venueId/venue-details/units'
+      }
+    })
+
+  const exportBtn = await screen.findByTestId('export-unit')
+  await userEvent.click(exportBtn)
+  await waitFor(() => expect(exportFn).toHaveBeenCalled())
+})
+

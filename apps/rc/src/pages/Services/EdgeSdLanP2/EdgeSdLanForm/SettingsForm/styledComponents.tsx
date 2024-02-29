@@ -1,24 +1,29 @@
-import styled from 'styled-components/macro'
+import { Col } from 'antd'
+import styled  from 'styled-components/macro'
 
-import { Button } from '@acx-ui/components'
+import { SdLanTopologyDiagram } from '@acx-ui/rc/components'
 
-export const AlertText = styled.div`
-  min-height: 35px;
-
-  & span {
-    color: var(--acx-semantics-red-50);
-    font-size: var(--acx-body-4-font-size);
-  }
-`
-
-export const LinkButton = styled(Button)`
-  vertical-align: inherit;
-  & span {
-    color: inherit;
-  }
-`
-
-export const Diagram = styled.img`
-  width: 220px;
+export const StyledDiagram = styled(SdLanTopologyDiagram)`
   margin-top: 40px;
+`
+
+export const FieldText = styled.div`
+  font-size: var(--acx-body-4-font-size);
+`
+export const ClusterSelectorHelper = styled(FieldText)`
+  color: var(--acx-neutrals-60);
+  margin-top: -4px;
+  & svg {
+    vertical-align: sub;
+  }
+`
+export const VenueSelectorText = styled(FieldText)`
+  margin-top: -10px;
+  margin-bottom: var(--acx-select-item-top-padding);
+`
+
+export const VerticalSplitLine = styled(Col)`
+  margin: auto 0;
+  height: 350px;
+  border-left: 1px solid var(--acx-neutrals-30);
 `

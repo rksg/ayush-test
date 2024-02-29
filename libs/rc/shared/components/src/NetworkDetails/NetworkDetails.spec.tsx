@@ -1,14 +1,31 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen }                   from '@acx-ui/test-utils'
-import { RolesEnum }                                    from '@acx-ui/types'
-import { getUserProfile, setUserProfile }               from '@acx-ui/user'
+import { useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                             from '@acx-ui/store'
+import { mockServer, render, screen }                                           from '@acx-ui/test-utils'
+import { RolesEnum }                                                            from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                       from '@acx-ui/user'
 
-import { NetworkDetails } from './NetworkDetails'
+import { venuesResponse } from '../NetworkForm/__tests__/fixtures'
+
+import { networkDetailHeaderData } from './__tests__/fixtures'
+import { NetworkDetails }          from './NetworkDetails'
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+beforeEach(() => {
+  mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+})
+
+afterEach(() => {
+  mockedUseConfigTemplate.mockRestore()
+})
 
 jest.mock('./NetworkIncidentsTab', () => ({
   NetworkIncidentsTab: () => <div data-testid='rc-NetworkIncidentsTab'>incidents</div>
@@ -36,16 +53,6 @@ const network = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 
-const networkDetailHeaderData = {
-  activeVenueCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  network: {
-    clients: 1
-  }
-}
-
 jest.mock('socket.io-client')
 
 const mockedVenuesResult = {
@@ -62,6 +69,9 @@ describe('NetworkDetails', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -82,7 +92,17 @@ describe('NetworkDetails', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(
+        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        (req, res, ctx) => res(ctx.json(venuesResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
@@ -98,6 +118,22 @@ describe('NetworkDetails', () => {
 
     expect(await screen.findByText('overview')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(5)
+  })
+
+  it('renders a tab with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'venues'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Configuration Templates')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 
   it('renders another tab', async () => {

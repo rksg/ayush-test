@@ -6,10 +6,10 @@ import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }        
 import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { isEqualCaptivePortal }                                                                   from '@acx-ui/rc/components'
 import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
-import { Client, ClientStatusEnum, ClientUrlsInfo }                                               from '@acx-ui/rc/utils'
+import { Client, ClientStatusEnum }                                                               from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useSearchParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                         from '@acx-ui/user'
-import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter }                    from '@acx-ui/utils'
+import { DateFilter, DateRange, encodeParameter, useDateFilter }                                  from '@acx-ui/utils'
 
 
 import ClientDetailTabs from './ClientDetailTabs'
@@ -49,18 +49,13 @@ function ClientDetailPageHeader () {
       // case 'download-information':
       //   break
       case 'disconnect-client':
-        const clientData = enableNewApi(ClientUrlsInfo.disconnectClient)
-          ? [{
-            clientMac: clientId,
-            serialNumber: clentDetails?.apSerialNumber
-          }]
-          : [{
-            clientMac: clientId,
-            apMac: clentDetails?.apMac
-          }]
+        const clientData = [{
+          clientMac: clientId,
+          serialNumber: clentDetails?.apSerialNumber
+        }]
         disconnectClient({ params: { tenantId }, payload: clientData }).then(()=>{
           const period = encodeParameter<DateFilter>({
-            startDate: moment().subtract(24, 'hours').format(),
+            startDate: moment().subtract(8, 'hours').format(),
             endDate: moment().format(),
             range: DateRange.custom
           })
@@ -108,8 +103,7 @@ function ClientDetailPageHeader () {
       // },
         {
           label: $t({ defaultMessage: 'Disconnect Client' }),
-          disabled: enableNewApi(ClientUrlsInfo.disconnectClient) ?
-            !clentDetails?.apSerialNumber : !clentDetails?.apMac,
+          disabled: !clentDetails?.apSerialNumber,
           key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len

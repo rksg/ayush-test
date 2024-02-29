@@ -113,9 +113,9 @@ export function GenerateNewPasswordModal (props: {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }
@@ -139,6 +139,7 @@ export function GenerateNewPasswordModal (props: {
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
   return (<Modal
+    data-testid='generate-password-modal'
     title={$t({ defaultMessage: 'Generate New Password' })}
     visible={props.generateModalVisible}
     okButtonProps={{ disabled: buttonDisabled }}

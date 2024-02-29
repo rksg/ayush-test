@@ -20,7 +20,15 @@ import {
   ConnectionMetering,
   BillingCycleType,
   TemplateScope,
-  MessageType, PassphraseFormatEnum, MacRegistrationPool
+  MessageType,
+  PassphraseFormatEnum,
+  MacRegistrationPool,
+  NetworkTypeEnum,
+  BasicServiceSetPriorityEnum,
+  RfBandUsageEnum,
+  BssMinimumPhyRateEnum,
+  PhyTypeConstraintEnum,
+  ManagementFrameMinimumPhyRateEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -28,7 +36,7 @@ export const successResponse = {
 }
 
 export const venuelist = {
-  totalCount: 10,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -70,25 +78,27 @@ export const venueDetailHeaderData = {
   }
 }
 
-export const venueApCompatibilitiesData = [
-  {
-    id: '8caa8f5e01494b5499fa156a6c565138',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
+export const venueApCompatibilitiesData = {
+  apCompatibilities: [
+    {
+      id: '8caa8f5e01494b5499fa156a6c565138',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
       }
-      ]
+      ],
+      total: 1,
+      incompatible: 1
     }
-    ],
-    total: 1,
-    incompatible: 1
-  }
-]
+  ]
+}
 
 export const apCompatibilitiesFilterData = [
   {
@@ -587,7 +597,8 @@ export const venueNetworkList = {
       ssid: 'test_1',
       venues: {
         count: 0,
-        names: []
+        names: [],
+        ids: []
       },
       aps: 0,
       description: '',
@@ -603,7 +614,8 @@ export const venueNetworkList = {
       ssid: 'test_2',
       venues: {
         count: 0,
-        names: []
+        names: [],
+        ids: []
       },
       aps: 0,
       description: '',
@@ -614,103 +626,112 @@ export const venueNetworkList = {
   ]
 }
 
-export const venueNetworkApCompatibilitiesData = [
-  {
-    id: 'd556bb683e4248b7a911fdb40c307aa5',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
-      }
-      ]
-    }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: 'cd922ec00f744a16b4b784f3305ec0aa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  }
-]
-
-export const venuesApCompatibilitiesData = [
-  {
-    id: 'd556bb683e4248b7a911fdb40c307aa5',
-    incompatibleFeatures: [ {
-      featureName: 'EXAMPLE-FEATURE-1',
-      requiredFw: '7.0.0.0.123',
-      requiredModel: '11be',
-      incompatibleDevices: [{
-        firmware: '6.2.3.103.233',
-        model: 'R550',
-        count: 1
-      }
-      ]
-    }
-    ],
-    total: 1,
-    incompatible: 1
-  },{
-    id: 'cd922ec00f744a16b4b784f3305ec0aa',
-    incompatibleFeatures: [],
-    total: 1,
-    incompatible: 0
-  }
-]
-
-export const venueNetworkApGroup = {
-  response: [
+export const venueNetworkApCompatibilitiesData = {
+  apCompatibilities: [
     {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'd556bb683e4248b7a911fdb40c307aa5',
-      apGroups: [
-        {
-          id: 'test',
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
         }
+        ]
+      }
       ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
-    },
-    {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
-      apGroups: [
-        {
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
-        }
-      ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
+      total: 1,
+      incompatible: 1
+    },{
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
     }
   ]
 }
 
+
+export const venuesApCompatibilitiesData = {
+  apCompatibilities: [
+    {
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      incompatibleFeatures: [ {
+        featureName: 'EXAMPLE-FEATURE-1',
+        requiredFw: '7.0.0.0.123',
+        requiredModel: ['11be'],
+        incompatibleDevices: [{
+          firmware: '6.2.3.103.233',
+          model: 'R550',
+          count: 1
+        }
+        ]
+      }
+      ],
+      total: 1,
+      incompatible: 1
+    },{
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      incompatibleFeatures: [],
+      total: 1,
+      incompatible: 0
+    }
+  ]
+}
+
+export const venueNetworkApGroupData = [
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+    apGroups: [
+      {
+        id: 'test',
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: RadioEnum.Both,
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: RadioEnum.Both
+  },
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
+    apGroups: [
+      {
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: RadioEnum.Both,
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: RadioEnum.Both
+  }
+]
+
+export const venueNetworkApGroup = {
+  response: venueNetworkApGroupData
+}
+
+
 export const networkDeepList = {
   response: [
     {
-      type: 'aaa',
+      type: NetworkTypeEnum.AAA,
       wlan: {
         wlanSecurity: WlanSecurityEnum.WPA3,
         advancedCustomization: {
+          bssPriority: BasicServiceSetPriorityEnum.HIGH,
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
           totalUplinkRateLimiting: 0,
@@ -730,10 +751,10 @@ export const networkDeepList = {
           enableFastRoaming: false,
           mobilityDomainId: 1,
           radioCustomization: {
-            rfBandUsage: 'BOTH',
-            bssMinimumPhyRate: 'default',
-            phyTypeConstraint: 'OFDM',
-            managementFrameMinimumPhyRate: '6'
+            rfBandUsage: RfBandUsageEnum.BOTH,
+            bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
+            phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
+            managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6
           },
           enableSyslog: false,
           clientInactivityTimeout: 120,
@@ -759,7 +780,8 @@ export const networkDeepList = {
           arpRequestRateLimit: 15,
           enableDhcpRequestRateLimit: true,
           dhcpRequestRateLimit: 15,
-          dnsProxyEnabled: false
+          dnsProxyEnabled: false,
+          vlanPool: null
         },
         vlanId: 1,
         ssid: 'test_2',
@@ -779,13 +801,15 @@ export const networkDeepList = {
       name: 'test_2',
       enableAuthProxy: false,
       enableAccountingProxy: false,
-      id: 'cd922ec00f744a16b4b784f3305ec0aa'
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      venues: []
     },
     {
-      type: 'psk',
+      type: NetworkTypeEnum.PSK,
       wlan: {
         wlanSecurity: WlanSecurityEnum.WPA2Personal,
         advancedCustomization: {
+          bssPriority: BasicServiceSetPriorityEnum.HIGH,
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
           totalUplinkRateLimiting: 0,
@@ -804,10 +828,10 @@ export const networkDeepList = {
           enableFastRoaming: false,
           mobilityDomainId: 1,
           radioCustomization: {
-            rfBandUsage: 'BOTH',
-            bssMinimumPhyRate: 'default',
-            phyTypeConstraint: 'OFDM',
-            managementFrameMinimumPhyRate: '6'
+            rfBandUsage: RfBandUsageEnum.BOTH,
+            bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
+            phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
+            managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6
           },
           enableSyslog: false,
           clientInactivityTimeout: 120,
@@ -833,7 +857,8 @@ export const networkDeepList = {
           arpRequestRateLimit: 15,
           enableDhcpRequestRateLimit: true,
           dhcpRequestRateLimit: 15,
-          dnsProxyEnabled: false
+          dnsProxyEnabled: false,
+          vlanPool: null
         },
         macAddressAuthentication: false,
         macAuthMacFormat: 'UpperDash',
@@ -855,6 +880,41 @@ export const networkDeepList = {
         isAllApGroups: true,
         allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz]
       }]
+    }
+  ]
+}
+
+export const mockVenueNetworkData = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'test_1',
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'test_1',
+      venues: { count: 0, names: [], ids: [] },
+      aps: 0,
+      description: '',
+      clients: 0,
+      activated: { isActivated: true, isDisabled: false, errors: [] },
+      deepNetwork: networkDeepList.response[1],
+      incompatible: 0
+    },
+    {
+      name: 'test_2',
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      vlan: 1,
+      nwSubType: 'aaa',
+      ssid: 'test_2',
+      venues: { count: 0, names: [], ids: [] },
+      aps: 0,
+      description: '',
+      clients: 0,
+      activated: { isActivated: false, isDisabled: false, errors: [] },
+      deepNetwork: networkDeepList.response[0],
+      incompatible: 0
     }
   ]
 }
@@ -3122,6 +3182,13 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       dpsks: [],
       personaId: 'persona-1',
       vni: 0
+    }, {
+      id: 'unit-id-2',
+      name: 'unit-2',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-2',
+      vni: 1
     }
   ]
 }
@@ -3376,6 +3443,25 @@ export const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
     {
       id: 'persona-group-id-1',
       name: 'persona-group-name-1'
+    }
+  ]
+}
+
+export const mockVenueConfigTemplates = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '069c06765c9841fcaf35bb5dbd2319eb',
+      name: 'My1stVenueTemplate1'
+    },
+    {
+      id: 'eb9555414ea444aa984d5399f0c1c892',
+      name: 'My1stVenueTemplate2'
     }
   ]
 }

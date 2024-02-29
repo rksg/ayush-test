@@ -2,9 +2,9 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                    from '@acx-ui/components'
-import { SwitchConfigHistoryTable, SwitchVeTable } from '@acx-ui/rc/components'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
+import { Tabs }                                                                  from '@acx-ui/components'
+import { SwitchConfigHistoryTable, SwitchVeTable, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useNavigate, useParams }                                                from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
@@ -17,7 +17,7 @@ export function SwitchConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${params.venueId}/edit/switch/`)
+  const basePath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/switch/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const onTabChange = (tab: string) => {

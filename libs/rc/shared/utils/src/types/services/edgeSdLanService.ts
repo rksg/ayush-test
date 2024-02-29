@@ -33,3 +33,31 @@ export interface EdgeSdLanViewData {
   vlanNum?: number
   vxlanTunnelNum?: number
 }
+
+export interface EdgeSdLanSettingP2 extends EdgeSdLanSetting {
+  isGuestTunnelEnabled: boolean;
+  guestEdgeId: string;
+  guestTunnelProfileId: string;
+  guestNetworkIds: string[];
+}
+
+export interface EdgeSdLanViewDataP2 extends EdgeSdLanViewData {
+  isGuestTunnelEnabled: boolean
+  guestEdgeId: string
+  guestTunnelProfileId: string
+  guestNetworkIds: string[]
+  guestEdgeName?: string
+  guestTunnelProfileName?: string
+  guestNetworkInfos?: {
+    networkId: string
+    networkName: string
+    }[]
+}
+
+export interface EdgeSdLanActivateNetworkPayload {
+  isGuestTunnelUtilized: boolean
+}
+
+export interface EdgeSdLanToggleDmzPayload {
+  isGuestTunnelEnabled: boolean
+}

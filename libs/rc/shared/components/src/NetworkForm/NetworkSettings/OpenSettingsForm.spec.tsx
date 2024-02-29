@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { userEvent } from '@storybook/testing-library'
-import { Form }      from 'antd'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -17,12 +17,18 @@ import {
   venueListResponse,
   venuesResponse
 } from '../__tests__/fixtures'
+import { MLOContext } from '../NetworkForm'
 
 import { OpenSettingsForm } from './OpenSettingsForm'
 
 jest.mock('./MacRegistrationListComponent', () => () => {
   return <div data-testid='MacRegistrationListComponentId' />
 })
+
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
@@ -39,7 +45,7 @@ describe('OpenNetwork form', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -63,9 +69,14 @@ describe('OpenNetwork form', () => {
 
   it('should render OpenNetwork successfully with mac address format', async () => {
     render(<Provider>
-      <Form>
-        <OpenSettingsForm />
-      </Form>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <OpenSettingsForm />
+        </Form>
+      </MLOContext.Provider>
     </Provider>, { route: { params } })
 
     await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))

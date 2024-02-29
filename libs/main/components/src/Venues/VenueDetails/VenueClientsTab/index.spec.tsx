@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { waitFor } from '@testing-library/react'
-import { rest }    from 'msw'
+import { rest } from 'msw'
 
 import { useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
@@ -10,7 +9,8 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { VenueClientsTab } from './index'

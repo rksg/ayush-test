@@ -15,6 +15,7 @@ configure({ asyncUtilTimeout: 3000 })
 // turn off warning from async-validator
 global.ASYNC_VALIDATOR_NO_WARNING = 1
 
+
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
@@ -56,6 +57,9 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 beforeAll(() => {
   mockServer.listen()
   setUpIntl({ locale: 'en-US', messages: {} })
+
+  // turn off warning from react act
+  global.IS_REACT_ACT_ENVIRONMENT = false
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)

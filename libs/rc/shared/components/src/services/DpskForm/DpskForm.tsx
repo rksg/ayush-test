@@ -9,32 +9,37 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
+  useCreateDpskTemplateMutation,
   useGetDpskListQuery,
   useGetDpskQuery,
-  useUpdateDpskMutation
+  useGetDpskTemplateQuery,
+  useGetEnhancedDpskTemplateListQuery,
+  useUpdateDpskMutation,
+  useUpdateDpskTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   CreateDpskFormFields,
   PassphraseFormatEnum,
   ServiceType,
-  getServiceRoutePath,
   ServiceOperation,
   DpskSaveData,
   DeviceNumberType,
-  getServiceListRoutePath,
   DpskMutationResult,
-  DpskNewFlowMutationResult
+  DpskNewFlowMutationResult,
+  useConfigTemplate,
+  useServiceListBreadcrumb,
+  generateServicePageHeaderTitle,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult,
+  useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-
-import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
 
 import DpskSettingsForm                                               from './DpskSettingsForm'
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
@@ -48,32 +53,38 @@ interface DpskFormProps {
 export function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
-  const linkToServices = useTenantLink(tablePath)
+  const linkToInstances = useServicePreviousPath(ServiceType.DPSK, ServiceOperation.LIST)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams },
-    { skip: !isModalModeForNewConfigFlow() })
-  const [ createDpsk ] = useCreateDpskMutation()
-  const [ updateDpsk ] = useUpdateDpskMutation()
-  const {
-    data: dataFromServer,
-    isLoading,
-    isFetching
-  } = useGetDpskQuery({ params: { ...params, ...dpskNewConfigFlowParams } }, { skip: !editMode })
+
+  // eslint-disable-next-line max-len
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery, !isModalMode()
+  )
+
+  // eslint-disable-next-line max-len
+  const [ createDpsk ] = useConfigTemplateMutationFnSwitcher(useCreateDpskMutation, useCreateDpskTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateDpsk ] = useConfigTemplateMutationFnSwitcher(useUpdateDpskMutation, useUpdateDpskTemplateMutation)
+
+  // eslint-disable-next-line max-len
+  const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>(
+    useGetDpskQuery, useGetDpskTemplateQuery, !editMode
+  )
+
   const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
     deviceNumberType: DeviceNumberType.UNLIMITED
   }
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
 
-  function isModalModeForNewConfigFlow (): boolean {
-    return modalMode && isNewConfigFlow && !editMode
+  function isModalMode (): boolean {
+    return modalMode && !editMode
   }
 
   useEffect(() => {
@@ -101,24 +112,19 @@ export function DpskForm (props: DpskFormProps) {
     try {
       if (editMode) {
         result = await updateDpsk({
-          params: { ...params, ...dpskNewConfigFlowParams },
+          params: { ...params },
           payload: _.omit(dpskSaveData, 'id')
         }).unwrap()
       } else {
         result = await createDpsk({
-          params: dpskNewConfigFlowParams,
           payload: dpskSaveData
         }).unwrap()
       }
 
       if (modalMode) {
-        if (isNewConfigFlow) {
-          idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
-        } else {
-          modalCallBack?.(result as DpskSaveData)
-        }
+        idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
       } else {
-        navigate(linkToServices, { replace: true })
+        navigate(linkToInstances, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -128,29 +134,15 @@ export function DpskForm (props: DpskFormProps) {
   return (
     <>
       {!modalMode && <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit DPSK Service' })
-          : $t({ defaultMessage: 'Add DPSK Service' })
-        }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DPSK' }),
-            link: tablePath
-          }
-        ]}
+        title={generateServicePageHeaderTitle(editMode, isTemplate, ServiceType.DPSK)}
+        breadcrumb={breadcrumb}
       />}
       <Loader states={[{ isLoading, isFetching }]}>
         <StepsFormLegacy<CreateDpskFormFields>
           formRef={formRef}
-          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
+          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToInstances)}
           onFinish={saveData}
-          buttonLabel={{
-            submit: editMode
-              ? $t({ defaultMessage: 'Apply' })
-              : $t({ defaultMessage: 'Add' })
-          }}
+          editMode={editMode}
         >
           <StepsFormLegacy.StepForm<CreateDpskFormFields>
             name='details'

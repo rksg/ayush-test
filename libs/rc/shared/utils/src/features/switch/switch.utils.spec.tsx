@@ -22,7 +22,10 @@ import {
   isEmpty,
   getSwitchPortLabel,
   sortPortFunction,
-  isSameModelFamily
+  isSameModelFamily,
+  convertInputToUppercase,
+  isL3FunctionSupported,
+  isFirmwareSupportAdminPassword
 } from '.'
 
 const switchRow ={
@@ -273,6 +276,7 @@ describe('switch.utils', () => {
       expect(getStackMemberStatus(STACK_MEMBERSHIP.ACTIVE)).toBe('Active')
       expect(getStackMemberStatus(STACK_MEMBERSHIP.STANDBY)).toBe('Standby')
       expect(getStackMemberStatus(STACK_MEMBERSHIP.MEMBER)).toBe('Member')
+      expect(getStackMemberStatus(STACK_MEMBERSHIP.STANDALONE)).toBe('Standalone')
       expect(getStackMemberStatus('', true)).toBe('Member')
       expect(getStackMemberStatus('')).toBeFalsy()
     })
@@ -356,4 +360,49 @@ describe('switch.utils', () => {
     })
   })
 
+  describe('Test isFirmwareSupportAdminPassword function', () => {
+    it('should render correctly', async () => {
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd2')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010f')).toBe(false)
+
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd2_b4')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010b_rc88')).toBe(false)
+    })
+  })
+
+  describe('Test convertInputToUppercase function', () => {
+    it('should render correctly', async () => {
+      const inputElement = document.createElement('input')
+      inputElement.value = 'fek3224r0ag'
+      const mockEvent = {
+        target: inputElement
+      } as React.ChangeEvent<HTMLInputElement>
+      convertInputToUppercase(mockEvent)
+      expect(inputElement.value).toBe('FEK3224R0AG')
+    })
+  })
+
+  describe('Test isL3FunctionSupported function', () => {
+    it('returns false for undefined switchType', () => {
+      const result = isL3FunctionSupported(undefined)
+      expect(result).toBe(false)
+    })
+
+    it('returns false for empty string switchType', () => {
+      const result = isL3FunctionSupported('')
+      expect(result).toBe(false)
+    })
+
+    it('returns true for ROUTER switchType', () => {
+      const result = isL3FunctionSupported(SWITCH_TYPE.ROUTER)
+      expect(result).toBe(true)
+    })
+
+    it('returns treu for SWITCH switchType', () => {
+      const result = isL3FunctionSupported(SWITCH_TYPE.SWITCH)
+      expect(result).toBe(false)
+    })
+  })
 })

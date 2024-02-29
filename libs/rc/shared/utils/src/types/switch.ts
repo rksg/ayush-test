@@ -148,6 +148,7 @@ export interface VeViewModel {
   ingressAclName?: string
   egressAclName?: string
   name?: string
+  connectedVe?: boolean
   dhcpRelayAgent?: string
   defaultVlan: boolean
   deviceStatus: SwitchStatusEnum
@@ -199,7 +200,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  unitId = 1
+  unitId?: number
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -236,6 +237,7 @@ export class SwitchViewModel extends Switch {
   position?: NetworkDevicePosition
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface SwitchRow {
@@ -273,6 +275,7 @@ export interface SwitchRow {
   clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface StackMember {

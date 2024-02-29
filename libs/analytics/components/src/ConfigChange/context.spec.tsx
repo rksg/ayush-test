@@ -1,9 +1,8 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import moment      from 'moment-timezone'
+import userEvent from '@testing-library/user-event'
+import moment    from 'moment-timezone'
 
-import { render, screen } from '@acx-ui/test-utils'
-import { DateRange }      from '@acx-ui/utils'
+import { render, screen, waitFor } from '@acx-ui/test-utils'
+import { DateRange }               from '@acx-ui/utils'
 
 import { KPIFilterProvider, KPIFilterContext, ConfigChangeProvider, ConfigChangeContext } from './context'
 

@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
+import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
 
@@ -11,6 +12,7 @@ function NetworkTabs () {
   const params = useParams()
   const basePath = useTenantLink(`/networks/wireless/${params.networkId}/network-details/`)
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -20,11 +22,22 @@ function NetworkTabs () {
   const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
 
   const [apsCount, venuesCount] = [
-    data?.aps.totalApCount ?? 0,
+    data?.aps?.totalApCount ?? 0,
     data?.activeVenueCount ?? 0
   ]
 
   const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
+
+  if (isTemplate) {
+    return (
+      <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+          key='venues'
+        />
+      </Tabs>
+    )
+  }
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>

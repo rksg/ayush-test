@@ -3,17 +3,17 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useGetDpskListQuery }          from '@acx-ui/rc/services'
+import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   transformNetworkEncryption,
   transformDpskNetwork,
   DpskNetworkType,
   DpskSaveData,
-  transformAdvancedDpskExpirationText
+  transformAdvancedDpskExpirationText,
+  TableResult,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-
-import { useDpskNewConfigFlowParams } from '../../services/useDpskNewConfigFlowParams'
 
 export function DpskSummaryForm (props: {
   summaryData: NetworkSaveData;
@@ -21,8 +21,9 @@ export function DpskSummaryForm (props: {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { data: dpskList } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery
+  )
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
 
   useEffect(() => {

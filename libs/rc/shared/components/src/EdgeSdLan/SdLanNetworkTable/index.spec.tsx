@@ -1,13 +1,14 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockNetworkSaveData, mockDeepNetworkList } from '../__tests__/fixtures'
@@ -16,28 +17,41 @@ import { EdgeSdLanActivatedNetworksTable } from '.'
 
 const mockedSetFieldValue = jest.fn()
 const mockedOnChangeFn = jest.fn()
+const mockedGetNetworkDeepList = jest.fn()
 const { click } = userEvent
 
-describe('Edge SD-LAN ActivatedNetworksTable', () => {
-  const mockedGetNetworkDeepList = jest.fn()
+const services = require('@acx-ui/rc/services')
 
+describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
+    mockedOnChangeFn.mockReset()
     mockedGetNetworkDeepList.mockReset()
 
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
+
+    // mockServer can be removed
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockedGetNetworkDeepList()
           return res(ctx.json(mockDeepNetworkList))
         }
       )
     )
+
   })
 
   it('should correctly render', async () => {
@@ -49,9 +63,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
+    const rows = await checkPageLoaded()
     rows.forEach(row => {
       expect(within(row).getByRole('switch')).not.toBeChecked()
     })
@@ -66,10 +78,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
-
+    await checkPageLoaded()
     const switchBtn1 = within(await screen.findByRole('row', { name: /MockedNetwork 1/i }))
       .getByRole('switch')
     expect(switchBtn1).not.toBeChecked()
@@ -97,10 +106,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(3)
-
+    await checkPageLoaded()
     await click(
       within(await screen.findByRole('row', { name: /MockedNetwork 2/i })).getByRole('switch'))
     expect(mockedOnChangeFn).toBeCalledWith({
@@ -116,3 +122,10 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     }])
   })
 })
+
+const checkPageLoaded = async (): Promise<HTMLElement[]> => {
+  await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+  const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+  expect(rows.length).toBe(4)
+  return rows
+}

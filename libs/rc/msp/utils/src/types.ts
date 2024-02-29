@@ -5,7 +5,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  Entitlement
+  Entitlement,
+  TenantMspEc
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -276,6 +277,7 @@ export interface TenantDetail {
   tenantType: string;
   updatedDate?: string;
   upgradeGroup?: string;
+  mspEc?: TenantMspEc;
 }
 
 export interface MspProfile {
@@ -447,23 +449,7 @@ export interface MspRecCustomer {
   email_id?: string
 }
 
-export enum ConfigTemplateType {
-  NETWORK = 'NETWORK',
-  RADIUS = 'RADIUS'
-}
-
-export interface ConfigTemplate {
-  id?: string,
-  name: string,
-  createdBy: string,
-  createdOn: number,
-  ecTenants: string[],
-  templateType: ConfigTemplateType,
-  lastModified: number,
-  lastApplied: number
-}
-
 export enum MspEcTierEnum {
-  Essential = 'Gold',
+  Essentials = 'Gold',
   Professional = 'Platinum'
 }

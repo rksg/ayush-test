@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom'
-import React from 'react'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
@@ -21,6 +20,11 @@ import {
   mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList, mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
+
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
 
 jest.mock('../utils', () => ({
   ...jest.requireActual('../utils'),
@@ -123,7 +127,7 @@ describe('NetworkForm', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -133,8 +137,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,

@@ -44,8 +44,8 @@ describe('SnmpV3AgentTable', () => {
     expect(v3Rows.length).toBe(2)
 
     // Delete SNMPv3 Agent
-    let v3Row = await screen.findByRole('row', { name: /joe_un1/i })
-    await userEvent.click(await within(v3Row).findByRole('checkbox'))
+    expect(within(v3Rows[0]).getByRole('cell', { name: /joe_un1/i })).toBeVisible()
+    await userEvent.click(await within(v3Rows[0]).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
     v3Rows = await screen.findAllByRole('row', { name: /joe_un/i })
@@ -63,8 +63,8 @@ describe('SnmpV3AgentTable', () => {
     expect(v3Rows.length).toBe(2)
 
     // Edit SNMPv3 Agent
-    let v3Row = await screen.findByRole('row', { name: /joe_un2/i })
-    await userEvent.click(await within(v3Row).findByRole('checkbox'))
+    expect(within(v3Rows[1]).getByRole('cell', { name: /joe_un2/i })).toBeVisible()
+    await userEvent.click(await within(v3Rows[1]).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
     await screen.findByText('Edit SNMPv3 Agent')

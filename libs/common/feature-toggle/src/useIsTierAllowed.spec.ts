@@ -1,4 +1,5 @@
 import { useTreatments } from '@splitsoftware/splitio-react'
+import _                 from 'lodash'
 
 import { renderHook }                   from '@acx-ui/test-utils'
 import { AccountType, AccountVertical } from '@acx-ui/utils'
@@ -44,9 +45,11 @@ jest.mock('@acx-ui/user', () => ({
 
 jest.mock('./useIsTierAllowed', () => ({
   ...jest.requireActual('./useIsTierAllowed'),
-  useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3'])
+  useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3']),
+  useFFList: jest.fn(() => ({
+    featureDrawerBetaList: ['beta1', 'beta2', 'beta3']
+  }))
 }))
-
 
 describe('Test useIsTierAllowed function', () => {
   const tenantType = 'REC'
@@ -124,18 +127,74 @@ describe('Test useIsTierAllowed function', () => {
     expect(res1.current.config).toBe('')
   })
 
+  it('should return default vertical feature Ids also when non-default vertical', () => {
+    const jwtPayload = { acx_account_vertical: 'Education' }
+
+    useIsSplitOn.useIsSplitOn = jest.fn().mockReturnValue(true)
+    user.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
+      return { data: { enabled: 'false' } }
+    })
+    utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
+      return {
+        acx_account_tier: 'Platinum',
+        acx_account_vertical: 'Education',
+        isBetaFlag: true
+      }
+    })
+    const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+    expect(enabled).toBeFalsy()
+    // eslint-disable-next-line max-len
+    const accountVertical = defaultVerticals.includes(jwtPayload?.acx_account_vertical as AccountVertical)
+      ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
+    expect(accountVertical).toBe(AccountVertical.EDU)
+  })
+
 })
 
 describe('useGetBetaList', () => {
   it('returns the correct beta list', () => {
-    const useFFList = jest.fn(() => JSON.stringify({
-      betaList: ['beta1', 'beta2', 'beta3']
-    }))
+    const { result } = renderHook(() => useGetBetaList())
+    expect(result.current).toEqual(['beta1', 'beta2', 'beta3'])
+  })
+})
 
-    const { result: res1 } = renderHook(() => useFFList())
-    const { result: res2 } = renderHook(() => useGetBetaList())
-    expect(JSON.parse(res1.current)?.betaList).toEqual(res2.current)
-    expect(res2.current).toEqual(['beta1', 'beta2', 'beta3'])
+describe('Feature Key Test', () => {
+  it('returns the correct feature list', () => {
+    const tenantType = AccountType.REC
+    const accountVertical = AccountVertical.DEFAULT
+    const defaultConfig = {
+      'feature-REC-Education': ['feature1', 'feature2'],
+      'feature-REC-Default': ['feature3', 'feature4'],
+      'betaList': ['beta1', 'beta2'],
+      'alphaList': ['alpha1', 'alpha2']
+    }
+    const userFFConfig = _.cloneDeep(defaultConfig)
+    const betaEnabled = true
+    const userProfile = { dogfood: true }
+
+    const featureKey = [
+      'feature',
+      tenantType,
+      accountVertical
+    ].join('-') as keyof typeof defaultConfig
+
+    const featureDefaultKey = [
+      'feature',
+      tenantType,
+      'Default'
+    ].join('-') as keyof typeof defaultConfig
+    const result = {
+      featureList: (accountVertical === 'Default')?
+        userFFConfig[featureKey] :
+        _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
+      betaList: betaEnabled? userFFConfig['betaList'] : [],
+      featureDrawerBetaList: userFFConfig['betaList'],
+      alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
+    }
+    expect(result.featureList).toEqual(['feature3', 'feature4'])
+    expect(result.betaList).toEqual(['beta1', 'beta2'])
+    expect(result.featureDrawerBetaList).toEqual(['beta1', 'beta2'])
+    expect(result.alphaList).toEqual(['alpha1', 'alpha2'])
   })
 })
 

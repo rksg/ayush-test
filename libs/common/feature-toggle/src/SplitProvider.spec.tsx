@@ -1,9 +1,9 @@
-import { rest } from 'msw'
+import { rest }          from 'msw'
+import { BrowserRouter } from 'react-router-dom'
 
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
-import { isDelegationMode }           from '@acx-ui/utils'
 
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
@@ -92,8 +92,8 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   jest.doMock('@acx-ui/analytics/utils', () => ({
     getUserProfile: jest.fn().mockImplementation(() => ({ accountId: props.tenant }))
   }))
-  jest.doMock('react-router-dom', () => ({
-    useParams: () => ({ tenantId: props.tenant })
+  jest.doMock('@acx-ui/utils', () => ({
+    useTenantId: () => props.tenant
   }))
   jest.doMock('@splitsoftware/splitio-react', () => ({
     SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
@@ -101,7 +101,7 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   }))
   split = require('@splitsoftware/splitio-react')
   const { SplitProvider } = require('./SplitProvider')
-  return <div>{SplitProvider({ children: 'child1' })}</div>
+  return <BrowserRouter><div>{SplitProvider({ children: 'child1' })}</div></BrowserRouter>
 }
 
 describe('SplitProvider', () => {
@@ -161,31 +161,14 @@ describe('useIsTierAllowed', () => {
     )
   })
 
-  it.skip('returns true for allowed feature', () => {
-    jest.mock('./useIsTierAllowed', () => ({
-      useFFList: jest.fn(() => JSON.stringify({
-        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-        betaList: ['PLCY-EDGE', 'BETA-CP']
-
-      }))
-    }))
-    jest.mocked(isDelegationMode).mockReturnValue(true)
-    services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantAccountTierMock }
-    })
-    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'))
-
-    expect(result.current).toBe(true)
-  })
-
-  it.skip('returns false for disallowed feature', () => {
+  it('returns false for disallowed feature', () => {
     jest.mock('./useIsTierAllowed', () => ({
       useFFList: jest.fn(() => ({
         featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
         betaList: ['PLCY-EDGE', 'BETA-CP']
       }))
     }))
-    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     services.useGetAccountTierQuery = jest.fn().mockImplementation(() => {
       return { data: tenantAccountTierMock }
     })
@@ -197,13 +180,15 @@ describe('useIsTierAllowed', () => {
 
 describe('useIsSplitOn', () => {
   it('should return true when the treatment is "on"', () => {
-    const { result } = renderHook(() => useIsSplitOn('testSplitName'))
+    const { result } = renderHook(() => useIsSplitOn('testSplitName'),
+      { wrapper: BrowserRouter })
 
     expect(result.current).toBe(true)
   })
 
   it('should return false when the treatment is "off"', () => {
-    const { result } = renderHook(() => useIsSplitOn('anotherSplitName'))
+    const { result } = renderHook(() => useIsSplitOn('anotherSplitName'),
+      { wrapper: BrowserRouter })
 
     expect(result.current).toBe(false)
   })

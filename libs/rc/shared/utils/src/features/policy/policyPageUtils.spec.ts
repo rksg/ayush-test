@@ -2,7 +2,7 @@ import { renderHook } from '@acx-ui/test-utils'
 
 import { PolicyType } from '../../types'
 
-import { PolicyOperation, generatePolicyPageHeaderTitle, getPolicyListRoutePath, getPolicyRoutePath, usePolicyBreadcrumb } from '.'
+import { PolicyOperation, generatePolicyPageHeaderTitle, getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
@@ -23,17 +23,16 @@ describe('policyPageUtils', () => {
     expect(generatePolicyPageHeaderTitle(false, false, PolicyType.AAA)).toBe('Add RADIUS Server ')
   })
 
-  it('usePolicyBreadcrumb when isTemplate is true', () => {
+  it('usePolicyListBreadcrumb when isTemplate is true', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    const { result } = renderHook(() => usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.CREATE))
+    const { result } = renderHook(() => usePolicyListBreadcrumb(PolicyType.AAA))
 
     expect(result.current).toEqual([])
   })
 
-  it('usePolicyBreadcrumb when isTemplate is false', () => {
+  it('usePolicyListBreadcrumb when isTemplate is false', () => {
     const targetPolicyType = PolicyType.AAA
-    const targetPolicyOper = PolicyOperation.CREATE
-    const { result } = renderHook(() => usePolicyBreadcrumb(targetPolicyType, targetPolicyOper))
+    const { result } = renderHook(() => usePolicyListBreadcrumb(targetPolicyType))
 
     expect(result.current).toEqual([
       { text: 'Network Control' },
@@ -42,7 +41,7 @@ describe('policyPageUtils', () => {
         link: getPolicyListRoutePath(true)
       },
       { text: 'RADIUS Server',
-        link: getPolicyRoutePath({ type: targetPolicyType, oper: targetPolicyOper })
+        link: getPolicyRoutePath({ type: targetPolicyType, oper: PolicyOperation.LIST })
       }
     ])
   })

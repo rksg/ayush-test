@@ -1,7 +1,8 @@
 export enum EdgePortTypeEnum {
   UNCONFIGURED = 'UNCONFIGURED',
   WAN = 'WAN',
-  LAN = 'LAN'
+  LAN = 'LAN',
+  CLUSTER = 'CLUSTER'
 }
 
 export enum EdgeIpModeEnum {
@@ -48,7 +49,8 @@ export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
   NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
-  SD_LAN = 'SDLAN'
+  SD_LAN = 'SDLAN',
+  SD_LAN_P2 = 'SDLAN_P2'
 }
 
 export enum EdgeServiceStatusEnum {

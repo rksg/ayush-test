@@ -215,7 +215,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                               >
                                 5 of 27 clients (18.52%)
                               </span>
@@ -888,7 +888,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                               >
                                 5 of 27 clients (18.52%)
                               </span>
@@ -1189,7 +1189,47 @@ exports[`incident details should render incident details correctly when there is
                             <span
                               class="ant-descriptions-item-label"
                             >
-                              Event End Time
+                              Data Start Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                07/19/2022 02:42
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Data End Time
                             </span>
                           </div>
                         </th>

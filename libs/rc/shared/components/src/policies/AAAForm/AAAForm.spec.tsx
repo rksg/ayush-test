@@ -2,8 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo }                                 from '@acx-ui/msp/utils'
-import { AaaUrls }                                                from '@acx-ui/rc/utils'
+import { AaaUrls, ConfigTemplateUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                           from '@acx-ui/user'
@@ -130,14 +129,14 @@ describe('AAAForm', () => {
     const longSecret = '@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5Ag1'
     const primarySecret = await screen.findByLabelText('Shared Secret')
 
-    await userEvent.type(primarySecret, longSecret)
+    fireEvent.change(primarySecret, { target: { value: longSecret } })
     const primaryAlert = await screen.findByRole('alert')
     expect(primaryAlert).toHaveTextContent('255 characters')
 
     await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/ }))
     const secondaryFieldset = await screen.findByRole('group', { name: /Secondary Server/ })
     const secondarySecret = await within(secondaryFieldset).findByLabelText('Shared Secret')
-    await userEvent.type(secondarySecret, longSecret)
+    fireEvent.change(secondarySecret, { target: { value: longSecret } })
     const secondaryAlert = await within(secondaryFieldset).findByRole('alert')
     expect(secondaryAlert).toHaveTextContent('255 characters')
   })

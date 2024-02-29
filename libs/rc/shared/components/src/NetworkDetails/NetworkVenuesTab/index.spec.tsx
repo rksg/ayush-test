@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi }             from '@acx-ui/rc/services'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeSdLanUrls,
@@ -33,7 +33,7 @@ import {
   params,
   networkVenue_allAps,
   networkVenue_apgroup,
-  networkVenueApCompatibilities
+  networkVenueApCompatibilities, mockNetworkSaveData
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -76,13 +76,16 @@ jest.mock('../../useEdgeActions', () => ({
 
 const mockedApplyFn = jest.fn()
 const mockedGetSdLanFn = jest.fn()
+const mockedGetApCompatibilitiesNetwork = jest.fn()
+
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      mockedGetSdLanFn.mockClear()
+      mockedGetApCompatibilitiesNetwork.mockClear()
     })
-
-    mockedGetSdLanFn.mockClear()
 
     mockServer.use(
       rest.post(
@@ -90,8 +93,16 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -122,7 +133,10 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
@@ -130,6 +144,10 @@ describe('NetworkVenuesTab', () => {
           mockedGetSdLanFn()
           return res(ctx.json(mockedSdLanDataList))
         }
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [network] }))
       )
     )
   })
@@ -176,17 +194,15 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, newApGroup2] }))
       ),
       rest.post(
-        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, newApGroup2] }))
       )
     )
 
-    const toogleButton = await screen.findByRole('switch', { checked: false })
-    fireEvent.click(toogleButton)
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    const toogleButton = await screen.findByRole('switch', { checked: false })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -196,8 +212,7 @@ describe('NetworkVenuesTab', () => {
     const icon = await within(row2).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
 
-    await screen.findByRole('row', { name: /VLAN Pool/i })
-
+    expect(row2).toHaveTextContent(/VLAN Pool/i)
     expect(row2).toHaveTextContent('VLAN Pool: pool1 (Custom)')
     expect(row2).toHaveTextContent('Unassigned APs')
     expect(row2).toHaveTextContent('24/7')
@@ -227,15 +242,17 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
       )
     )
 
-    const toogleButton = await screen.findByRole('switch', { checked: true })
-    fireEvent.click(toogleButton)
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
+    const toogleButton = await screen.findByRole('switch', { checked: true })
+    await userEvent.click(toogleButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -247,7 +264,7 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const mockedNetworkActivation = jest.fn()
 
     mockServer.use(
       rest.get(
@@ -267,16 +284,21 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+        CommonUrlsInfo.networkActivations.url,
+        (_req, res, ctx) => {
+          mockedNetworkActivation()
+          return res(ctx.json(mockNetworkSaveData))
+        }
       )
     )
 
-    fireEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
-    const activateButton = screen.getByRole('button', { name: 'Activate' })
-    fireEvent.click(activateButton)
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
+    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    await userEvent.click(activateButton)
+
+    expect(mockedNetworkActivation).toHaveBeenCalled()
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -285,7 +307,7 @@ describe('NetworkVenuesTab', () => {
   it.skip('Table action bar activate Network and show modal', async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
+        CommonUrlsInfo.getNVenuesList.url,
         (req, res, ctx) => res(ctx.json({ ...list,
           data: [
             list.data[0],
@@ -346,7 +368,7 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const mockedDeleteNetworkVenues = jest.fn()
 
     mockServer.use(
       rest.get(
@@ -359,22 +381,33 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenues.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+        (req, res, ctx) => {
+          mockedDeleteNetworkVenues()
+          return res(ctx.json({ requestId: '456' }))
+        }
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
       ),
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
+
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
+
     await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
     const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
     await userEvent.click(deactivateButton)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(mockedDeleteNetworkVenues).not.toHaveBeenCalled()
+
+    expect(await screen.findByText('No venues activating this network. Use the ON/OFF switches in the list to select the activating venues')).toBeVisible()
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -386,19 +419,25 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
     })
+
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -492,6 +531,13 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         ] }))
       ),
       rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [
+          networkVenue_allAps,
+          { ...networkVenue_apgroup, apGroups: newAPGroups }
+        ] }))
+      ),
+      rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
@@ -506,15 +552,17 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
-    const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /network-venue-1/i })).toBeVisible()
+    expect(within(rows[2]).getByRole('cell', { name: /My-Venue/i })).toBeVisible()
 
-    expect(row2).toHaveTextContent('2 AP Groups')
-    expect(row2).toHaveTextContent('Per AP Group')
+    expect(rows[2]).toHaveTextContent('2 AP Groups')
+    expect(rows[2]).toHaveTextContent('Per AP Group')
 
-    expect(row1).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
-    expect(row2).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
+    expect(rows[1]).toHaveTextContent('ON now') // { day: 'Thu', timeIndex: 5 }
+    expect(rows[2]).toHaveTextContent('OFF now')  // { day: 'Wed', timeIndex: 45 }
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
@@ -550,6 +598,13 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [
+          { ...networkVenue_allAps, apGroups: newVenues[0].apGroups },
+          networkVenue_apgroup
+        ] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [
           { ...networkVenue_allAps, apGroups: newVenues[0].apGroups },
           networkVenue_apgroup
         ] }))
@@ -598,6 +653,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,

@@ -12,6 +12,7 @@ export type { ApTableRefType } from './ApTable'
 export { ApsTabContext } from './ApTable/context'
 export { groupedFields } from './ApTable/config'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
+export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
 export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ClientTabContext } from './ClientDualTable/context'
@@ -35,6 +36,7 @@ export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgePortsTable }  from './EdgeInfoWidget/EdgePortsTable'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
+export { EdgeDhcpSelectionForm } from './EdgeDhcpSelectionForm'
 export { useEdgeDhcpActions } from './EdgeDhcpSetting/useEdgeDhcpActions'
 export { AddEdgeDhcpServiceModal } from './AddEdgeDhcpServiceModal'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
@@ -82,7 +84,6 @@ export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus, defaultSwitchPayload } from './SwitchTable'
 export type { SwitchTableRefType } from './SwitchTable'
 export { SwitchPortTable, isLAGMemberPort, getInactiveTooltip } from './SwitchPortTable'
-export { EditPortDrawer as EditPortDrawerLegacy } from './SwitchPortTable/editPortDrawerLegacy'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { SwitchLagModal } from './SwitchLagDrawer/SwitchLagModal'
 export { TimelineDrawer } from './TimelineDrawer'
@@ -99,6 +100,7 @@ export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
 export { ApFloorplan } from './ApFloorplan'
+export { ApSnmpMibsDownloadInfo } from './ApSnmpMibsDownloadInfo'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
 export { SwitchClientsTable } from './SwitchClientsTable'
@@ -145,15 +147,17 @@ export {
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
-export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
-export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
-export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
-export { ApsTable } from './NetworkSegmentationDetailTableGroup/ApsTable'
-export { AssignedSegmentsTable } from './NetworkSegmentationDetailTableGroup/AssignedSegmentsTable'
-export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwitchesTable'
+export { PersonalIdentityNetworkServiceInfo } from './PersonalIdentityNetworkServiceInfo'
+export { PersonalIdentityNetworkDetailTableGroup } from './PersonalIdentityNetworkDetailTableGroup'
+export { AccessSwitchTable } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
+export { ApsTable } from './PersonalIdentityNetworkDetailTableGroup/ApsTable'
+export {
+  AssignedSegmentsTable
+} from './PersonalIdentityNetworkDetailTableGroup/AssignedSegmentsTable'
+export { DistSwitchesTable } from './PersonalIdentityNetworkDetailTableGroup/DistSwitchesTable'
 export type {
   AccessSwitchTableDataType
-} from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+} from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
   useIsEdgeFeatureReady,
@@ -172,8 +176,16 @@ export {
 } from './AdaptivePolicySettingForm/RadiusAttributeGroupSelectDrawer'
 export {
   EdgeSdLanActivatedNetworksTable,
-  ActivateNetworkSwitchButton } from './EdgeSdLan/SdLanNetworkTable'
+  ActivateNetworkSwitchButton
+} from './EdgeSdLan/SdLanNetworkTable'
 export type { ActivatedNetworksTableProps } from './EdgeSdLan/SdLanNetworkTable'
+export {
+  EdgeSdLanP2ActivatedNetworksTable
+} from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+export type { ActivatedNetworksTableP2Props }
+  from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
+export { useEdgeSdLanActions } from './EdgeSdLan/useEdgeSdLanActions'
+export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
@@ -184,6 +196,9 @@ export {
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
+export { usePersonaListQuery } from './usePersonaListQuery'
+export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
+export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 
 export * from './services'
 export * from './policies'
@@ -199,3 +214,4 @@ export * from './ZoomWidget'
 export * from './NetworkForm'
 export * from './NetworkDetails'
 export * from './users'
+export * from './configTemplates'

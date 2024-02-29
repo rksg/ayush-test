@@ -270,7 +270,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Insufficient Licenses',
-        summary: 'Insufficient Licenses',
+        summary: 'No RRM recommendation due to incomplete license compliance',
         status: 'Insufficient Licenses',
         statusTooltip: 'Insufficient Licenses',
         statusEnum: 'insufficientLicenses',
@@ -292,7 +292,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verification Error',
-        summary: 'Verification Error',
+        summary: 'No RRM recommendation due to verification error',
         status: 'Verification Error',
         statusTooltip: 'Verification Error',
         statusEnum: 'verificationError',
@@ -314,7 +314,7 @@ describe('Recommendation services', () => {
           text: 'Low'
         },
         category: 'Verified',
-        summary: 'Verified',
+        summary: 'AI verified and in optimal state',
         status: 'Verified',
         statusTooltip: 'Verified',
         statusEnum: 'verified',
@@ -326,6 +326,71 @@ describe('Recommendation services', () => {
       },
       {
         ...recommendationListResult.recommendations[7],
+        id: '4', // _.uniqueId()
+        scope: `vsz34 (SZ Cluster)
+> 23-IND-BNG-D23-Keshav-Home (Domain)
+> 23-IND-BNG-D23-Keshav-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Unqualified Zone',
+        summary: 'No RRM recommendation as venue is unqualified',
+        status: 'Unqualified Zone',
+        statusTooltip: 'Unqualified Zone',
+        statusEnum: 'unqualifiedZone',
+        crrmOptimizedState: {
+          ...crrmStates.unqualifiedZone,
+          text: 'Unqualified Zone'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[8],
+        id: '5', // _.uniqueId()
+        scope: `vsz34 (SZ Cluster)
+> 25-US-CA-D25-SandeepKour-home (Domain)
+> 25-US-CA-D25-SandeepKour-home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'No APs',
+        summary: 'No RRM recommendation as venue has no APs',
+        status: 'No APs',
+        statusTooltip: 'No APs',
+        statusEnum: 'noAps',
+        crrmOptimizedState: {
+          ...crrmStates.noAps,
+          text: 'No APs'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[9],
+        id: '6', // _.uniqueId()
+        scope: `vsz-h-bdc-home-network-05 (SZ Cluster)
+> 22-US-CA-Z22-Aaron-Home (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.low,
+          text: 'Low'
+        },
+        category: 'Unknown',
+        summary: 'Unknown',
+        status: 'Unknown',
+        statusTooltip: 'Unknown',
+        statusEnum: 'unknown',
+        crrmOptimizedState: {
+          ...crrmStates.unknown,
+          text: 'Unknown'
+        },
+        toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[10],
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',

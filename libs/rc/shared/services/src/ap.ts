@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
@@ -56,9 +57,8 @@ import {
   AFCStatus,
   ApGroupViewModel,
   ApManagementVlan,
-  ApIncompatibleFeature,
-  ApCompatibility
-
+  ApFeatureSet,
+  ApAntennaTypeSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -123,9 +123,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        const apGroupListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
-          ...venueListReq,
+          ...apGroupListReq,
           body: payload
         }
       },
@@ -533,6 +533,15 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
@@ -611,9 +620,44 @@ export const apApi = baseApApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
-    resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
-      query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
-      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
+    getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'ANTENNA' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApAntennaTypeSettings',
+            'ResetApAntennaTypeSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ANTENNA' }]))
+          })
+        })
+      }
+    }),
+    updateApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<ApAntennaTypeSettings>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApAntennaTypeSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
+    }),
+    resetApAntennaTypeSettings: build.mutation<CommonResult, RequestPayload<void>>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApAntennaTypeSettings, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'ANTENNA' }]
     }),
     getApBssColoring: build.query<ApBssColoringSettings, RequestPayload>({
       query: ({ params, payload }) => {
@@ -663,15 +707,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
-    }),
-    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
@@ -938,24 +973,14 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
     }),
-    getApFeatureSets: build.query<ApIncompatibleFeature[], RequestPayload>({
+    getApFeatureSets: build.query<ApFeatureSet, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApFeatureSets, params, { ...ignoreErrorModal })
         return{
           ...req
         }
       },
       providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
-    }),
-    getApCompatibilities: build.query<ApCompatibility[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApCompatibilities, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Ap', id: 'ApCompatibilities' }]
     })
   })
 })
@@ -1010,7 +1035,10 @@ export const {
   useResetApLedMutation,
   useGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
-  useResetApBandModeSettingsMutation,
+  useGetApAntennaTypeSettingsQuery,
+  useLazyGetApAntennaTypeSettingsQuery,
+  useUpdateApAntennaTypeSettingsMutation,
+  useResetApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
   useGetApCapabilitiesQuery,
@@ -1019,6 +1047,7 @@ export const {
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
+  useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
   useResetApDirectedMulticastMutation,
@@ -1047,8 +1076,7 @@ export const {
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useDeleteApManagementVlanMutation,
-  useLazyGetApFeatureSetsQuery,
-  useLazyGetApCompatibilitiesQuery
+  useLazyGetApFeatureSetsQuery
 } = apApi
 
 

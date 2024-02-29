@@ -55,7 +55,6 @@ export const ScopeForm = () => {
             name='activatedNetworks'
             valuePropName='data'
             noStyle
-            initialValue={[]}
           >
             <NetworksTable
               venueId={venueId}

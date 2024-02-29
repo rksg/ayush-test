@@ -119,8 +119,8 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
-          endDate: lastActiveTime,
+          startDate: moment(lastActiveTime).subtract(4, 'hours').format(),
+          endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
         const link = isReportOnly
@@ -364,6 +364,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.aps as unknown as AP[]}
                 pagination={pagination}
                 settingsId='ap-search-table'
+                rowKey='macAddress'
               />
             </Panel>
           }
@@ -380,6 +381,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.wifiNetworks as unknown as Network[]}
                 pagination={pagination}
                 settingsId='wifi-networks-search-table'
+                rowKey='name'
               />
             </Panel>
           }
@@ -392,6 +394,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.clients as unknown as Client[]}
                 pagination={pagination}
                 settingsId='clients-search-table'
+                rowKey='mac'
               />
             </Panel>
           }
@@ -404,6 +407,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.switches as unknown as Switch[]}
                 pagination={pagination}
                 settingsId='switch-search-table'
+                rowKey='switchMac'
               />
             </Panel>
           }
@@ -420,6 +424,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.networkHierarchy as unknown as NetworkHierarchy[]}
                 pagination={pagination}
                 settingsId='network-hierarchy-search-table'
+                rowKey='name'
               />
             </Panel>
           }

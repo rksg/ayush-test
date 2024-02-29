@@ -34,8 +34,7 @@ import {
   useUpdateApRadioCustomizationMutation,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useGetApBandModeSettingsQuery,
-  useUpdateApBandModeSettingsMutation,
-  useResetApBandModeSettingsMutation
+  useUpdateApBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   ApRadioCustomization,
@@ -384,9 +383,6 @@ export function RadioSettings () {
   const [ updateApBandMode, { isLoading: isUpdatingApBandMode } ] =
     useUpdateApBandModeSettingsMutation()
 
-  const [ resetApBandMode, { isLoading: isResettingApBandMode } ] =
-    useResetApBandModeSettingsMutation()
-
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
   const [getVenueApModelBandModeSettings] = useLazyGetVenueApModelBandModeSettingsQuery()
@@ -646,7 +642,7 @@ export function RadioSettings () {
       return
     }
 
-    console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
+    //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
 
     if (isSupportDual5GAp) {
       const isDual5gEnabled = (getCurrentBandMode() === BandModeEnum.DUAL)
@@ -893,14 +889,10 @@ export function RadioSettings () {
       }
 
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
-        if (currentApBandModeData?.useVenueSettings ?? true) {
-          await resetApBandMode({ params: { venueId: venue.id, serialNumber } }).unwrap()
-        } else {
-          await updateApBandMode({
-            params: { venueId: venue.id, serialNumber },
-            payload: currentApBandModeData
-          }).unwrap()
-        }
+        await updateApBandMode({
+          params: { venueId: venue.id, serialNumber },
+          payload: currentApBandModeData
+        }).unwrap()
       }
 
       if (!isEnablePerApRadioCustomizationFlag && payload.useVenueSettings) {
@@ -1090,7 +1082,7 @@ export function RadioSettings () {
   return (
     <Loader states={[{
       isLoading: !isApDataLoaded || isApRadioDataInitializing || (isSupportBandManagementAp && isApBandModeDataInitializing),
-      isFetching: isUpdatingApRadio || isDeletingApRadio || (isWifiSwitchableRfEnabled && (isUpdatingApBandMode || isResettingApBandMode))
+      isFetching: isUpdatingApRadio || isDeletingApRadio || (isWifiSwitchableRfEnabled && isUpdatingApBandMode)
     }]}>
       <StepsFormLegacy
         formRef={formRef}

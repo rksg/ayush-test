@@ -29,6 +29,8 @@ describe('CcdResultViewer', () => {
   })
 
   afterEach(() => {
+    mockedInitCcdSocketFn.mockRestore()
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 

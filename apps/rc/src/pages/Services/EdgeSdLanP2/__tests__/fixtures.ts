@@ -59,7 +59,8 @@ export const mockNetworkSaveData = {
   data: [
     { networkId: 'network_1', venueId: 'venue_00002' },
     { networkId: 'network_2', venueId: 'venue_00002' },
-    { networkId: 'network_3', venueId: 'venue_00005' }
+    { networkId: 'network_3', venueId: 'venue_00005' },
+    { networkId: 'network_4', venueId: 'venue_00005' }
   ]
 }
 
@@ -68,18 +69,24 @@ export const mockDeepNetworkList = {
   response: [
     { name: 'MockedNetwork 1', id: 'network_1', type: NetworkTypeEnum.DPSK },
     { name: 'MockedNetwork 2', id: 'network_2', type: NetworkTypeEnum.PSK },
-    { name: 'MockedNetwork 3', id: 'network_3', type: NetworkTypeEnum.OPEN }
+    { name: 'MockedNetwork 3', id: 'network_3', type: NetworkTypeEnum.OPEN },
+    { name: 'MockedNetwork 4', id: 'network_4', type: NetworkTypeEnum.CAPTIVEPORTAL }
   ]
 }
 
 export const mockedNetworkViewData = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
-      id: '8e22159cfe264ac18d591ea492fbc05a',
-      name: 'amyNetwork',
-      nwSubType: 'dpsk'
+      id: 'network_1',
+      name: 'dpskNetwork',
+      nwSubType: NetworkTypeEnum.DPSK
+    },
+    {
+      id: 'network_4',
+      name: 'guestNetwork1',
+      nwSubType: NetworkTypeEnum.CAPTIVEPORTAL
     }
   ]
 }

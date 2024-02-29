@@ -1,11 +1,42 @@
-import '@testing-library/react'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
 
-import NetworkPageHeader from './NetworkPageHeader'
+import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                  from '@acx-ui/test-utils'
 
+import { networkDetailHeaderData } from './__tests__/fixtures'
+import NetworkPageHeader           from './NetworkPageHeader'
 
-describe.skip('NetworkPageHeader', () => {
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+beforeEach(() => {
+  mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+})
+
+afterEach(() => {
+  mockedUseConfigTemplate.mockRestore()
+})
+
+describe('NetworkPageHeader', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
+      ),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+        (_, res, ctx) => res(ctx.json([]))
+      )
+    )
+  })
+
   it('should render correctly in overview', async () => {
     render(
       <Provider>
@@ -64,5 +95,30 @@ describe.skip('NetworkPageHeader', () => {
     expect(screen.getByRole('link', {
       name: /network list/i
     })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    render(
+      <Provider>
+        <NetworkPageHeader />,
+      </Provider>,
+      {
+        route: {
+          params: {
+            tenantId: 'testId',
+            networkId: 'test',
+            activeTab: 'overview'
+          }
+        }
+      }
+    )
+
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Configure' })).toBeVisible()
+    )
+    expect(await screen.findByText(/Venues \(1\)/)).toBeVisible()
+    expect(await screen.findByText('Configuration Templates')).toBeVisible()
   })
 })

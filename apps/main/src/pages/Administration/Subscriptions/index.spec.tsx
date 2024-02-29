@@ -1,84 +1,78 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                  from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                       from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within  } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                 from '@acx-ui/user'
-import { isDelegationMode }                             from '@acx-ui/utils'
+import { showToast }                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { mspApi }                                                                  from '@acx-ui/msp/services'
+import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
+import { administrationApi }                                                       from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                                  from '@acx-ui/rc/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within  } from '@acx-ui/test-utils'
 
 import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
 
 import Subscriptions from '.'
 
 const mockedWindowOpen = jest.fn()
+const mockedRefreshFn = jest.fn()
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
 })
 jest.spyOn(window, 'open').mockImplementation(mockedWindowOpen)
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />),
   showToast: jest.fn()
 }))
-jest.mock('./ConvertNonVARMSPButton', () => ({
-  ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
-}))
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils'),
-  isDelegationMode: jest.fn().mockReturnValue(false)
+jest.mock('./SubscriptionHeader', () => ({
+  SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    mockedWindowOpen.mockClear()
+    mockedRefreshFn.mockClear()
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
 
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
-        AdministrationUrlsInfo.getEntitlementsList.newApi
-          ? AdministrationUrlsInfo.getEntitlementsList.url
-          : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
-        (req, res, ctx) => res(ctx.json(mockedEtitlementsList))
-      ),
-      rest.get(AdministrationUrlsInfo.getEntitlementSummary.oldUrl as string,
+        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
         (req, res, ctx) => {
-          return res(ctx.json(mockedSummary))
-        }
-      ),
-      rest.get(
-        AdministrationUrlsInfo.getEntitlementSummary.url,
-        (req, res, ctx) => {
-          if (req.url.searchParams.get('refresh') === 'true')
+          if (req.url.searchParams.get('refresh') === 'true') {
+            mockedRefreshFn()
             return res(ctx.status(202))
-          else
+          } else {
             return res(ctx.json({
               banners: [],
               entitlements: mockedEtitlementsList,
               summary: mockedSummary
             }))
-        }
-      ),
-      rest.post(
-        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(UserUrlsInfo.getAccountTier.url as string,
-        (req, res, ctx) => {
-          return res(ctx.json({ acx_account_tier: 'Gold' }))
+          }
         }
       ),
       rest.get(
+        AdministrationUrlsInfo.getEntitlementsList.newApi
+          ? AdministrationUrlsInfo.getEntitlementsList.url
+          : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
+        (_req, res, ctx) => res(ctx.json(mockedEtitlementsList))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
+        (_req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
         MspUrlsInfo.getMspProfile.url,
-        (req, res, ctx) => res(ctx.json({
+        (_req, res, ctx) => res(ctx.json({
           msp_external_id: '0000A000001234YFFOO',
           msp_label: '',
           msp_tenant_name: ''
@@ -88,10 +82,6 @@ describe('Subscriptions', () => {
   })
 
   it('should render correctly', async () => {
-    const mockedShowToast = jest.fn()
-    jest.mocked(isDelegationMode).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
-    jest.mocked(showToast).mockImplementation(mockedShowToast)
     render(
       <Provider>
         <Subscriptions />
@@ -99,13 +89,27 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    expect(await screen.findByText(/2\s+\/\s+130/i)).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
-    expect(await screen.findByText('Essentials')).toBeVisible()
+    expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
+  })
+
+  it('should refresh successfully', async () => {
+    const mockedShowToast = jest.fn()
+    jest.mocked(showToast).mockImplementation(mockedShowToast)
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
@@ -113,13 +117,7 @@ describe('Subscriptions', () => {
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
-    // only for old API
-    // await waitFor(() => {
-    //   expect(mockedShowToast).toBeCalledWith({
-    //     type: 'success',
-    //     content: 'Successfully refreshed.'
-    //   })
-    // })
+    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
   })
 
   it('should display toast message when refresh failed', async () => {
@@ -140,7 +138,7 @@ describe('Subscriptions', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
-        (req, res, ctx) => res(ctx.status(500))
+        (_req, res, ctx) => res(ctx.status(500))
       )
     )
 
@@ -151,24 +149,25 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
     // FIXME: might need to fix when general error handler behavior changed.
-    await waitFor(() => {
-      expect(spyConsole).toBeCalled()
-    })
+    await waitFor(() => expect(spyConsole).toBeCalled())
   })
 
   it('should display empty string when subscription type is not mapped', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(
       <Provider>
         <Subscriptions />
       </Provider>, {
         route: { params }
       })
-
-    await screen.findByRole('columnheader', { name: 'Device Count' })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByRole('columnheader', { name: 'Part Number' })
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
     const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
@@ -176,7 +175,6 @@ describe('Subscriptions', () => {
   })
 
   it('should correctly handle device sub type', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
     render(
       <Provider>
         <Subscriptions />
@@ -184,6 +182,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const wifiRow = await screen.findByRole('row', { name: /Wi-Fi/i })
     const wifiRowCells = await within(wifiRow as HTMLTableRowElement).findAllByRole('cell')
@@ -195,7 +194,6 @@ describe('Subscriptions', () => {
   })
 
   it('should correctly handle edge data', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
     render(
       <Provider>
         <Subscriptions />
@@ -203,12 +201,12 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /SmartEdge/i })
   })
   it('should filter edge data when PLM FF is not denabled', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
 
     render(
       <Provider>
@@ -217,10 +215,44 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Wi-Fi/i })
     expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
     expect(screen.queryAllByText('SmartEdge').length).toBe(0)
+  })
+
+  it('should show banner on no subscription active error', async () => {
+
+    mockServer.use(rest.get(
+      AdministrationUrlsInfo.getEntitlementsList.newApi
+        ? AdministrationUrlsInfo.getEntitlementsList.url
+        : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
+      (req, res, ctx) => {
+        return res(ctx.status(417), ctx.json({
+          errors: [{
+            code: 'ENTITLEMENT-10003',
+            message: `Cannot display subscription data: entitlement ID is missing.
+            At least one tenant subscription must be active.`
+          }]
+        }))
+      }
+    ))
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
+      .toBeVisible()
+    const refreshButton = await screen.findByTestId('bannerRefreshLink')
+    await userEvent.click(refreshButton)
+    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
   })
 })

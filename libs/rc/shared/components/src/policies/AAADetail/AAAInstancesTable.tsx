@@ -1,12 +1,18 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
-import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader } from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }     from '@acx-ui/rc/services'
+import {
+  AAAPolicyNetwork, captiveNetworkTypes, ConfigTemplateType,
+  GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes,
+  useConfigTemplate, useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
 export default function AAAInstancesTable (){
-
+  const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useAaaNetworkInstancesQuery,
@@ -32,11 +38,11 @@ export default function AAAInstancesTable (){
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
-          <TenantLink
-            to={`/networks/wireless/${row.networkId}/network-details/aps`}>
-            {row.networkName}</TenantLink>
-        )
+        return isTemplate
+          // eslint-disable-next-line max-len
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.networkId, row.networkName)
+          // eslint-disable-next-line max-len
+          : <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{row.networkName}</TenantLink>
       }
     },
     {

@@ -1,7 +1,7 @@
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -10,13 +10,14 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Path }     from '@acx-ui/react-router-dom'
-import { Provider } from '@acx-ui/store'
+import { Path }            from '@acx-ui/react-router-dom'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'
@@ -71,6 +72,8 @@ describe('DpskTable', () => {
   const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -105,6 +108,7 @@ describe('DpskTable', () => {
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByRole('row', { name: new RegExp(mockedDpskList.data[0].name) })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'

@@ -62,7 +62,8 @@ export interface DeviceOSDrawerProps {
   isOnlyViewMode?: boolean,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -113,7 +114,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [localEditMode, setLocalEdiMode] = useState(
@@ -207,7 +209,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (devicePolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
+    if (contentForm && devicePolicyInfo &&
+      (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('description', devicePolicyInfo.description)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
@@ -223,7 +226,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
       }))] as DeviceOSRule[])
     }
-  }, [devicePolicyInfo, queryPolicyId])
+  }, [contentForm, devicePolicyInfo, queryPolicyId])
 
   useEffect(() => {
     if (onlyAddMode.enable && onlyAddMode.visible) {
@@ -233,11 +236,11 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   // use policyName to find corresponding id before API return profile id
   useEffect(() => {
-    if (requestId && queryPolicyName) {
-      deviceSelectOptions.map(option => {
+    if (form && requestId && queryPolicyName) {
+      deviceSelectOptions.forEach(option => {
         if (option.props.children === queryPolicyName) {
           if (!onlyAddMode.enable) {
-            form.setFieldValue('devicePolicyId', option.key)
+            form.setFieldValue([...inputName, 'devicePolicyId'], option.key)
           }
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
@@ -245,7 +248,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
       })
     }
-  }, [deviceSelectOptions, requestId, policyName])
+  }, [form, deviceSelectOptions, requestId, policyName])
 
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
@@ -338,6 +341,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
 
@@ -520,7 +524,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         rules={[
-          { max: 255 }
+          { max: 180 }
         ]}
         children={<TextArea disabled={isViewMode()} />}
       />

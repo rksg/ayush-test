@@ -131,7 +131,7 @@ export const ConnectedClientsTable = (props: {
       params.apId ? { serialNumber: [params.apId] } :
         params.networkId ? { networkId: [params.networkId] } : {}
 
-
+  const settingsId = 'connected-clients-table'
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: { ...defaultClientPayload, searchString },
@@ -139,7 +139,8 @@ export const ConnectedClientsTable = (props: {
       searchTargetFields: defaultClientPayload.searchTargetFields,
       searchString: searchString
     },
-    option: { skip: !!props.tableQuery }
+    option: { skip: !!props.tableQuery },
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -595,7 +596,7 @@ export const ConnectedClientsTable = (props: {
         <Table<ClientList>
           rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
           rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
-          settingsId='connected-clients-table'
+          settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -5,19 +5,12 @@ import { compareVersion } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
-import { crrmText } from './utils'
+import { CRRMStates } from './states'
+import { crrmText }   from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
-
-export enum CRRMStates {
-  optimized = 'optimized',
-  nonOptimized = 'nonOptimized',
-  verified = 'verified',
-  insufficientLicenses = 'insufficientLicenses',
-  verificationError = 'verificationError'
-}
 
 export type ConfigurationValue =
   string |
@@ -30,7 +23,10 @@ export const crrmStates: Record<CRRMStates, IconValue> = {
   [CRRMStates.nonOptimized]: { order: 1, label: defineMessage({ defaultMessage: 'Non-Optimized' }) },
   [CRRMStates.verified]: { order: 0, label: defineMessage({ defaultMessage: 'Verified' }) },
   [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
-  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
+  [CRRMStates.unqualifiedZone]: { order: 2, label: defineMessage({ defaultMessage: 'Unqualified Zone' }) },
+  [CRRMStates.noAps]: { order: 2, label: defineMessage({ defaultMessage: 'No APs' }) },
+  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) },
+  [CRRMStates.unknown]: { order: 2, label: defineMessage({ defaultMessage: 'Unknown' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -82,7 +78,9 @@ const categories = {
   'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
   'Insufficient Licenses': crrmStates[CRRMStates.insufficientLicenses].label,
   'Verification Error': crrmStates[CRRMStates.verificationError].label,
-  'Verified': crrmStates[CRRMStates.verified].label
+  'Verified': crrmStates[CRRMStates.verified].label,
+  'Unqualified Zone': crrmStates[CRRMStates.unqualifiedZone].label,
+  'No APs': crrmStates[CRRMStates.noAps].label
 }
 
 const bandbalancingEnable: RecommendationConfig = {
@@ -154,6 +152,14 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Deleted' }),
     tooltip: defineMessage({ defaultMessage: 'Deleted' })
   },
+  unqualifiedZone: {
+    text: crrmStates[CRRMStates.unqualifiedZone].label,
+    tooltip: crrmStates[CRRMStates.unqualifiedZone].label
+  },
+  noAps: {
+    text: crrmStates[CRRMStates.noAps].label,
+    tooltip: crrmStates[CRRMStates.noAps].label
+  },
   insufficientLicenses: {
     text: crrmStates[CRRMStates.insufficientLicenses].label,
     tooltip: crrmStates[CRRMStates.insufficientLicenses].label
@@ -165,6 +171,10 @@ export const states = {
   verified: {
     text: crrmStates[CRRMStates.verified].label,
     tooltip: crrmStates[CRRMStates.verified].label
+  },
+  unknown: {
+    text: crrmStates[CRRMStates.unknown].label,
+    tooltip: crrmStates[CRRMStates.unknown].label
   }
 }
 
@@ -503,19 +513,38 @@ export const codes = {
       deltaSign: '-'
     }]
   },
+  'unqualifiedZone': {
+    category: crrmStates[CRRMStates.unqualifiedZone].label,
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue is unqualified' }),
+    priority: priorities.low
+  },
+  'noAps': {
+    category: crrmStates[CRRMStates.noAps].label,
+    summary: get('IS_MLISA_SA')
+      ? defineMessage({ defaultMessage: 'No RRM recommendation as zone has no APs' })
+      : defineMessage({ defaultMessage: 'No RRM recommendation as venue has no APs' }),
+    priority: priorities.low
+  },
   'insufficientLicenses': {
     category: crrmStates[CRRMStates.insufficientLicenses].label,
-    summary: crrmStates[CRRMStates.insufficientLicenses].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to incomplete license compliance' }),
     priority: priorities.low
   },
   'verificationError': {
     category: crrmStates[CRRMStates.verificationError].label,
-    summary: crrmStates[CRRMStates.verificationError].label,
+    summary: defineMessage({ defaultMessage: 'No RRM recommendation due to verification error' }),
     priority: priorities.low
   },
   'verified': {
     category: crrmStates[CRRMStates.verified].label,
-    summary: crrmStates[CRRMStates.verified].label,
+    summary: defineMessage({ defaultMessage: 'AI verified and in optimal state' }),
+    priority: priorities.low
+  },
+  'unknown': {
+    category: crrmStates[CRRMStates.unknown].label,
+    summary: defineMessage({ defaultMessage: 'Unknown' }),
     priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>

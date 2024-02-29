@@ -1,19 +1,24 @@
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
-import { AAAForm, NetworkForm }                             from '@acx-ui/rc/components'
+import { Brand360 }                                                                           from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                                                from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings }                                   from '@acx-ui/msp/components'
+import { AAAForm, AAAPolicyDetail, AccessControlForm, DpskForm, NetworkDetails, NetworkForm } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
-  CONFIG_TEMPLATE_PATH_PREFIX,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath
+  ServiceOperation,
+  ServiceType,
+  getConfigTemplatePath,
+  getPolicyRoutePath,
+  getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
+import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -23,7 +28,6 @@ import { AddRecCustomer }                          from './pages/MspRecCustomers
 import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
-
 
 export default function MspRoutes () {
   const routes = rootRoutes(
@@ -42,7 +46,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
-      <Route path={CONFIG_TEMPLATE_PATH_PREFIX + '/*'} element={<ConfigTemplatesRoutes />} />
+      <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
   return (
@@ -84,7 +88,7 @@ function ConfigTemplatesRoutes () {
 
   return isConfigTemplateEnabled ? rootRoutes(
     <Route path=':tenantId/v/'>
-      <Route path={CONFIG_TEMPLATE_PATH_PREFIX}
+      <Route path={getConfigTemplatePath()}
         element={<LayoutWithConfigTemplateContext />}
       >
         <Route index
@@ -101,13 +105,34 @@ function ConfigTemplatesRoutes () {
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-          element={<div>AAA Details</div>}
+          element={<AAAPolicyDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
+          })}
+          element={<AccessControlForm editMode={false}/>}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
+        <Route path='networks/wireless/:networkId/network-details/:activeTab'
+          element={<NetworkDetails />}
+        />
+        <Route path='venues/add' element={<VenuesForm />} />
+        <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
+        <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
+        <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
         <Route
-          path='networks/wireless/:networkId/network-details/:activeTab'
-          element={<div>Network Details</div>}
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+          element={<DpskForm />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+          element={<DpskForm editMode={true} />}
+        />
+        <Route
+          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+          element={<DpskDetails />}
         />
       </Route>
     </Route>

@@ -17,30 +17,24 @@ jest.mock('@acx-ui/components', () => ({
     data-testid='config-provider'
   />
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  renderPendo: jest.fn(),
+  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
+}))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
   />,
-  useUserProfileContext: () => ({ allowedOperations: ['some-operation'], accountTier: 'Gold' })
+  useUserProfileContext: () => ({
+    isUserProfileLoading: false,
+    data: { preferredLanguage: 'en-US' },
+    allowedOperations: ['some-operation'],
+    accountTier: 'Gold'
+  })
 }))
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils'),
-  renderPendo: jest.fn(),
-  UserProfileProvider: (props: { children: React.ReactNode }) => <div
-    {...props}
-    data-testid='user-profile-provider'
-  />,
-  useLocaleContext: () => ({ messages: { 'en-US': { lang: 'Language' } } })
-}))
-jest.mock('./BrowserDialog/BrowserDialog', () => ({
-  detectBrowserLang: jest.fn(),
-  isNonProdEnv: jest.fn(),
-  showBrowserLangDialog: jest.fn(),
-  updateUserProfile: jest.fn()
-}))
-
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 
 describe('bootstrap.init', () => {

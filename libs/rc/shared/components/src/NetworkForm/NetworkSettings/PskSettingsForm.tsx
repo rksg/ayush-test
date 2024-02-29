@@ -187,13 +187,6 @@ function SettingsForm () {
         }
       }
     })
-
-    if(value === WlanSecurityEnum.WPA23Mixed){
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    } else {
-      disableMLO(false)
-    }
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -216,12 +209,17 @@ function SettingsForm () {
           macRegistrationListId: data.wlan?.macRegistrationListId
         }
       })
-      if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-        disableMLO(true)
-        form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      }
     }
   },[data])
+
+  useEffect(() => {
+    if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity])
 
   useEffect(() => {
     if (!editMode && !cloneMode) {

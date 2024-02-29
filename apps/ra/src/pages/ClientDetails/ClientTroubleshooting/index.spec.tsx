@@ -18,6 +18,15 @@ describe('ClientTroubleshootingTab', () => {
         client: {
           connectionDetailsByAp: [],
           connectionEvents: [],
+          connectionQualities: []
+        }
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp: [],
+          connectionEvents: [],
           connectionQualities: [],
           incidents: []
         }
@@ -36,7 +45,12 @@ describe('ClientTroubleshootingTab', () => {
       client: {
         connectionDetailsByAp: [],
         connectionEvents: [],
-        connectionQualities: [],
+        connectionQualities: []
+      }
+    } })
+
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', { data: {
+      client: {
         incidents: []
       }
     } })
@@ -46,8 +60,8 @@ describe('ClientTroubleshootingTab', () => {
       useEffect(() => {
         setDateFilter({
           range: DateRange.custom,
-          startDate: '02/01/2023',
-          endDate: '02/01/2023'
+          startDate: '2023-02-01T00:00:00.000Z',
+          endDate: '2023-02-01T00:00:00.000Z'
         })
       }, [])
       return <Provider><ClientTroubleshootingTab /></Provider>

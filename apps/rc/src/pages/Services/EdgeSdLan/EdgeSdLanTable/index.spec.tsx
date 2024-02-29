@@ -68,12 +68,12 @@ describe('SD-LAN Table', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    const row = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
-    expect(row.length).toBe(2)
+    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+    expect(rows.length).toBe(2)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Mocked_SDLAN_1 Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Poor' })
+    expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Mocked_tunnel-1\s*1\s*Poor/)
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Mocked_SDLAN_2 Mocked-Venue-2 vSE-b466 Mocked_tunnel-1 0 Good' })
+    expect(rows[1]).toHaveTextContent(/Mocked_SDLAN_2\s*Mocked-Venue-2\s*vSE-b466\s*Mocked_tunnel-1\s*0\s*Good/)
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
@@ -137,10 +137,11 @@ describe('SD-LAN Table', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await click(within(await screen.findByRole('row', { name: /Mocked_SDLAN_1/i }))
-      .getByRole('checkbox'))
-    await click(within(await screen.findByRole('row', { name: /Mocked_SDLAN_2/i }))
-      .getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+    expect(within(rows[0]).getByRole('cell', { name: /Mocked_SDLAN_1/i })).toBeVisible()
+    await click(within(rows[0]).getByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /Mocked_SDLAN_2/i })).toBeVisible()
+    await click(within(rows[1]).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 SD-LAN"?')
     await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
@@ -169,9 +170,10 @@ describe('SD-LAN Table', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SmartEdge' })
-    await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'Mocked_SDLAN_1 Mocked-Venue-1 vSE-b490 Mocked_tunnel-1 1 Poor' })
+    // eslint-disable-next-line max-len
+    expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Mocked_tunnel-1\s*1\s*Poor/)
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)

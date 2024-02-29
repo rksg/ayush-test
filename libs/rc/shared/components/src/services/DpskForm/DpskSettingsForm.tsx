@@ -9,9 +9,9 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery }                 from '@acx-ui/rc/services'
+import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
+import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -23,13 +23,16 @@ import {
   NEW_MAX_DEVICES_PER_PASSPHRASE,
   OLD_MAX_DEVICES_PER_PASSPHRASE,
   defaultAccessLabelMapping,
-  passphraseFormatDescription
+  passphraseFormatDescription,
+  useConfigTemplateLazyQueryFnSwitcher,
+  DpskSaveData,
+  TableResult,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { ExpirationDateSelector }     from '../../ExpirationDateSelector'
-import { useDpskNewConfigFlowParams } from '../useDpskNewConfigFlowParams'
+import { ExpirationDateSelector } from '../../ExpirationDateSelector'
 
 import { FieldSpace } from './styledComponents'
 
@@ -44,12 +47,14 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const [ dpskList ] = useLazyGetDpskListQuery()
-  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const [ getDpskList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery
+  )
+  const { isTemplate } = useConfigTemplate()
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({ params: dpskNewConfigFlowParams }).unwrap()).data
+    const list = (await getDpskList({}).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))

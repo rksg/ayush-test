@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 import { Path } from 'react-router-dom'
 
+import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -12,7 +13,7 @@ import {
   TableResult,
   IdentityProviderViewModel
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -120,6 +121,9 @@ describe('IdentityProviderTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         IdentityProviderUrls.getEnhancedIdentityProviderList.url,

@@ -13,12 +13,13 @@ import {  useAlarmsListQuery }                                     from '@acx-ui
 import {
   Alarm,
   ApViewModel,
-  EventSeverityEnum
+  CommonUrlsInfo,
+  EventSeverityEnum,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WrapIfAccessible }              from '@acx-ui/user'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
+import { WrapIfAccessible }     from '@acx-ui/user'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 

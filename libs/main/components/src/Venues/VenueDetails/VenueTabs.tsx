@@ -3,15 +3,22 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
-import { PropertyConfigStatus, VenueDetailHeader }                 from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
-import { hasAccess }                                               from '@acx-ui/user'
+import {
+  PropertyConfigStatus,
+  useConfigTemplate,
+  useConfigTemplateTenantLink,
+  VenueDetailHeader
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccess }                             from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
+  const templateBasePath = useConfigTemplateTenantLink(`venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
   const enabledServices = useIsSplitOn(Features.SERVICES)
   const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: unitQuery } = useGetPropertyUnitListQuery({
@@ -22,10 +29,20 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortField: 'name',
       sortOrder: 'ASC'
     }
-  }, { skip: !enableProperty })
-  const propertyConfig = useGetPropertyConfigsQuery({ params }, { skip: !enableProperty })
+  }, { skip: !enableProperty || isTemplate })
+  const propertyConfig = useGetPropertyConfigsQuery({ params }, {
+    skip: !enableProperty || isTemplate
+  })
 
   const onTabChange = (tab: string) => {
+    if (isTemplate) {
+      navigate({
+        ...templateBasePath,
+        pathname: `${templateBasePath.pathname}/${tab}`
+      })
+      return
+    }
+
     navigate({
       ...basePath,
       pathname: (tab === 'clients' || tab === 'devices')
@@ -44,6 +61,17 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     data?.activeNetworkCount ?? 0,
     unitQuery?.totalCount ?? 0
   ]
+
+  if (isTemplate) {
+    return (
+      <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
+          key='networks'
+        />
+      </Tabs>
+    )
+  }
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>

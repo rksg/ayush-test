@@ -4,10 +4,20 @@ import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Spac
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                                                                                                                                        from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgeLag, EdgePort, edgePortIpValidator, EdgePortTypeEnum, EdgePortWithStatus, getEdgePortTypeOptions, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgeLag,
+  EdgePort,
+  EdgePortTypeEnum,
+  EdgePortWithStatus,
+  edgePortIpValidator,
+  getEdgePortTypeOptions,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortKey, getInnerPortFormID, isWANPortExist, lanPortsubnetValidator } from '../EdgePortsGeneral/utils'
+import { getEnabledCorePortInfo, getInnerPortFormID, isWANPortExist, lanPortsubnetValidator } from '../EdgePortsGeneral/utils'
 
 import * as UI from './styledComponents'
 
@@ -65,25 +75,29 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
 
-  const corePortInfo = getEnabledCorePortKey(portsData, lagData || [])
+  const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
   const isCurrentPortCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
     : corePortInfo.key === physicalPortIfName))
 
-  // corePort should be grey-out when one of the following NOT matches :
-  // - enabled WAN port cannot exist and current LAN port is core port
-  //    (user should be able to unset core port)
-  // if SD-LAN enable on this edge
+  // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
+  // 2. corePort should be grey-out when one of the following NOT matches :
+  //     - enabled WAN port cannot exist and current LAN port is core port
+  //       (user should be able to unset core port)
+  //    if SD-LAN enable on this edge
   //     - corePort is exist(physical port might be unplugged by user)
-  // else
+  //    else
   //     - only allowed 1 core port enabled
   //     - must be LAN port type
   const hasWANPort = isWANPortExist(portsData, lagData || [])
-  const isCorePortDisabled = (hasWANPort && !isCurrentPortCorePortEnabled) || (isEdgeSdLanRun
-    ? hasCorePortEnabled
-  // eslint-disable-next-line max-len
-    : ((hasCorePortEnabled && !isCurrentPortCorePortEnabled) || portType !== EdgePortTypeEnum.LAN))
+  const isCorePortDisabled = corePortInfo.isExistingCorePortInLagMember
+    ? false
+    : ((hasWANPort && !isCurrentPortCorePortEnabled)
+      || (isEdgeSdLanRun
+        ? hasCorePortEnabled
+        // eslint-disable-next-line max-len
+        : ((hasCorePortEnabled && !isCurrentPortCorePortEnabled) || portType !== EdgePortTypeEnum.LAN)))
 
   const getCurrentSubnetInfo = () => {
     return {
@@ -105,7 +119,10 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   }
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
-    if(portType === EdgePortTypeEnum.LAN && isCurrentPortCorePortEnabled === false) {
+    if(
+      (portType === EdgePortTypeEnum.LAN && isCurrentPortCorePortEnabled === false) ||
+      portType === EdgePortTypeEnum.CLUSTER
+    ) {
       return (
         <>
           <Form.Item
@@ -240,7 +257,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           return <Select.Option
             key={item.value}
             value={item.value}
-            disabled={hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN}
+            disabled={corePortInfo.isExistingCorePortInLagMember
+              ? false
+              : (hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN)}
           >
             {item.label}
           </Select.Option>
@@ -249,63 +268,66 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     </Form.Item>
     <Form.Item
       noStyle
-      shouldUpdate={(prev, cur) => {
-        return _.get(prev, getFieldFullPath('ipMode'))
-      !== _.get(cur, getFieldFullPath('ipMode'))
-      }}
+      shouldUpdate={true}
     >
       {({ getFieldValue }) => {
         const _portType = getFieldValue(getFieldFullPath('portType'))
         const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
 
-        return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
-          <>
-            {_portType === EdgePortTypeEnum.LAN &&
-          <Form.Item
-            name={getFieldPath('corePortEnabled')}
-            valuePropName='checked'
-            {..._.get(formFieldsProps, 'corePortEnabled')}
-          >
-            <Checkbox
-              disabled={isCorePortDisabled}
-            >
-              {
-                // eslint-disable-next-line max-len
-                _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
-              }
+        return (
+          _portType === EdgePortTypeEnum.LAN ||
+          _portType === EdgePortTypeEnum.WAN ||
+          _portType === EdgePortTypeEnum.CLUSTER
+        ) ? (
+            <>
+              {_portType === EdgePortTypeEnum.LAN &&
+                <Form.Item
+                  name={getFieldPath('corePortEnabled')}
+                  valuePropName='checked'
+                  {..._.get(formFieldsProps, 'corePortEnabled')}
+                >
+                  <Checkbox
+                    disabled={isCorePortDisabled}
+                  >
+                    {
+                      // eslint-disable-next-line max-len
+                      _.get(formFieldsProps, 'corePortEnabled')?.title ?? $t({ defaultMessage: 'Use this port as Core Port' })
+                    }
 
-              <Tooltip
-                placement='topRight'
-                title={
-                  // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this SmartEdge establishes tunnels for directing data traffic effectively' })
-                }
-              >
-                <UI.StyledQuestionIcon />
-              </Tooltip>
-            </Checkbox>
-          </Form.Item>
-            }
-            <StepsFormLegacy.FieldLabel width='120px'>
-              {
-                _.get(formFieldsProps, 'enabled')?.title ?? $t({ defaultMessage: 'Port Enabled' })
+                    <Tooltip
+                      placement='topRight'
+                      title={
+                        // eslint-disable-next-line max-len
+                        $t({ defaultMessage: 'Utilized for SD-LAN service, the core port on this SmartEdge establishes tunnels for directing data traffic effectively' })
+                      }
+                    >
+                      <UI.StyledQuestionIcon />
+                    </Tooltip>
+                  </Checkbox>
+                </Form.Item>
               }
-              <Form.Item
-                name={getFieldPath('enabled')}
-                valuePropName='checked'
-                {..._.get(formFieldsProps, 'enabled')}
-                // Not allow to enable WAN port when core port exist
-                children={<Switch
-                  disabled={hasCorePortEnabled
-                    ? !portEnabled && portType === EdgePortTypeEnum.WAN
-                    : false} />
+              <StepsFormLegacy.FieldLabel width='120px'>
+                {
+                  _.get(formFieldsProps, 'enabled')?.title ?? $t({ defaultMessage: 'Port Enabled' })
                 }
-              />
-            </StepsFormLegacy.FieldLabel>
+                <Form.Item
+                  name={getFieldPath('enabled')}
+                  valuePropName='checked'
+                  {..._.get(formFieldsProps, 'enabled')}
+                  // Not allow to enable WAN port when core port exist
+                  children={<Switch
+                    disabled={corePortInfo.isExistingCorePortInLagMember
+                      ? false
+                      : hasCorePortEnabled
+                        ? !portEnabled && portType === EdgePortTypeEnum.WAN
+                        : false} />
+                  }
+                />
+              </StepsFormLegacy.FieldLabel>
 
-            <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
-            {getFieldsByPortType(_portType, _ipMode)}
-          </>): null
+              <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
+              {getFieldsByPortType(_portType, _ipMode)}
+            </>): null
       }}
     </Form.Item>
   </>

@@ -8,6 +8,7 @@ import {
   WanConnectionEnum
 } from '../constants'
 import {
+  ApAntennaTypeEnum,
   BandBalancing,
   BandModeEnum,
   DenialOfServiceProtection,
@@ -251,6 +252,11 @@ export interface VenueLed {
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
+}
+
+export type VeuneApAntennaTypeSettings = {
+	model: string
+	antennaType: ApAntennaTypeEnum
 }
 
 export interface VenueBssColoring {
@@ -758,6 +764,7 @@ export interface Node {
 	status?: DeviceStatus;
 	label?: string;
 	cloudPort?: string;
+	isConnectedCloud?: boolean;
 }
 
 export interface UINode {
@@ -895,9 +902,20 @@ export enum SignalStrengthLevel {
 }
 
 export interface ApFeatureSet {
-  name: string,
-  requiredFw: string,
-  requiredModel: string
+  featureName: string,
+  requiredFw?: string,
+  requiredModel?: string[]
+}
+
+export interface ApCompatibilityFeatureResponse {
+  feature: ApFeatureSet,
+  incompatibleDevices: ApIncompatibleFeature[],
+  total: number,
+  incompatible: number
+}
+
+export interface ApCompatibilityResponse {
+  apCompatibilities: ApCompatibility[]
 }
 
 export interface ApCompatibility {
@@ -907,11 +925,8 @@ export interface ApCompatibility {
   incompatible: number
 }
 
-export interface ApIncompatibleFeature {
-  featureName: string;
-  requiredFw: string;
-  requiredModel?: string;
-  incompatibleDevices: ApIncompatibleDevice[];
+export interface ApIncompatibleFeature extends ApFeatureSet{
+  incompatibleDevices: ApIncompatibleDevice[]
 }
 
 export interface ApIncompatibleDevice {

@@ -28,6 +28,15 @@ import {
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
+jest.mock('../useEdgeActions', () => ({
+  ...jest.requireActual('../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
+}))
+
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
@@ -155,7 +164,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getNetworkDeepList.url, (_, res, ctx) =>
         res(ctx.json({ response: [networkResponse] }))
       ),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (_, res, ctx) =>
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venuesResponse))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>

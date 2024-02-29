@@ -40,8 +40,8 @@ export const UnknownDetails = () => {
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(date, moment.ISO_8601))
     }
   ]
-  const value = isZone ? 'zone' : 'venue'
-  const Value = isZone ? 'Zone' : 'Venue'
+  const value = isZone ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: 'venue' })
+  const Value = isZone ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' })
 
   const failureText = {
     insufficientLicenses: defineMessage({ defaultMessage:
@@ -57,8 +57,14 @@ export const UnknownDetails = () => {
       The {value} will continue to be monitored and a recommendation will
       be raised if an improvement is needed.`
     }),
-    verificationError: defineMessage({ defaultMessage:
-      'RUCKUS AI encountered an error while verifying this zone.' }),
+    unqualifiedZone: defineMessage({ defaultMessage: `
+      More than 20% of the APs in this {value} have configurations with AP overrides.
+      In such cases, RRM recommendations will not be generated.
+    ` }),
+    verificationError: defineMessage({ defaultMessage: `
+      Insufficient data for RUCKUS AI to generate RRM recommendations.
+      RUCKUS AI requires at least 3 days of data to train its AI models.
+    ` }),
     global_zone_checker: defineMessage({ defaultMessage:
       `RUCKUS AI will not be able to generate RRM recommendations as the controller
       version is below pre-requisite levels. Please upgrade your controller to v5.2.1 and above.`
@@ -66,6 +72,8 @@ export const UnknownDetails = () => {
     mesh: defineMessage({ defaultMessage:
       `RUCKUS AI has detected mesh configuration in your zone and
       this configuration is not supported for RRM recommendations.`
+    }),
+    noAps: defineMessage({ defaultMessage: 'There are no APs in this {value}.'
     })
   }
 

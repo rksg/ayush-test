@@ -20,7 +20,7 @@ import {
 
 import EdgeSdLanForm from '.'
 
-const { mockedSdLanService } = EdgeSdLanFixtures
+const { mockedSdLanServiceP2 } = EdgeSdLanFixtures
 
 const { click } = userEvent
 
@@ -28,6 +28,10 @@ const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue('t-id')
 }))
 
 const MockedStep1 = () => <div data-testid='rc-SettingsForm'>
@@ -52,14 +56,14 @@ const addSteps = [{
 }]
 
 const mockedFinishFn = jest.fn()
-const { result } = renderHook(() => Form.useForm())
 
-describe('SD-LAN form', () => {
+describe('SD-LAN P2 form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
   })
 
   it('should navigate to service list when click cancel', async () => {
+    const { result } = renderHook(() => Form.useForm())
     render(<EdgeSdLanForm
       form={result.current[0]}
       steps={addSteps}
@@ -73,7 +77,7 @@ describe('SD-LAN form', () => {
     })
 
     const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_SD_LAN,
+      type: ServiceType.EDGE_SD_LAN_P2,
       oper: ServiceOperation.LIST
     })
 
@@ -91,6 +95,8 @@ describe('SD-LAN form', () => {
   })
 
   describe('Add', () => {
+    const { result } = renderHook(() => Form.useForm())
+
     it('should submit with correct data', async () => {
       render(<EdgeSdLanForm
         form={result.current[0]}
@@ -119,12 +125,21 @@ describe('SD-LAN form', () => {
       await click(actions.getByRole('button', { name: 'Add' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({ name: 'mockedServiceName' })
+        expect(mockedFinishFn).toBeCalledWith({
+          name: 'mockedServiceName',
+          tunnelProfileId: 'SLt-id',
+          tunnelProfileName: 'Default tunnel profile (SD-LAN)',
+          activatedNetworks: [],
+          activatedGuestNetworks: [],
+          isGuestTunnelEnabled: false
+        })
       })
     })
   })
 
   describe('Edit', () => {
+    const { result } = renderHook(() => Form.useForm())
+
     const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
       <Form.Item name='name'>
         <Input />
@@ -143,7 +158,7 @@ describe('SD-LAN form', () => {
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}
-        editData={mockedSdLanService}
+        editData={mockedSdLanServiceP2}
       />, {
         wrapper: Provider,
         route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
@@ -157,8 +172,9 @@ describe('SD-LAN form', () => {
 
       await waitFor(() => {
         expect(mockedFinishFn).toBeCalledWith({
-          ...mockedSdLanService,
-          activatedNetworks: mockedSdLanService.networkIds.map(id => ({ id }))
+          ...mockedSdLanServiceP2,
+          activatedNetworks: mockedSdLanServiceP2.networkIds.map(id => ({ id })),
+          activatedGuestNetworks: mockedSdLanServiceP2.guestNetworkIds.map(id => ({ id }))
         })
       })
     })

@@ -4,15 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }                                             from '@acx-ui/rc/services'
 import { CommonUrlsInfo, MacRegListUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
+import { Provider, store }                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
   waitForElementToBeRemoved,
-  waitFor
+  waitFor,
+  act
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -27,6 +29,15 @@ import {
   vlanList
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
+
+jest.mock('../useEdgeActions', () => ({
+  ...jest.requireActual('../useEdgeActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+}))
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
+}))
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',
@@ -74,13 +85,17 @@ const macRegistrationList = {
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -90,8 +105,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,

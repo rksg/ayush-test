@@ -2,8 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ConfigTemplateUrlsInfo }              from '@acx-ui/msp/utils'
-import { CommonUrlsInfo,  AaaUrls }            from '@acx-ui/rc/utils'
+import { AaaUrls, ConfigTemplateUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -32,9 +31,6 @@ describe('WISPRAuthACCServer', () => {
     mockServer.use(
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
-        res(ctx.json({}))
-      ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
         (_, res, ctx) => res(ctx.json(mockAAAPolicyNewCreateResponse))

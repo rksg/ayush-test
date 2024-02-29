@@ -1,13 +1,15 @@
 
-import { useIntl } from 'react-intl'
+import { isNaN, isNull } from 'lodash'
+import { useIntl }       from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
-  transformToLspView, transformToPropertyView, Property, Common, Lsp
+  transformToLspView, transformToPropertyView, Property, Common, Lsp, customSort
 } from './helpers'
 import {
   Response
@@ -15,15 +17,17 @@ import {
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function BrandTable ({ sliceType, slaThreshold, data }:
-{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[] }) {
+export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
+{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[], isLSP?: boolean }) {
   const { $t } = useIntl()
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
-  const pColor = 'var(--acx-accents-blue-50)'
+  const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
+  const noDataColor = 'var(--acx-primary-black)'
+
   const tableData = sliceType === 'lsp'
     ? transformToLspView(data)
     : transformToPropertyView(data)
@@ -32,7 +36,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'P1 Incidents Count' }),
       dataIndex: 'p1Incidents',
       key: 'p1Incidents',
-      sorter: { compare: sortProp('p1Incidents', defaultSort) },
+      sorter: { compare: sortProp('p1Incidents', customSort) },
       render: (_, row: Common) =>
         <span
           style={{
@@ -47,26 +51,35 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'Guest Experience' }),
       dataIndex: 'guestExp',
       key: 'guestExp',
-      sorter: { compare: sortProp('guestExp', defaultSort) },
+      sorter: { compare: sortProp('guestExp', customSort) },
       render: (_, row: Common) => <Tooltip
         placement='top'
         title={$t({
           // eslint-disable-next-line max-len
           defaultMessage: 'Average Connection Success: {avgConnSuccess}{nl} Average Time to Connect: {avgTTC}{nl} Average Client Throughput: {avgClientThroughput}'
         }, {
-          avgConnSuccess: formatter('percentFormat')(row.avgConnSuccess),
-          avgTTC: formatter('percentFormat')(row.avgTTC),
-          avgClientThroughput: formatter('percentFormat')(row.avgClientThroughput),
+          avgConnSuccess: !isNaN(row.avgConnSuccess)
+            ? formatter('percentFormat')(row.avgConnSuccess)
+            : noDataDisplay,
+          avgTTC: !isNaN(row.avgTTC)
+            ? formatter('percentFormat')(row.avgTTC)
+            : noDataDisplay,
+          avgClientThroughput: !isNaN(row.avgClientThroughput)
+            ? formatter('percentFormat')(row.avgClientThroughput)
+            : noDataDisplay,
           nl: '\n'
         })}
       >
         <span
           style={{
-            color: row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
-              ? pColor : nColor
+            color: !isNaN(row?.guestExp) && !isNull(row?.guestExp)
+              ? row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
           }}
         >
-          {formatter('percentFormat')(row?.guestExp)}
+          {!isNaN(row?.guestExp) ? formatter('percentFormat')(row?.guestExp) : noDataDisplay}
         </span>
       </Tooltip>
     },
@@ -74,22 +87,27 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       title: $t({ defaultMessage: 'SSID Compliance' }),
       dataIndex: 'ssidCompliance',
       key: 'ssidCompliance',
-      sorter: { compare: sortProp('ssidCompliance', defaultSort) },
+      sorter: { compare: sortProp('ssidCompliance', customSort) },
       render: (_, row: Common) =>
         <span
           style={{
-            color: row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
-              ? pColor : nColor
+            color: !isNaN(row?.ssidCompliance)
+              ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
+                ? pColor
+                : nColor
+              : noDataColor
           }}
         >
-          {formatter('percentFormat')(row?.ssidCompliance)}
+          {!isNaN(row?.ssidCompliance)
+            ? formatter('percentFormat')(row?.ssidCompliance)
+            : noDataDisplay}
         </span>
     },
     {
       title: $t({ defaultMessage: 'Devices Total' }),
       dataIndex: 'deviceCount',
       key: 'deviceCount',
-      sorter: { compare: sortProp('deviceCount', defaultSort) }
+      sorter: { compare: sortProp('deviceCount', customSort) }
     }
   ]
   const lspCols: TableProps<Pick<Lsp,'lsp' | 'propertyCount'>>['columns'] = [
@@ -98,6 +116,7 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
       dataIndex: 'lsp',
       key: 'lsp',
       searchable: true,
+      fixed: 'left',
       sorter: { compare: sortProp('lsp', defaultSort) },
       render: (_, row: Pick<Lsp,'lsp' | 'propertyCount'>, __, highlightFn: CallableFunction) =>
         <span>{highlightFn(row?.lsp)}</span>
@@ -123,12 +142,17 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
     title: $t({ defaultMessage: 'LSP' }),
     dataIndex: 'lsp',
     key: 'lsp',
+    fixed: 'left',
     searchable: true,
     sorter: { compare: sortProp('lsp', defaultSort) },
     render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
       <span>{highlightFn(row?.lsp)}</span>
   }
   ]
+  // Remove lsp column in case of LSP account
+  if(isLSP){
+    propertyCols.splice(-1)
+  }
 
   return <Table<Property | Lsp>
     columns={[
@@ -137,5 +161,6 @@ export function BrandTable ({ sliceType, slaThreshold, data }:
     dataSource={tableData as Property[] | Lsp[]}
     pagination={pagination}
     settingsId='property-list-table'
+    rowKey='id'
   />
 }

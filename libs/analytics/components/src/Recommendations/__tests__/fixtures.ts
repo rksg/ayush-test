@@ -393,6 +393,89 @@ export const verified = {
   preferences: null
 }
 
+export const unqualifiedZone = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'unqualifiedZone',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '23A-IND-BNG-D23-Keshav-Home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { mesh: false } } ] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    },
+    {
+      type: 'zone',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const unknownAudit = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'unknown',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: { audit: [{ code: 'global', stage: 'filter', failure: { somethingUnknown: false } }] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz-h-bdc-home-network-05'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const noAps = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'noAps',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '25-US-CA-D25-SandeepKour-home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { 'no-aps': false } } ] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '25-US-CA-D25-SandeepKour-home'
+    },
+    {
+      type: 'zone',
+      name: '25-US-CA-D25-SandeepKour-home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
 export const recommendationListResult = {
   recommendations: [
     {
@@ -519,6 +602,9 @@ export const recommendationListResult = {
     insufficientLicenses,
     verificationError,
     verified,
+    unqualifiedZone,
+    noAps,
+    unknownAudit,
     {
       id: '15',
       code: 'c-crrm-channel24g-auto',
