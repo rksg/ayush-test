@@ -171,9 +171,12 @@ export function AddCustomRole () {
   }
 
   const PermissionsTechForm = () => {
-    const [wifiAttribute, setWifiAttribute] = useState(false)
-    const [wiredAttribute, setWiredAttribute] = useState(false)
-    const [smartedgeAttribute, setSmartedgeAttribute] = useState(false)
+    const [wifiAttribute, setWifiAttribute] =
+      useState(form.getFieldValue(WifiAttributeProfile.READ) ?? false)
+    const [wiredAttribute, setWiredAttribute] =
+      useState(form.getFieldValue(SwitchAttributeProfile.READ) ?? false)
+    const [smartedgeAttribute, setSmartedgeAttribute] =
+      useState(form.getFieldValue(EdgeAttributeProfile.READ) ?? false)
 
     useEffect(() => {
       if (location && location?.scopes && (isEditMode || action === 'clone')) {
@@ -283,7 +286,8 @@ export function AddCustomRole () {
         <Form.Item
           name={WifiAttributeProfile.READ}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wifiAttribute}
             onChange={(e)=>OnWifiReadChange(e.target.checked)}
@@ -293,7 +297,8 @@ export function AddCustomRole () {
         <Form.Item
           name={WifiAttributeProfile.CREATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wifiAttribute}
             onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
@@ -303,7 +308,8 @@ export function AddCustomRole () {
         <Form.Item
           name={WifiAttributeProfile.UPDATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wifiAttribute}
             onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
@@ -313,7 +319,8 @@ export function AddCustomRole () {
         <Form.Item
           name={WifiAttributeProfile.DELETE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wifiAttribute}
             onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
@@ -345,7 +352,8 @@ export function AddCustomRole () {
         <Form.Item
           name={SwitchAttributeProfile.READ}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wiredAttribute}
             onChange={(e)=>OnWiredReadChange(e.target.checked)}
@@ -355,7 +363,8 @@ export function AddCustomRole () {
         <Form.Item
           name={SwitchAttributeProfile.CREATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wiredAttribute}
             onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
@@ -365,7 +374,8 @@ export function AddCustomRole () {
         <Form.Item
           name={SwitchAttributeProfile.UPDATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wiredAttribute}
             onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
@@ -375,7 +385,8 @@ export function AddCustomRole () {
         <Form.Item
           name={SwitchAttributeProfile.DELETE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!wiredAttribute}
             onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
@@ -407,7 +418,8 @@ export function AddCustomRole () {
         <Form.Item
           name={EdgeAttributeProfile.READ}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
             onChange={(e)=>OnSmartEdgeReadChange(e.target.checked)}
@@ -417,7 +429,8 @@ export function AddCustomRole () {
         <Form.Item
           name={EdgeAttributeProfile.CREATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
             onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
@@ -427,7 +440,8 @@ export function AddCustomRole () {
         <Form.Item
           name={EdgeAttributeProfile.UPDATE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
             onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
@@ -437,7 +451,8 @@ export function AddCustomRole () {
         <Form.Item
           name={EdgeAttributeProfile.DELETE}
           className='grid-item'
-          valuePropName='checked'>
+          valuePropName='checked'
+          initialValue={false}>
           <Input type='checkbox'
             hidden={!smartedgeAttribute}
             onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
@@ -445,6 +460,22 @@ export function AddCustomRole () {
         </Form.Item>
 
       </UI.FieldLabelAttributes>
+
+      <Form.Item
+        name='permissions-validation'
+        style={{ padding: '0px 20px', margin: '-20px 0px' }}
+        rules={[
+          { validator: () => {
+            if (!form.getFieldValue(WifiAttributeProfile.READ) &&
+            !form.getFieldValue(SwitchAttributeProfile.READ) &&
+            !form.getFieldValue(EdgeAttributeProfile.READ)) {
+              return Promise.reject('Please select permission(s)')
+            }
+            return Promise.resolve()
+          }
+          }
+        ]}
+        validateFirst />
     </div>
   }
 

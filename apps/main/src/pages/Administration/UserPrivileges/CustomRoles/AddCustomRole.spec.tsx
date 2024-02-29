@@ -87,10 +87,6 @@ describe('Add Custom Role', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(screen.queryByText('Please enter Role Name')).toBeNull()
     expect(screen.getByText('Set the permissions for this role:')).toBeVisible()
-
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-    expect(await screen.findByText('Network Info')).toBeVisible()
-    expect(screen.queryByText('Set the permissions for this role:')).toBeNull()
   })
   it('should save correctly for add', async () => {
     render(
@@ -109,6 +105,15 @@ describe('Add Custom Role', () => {
     fireEvent.change(screen.getByLabelText('Role Name'), { target: { value: 'custom role' } })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByText('Set the permissions for this role:')).toBeVisible()
+    await userEvent.click(screen.getAllByRole('checkbox')[0])
+    await userEvent.click(screen.getAllByRole('checkbox')[1])
+    await userEvent.click(screen.getAllByRole('checkbox')[3])
+    await userEvent.click(screen.getAllByRole('checkbox')[5])
+    await userEvent.click(screen.getAllByRole('checkbox')[6])
+    await userEvent.click(screen.getAllByRole('checkbox')[8])
+    await userEvent.click(screen.getAllByRole('checkbox')[10])
+    await userEvent.click(screen.getAllByRole('checkbox')[11])
+    await userEvent.click(screen.getAllByRole('checkbox')[13])
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByText('Network Info')).toBeVisible()
 
