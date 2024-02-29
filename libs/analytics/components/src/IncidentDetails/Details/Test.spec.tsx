@@ -57,8 +57,8 @@ jest.mock('../IncidentDetails/TimeSeries')
 jest.mock('../ChannelConfig', () => ({
   ChannelConfig: () => <div data-testid='channelConfig' />
 }))
-jest.mock('../Charts/ChannelDistributionHeatMap', () => ({
-  ...jest.requireActual('../Charts/ChannelDistributionHeatMap'),
+jest.mock('../Charts/ChannelDistributionHeatmap', () => ({
+  ...jest.requireActual('../Charts/ChannelDistributionHeatmap'),
   ChannelDistributionHeatMap: () => <div data-testid='channelDistributionHeatMap' />
 }))
 jest.mock('../Charts/RssDistributionChart', () => ({
