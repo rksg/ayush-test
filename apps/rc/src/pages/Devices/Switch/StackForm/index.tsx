@@ -216,7 +216,7 @@ export function StackForm () {
       setCurrentVenueAboveTenFw(venueAboveTenFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
-        formRef?.current?.setFieldValue('rearModule',
+        formRef?.current?.setFieldValue('rearModuleOption',
           formRef.current?.getFieldValue('rearModule') === 'stack-40g')
       }
 
@@ -332,6 +332,7 @@ export function StackForm () {
   useEffect(() => {
     if (activeSerialNumber) {
       const switchModel = getSwitchModel(activeSerialNumber) || ''
+      setIsIcx7650(switchModel.includes('ICX7650'))
       const miniMembers = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
       setTableData(data => [...data].splice(0, miniMembers))
     }
@@ -400,7 +401,8 @@ export function StackForm () {
         jumboMode: false,
         igmpSnooping: 'none',
         spanningTreePriority: '',
-        initialVlanId: values?.initialVlanId
+        initialVlanId: values?.initialVlanId,
+        ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
       }
       await saveSwitch({ params: { tenantId } , payload }).unwrap()
 

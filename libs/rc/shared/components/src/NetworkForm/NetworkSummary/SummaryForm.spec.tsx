@@ -67,7 +67,7 @@ describe('SummaryForm', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
@@ -77,8 +77,6 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
