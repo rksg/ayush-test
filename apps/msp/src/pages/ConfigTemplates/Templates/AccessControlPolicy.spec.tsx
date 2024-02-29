@@ -8,15 +8,18 @@ import { mockServer, render, screen, waitFor }                                  
 
 import { ConfigTemplateTabKey } from '..'
 import {
-  avcApp,
-  avcCat,
+  applicationDetailResponse,
+  avcApp, avcCat,
+  devicePolicyDetailResponse,
+  layer2PolicyDetailResponse,
   layer2PolicyListResponse,
+  layer3PolicyDetailResponse,
   layer3PolicyListResponse,
   mockedConfigTemplateList,
   mockedMSPCustomerList
 } from '../__tests__/fixtures'
 
-import { AccessControlSubPolicyDrawers, INIT_STATE } from './AccessControlPolicy'
+import { AccessControlSubPolicyDrawers, createAccessControlPolicyMenuItem, INIT_STATE } from './AccessControlPolicy'
 
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
@@ -51,15 +54,24 @@ describe('AccessControlPolicy component', () => {
           ctx.json(layer2PolicyListResponse)
         )
       ),
+      rest.get(
+        AccessControlUrls.getL2AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer2PolicyDetailResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(
           ctx.json(layer3PolicyListResponse)
         )
       ),
+      rest.post(AccessControlUrls.getL3AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer3PolicyDetailResponse))),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (req, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
       rest.get(AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => res(ctx.json(applicationDetailResponse))),
       rest.get(AccessControlUrls.getAvcCategory.url,
         (_, res, ctx) => {
           mockAvcCategory()
@@ -70,7 +82,6 @@ describe('AccessControlPolicy component', () => {
           mockAvcApp()
           return res(ctx.json(avcApp))
         })
-
     )
   })
   it('should render layer 2 policy correct', async () => {
@@ -79,7 +90,27 @@ describe('AccessControlPolicy component', () => {
         <AccessControlSubPolicyDrawers
           accessControlSubPolicyVisible={{
             ...INIT_STATE,
-            'Layer 2 Policy': true
+            'Layer 2 Policy': { visible: true, id: '' }
+          }}
+          setAccessControlSubPolicyVisible={mockSetVisible}
+        />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText(/layer 2 settings/i)).toBeVisible()
+    const cancelButton = await screen.findByRole('button', { name: /cancel/i })
+    await userEvent.click(cancelButton)
+    expect(screen.queryByText(/layer 2 settings/i)).toBeNull()
+  })
+  it('should render layer 2 policy correct with editMode', async () => {
+    render(
+      <Provider>
+        <AccessControlSubPolicyDrawers
+          accessControlSubPolicyVisible={{
+            ...INIT_STATE,
+            'Layer 2 Policy': { visible: true, id: 'layer2PolicyId' }
           }}
           setAccessControlSubPolicyVisible={mockSetVisible}
         />
@@ -100,7 +131,7 @@ describe('AccessControlPolicy component', () => {
         <AccessControlSubPolicyDrawers
           accessControlSubPolicyVisible={{
             ...INIT_STATE,
-            'Layer 3 Policy': true
+            'Layer 3 Policy': { visible: true, id: '' }
           }}
           setAccessControlSubPolicyVisible={mockSetVisible}
         />
@@ -122,7 +153,7 @@ describe('AccessControlPolicy component', () => {
         <AccessControlSubPolicyDrawers
           accessControlSubPolicyVisible={{
             ...INIT_STATE,
-            'Device Policy': true
+            'Device Policy': { visible: true, id: '' }
           }}
           setAccessControlSubPolicyVisible={mockSetVisible}
         />
@@ -146,7 +177,7 @@ describe('AccessControlPolicy component', () => {
         <AccessControlSubPolicyDrawers
           accessControlSubPolicyVisible={{
             ...INIT_STATE,
-            'Application Policy': true
+            'Application Policy': { visible: true, id: '' }
           }}
           setAccessControlSubPolicyVisible={mockSetVisible}
         />
@@ -159,5 +190,13 @@ describe('AccessControlPolicy component', () => {
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelButton)
     expect(screen.queryByText(/Application Access Settings/i)).toBeNull()
+  })
+
+  it('render createAccessControlPolicyMenuItem correctly', async () => {
+    const mockedSetAccessControlSubPolicyVisible = jest.fn()
+    const menuItem = createAccessControlPolicyMenuItem(mockedSetAccessControlSubPolicyVisible)
+    expect(menuItem).toHaveProperty('children')
+    // @ts-ignore
+    expect(menuItem['children']).toHaveLength(5)
   })
 })

@@ -1,10 +1,7 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -21,11 +18,11 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeClusterSettingForm: () => <div data-testid='edge-cluster-setting-form' />
 }))
-const mockedFinishFn = jest.fn()
+const mockedPatchApi = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   usePatchEdgeClusterMutation: () => ([() => ({
-    unwrap: async () => mockedFinishFn()
+    unwrap: async () => mockedPatchApi()
   })])
 }))
 
@@ -38,15 +35,6 @@ describe('Edit Edge Cluster - ClusterDetails', () => {
       clusterId: 'testClusterId',
       activeTab: 'cluster-details'
     }
-    mockServer.use(
-      rest.patch(
-        EdgeUrlsInfo.patchEdgeCluster.url,
-        (req, res, ctx) => {
-          mockedFinishFn()
-          return res(ctx.status(202))
-        }
-      )
-    )
   })
 
   it('should render ClusterDetails successfully', async () => {
@@ -69,7 +57,7 @@ describe('Edit Edge Cluster - ClusterDetails', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockedFinishFn).toBeCalled()
+    expect(mockedPatchApi).toBeCalled()
   })
 
   it('should back to list page when clicking cancel button', async () => {

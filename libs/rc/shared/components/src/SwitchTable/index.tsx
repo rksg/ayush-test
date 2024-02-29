@@ -38,6 +38,7 @@ import {
   TableQuery,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
+  isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
   FILTER,
   SEARCH,
@@ -48,7 +49,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
+import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -103,7 +104,7 @@ export const defaultSwitchPayload = {
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
     'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword'
+    'syncedAdminPassword', 'adminPassword', 'extIp'
   ]
 }
 
@@ -147,7 +148,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ],
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
@@ -159,6 +160,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -203,7 +205,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
-        const switchIdList = rows.map(row => row.id)
+        const switchIdList = rows
+          .filter(row => isFirmwareSupportAdminPassword(row?.firmware ?? ''))
+          .map(row => row.id)
+
         const callback = () => {
           clearSelection?.()
           showToast({
@@ -268,12 +273,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       disabled: true,
       show: false,
       render: (data:boolean, row:SwitchRow) => {
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
         const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
-        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
-          <Tooltip title={getPasswordTooltip(row)}>{
-            getAdminPassword(row, PasswordInput)
-          }</Tooltip>
-        </div>
+        return isSupportAdminPassword
+          ? <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+            <Tooltip title={getPasswordTooltip(row)}>{
+              getAdminPassword(row, PasswordInput)
+            }</Tooltip>
+          </div>
+          : noDataDisplay
       }
     }] : []),
     {
@@ -331,7 +339,17 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
-    }
+    },
+    ...( enableSwitchExternalIp ? [{
+      key: 'extIp',
+      title: $t({ defaultMessage: 'Ext. IP Address' }),
+      dataIndex: 'extIp',
+      sorter: false,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchRow) => {
+        return row.isFirstLevel ? row.extIp || noDataDisplay : ''
+      }
+    }] : [])
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',
       //   title: $t({ defaultMessage: 'Tags' }),
@@ -397,7 +415,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
         const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
           row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
-        return !row?.syncedAdminPassword && isConfigSynced && isOperational
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational && isSupportAdminPassword
       }).length === 0
     },
     onClick: handleClickMatchPassword

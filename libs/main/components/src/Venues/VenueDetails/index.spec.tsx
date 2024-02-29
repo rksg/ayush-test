@@ -86,7 +86,7 @@ describe('VenueDetails', () => {
         (req, res, ctx) => res(ctx.json(data))
       ),
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(

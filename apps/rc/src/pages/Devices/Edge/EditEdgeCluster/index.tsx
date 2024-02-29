@@ -81,7 +81,7 @@ const EditEdgeCluster = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
         ]}
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>

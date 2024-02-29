@@ -18,6 +18,8 @@ import EdgeSdLan from '.'
 const mockedEditFn = jest.fn()
 const mockedGetNetworkDeepList = jest.fn()
 
+const services = require('@acx-ui/rc/services')
+
 describe('Venue Edge SD-LAN Service', () => {
   let params: { tenantId: string, venueId: string }
 
@@ -29,6 +31,15 @@ describe('Venue Edge SD-LAN Service', () => {
 
     mockedEditFn.mockReset()
     mockedGetNetworkDeepList.mockReset()
+
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
 
     mockServer.use(
       rest.patch(
