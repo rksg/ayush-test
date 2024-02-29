@@ -6,9 +6,9 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                           from '@acx-ui/components'
-import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask } from '@acx-ui/rc/utils'
-import { getIntl }                                                  from '@acx-ui/utils'
+import { Drawer, Select }                                                         from '@acx-ui/components'
+import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask, optionSorter } from '@acx-ui/rc/utils'
+import { getIntl }                                                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -21,7 +21,7 @@ interface SelectInterfaceDrawerProps {
   setVisible: (visible: boolean) => void
   handleFinish: (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => void
   currentVipIndex?: number
-  currentCluster?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterTableDataType
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
   }
@@ -33,23 +33,10 @@ interface SelectInterfaceDrawerFormType {
   [key: string]: { port: string }
 }
 
-const optionSorter = (
-  a: DefaultOptionType,
-  b: DefaultOptionType
-) => {
-  if ( (a.label ?? '') < (b.label ?? '') ){
-    return -1
-  }
-  if ( (a.label ?? '') > (b.label ?? '') ){
-    return 1
-  }
-  return 0
-}
-
 export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   const {
     visible, setVisible, currentVipIndex = 0,
-    currentCluster, handleFinish: handleOk , editData,
+    currentClusterStatus, handleFinish: handleOk , editData,
     selectedInterfaces, lanInterfaces
   } = props
   const { $t } = useIntl()
@@ -132,7 +119,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     >
       <Row gutter={[16, 10]}>
         {
-          currentCluster?.edgeList?.map(item => (
+          currentClusterStatus?.edgeList?.map(item => (
             <Col key={`node-${item.serialNumber}`} span={24}>
               <UI.EdgeNameHeadLine>{item.name}</UI.EdgeNameHeadLine>
               <Form.Item
@@ -166,10 +153,22 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                 }
                 children={
                   <Select
-                    options={filterPortOptions(
-                      lanInterfacesOptions[item.serialNumber],
-                      item.serialNumber
-                    )}
+                    children={
+                      filterPortOptions(
+                        lanInterfacesOptions[item.serialNumber],
+                        item.serialNumber
+                      )?.map(option => (
+                        <Select.Option
+                          key={option.value}
+                          value={option.value}
+                          children={option.label}
+                          disabled={
+                            !lanInterfaces?.[item.serialNumber]?.find(item =>
+                              item.portName === option.value)?.ip
+                          }
+                        />
+                      ))
+                    }
                   />
                 }
                 validateFirst

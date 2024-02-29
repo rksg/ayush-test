@@ -17,6 +17,7 @@ import {
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }       from '@acx-ui/utils'
 
 import * as CommUI from '../styledComponents'
 
@@ -24,7 +25,7 @@ import { InterfaceTable }        from './InterfaceTable'
 import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
 
 interface VirtualIpProps {
-  currentCluster?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterTableDataType
   currentVipConfig?: EdgeCluster['virtualIpSettings']
 }
 
@@ -39,7 +40,7 @@ export interface VirtualIpFormType {
 }
 
 export const VirtualIp = (props: VirtualIpProps) => {
-  const { currentCluster, currentVipConfig } = props
+  const { currentClusterStatus, currentVipConfig } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
@@ -53,11 +54,11 @@ export const VirtualIp = (props: VirtualIpProps) => {
     isLoading: isLanInterfacesLoading
   } = useGetAllInterfacesByTypeQuery({
     payload: {
-      edgeIds: currentCluster?.edgeList?.map(node => node.serialNumber),
+      edgeIds: currentClusterStatus?.edgeList?.map(node => node.serialNumber),
       portTypes: [EdgePortTypeEnum.LAN]
     }
   }, {
-    skip: !currentCluster?.edgeList || currentCluster?.edgeList.length === 0
+    skip: !currentClusterStatus?.edgeList || currentClusterStatus?.edgeList.length === 0
   })
 
   useEffect(() => {
@@ -96,8 +97,8 @@ export const VirtualIp = (props: VirtualIpProps) => {
   const handleFinish = async (values: VirtualIpFormType) => {
     try {
       const params = {
-        venueId: currentCluster?.venueId,
-        clusterId: currentCluster?.clusterId
+        venueId: currentClusterStatus?.venueId,
+        clusterId: currentClusterStatus?.clusterId
       }
       const vipSettings = values.vipConfig.map(item => {
         const ports = Object.entries(item.interfaces).map(([, v2]) => {
@@ -168,7 +169,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
                                     index={index}
                                     remove={remove}
                                     vipConfig={vipConfig}
-                                    currentCluster={currentCluster}
+                                    currentClusterStatus={currentClusterStatus}
                                     openDrawer={openDrawer}
                                   />
                                 </Col>
@@ -235,7 +236,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
         handleFinish={handleSelectPort}
         currentVipIndex={currentIndex}
         editData={vipConfig?.[currentIndex]?.interfaces}
-        currentCluster={currentCluster}
+        currentClusterStatus={currentClusterStatus}
         selectedInterfaces={vipConfig}
         lanInterfaces={lanInterfaces}
       />
@@ -255,12 +256,12 @@ interface VipCardProps {
       vip: string
     }
   }
-  currentCluster?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterTableDataType
   openDrawer: (index: number) => void
 }
 
 const VipCard = (props: VipCardProps) => {
-  const { field, index, remove, vipConfig, currentCluster, openDrawer } = props
+  const { field, index, remove, vipConfig, currentClusterStatus, openDrawer } = props
   const { $t } = useIntl()
 
   return (
@@ -312,7 +313,7 @@ const VipCard = (props: VipCardProps) => {
                     />
                   </div>
                   <InterfaceTable
-                    nodeList={currentCluster?.edgeList}
+                    nodeList={currentClusterStatus?.edgeList}
                     selectedInterface={vipConfig?.[index]?.interfaces}
                   />
                 </>
@@ -340,7 +341,8 @@ const VipCard = (props: VipCardProps) => {
                   Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0].ip,
                   Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0].subnet
                 )
-              }
+              },
+              { validator: (_, value) => validateVip(value, vipConfig?.[index]?.interfaces) }
             ]}
             extra={
               <SuggestedRange portInfo={Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0]} />
@@ -352,6 +354,22 @@ const VipCard = (props: VipCardProps) => {
       </Row>
     </Fieldset>
   )
+}
+
+const validateVip = (
+  value: string,
+  interfaces: { [key: string]: EdgePortInfo }
+) => {
+  if(!interfaces) return Promise.resolve()
+  const validInterfaces = Object.values(interfaces)
+    .filter(item => item.ip).map(item => item.ip.split('/')[0])
+  const { $t } = getIntl()
+  if (validInterfaces.includes(value)) {
+    return Promise.reject(
+      $t({ defaultMessage: 'Virtual IP cannot be the same as any node interface IP.' })
+    )
+  }
+  return Promise.resolve()
 }
 
 const SuggestedRange = ({ portInfo }: { portInfo: EdgePortInfo }) => {
