@@ -917,7 +917,6 @@ export function StackForm () {
                           type='link'
                           size='small'
                           disabled={tableData.length >= 12}
-                          hidden={readOnly}
                         >
                           {$t({ defaultMessage: 'Add another member' })}
                         </Button>
