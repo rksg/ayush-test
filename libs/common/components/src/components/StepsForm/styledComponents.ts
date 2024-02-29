@@ -1,5 +1,5 @@
-import { Typography, Steps as AntSteps, Space } from 'antd'
-import styled, { css }                          from 'styled-components/macro'
+import { Typography, Steps as AntSteps, Space, Alert as AntAlert, AlertProps } from 'antd'
+import styled, { css }                                                         from 'styled-components/macro'
 
 import modifyVars                  from '../../theme/modify-vars'
 import { Subtitle }                from '../Subtitle'
@@ -243,4 +243,45 @@ export const MultiSelect = styled.div`
       border-right-width: 1px;
     }
   }
+`
+export const AlertContainer = styled(AntAlert)<{ type: AlertProps['type'] }>`
+position: fixed;
+width: calc(
+  100%
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+min-width: calc(
+  ${modifyVars['@screen-xl']}
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+bottom: calc(
+  32px
+  + var(--acx-steps-form-actions-vertical-space) * 2
+);
+padding: 10px 0;
+background-color: var(--acx-neutrals-10);
+z-index: 5;
+&::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: ${props => {
+    switch(props.type) {
+      case 'success':
+        return 'var(--acx-accents-orange-10)'
+      case 'error':
+      default:
+        return '#ffe8e8'
+
+    }
+  }}
+}
+&.ant-alert {
+  border: none;
+}
+& > .ant-alert-content {
+  z-index: 1;
+}
 `

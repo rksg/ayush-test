@@ -1,4 +1,6 @@
-import type { FormProps } from 'antd'
+import { ReactNode } from 'react'
+
+import type { AlertProps, FormProps } from 'antd'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <T = any> = Omit<
@@ -43,6 +45,11 @@ export type StepFormProps <T> = Omit<
   children: React.ReactNode
 
   onFinish?: (values: T) => Promise<boolean | void>
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
+  }
 }
 
 export type InternalStepFormProps <T> = StepFormProps<T> & { step: number, name: string }

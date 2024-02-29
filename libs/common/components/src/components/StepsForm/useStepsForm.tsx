@@ -125,7 +125,7 @@ export function useStepsForm <T> ({
     ..._.omit(config, 'defaultFormValues'),
     ...props,
     // omit name for preventing prefix of id
-    ..._.omit(currentStep.props, ['children', 'name', 'title']),
+    ..._.omit(currentStep.props, ['children', 'name', 'title', 'alert']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
@@ -221,6 +221,11 @@ export function useStepsForm <T> ({
     />
   </UI.ActionsContainer>
 
+  const alertEl = currentStep?.props.alert && <UI.AlertContainer
+    data-testid='steps-form-alert'
+    {...currentStep?.props.alert}
+  />
+
   const currentStepEl = steps[newConfig.current]
 
   const formLayout = steps.length > 1
@@ -233,6 +238,7 @@ export function useStepsForm <T> ({
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
       <Row gutter={20}>{formLayout}</Row>
+      { currentStep?.props.alert ? alertEl : null}
       {buttonEls}
     </Form>
   </UI.Wrapper>
