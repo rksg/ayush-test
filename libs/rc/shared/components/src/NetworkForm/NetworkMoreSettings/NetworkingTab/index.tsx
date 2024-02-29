@@ -5,6 +5,7 @@ import { useIntl, defineMessage }                         from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { RadiusOptionsForm }                  from '../../../RadiusOptionsForm'
@@ -184,7 +185,18 @@ export function NetworkingTab (props: {
         </UI.LabelOfInput>
         <Form.Item
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
-          label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+          label={
+            <>
+              {$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+              <Tooltip
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'The max value for Wi-Fi 6E and Wi-Fi 7 AP models is 4200.' })}
+                placement='bottom'
+              >
+                <QuestionMarkCircleOutlined/>
+              </Tooltip>
+            </>
+          }
           initialValue={120}
           rules={[{
             type: 'number', max: 86400, min: 60,
