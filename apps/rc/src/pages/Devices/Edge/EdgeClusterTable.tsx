@@ -189,7 +189,7 @@ export const EdgeClusterTable = () => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? row.clusterId)}
+        rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
