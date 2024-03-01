@@ -328,6 +328,11 @@ export function Subscriptions () {
       }
     })
 
+    subscriptionData?.map((item) => {
+      item.status = (item.status === 'FUTURE') ? 'VALID' : item.status
+      return item
+    })
+
     return (
       <Loader states={[queryResults]}>
         <Table
