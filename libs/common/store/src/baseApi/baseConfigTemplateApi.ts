@@ -7,7 +7,7 @@ export const baseConfigTemplateApi = createApi({
   reducerPath: 'configTemplateApi',
   tagTypes: [
     'ConfigTemplate', 'AAATemplate', 'NetworkTemplate', 'VenueTemplate', 'VenueTemplateRadio',
-    'VenueTemplateExternalAntenna', 'DpskTemplate'
+    'VenueTemplateExternalAntenna', 'DpskTemplate', 'AccessControlTemplate'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

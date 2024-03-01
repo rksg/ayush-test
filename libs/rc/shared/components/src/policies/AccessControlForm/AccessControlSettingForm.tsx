@@ -4,12 +4,16 @@ import { useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
 
 import { GridCol, GridRow }                                                     from '@acx-ui/components'
 import { StepsFormLegacy }                                                      from '@acx-ui/components'
 import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
-import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
+import {
+  useGetAccessControlProfileTemplateListQuery,
+  useGetAccessControlProfileTemplateQuery
+} from '@acx-ui/rc/services'
+import { AclEmbeddedObject, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+
 
 import AccessControlComponent from './AccessControlComponent'
 
@@ -26,12 +30,18 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     embeddedMode = false,
     embeddedObject = {} as AclEmbeddedObject
   } = props
-  const params = useParams()
   const form = Form.useFormInstance()
 
-  const { data } = useGetAccessControlProfileQuery({ params }, { skip: !editMode })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetAccessControlProfileQuery,
+    useGetAccessControlProfileTemplateQuery,
+    !editMode
+  )
 
-  const { data: aclProfileList } = useGetAccessControlProfileListQuery({ params })
+  const { data: aclProfileList } = useConfigTemplateQueryFnSwitcher(
+    useGetAccessControlProfileListQuery,
+    useGetAccessControlProfileTemplateListQuery
+  )
 
   useEffect(() => {
     if (data) {

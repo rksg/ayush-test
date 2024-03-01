@@ -24,11 +24,17 @@ import {
   useUpdateAppPolicyMutation
 } from '@acx-ui/rc/services'
 import {
+  useAddAppPolicyTemplateMutation,
+  useGetAppPolicyTemplateListQuery,
+  useGetAppPolicyTemplateQuery,
+  useUpdateAppPolicyTemplateMutation
+} from '@acx-ui/rc/services'
+import {
   ApplicationAclType,
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp
+  sortProp, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -191,35 +197,21 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
-  const [ createAppPolicy ] = useAddAppPolicyMutation()
+  const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddAppPolicyMutation, useAddAppPolicyTemplateMutation)
 
-  const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
+  const [ updateAppPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAppPolicyMutation, useUpdateAppPolicyTemplateMutation)
 
-  const { appSelectOptions, appList, appIdList } = useAppPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        appSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        appList: data ? data.map(item => item.name) : [],
-        appIdList: data ? data.map(item => item.id) : []
-      }
-    }
-  })
+  const { appSelectOptions, appList, appIdList } = GetAppAclPolicyListInstance(requestId)
 
-  const { data: appPolicyInfo } = useGetAppPolicyQuery(
-    {
-      params: {
-        ...params,
-        applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
-      }
-    },
-    { skip: skipFetch ||
-        (applicationPolicyId !== undefined
-          && !appIdList.some(appId => appId === applicationPolicyId)) }
+  const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetAppPolicyQuery,
+    useGetAppPolicyTemplateQuery,
+    // eslint-disable-next-line max-len
+    skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
+    {},
+    { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
   )
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -725,3 +717,45 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     </>
   )
 }
+
+const GetAppAclPolicyListInstance = (requestId: string): {
+  appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
+    params: { ...params, requestId: requestId }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        appSelectOptions: data ? data.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) : [],
+        appList: data ? data.map(item => item.name) : [],
+        appIdList: data ? data.map(item => item.id) : []
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useAppPolicyList = useAppPolicyListQuery({
+    params: { ...params, requestId: requestId }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        appSelectOptions: data ? data.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) : [],
+        appList: data ? data.map(item => item.name) : [],
+        appIdList: data ? data.map(item => item.id) : []
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useAppPolicyTemplateList : useAppPolicyList
+}
+

@@ -13,6 +13,10 @@ import {
   useUpdateAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
+  useAddAccessControlProfileTemplateMutation,
+  useUpdateAccessControlProfileTemplateMutation
+} from '@acx-ui/rc/services'
+import {
   AccessControlInfoType,
   AccessControlProfile,
   getPolicyRoutePath,
@@ -22,7 +26,7 @@ import {
   getPolicyListRoutePath,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
-  useConfigTemplateTenantLink
+  useConfigTemplateTenantLink, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -144,9 +148,11 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
-  const [ createAclProfile ] = useAddAccessControlProfileMutation()
+  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher(
+    useAddAccessControlProfileMutation, useAddAccessControlProfileTemplateMutation)
 
-  const [ updateAclProfile ] = useUpdateAccessControlProfileMutation()
+  const [ updateAclProfile ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAccessControlProfileMutation, useUpdateAccessControlProfileTemplateMutation)
 
   const handleAccessControlPolicy = async (editMode: boolean) => {
     try {

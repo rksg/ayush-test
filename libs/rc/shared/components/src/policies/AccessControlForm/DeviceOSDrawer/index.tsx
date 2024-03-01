@@ -22,12 +22,22 @@ import {
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
 import {
+  useAddDevicePolicyTemplateMutation,
+  useGetDevicePolicyTemplateListQuery,
+  useGetDevicePolicyTemplateQuery,
+  useUpdateDevicePolicyTemplateMutation
+} from '@acx-ui/rc/services'
+import {
   AccessStatus,
   CommonResult,
   DeviceRule,
   OsVendorEnum,
   defaultSort,
-  sortProp } from '@acx-ui/rc/utils'
+  sortProp,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -151,29 +161,20 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
 
-  const [ createDevicePolicy ] = useAddDevicePolicyMutation()
+  const [ createDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddDevicePolicyMutation, useAddDevicePolicyTemplateMutation)
 
-  const [ updateDevicePolicy ] = useUpdateDevicePolicyMutation()
+  const [ updateDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateDevicePolicyMutation, useUpdateDevicePolicyTemplateMutation)
 
-  const { deviceSelectOptions, deviceList } = useDevicePolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        deviceSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        deviceList: data? data.map(item => item.name) : []
-      }
-    }
-  })
+  const { deviceSelectOptions, deviceList } = GetDeviceAclPolicyListInstance(requestId)
 
-  const { data: devicePolicyInfo } = useGetDevicePolicyQuery(
-    {
-      params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
-    },
-    { skip: skipFetch }
+  const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetDevicePolicyQuery,
+    useGetDevicePolicyTemplateQuery,
+    skipFetch,
+    {},
+    { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
   )
 
   const setDrawerVisible = (status: boolean) => {
@@ -692,4 +693,43 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       />
     </>
   )
+}
+
+const GetDeviceAclPolicyListInstance = (requestId: string): {
+  deviceSelectOptions: JSX.Element[], deviceList: string[]
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
+    params: { ...params, requestId: requestId }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        deviceSelectOptions: data ? data.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) : [],
+        deviceList: data? data.map(item => item.name) : []
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useDevicePolicyList = useDevicePolicyListQuery({
+    params: { ...params, requestId: requestId }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        deviceSelectOptions: data ? data.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) : [],
+        deviceList: data? data.map(item => item.name) : []
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useDevicePolicyTemplateList : useDevicePolicyList
 }
