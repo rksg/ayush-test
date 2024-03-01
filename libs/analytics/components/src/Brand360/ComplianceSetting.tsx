@@ -51,7 +51,6 @@ const tooltipMsg = defineMessage({
     {br}
     ^[a-zA-Z0-9]'{5}'_GUEST$
     {br}
-    {br}
     ^[a-zA-Z0-9]'{5}'_STAFF$
   `
 })
