@@ -187,7 +187,7 @@ export function NetworkingTab (props: {
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
           label={
             <>
-              {$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+              {$t({ defaultMessage: 'Client Inactivity Timeout' })}
               <Tooltip
                 // eslint-disable-next-line max-len
                 title={$t({ defaultMessage: 'The max value for Wi-Fi 6E and Wi-Fi 7 AP models is 4200.' })}
