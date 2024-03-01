@@ -43,14 +43,14 @@ import {
   subnetMaskIpRegExp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate
+  useConfigTemplate,
+  layer3ProtocolLabelMapping
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                           from './AccessControlForm'
 import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY } from './constants'
-import { layer3ProtocolLabelMapping }                            from './contentsMap'
 import { useScrollLock }                                         from './ScrollLock'
 
 const { useWatch } = Form

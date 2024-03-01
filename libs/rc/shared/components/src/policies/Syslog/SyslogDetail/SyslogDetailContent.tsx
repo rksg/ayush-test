@@ -3,14 +3,12 @@ import { useContext, useEffect } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, SummaryCard }     from '@acx-ui/components'
-import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
+import { Loader, SummaryCard }           from '@acx-ui/components'
+import { useGetSyslogPolicyQuery }       from '@acx-ui/rc/services'
 import {
-  FacilityEnum,
-  FlowLevelEnum
+  FacilityEnum, facilityLabelMapping,
+  FlowLevelEnum, flowLevelLabelMapping
 } from '@acx-ui/rc/utils'
-
-import { facilityLabelMapping, flowLevelLabelMapping } from '../contentsMap'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
