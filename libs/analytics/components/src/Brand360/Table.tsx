@@ -1,6 +1,6 @@
 
-import { isNaN }   from 'lodash'
-import { useIntl } from 'react-intl'
+import { isNaN, isNull } from 'lodash'
+import { useIntl }       from 'react-intl'
 
 import { getDefaultSettings }               from '@acx-ui/analytics/services'
 import { defaultSort, sortProp, Settings  } from '@acx-ui/analytics/utils'
@@ -24,7 +24,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
   const thresholdGuestExp = thresholds['sla-guest-experience' as keyof typeof slaThreshold]
   const thresholdSSID = thresholds['sla-brand-ssid-compliance' as keyof typeof slaThreshold]
-  const pColor = 'var(--acx-accents-blue-50)'
+  const pColor = 'var(--acx-primary-black)'
   const nColor = 'var(--acx-semantics-red-50)'
   const noDataColor = 'var(--acx-primary-black)'
 
@@ -72,7 +72,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       >
         <span
           style={{
-            color: !isNaN(row?.guestExp)
+            color: !isNaN(row?.guestExp) && !isNull(row?.guestExp)
               ? row?.guestExp >= parseFloat(thresholdGuestExp as string)/100
                 ? pColor
                 : nColor
@@ -116,6 +116,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       dataIndex: 'lsp',
       key: 'lsp',
       searchable: true,
+      fixed: 'left',
       sorter: { compare: sortProp('lsp', defaultSort) },
       render: (_, row: Pick<Lsp,'lsp' | 'propertyCount'>, __, highlightFn: CallableFunction) =>
         <span>{highlightFn(row?.lsp)}</span>
@@ -141,6 +142,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
     title: $t({ defaultMessage: 'LSP' }),
     dataIndex: 'lsp',
     key: 'lsp',
+    fixed: 'left',
     searchable: true,
     sorter: { compare: sortProp('lsp', defaultSort) },
     render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>

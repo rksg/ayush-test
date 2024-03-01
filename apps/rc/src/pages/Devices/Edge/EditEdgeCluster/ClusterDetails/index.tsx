@@ -26,6 +26,7 @@ export const ClusterDetails = (props: ClusterDetailsProps) => {
       }
       const payload = {
         name: values.name,
+        description: values.description,
         smartEdges: values.smartEdges?.map(item => ({
           serialNumber: item.serialNumber,
           name: item.name

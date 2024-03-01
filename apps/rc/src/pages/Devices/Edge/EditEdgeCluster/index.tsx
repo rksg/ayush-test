@@ -6,9 +6,10 @@ import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx
 import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import { ClusterDetails }  from './ClusterDetails'
-import { EdgeClusterDhcp } from './EdgeClusterDhcp'
-import { VirtualIp }       from './VirtualIp'
+import { ClusterDetails }   from './ClusterDetails'
+import { ClusterInterface } from './ClusterInterface'
+import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
+import { VirtualIp }        from './VirtualIp'
 
 
 const EditEdgeCluster = () => {
@@ -52,13 +53,15 @@ const EditEdgeCluster = () => {
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
       content: <VirtualIp
-        currentCluster={currentClusterStatus}
+        currentClusterStatus={currentClusterStatus}
         currentVipConfig={currentCluster?.virtualIpSettings}
       />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
-      content: <div children={'cluster-interface'} />
+      content: <ClusterInterface
+        currentClusterStatus={currentClusterStatus}
+      />
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),
@@ -78,7 +81,7 @@ const EditEdgeCluster = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
         ]}
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>

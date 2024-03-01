@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { range } from 'lodash'
 
 import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
 import type { Settings }                   from '@acx-ui/analytics/utils'
@@ -46,10 +47,11 @@ describe('ComplianceSetting Drawer', () => {
     await userEvent.click(await screen.findByTestId('ssidSettings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
-    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc' } })
+    const target = '  ssidRegex1  \n ssidRegex2 '
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: target } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).toBeCalledWith({
-      'brand-ssid-compliance-matcher': 'abc'
+      'brand-ssid-compliance-matcher': 'ssidRegex1\nssidRegex2'
     })
   })
   it('should not save if invalid ssid regex', async () => {
@@ -62,7 +64,7 @@ describe('ComplianceSetting Drawer', () => {
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc(' } })
     await userEvent.click(await screen.findByText('Save'))
-    expect(await screen.findByText('Input is not a valid Java Regular Expression!'))
+    expect(await screen.findByText('Line: 1 is not a valid Java Regular Expression!'))
       .toBeVisible()
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })
@@ -89,6 +91,32 @@ describe('ComplianceSetting Drawer', () => {
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'test' } })
+    await userEvent.click(await screen.findByText('Save'))
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+  it('should not save if ssid regex exceeds 1000 characters', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    const thousandChar = range(1001).map(() => '1').join('')
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: thousandChar } })
+    await userEvent.click(await screen.findByText('Save'))
+    expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+  it('should not save if ssid regex has blanks', async () => {
+    const settings = {
+      'brand-ssid-compliance-matcher': 'test'
+    }
+    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    const spaceRegex = 'brand360\n\nxd'
+    fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: spaceRegex } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })

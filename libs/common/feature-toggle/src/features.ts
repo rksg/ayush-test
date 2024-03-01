@@ -14,6 +14,7 @@ export enum Features {
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_SNMP = 'wifi-consumer-ap-snmp-toggle',
   AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
+  AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
@@ -106,7 +107,6 @@ export enum Features {
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
-  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
@@ -154,7 +154,8 @@ export enum Features {
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
-  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle'
+  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
+  SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

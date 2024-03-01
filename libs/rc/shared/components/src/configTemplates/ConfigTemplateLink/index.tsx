@@ -1,26 +1,30 @@
 import { ReactNode } from 'react'
 
-import { Form } from 'antd'
-
 import {
   ConfigTemplateType,
+  DpskDetailsTabKey,
   LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,
   PolicyRoutePathProps,
   PolicyType,
+  ServiceDetailsLinkProps,
+  ServiceOperation,
+  ServiceRoutePathProps,
+  ServiceType,
   getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath,
-  useConfigTemplate
+  useConfigTemplate,
+  useConfigTemplateTenantLink,
+  getServiceDetailsLink,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { ApplicationDrawer, DeviceOSDrawer, Layer2Drawer, Layer3Drawer } from '../../policies'
-
 type OptionProps = {
   [key in ConfigTemplateType]?: {
-    [subKey: string]: string
+    activeTab?: string
   }
 }
 
@@ -70,6 +74,34 @@ export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDeta
   )
 }
 
+interface ServiceConfigTemplateLinkProps extends ServiceRoutePathProps {
+	children: ReactNode
+  attachCurrentPathToState?: boolean
+}
+export function ServiceConfigTemplateLink (props: ServiceConfigTemplateLinkProps) {
+  const { children, attachCurrentPathToState = true, ...rest } = props
+  return (
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getServiceRoutePath(rest)} attachCurrentPathToState={attachCurrentPathToState}>
+      {props.children}
+    </ConfigTemplateLink>
+  )
+}
+
+interface ServiceConfigTemplateDetailsLinkProps extends ServiceDetailsLinkProps {
+	children: ReactNode
+  attachCurrentPathToState?: boolean
+}
+export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDetailsLinkProps) {
+  const { children, attachCurrentPathToState = true, ...rest } = props
+  return (
+    // eslint-disable-next-line max-len
+    <ConfigTemplateLink to={getServiceDetailsLink(rest)} attachCurrentPathToState={attachCurrentPathToState}>
+      {props.children}
+    </ConfigTemplateLink>
+  )
+}
+
 // eslint-disable-next-line max-len
 export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
   let activeTab = ''
@@ -77,6 +109,14 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     case ConfigTemplateType.RADIUS:
       // eslint-disable-next-line max-len
       return <PolicyConfigTemplateDetailsLink type={PolicyType.AAA} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
+    case ConfigTemplateType.DPSK:
+      return <ServiceConfigTemplateDetailsLink
+        type={ServiceType.DPSK}
+        oper={ServiceOperation.DETAIL}
+        activeTab={DpskDetailsTabKey.OVERVIEW}
+        serviceId={id}
+        children={name}
+      />
     case ConfigTemplateType.NETWORK:
       activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
       // eslint-disable-next-line max-len
@@ -88,34 +128,9 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     case ConfigTemplateType.ACCESS_CONTROL_SET:
       // eslint-disable-next-line max-len
       return <PolicyConfigTemplateDetailsLink type={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
-    case ConfigTemplateType.LAYER_2_POLICY:
-      return <Form><Layer2Drawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.LAYER_3_POLICY:
-      return <Form><Layer3Drawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.DEVICE_POLICY:
-      return <Form><DeviceOSDrawer
-        isOnlyViewMode={true}
-        onlyViewMode={{ id: id, viewText: name }}
-      /></Form>
-    case ConfigTemplateType.APPLICATION_POLICY:
-      return <Form><ApplicationDrawer
-        isOnlyViewMode={true}
-        onlyViewMode={{
-          id: id,
-          viewText: name
-        }}
-      /></Form>
+    default:
+      return
   }
-}
-
-export function useConfigTemplateTenantLink (to: string) {
-  return useTenantLink(getConfigTemplatePath(to), 'v')
 }
 
 // eslint-disable-next-line max-len

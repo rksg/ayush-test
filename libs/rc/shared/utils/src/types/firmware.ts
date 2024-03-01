@@ -278,6 +278,7 @@ export interface SwitchFirmwareStatus {
   status: SwitchFwStatusEnum;
   targetFirmware: string;
   switchStatus: SwitchStatusEnum;
+  lastStatusUpdateTime?: string;
 }
 
 export interface CurrentVersions {

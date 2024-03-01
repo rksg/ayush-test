@@ -12,14 +12,23 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }                                                 from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsComponent } from '@acx-ui/rc/components'
+import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
+import {
+  ConfigTemplateLink,
+  PolicyConfigTemplateLink,
+  ServiceConfigTemplateLink,
+  renderConfigTemplateDetailsComponent
+} from '@acx-ui/rc/components'
 import {
   useDelAppPolicyMutation,
   useDelDevicePolicyMutation,
-  useDeleteAAAPolicyTemplateMutation, useDeleteAccessControlProfileMutation,
+  useDeleteAccessControlProfileMutation,
+  useDeleteDpskTemplateMutation,
+  useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
+  useDeleteVenueTemplateMutation,
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
   useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -29,7 +38,11 @@ import {
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
-  getConfigTemplateEditPath
+  getConfigTemplateEditPath,
+  ServiceType,
+  ServiceOperation,
+  serviceTypeLabelMapping,
+  AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -37,13 +50,13 @@ import { getIntl }                                 from '@acx-ui/utils'
 
 import {
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, createAccessControlPolicyMenuItem,
+  AccessControlSubPolicyVisibility,
+  createAccessControlPolicyMenuItem, INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
 import * as UI                   from './styledComponents'
-
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -69,8 +82,17 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
+          setAccessControlSubPolicyVisible({
+            ...INIT_STATE,
+            [selectedRow.type]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
@@ -155,6 +177,10 @@ function useColumns (props: templateColumnProps) {
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
+  const typeFilterOptions = Object.keys(ConfigTemplateType).map((key =>
+    ({ key, value: key })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -170,24 +196,25 @@ function useColumns (props: templateColumnProps) {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },
@@ -233,6 +260,7 @@ function useDeleteMutation () {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
+  const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
   const [ deleteLayer2 ] = useDelL2AclPolicyMutation()
   const [ deleteLayer3 ] = useDelL3AclPolicyMutation()
   const [ deleteDevice ] = useDelDevicePolicyMutation()
@@ -243,6 +271,7 @@ function useDeleteMutation () {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
     [ConfigTemplateType.VENUE]: deleteVenueTemplate,
+    [ConfigTemplateType.DPSK]: deleteDpskTemplate,
     [ConfigTemplateType.LAYER_2_POLICY]: deleteLayer2,
     [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
@@ -259,6 +288,7 @@ function getAddTemplateMenuProps (props: {
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
+    subMenuCloseDelay: 0.2,
     items: [
       {
         key: 'add-wifi-network',
@@ -277,6 +307,12 @@ function getAddTemplateMenuProps (props: {
           createPolicyMenuItem(PolicyType.AAA, 'add-aaa'),
           createAccessControlPolicyMenuItem(setAccessControlSubPolicyVisible)
         ]
+      }, {
+        key: 'add-service',
+        label: $t({ defaultMessage: 'Services' }),
+        children: [
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
+        ]
       }
     ]
   }
@@ -290,5 +326,16 @@ export function createPolicyMenuItem (policyType: PolicyType, key: string) {
     label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
       {$t(policyTypeLabelMapping[policyType])}
     </PolicyConfigTemplateLink>
+  }
+}
+
+function createServiceMenuItem (serviceType: ServiceType, key: string) {
+  const { $t } = getIntl()
+
+  return {
+    key,
+    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
+      {$t(serviceTypeLabelMapping[serviceType])}
+    </ServiceConfigTemplateLink>
   }
 }
