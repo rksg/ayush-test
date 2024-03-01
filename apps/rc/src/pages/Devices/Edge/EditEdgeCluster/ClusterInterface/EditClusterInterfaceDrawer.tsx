@@ -34,7 +34,9 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
   const [form] = Form.useForm()
 
   useEffect(() => {
-    form.setFieldsValue(editData)
+    if (visible){
+      form.setFieldsValue(editData)
+    }
   }, [editData])
 
   const interfaceOprionts = interfaceList?.filter(item =>
