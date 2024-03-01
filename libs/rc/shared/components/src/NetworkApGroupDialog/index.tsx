@@ -270,6 +270,9 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   }
                   return Promise.resolve()
                 }
+              },
+              {
+                validator: (_, value) => validateRadioBandForDsaeNetwork(value)
               }
             ]}>
             { selected ? <RadioSelect /> : <Input type='hidden' /> }
