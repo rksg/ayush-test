@@ -50,7 +50,6 @@ describe('PersonalIdentityNetworkTable', () => {
     type: ServiceType.NETWORK_SEGMENTATION,
     oper: ServiceOperation.LIST
   })
-  const mockedDeleteNetworkSegmentationGroup = jest.fn()
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -73,12 +72,6 @@ describe('PersonalIdentityNetworkTable', () => {
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
         (req, res, ctx) => res(ctx.json(mockNsgStatsList))
-      ),
-      rest.delete(
-        NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
-        (req, res, ctx) => {
-          mockedDeleteNetworkSegmentationGroup()
-          return res(ctx.status(202))}
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
@@ -195,7 +188,7 @@ describe('PersonalIdentityNetworkTable', () => {
     })
   })
 
-  it('edit button will remove when select above 1 row', async () => {
+  it('edit and delete button will remove when select above 1 row', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -209,26 +202,20 @@ describe('PersonalIdentityNetworkTable', () => {
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
-  })
-
-  it('delete button will remove when select above 1 row', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <NetworkSegmentationTable />
-      </Provider>, {
-        route: { params, path: tablePath }
-      })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    const row = await screen.findAllByRole('row', { name: /nsg/i })
-    await user.click(within(row[0]).getByRole('checkbox'))
-    await user.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
   })
 
   it('should delete selected row', async () => {
     const user = userEvent.setup()
+    const mockedDeleteNetworkSegmentationGroup = jest.fn()
+    mockServer.use(
+      rest.delete(
+        NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
+        (req, res, ctx) => {
+          mockedDeleteNetworkSegmentationGroup()
+          return res(ctx.status(202))}
+      )
+    )
     render(
       <Provider>
         <NetworkSegmentationTable />

@@ -20,6 +20,7 @@ import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
+import { formatter } from '@acx-ui/formatter'
 import {
   CheckMark,
   DownloadOutlined
@@ -158,6 +159,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -409,7 +411,19 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         })
         return acc
       }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
-    }, {
+    },
+    ...(apUptimeFlag ? [
+      {
+        key: 'uptime',
+        title: $t({ defaultMessage: 'Up Time' }),
+        dataIndex: 'uptime',
+        sorter: true,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const uptime = row.apStatusData?.APSystem?.uptime
+          return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+        }
+      }] : []),
+    {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',

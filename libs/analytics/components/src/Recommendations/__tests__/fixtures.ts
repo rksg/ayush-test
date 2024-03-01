@@ -422,6 +422,31 @@ export const unqualifiedZone = {
   preferences: null
 }
 
+export const unknownAudit = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'unknown',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: { audit: [{ code: 'global', stage: 'filter', failure: { somethingUnknown: false } }] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz-h-bdc-home-network-05'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
 export const noAps = {
   id: 'unknown',
   code: 'unknown',
@@ -579,6 +604,7 @@ export const recommendationListResult = {
     verified,
     unqualifiedZone,
     noAps,
+    unknownAudit,
     {
       id: '15',
       code: 'c-crrm-channel24g-auto',

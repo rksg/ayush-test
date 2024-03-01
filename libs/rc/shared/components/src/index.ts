@@ -84,7 +84,6 @@ export { SwitchTabContext } from './SwitchTable/context'
 export { SwitchTable, SwitchStatus, defaultSwitchPayload } from './SwitchTable'
 export type { SwitchTableRefType } from './SwitchTable'
 export { SwitchPortTable, isLAGMemberPort, getInactiveTooltip } from './SwitchPortTable'
-export { EditPortDrawer as EditPortDrawerLegacy } from './SwitchPortTable/editPortDrawerLegacy'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { SwitchLagModal } from './SwitchLagDrawer/SwitchLagModal'
 export { TimelineDrawer } from './TimelineDrawer'
@@ -185,9 +184,8 @@ export {
 } from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export {
-  useEdgeSdLanActions
-} from './EdgeSdLan/useEdgeSdLanActions'
+export { useEdgeSdLanActions } from './EdgeSdLan/useEdgeSdLanActions'
+export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

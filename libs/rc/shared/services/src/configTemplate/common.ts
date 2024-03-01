@@ -7,17 +7,18 @@ import {
   CommonResultWithEntityResponse,
   NetworkSaveData,
   AAAViewModalType,
-  transformNetworkListResponse,
   Network,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
   VenueExtended,
-  Venue
+  Venue,
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
+import { networkApi } from '../network'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -26,19 +27,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddRadiusServerProfileTemplateRecord',
-            'UpdateRadiusServerProfileTemplateRecord',
-            'DeleteRadiusServerProfileTemplateRecord',
-            'AddNetworkTemplateRecord',
-            'UpdateNetworkTemplateRecord',
-            'DeleteNetworkTemplateRecord',
-            'ApplyTemplate',
-            'AddVenueTemplateRecord',
-            'UpdateVenueTemplateRecord',
-            'DeleteVenueTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'ConfigTemplate', id: 'LIST' }]))
           })
@@ -72,7 +61,13 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse: transformNetworkListResponse,
+      transformResponse (result: TableResult<Network>) {
+        result.data = result.data.map(item => ({
+          ...transformNetwork(item)
+        })) as Network[]
+        return result
+      },
+      keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -160,6 +155,57 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddNetworkVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
+          })
+        })
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    deleteNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'DeleteNetworkVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
+          })
+        })
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateNetworkVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
+          })
+        })
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     })
   })
 })
@@ -170,6 +216,7 @@ export const {
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
   useDeleteNetworkTemplateMutation,
+  useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,
   useAddAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateQuery,
@@ -181,7 +228,10 @@ export const {
   useDeleteVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
   useGetVenueTemplateQuery,
-  useLazyGetVenuesTemplateListQuery
+  useLazyGetVenuesTemplateListQuery,
+  useAddNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation
 } = configTemplateApi
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']
@@ -196,3 +246,19 @@ export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
     }
   }
 }
+
+const useCasesToRefreshTemplateList = [
+  'AddRadiusServerProfileTemplateRecord',
+  'UpdateRadiusServerProfileTemplateRecord',
+  'DeleteRadiusServerProfileTemplateRecord',
+  'AddNetworkTemplateRecord',
+  'UpdateNetworkTemplateRecord',
+  'DeleteNetworkTemplateRecord',
+  'ApplyTemplate',
+  'AddVenueTemplateRecord',
+  'UpdateVenueTemplateRecord',
+  'DeleteVenueTemplateRecord',
+  'CREATE_POOL_TEMPLATE_RECORD',
+  'UPDATE_POOL_TEMPLATE_RECORD',
+  'DELETE_POOL_TEMPLATE_RECORD'
+]

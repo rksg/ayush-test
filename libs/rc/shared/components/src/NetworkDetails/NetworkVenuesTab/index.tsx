@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -23,7 +23,9 @@ import {
   useNetworkVenueTableQuery,
   useGetVenueCityListQuery,
   useNetworkVenueTableV2Query,
-  useNetworkVenueListV2Query
+  useNetworkVenueListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation, useUpdateNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -37,7 +39,7 @@ import {
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum
+  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -97,13 +99,17 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
       : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
@@ -133,17 +139,17 @@ export function NetworkVenuesTab () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
 
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
 
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
@@ -540,7 +546,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && {
+        rowSelection={hasAccess() && !systemNetwork && !isTemplate && {
           type: 'checkbox'
         }}
         columns={columns}
