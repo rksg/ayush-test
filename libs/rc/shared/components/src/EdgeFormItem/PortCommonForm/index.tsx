@@ -13,11 +13,12 @@ import {
   EdgePortWithStatus,
   edgePortIpValidator,
   getEdgePortTypeOptions,
+  lanPortsubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo, getInnerPortFormID, isWANPortExist, lanPortsubnetValidator } from '../EdgePortsGeneral/utils'
+import { getEnabledCorePortInfo, getInnerPortFormID, isWANPortExist } from '../EdgePortsGeneral/utils'
 
 import * as UI from './styledComponents'
 
