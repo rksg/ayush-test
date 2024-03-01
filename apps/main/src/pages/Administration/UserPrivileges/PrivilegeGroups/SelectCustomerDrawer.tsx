@@ -29,6 +29,13 @@ const customerListPayload = {
   sortOrder: 'ASC'
 }
 
+interface MspEcWithVenue extends MspEc {
+  children?: {
+    name: string,
+    id: string
+  }[]
+}
+
 
 export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const { $t } = useIntl()
@@ -37,6 +44,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspEc[]>([])
+  const [treeData, setTreeData] = useState<MspEcWithVenue[]>([])
 
   function getSelectedKeys (mspEcs: MspEc[], ecId: string[]) {
     return mspEcs.filter(rec => ecId.includes(rec.id)).map(rec => rec.id)
@@ -84,6 +92,16 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
       setSelectedKeys(selectKeys)
       const selRows = getSelectedRows(customerList?.data as MspEc[], ecIds)
       setSelectedRows(selRows)
+      const dataWithVenues = customerList.data.map(c => {
+        return {
+          ...c,
+          children: [
+            // { name: 'Venue A', id: 'A' },
+            // { name: 'Venue B', id: 'B' }
+          ]
+        }
+      })
+      setTreeData(dataWithVenues)
     }
     // setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [customerList?.data])
@@ -93,7 +111,8 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     <Loader >
       <Table
         columns={columns}
-        dataSource={customerList?.data}
+        dataSource={treeData}
+        indentSize={20}
         rowKey='id'
         rowSelection={{
           type: 'checkbox',

@@ -18,9 +18,15 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { MspEc }                                                                                     from '@acx-ui/msp/utils'
-import { useAddPrivilegeGroupMutation }                                                              from '@acx-ui/rc/services'
-import { PrivilegePolicy, PrivilegePolicyEntity, PrivilegePolicyObjectType, Venue, VenueObjectList } from '@acx-ui/rc/utils'
+import { MspEc }                        from '@acx-ui/msp/utils'
+import { useAddPrivilegeGroupMutation } from '@acx-ui/rc/services'
+import {
+  PrivilegePolicy,
+  PrivilegePolicyEntity,
+  PrivilegePolicyObjectType,
+  Venue//,
+  // VenueObjectList
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -62,6 +68,7 @@ export function AddPrivilegeGroup () {
   const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
   const [selectedVenus, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEc[])
+  const [displayMspScope, setDisplayMspScope] = useState(false)
 
   const navigate = useNavigate()
   const location = useLocation().state as boolean
@@ -121,18 +128,17 @@ export function AddPrivilegeGroup () {
         (selectedScope === choiceScopeEnum.SPECIFIC_VENUE && policies.length > 0)
           ? policies : undefined
 
-      if (isOnboardedMsp) {
+      if (isOnboardedMsp && displayMspScope) {
         const policyEntities = [] as PrivilegePolicyEntity[]
-        let venueList = {} as VenueObjectList
-        venueList['com.ruckus.cloud.venue.model.venue'] = ['a2dd0f3bff004927aec1947ca138b1da']
+        // let venueList = {} as VenueObjectList
+        // venueList['com.ruckus.cloud.venue.model.venue'] = ['a2dd0f3bff004927aec1947ca138b1da']
         selectedCustomers.forEach((ec: MspEc) => {
           policyEntities.push({
-            tenantId: ec.id,
-            objectList: venueList
+            tenantId: ec.id//,
+            // objectList: venueList
           })
         })
-        privilegeGroupData.delegation = true
-        // privilegeGroupData.allCustomers = false
+        privilegeGroupData.delegation = selectedCustomers.length > 0
         privilegeGroupData.policyEntityDTOS =
         (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
           ? policyEntities : undefined
@@ -259,12 +265,16 @@ export function AddPrivilegeGroup () {
 
     <Form.Item
       name='mspscope'
+      valuePropName='checked'
       children={
-        <Checkbox checked={true} children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+        <Checkbox checked={displayMspScope}
+          onChange={e => setDisplayMspScope(e.target.checked)}
+          children={intl.$t({ defaultMessage: 'MSP Customers' })} />
       }
     />
     <Form.Item
-      initialValue={choiceCustomerEnum.ALL_CUSTOMERS}>
+      initialValue={choiceCustomerEnum.ALL_CUSTOMERS}
+      hidden={!displayMspScope}>
       <Radio.Group
         style={{ marginLeft: 22 }}
         value={selectedMspScope}

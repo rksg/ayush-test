@@ -85,7 +85,7 @@ describe('Privilege Group Table', () => {
         MspUrlsInfo.getMspProfile.url,
         (req, res, ctx) => res(ctx.json({
           msp_external_id: '0000A000001234YFFOO',
-          msp_label: '',
+          msp_label: 'msp-eleu',
           msp_tenant_name: ''
         }))
       )
@@ -115,11 +115,11 @@ describe('Privilege Group Table', () => {
     expect(await screen.findByRole('button', { name: 'Add Privilege Group' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Privilege Group' }))
 
-    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/create`,
-    //   hash: '',
-    //   search: ''
-    // }, { state: false })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/create`,
+      hash: '',
+      search: ''
+    }, { state: true })
   })
   it('should render correctly for non prime admin', async () => {
     render(
