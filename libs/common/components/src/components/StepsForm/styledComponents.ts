@@ -270,10 +270,11 @@ z-index: 5;
   background-color: ${props => {
     switch(props.type) {
       case 'success':
-        return 'var(--acx-accents-orange-10)'
+        return 'var(--acx-accents-orange-10);'
       case 'error':
+        return '#ffe8e8;'
       default:
-        return '#ffe8e8'
+        return 'var(--acx-neutrals-10);'
 
     }
   }}

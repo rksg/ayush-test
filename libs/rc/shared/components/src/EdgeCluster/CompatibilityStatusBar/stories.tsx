@@ -3,7 +3,7 @@ import { Col, Form, Input, Row, Select, Typography } from 'antd'
 
 import { StepsForm, showToast } from '@acx-ui/components'
 
-import { CompatibilityError } from '../CompatibilityErrorDetails'
+import { CompatibilityNodeError } from '../CompatibilityErrorDetails/types'
 
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '.'
 
@@ -43,18 +43,18 @@ export function BasicMultiSteps () {
   const errorDetails = [{
     nodeId: '123',
     nodeName: 'SE_Node 1',
-    errors: [{
-      id: 'lags',
-      value: 1
-    }]
+    errors: {
+      lags: 1,
+      corePort: 0
+
+    }
   }, {
     nodeId: '321',
     nodeName: 'SE_Node 2',
-    errors: [{
-      id: 'corePort',
-      value: 0
-    }]
-  }] as CompatibilityError[]
+    errors: {
+      corePort: 0
+    }
+  }] as CompatibilityNodeError[]
 
   return (
     <StepsForm
@@ -138,7 +138,7 @@ export function BasicMultiSteps () {
 }
 
 
-storiesOf('CompatibilityStatusBar', module)
+storiesOf('EdgeCluster CompatibilityStatusBar', module)
 
   .add('in StepsForm', () => {
     return <BasicMultiSteps />

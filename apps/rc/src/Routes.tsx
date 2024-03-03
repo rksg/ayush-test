@@ -36,6 +36,7 @@ import { Provider }                                    from '@acx-ui/store'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
+import EdgeClusterConfigWizard                      from './pages/Devices/Edge/ClusterConfigWizard'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import EditEdgeCluster                              from './pages/Devices/Edge/EditEdgeCluster'
@@ -209,6 +210,10 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
         element={<EditEdgeCluster />} />
+      <Route path='devices/edge/cluster/:clusterId/configure'
+        element={<EdgeClusterConfigWizard />} />
+      <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
+        element={<EdgeClusterConfigWizard />} />
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />

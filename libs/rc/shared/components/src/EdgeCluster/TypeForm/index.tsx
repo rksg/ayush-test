@@ -1,6 +1,5 @@
 import { ReactElement, ReactNode } from 'react'
 
-
 interface TypeFormProps {
   content: ReactElement
   header?: () => ReactNode

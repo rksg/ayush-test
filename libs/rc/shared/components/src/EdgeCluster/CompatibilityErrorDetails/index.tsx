@@ -3,25 +3,19 @@ import { useIntl }     from 'react-intl'
 
 import { Button, Drawer, cssNumber } from '@acx-ui/components'
 
-import { SingleNodeDetails, SingleNodeDetailsField } from './SingleNodeDetails'
+import { SingleNodeDetails } from './SingleNodeDetails'
 
-export interface CompatibilityError {
-  nodeId: string
-  nodeName: string
-  errors: {
-    id: string,
-    value: unknown
-  }[]
-}
+import type { CompatibilityNodeError, SingleNodeDetailsField } from './types'
 
-interface CompatibilityErrorDetailsProps {
+interface CompatibilityErrorDetailsProps<RecordType> {
   visible: boolean
   setVisible: React.Dispatch<React.SetStateAction<boolean>>
-  fields: SingleNodeDetailsField[]
-  data: CompatibilityError[]
+  fields: SingleNodeDetailsField<RecordType>[]
+  data: CompatibilityNodeError<RecordType>[]
 }
 
-export const CompatibilityErrorDetails = (props: CompatibilityErrorDetailsProps) => {
+export const CompatibilityErrorDetails = <RecordType,>
+  (props: CompatibilityErrorDetailsProps<RecordType>) => {
   const { visible, setVisible, fields, data } = props
   const { $t } = useIntl()
 
@@ -59,6 +53,7 @@ export const CompatibilityErrorDetails = (props: CompatibilityErrorDetailsProps)
           key={`singleNodeDetails-${item.nodeId}`}
           title={item.nodeName}
           fields={fields}
+          data={item.errors}
         />
       })}
     </Space>

@@ -5,8 +5,8 @@ import { useIntl }           from 'react-intl'
 
 import { Button, cssNumber } from '@acx-ui/components'
 
-import { CompatibilityError, CompatibilityErrorDetails } from '../CompatibilityErrorDetails'
-import { SingleNodeDetailsField }                        from '../CompatibilityErrorDetails/SingleNodeDetails'
+import { CompatibilityErrorDetails }                      from '../CompatibilityErrorDetails'
+import { CompatibilityNodeError, SingleNodeDetailsField } from '../CompatibilityErrorDetails/types'
 
 import * as UI from './styledComponents'
 
@@ -15,13 +15,14 @@ export enum CompatibilityStatusEnum {
   FAIL = 'FAIL'
 }
 
-interface CompatibilityStatusBarProps {
+interface CompatibilityStatusBarProps<RecordType> {
   type: CompatibilityStatusEnum,
-  fields: SingleNodeDetailsField[],
-  errors?: CompatibilityError[]
+  fields: SingleNodeDetailsField<RecordType>[],
+  errors?: CompatibilityNodeError<RecordType>[]
 }
 
-export const CompatibilityStatusBar = (props: CompatibilityStatusBarProps) => {
+export const CompatibilityStatusBar = <RecordType,>
+  (props: CompatibilityStatusBarProps<RecordType>) => {
   const { type, fields, errors } = props
   const { $t } = useIntl()
   const [visible, setVisible] = useState<boolean>(false)
@@ -33,7 +34,7 @@ export const CompatibilityStatusBar = (props: CompatibilityStatusBarProps) => {
       <UI.Title children={$t({ defaultMessage: 'Nodes Compatibility Check' })} />
       <UI.AlertMessageWrapper type={type}>
         { type === CompatibilityStatusEnum.PASS
-          ? <UI.CheckMarkIcon/>
+          ? <UI.CheckMarkIcon />
           : <UI.FailedSolidIcon />
         }
         <Typography.Text children={$t({

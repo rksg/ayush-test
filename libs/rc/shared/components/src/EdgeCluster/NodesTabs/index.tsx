@@ -5,8 +5,6 @@ interface NodesTabsProps {
   clusterId: string
 }
 
-
-
 export const NodesTabs = (props: NodesTabsProps) => {
   const { clusterId } = props
   const clusterOptionsDefaultPayload = {

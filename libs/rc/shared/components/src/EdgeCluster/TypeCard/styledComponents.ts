@@ -27,11 +27,21 @@ export const IconWrapper = styled.div`
 
 type WrapperProps = Pick<EdgeClusterTypeCardProps, 'showSelected'> & {
   hasWarning: boolean
+  disabled: boolean
 }
 export const Wrapper = styled.div<WrapperProps>`
   width: 223px;
   height: 142px;
   max-height: 142px;
+
+  ${(props) => (props.disabled
+    ? ''
+    : `
+      &:hover .ant-card, &:focus .ant-card, &:active .ant-card {
+        border-width: 2px;
+        border-color: var(--acx-accents-orange-50);
+      }
+    ` )}
 
   .ant-card {
     height: 100%;
@@ -41,11 +51,6 @@ export const Wrapper = styled.div<WrapperProps>`
     padding: 12px 16px;
     border: 1px solid var(--acx-neutrals-20);
     box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
-  }
-
-  &:hover .ant-card, &:focus .ant-card, &:active .ant-card {
-    border-width: 2px;
-    border-color: var(--acx-accents-orange-50);
   }
 
   .ant-card-head {

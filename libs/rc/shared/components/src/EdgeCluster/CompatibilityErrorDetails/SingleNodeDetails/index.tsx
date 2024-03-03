@@ -1,22 +1,18 @@
-import { ReactNode } from 'react'
-
 import { Card, Descriptions } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
-export interface SingleNodeDetailsField {
+import type { CompatibilityNodeError, SingleNodeDetailsField } from '../types'
+
+interface SingleNodeDetailsProps<RecordType> {
   title: string,
-  key: string,
-  render: () => ReactNode
+  fields: SingleNodeDetailsField<RecordType>[],
+  data: CompatibilityNodeError<RecordType>['errors']
 }
 
-interface SingleNodeDetailsProps {
-  title: string,
-  fields: SingleNodeDetailsField[]
-}
-
-export const SingleNodeDetails = (props: SingleNodeDetailsProps) => {
-  const { title, fields } = props
+export const SingleNodeDetails = <RecordType,>
+  (props: SingleNodeDetailsProps<RecordType>) => {
+  const { title, fields, data } = props
 
   return <UI.StyledCard>
     <Card title={title}>
@@ -25,7 +21,7 @@ export const SingleNodeDetails = (props: SingleNodeDetailsProps) => {
           return <Descriptions.Item
             key={item.key}
             label={item.title}
-            children={item.render()}
+            children={item.render(data)}
           />
         })}
       </Descriptions>
