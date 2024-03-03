@@ -6,6 +6,7 @@ import { useIntl }                     from 'react-intl'
 import { Button, PageHeader }                    from '@acx-ui/components'
 import { MapSolid }                              from '@acx-ui/icons'
 import { EdgeClusterTypeCard, SpaceWrapper }     from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery }            from '@acx-ui/rc/services'
 import { CommonCategory, Device, genUrl }        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -17,6 +18,23 @@ export const SelectType = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
   const [selected, setSelected] = useState<string | undefined>(undefined)
+
+  const { clusterName } = useGetEdgeClusterListQuery({
+    payload: {
+      fields: [
+        'name',
+        'clusterId'
+      ],
+      filters: { clusterId: [clusterId] },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      pageSize: 1
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      clusterName: data?.data[0].name
+    })
+  })
 
   const typeCards = [{
     id: 'interface',
@@ -82,7 +100,7 @@ export const SelectType = () => {
         <Typography.Text>
           {$t({ defaultMessage: `Select which configuration you want to quickly set up for
       all SmartEdges in this cluster ({clusterName}):` },
-          { clusterName: clusterId })}
+          { clusterName })}
         </Typography.Text>
       </Row>
       <Row>

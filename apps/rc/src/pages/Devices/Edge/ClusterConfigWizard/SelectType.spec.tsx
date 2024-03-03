@@ -1,9 +1,14 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider } from '@acx-ui/store'
+import { edgeApi }                           from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                   from '@acx-ui/store'
 import {
+  mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { SelectType } from './SelectType'
@@ -26,6 +31,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   </div>
 }))
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 describe('SelectType', () => {
   let params: { tenantId: string, clusterId:string }
   beforeEach(() => {
@@ -34,8 +41,28 @@ describe('SelectType', () => {
       clusterId: 'mocked_cluster_id'
     }
     mockedUsedNavigate.mockReset()
+    store.dispatch(edgeApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      )
+    )
   })
 
+  it('should correctly render', async () => {
+    render(
+      <Provider>
+        <SelectType />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+
+    await checkDataRendered()
+    expect(screen.getByTestId('rc-typeCard-interface')).toBeInTheDocument()
+    expect(screen.getByTestId('rc-typeCard-subInterface')).toBeInTheDocument()
+    expect(screen.getByTestId('rc-typeCard-clusterInterface')).toBeInTheDocument()
+  })
   it('should navigte to interface setting step', async () => {
     render(
       <Provider>
@@ -44,7 +71,8 @@ describe('SelectType', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
 
-    const card = await screen.findByTestId('rc-typeCard-interface')
+    await checkDataRendered()
+    const card = screen.getByTestId('rc-typeCard-interface')
     expect(card).toBeInTheDocument()
     await userEvent.click(card)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -62,7 +90,8 @@ describe('SelectType', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
-    const card = await screen.findByTestId('rc-typeCard-subInterface')
+    await checkDataRendered()
+    const card = screen.getByTestId('rc-typeCard-subInterface')
     expect(card).toBeInTheDocument()
     await userEvent.click(card)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -80,7 +109,8 @@ describe('SelectType', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
-    const card = await screen.findByTestId('rc-typeCard-clusterInterface')
+    await checkDataRendered()
+    const card = screen.getByTestId('rc-typeCard-clusterInterface')
     expect(card).toBeInTheDocument()
     await userEvent.click(card)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -98,6 +128,7 @@ describe('SelectType', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
+    await checkDataRendered()
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge`,
@@ -106,3 +137,8 @@ describe('SelectType', () => {
     })
   })
 })
+
+const checkDataRendered = async () => {
+  const subTitle = screen.getByText(/set up for all SmartEdges in this cluster/i)
+  await waitFor(() => expect(subTitle).toHaveTextContent('(Edge Cluster 1):'))
+}
