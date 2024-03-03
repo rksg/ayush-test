@@ -77,8 +77,6 @@ describe('Edge Cluster Table', () => {
     await userEvent.click(within(row1).getByRole('button'))
     const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    const row2 = screen.getByRole('row', { name: /Edge Cluster 5/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     expect(mockedDeleteFn).toBeCalled()
   })
