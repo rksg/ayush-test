@@ -28,7 +28,10 @@ export function CustomSubmitBtton () {
       }}
       customSubmit={{
         label: editMode?'Apply & Continue':'Add & Continue',
-        onFinish: () => Promise.resolve()
+        onFinish: async () => {
+          await wait(1000)
+          showToast({ type: 'success', content: 'customSubmitButton submitted' })
+        }
       }}
     >
       <StepsForm.StepForm name='step1' title='Step 1'>
@@ -63,7 +66,7 @@ export function CustomSubmitBtton () {
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 3' />
-            <Form.Item name='field5' label='Field 5'>
+            <Form.Item name='field5' label='Field 5' rules={[{ required: true }]}>
               <Input />
             </Form.Item>
             <Form.Item name='field7' label='Field 6'>

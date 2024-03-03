@@ -116,16 +116,24 @@ export function useStepsForm <T> ({
     })
   }
 
-  const submit = (isCustom?: boolean) => {
+  const submit = () => {
     const values = form.getFieldsValue(true)
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
-        const promise = handleAsyncSubmit(formConfig.submit())
-        if (isCustom) {
-          promise.then(() => customSubmit?.onFinish(values))
-            .catch(() => {/* mute validation error on last step */})
-        }
-        promise.finally(done)
+        handleAsyncSubmit(formConfig.submit())
+          .finally(done)
+      })
+    })
+  }
+
+  const customSubmitHandler = () => {
+    const values = form.getFieldsValue(true)
+    guardSubmit((done) => {
+      onCurrentStepFinish(values, () => {
+        handleAsyncSubmit(form.validateFields()
+          .then(() => customSubmit?.onFinish(values))
+        )
+          .finally(done)
       })
     })
   }
@@ -212,7 +220,7 @@ export function useStepsForm <T> ({
       ? <Button
         type='primary'
         loading={loading}
-        onClick={() => submit()}
+        onClick={() => customSubmitHandler()}
         children={customSubmit.label}
       />
       : undefined

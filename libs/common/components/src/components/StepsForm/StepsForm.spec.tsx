@@ -454,6 +454,98 @@ describe('StepsForm', () => {
     expect(asFragment().querySelector('form.ant-form-vertical')).not.toBeNull()
   })
 
+  it('supports custom submit button', async () => {
+    const onFinish = jest.fn()
+    const onStep1Finish = jest.fn().mockResolvedValue(true)
+    const onStep2Finish = jest.fn().mockResolvedValue(false)
+    const mockedCustomSubmitOnFinish = jest.fn().mockResolvedValue(false)
+    const Component = () => {
+      const [done1, setDone1] = React.useState(false)
+      const [done2, setDone2] = React.useState(false)
+      return <>
+        {done1 ? <h1>Done 1</h1> : null}
+        {done2 ? <h1>Done 2</h1> : null}
+        <StepsForm
+          customSubmit={{
+            label: 'ApplyAndContinue',
+            onFinish: mockedCustomSubmitOnFinish
+          }}
+          onFinish={async () => {
+            onFinish()
+            setDone2(true)
+          }}>
+          <StepsForm.StepForm title='Step 1' onFinish={onStep1Finish}>
+            <StepsForm.Title>Step 1</StepsForm.Title>
+            <Form.Item
+              name='field1'
+              label='Field 1'
+              rules={[{ required: true }]}
+              children={<Input />}
+            />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm
+            title='Step 2'
+            onFinish={async (values) => {
+              await onStep2Finish(values)
+              setDone1(true)
+            }}>
+            <StepsForm.Title>Step 2</StepsForm.Title>
+            <Form.Item
+              name='field2'
+              label='Field 2'
+              rules={[{ required: true }]}
+              children={<Input />}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </>
+    }
+    render(<Component />)
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 1' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+    expect(onStep1Finish).toHaveBeenCalledWith({ field1: 'value' })
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'ApplyAndContinue' }))
+
+    expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
+    expect(onStep2Finish).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+
+    expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
+    expect(onFinish).not.toBeCalled()
+    expect(mockedCustomSubmitOnFinish).toBeCalled()
+  })
+
+  it('supports form alert message on individual step', async () => {
+    const Component = () => {
+      return <StepsForm>
+        <StepsForm.StepForm
+          title='Step 1'
+          alert={{
+            type: 'success',
+            message: 'Test Pass'
+          }}>
+          <StepsForm.Title>Step 1</StepsForm.Title>
+          <Form.Item
+            name='field1'
+            label='Field 1'
+            rules={[{ required: true }]}
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    }
+    render(<Component />)
+
+    const alertDiv = screen.getByTestId('steps-form-alert')
+    expect(alertDiv).toBeInTheDocument()
+    expect(alertDiv).toHaveTextContent(/Test Pass/)
+  })
+
   // TODO
   // A requirement from UX
   it.todo('disable submit button when some fields are invalid')
