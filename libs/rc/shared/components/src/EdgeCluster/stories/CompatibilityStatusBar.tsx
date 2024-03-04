@@ -1,11 +1,9 @@
-import { storiesOf }                                 from '@storybook/react'
 import { Col, Form, Input, Row, Select, Typography } from 'antd'
 
 import { StepsForm, showToast } from '@acx-ui/components'
 
-import { CompatibilityNodeError } from '../CompatibilityErrorDetails/types'
-
-import { CompatibilityStatusBar, CompatibilityStatusEnum } from '.'
+import { CompatibilityNodeError }                          from '../CompatibilityErrorDetails/types'
+import { CompatibilityStatusBar, CompatibilityStatusEnum } from '../CompatibilityStatusBar'
 
 const getFields = () => {
   return [{
@@ -37,7 +35,7 @@ const getFields = () => {
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-export function BasicMultiSteps () {
+export function BasicCompatibilityStatusBar () {
   const fields = getFields()
 
   const errorDetails = [{
@@ -136,10 +134,3 @@ export function BasicMultiSteps () {
     </StepsForm>
   )
 }
-
-
-storiesOf('EdgeCluster CompatibilityStatusBar', module)
-
-  .add('in StepsForm', () => {
-    return <BasicMultiSteps />
-  })

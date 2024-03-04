@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Radio } from 'antd'
 
 import { MapSolid } from '@acx-ui/icons'
 import {
@@ -11,7 +12,9 @@ import { EdgeClusterTypeCard } from './'
 const mockedOnClickFn = jest.fn()
 jest.mock('antd', () => ({
   ...jest.requireActual('antd'),
-  Spin: ({ children }: React.PropsWithChildren) => <div data-testid='antd-spin'>
+  Spin: ({ children, spinning }: React.PropsWithChildren
+  & { spinning: boolean }) => <div>
+    {spinning && <div data-testid='antd-spinning' />}
     {children}
   </div>
 }))
@@ -31,6 +34,7 @@ describe('EdgeClusterTypeCard', () => {
 
     expect(screen.getByText('Port & Virtual IP')).toBeVisible()
     expect(screen.getByTestId('MapSolid')).toBeVisible()
+    expect(screen.queryByTestId('antd-spinning')).toBeNull()
   })
 
   it('should display warning tooltip', async () => {
@@ -45,16 +49,18 @@ describe('EdgeClusterTypeCard', () => {
     expect(await screen.findByRole('tooltip', { hidden: true })).toHaveTextContent('A test warning')
   })
 
-  it('should display selected icon', async () => {
+  it('should display selected icon when selected', async () => {
     render(
-      <EdgeClusterTypeCard
-        id='interface'
-        title='Port & Virtual IP'
-        icon={<MapSolid title='portVirtualIP'/>}
-        showSelected={true}
-      />)
+      <Radio.Group value='interface'>
+        <EdgeClusterTypeCard
+          id='interface'
+          title='Port & Virtual IP'
+          icon={<MapSolid title='portVirtualIP'/>}
+        />
+      </Radio.Group>)
 
-    expect(screen.queryByTestId('CheckMarkCircleSolid')).toBeVisible()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(screen.queryByRole('radio')?.parentNode).toHaveClass('ant-radio-checked')
   })
 
   it('should invoke click handler', async () => {
@@ -81,6 +87,6 @@ describe('EdgeClusterTypeCard', () => {
       />)
     await userEvent.click(screen.getByText('Port & Virtual IP'))
     expect(mockedOnClickFn).toBeCalledTimes(0)
-    expect(screen.getByTestId('antd-spin')).toBeVisible()
+    expect(screen.getByTestId('antd-spinning')).toBeVisible()
   })
 })

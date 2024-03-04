@@ -1,8 +1,7 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 import { CheckMarkCircleSolid, InformationSolid } from '@acx-ui/icons'
-
-import { EdgeClusterTypeCardProps } from '.'
 
 export const CheckMarkIcon = styled(CheckMarkCircleSolid)`
   width: 16px;
@@ -25,21 +24,25 @@ export const IconWrapper = styled.div`
   }
 `
 
-type WrapperProps = Pick<EdgeClusterTypeCardProps, 'showSelected'> & {
+type WrapperProps = {
   hasWarning: boolean
   disabled: boolean
 }
 export const Wrapper = styled.div<WrapperProps>`
-  width: 223px;
+  width: 100%;
   height: 142px;
   max-height: 142px;
 
   ${(props) => (props.disabled
     ? ''
     : `
-      &:hover .ant-card, &:focus .ant-card, &:active .ant-card {
-        border-width: 2px;
-        border-color: var(--acx-accents-orange-50);
+      &:hover .ant-card, &:focus .ant-card, &:active .ant-card,
+      &:has(.ant-radio-checked) .ant-card {
+        border-radius: 4px;
+        border: 1px solid var(--acx-accents-orange-50);
+      }
+      &:has(.ant-radio-checked) .ant-card {
+        background: var(--acx-accents-orange-10);
       }
     ` )}
 
@@ -82,9 +85,6 @@ export const Wrapper = styled.div<WrapperProps>`
     padding: 0
     font-size: var(--acx-body-3-font-size);
     line-height: var(--acx-body-3-line-height);
-    ${(props) => (props.showSelected
-    ? 'padding-top: 5px;'
-    : 'padding-top: calc(16px + 5px);' )}
     ${(props) => (props.hasWarning
     ? ''
     : 'padding-bottom: 1.33em;')}
@@ -93,6 +93,13 @@ export const Wrapper = styled.div<WrapperProps>`
     padding: 0;
     border-top: none;
     min-height: 1.33em;
+    display: flex;
+    justify-content: flex-end;
+    background-color: transparent;
+    position: absolute;
+    bottom: 16px;
+    right: 12px;
+    z-index: 1;
     &::before {
       display: none;
     }
@@ -105,13 +112,16 @@ export const Wrapper = styled.div<WrapperProps>`
       display: flex;
       justify-content: flex-end;
       align-items: flex-end;
-
       & span {
         min-width: unset;
         display: flex;
       }
     }
   }
+`
+export const CardBody = styled(Space)`
+  height: 100%;
+  justify-content: center;
 `
 
 export const Title = styled.div`

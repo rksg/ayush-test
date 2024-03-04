@@ -31,6 +31,7 @@ type WrapperProps = {
 }
 
 export const AlertMessageWrapper = styled(Space)<WrapperProps>`
+  display: flex;
   color: ${props => props.type === CompatibilityStatusEnum.FAIL
     ? 'red'
     :'green'
@@ -38,5 +39,9 @@ export const AlertMessageWrapper = styled(Space)<WrapperProps>`
 
   & span.ant-typography {
     color: inherit
+  }
+
+  & .ant-space-item {
+    display: flex;
   }
 `

@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { edgeApi }                           from '@acx-ui/rc/services'
@@ -18,16 +19,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeClusterTypeCard: (props: {
-    id: string,
-    onClick: (id: string) => void
-  }) => <div
-    data-testid={`rc-typeCard-${props.id}`}
-    onClick={() => props.onClick(props.id)}
-  >
-    {props.id}
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Spin: ({ children, spinning }: React.PropsWithChildren
+  & { spinning: boolean }) => <div>
+    {spinning && <div data-testid='antd-spinning' />}
+    {children}
   </div>
 }))
 
@@ -59,9 +56,9 @@ describe('SelectType', () => {
       })
 
     await checkDataRendered()
-    expect(screen.getByTestId('rc-typeCard-interface')).toBeInTheDocument()
-    expect(screen.getByTestId('rc-typeCard-subInterface')).toBeInTheDocument()
-    expect(screen.getByTestId('rc-typeCard-clusterInterface')).toBeInTheDocument()
+    expect(screen.getByText('LAG, Port & Virtual IP Settings')).toBeInTheDocument()
+    expect(screen.getByText('Sub-interface Settings')).toBeInTheDocument()
+    expect(screen.getByText('Cluster Interface Settings')).toBeInTheDocument()
   })
   it('should navigte to interface setting step', async () => {
     render(
@@ -72,9 +69,11 @@ describe('SelectType', () => {
       })
 
     await checkDataRendered()
-    const card = screen.getByTestId('rc-typeCard-interface')
-    expect(card).toBeInTheDocument()
-    await userEvent.click(card)
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'interface'
+    )[0]
+    expect(cardIcon).toBeInTheDocument()
+    await userEvent.click(cardIcon)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
@@ -91,9 +90,11 @@ describe('SelectType', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
     await checkDataRendered()
-    const card = screen.getByTestId('rc-typeCard-subInterface')
-    expect(card).toBeInTheDocument()
-    await userEvent.click(card)
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'subInterface'
+    )[0]
+    expect(cardIcon).toBeInTheDocument()
+    await userEvent.click(cardIcon)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
@@ -110,9 +111,11 @@ describe('SelectType', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
     await checkDataRendered()
-    const card = screen.getByTestId('rc-typeCard-clusterInterface')
-    expect(card).toBeInTheDocument()
-    await userEvent.click(card)
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'clusterInterface'
+    )[0]
+    expect(cardIcon).toBeInTheDocument()
+    await userEvent.click(cardIcon)
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
@@ -135,6 +138,73 @@ describe('SelectType', () => {
       hash: '',
       search: ''
     })
+  })
+  it('should block next button when edge list is empty', async () => {
+    const mockedData = _.cloneDeep(mockEdgeClusterList)
+    mockedData.data[0].edgeList = []
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockedData))
+      )
+    )
+    render(
+      <Provider>
+        <SelectType />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
+  })
+  it('should display warning when cluster nodes are hardware incompatible', async () => {
+    const mockedIncompatibleData = _.cloneDeep(mockEdgeClusterList)
+    mockedIncompatibleData.data[0].edgeList[0].memoryTotalKb = 26156250
+    mockedIncompatibleData.data[0].edgeList[1].memoryTotalKb = 22250000
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockedIncompatibleData))
+      )
+    )
+
+    render(
+      <Provider>
+        <SelectType />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    expect(screen.queryByText('Incompatible Hardware warning:')).toBeValid()
+    expect(screen.getAllByTestId('antd-spinning').length).toBe(3)
+    expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
+  })
+  it('should be no hardware compatible issue when only 1 node', async () => {
+    const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
+    mockedOneNodeData.data[0].edgeList.splice(1, 1)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockedOneNodeData))
+      )
+    )
+
+    render(
+      <Provider>
+        <SelectType />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    expect(screen.queryByText('Incompatible Hardware warning:')).toBeNull()
+    expect(screen.queryByTestId('antd-spinning')).toBeNull()
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'clusterInterface'
+    )[0]
+    await userEvent.click(cardIcon)
+    expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
   })
 })
 
