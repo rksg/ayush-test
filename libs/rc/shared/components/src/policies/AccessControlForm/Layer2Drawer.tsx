@@ -23,7 +23,8 @@ import {
   useUpdateL2AclPolicyMutation
 } from '@acx-ui/rc/services'
 import {
-  useAddL2AclPolicyTemplateMutation, useGetL2AclPolicyTemplateListQuery,
+  useAddL2AclPolicyTemplateMutation,
+  useGetL2AclPolicyTemplateListQuery,
   useGetL2AclPolicyTemplateQuery,
   useUpdateL2AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
@@ -34,7 +35,7 @@ import {
   MacAddressFilterRegExp,
   sortProp, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher, useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -718,20 +719,32 @@ const GetL2AclPolicyListInstance = (requestId: string): {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer2SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer2List: data ? data.map(item => item.name) : []
-      }
-    },
-    skip: !isTemplate
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ],
+    page: 1,
+    sortField: 'name',
+    sortOrder: 'DESC'
+  }
+
+  const settingsId = 'policies-access-control-layer2-table-template'
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetL2AclPolicyTemplateListQuery,
+    defaultPayload,
+    pagination: { settingsId: settingsId, pageSize: 10000 }
   })
+
+  const useL2PolicyTemplateList = {
+    layer2SelectOptions: tableQuery?.data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer2List: tableQuery?.data?.data?.map(item => item.name) ?? []
+  }
 
   const useL2PolicyList = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId }
@@ -747,6 +760,8 @@ const GetL2AclPolicyListInstance = (requestId: string): {
     },
     skip: isTemplate
   })
+
+
 
   return isTemplate ? useL2PolicyTemplateList : useL2PolicyList
 }

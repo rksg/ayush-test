@@ -1,19 +1,28 @@
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow }                                                     from '@acx-ui/components'
-import { StepsFormLegacy }                                                      from '@acx-ui/components'
-import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
+import { GridCol, GridRow }         from '@acx-ui/components'
+import { StepsFormLegacy }          from '@acx-ui/components'
+import {
+  useGetAccessControlProfileListQuery,
+  useGetAccessControlProfileQuery
+} from '@acx-ui/rc/services'
 import {
   useGetAccessControlProfileTemplateListQuery,
   useGetAccessControlProfileTemplateQuery
 } from '@acx-ui/rc/services'
-import { AclEmbeddedObject, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-
+import {
+  AccessControlInfoType,
+  AclEmbeddedObject,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import AccessControlComponent from './AccessControlComponent'
 
@@ -38,10 +47,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     !editMode
   )
 
-  const { data: aclProfileList } = useConfigTemplateQueryFnSwitcher(
-    useGetAccessControlProfileListQuery,
-    useGetAccessControlProfileTemplateListQuery
-  )
+  const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
 
   useEffect(() => {
     if (data) {
@@ -153,4 +159,36 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
       </GridCol>
     </GridRow>
   )
+}
+
+const GetAclPolicyListInstance = (editMode: boolean) => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ],
+    page: 1,
+    sortField: 'name',
+    sortOrder: 'DESC'
+  }
+
+  const settingsId = 'policies-access-control-set-table-template'
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetAccessControlProfileTemplateListQuery,
+    defaultPayload,
+    pagination: { settingsId: settingsId, pageSize: 10000 }
+  })
+
+
+  const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]
+
+  // eslint-disable-next-line max-len
+  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode && !isTemplate })
+
+  return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }

@@ -11,10 +11,11 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   L2AclPolicy,
   L3AclPolicy,
-  ApplicationPolicy
+  ApplicationPolicy, TableResult
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
 import { commonQueryFn, configTemplateApi } from './common'
 
@@ -67,20 +68,26 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    getL2AclPolicyTemplateList: build.query<L2AclPolicy[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getL2AclPolicyList),
+    getL2AclPolicyTemplateList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
-          if (params.requestId) {
-            onActivityMessageReceived(msg, L2AclTemplateUseCases,() => {
-              // eslint-disable-next-line max-len
-              api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AccessControlTemplate', id: 'LIST' }]))
-            }, params.requestId as string)
-          }
+          onActivityMessageReceived(msg, L2AclTemplateUseCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'AccessControlTemplate', id: 'LIST' }
+            ]))
+          })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateL2AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateL2AclPolicy),
@@ -107,20 +114,26 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    getL3AclPolicyTemplateList: build.query<L3AclPolicy[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getL3AclPolicyList),
+    getL3AclPolicyTemplateList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
-          if (params.requestId) {
-            onActivityMessageReceived(msg, L3AclTemplateUseCases,() => {
-              // eslint-disable-next-line max-len
-              api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AccessControlTemplate', id: 'LIST' }]))
-            }, params.requestId as string)
-          }
+          onActivityMessageReceived(msg, L3AclTemplateUseCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'AccessControlTemplate', id: 'LIST' }
+            ]))
+          })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateL3AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateL3AclPolicy),
@@ -138,19 +151,21 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAccessControlProfile),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }]
     }),
-    getAccessControlProfileTemplateList: build.query<AccessControlInfoType[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAccessControlProfileList),
+    // eslint-disable-next-line max-len
+    getAccessControlProfileTemplateList: build.query<TableResult<AccessControlInfoType>, RequestPayload>({
+      query: ({ params, payload }) => {
+      // eslint-disable-next-line max-len
+        const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEnhancedAccessControlProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            ...AccessControlTemplateUseCases,
-            ...L2AclTemplateUseCases,
-            ...L3AclTemplateUseCases,
-            ...DeviceTemplateUseCases,
-            ...ApplicationTemplateUseCases
-          ], () => {
-            api.dispatch(policiesConfigTemplateApi.util.invalidateTags([
+          onActivityMessageReceived(msg, AccessControlTemplateUseCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'AccessControlTemplate', id: 'LIST' }
             ]))
           })
@@ -183,19 +198,26 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    getDevicePolicyTemplateList: build.query<DevicePolicy[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getDevicePolicyList),
+    getDevicePolicyTemplateList: build.query<TableResult<DevicePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
           onActivityMessageReceived(msg, DeviceTemplateUseCases, () => {
             api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'AccessControlTemplate', id: 'LIST' }
             ]))
-          }, params.requestId as string)
+          })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateDevicePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateDevicePolicy),
@@ -222,20 +244,26 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    getAppPolicyTemplateList: build.query<ApplicationPolicy[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAppPolicyList),
+    getAppPolicyTemplateList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
-          if (params.requestId) {
-            onActivityMessageReceived(msg, ApplicationTemplateUseCases,() => {
-              // eslint-disable-next-line max-len
-              api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AccessControlTemplate', id: 'LIST' }]))
-            }, params.requestId as string)
-          }
+          onActivityMessageReceived(msg, ApplicationTemplateUseCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'AccessControlTemplate', id: 'LIST' }
+            ]))
+          })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     updateAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateAppAclPolicy),

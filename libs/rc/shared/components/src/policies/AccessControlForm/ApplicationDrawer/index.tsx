@@ -34,7 +34,11 @@ import {
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
+  sortProp,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -724,21 +728,33 @@ const GetAppAclPolicyListInstance = (requestId: string): {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        appSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        appList: data ? data.map(item => item.name) : [],
-        appIdList: data ? data.map(item => item.id) : []
-      }
-    },
-    skip: !isTemplate
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ],
+    page: 1,
+    sortField: 'name',
+    sortOrder: 'DESC'
+  }
+
+  const settingsId = 'policies-access-control-application-table-template'
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetAppPolicyTemplateListQuery,
+    defaultPayload,
+    pagination: { settingsId: settingsId, pageSize: 10000 }
   })
+
+  const useAppPolicyTemplateList = {
+    appSelectOptions: tableQuery?.data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    appList: tableQuery?.data?.data?.map(item => item.name) ?? [],
+    appIdList: tableQuery?.data?.data?.map(item => item.id) ?? []
+  }
 
   const useAppPolicyList = useAppPolicyListQuery({
     params: { ...params, requestId: requestId }

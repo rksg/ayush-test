@@ -11,6 +11,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
     newApi: true
   },
+  getEnhancedL2AclPolicies: {
+    method: 'post',
+    url: '/templates/l2AclPolicies/query',
+    newApi: true
+  },
   delL2AclPolicy: {
     method: 'delete',
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
@@ -31,6 +36,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l3AclPolicies/:l3AclPolicyId',
     newApi: true
   },
+  getEnhancedL3AclPolicies: {
+    method: 'post',
+    url: '/templates/l3AclPolicies/query',
+    newApi: true
+  },
   delL3AclPolicy: {
     method: 'delete',
     url: '/templates/l3AclPolicies/:l3AclPolicyId',
@@ -49,6 +59,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAppPolicy: {
     method: 'get',
     url: '/templates/applicationPolicies/:applicationPolicyId',
+    newApi: true
+  },
+  getEnhancedApplicationPolicies: {
+    method: 'post',
+    url: '/templates/applicationPolicies/query',
     newApi: true
   },
   delAppAclPolicy: {
@@ -99,6 +114,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/accessControlProfiles',
     newApi: true
   },
+  getEnhancedAccessControlProfiles: {
+    method: 'post',
+    url: '/templates/accessControlProfiles/query',
+    newApi: true
+  },
   addAccessControlProfile: {
     method: 'post',
     url: '/templates/accessControlProfiles',
@@ -138,6 +158,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getDevicePolicyList: {
     method: 'get',
     url: '/templates/devicePolicies',
+    newApi: true
+  },
+  getEnhancedDevicePolicies: {
+    method: 'post',
+    url: '/templates/devicePolicies/query',
     newApi: true
   }
 }
