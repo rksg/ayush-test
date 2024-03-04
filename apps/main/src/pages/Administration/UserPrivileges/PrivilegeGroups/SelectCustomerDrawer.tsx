@@ -11,8 +11,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-import { MspEc }                   from '@acx-ui/msp/utils'
+import { useGetMspEcWithVenuesListQuery } from '@acx-ui/msp/services'
+import { MspEc }                          from '@acx-ui/msp/utils'
+import { AccountType }                    from '@acx-ui/utils'
 
 interface SelectCustomerDrawerProps {
   visible: boolean
@@ -24,18 +25,18 @@ interface SelectCustomerDrawerProps {
 
 const customerListPayload = {
   fields: ['name', 'id'],
+  filters: { tenantType: [AccountType.MSP_EC] },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
-interface MspEcWithVenue extends MspEc {
-  children?: {
-    name: string,
-    id: string
-  }[]
-}
-
+// interface MspEcWithVenue extends MspEc {
+//   children?: {
+//     name: string,
+//     id: string
+//   }[]
+// }
 
 export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const { $t } = useIntl()
@@ -44,7 +45,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspEc[]>([])
-  const [treeData, setTreeData] = useState<MspEcWithVenue[]>([])
+  // const [treeData, setTreeData] = useState<MspEcWithVenue[]>([])
 
   function getSelectedKeys (mspEcs: MspEc[], ecId: string[]) {
     return mspEcs.filter(rec => ecId.includes(rec.id)).map(rec => rec.id)
@@ -55,7 +56,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const { data: customerList }
-  = useMspCustomerListQuery({ params: useParams(), payload: customerListPayload })
+  = useGetMspEcWithVenuesListQuery({ params: useParams(), payload: customerListPayload })
 
   const onClose = () => {
     setVisible(false)
@@ -92,16 +93,14 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
       setSelectedKeys(selectKeys)
       const selRows = getSelectedRows(customerList?.data as MspEc[], ecIds)
       setSelectedRows(selRows)
-      const dataWithVenues = customerList.data.map(c => {
-        return {
-          ...c,
-          children: [
-            // { name: 'Venue A', id: 'A' },
-            // { name: 'Venue B', id: 'B' }
-          ]
-        }
-      })
-      setTreeData(dataWithVenues)
+      // const dataWithVenues = customerList.data.map(c => {
+      //   return {
+      //     ...c,
+      //     children: [
+      //     ]
+      //   }
+      // })
+      // setTreeData(dataWithVenues)
     }
     // setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [customerList?.data])
@@ -111,7 +110,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     <Loader >
       <Table
         columns={columns}
-        dataSource={treeData}
+        dataSource={customerList?.data}
         indentSize={20}
         rowKey='id'
         rowSelection={{

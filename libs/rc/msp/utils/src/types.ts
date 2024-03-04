@@ -453,3 +453,10 @@ export enum MspEcTierEnum {
   Essentials = 'Gold',
   Professional = 'Platinum'
 }
+
+export interface MspEcWithVenue extends MspEc {
+  children?: {
+    name: string,
+    id: string
+  }[]
+}

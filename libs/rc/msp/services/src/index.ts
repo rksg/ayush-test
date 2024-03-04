@@ -1,6 +1,7 @@
-import _           from 'lodash'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                       from 'lodash'
+import moment                  from 'moment-timezone'
+import { useIntl }             from 'react-intl'
 
 import {
   showActionModal
@@ -27,7 +28,8 @@ import {
   MspAggregations,
   MspEcAlarmList,
   RecommendFirmwareUpgrade,
-  AvailableMspRecCustomers
+  AvailableMspRecCustomers,
+  MspEcWithVenue
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -840,9 +842,81 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(MspUrlsInfo.getMspCustomersList, arg.params),
+          body: arg.payload
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<MspEcWithVenue>
+        const ecVenues:{ [index:string]: Venue[] } = {}
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
+
+        const ecTenantId: string[] = []
+
+        list.data.forEach(async (item:MspEcWithVenue) => {
+          ecTenantId.push(item.id)
+        })
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allEcVenues:any = await Promise.all(ecTenantId.map(id =>
+          fetchWithBQ(genVenuePayload(arg, id))
+        ))
+        ecTenantId.forEach((id:string, index:number) => {
+          ecVenues[id] = allEcVenues[index]?.data.data
+        })
+        const aggregatedList = aggregatedMspEcListData(list, ecVenues)
+
+        return { data: aggregatedList }
+      }
     })
   })
 })
+
+const genVenuePayload = (arg:RequestPayload<unknown>, ecTenantId:string) => {
+  const CUSTOM_HEADER = {
+    'x-rks-tenantid': ecTenantId
+  }
+  return {
+    ...createHttpRequest(CommonUrlsInfo.getVenuesList, arg.params, CUSTOM_HEADER, true),
+    body: {
+      fields: ['name', 'country', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }
+}
+
+const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
+  ecVenues:{ [index:string]: Venue[] }) => {
+  const data:MspEcWithVenue[] = []
+  ecList.data.forEach(item => {
+    const tmp = {
+      ...item,
+      isFirstLevel: true
+    }
+    if (ecVenues[item.id]) {
+      const tmpV = _.cloneDeep(ecVenues[item.id])
+      // tmpV.forEach((venue: Venue, index: number) => {
+      //   if (venue.id === tmp.id) {
+      //     tmpV[index].venueId = venue.id
+      //     tmpV[index].id = item.id
+      //     tmpV[index].name = venue.name
+      //   }
+      // })
+      tmp.children = tmpV
+    }
+    data.push(tmp)
+  })
+  return {
+    ...ecList,
+    data
+  }
+}
+
 export const {
   useMspCustomerListQuery,
   useIntegratorCustomerListQuery,
@@ -908,6 +982,5 @@ export const {
   useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
-  useGetMspEcVenuesListQuery,
-  useLazyGetMspEcVenuesListQuery
+  useGetMspEcWithVenuesListQuery
 } = mspApi
