@@ -4,11 +4,13 @@ import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
   getServiceDetailsLink,
+  getServiceRoutePath,
   PolicyDetailsLinkProps,
   PolicyOperation,
   PolicyType,
   ServiceDetailsLinkProps,
   ServiceOperation,
+  ServiceRoutePathProps,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantType, To } from '@acx-ui/react-router-dom'
@@ -19,6 +21,7 @@ import {
   PolicyConfigTemplateDetailsLink,
   PolicyConfigTemplateLink,
   renderConfigTemplateDetailsComponent,
+  ServiceConfigTemplateLink,
   ServiceConfigTemplateLinkSwitcher,
   usePathBasedOnConfigTemplate
 } from '.'
@@ -91,28 +94,35 @@ describe('ConfigTemplateLink', () => {
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 
-  it('renderConfigTemplateDetailsComponent for venue with default activeTab', () => {
-    render(
+  it('shoulde render renderConfigTemplateDetailsComponent correctly', () => {
+    const { rerender } = render(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
     )
 
     // default activeTab : networks
-    const targetPath = getConfigTemplatePath('venues/venue_id/venue-details/networks')
-    expect(screen.getByText(targetPath)).toBeInTheDocument()
-  })
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(getConfigTemplatePath('venues/venue_id/venue-details/networks'))).toBeInTheDocument()
 
-  it('renderConfigTemplateDetailsComponent for venue with services activeTab', () => {
-    render(
-      renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
-        [ConfigTemplateType.VENUE]: { activeTab: 'services' }
-      })
+    rerender(
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.RADIUS, 'radius_id', 'radius_name')
     )
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(getConfigTemplatePath('policies/aaa/radius_id/detail'))).toBeInTheDocument()
 
-    const targetPath = getConfigTemplatePath('venues/venue_id/venue-details/services')
-    expect(screen.getByText(targetPath)).toBeInTheDocument()
+    rerender(
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.DPSK, 'dpsk_id', 'dpsk_name')
+    )
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(getConfigTemplatePath('services/dpsk/dpsk_id/detail/overview'))).toBeInTheDocument()
+
+    rerender(
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, 'network_id', 'network_name')
+    )
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(getConfigTemplatePath('networks/wireless/network_id/network-details/venues'))).toBeInTheDocument()
   })
 
-  it('should render the correct service link with the config template flag', async () => {
+  it('should render the correct service link with the config template flag', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
     // eslint-disable-next-line max-len
@@ -126,7 +136,7 @@ describe('ConfigTemplateLink', () => {
       children={'DHCP Edit Page'}
     />, { route: { path: '/tenantId/t/test' } })
 
-    expect(await screen.findByText(`configTemplates/${targetPath}`)).toBeInTheDocument()
+    expect(screen.getByText(getConfigTemplatePath(targetPath))).toBeInTheDocument()
 
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
@@ -137,10 +147,10 @@ describe('ConfigTemplateLink', () => {
       children={'DHCP Edit Page'}
     />)
 
-    expect(await screen.findByText(targetPath)).toBeInTheDocument()
+    expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 
-  it('should render the correct base path with the config template flag', async () => {
+  it('should render the correct base path with the config template flag', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     // eslint-disable-next-line max-len
     const { result: templateResult } = renderHook(() => usePathBasedOnConfigTemplate('regular', 'template'))
@@ -156,5 +166,19 @@ describe('ConfigTemplateLink', () => {
       to: 'regular',
       tenantType: undefined
     })
+  })
+
+  it('renders ServiceConfigTemplateLink', () => {
+    // eslint-disable-next-line max-len
+    const targetProps: ServiceRoutePathProps = { type: ServiceType.DHCP, oper: ServiceOperation.CREATE }
+    const targetPath = getServiceRoutePath(targetProps)
+
+    render(<ServiceConfigTemplateLink
+      type={targetProps.type}
+      oper={targetProps.oper}
+      children={'DHCP Creation page'}
+    />)
+
+    expect(screen.getByText(getConfigTemplatePath(targetPath))).toBeInTheDocument()
   })
 })
