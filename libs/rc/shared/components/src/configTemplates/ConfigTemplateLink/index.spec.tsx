@@ -20,6 +20,7 @@ import {
   ConfigTemplateLink,
   PolicyConfigTemplateDetailsLink,
   PolicyConfigTemplateLink,
+  PolicyConfigTemplateLinkSwitcher,
   renderConfigTemplateDetailsComponent,
   ServiceConfigTemplateLink,
   ServiceConfigTemplateLinkSwitcher,
@@ -145,6 +146,34 @@ describe('ConfigTemplateLink', () => {
       oper={targetProps.oper}
       serviceId={targetProps.serviceId}
       children={'DHCP Edit Page'}
+    />)
+
+    expect(screen.getByText(targetPath)).toBeInTheDocument()
+  })
+
+  it('should render the correct policy link with the config template flag', () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+    // eslint-disable-next-line max-len
+    const targetProps: PolicyDetailsLinkProps = { type: PolicyType.AAA, oper: PolicyOperation.EDIT, policyId: '123456' }
+    const targetPath = getPolicyDetailsLink(targetProps)
+
+    const { rerender } = render(<PolicyConfigTemplateLinkSwitcher
+      type={targetProps.type}
+      oper={targetProps.oper}
+      policyId={targetProps.policyId}
+      children={'RADIUS Edit Page'}
+    />, { route: { path: '/tenantId/t/test' } })
+
+    expect(screen.getByText(getConfigTemplatePath(targetPath))).toBeInTheDocument()
+
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
+    rerender(<PolicyConfigTemplateLinkSwitcher
+      type={targetProps.type}
+      oper={targetProps.oper}
+      policyId={targetProps.policyId}
+      children={'RADIUS Edit Page'}
     />)
 
     expect(screen.getByText(targetPath)).toBeInTheDocument()
