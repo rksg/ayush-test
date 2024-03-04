@@ -28,6 +28,11 @@ export type StepsFormProps <T = any> = Omit<
     label: string,
     onFinish: (values: T) => Promise<boolean | void>
   }
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
+  }
 }
 
 // declare type BaseFormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'>;
@@ -51,11 +56,6 @@ export type StepFormProps <T> = Omit<
   children: React.ReactNode
 
   onFinish?: (values: T) => Promise<boolean | void>
-
-  alert?: {
-    type: AlertProps['type']
-    message: ReactNode
-  }
 }
 
 export type InternalStepFormProps <T> = StepFormProps<T> & { step: number, name: string }

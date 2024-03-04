@@ -61,18 +61,17 @@ export function BasicCompatibilityStatusBar () {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
+      alert={{
+        type: 'error',
+        message: <CompatibilityStatusBar
+          key='step1'
+          fields={fields}
+          type={CompatibilityStatusEnum.FAIL}
+          errors={errorDetails}
+        />
+      }}
     >
-      <StepsForm.StepForm title='Step 1'
-        alert={{
-          type: 'error',
-          message: <CompatibilityStatusBar
-            key='step1'
-            fields={fields}
-            type={CompatibilityStatusEnum.FAIL}
-            errors={errorDetails}
-          />
-        }}
-      >
+      <StepsForm.StepForm title='Step 1'>
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 1' />
@@ -109,16 +108,7 @@ export function BasicCompatibilityStatusBar () {
         </Row>
       </StepsForm.StepForm>
 
-      <StepsForm.StepForm title='Step 2'
-        alert={{
-          type: 'success',
-          message: <CompatibilityStatusBar
-            key='step2'
-            fields={fields}
-            type={CompatibilityStatusEnum.PASS}
-          />
-        }}
-      >
+      <StepsForm.StepForm title='Step 2'>
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 2' />

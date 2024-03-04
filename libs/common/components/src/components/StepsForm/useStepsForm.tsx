@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { Col, Form, Row, Space, Steps }    from 'antd'
 import _                                   from 'lodash'
@@ -10,9 +10,9 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
-import type { InternalStepFormProps }               from './types'
-import type { FormInstance, FormProps, StepsProps } from 'antd'
-import type { UseStepsFormConfig }                  from 'sunflower-antd'
+import type { InternalStepFormProps }                           from './types'
+import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
+import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
 function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
@@ -44,6 +44,11 @@ type UseStepsFormParam <T> = Omit<
     label: string,
     onFinish: (values: T) => Promise<boolean | void>
   }
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
+  }
 }
 
 export function useStepsForm <T> ({
@@ -54,6 +59,7 @@ export function useStepsForm <T> ({
   onCancel,
   onFinishFailed,
   customSubmit,
+  alert,
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
@@ -144,7 +150,7 @@ export function useStepsForm <T> ({
     ..._.omit(config, 'defaultFormValues'),
     ...props,
     // omit name for preventing prefix of id
-    ..._.omit(currentStep.props, ['children', 'name', 'title', 'alert']),
+    ..._.omit(currentStep.props, ['children', 'name', 'title']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
@@ -250,9 +256,9 @@ export function useStepsForm <T> ({
     />
   </UI.ActionsContainer>
 
-  const alertEl = currentStep?.props.alert && <UI.AlertContainer
+  const alertEl = alert?.message && alert?.type && <UI.AlertContainer
     data-testid='steps-form-alert'
-    {...currentStep?.props.alert}
+    {...alert}
   />
 
   const currentStepEl = steps[newConfig.current]
@@ -267,7 +273,7 @@ export function useStepsForm <T> ({
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
       <Row gutter={20}>{formLayout}</Row>
-      { currentStep?.props.alert ? alertEl : null}
+      { alert ? alertEl : null}
       {buttonEls}
     </Form>
   </UI.Wrapper>

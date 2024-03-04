@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import userEvent              from '@testing-library/user-event'
 import { Form, Input, Radio } from 'antd'
@@ -520,32 +520,6 @@ describe('StepsForm', () => {
     expect(mockedCustomSubmitOnFinish).toBeCalled()
   })
 
-  it('supports form alert message on individual step', async () => {
-    const Component = () => {
-      return <StepsForm>
-        <StepsForm.StepForm
-          title='Step 1'
-          alert={{
-            type: 'success',
-            message: 'Test Pass'
-          }}>
-          <StepsForm.Title>Step 1</StepsForm.Title>
-          <Form.Item
-            name='field1'
-            label='Field 1'
-            rules={[{ required: true }]}
-            children={<Input />}
-          />
-        </StepsForm.StepForm>
-      </StepsForm>
-    }
-    render(<Component />)
-
-    const alertDiv = screen.getByTestId('steps-form-alert')
-    expect(alertDiv).toBeInTheDocument()
-    expect(alertDiv).toHaveTextContent(/Test Pass/)
-  })
-
   // TODO
   // A requirement from UX
   it.todo('disable submit button when some fields are invalid')
@@ -629,5 +603,56 @@ describe('StepsForm.FieldSummary', () => {
     />)
 
     expect(container).toHaveTextContent('Custom Content')
+  })
+})
+
+describe('StepsForm alert message bar', () => {
+  const Component = (props: {
+    initVal?: StepsFormProps<Record<string, unknown>>['alert']
+  }) => {
+    return <StepsForm alert={props.initVal}>
+      <StepsForm.StepForm title='Step 1'>
+        <StepsForm.Title>Step 1</StepsForm.Title>
+        <Form.Item
+          name='field1'
+          label='Field 1'
+          rules={[{ required: true }]}
+          children={<Input />}
+        />
+      </StepsForm.StepForm>
+    </StepsForm>
+  }
+
+  it('supports form alert message', async () => {
+    render(<Component initVal={{
+      type: 'error',
+      message: 'Cross validation failed'
+    }} />)
+    const alertDiv = screen.getByTestId('steps-form-alert')
+    expect(alertDiv).toBeInTheDocument()
+    expect(alertDiv).toHaveTextContent(/Cross validation failed/)
+  })
+
+  it('should be nothing with undefined', async () => {
+    render(<Component initVal={undefined}/>)
+    expect(screen.queryByTestId('steps-form-alert')).toBeNull()
+  })
+
+  it('dynamic update alert message', async () => {
+    const WrappedComponent = () => {
+      const [val, setVal] = useState({} as StepsFormProps<Record<string, unknown>>['alert'] )
+      useEffect(() => {
+        setTimeout(() => setVal({
+          type: 'error',
+          message: 'Delayed validation failed'
+        }), 1000)
+      }, [])
+
+      return <Component initVal={val}/>
+    }
+    render(<WrappedComponent />)
+    expect(screen.queryByTestId('steps-form-alert')).toBeNull()
+    const alertDiv = await screen.findByTestId('steps-form-alert')
+    await waitFor(() => expect(alertDiv).toHaveTextContent(/Delayed validation failed/))
   })
 })
