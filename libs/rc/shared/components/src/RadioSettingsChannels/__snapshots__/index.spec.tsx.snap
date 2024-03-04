@@ -76,22 +76,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            36
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              36
+                            </span>
+                            <span>
+                              40
+                            </span>
+                            <span>
+                              44
+                            </span>
+                            <span>
+                              48
+                            </span>
                           </span>
-                          <span>
-                            40
-                          </span>
-                          <span>
-                            44
-                          </span>
-                          <span>
-                            48
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                     <label
@@ -110,22 +114,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            52
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              52
+                            </span>
+                            <span>
+                              56
+                            </span>
+                            <span>
+                              60
+                            </span>
+                            <span>
+                              64
+                            </span>
                           </span>
-                          <span>
-                            56
-                          </span>
-                          <span>
-                            60
-                          </span>
-                          <span>
-                            64
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                     <label
@@ -144,22 +152,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            100
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              100
+                            </span>
+                            <span>
+                              104
+                            </span>
+                            <span>
+                              108
+                            </span>
+                            <span>
+                              112
+                            </span>
                           </span>
-                          <span>
-                            104
-                          </span>
-                          <span>
-                            108
-                          </span>
-                          <span>
-                            112
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                     <label
@@ -178,22 +190,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            116
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              116
+                            </span>
+                            <span>
+                              120
+                            </span>
+                            <span>
+                              124
+                            </span>
+                            <span>
+                              128
+                            </span>
                           </span>
-                          <span>
-                            120
-                          </span>
-                          <span>
-                            124
-                          </span>
-                          <span>
-                            128
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                     <label
@@ -212,22 +228,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            132
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              132
+                            </span>
+                            <span>
+                              136
+                            </span>
+                            <span>
+                              140
+                            </span>
+                            <span>
+                              144
+                            </span>
                           </span>
-                          <span>
-                            136
-                          </span>
-                          <span>
-                            140
-                          </span>
-                          <span>
-                            144
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                     <label
@@ -246,22 +266,26 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <span
-                          class="channels"
+                        <div
+                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
                         >
-                          <span>
-                            149
+                          <span
+                            class="channels"
+                          >
+                            <span>
+                              149
+                            </span>
+                            <span>
+                              153
+                            </span>
+                            <span>
+                              157
+                            </span>
+                            <span>
+                              161
+                            </span>
                           </span>
-                          <span>
-                            153
-                          </span>
-                          <span>
-                            157
-                          </span>
-                          <span>
-                            161
-                          </span>
-                        </span>
+                        </div>
                       </span>
                     </label>
                   </div>
