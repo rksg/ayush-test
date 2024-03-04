@@ -71,7 +71,7 @@ export interface EdgeDetails {
 
 export interface EdgePort {
   id: string
-  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
+  portType: EdgePortTypeEnum
   name: string
   mac: string
   enabled: boolean
@@ -128,6 +128,7 @@ export interface EdgePortStatus {
   subnet: string
   interfaceName?: string
   serialNumber?: string
+  isCorePort?: string
 }
 
 export interface EdgeStatusSeverityStatistic {
@@ -355,15 +356,17 @@ export interface EdgeCluster {
     name: string
   }[]
   virtualIpSettings: {
-      virtualIps: {
-        virtualIp: string
-        ports: {
-          serialNumber: string
-          portName: string
-        }[]
-        timeoutSeconds: number
-      }[]
+      virtualIps: VirtualIpSetting[]
   }
+}
+
+export interface VirtualIpSetting {
+  virtualIp: string
+  ports: {
+    serialNumber: string
+    portName: string
+  }[]
+  timeoutSeconds: number
 }
 
 export interface EdgeClusterStatus {
@@ -389,4 +392,20 @@ export interface EdgePortInfo {
   portName: string
   ip: string
   subnet: string
+  portType: EdgePortTypeEnum
+  isCorePort: boolean
+  isLagMember: boolean
+  portEnabled: boolean
+}
+
+export interface ClusterNetworkSettings {
+  virtualIpSettings: VirtualIpSetting[]
+  portSettings: {
+    serialNumber: string,
+    ports: EdgePort[]
+  }[]
+  lagSettings: {
+    serialNumber: string,
+    lags: EdgeLag[]
+  }[]
 }
