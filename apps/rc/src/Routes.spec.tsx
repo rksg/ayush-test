@@ -100,10 +100,6 @@ jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
   return <div data-testid='AddDHCP' />
 })
 
-jest.mock('./pages/Services/DHCP/DHCPDetail', () => () => {
-  return <div data-testid='DHCPDetail' />
-})
-
 jest.mock('./pages/Services/DHCP/DHCPTable/DHCPTable', () => () => {
   return <div data-testid='DHCPTable' />
 })
@@ -198,6 +194,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
   WifiCallingDetailView: () => <div data-testid='WifiCallingDetailView' />,
   DHCPForm: () => <div data-testid='DHCPForm' />,
+  DHCPDetail: () => <div data-testid='DHCPDetail' />,
   PortalForm: () => <div data-testid='PortalForm' />,
   NetworkForm: () => <div data-testid='NetworkForm' />,
   AAAPolicyDetail: () => <div data-testid='AAAPolicyDetail' />,

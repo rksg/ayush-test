@@ -36,6 +36,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
 
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
 
   const parserUnitDetialsData = (count = 0) => {
@@ -102,6 +103,10 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           label={$t({ defaultMessage: 'IP Address' })}
           children={switchDetail.ipAddress || noDataDisplay}
         />
+        { enableSwitchExternalIp && <Form.Item
+          label={$t({ defaultMessage: 'Ext. IP Address' })}
+          children={switchDetail.extIp || noDataDisplay}
+        />}
         <Form.Item
           label={$t({ defaultMessage: 'Subnet Mask' })}
           children={switchDetail.subnetMask || noDataDisplay}

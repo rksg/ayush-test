@@ -20,18 +20,17 @@ import {
   renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
+  useDelAppPolicyMutation,
+  useDelDevicePolicyMutation,
+  useDeleteAccessControlProfileMutation,
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useDeleteVenueTemplateMutation,
-  useGetConfigTemplateListQuery
-} from '@acx-ui/rc/services'
-import {
-  useDelAppPolicyTemplateMutation,
-  useDelDevicePolicyTemplateMutation,
-  useDeleteAccessControlProfileTemplateMutation,
-  useDelL2AclPolicyTemplateMutation,
-  useDelL3AclPolicyTemplateMutation
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
+  useGetConfigTemplateListQuery,
+  useDeleteDhcpTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -49,7 +48,6 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 import { getIntl }                                 from '@acx-ui/utils'
-
 
 import {
   AccessControlSubPolicyDrawers,
@@ -264,11 +262,12 @@ function useDeleteMutation () {
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
   const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
-  const [ deleteLayer2 ] = useDelL2AclPolicyTemplateMutation()
-  const [ deleteLayer3 ] = useDelL3AclPolicyTemplateMutation()
-  const [ deleteDevice ] = useDelDevicePolicyTemplateMutation()
-  const [ deleteApplication ] = useDelAppPolicyTemplateMutation()
-  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileTemplateMutation()
+  const [ deleteLayer2 ] = useDelL2AclPolicyMutation()
+  const [ deleteLayer3 ] = useDelL3AclPolicyMutation()
+  const [ deleteDevice ] = useDelDevicePolicyMutation()
+  const [ deleteApplication ] = useDelAppPolicyMutation()
+  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -279,7 +278,8 @@ function useDeleteMutation () {
     [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet
+    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }
 
@@ -314,7 +314,8 @@ function getAddTemplateMenuProps (props: {
         key: 'add-service',
         label: $t({ defaultMessage: 'Services' }),
         children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
+          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
         ]
       }
     ]
