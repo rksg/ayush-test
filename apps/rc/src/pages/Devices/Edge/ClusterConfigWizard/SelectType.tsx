@@ -160,9 +160,11 @@ export const SelectType = () => {
             <UI.WarningTxt>
               {
               // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'The number of CPU cores, memory, or physical ports on the SmartEdges do not meet the requirements for High Availability. \n'+
+                $t({ defaultMessage: 'The number of CPU cores, memory, or physical ports on the SmartEdges do not meet the requirements for High Availability. {br}'+
               // eslint-disable-next-line max-len
-              'Please ensure the devices have matching specifications to establish a reliable HA configurations.' })}
+              'Please ensure the devices have matching specifications to establish a reliable HA configurations.' }, {
+                  br: <br/>
+                })}
             </UI.WarningTxt>
           </Col>
         </Row>
