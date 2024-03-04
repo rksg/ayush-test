@@ -68,7 +68,7 @@ describe('ConfigTemplateLink', () => {
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 
-  it('renderConfigTemplateDetailsLink for venue with default activeTab', () => {
+  it('renderConfigTemplateDetailsComponent for venue with default activeTab', () => {
     render(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
     )
@@ -78,7 +78,7 @@ describe('ConfigTemplateLink', () => {
     expect(screen.getByText(targetPath)).toBeInTheDocument()
   })
 
-  it('renderConfigTemplateDetailsLink for venue with services activeTab', () => {
+  it('renderConfigTemplateDetailsComponent for venue with services activeTab', () => {
     render(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name', {
         [ConfigTemplateType.VENUE]: { activeTab: 'services' }
