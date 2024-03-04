@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Row, Col, Form, Input, Button, AlertProps } from 'antd'
+import { Row, Col, Form, Input, Button, AlertProps, Space, Switch } from 'antd'
 
 import { StepsForm, StepsFormProps } from '..'
 import { Drawer }                    from '../../Drawer'
@@ -10,21 +10,28 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 export function AlertMessageBar () {
   const [visible, setVisible] = useState(false)
+  const [mockedCrossCheckStatus, setMockedCrossCheckStatus] = useState<boolean>(false)
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert'] | undefined>(undefined)
   const [form] = Form.useForm()
 
-  const crossValidation = async (): Promise<Record<string, unknown> | undefined>=> {
-    return {
-      type: 'error',
-      data: [{
-        field1: '1',
-        field2: 'LAN'
-      }]
-    }
+  const crossValidation = async (): Promise<Record<string, unknown> | void> => {
+    return mockedCrossCheckStatus
+      ? Promise.resolve()
+      : Promise.reject({
+        type: 'error',
+        data: [{
+          field1: '1',
+          field2: 'LAN'
+        }]
+      })
   }
 
   return <>
+    <Space>
+      <div>Is cross checking with other form passed: </div>
+      <Switch onClick={(val) => setMockedCrossCheckStatus(val)} />
+    </Space>
     <StepsForm
       form={form}
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
@@ -41,24 +48,28 @@ export function AlertMessageBar () {
       <StepsForm.StepForm name='step1'
         title='Step 1'
         onFinish={async () => {
-          const errors = form.getFieldsError()
-          const hasErrors = errors.some((field) => field.errors.length > 0)
-          const crossCheckResult = await crossValidation()
-          // mock cross checking failed
-          if (!hasErrors && crossCheckResult) {
-            setAlertData({
-              type: crossCheckResult.type as AlertProps['type'],
-              message: <div>
-                {JSON.stringify(crossCheckResult.data)}
-                <Button type='link' onClick={() => setVisible(true)}>
-                  More details
-                </Button>
-              </div>
-            })
-            return false
-          } else {
+          try {
+            await form.validateFields()
+            return await crossValidation()
+              .then(() => {
+                setAlertData(undefined)
+                return true
+              })
+              .catch((errorData) => {
+                setAlertData({
+                  type: errorData.type as AlertProps['type'],
+                  message: <div>
+                    {JSON.stringify(errorData.data)}
+                    <Button type='link' onClick={() => setVisible(true)}>
+                      More details
+                    </Button>
+                  </div>
+                })
+                return false
+              })
+          } catch {
             setAlertData(undefined)
-            return true
+            return false
           }
         }}>
         <Row gutter={20}>
@@ -78,15 +89,7 @@ export function AlertMessageBar () {
         </Row>
       </StepsForm.StepForm>
 
-      <StepsForm.StepForm title='Step 2'
-        onFinish={async () => {
-          if (alertData) {
-            return false
-          } else {
-            setAlertData(undefined)
-            return true
-          }
-        }}>
+      <StepsForm.StepForm title='Step 2'>
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 2' />
@@ -99,35 +102,14 @@ export function AlertMessageBar () {
           </Col>
         </Row>
       </StepsForm.StepForm>
-
-      <StepsForm.StepForm title='Step 3'
-        onFinish={async () => {
-          if (alertData) {
-            return false
-          } else {
-            setAlertData(undefined)
-            return true
-          }
-        }}>
-        <Row gutter={20}>
-          <Col span={10}>
-            <StepsForm.Title children='Step 3' />
-            <Form.Item name='field5' label='Field 5'>
-              <Input />
-            </Form.Item>
-            <Form.Item name='field6' label='Field 6'>
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-      </StepsForm.StepForm>
     </StepsForm>
-    <Drawer
+    {alertData && <Drawer
       title='More Details'
       visible={visible}
       onClose={() => setVisible(false)}
     >
-    More details about the information alert message.
+      More details about the information alert message.
     </Drawer>
+    }
   </>
 }

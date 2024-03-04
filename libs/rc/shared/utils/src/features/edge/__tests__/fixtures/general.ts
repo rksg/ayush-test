@@ -172,10 +172,14 @@ export const mockEdgeClusterList = {
           model: 'model 1',
           serialNumber: 'serialNumber-1',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '3',
           venueName: 'Venue 1',
           venueId: 'mock_venue_1',
-          tags: ['Tag1', 'Tag2']
+          tags: ['Tag1', 'Tag2'],
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949424
         },
         {
           name: 'Smart Edge 2',
@@ -184,10 +188,14 @@ export const mockEdgeClusterList = {
           model: 'model 1',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '3',
           venueName: 'Venue 1',
           venueId: 'mock_venue_1',
-          tags: ['Tag1', 'Tag2']
+          tags: ['Tag1', 'Tag2'],
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949420
         }
       ]
     },
@@ -199,7 +207,18 @@ export const mockEdgeClusterList = {
       venueId: '0000000002',
       venueName: 'venue_2',
       clusterStatus: '',
-      edgeList: []
+      edgeList: [ {
+        name: 'Smart Edge 3',
+        deviceStatus: '1_01_NeverContactedCloud',
+        type: 'Virtual',
+        model: 'model 1',
+        serialNumber: 'serialNumber-3',
+        ip: '0.0.0.0',
+        ports: '2',
+        venueName: 'Venue 2',
+        venueId: '0000000002',
+        tags: ['Tag1', 'Tag2']
+      }]
     },{
       tenantId: 'tenantId_3',
       clusterId: 'clusterId_3',
@@ -210,13 +229,13 @@ export const mockEdgeClusterList = {
       clusterStatus: 'Single node',
       edgeList: [
         {
-          name: 'Smart Edge 3',
+          name: 'Smart Edge 4',
           deviceStatus: '1_01_NeverContactedCloud',
           type: 'Virtual',
           model: 'model 1',
-          serialNumber: '0000000005',
+          serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '2',
           venueName: 'Venue 3',
           venueId: '0000000003',
           tags: ['Tag1', 'Tag2']
