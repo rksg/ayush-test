@@ -19,7 +19,8 @@ export function VenueDetails () {
     const { isTemplate } = useConfigTemplate()
     if (isTemplate) {
       return {
-        networks: VenueNetworksTab
+        networks: VenueNetworksTab,
+        services: VenueServicesTab
       }
     }
 

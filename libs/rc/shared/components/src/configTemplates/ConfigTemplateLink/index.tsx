@@ -20,7 +20,7 @@ import {
   getServiceDetailsLink,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { LinkProps, MspTenantLink, Path, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
 type OptionProps = {
   [key in ConfigTemplateType]?: {
@@ -102,6 +102,23 @@ export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDe
   )
 }
 
+interface ServiceConfigTemplateLinkSwitcherProps extends ServiceDetailsLinkProps {
+  children: ReactNode
+}
+// eslint-disable-next-line max-len
+export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateLinkSwitcherProps) {
+  const { isTemplate } = useConfigTemplate()
+  const { type, oper, serviceId, children } = props
+
+  return isTemplate
+    ? <ServiceConfigTemplateDetailsLink type={type} oper={oper} serviceId={serviceId}>
+      {children}
+    </ServiceConfigTemplateDetailsLink>
+    : <TenantLink to={getServiceDetailsLink({ type, oper, serviceId })}>
+      {children}
+    </TenantLink>
+}
+
 // eslint-disable-next-line max-len
 export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
   let activeTab = ''
@@ -117,6 +134,9 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
         serviceId={id}
         children={name}
       />
+    case ConfigTemplateType.DHCP:
+      // eslint-disable-next-line max-len
+      return <ServiceConfigTemplateDetailsLink type={ServiceType.DHCP} oper={ServiceOperation.DETAIL} serviceId={id} children={name} />
     case ConfigTemplateType.NETWORK:
       activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
       // eslint-disable-next-line max-len
