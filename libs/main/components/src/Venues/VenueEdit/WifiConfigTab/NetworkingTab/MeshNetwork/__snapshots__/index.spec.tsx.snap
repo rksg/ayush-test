@@ -25,20 +25,24 @@ exports[`MeshNetwork should render correctly 1`] = `
               <div
                 class="ant-form-item-control-input-content"
               >
-                <button
-                  aria-checked="true"
-                  class="ant-switch ant-switch-checked"
-                  data-testid="mesh-switch"
-                  role="switch"
-                  type="button"
+                <div
+                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
                 >
-                  <div
-                    class="ant-switch-handle"
-                  />
-                  <span
-                    class="ant-switch-inner"
-                  />
-                </button>
+                  <button
+                    aria-checked="true"
+                    class="ant-switch ant-switch-checked"
+                    data-testid="mesh-switch"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -74,27 +78,31 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
               <div
                 class="ant-form-item-control-input-content"
               >
-                <span
-                  class="ant-tooltip-disabled-compatible-wrapper"
-                  style="display: inline-block; cursor: not-allowed;"
+                <div
+                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
                 >
-                  <button
-                    aria-checked="false"
-                    class="ant-switch ant-switch-disabled"
-                    data-testid="mesh-switch"
-                    disabled=""
-                    role="switch"
-                    style="pointer-events: none;"
-                    type="button"
+                  <span
+                    class="ant-tooltip-disabled-compatible-wrapper"
+                    style="display: inline-block; cursor: not-allowed;"
                   >
-                    <div
-                      class="ant-switch-handle"
-                    />
-                    <span
-                      class="ant-switch-inner"
-                    />
-                  </button>
-                </span>
+                    <button
+                      aria-checked="false"
+                      class="ant-switch ant-switch-disabled"
+                      data-testid="mesh-switch"
+                      disabled=""
+                      role="switch"
+                      style="pointer-events: none;"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
