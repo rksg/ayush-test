@@ -1,5 +1,6 @@
 import { storiesOf } from '@storybook/react'
 
+import { AlertMessageBar }   from './AlertMessageBar'
 import { AsyncValidation }   from './AsyncValidation'
 import { BasicMultiSteps }   from './BasicMultiSteps'
 import { CustomInputForm }   from './CustomInputForm'
@@ -20,5 +21,6 @@ storiesOf('StepsForm', module)
   .add('Single Step', () => <MockLayout><SingleStep /></MockLayout>)
   .add('Custom Inputs', () => <MockLayout><CustomInputForm /></MockLayout>)
   .add('Custom Submit Button', () => <MockLayout><CustomSubmitBtton /></MockLayout>)
+  .add('Alert Message Bar', () => <MockLayout><AlertMessageBar /></MockLayout>)
 
 export {}

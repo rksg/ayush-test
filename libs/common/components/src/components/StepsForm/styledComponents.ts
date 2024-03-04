@@ -262,23 +262,26 @@ bottom: calc(
 );
 padding: 10px 0;
 background-color: var(--acx-neutrals-10);
+&.ant-alert.ant-alert-success, &.ant-alert.ant-alert-success::before {
+  background-color: var(--acx-accents-orange-10);
+}
+&.ant-alert.ant-alert-info, &.ant-alert.ant-alert-info::before {
+  background-color: var(--acx-accents-orange-10);
+}
+&.ant-alert.ant-alert-warning, &.ant-alert.ant-alert-warning::before {
+  background-color: #fffbe6;
+}
+&.ant-alert.ant-alert-error, &.ant-alert.ant-alert-error::before {
+  background-color: #ffe8e8;
+}
 z-index: 5;
 &::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
-  background-color: ${props => {
-    switch(props.type) {
-      case 'success':
-        return 'var(--acx-accents-orange-10);'
-      case 'error':
-        return '#ffe8e8;'
-      default:
-        return 'var(--acx-neutrals-10);'
-
-    }
-  }}
+  background-color: var(--acx-neutrals-10);
 }
+
 &.ant-alert {
   border: none;
 }
