@@ -1,0 +1,153 @@
+import { Button, Form, Input, Space } from 'antd'
+import TextArea                       from 'antd/lib/input/TextArea'
+import _                              from 'lodash'
+import { useIntl }                    from 'react-intl'
+
+import { GridCol, GridRow, Select, StepsFormLegacy, Subtitle }             from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                              from '@acx-ui/icons'
+import { useGetWifiOperatorListQuery }                                     from '@acx-ui/rc/services'
+import { FriendlyName, domainNameWildcardRegExp, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
+
+import { FriendlyNameEnum }        from '../constants'
+import { friendlyNameEnumOptions } from '../contentMaps'
+
+
+type WifiOperatorSettingFormProps = {
+  edit: boolean
+}
+
+const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
+  const { $t } = useIntl()
+  const { useWatch } = Form
+  const { edit } = props
+  const params = useParams()
+
+  const [friendlyNames] = [useWatch<FriendlyName[]>('friendlyNames')]
+
+  const friendlyNameKeys = Object.keys(FriendlyNameEnum) as Array<keyof typeof FriendlyNameEnum>
+  const friendlyNameLanguageOptions = friendlyNameKeys.map(key =>
+    ( { value: key, label: $t(friendlyNameEnumOptions[FriendlyNameEnum[key]]) }))
+  const { data } = useGetWifiOperatorListQuery({
+    params,
+    payload: {
+      fields: ['name', 'id'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
+    }
+  })
+
+  const nameValidator = async (_rule: unknown, value: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (!edit && value && data?.data.length && data?.data.findIndex((wifiOperator) =>
+        wifiOperator.name === value) !== -1
+      ) {
+        return reject(
+          $t({ defaultMessage: 'The Wi-Fi Operator with that name already exists' })
+        )
+      }
+      return resolve()
+    })
+  }
+
+  const validateDuplicateLangauage = (langCode: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (friendlyNames.filter(item => {return item.language === langCode}).length > 1) {
+        return reject(
+          $t({ defaultMessage: 'Duplicate language' })
+        )
+      }
+      return resolve()
+    })
+  }
+
+  return (
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'Policy Name' })}
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 32 },
+            { validator: nameValidator },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
+          ]}
+          validateFirst
+          hasFeedback
+          initialValue={''}
+          children={<Input/>}
+        />
+        <Form.Item
+          name='domainNames'
+          label={$t({ defaultMessage: 'Domain' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => {
+              let namesSplit: string[] = value.split(/\r?\n/)
+              return domainNameWildcardRegExp(namesSplit)
+            }
+            }
+          ]}
+          initialValue={''}
+          children={<TextArea rows={8} placeholder={$t({ defaultMessage: 'On domain per line' })}/>}
+        />
+        <Subtitle level={3}>
+          { $t({ defaultMessage: 'Operator Friendly Name' }) }
+        </Subtitle>
+
+        <Form.List name='friendlyNames' initialValue={[{}]}>
+          {(fields, { add, remove }) => (
+            <>
+              {fields?.map((field, index) =>
+                <Space align='start' size={12} key={`friendlyName_${index}`}>
+                  {<Form.Item
+                    name={[field.name, 'language']}
+                    label={$t({ defaultMessage: 'Language' })}
+                    rules={[
+                      { required: true },
+                      { validator: (_, value) => validateDuplicateLangauage(value) }
+                    ]}
+                    children={
+                      <Select style={{ minWidth: 150 }}
+                        placeholder={$t({ defaultMessage: 'Select...' })}
+                        options={friendlyNameLanguageOptions}
+                      />}
+                  /> }
+                  <Form.Item
+                    name={[field.name, 'name']}
+                    label={$t({ defaultMessage: 'Friendly Name' })}
+                    rules={[
+                      { required: true },
+                      { min: 1 },
+                      { max: 252 }
+                    ]}
+                    children={<Input />}
+                  />
+                  <Button
+                    aria-label='delete'
+                    type='link'
+                    hidden={fields.length === 1}
+                    style={{ marginTop: '20px', marginLeft: '6px' }}
+                    icon={<DeleteOutlinedIcon />}
+                    onClick={() => remove(field.name)}
+                  />
+                </Space>
+              )}
+              <Button type='link'
+                key='addFriendlyNameBtn'
+                style={{ textAlign: 'left' }}
+                onClick={add}>
+                {$t({ defaultMessage: 'Add another name' })}
+              </Button>
+            </>
+          )}
+        </Form.List>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
+      </GridCol>
+    </GridRow>
+  )
+}
+export default WifiOperatorSettingForm

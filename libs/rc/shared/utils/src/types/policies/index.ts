@@ -3,6 +3,7 @@ export * from './rogueApDetectionPolicy'
 export * from './aaaPolicy'
 export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
+export * from './wifiOperator'
 export * from './identityProvider'
 export * from './syslogPolicy'
 export * from './accessControl'
@@ -33,7 +34,8 @@ export enum PolicyType {
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  CONNECTION_METERING = 'Data Usage Metering'
+  CONNECTION_METERING = 'Data Usage Metering',
+  WIFI_OPERATOR = 'Wi-Fi Operator',
 }
 
 export enum PolicyTechnology {
