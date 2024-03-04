@@ -37,9 +37,12 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
   })
 
   const nameValidator = async (_rule: unknown, value: string) => {
+    const policyId = edit ? params.policyId : ''
     return new Promise<void>((resolve, reject) => {
-      if (!edit && value && data?.data.length && data?.data.findIndex((wifiOperator) =>
-        wifiOperator.name === value) !== -1
+      if (!edit && value
+        && data?.data.length
+        && data?.data.filter(item => item.id !== policyId)
+          .findIndex((wifiOperator) => wifiOperator.name === value) !== -1
       ) {
         return reject(
           $t({ defaultMessage: 'The Wi-Fi Operator with that name already exists' })
@@ -111,6 +114,7 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
                     ]}
                     children={
                       <Select style={{ minWidth: 150 }}
+                        data-testid={`select_language_${index}`}
                         placeholder={$t({ defaultMessage: 'Select...' })}
                         options={friendlyNameLanguageOptions}
                       />}
@@ -123,7 +127,7 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
                       { min: 1 },
                       { max: 252 }
                     ]}
-                    children={<Input />}
+                    children={<Input data-testid={`input_name_${index}`} />}
                   />
                   <Button
                     aria-label='delete'

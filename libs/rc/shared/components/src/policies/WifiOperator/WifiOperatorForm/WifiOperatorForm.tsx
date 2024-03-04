@@ -1,7 +1,6 @@
 
 import { useEffect, useRef } from 'react'
 
-import { useIntl }         from 'react-intl'
 import * as reactRouterDom from 'react-router-dom'
 
 import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance }                                                                         from '@acx-ui/components'
@@ -16,7 +15,6 @@ type WifiOperatorFormProps = {
 }
 
 export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
-  const { $t } = useIntl()
 
   const navigate = reactRouterDom.useNavigate()
   const tablePath = getPolicyRoutePath(

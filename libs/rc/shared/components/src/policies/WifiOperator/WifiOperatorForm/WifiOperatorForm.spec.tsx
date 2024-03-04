@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { WifiOperator, WifiOperatorUrls, WifiOperatorViewModel } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                    from '@acx-ui/test-utils'
+import { WifiOperator, WifiOperatorUrls }      from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { WifiOperatorForm } from './WifiOperatorForm'
 
@@ -30,15 +30,21 @@ const wifiOperatorData: WifiOperator = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1'
 }
 
-const wifiOperatorList=[{
-  id: '70ea860d29d34c218de1b42268b563dc',
-  name: 'wo1'
-},{
-  id: 'policy-id',
-  name: 'wo2'
-}] as WifiOperatorViewModel[]
+const wifiOperatorList = {
+  totalCount: 2,
+  data: [{
+    id: '70ea860d29d34c218de1b42268b563dc',
+    name: 'wo1'
+  },{
+    id: 'policy-id',
+    name: 'wo2'
+  }] }
 
 const mockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
+}))
 
 describe('WifiOperatorForm', () => {
   beforeEach(() => {
@@ -54,12 +60,9 @@ describe('WifiOperatorForm', () => {
     )
   })
 
-  it.skip('should create Wi-Fi Operator successfully', async () => {
+  it('should create Wi-Fi Operator successfully', async () => {
     const addWifiOperator = jest.fn()
     mockServer.use(
-      // rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-      //   res(ctx.json({ COMMON: '{}' }))
-      // ),
       rest.post(
         WifiOperatorUrls.addWifiOperator.url,
         (_, res, ctx) => {
@@ -82,20 +85,10 @@ describe('WifiOperatorForm', () => {
     //step 1 setting form
     await userEvent.type(await screen.findByLabelText('Policy Name'), 'test1')
     await userEvent.type(await screen.findByLabelText('Domain'), 'rks.com')
-    // await userEvent.selectOptions(await screen.findByTestId('select_language_0'), 'ENG')
     const combobox = await screen.findByRole('combobox', { name: 'Language' })
     await userEvent.click(combobox)
     await userEvent.click(await screen.findByText( 'English' ))
-    // const dropdown = await screen.findByRole('combobox')
-    // expect(dropdown).toHaveAttribute('placeholder', 'Select...')
-    // await userEvent.selectOptions(dropdown, 'ENG')
-    // await userEvent.type(await screen.findByTestId('Friendly Name'), 'ENGG')
     await userEvent.type(await screen.findByTestId('input_name_0'), 'ENG_TEXT')
-    // const input = await screen.findByRole('text', { name: 'Friendly Name' })
-    // await userEvent.type(input, 'ENG_TEXT')
-
-    // const form = within(await screen.findByTestId('steps-form'))
-    // const body = within(form.getByTestId('steps-form-body'))
 
     await userEvent.click(await screen.findByText('Add'))
 
@@ -116,12 +109,9 @@ describe('WifiOperatorForm', () => {
     })).toBeVisible()
   })
 
-  it.skip('should edit vlan successfully', async () => {
+  it('should edit Wi-Fi Operator successfully', async () => {
     const editWifiOperator = jest.fn()
     mockServer.use(
-      // rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-      //   res(ctx.json({ COMMON: '{}' }))
-      // ),
       rest.post(
         WifiOperatorUrls.addWifiOperator.url,
         (_, res, ctx) => {return res(ctx.json(successResponse))}
@@ -143,18 +133,21 @@ describe('WifiOperatorForm', () => {
 
     await userEvent.type(screen.getByLabelText('Policy Name'), 'test2')
 
-    await userEvent.type(await screen.findByLabelText('Domain'), 'rks.rks.com')
+    await userEvent.type(await screen.findByLabelText('Domain'), '\nrks.rks.com')
+    const dropdown = await screen.findByTestId('select_language_0')
+    await userEvent.click(dropdown)
+    await userEvent.click(await screen.findByText( 'English' ))
+
+    await userEvent.type(await screen.findByTestId('input_name_0'), 'ENG_TEXT')
+
     await userEvent.click(await screen.findByText('Finish'))
 
     await waitFor(async () => expect(editWifiOperator).toBeCalledTimes(1))
   })
 
 
-  it.skip('should cancel Wi-Fi Operator Form successfully', async () => {
+  it('should cancel Wi-Fi Operator Form successfully', async () => {
     mockServer.use(
-      // rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-      //   res(ctx.json({ COMMON: '{}' }))
-      // ),
       rest.post(
         WifiOperatorUrls.addWifiOperator.url,
         (_, res, ctx) => {return res(ctx.json(successResponse))}
@@ -172,7 +165,7 @@ describe('WifiOperatorForm', () => {
     await userEvent.click(await screen.findByText('Cancel'))
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      hash: '', pathname: '/tenant-id/t/policies/wifiOperator/list', search: '' }, { replace: true }
+      hash: '', pathname: '/tenant-id/t/policies/wifiOperator/list', search: '' }
     )
   })
 })
