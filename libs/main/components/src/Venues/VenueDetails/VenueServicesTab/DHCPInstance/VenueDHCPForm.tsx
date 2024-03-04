@@ -10,14 +10,21 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
-import { GridRow, Button }    from '@acx-ui/components'
-import { DeleteOutlinedIcon } from '@acx-ui/icons'
+import { GridRow, Button }      from '@acx-ui/components'
+import { DeleteOutlinedIcon }   from '@acx-ui/icons'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,
-  useApListQuery
+  useApListQuery,
+  useGetVenueTemplateDhcpProfileQuery,
+  useGetDhcpTemplateListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
+import {
+  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
+  ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
+  getServiceRoutePath, ServiceOperation, ServiceType,
+  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
+} from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -38,18 +45,21 @@ const VenueDHCPForm = (props: {
   const params = useParams()
   const form = props.form
   const dhcpInfo = useDHCPInfo()
+  const { isTemplate } = useConfigTemplate()
 
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params
-  })
-  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
+    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
+  )
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
+    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
+  )
   const { data: apList } = useApListQuery({
     params,
     payload: {
       ...defaultAPPayload,
       filters: { venueId: params.venueId ? [params.venueId] : [] }
     }
-  })
+  }, { skip: isTemplate })
 
   const [selectedAPs, setSelectedAPs] = useState<string[]>([])
 
@@ -301,10 +311,13 @@ const VenueDHCPForm = (props: {
             e.stopPropagation()
           }
         }}
-        to={useTenantLink('/services/dhcp/create')}
+        // eslint-disable-next-line max-len
+        to={useTenantLink(getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }))}
         state={{
-          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-          param: { showConfig: true }
+          from: {
+            pathname: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+            returnParams: { showConfig: true }
+          }
         }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>
