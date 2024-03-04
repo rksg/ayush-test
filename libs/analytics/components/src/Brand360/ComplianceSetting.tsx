@@ -48,9 +48,7 @@ const tooltipMsg = defineMessage({
     Regular expression should be compatible with Java standards.
     You can add one rule per line, i.e :
     {br}
-    {br}
     ^[a-zA-Z0-9]'{5}'_GUEST$
-    {br}
     {br}
     ^[a-zA-Z0-9]'{5}'_STAFF$
   `
