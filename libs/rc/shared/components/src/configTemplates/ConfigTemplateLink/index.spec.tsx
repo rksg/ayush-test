@@ -13,7 +13,7 @@ import {
   ServiceRoutePathProps,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantType, To } from '@acx-ui/react-router-dom'
+import { TenantType, To }             from '@acx-ui/react-router-dom'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import {
