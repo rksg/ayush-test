@@ -45,7 +45,6 @@ import {
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
-  useLazyGetStackMemberListQuery,
   useLazyGetSwitchListQuery,
   useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
@@ -61,7 +60,6 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
-  StackMember,
   isSameModelFamily,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
@@ -147,7 +145,6 @@ export function StackForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
   const [previousPath, setPreviousPath] = useState('')
@@ -225,33 +222,8 @@ export function StackForm () {
       }
 
       const getStackMembersList = async () => {
-        const stackMembersPayload = {
-          fields: [
-            'activeUnitId',
-            'unitId',
-            'unitStatus',
-            'name',
-            'deviceStatus',
-            'model',
-            'serialNumber',
-            'activeSerial',
-            'switchMac',
-            'ip',
-            'venueName',
-            'uptime'
-          ],
-          filters: { activeUnitId: [''] }
-        }
-
-        stackMembersPayload.filters.activeUnitId = [switchDetail?.activeSerial || '']
-        const stackMembersList = switchDetail?.activeSerial
-          ? (await getStackMemberList({
-            params: { tenantId, switchId }, payload: stackMembersPayload
-          }, false))
-          : []
-
-        const stackMembers = _.get(stackMembersList, 'data.data').map(
-          (item: { id: string; model: undefined }, index: number) => {
+        const stackMembers = switchData?.stackMembers?.map(
+          (item: { id: string; model: string }, index: number) => {
             const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
@@ -268,14 +240,10 @@ export function StackForm () {
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
                 switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
-          })
+          }) ?? []
 
-        const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
-        const syncedStackMembers
-        = stackMembers?.filter((stack: StackMember) => stackMemberIds?.includes(stack.id))
-
-        setTableData(syncedStackMembers)
-        setRowKey(syncedStackMembers?.length)
+        setTableData(stackMembers)
+        setRowKey(stackMembers?.length)
       }
 
       getStackMembersList()

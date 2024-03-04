@@ -727,7 +727,7 @@ export const checkSwitchUpdateFields = function (
   const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
   const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
 
-  return Object.keys(originalValues ?? {}).reduce((result: string[], key) => {
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
     if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
       return [ ...result, key ]
     }
