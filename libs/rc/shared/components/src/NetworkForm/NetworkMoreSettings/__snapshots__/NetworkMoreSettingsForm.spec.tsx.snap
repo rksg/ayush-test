@@ -1426,9 +1426,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 <label
                   class=""
                   for="wlan_advancedCustomization_clientInactivityTimeout"
-                  title="Client Inactivity Timeout:"
+                  title=""
                 >
                   Client Inactivity Timeout
+                  <svg
+                    data-testid="QuestionMarkCircleOutlined"
+                  />
                 </label>
               </div>
               <div

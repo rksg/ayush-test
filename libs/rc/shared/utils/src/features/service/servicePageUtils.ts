@@ -5,10 +5,10 @@ import { useIntl } from 'react-intl'
 import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
 
-import { LocationExtended }                                    from '../../common'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
-import { ServiceType }                                         from '../../constants'
-import { generatePageHeaderTitle }                             from '../../pages'
+import { LocationExtended }                                                               from '../../common'
+import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
+import { ServiceType }                                                                    from '../../constants'
+import { generatePageHeaderTitle }                                                        from '../../pages'
 
 import { serviceTypeLabelMapping }                                        from './contentsMap'
 import { ServiceOperation, getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
@@ -45,9 +45,13 @@ export function useServiceListBreadcrumb (type: ServiceType) {
   return breadcrumb
 }
 
-export function useServicePreviousPath (type: ServiceType, oper: ServiceOperation) {
-  const fallbackPath = useTenantLink(getServiceRoutePath({ type, oper }), 't')
+// eslint-disable-next-line max-len
+export function useServicePreviousPath (type: ServiceType, oper: ServiceOperation): LocationExtended['state']['from'] {
+  const { isTemplate } = useConfigTemplate()
+  const regularFallbackPath = useTenantLink(getServiceRoutePath({ type, oper }), 't')
+  const templateFallbackPath = useTenantLink(CONFIG_TEMPLATE_LIST_PATH, 'v')
+  const fallbackPath = isTemplate ? templateFallbackPath : regularFallbackPath
   const location = useLocation()
 
-  return (location as LocationExtended)?.state?.from?.pathname ?? fallbackPath
+  return (location as LocationExtended)?.state?.from ?? { pathname: fallbackPath.pathname }
 }
