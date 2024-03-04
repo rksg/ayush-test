@@ -11,9 +11,13 @@ import { formatter }                                                      from '
 import {
   useVenueDHCPPoolsQuery,
   useActivateDHCPPoolMutation,
-  useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
-import { IpUtilsService, VenueDHCPPoolInst } from '@acx-ui/rc/utils'
-import { hasAccess }                         from '@acx-ui/user'
+  useDeactivateDHCPPoolMutation,
+  useGetVenueTemplateDhcpPoolsQuery,
+  useActivateVenueTemplateDhcpPoolMutation,
+  useDeactivateVenueTemplateDhcpPoolMutation
+} from '@acx-ui/rc/services'
+import { IpUtilsService, VenueDHCPPoolInst, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { hasAccess }                                                                                                from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
@@ -23,15 +27,16 @@ export default function VenuePoolTable (){
 
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
+  const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>(
+    useVenueDHCPPoolsQuery, useGetVenueTemplateDhcpPoolsQuery
+  )
 
-  const venueDHCPPools = useVenueDHCPPoolsQuery({
-    params
-  })
-
-
-  const [activateDHCPPool] = useActivateDHCPPoolMutation()
-  const [deactivateDHCPPool] = useDeactivateDHCPPoolMutation()
-
+  const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher(
+    useActivateDHCPPoolMutation, useActivateVenueTemplateDhcpPoolMutation
+  )
+  const [deactivateDHCPPool] = useConfigTemplateMutationFnSwitcher(
+    useDeactivateDHCPPoolMutation, useDeactivateVenueTemplateDhcpPoolMutation
+  )
 
   const setActivePool = async (dhcppoolId:string, active:boolean)=>{
 

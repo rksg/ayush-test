@@ -83,7 +83,7 @@ describe('DHCPForm', () => {
 
     fillInBeforeSettings('DhcpConfigServiceProfile1')
 
-    await screen.findByRole('heading', { level: 1, name: 'Add DHCP for Wi-Fi Service' })
+    await screen.findByRole('heading', { level: 1, name: 'Add DHCP for Wi-Fi' })
 
     await userEvent.click(screen.getByRole('radio',{ name: /Simple DHCP/ } ) )
     expect(screen.queryByText('Add DHCP Pool')).toBeVisible()
@@ -118,7 +118,7 @@ describe('DHCPForm', () => {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'DHCP'
+      name: 'DHCP for Wi-Fi'
     })).toBeVisible()
   })
 
