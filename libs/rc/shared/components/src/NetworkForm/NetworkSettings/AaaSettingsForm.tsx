@@ -19,8 +19,11 @@ import { Features, useIsSplitOn }                       from '@acx-ui/feature-to
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   AAAWlanSecurityEnum,
+  MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
-  WlanSecurityEnum
+  WifiNetworkMessages,
+  WlanSecurityEnum,
+  macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
 import AAAInstance                 from '../AAAInstance'
@@ -49,7 +52,9 @@ export function AaaSettingsForm () {
         authRadiusId: data.authRadiusId,
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
-          managementFrameProtection: data.wlan?.managementFrameProtection
+          managementFrameProtection: data.wlan?.managementFrameProtection,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macAuthMacFormat: data.wlan?.macAuthMacFormat
         }
       })
     }
@@ -165,9 +170,21 @@ function SettingsForm () {
     const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = useWatch('enableAccountingService', form)
-    const enableMacAuthentication = useWatch('macAddressAuthentication', form)
+    const enableMacAuthentication = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
+    const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
+    }
+    const onMacAuthChange = (checked: boolean) => {
+      setData && setData({
+        ...data,
+        ...{
+          wlan: {
+            ...data?.wlan,
+            macAddressAuthentication: checked
+          }
+        }
+      })
     }
 
     const proxyServiceTooltip = <Tooltip
@@ -178,14 +195,12 @@ function SettingsForm () {
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
       })}
     />
-    const macAuthenticationTooltip = <Tooltip
-      placement='bottom'
-      children={<QuestionMarkCircleOutlined />}
-      title={$t({
-        // eslint-disable-next-line max-len
-        defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
-      })}
-    />
+    const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
+      <Option key={key}>
+        { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
+      </Option>
+    ))
+
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
@@ -231,16 +246,38 @@ function SettingsForm () {
             </>
           )}
         </div>
+        {support8021xMacAuth &&
         <div>
-          <Subtitle level={3}>{ $t({ defaultMessage: 'MAC Authentication' }) }</Subtitle>
-          {macAuthenticationTooltip}
-          <Form.Item
-            name='macAddressAuthentication'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch onChange={(value)=>onProxyChange(value,'macAddressAuthentication')}/>}
-          />
+          <Form.Item>
+            <Form.Item>
+              <label htmlFor={'macAuth8021x'}>{$t({ defaultMessage: 'MAC Authentication' })}</label>
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+                placement='bottom'
+              />
+            </Form.Item>
+            <Form.Item noStyle
+              name={['wlan', 'macAddressAuthentication']}
+              valuePropName='checked'>
+              <Switch id={'macAuth8021x'}
+                disabled={editMode}
+                onChange={onMacAuthChange}
+              />
+            </Form.Item>
+          </Form.Item>
+          {enableMacAuthentication &&
+            <Form.Item
+              label={$t({ defaultMessage: 'MAC Address Format' })}
+              name={['wlan', 'macAuthMacFormat']}
+              initialValue={MacAuthMacFormatEnum.UpperDash}
+            >
+              <Select>
+                {macAuthOptions}
+              </Select>
+            </Form.Item>
+          }
         </div>
+        }
       </Space>
     )
   }

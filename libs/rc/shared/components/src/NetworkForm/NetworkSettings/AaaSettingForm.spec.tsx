@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 
@@ -18,7 +19,9 @@ import {
   networkDeepResponse,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
-import { NetworkForm } from '../NetworkForm'
+import { MLOContext, NetworkForm } from '../NetworkForm'
+
+import { AaaSettingsForm } from './AaaSettingsForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -136,5 +139,23 @@ describe('NetworkForm', () => {
     await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa.png')
+  })
+
+  it('should render AAA Network successfully with mac address format', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))
+    expect(await screen.findByText(/MAC Address Format/i)).toBeInTheDocument()
+    expect(await screen.findByText('AA-BB-CC-DD-EE-FF')).toBeVisible()
   })
 })
