@@ -278,6 +278,6 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/v/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab')).toHaveLength(1)
+    expect(screen.getAllByRole('tab')).toHaveLength(2)
   })
 })
