@@ -255,14 +255,14 @@ function SettingsForm () {
                 title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
                 placement='bottom'
               />
-            </Form.Item>
-            <Form.Item noStyle
-              name={['wlan', 'macAddressAuthentication']}
-              valuePropName='checked'>
-              <Switch id={'macAuth8021x'}
-                disabled={editMode}
-                onChange={onMacAuthChange}
-              />
+              <Form.Item noStyle
+                name={['wlan', 'macAddressAuthentication']}
+                valuePropName='checked'>
+                <Switch id={'macAuth8021x'}
+                  disabled={editMode}
+                  onChange={onMacAuthChange}
+                />
+              </Form.Item>
             </Form.Item>
           </Form.Item>
           {enableMacAuthentication &&
