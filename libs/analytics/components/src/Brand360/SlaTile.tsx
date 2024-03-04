@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Typography } from 'antd'
 import {
   meanBy,
   mean,
@@ -35,6 +36,8 @@ interface SlaTileProps {
   sliceType: SliceType
   settings: Settings
 }
+
+const { Text } = Typography
 
 export const getChartDataKey = (chartKey: ChartKey): string[] => {
   switch (chartKey) {
@@ -136,10 +139,13 @@ const TopElementsSwitcher = ({ data, chartKey }:
         }
       }
     }>
-    <div>
-      {topSortedItems.map(([key, val, ind]) =>
-        <li key={key}>{ind}. {key} ({!isNaN(val as number) ? formatter(val) : noDataDisplay})</li>)}
-    </div>
+    <UI.ListContainer>
+      {topSortedItems.map(([key, val, ind]) => <li key={key}>
+        <Text ellipsis={{ suffix: ` (${!isNaN(val as number) ? formatter(val) : noDataDisplay})` }}>
+          {ind}. {key}
+        </Text>
+      </li>)}
+    </UI.ListContainer>
     {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
 }
