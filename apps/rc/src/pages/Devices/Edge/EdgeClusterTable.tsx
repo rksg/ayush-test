@@ -82,8 +82,6 @@ export const EdgeClusterTable = () => {
       key: 'clusterStatus',
       dataIndex: 'clusterStatus',
       sorter: true,
-      filterable: venueOptions,
-      filterKey: 'clusterStatus',
       render: (_, row) => {
         return row.clusterStatus && getClusterStatus(row)
       }

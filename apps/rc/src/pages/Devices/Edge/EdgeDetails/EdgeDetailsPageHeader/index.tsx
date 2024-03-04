@@ -122,7 +122,7 @@ export const EdgeDetailsPageHeader = () => {
     <PageHeader
       title={currentEdge?.name || ''}
       titleExtra={
-        <Row>
+        <Row gutter={[5,0]}>
           <Col>
             <EdgeStatusLight data={status} showText={!currentEdgeOperational}/>
           </Col>
