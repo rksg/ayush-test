@@ -190,13 +190,16 @@ export const getAirtimeBusyRecommendations = (
 
 const airtimeRxAllFalseChecks = [
   'isHighDensityWifiDevices',
-  'isLargeMgmtFrameCount',
+  ['isLargeMgmtFrameCount', 'isHighSsidCountPerRadio'],
   'isCRRMRaised',
   'isHighLegacyWifiDevicesCount'
 ]
+
 const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0 || (checkTrue.length === 1 && checkTrue[0] === 'isLargeMgmtFrameCount')
+  const allFalse = airtimeRxAllFalseChecks
+    .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
+    .length === 0
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
@@ -235,7 +238,9 @@ const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
 }
 const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0 || (checkTrue.length === 1 && checkTrue[0] === 'isLargeMgmtFrameCount')
+  const allFalse = airtimeRxAllFalseChecks
+    .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
+    .length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
   const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
   const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>

@@ -1,6 +1,6 @@
 import { useImperativeHandle, useMemo, forwardRef, useState } from 'react'
 
-import _                          from 'lodash'
+import { isNil, merge, find }     from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -43,7 +43,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
     const params = useParams()
     const { $t } = useIntl()
     const [networkModalVisible, setNetworkModalVisible] = useState(false)
-
     const { networkList, isLoading, isFetching } = useVenueNetworkActivationsDataListQuery({
       params: { ...params },
       payload: {
@@ -54,9 +53,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         fields: [
           'id',
           'name',
-          'type',
-          'owePairNetworkId',
-          'dsaeOnboardNetwork'
+          'type'
         ]
       }
     }, {
@@ -117,13 +114,17 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
       align: 'center' as AlignType,
       width: 120,
       render: (_: unknown, row: NetworkSaveData) => {
+        const isVlanPooling = !isNil(row.wlan?.advancedCustomization?.vlanPool)
         return row.type === NetworkTypeEnum.CAPTIVEPORTAL
           ? <ActivateNetworkSwitchButtonP2
             fieldName='activatedGuestNetworks'
             row={row}
             rows={networkList!}
             activated={activatedGuest ?? []}
-            disabled={hasAccess() === false}
+            disabled={hasAccess() === false || isVlanPooling}
+            tooltip={isVlanPooling
+              ? $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+              : undefined}
             onChange={onActivateChange}
           />
           : ''
@@ -149,12 +150,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         ]}>
           <Table
             rowKey='id'
-            columns={_.mergeWith(defaultColumns, columnsSetting, (obj, src) => {
-              const { key, ...srcOtherProps } = src
-              if(obj.key === src.key) {
-                return { ...obj, ...srcOtherProps }
-              }
-            })}
+            columns={defaultColumns.map(item => merge(item,
+              find(columnsSetting, { key: item.key })))}
             dataSource={networkList}
             actions={filterByAccess(actions)}
           />
