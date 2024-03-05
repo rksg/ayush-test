@@ -19,7 +19,7 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { MspEc }                                                         from '@acx-ui/msp/utils'
+import { MspEcWithVenue }                                                from '@acx-ui/msp/utils'
 import { useGetOnePrivilegeGroupQuery, useUpdatePrivilegeGroupMutation } from '@acx-ui/rc/services'
 import { PrivilegeGroup, Venue }                                         from '@acx-ui/rc/utils'
 import {
@@ -80,7 +80,7 @@ export function EditPrivilegeGroup () {
   const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
   const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
   const [selectedVenus, setVenues] = useState([] as Venue[])
-  const [selectedCustomers, setCustomers] = useState([] as MspEc[])
+  const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
 
   const navigate = useNavigate()
@@ -108,7 +108,7 @@ export function EditPrivilegeGroup () {
     setVenues(selected)
   }
 
-  const setSelectedCustomers = (selected: MspEc[]) => {
+  const setSelectedCustomers = (selected: MspEcWithVenue[]) => {
     setCustomers(selected)
   }
 

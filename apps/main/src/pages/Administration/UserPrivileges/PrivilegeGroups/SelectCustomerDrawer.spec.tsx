@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { MspEc }                  from '@acx-ui/msp/utils'
+import { MspEcWithVenue }         from '@acx-ui/msp/utils'
 import { Provider }               from '@acx-ui/store'
 import { render, screen, within } from '@acx-ui/test-utils'
 
@@ -14,7 +14,8 @@ const customerList = {
     {
       id: '3756dcf148c2473ba0c3dd8b811a9bcd',
       name: 'AC Hotel Atlanta Airport Gateway',
-      entitlements: []
+      entitlements: [],
+      children: [{ name: 'Venue A', id: 'AAA', selected: false }]
     },
     {
       id: '07da017483044526875ae33acbd0117e',
@@ -44,14 +45,16 @@ const customerList = {
       edgeLicenses: 0,
       apSwLicenses: 50,
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      children: [{ name: 'Venue B', id: 'BB', selected: false }]
     },
     {
       id: '5d4b605aa0604241b2cd7a238b7d5c56',
       name: 'int 1',
       entitlements: [],
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      children: [{ name: 'Venue C', id: 'CCC', selected: false }]
     },
     {
       id: '3f8dd5028b0f4a9da61a0d69c50405b6',
@@ -81,7 +84,8 @@ const customerList = {
       edgeLicenses: 0,
       apSwLicenses: 50,
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      children: [{ name: 'Venue D', id: 'DDD', selected: false }]
     },
     {
       id: '4378c5e5cddb483594cca0a48a74007a',
@@ -111,7 +115,8 @@ const customerList = {
       edgeLicenses: 0,
       apSwLicenses: 50,
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      children: [{ name: 'Venue E', id: 'EEE', selected: false }]
     },
     {
       id: 'de2dae3028ac40d39c08221bf24a191c',
@@ -141,7 +146,8 @@ const customerList = {
       edgeLicenses: 0,
       apSwLicenses: 50,
       installerCount: 0,
-      integratorCount: 0
+      integratorCount: 0,
+      children: [{ name: 'Venue F', id: 'FFF', selected: false }]
     }
   ]
 }
@@ -149,11 +155,13 @@ const selectedCustomers =
 [
   {
     id: '3756dcf148c2473ba0c3dd8b811a9bcd',
-    name: 'AC Hotel Atlanta Airport Gateway'
+    name: 'AC Hotel Atlanta Airport Gateway',
+    children: [{ name: 'Venue A', id: 'AAA', selected: true }]
   },
   {
     id: '07da017483044526875ae33acbd0117e',
-    name: 'Amy'
+    name: 'Amy',
+    children: [{ name: 'Venue B', id: 'BBB', selected: true }]
   }
 ]
 
@@ -162,7 +170,7 @@ const services = require('@acx-ui/msp/services')
 describe('SelectCustomerDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    services.useMspCustomerListQuery = jest.fn().mockImplementation(() => {
+    services.useGetMspEcWithVenuesListQuery = jest.fn().mockImplementation(() => {
       return { data: customerList }
     })
     params = {
@@ -194,7 +202,6 @@ describe('SelectCustomerDrawer', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(customerList.data.length)
-
   })
   it('should load data correctly', async () => {
     render(
@@ -203,7 +210,7 @@ describe('SelectCustomerDrawer', () => {
           visible={true}
           setVisible={jest.fn()}
           setSelected={jest.fn()}
-          selected={selectedCustomers as MspEc[]} />
+          selected={selectedCustomers as MspEcWithVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/userPrivileges/privilegeGroups/create' }
       })
@@ -244,7 +251,7 @@ describe('SelectCustomerDrawer', () => {
           visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          selected={selectedCustomers as MspEc[]} />
+          selected={selectedCustomers as MspEcWithVenue[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/userPrivileges/privilegeGroups/create' }
       })
@@ -252,8 +259,8 @@ describe('SelectCustomerDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(customerList.data.length + 1)
-    await userEvent.click(checkboxes.at(1)!)
-    await userEvent.click(checkboxes.at(2)!)
+    await userEvent.click(checkboxes[1])
+    await userEvent.click(checkboxes[2])
 
     await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
 
@@ -276,7 +283,7 @@ describe('SelectCustomerDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
     // expect(checkboxes).toHaveLength(3)
-    await userEvent.click(checkboxes.at(1)!)
+    await userEvent.click(checkboxes[1])
     await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
 
     expect(mockedSetSelected).toHaveBeenCalledTimes(1)

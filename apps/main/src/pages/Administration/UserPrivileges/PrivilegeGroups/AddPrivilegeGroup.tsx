@@ -132,7 +132,7 @@ export function AddPrivilegeGroup () {
         const policyEntities = [] as PrivilegePolicyEntity[]
         let venueList = {} as VenueObjectList
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
-          const venueIds = ec.children?.map(venue => venue.id)
+          const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
             tenantId: ec.id,
@@ -175,11 +175,12 @@ export function AddPrivilegeGroup () {
   }
 
   const DisplaySelectedCustomers = () => {
-    const fisrtCustomer = selectedCustomers[0]
+    const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
     return <>
-      <UI.VenueList key={fisrtCustomer.id}>
-        {fisrtCustomer.name}
+      <UI.VenueList key={firstCustomer.id}>
+        {firstCustomer.name} ({firstCustomer.children.filter(v => v.selected).length}
+        {firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -188,7 +189,8 @@ export function AddPrivilegeGroup () {
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name}
+          {ec.name} ({ec.children.filter(v => v.selected).length}
+          {ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
         </UI.VenueList>
       )}
     </>

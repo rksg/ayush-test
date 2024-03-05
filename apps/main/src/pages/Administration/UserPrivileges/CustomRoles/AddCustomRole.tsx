@@ -254,10 +254,10 @@ export function AddCustomRole () {
     return <div >
       <UI.FieldLabelPermission width='270'>
         <label></label>
-        <label>Read</label>
-        <label>Create</label>
-        <label>Update</label>
-        <label>Delete</label>
+        <label>{intl.$t({ defaultMessage: 'Read' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Create' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Update' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Delete' })}</label>
       </UI.FieldLabelPermission>
 
       <UI.FieldLabelAttributes width='660'>

@@ -886,7 +886,9 @@ const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
     }
     if (ecVenues[item.id]) {
       const tmpV = _.cloneDeep(ecVenues[item.id])
-      tmp.children = tmpV
+      tmp.children = tmpV.map(venue => {
+        return { ...venue, selected: false }
+      })
     }
     data.push(tmp)
   })

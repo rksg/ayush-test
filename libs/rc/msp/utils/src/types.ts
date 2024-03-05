@@ -455,10 +455,10 @@ export enum MspEcTierEnum {
 }
 
 export interface MspEcWithVenue extends MspEc {
-  allVenues?: boolean,
   isFirstLevel?: boolean,
-  children?: {
+  children: {
     name: string,
-    id: string
+    id: string,
+    selected: boolean
   }[]
 }

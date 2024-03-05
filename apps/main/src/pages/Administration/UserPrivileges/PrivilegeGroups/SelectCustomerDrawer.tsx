@@ -40,8 +40,9 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
 
   function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
-    const selectedVenueIds = selected.map(venue => venue.id)
-    const allVenueIds = mspEcs.flatMap(ec => ec.children?.map(venue => venue.id))
+    const selectedVenueIds = selected.flatMap(ec => ec.children).filter(venue => venue.selected)
+      .map(venue => venue.id)
+    const allVenueIds = mspEcs.flatMap(ec => ec.children.map(venue => venue.id))
     return selectedVenueIds.filter(id => allVenueIds.includes(id))
   }
 
@@ -67,15 +68,20 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
-    const selVenues = selectedRows.filter(item => !item.isFirstLevel)
-    // customerList?.data.forEach(item => {
-    //   const vvv = selVenues.filter(venue => item.children?.includes(venue))
-    //   if (vvv) {
-    //     const tmpV = _.cloneDeep(item)
-    //     tmpV.children = []
-    //   }
-    // })
-    return selVenues
+    const selVenueIds = selectedRows.filter(item => !item.isFirstLevel).map(venue => venue.id)
+    const ecsWithSelVenues: MspEcWithVenue[] = customerList?.data.filter(ec =>
+      ec.children.some(venue => selVenueIds.includes(venue.id))) ?? []
+    return ecsWithSelVenues.map(ec => {
+      return {
+        ...ec,
+        children: ec.children.map(venue => {
+          return {
+            ...venue,
+            selected: selVenueIds.includes(venue.id)
+          }
+        })
+      }
+    })
   }
 
   const columns: TableProps<MspEcWithVenue>['columns'] = [
