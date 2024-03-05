@@ -19,8 +19,8 @@ const networkList = {
   page: 1,
   data: [{
     id: 'ebcccef6b366415dbb85073e5aa7248c',
-    name: 'openNetwork1',
-    nwSubType: 'open',
+    name: 'hotspot20Network1',
+    nwSubType: 'aaa',
     venueApGroups: [{
       venueId: '9db255d7fea84757b06d349acf816999',
       apGroupIds: [
@@ -31,8 +31,8 @@ const networkList = {
   },
   {
     id: '697e24a3cc2949eaae2f825b90469b52',
-    name: 'openNetwork2',
-    nwSubType: 'open',
+    name: 'hotspot20Network2',
+    nwSubType: 'aaa',
     venueApGroups: [{
       venueId: '9db255d7fea84757b06d349acf816999',
       apGroupIds: [

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                              from '@acx-ui/components'
-import { useGetWifiOperatorListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
-import { WifiNetwork, useTableQuery }                           from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
-
-import { SimpleListTooltip } from '../../../../../../../libs/rc/shared/components/src/SimpleListTooltip'
+import { Card, Table, TableProps }                                  from '@acx-ui/components'
+import { SimpleListTooltip }                                        from '@acx-ui/rc/components'
+import { useGetWifiOperatorListQuery, useWifiNetworkListQuery }     from '@acx-ui/rc/services'
+import { NetworkType, NetworkTypeEnum, WifiNetwork, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                    from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   fields: [
@@ -53,7 +52,11 @@ const WifiOperatorNetworkDetail = () => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      key: 'nwSubType'
+      key: 'nwSubType',
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
+        row={row}
+      />
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
