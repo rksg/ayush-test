@@ -16,6 +16,7 @@ import {
   partialDpskNetworkEntity,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
@@ -66,7 +67,14 @@ describe('DpskSettingsForm', () => {
   it('should render Cloudpath Server form successfully', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -78,14 +86,14 @@ describe('DpskSettingsForm', () => {
   it('should render edit form with DPSK service profile', async () => {
     render(
       <Provider>
-        <NetworkFormContext.Provider value={{
-          editMode: true,
-          cloneMode: false,
-          data: partialDpskNetworkEntity,
-          setData: jest.fn()
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
         }}>
-          <Form><DpskSettingsForm /></Form>
-        </NetworkFormContext.Provider>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -98,7 +106,14 @@ describe('DpskSettingsForm', () => {
   it('should display DPSK service detail when select the dropdown list', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -115,7 +130,14 @@ describe('DpskSettingsForm', () => {
   it('should open the Add DPSK Service modal', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -142,7 +164,14 @@ describe('DpskSettingsForm', () => {
           data: { ...partialDpskNetworkEntity, enableAuthProxy: true },
           setData: jest.fn()
         }}>
-          <Form><DpskSettingsForm /></Form>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn
+          }}>
+            <Form>
+              <DpskSettingsForm />
+            </Form>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
