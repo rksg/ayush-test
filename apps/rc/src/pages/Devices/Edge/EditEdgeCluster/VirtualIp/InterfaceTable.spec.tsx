@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { EdgeGeneralFixtures, EdgeStatus, EdgeSubInterfaceFixtures } from '@acx-ui/rc/utils'
+import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeStatus } from '@acx-ui/rc/utils'
 import {
   render,
   screen
@@ -8,7 +8,7 @@ import {
 import { InterfaceTable } from './InterfaceTable'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgeSubInterfaceFixtures
+const { mockLanInterfaces } = EdgePortConfigFixtures
 
 const mockSelectedInterface = Object.fromEntries(Object.entries(mockLanInterfaces)
   .map(([k, v]) => [k, v[0]]))

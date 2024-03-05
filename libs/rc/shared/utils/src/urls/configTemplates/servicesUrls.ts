@@ -25,5 +25,35 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/dpskServices/query',
     newApi: true
+  },
+  addDhcp: {
+    method: 'post',
+    url: '/templates/dhcpConfigServiceProfiles',
+    newApi: true
+  },
+  getDhcpList: {
+    method: 'get',
+    url: '/templates/dhcpConfigServiceProfiles',
+    newApi: true
+  },
+  updateDhcp: {
+    method: 'put',
+    url: '/templates/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  getDhcp: {
+    method: 'get',
+    url: '/templates/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deleteDhcp: {
+    method: 'delete',
+    url: '/templates/dhcpConfigServiceProfiles/:templateId',
+    newApi: true
+  },
+  getEnhancedDhcpList: {
+    method: 'post',
+    url: '/templates/enhancedDhcpConfigServiceProfiles/query',
+    newApi: true
   }
 }
