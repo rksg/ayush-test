@@ -4,6 +4,7 @@ import {
   Form,
   Input
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -191,7 +192,10 @@ export function AddCustomRole () {
     // wi-fi
     const OnWifiAttributeChange = (checked: boolean) => {
       setWifiAttribute(checked)
-      wifiScopes.map(item => form.setFieldValue(item, checked))
+      form.setFieldsValue(_.reduce(wifiScopes , (obj, item) => {
+        obj[item] = checked
+        return obj
+      }, {} as Record<WifiAttributeProfile, boolean>))
     }
 
     const OnWifiReadChange = (checked: boolean) => {
@@ -212,7 +216,10 @@ export function AddCustomRole () {
     // switch
     const OnWiredAttributeChange = (checked: boolean) => {
       setWiredAttribute(checked)
-      switchScopes.map(item => form.setFieldValue(item, checked))
+      form.setFieldsValue(_.reduce(switchScopes , (obj, item) => {
+        obj[item] = checked
+        return obj
+      }, {} as Record<SwitchAttributeProfile, boolean>))
     }
 
     const OnWiredReadChange = (checked: boolean) => {
@@ -233,7 +240,10 @@ export function AddCustomRole () {
     // smart edge
     const OnSmartEdgeAttributeChange = (checked: boolean) => {
       setSmartedgeAttribute(checked)
-      edgeScopes.map(item => form.setFieldValue(item, checked))
+      form.setFieldsValue(_.reduce(edgeScopes , (obj, item) => {
+        obj[item] = checked
+        return obj
+      }, {} as Record<EdgeAttributeProfile, boolean>))
     }
 
     const OnSmartEdgeReadChange = (checked: boolean) => {

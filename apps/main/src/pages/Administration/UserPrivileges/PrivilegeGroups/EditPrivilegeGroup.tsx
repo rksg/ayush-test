@@ -173,11 +173,12 @@ export function EditPrivilegeGroup () {
   }
 
   const DisplaySelectedCustomers = () => {
-    const fisrtCustomer = selectedCustomers[0]
+    const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
     return <>
-      <UI.VenueList key={fisrtCustomer.id}>
-        {fisrtCustomer.name}
+      <UI.VenueList key={firstCustomer.id}>
+        {firstCustomer.name} ({firstCustomer.children.filter(v => v.selected).length}
+        {firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -186,7 +187,8 @@ export function EditPrivilegeGroup () {
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name}
+          {ec.name} ({ec.children.filter(v => v.selected).length}
+          {ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
         </UI.VenueList>
       )}
     </>
