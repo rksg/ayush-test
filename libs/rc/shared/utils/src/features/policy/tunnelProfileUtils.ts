@@ -26,7 +26,7 @@ export const getVxlanDefaultTunnelProfileOpt = () => {
   const tenantId = getTenantId()
   return {
     value: tenantId ?? '',
-    label: 'Default'
+    label: 'Default tunnel profile (PIN)'
   }
 }
 

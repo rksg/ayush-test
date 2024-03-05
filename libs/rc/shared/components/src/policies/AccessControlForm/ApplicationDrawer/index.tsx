@@ -61,7 +61,8 @@ export interface ApplicationDrawerProps {
   isOnlyViewMode?: boolean,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 export interface ApplicationsRule {
@@ -158,7 +159,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [localEditMode, setLocalEdiMode] = useState(
@@ -418,6 +420,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
   const handleAddApplicationsRule = () => {
@@ -575,6 +578,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         children={<></>}
       />
       {isOnlyViewMode && !editMode.isEdit ? <Table
+        rowKey='ruleName'
         columns={basicColumns}
         dataSource={applicationsRuleList as ApplicationsRule[]}
       /> : <Table

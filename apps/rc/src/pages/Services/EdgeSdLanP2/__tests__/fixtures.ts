@@ -75,13 +75,18 @@ export const mockDeepNetworkList = {
 }
 
 export const mockedNetworkViewData = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
-      id: '8e22159cfe264ac18d591ea492fbc05a',
-      name: 'amyNetwork',
-      nwSubType: 'dpsk'
+      id: 'network_1',
+      name: 'dpskNetwork',
+      nwSubType: NetworkTypeEnum.DPSK
+    },
+    {
+      id: 'network_4',
+      name: 'guestNetwork1',
+      nwSubType: NetworkTypeEnum.CAPTIVEPORTAL
     }
   ]
 }

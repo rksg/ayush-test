@@ -13,8 +13,8 @@ import {
   venueDetailHeaderData,
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup,
-  serviceProfile
+  serviceProfile,
+  venueNetworkApGroupData
 } from '../__tests__/fixtures'
 
 import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
@@ -86,7 +86,7 @@ describe('VenueDetails', () => {
         (req, res, ctx) => res(ctx.json(data))
       ),
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
@@ -95,7 +95,11 @@ describe('VenueDetails', () => {
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
       ),
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,
@@ -274,6 +278,6 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/v/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab')).toHaveLength(1)
+    expect(screen.getAllByRole('tab')).toHaveLength(2)
   })
 })

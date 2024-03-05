@@ -1,8 +1,8 @@
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
-import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeMessages, DHCPProfileAps }                           from '@acx-ui/rc/utils'
+import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery, useGetVenueTemplateDhcpProfileQuery, useGetDhcpTemplateQuery } from '@acx-ui/rc/services'
+import { DHCPConfigTypeMessages, DHCPProfileAps, DHCPSaveData, VenueDHCPProfile, useConfigTemplate, useConfigTemplateQueryFnSwitcher }    from '@acx-ui/rc/utils'
 
 const defaultApPayload = {
   fields: ['serialNumber', 'name', 'venueId'],
@@ -10,19 +10,25 @@ const defaultApPayload = {
 }
 
 export default function useDHCPInfo () {
-
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
 
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params
-  })
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
+    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
+  )
 
-  const { data: apList } = useApListQuery({ params, payload: defaultApPayload })
+  // eslint-disable-next-line max-len
+  const { data: apList } = useApListQuery({ params, payload: defaultApPayload }, { skip: isTemplate })
 
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
-  const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId||'' }
-  }, { skip: !venueDHCPProfile?.serviceProfileId })
+
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
+    useGetDHCPProfileQuery,
+    useGetDhcpTemplateQuery,
+    !venueDHCPProfile?.serviceProfileId,
+    undefined,
+    { serviceId: venueDHCPProfile?.serviceProfileId }
+  )
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
   if(venueDHCPProfile?.dhcpServiceAps){

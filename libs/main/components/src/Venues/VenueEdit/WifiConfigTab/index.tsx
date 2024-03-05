@@ -2,9 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useNavigate, useParams }       from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
@@ -18,7 +19,7 @@ export function WifiConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${params.venueId}/edit/wifi/`)
+  const basePath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/wifi/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const onTabChange = (tab: string) => {

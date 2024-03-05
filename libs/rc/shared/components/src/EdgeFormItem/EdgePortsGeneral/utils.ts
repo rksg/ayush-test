@@ -1,26 +1,7 @@
-import { EdgeLag, EdgePort, EdgePortTypeEnum, isSubnetOverlap } from '@acx-ui/rc/utils'
+import { EdgeLag, EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 export const INNER_PORT_FORM_ID_PREFIX = 'port_'
 export const getInnerPortFormID = (index: number | string) => `${INNER_PORT_FORM_ID_PREFIX}${index}`
-
-export async function lanPortsubnetValidator (
-  currentSubnet: { ip: string, subnetMask: string },
-  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
-) {
-  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
-    return
-  }
-
-  for(let item of allSubnetWithoutCurrent) {
-    try {
-      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
-        item.ip, item.subnetMask)
-    } catch (error) {
-      return Promise.reject(error)
-    }
-  }
-  return Promise.resolve()
-}
 
 export const getEnabledCorePortInfo = (portsData: EdgePort[], lagData: EdgeLag[]) : {
     key: string | undefined,

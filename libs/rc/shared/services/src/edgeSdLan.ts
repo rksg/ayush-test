@@ -14,7 +14,8 @@ import {
   EdgeStatus,
   EdgeSdLanViewDataP2,
   EdgeSdLanSettingP2,
-  EdgeSdLanActivateNetworkPayload
+  EdgeSdLanActivateNetworkPayload,
+  EdgeSdLanToggleDmzPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -301,11 +302,49 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanNetwork, params)
         return { ...req, body: payload }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'Activate network'
+                && msg.steps?.find((step) =>
+                  (step.id === 'Activate network'))?.status !== 'IN_PROGRESS') {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
       }
     }),
     deactivateEdgeSdLanNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork, params)
+        return { ...req, body: payload }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (response && msg.useCase === 'Deactivate network'
+                && msg.steps?.find((step) =>
+                  (step.id === 'Deactivate network'))?.status !== 'IN_PROGRESS') {
+              (requestArgs.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    toggleEdgeSdLanDmz: build.mutation<CommonResult, RequestPayload<EdgeSdLanToggleDmzPayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.toggleEdgeSdLanDmz, params)
+        return { ...req, body: payload }
+      }
+    }),
+    getEdgeSdLanIsDmz: build.query<EdgeSdLanToggleDmzPayload, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz, params)
         return { ...req, body: payload }
       }
     })
@@ -329,5 +368,7 @@ export const {
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useDeactivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
-  useDeactivateEdgeSdLanNetworkMutation
+  useDeactivateEdgeSdLanNetworkMutation,
+  useGetEdgeSdLanIsDmzQuery,
+  useToggleEdgeSdLanDmzMutation
 } = edgeSdLanApi

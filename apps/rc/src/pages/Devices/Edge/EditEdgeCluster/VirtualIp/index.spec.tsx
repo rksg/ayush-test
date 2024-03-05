@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                                                                               from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                       from '@acx-ui/store'
+import { edgeApi }                                                                             from '@acx-ui/rc/services'
+import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,7 +16,7 @@ import {
 import { VirtualIp } from '.'
 
 const { mockEdgeClusterList, mockEdgeCluster } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgeSubInterfaceFixtures
+const { mockLanInterfaces } = EdgePortConfigFixtures
 
 const mockedFinishFn = jest.fn()
 
@@ -94,7 +94,7 @@ describe('Edit Edge Cluster - VirtualIp', () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>
@@ -111,7 +111,7 @@ describe('Edit Edge Cluster - VirtualIp', () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>
@@ -129,7 +129,7 @@ describe('Edit Edge Cluster - VirtualIp', () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>
