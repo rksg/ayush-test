@@ -139,30 +139,30 @@ const EdgeSdLanTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edgeId',
-      dataIndex: 'edgeId',
+      key: 'clusterId',
+      dataIndex: 'clusterId',
       sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
         return <TenantLink
-          to={`/devices/edge/${row.edgeId}/details/overview`}
+          to={`/devices/edge/${row.clusterId}/details/overview`}
         >
-          {row.edgeName}
+          {row.clusterName}
         </TenantLink>
       }
     },
     {
       title: $t({ defaultMessage: 'DMZ Cluster' }),
-      key: 'guestEdgeId',
-      dataIndex: 'guestEdgeId',
+      key: 'guestClusterId',
+      dataIndex: 'guestClusterId',
       sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
-        return <TenantLink
-          to={`/devices/edge/${row.guestEdgeId}/details/overview`}
+        return row.guestClusterId ? <TenantLink
+          to={`/devices/edge/${row.guestClusterId}/details/overview`}
         >
-          {row.guestEdgeName}
-        </TenantLink>
+          {row.guestClusterName}
+        </TenantLink> : ''
       }
     },
     {

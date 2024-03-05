@@ -47,15 +47,14 @@ const AddEdgeSdLanP2 = () => {
       const payload = {
         name: formData.name,
         venueId: formData.venueId,
-        edgeId: formData.edgeId,
-        corePortMac: formData.corePortMac,
+        clusterId: formData.clusterId,
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled
       } as EdgeSdLanSettingP2
 
       if (formData.isGuestTunnelEnabled) {
-        payload.guestEdgeId = formData.guestEdgeId
+        payload.guestClusterId = formData.guestClusterId
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }

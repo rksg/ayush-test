@@ -7,7 +7,6 @@ import { edgeApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
-  EdgePortConfigFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
   EdgeStatusEnum,
@@ -28,9 +27,8 @@ import { mockedVenueList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
-const { mockEdgePortConfig } = EdgePortConfigFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -77,7 +75,7 @@ describe('Edge SD-LAN form: settings', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -91,12 +89,6 @@ describe('Edge SD-LAN form: settings', () => {
         (req, res, ctx) => {
           mockedReqEdgesList(req.body)
           return res(ctx.json(mockEdgeList))
-        }
-      ),
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (_, res, ctx) => {
-          return res(ctx.json(mockEdgePortConfig))
         }
       )
     )
@@ -144,17 +136,17 @@ describe('Edge SD-LAN form: settings', () => {
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
       '0000000005')
-    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeName', 'Smart Edge 5')
+    expect(mockedSetFieldValue).toBeCalledWith('guestClusterName', 'Smart Edge 5')
   })
 
   it('should query specific venue and edge when edit mode', async () => {
     const expectedVenueId = 'venue_00005'
-    const expectedEdgeId = '0000000005'
+    const expectedClusterId = '0000000005'
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('venueId', expectedVenueId)
-      form.setFieldValue('edgeId', expectedEdgeId)
+      form.setFieldValue('clusterId', expectedClusterId)
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
     })
@@ -183,15 +175,11 @@ describe('Edge SD-LAN form: settings', () => {
         fields: ['name', 'serialNumber', 'venueId'],
         filters: {
           venueId: [expectedVenueId],
-          serialNumber: [expectedEdgeId],
+          serialNumber: [expectedClusterId],
           deviceStatus: Object.values(EdgeStatusEnum)
             .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
-    })
-
-    await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
     })
   })
 
@@ -227,8 +215,8 @@ describe('Edge SD-LAN form: settings', () => {
       const [ form ] = Form.useForm()
       return form
     })
-    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataList[0] }]
-    mockedSdLanDuplicateEdge[0].edgeId = mockEdgeList.data[4].serialNumber
+    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataListP2[0] }]
+    mockedSdLanDuplicateEdge[0].clusterId = mockEdgeList.data[4].serialNumber
 
     mockServer.use(
       rest.post(
@@ -282,7 +270,7 @@ const checkBasicSettings = async () => {
     .findAllByTestId('loadingIcon'))
 
   expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
-  expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
+  expect(mockedSetFieldValue).toBeCalledWith('clusterId', undefined)
 
   // select edge
   await userEvent.selectOptions(
@@ -290,8 +278,5 @@ const checkBasicSettings = async () => {
     '0000000002')
 
   // ensure related data to set into form
-  expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
-  await waitFor(() => {
-    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
-  })
+  expect(mockedSetFieldValue).toBeCalledWith('clusterName', 'Smart Edge 2')
 }

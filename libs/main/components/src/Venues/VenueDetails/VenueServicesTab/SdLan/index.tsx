@@ -86,7 +86,7 @@ const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
 
   return isEdgeSdLanPhase2Enabled
     ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
-    : <EdgeSdLan {...props}/>
+    : <EdgeSdLan data={props.data as EdgeSdLanViewData}/>
 }
 
 export default EdgeSdLanContainer

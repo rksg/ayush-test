@@ -114,7 +114,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     // display config data
     expect(await screen.findByRole('link', { name: 'Mocked_SDLAN_2' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mocked-Venue-2' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'vSE-b491' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'SE_Cluster 1' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mocked_tunnel-2' })).toBeVisible()
     screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
   })
@@ -130,7 +130,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     // display config data
     expect(await screen.findByRole('link', { name: 'Mocked_SDLAN_1' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mocked-Venue-1' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'vSE-b490' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'SE_Cluster 0' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
     screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
   })

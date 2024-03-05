@@ -5,14 +5,11 @@ import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
 import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
 import { InformationSolid }                        from '@acx-ui/icons'
 import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
-  useGetEdgeLagListQuery,
   useGetEdgeListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
-  useGetPortConfigQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -28,20 +25,19 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
-  const edgeId = Form.useWatch('edgeId', form)
-  const guestEdgeId = Form.useWatch('guestEdgeId', form)
+  const clusterId = Form.useWatch('clusterId', form)
+  const guestClusterId = Form.useWatch('guestClusterId', form)
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
-      fields: ['id', 'edgeId']
+      fields: ['id', 'clusterId']
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
         sdLanBoundEdges: (data?.data
-          ?.flatMap(item => [item.edgeId, item.guestEdgeId])
+          ?.flatMap(item => [item.clusterId, item.guestClusterId])
           .filter(val => !!val)) ?? [],
         isSdLanBoundEdgesLoading: isLoading
       })
@@ -81,7 +77,7 @@ export const SettingsForm = () => {
       ],
       filters: {
         venueId: [venueId],
-        ...(editMode && { serialNumber: [edgeId, ...(guestEdgeId ? [guestEdgeId] : [])] }),
+        ...(editMode && { serialNumber: [clusterId, ...(guestClusterId ? [guestClusterId] : [])] }),
         deviceStatus: Object.values(EdgeStatusEnum)
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
@@ -101,70 +97,23 @@ export const SettingsForm = () => {
     }
   })
 
-  // get corePort by portsConfig API
-  const { portsConfig } = useGetPortConfigQuery({
-    params: { serialNumber: edgeId }
-  }, {
-    skip: !edgeId,
-    selectFromResult: ({ data }) => {
-      return {
-        portsConfig: data?.ports
-      }
-    }
-  })
-
-  const { lagsConfig } = useGetEdgeLagListQuery({
-    params: { serialNumber: edgeId },
-    payload: {
-      page: 1,
-      pageSize: 10
-    }
-  },{
-    skip: !isEdgeLagEnabled || !edgeId,
-    selectFromResult ({ data }) {
-      return {
-        lagsConfig: data?.data
-      }
-    }
-  })
-
   // prepare venue info
   useEffect(() => {
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
   }, [venueId, venueOptions])
 
-  // prepare corePort info
-  useEffect(() => {
-    if (!portsConfig) return
-
-    // find corePort
-    let corePortMac
-    portsConfig?.forEach((port) => {
-      if (port.corePortEnabled) {
-        corePortMac = port.interfaceName
-      }
-    })
-    lagsConfig?.forEach((lag) => {
-      if (lag.corePortEnabled && lag.lagEnabled) {
-        corePortMac = lag.id
-      }
-    })
-
-    form.setFieldValue('corePortMac', corePortMac)
-  }, [portsConfig, lagsConfig])
-
   const onVenueChange = () => {
-    form.setFieldValue('edgeId', undefined)
+    form.setFieldValue('clusterId', undefined)
   }
 
   const onEdgeChange = (val: string) => {
     const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('edgeName', edgeData?.label)
+    form.setFieldValue('clusterName', edgeData?.label)
   }
 
   const onDmzEdgeChange = (val: string) => {
     const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('guestEdgeName', edgeData?.label)
+    form.setFieldValue('guestClusterName', edgeData?.label)
   }
 
   return (
@@ -218,7 +167,7 @@ export const SettingsForm = () => {
               <Row>
                 <Col span={18}>
                   <Form.Item
-                    name='edgeId'
+                    name='clusterId'
                     label={<>
                       { $t({ defaultMessage: 'Cluster' }) }
                       <Tooltip.Question
@@ -280,7 +229,7 @@ export const SettingsForm = () => {
                   return getFieldValue('isGuestTunnelEnabled')
                     ? (<>
                       <Form.Item
-                        name='guestEdgeId'
+                        name='guestClusterId'
                         label={<>
                           { $t({ defaultMessage: 'DMZ Cluster' }) }
                           <Tooltip.Question
@@ -295,7 +244,7 @@ export const SettingsForm = () => {
                       >
                         <Select
                           loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                          options={edgeOptions?.filter(item => item.value !== edgeId)}
+                          options={edgeOptions?.filter(item => item.value !== clusterId)}
                           placeholder={$t({ defaultMessage: 'Select ...' })}
                           disabled={editMode}
                           onChange={onDmzEdgeChange}

@@ -69,15 +69,14 @@ const targetPath = getServiceRoutePath({
 })
 const mockedDmzData = {
   name: 'testAddDMZSdLanService',
-  edgeId: '0000000002',
-  corePortMac: 't-coreport2-key',
+  clusterId: '0000000002',
   activatedNetworks: [{
     id: 'network_4',
     name: 'Network4'
   }],
   tunnelProfileId: 't-tunnelProfile-id',
   isGuestTunnelEnabled: true,
-  guestEdgeId: '0000000005',
+  guestClusterId: '0000000005',
   guestTunnelProfileId: 't-tunnelProfile-id-2',
   activatedGuestNetworks: [{
     id: 'network_4',
@@ -97,8 +96,7 @@ describe('Add SD-LAN service', () => {
   it('should correctly add service', async () => {
     const mockedFormData = {
       name: 'testAddSdLanService',
-      edgeId: '0000000001',
-      corePortMac: 't-coreport-key',
+      clusterId: '0000000001',
       tunnelProfileId: 't-tunnelProfile-id',
       activatedNetworks: [{
         id: 'network_1',
@@ -122,8 +120,7 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedFormData.name,
-        edgeId: mockedFormData.edgeId,
-        corePortMac: mockedFormData.corePortMac,
+        clusterId: mockedFormData.clusterId,
         tunnelProfileId: mockedFormData.tunnelProfileId,
         networkIds: mockedFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedFormData.isGuestTunnelEnabled
@@ -140,8 +137,7 @@ describe('Add SD-LAN service', () => {
   it('network is allowed to be empty', async () => {
     const mockeFormData = {
       name: 'testAddSdLanService2',
-      edgeId: '0000000002',
-      corePortMac: 't-coreport2-key',
+      clusterId: '0000000002',
       tunnelProfileId: 't-tunnelProfile2-id',
       activatedNetworks: [],
       isGuestTunnelEnabled: false
@@ -162,8 +158,7 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockeFormData.name,
-        edgeId: mockeFormData.edgeId,
-        corePortMac: mockeFormData.corePortMac,
+        clusterId: mockeFormData.clusterId,
         tunnelProfileId: mockeFormData.tunnelProfileId,
         networkIds: mockeFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockeFormData.isGuestTunnelEnabled
@@ -192,12 +187,11 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedDmzData.name,
-        edgeId: mockedDmzData.edgeId,
-        corePortMac: mockedDmzData.corePortMac,
+        clusterId: mockedDmzData.clusterId,
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         networkIds: mockedDmzData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
-        guestEdgeId: mockedDmzData.guestEdgeId,
+        guestClusterId: mockedDmzData.guestClusterId,
         guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(item => item.id),
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId
       })

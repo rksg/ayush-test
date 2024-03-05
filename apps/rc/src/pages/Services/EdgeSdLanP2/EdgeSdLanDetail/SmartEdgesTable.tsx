@@ -9,7 +9,7 @@ interface SmartEdgesTableProps {
 
 interface SmartEdgesTableData {
   id: string;
-  edgeName: string;
+  clusterName: string;
   vxlanTunnelNum?: number;
   vlanNum?: number;
 }
@@ -21,16 +21,16 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
   const tableData = [] as SmartEdgesTableData[]
   if (sdLanData) {
     tableData.push({
-      id: sdLanData.edgeId,
-      edgeName: sdLanData.edgeName!,
+      id: sdLanData.clusterId,
+      clusterName: sdLanData.clusterName!,
       vxlanTunnelNum: sdLanData.vxlanTunnelNum,
       vlanNum: sdLanData.vlanNum
     })
 
     if (sdLanData.isGuestTunnelEnabled) {
       tableData.push({
-        id: sdLanData.guestEdgeId,
-        edgeName: sdLanData.guestEdgeName!,
+        id: sdLanData.guestClusterId,
+        clusterName: sdLanData.guestClusterName!,
         vxlanTunnelNum: undefined,
         vlanNum: undefined
       })
@@ -40,8 +40,8 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
   const columns: TableProps<SmartEdgesTableData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edgeName',
-      dataIndex: 'edgeName',
+      key: 'clusterName',
+      dataIndex: 'clusterName',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
