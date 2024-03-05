@@ -173,7 +173,6 @@ function SettingsForm () {
     const enableAccountingService = useWatch('enableAccountingService', form)
     const enableMacAuthentication = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
     const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
-    const labelWidth = '516px'
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
@@ -250,16 +249,9 @@ function SettingsForm () {
         </div>
         {support8021xMacAuth &&
         <>
-          <UI.FieldLabel width={labelWidth}>
-            <Space>
-              { $t({ defaultMessage: 'MAC Authentication' }) }
-              <Tooltip.Question
-                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-                placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
-            </Space>
+          <Form.Item>
             <Form.Item
+              noStyle
               name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'>
               <Switch
@@ -268,7 +260,13 @@ function SettingsForm () {
                 data-testid='macAuth8021x'
               />
             </Form.Item>
-          </UI.FieldLabel>
+            <span>{ $t({ defaultMessage: 'MAC Authentication' }) }</span>
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px'}}
+            />
+          </Form.Item>
           {enableMacAuthentication &&
             <Form.Item
               label={$t({ defaultMessage: 'MAC Address Format' })}
