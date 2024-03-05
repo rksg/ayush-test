@@ -145,7 +145,7 @@ export function AntennaSection () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingAntTypeSettings|| isResettingAntTypeSettings
+    isFetching: isUpdatingAntTypeSettings
   }]}>
     <VenueSettingsHeader venue={venue}
       isUseVenueSettings={isUseVenueSettings}
