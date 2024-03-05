@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { edgeApi }                                                                       from '@acx-ui/rc/services'
 import { CommonOperation, Device, EdgeGeneralFixtures, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
 import { Provider, store }                                                               from '@acx-ui/store'
-import { mockServer, render, screen }                                                    from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }                                           from '@acx-ui/test-utils'
 
 import EditEdgeCluster from '.'
 
@@ -79,5 +79,47 @@ describe('Edit Edge Cluster', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('tab should be disabled when there are some non oprational nodes', async () => {
+    const mockApiFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => {
+          mockApiFn()
+          return res(ctx.json({
+            data: [
+              {
+                edgeList: [
+                  {
+                    deviceStatus: 'test'
+                  },
+                  {
+                    deviceStatus: '2_00_Operational'
+                  }
+                ]
+              }]
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <EditEdgeCluster />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    await waitFor(() => expect(mockApiFn).toBeCalledTimes(1))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Virtual IP' }).getAttribute('aria-disabled'))
+        .toBe('true'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Cluster Interface' }).getAttribute('aria-disabled'))
+        .toBe('true'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'DHCP' }).getAttribute('aria-disabled'))
+        .toBe('true'))
   })
 })
