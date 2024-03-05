@@ -469,7 +469,7 @@ export function AddCustomRole () {
             if (!form.getFieldValue(WifiAttributeProfile.READ) &&
             !form.getFieldValue(SwitchAttributeProfile.READ) &&
             !form.getFieldValue(EdgeAttributeProfile.READ)) {
-              return Promise.reject('Please select permission(s)')
+              return Promise.reject(intl.$t({ defaultMessage: 'Please select permission(s)' }))
             }
             return Promise.resolve()
           }

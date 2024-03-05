@@ -128,7 +128,6 @@ const CustomRoles = (props: CustomRolesTableProps) => {
           onOk: () => {
             deleteCustomRole({ params: { ...params, customRoleId: rows[0].id } })
               .then(clearSelection)
-            clearSelection()
           }
         })
       }
