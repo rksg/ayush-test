@@ -372,7 +372,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   resetApAntennaTypeSettings: {
-    method: 'put',
+    method: 'delete',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
