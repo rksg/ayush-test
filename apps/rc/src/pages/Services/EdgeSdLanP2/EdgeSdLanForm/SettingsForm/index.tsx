@@ -106,7 +106,7 @@ export const SettingsForm = () => {
 
   const onEdgeClusterChange = (val: string) => {
     const edgeData = clusterOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('edgeClusterrName', edgeData?.label)
+    form.setFieldValue('edgeClusterName', edgeData?.label)
   }
 
   const onDmzClusterChange = (val: string) => {

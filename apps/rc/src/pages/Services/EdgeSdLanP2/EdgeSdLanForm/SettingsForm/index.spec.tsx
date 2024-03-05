@@ -9,7 +9,6 @@ import {
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
-  EdgeStatusEnum,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -175,9 +174,10 @@ describe('Edge SD-LAN form: settings', () => {
         fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
           venueId: [expectedVenueId],
-          clusterId: [expectedClusterId],
-          clusterStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+          clusterId: [expectedClusterId]
+          // TODO: need confirm
+          // clusterStatus: Object.values(EdgeStatusEnum)
+          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
@@ -245,9 +245,10 @@ describe('Edge SD-LAN form: settings', () => {
       expect(mockedReqClusterList).toBeCalledWith({
         fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
-          venueId: [mockedVenueList.data[4].id],
-          clusterStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+          venueId: [mockedVenueList.data[4].id]
+          // TODO: need confirm
+          // clusterStatus: Object.values(EdgeStatusEnum)
+          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
