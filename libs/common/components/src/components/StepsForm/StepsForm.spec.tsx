@@ -468,7 +468,7 @@ describe('StepsForm', () => {
         <StepsForm
           customSubmit={{
             label: 'ApplyAndContinue',
-            onFinish: mockedCustomSubmitOnFinish
+            onCustomFinish: mockedCustomSubmitOnFinish
           }}
           onFinish={async () => {
             onFinish()

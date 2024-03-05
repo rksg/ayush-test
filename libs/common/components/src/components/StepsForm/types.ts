@@ -26,7 +26,7 @@ export type StepsFormProps <T = any> = Omit<
 
   customSubmit?: {
     label: string,
-    onFinish: (values: T) => Promise<boolean | void>
+    onCustomFinish: (values: T) => Promise<boolean | void>
   }
 
   alert?: {

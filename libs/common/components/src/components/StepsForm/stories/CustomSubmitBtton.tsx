@@ -28,7 +28,7 @@ export function CustomSubmitBtton () {
       }}
       customSubmit={{
         label: editMode?'Apply & Continue':'Add & Continue',
-        onFinish: async () => {
+        onCustomFinish: async () => {
           await wait(1000)
           showToast({ type: 'success', content: 'customSubmitButton submitted' })
         }

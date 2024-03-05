@@ -42,7 +42,7 @@ type UseStepsFormParam <T> = Omit<
 
   customSubmit?: {
     label: string,
-    onFinish: (values: T) => Promise<boolean | void>
+    onCustomFinish: (values: T) => Promise<boolean | void>
   }
 
   alert?: {
@@ -65,6 +65,9 @@ export function useStepsForm <T> ({
   const { $t } = useIntl()
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  // states for customSubmit
+  const [customSubmitLoading, setCustomSubmitLoading] = useState(false)
+  const [customSubmitting, setCustomSubmitting] = useState(false)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
@@ -74,19 +77,23 @@ export function useStepsForm <T> ({
   const form = formConfig.form as FormInstance<T>
   const props = formConfig.formProps as FormProps<T>
   const currentStep = steps[formConfig.current]
+  const isSubmitting = submitting || customSubmitting
+
   function guardSubmit (callback: (done: () => void) => void) {
     setSubmitting(true)
     callback(() => setSubmitting(false))
   }
 
+  function validationFailedHandler (errorInfo: ValidateErrorEntity) {
+    // eslint-disable-next-line no-console
+    const errorHandler = currentStep?.props.onFinishFailed || console.log
+    errorHandler(errorInfo)
+  }
+
   function handleAsyncSubmit <T> (promise: Promise<T>) {
     const timeout = setTimeout(setLoading, 50, true)
     return promise
-      .catch((errorInfo: ValidateErrorEntity) => {
-        // eslint-disable-next-line no-console
-        const errorHandler = currentStep?.props.onFinishFailed || console.log
-        errorHandler(errorInfo)
-      })
+      .catch(validationFailedHandler)
       .finally(() => {
         clearTimeout(timeout)
         setLoading(false)
@@ -132,15 +139,21 @@ export function useStepsForm <T> ({
     })
   }
 
+  // customSubmit's StepsForm submit handler
+  // this is not related to current step's submit
   const customSubmitHandler = () => {
     const values = form.getFieldsValue(true)
-    guardSubmit((done) => {
-      onCurrentStepFinish(values, () => {
-        handleAsyncSubmit(form.validateFields()
-          .then(() => customSubmit?.onFinish(values))
-        )
-          .finally(done)
-      })
+    setCustomSubmitting(true)
+    onCurrentStepFinish(values, () => {
+      const timeout = setTimeout(setCustomSubmitLoading, 50, true)
+      form.validateFields()
+        .then(() => customSubmit?.onCustomFinish?.(values))
+        .catch(validationFailedHandler)
+        .finally(() => {
+          clearTimeout(timeout)
+          setCustomSubmitLoading(false)
+          setCustomSubmitting(false)
+        })
     })
   }
 
@@ -156,7 +169,7 @@ export function useStepsForm <T> ({
     initialValues: config.defaultFormValues,
     requiredMark: true,
     preserve: true,
-    disabled: submitting,
+    disabled: isSubmitting,
     onFinishFailed: onFinishFailed
   }
 
@@ -178,7 +191,7 @@ export function useStepsForm <T> ({
     {steps.map(({ props }) => <Steps.Step
       key={props.name}
       title={props.title}
-      disabled={submitting || (!editMode && newConfig.current < props.step)}
+      disabled={isSubmitting || (!editMode && newConfig.current < props.step)}
     />)}
   </UI.Steps>
 
@@ -206,6 +219,7 @@ export function useStepsForm <T> ({
     apply: <Button
       type='primary'
       loading={loading}
+      disabled={customSubmitLoading}
       onClick={() => submit()}
       children={labels.apply}
     />,
@@ -219,13 +233,15 @@ export function useStepsForm <T> ({
       : <Button
         type='primary'
         loading={loading}
+        disabled={customSubmitLoading}
         onClick={() => submit()}
         children={labels.submit}
       />,
     customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
       ? <Button
         type='primary'
-        loading={loading}
+        loading={customSubmitLoading}
+        disabled={loading}
         onClick={() => customSubmitHandler()}
         children={customSubmit.label}
       />
