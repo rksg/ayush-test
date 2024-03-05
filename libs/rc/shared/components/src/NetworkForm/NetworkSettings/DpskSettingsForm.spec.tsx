@@ -55,7 +55,12 @@ describe('DpskSettingsForm', () => {
   it('should render DPSK form successfully', async () => {
     const { asFragment } = render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form><DpskSettingsForm /></Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -86,21 +91,30 @@ describe('DpskSettingsForm', () => {
   it('should render edit form with DPSK service profile', async () => {
     render(
       <Provider>
-        <MLOContext.Provider value={{
-          isDisableMLO: true,
-          disableMLO: jest.fn
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          data: partialDpskNetworkEntity,
+          setData: jest.fn()
         }}>
-          <Form>
-            <DpskSettingsForm />
-          </Form>
-        </MLOContext.Provider>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn
+          }}>
+            <Form>
+              <DpskSettingsForm />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       }
     )
+    await userEvent.click(await screen.findByRole('combobox', { name: /DPSK Service/i }))
+    await userEvent.click(await screen.findByText('DPSK Service 3'))
 
     expect(await screen.findByText('Keyboard Friendly')).toBeVisible()
-    expect(await screen.findByText('22 Characters')).toBeVisible()
+    expect(await screen.findByText('24 Characters')).toBeVisible()
   })
 
   it('should display DPSK service detail when select the dropdown list', async () => {
