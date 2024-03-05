@@ -109,4 +109,22 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedSetVisibleFn).toBeCalledWith(false)
   })
+
+  it('should be blocked by same ip address', async () => {
+    render(
+      <EditClusterInterfaceDrawer
+        visible={true}
+        setVisible={mockedSetVisibleFn}
+        handleFinish={mockedHandleFinishFn}
+        interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+        editData={mockedAllNodeData[0]}
+        allNodeData={mockedAllNodeData}
+      />
+    )
+
+    const ipField = screen.getByRole('textbox', { name: 'IP Address' })
+    await userEvent.clear(ipField)
+    await userEvent.type(ipField, '192.168.12.136')
+    expect(await screen.findByText('IP address cannot be the same as other nodes.')).toBeVisible()
+  })
 })
