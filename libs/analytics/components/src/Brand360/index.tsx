@@ -74,7 +74,7 @@ export function Brand360 () {
   const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
-    getDateRangeFilter(DateRange.last24Hours)
+    getDateRangeFilter(DateRange.last8Hours)
   )
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
@@ -136,6 +136,7 @@ export function Brand360 () {
             onDateApply={setDateFilterState as CallableFunction}
             showTimePicker
             selectionType={range}
+            showLast8hours
           />
         </>
       ]}

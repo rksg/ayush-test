@@ -34,6 +34,7 @@ export interface BrandVenuesSLA {
   zoneName: string
   incidentCount: number | null
   onlineApsSLA: [number| null, number| null]
+  onlineSwitchesSLA: [number| null, number| null]
   ssidComplianceSLA: [number| null, number| null]
   timeToConnectSLA: [number| null, number| null]
   clientThroughputSLA: [number| null, number| null]
@@ -102,6 +103,7 @@ export const api = dataApi.injectEndpoints({
             clientThroughputSLA
             connectionSuccessSLA
             onlineApsSLA
+            onlineSwitchesSLA
           }
         }
         `,

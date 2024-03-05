@@ -193,34 +193,3 @@ export const mockEdgeLagSubInterfacesStatus = {
       vlan: '3'
     }]
 }
-
-export const mockLanInterfaces = {
-  'serialNumber-1': [
-    {
-      serialNumber: 'serialNumber-1',
-      portName: 'port3',
-      ip: '192.168.14.135',
-      subnet: '255.255.255.0'
-    },
-    {
-      serialNumber: 'serialNumber-1',
-      portName: 'port2',
-      ip: '192.168.13.136',
-      subnet: '255.255.255.0'
-    }
-  ],
-  'serialNumber-2': [
-    {
-      serialNumber: 'serialNumber-2',
-      portName: 'port3',
-      ip: '192.168.14.135',
-      subnet: '255.255.255.0'
-    },
-    {
-      serialNumber: 'serialNumber-2',
-      portName: 'port2',
-      ip: '192.168.13.134',
-      subnet: '255.255.255.0'
-    }
-  ]
-}

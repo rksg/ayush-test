@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
 
 import { get }                        from '@acx-ui/config'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { VenueMarkerOptions }         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -28,6 +29,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
   const basePath = useTenantLink('/')
   const navigate = useNavigate()
+  const isNewProdUsMapKey = useIsSplitOn('acx-ui-announcement-alert-toggle')
 
   /* istanbul ignore next */
   const onNavigate = (params: NavigateProps) => {
@@ -75,7 +77,8 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
 
   return (
     <Wrapper
-      apiKey={get('GOOGLE_MAPS_KEY')}
+      apiKey={isNewProdUsMapKey ?
+        'AIzaSyB0ykwLbIT-J1kHXvZig3AxVIoUq6Brgao' : get('GOOGLE_MAPS_KEY')}
       libraries={['places']}
       language={'en'}
       region={region}

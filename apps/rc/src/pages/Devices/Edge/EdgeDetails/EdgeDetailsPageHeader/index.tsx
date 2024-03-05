@@ -1,6 +1,8 @@
 import {
+  Col,
   Menu,
   MenuProps,
+  Row,
   Space
 } from 'antd'
 import moment      from 'moment-timezone'
@@ -9,7 +11,7 @@ import { useIntl } from 'react-intl'
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
-  useEdgeBySerialNumberQuery
+  useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeStatusEnum, rebootableEdgeStatuses, resettabaleEdgeStatuses
@@ -21,6 +23,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
+
+import { HaStatusBadge } from '../../HaStatusBadge'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -43,13 +47,18 @@ export const EdgeDetailsPageHeader = () => {
       'deviceStatus',
       'deviceSeverity',
       'venueId',
-      'tags'
+      'tags',
+      'haStatus',
+      'clusterId'
     ],
     filters: { serialNumber: [serialNumber] } }
   const { data: currentEdge }
   = useEdgeBySerialNumberQuery({
     params, payload: edgeStatusPayload
   })
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
+  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -112,9 +121,24 @@ export const EdgeDetailsPageHeader = () => {
   return (
     <PageHeader
       title={currentEdge?.name || ''}
-      titleExtra={<EdgeStatusLight data={status} showText={!currentEdgeOperational}/>}
+      titleExtra={
+        <Row gutter={[5,0]}>
+          <Col>
+            <EdgeStatusLight data={status} showText={!currentEdgeOperational}/>
+          </Col>
+          <Col>
+            {
+              (currentCluster?.smartEdges.length ?? 0) >= 2 &&
+              <HaStatusBadge
+                haStatus={currentEdge?.haStatus}
+                needPostFix
+              />
+            }
+          </Col>
+        </Row>
+      }
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+        { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
       ]}
       extra={[
         <RangePicker

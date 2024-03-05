@@ -6,8 +6,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { HomeSolid }                             from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { HomeSolid }              from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -63,10 +63,7 @@ function Layout () {
   }
   const invitationTableQuery = useTableQuery({
     useQuery: useInviteCustomerListQuery,
-    defaultPayload: invitationPayload,
-    option: {
-      skip: tenantType === AccountType.REC
-    }
+    defaultPayload: invitationPayload
   })
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
   const nonVarDelegation =
@@ -160,10 +157,4 @@ function Layout () {
   )
 }
 
-function LayoutWithSplitProvider () {
-  return <SplitProvider>
-    <Layout />
-  </SplitProvider>
-}
-
-export default LayoutWithSplitProvider
+export default Layout

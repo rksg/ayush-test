@@ -1,12 +1,13 @@
-import _             from 'lodash'
-import { IntlShape } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { IntlShape }         from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
 import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                       from '../../validator'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
 
 const Netmask = require('netmask').Netmask
 
@@ -197,5 +198,37 @@ const validateVirtualEdgeSerialNumber = (value: string) => {
     }))
   }
 
+  return Promise.resolve()
+}
+
+export const optionSorter = (
+  a: DefaultOptionType,
+  b: DefaultOptionType
+) => {
+  if ( (a.label ?? '') < (b.label ?? '') ){
+    return -1
+  }
+  if ( (a.label ?? '') > (b.label ?? '') ){
+    return 1
+  }
+  return 0
+}
+
+export async function lanPortsubnetValidator (
+  currentSubnet: { ip: string, subnetMask: string },
+  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
+) {
+  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
+    return
+  }
+
+  for(let item of allSubnetWithoutCurrent) {
+    try {
+      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
+        item.ip, item.subnetMask)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
   return Promise.resolve()
 }
