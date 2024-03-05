@@ -701,6 +701,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
     getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
       query: ({ params }) => {
         const req =
@@ -817,6 +826,7 @@ export const {
   useAddCustomRoleMutation,
   useUpdateCustomRoleMutation,
   useDeleteCustomRoleMutation,
+  useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,

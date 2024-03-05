@@ -828,21 +828,6 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    getMspEcVenuesList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const CUSTOM_HEADER = {
-          'x-rks-tenantid': params?.includeTenantId
-        }
-        const venueListReq = createHttpRequest(
-          CommonUrlsInfo.getVenuesList,
-          params, CUSTOM_HEADER, true
-        )
-        return {
-          ...venueListReq,
-          body: payload
-        }
-      }
-    }),
     getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const listInfo = {
@@ -870,7 +855,8 @@ export const mspApi = baseMspApi.injectEndpoints({
         const aggregatedList = aggregatedMspEcListData(list, ecVenues)
 
         return { data: aggregatedList }
-      }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -900,13 +886,6 @@ const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
     }
     if (ecVenues[item.id]) {
       const tmpV = _.cloneDeep(ecVenues[item.id])
-      // tmpV.forEach((venue: Venue, index: number) => {
-      //   if (venue.id === tmp.id) {
-      //     tmpV[index].venueId = venue.id
-      //     tmpV[index].id = item.id
-      //     tmpV[index].name = venue.name
-      //   }
-      // })
       tmp.children = tmpV
     }
     data.push(tmp)

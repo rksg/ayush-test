@@ -1,22 +1,27 @@
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Checkbox,
   Col,
   Form,
   Input,
-  Row
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
+  Button,
   PageHeader,
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { useUpdatePrivilegeGroupMutation } from '@acx-ui/rc/services'
-import { PrivilegeGroup }                  from '@acx-ui/rc/utils'
+import { MspEc }                                                         from '@acx-ui/msp/utils'
+import { useGetOnePrivilegeGroupQuery, useUpdatePrivilegeGroupMutation } from '@acx-ui/rc/services'
+import { PrivilegeGroup, Venue }                                         from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -25,6 +30,11 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
+import * as UI            from '../styledComponents'
+
+import { choiceCustomerEnum, choiceScopeEnum } from './AddPrivilegeGroup'
+import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
+import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
 
 const AdministrationTabs = () => {
   const { $t } = useIntl()
@@ -64,16 +74,55 @@ interface PrivilegeGroupData {
 }
 
 export function EditPrivilegeGroup () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const [selectVenueDrawer, setSelectVenueDrawer] = useState(false)
+  const [selectCustomerDrawer, setSelectCustomerDrawer] = useState(false)
+  const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
+  const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
+  const [selectedVenus, setVenues] = useState([] as Venue[])
+  const [selectedCustomers, setCustomers] = useState([] as MspEc[])
+  const [displayMspScope, setDisplayMspScope] = useState(false)
 
   const navigate = useNavigate()
-  const { groupId } = useParams()
+  const { action, groupId } = useParams()
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
+  const isOnboardedMsp = location ?? false
 
-  // const isEditMode = action === 'view' || action === 'edit'
+  const { data: privilegeGroup } =
+      useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
+        { skip: action !== 'edit' && action !== 'clone' })
+
+
+  const onClickSelectVenue = () => {
+    setSelectVenueDrawer(true)
+  }
+
+  const onClickSelectCustomer = () => {
+    setSelectCustomerDrawer(true)
+  }
+
+  const setSelectedVenus = (selected: Venue[]) => {
+    setVenues(selected)
+  }
+
+  const setSelectedCustomers = (selected: MspEc[]) => {
+    setCustomers(selected)
+  }
+
+  const onScopeChange = (e: RadioChangeEvent) => {
+    setSelectedScope(e.target.value)
+    if (e.target.value === choiceScopeEnum.ALL_VENUES)
+      setSelectVenueDrawer(false)
+  }
+
+  const onCustomerChange = (e: RadioChangeEvent) => {
+    setSelectedMspScope(e.target.value)
+    if (e.target.value === choiceCustomerEnum.ALL_CUSTOMERS)
+      setSelectCustomerDrawer(false)
+  }
 
   const handleUpdatePrivilegeGroup = async () => {
     const formValues = form.getFieldsValue(true)
@@ -96,29 +145,181 @@ export function EditPrivilegeGroup () {
   }
 
   useEffect(() => {
-    if (location) {
-      form.setFieldValue('name', location.name)
-      form.setFieldValue('description', location?.description)
-      form.setFieldValue('role', location?.roleName)
+    if (privilegeGroup) {
+      form.setFieldValue('name', privilegeGroup.name)
+      form.setFieldValue('description', privilegeGroup?.description)
+      form.setFieldValue('role', privilegeGroup?.roleName)
     }
-  }, [location])
+  }, [privilegeGroup])
+
+  const DisplaySelectedVenues = () => {
+    const fisrtVenue = selectedVenus[0]
+    const restVenue = selectedVenus.slice(1)
+    return <>
+      <UI.VenueList key={fisrtVenue.id}>
+        {fisrtVenue.name}
+        <Button
+          type='link'
+          style={{ marginLeft: '40px' }}
+          onClick={onClickSelectVenue}
+        >Change</Button>
+      </UI.VenueList>
+      {restVenue.map(venue =>
+        <UI.VenueList key={venue.id}>
+          {venue.name}
+        </UI.VenueList>
+      )}
+    </>
+  }
+
+  const DisplaySelectedCustomers = () => {
+    const fisrtCustomer = selectedCustomers[0]
+    const restCustomer = selectedCustomers.slice(1)
+    return <>
+      <UI.VenueList key={fisrtCustomer.id}>
+        {fisrtCustomer.name}
+        <Button
+          type='link'
+          style={{ marginLeft: '40px' }}
+          onClick={onClickSelectCustomer}
+        >Change</Button>
+      </UI.VenueList>
+      {restCustomer.map(ec =>
+        <UI.VenueList key={ec.id}>
+          {ec.name}
+        </UI.VenueList>
+      )}
+    </>
+  }
+
+  const ScopeForm = () => {
+    return <Form.Item
+      name='scope'
+      label={intl.$t({ defaultMessage: 'Scope' })}
+      initialValue={choiceScopeEnum.ALL_VENUES}>
+      <Radio.Group
+        value={selectedScope}
+        onChange={onScopeChange}
+      >
+        <Space direction={'vertical'} size={12}>
+          <Radio
+            key={choiceScopeEnum.ALL_VENUES}
+            value={choiceScopeEnum.ALL_VENUES}>
+            {intl.$t({ defaultMessage: 'All Venues' })}
+          </Radio>
+          <Radio
+            key={choiceScopeEnum.SPECIFIC_VENUE}
+            value={choiceScopeEnum.SPECIFIC_VENUE}>
+            {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+          </Radio>
+          <Button
+            style={{ marginLeft: '22px' }}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            type='link'
+            onClick={onClickSelectVenue}
+          >Select venues</Button>
+        </Space>
+      </Radio.Group>
+      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+        <DisplaySelectedVenues />}
+    </Form.Item>
+  }
+
+  const MspScopeForm = () => {
+    return <><Form.Item
+      name='ownscope'
+      label={intl.$t({ defaultMessage: 'Scope' })}
+      children={
+        <Checkbox checked={true} children={intl.$t({ defaultMessage: 'Own Account' })} />
+      }
+    />
+    <Form.Item
+      initialValue={choiceScopeEnum.ALL_VENUES}>
+      <Radio.Group
+        style={{ marginLeft: 22 }}
+        value={selectedScope}
+        onChange={onScopeChange}
+      >
+        <Space direction={'vertical'} size={12}>
+          <Radio
+            key={choiceScopeEnum.ALL_VENUES}
+            value={choiceScopeEnum.ALL_VENUES}>
+            {intl.$t({ defaultMessage: 'All Venues' })}
+          </Radio>
+          <Radio
+            key={choiceScopeEnum.SPECIFIC_VENUE}
+            value={choiceScopeEnum.SPECIFIC_VENUE}>
+            {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+          </Radio>
+          <Button
+            style={{ marginLeft: '22px' }}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            type='link'
+            onClick={onClickSelectVenue}
+          >Select venues</Button>
+        </Space>
+      </Radio.Group>
+      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+        <DisplaySelectedVenues />}
+    </Form.Item>
+
+    <Form.Item
+      name='mspscope'
+      valuePropName='checked'
+      children={
+        <Checkbox checked={displayMspScope}
+          onChange={e => setDisplayMspScope(e.target.checked)}
+          children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+      }
+    />
+    <Form.Item
+      initialValue={choiceCustomerEnum.ALL_CUSTOMERS}
+      hidden={!displayMspScope}>
+      <Radio.Group
+        style={{ marginLeft: 22 }}
+        value={selectedMspScope}
+        onChange={onCustomerChange}
+      >
+        <Space direction={'vertical'} size={12}>
+          <Radio
+            key={choiceCustomerEnum.ALL_CUSTOMERS}
+            value={choiceCustomerEnum.ALL_CUSTOMERS}>
+            {intl.$t({ defaultMessage: 'All Customers' })}
+          </Radio>
+          <Radio
+            key={choiceCustomerEnum.SPECIFIC_CUSTOMER}
+            value={choiceCustomerEnum.SPECIFIC_CUSTOMER}>
+            {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
+          </Radio>
+          <Button
+            style={{ marginLeft: '22px' }}
+            hidden={selectedMspScope ===
+              choiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
+            type='link'
+            onClick={onClickSelectCustomer}
+          >Select customers</Button>
+        </Space>
+      </Radio.Group>
+
+      {selectedCustomers.length > 0 && selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER &&
+        <DisplaySelectedCustomers />}
+
+    </Form.Item></>
+  }
 
   const PrivilegeGroupForm = () => {
     return <StepsForm
       form={form}
       onFinish={handleUpdatePrivilegeGroup}
       onCancel={() => navigate(linkToPrivilegeGroups)}
-      // buttonLabel={{ submit: isEditMode
-      //   ? intl.$t({ defaultMessage: 'Save' })
-      //   : intl.$t({ defaultMessage: 'Add' }) }}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{ submit: intl.$t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <Row gutter={12}>
           <Col span={4}>
             <Form.Item
               name='name'
-              label={$t({ defaultMessage: 'Name' })}
+              label={intl.$t({ defaultMessage: 'Name' })}
               rules={[
                 { required: true },
                 { min: 2 },
@@ -128,7 +329,7 @@ export function EditPrivilegeGroup () {
             />
             <Form.Item
               name='description'
-              label={$t({ defaultMessage: 'Description' })}
+              label={intl.$t({ defaultMessage: 'Description' })}
               rules={[
                 { min: 2 },
                 { max: 64 }
@@ -136,29 +337,26 @@ export function EditPrivilegeGroup () {
               children={<Input />}
             />
             <CustomRoleSelector />
-            <Form.Item
-              name='ownscope'
-              label={$t({ defaultMessage: 'Scope' })}
-              rules={[
-                { min: 2 },
-                { max: 64 }
-              ]}
-              children={
-                <Checkbox checked={true} children={$t({ defaultMessage: 'Own Account' })} />
-              }
-            />
-            <Form.Item
-              name='mspscope'
-              rules={[
-                { min: 2 },
-                { max: 64 }
-              ]}
-              children={
-                <Checkbox checked={true} children={$t({ defaultMessage: 'MSP Customers' })} />
-              }
-            />
           </Col>
         </Row>
+        <Row gutter={12}>
+          <Col span={8}>
+            {isOnboardedMsp ? <MspScopeForm /> : <ScopeForm />}
+          </Col>
+        </Row>
+        <SelectVenuesDrawer
+          visible={selectVenueDrawer}
+          selected={selectedVenus}
+          setVisible={setSelectVenueDrawer}
+          setSelected={setSelectedVenus}
+        />
+        <SelectCustomerDrawer
+          visible={selectCustomerDrawer}
+          selected={selectedCustomers}
+          setVisible={setSelectCustomerDrawer}
+          setSelected={setSelectedCustomers}
+        />
+
       </StepsForm.StepForm>
     </StepsForm>
   }
@@ -167,11 +365,11 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Administrators' })}
+      title={intl.$t({ defaultMessage: 'Administrators' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Administration' }) },
-        { text: $t({ defaultMessage: 'Users & Privileges' }) },
-        { text: $t({ defaultMessage: 'Privilege Groups' }),
+        { text: intl.$t({ defaultMessage: 'Administration' }) },
+        { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },
+        { text: intl.$t({ defaultMessage: 'Privilege Groups' }),
           link: '/administration/userPrivileges/privilegeGroups' }
       ]}
       footer={<AdministrationTabs />}

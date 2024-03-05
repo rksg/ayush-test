@@ -262,6 +262,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/roleAuthentications/customRoles/:customRoleId',
     newApi: true
   },
+  getOnePrivilegeGroup: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
   getPrivilegeGroups: {
     method: 'get',
     url: '/roleAuthentications/privilegeGroups',

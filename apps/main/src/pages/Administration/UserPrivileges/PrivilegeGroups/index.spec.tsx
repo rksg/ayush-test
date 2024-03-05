@@ -216,10 +216,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/edit/99bb7b958a5544898cd0b938fa800a5a`,
       hash: '',
       search: ''
-    }, { state: {
-      description: 'privilege group for wi-fi', id: '99bb7b958a5544898cd0b938fa800a5a',
-      name: 'wi-fi privilege group', allCustomers: false, delegation: false, roleName: 'new wi-fi custom role', type: 'Custom'
-    } })
+    }, { state: true })
   })
   it('should clone selected row', async () => {
     render(
@@ -247,10 +244,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/clone/99bb7b958a5544898cd0b938fa800a5a`,
       hash: '',
       search: ''
-    }, { state: {
-      description: 'privilege group for wi-fi', id: '99bb7b958a5544898cd0b938fa800a5a',
-      name: 'wi-fi privilege group', allCustomers: false, delegation: false, roleName: 'new wi-fi custom role', type: 'Custom'
-    } })
+    }, { state: true })
   })
 })
 

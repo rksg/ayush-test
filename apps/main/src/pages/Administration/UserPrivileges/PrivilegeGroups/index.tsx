@@ -145,7 +145,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
-        }, { state: selectedRows[0] })
+        }, { state: isOnboardedMsp })
       }
     },
     {
@@ -157,7 +157,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
-        }, { state: selectedRows[0] })
+        }, { state: isOnboardedMsp })
       }
     },
     {

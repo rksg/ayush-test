@@ -12,15 +12,15 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { useGetMspEcWithVenuesListQuery } from '@acx-ui/msp/services'
-import { MspEc }                          from '@acx-ui/msp/utils'
+import { MspEcWithVenue }                 from '@acx-ui/msp/utils'
 import { AccountType }                    from '@acx-ui/utils'
 
 interface SelectCustomerDrawerProps {
   visible: boolean
-  selected: MspEc[]
+  selected: MspEcWithVenue[]
   tenantIds?: string[]
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspEc[]) => void
+  setSelected: (selected: MspEcWithVenue[]) => void
 }
 
 const customerListPayload = {
@@ -31,28 +31,18 @@ const customerListPayload = {
   sortOrder: 'ASC'
 }
 
-// interface MspEcWithVenue extends MspEc {
-//   children?: {
-//     name: string,
-//     id: string
-//   }[]
-// }
-
 export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, selected, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
-  const [selectedRows, setSelectedRows] = useState<MspEc[]>([])
-  // const [treeData, setTreeData] = useState<MspEcWithVenue[]>([])
+  const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
 
-  function getSelectedKeys (mspEcs: MspEc[], ecId: string[]) {
-    return mspEcs.filter(rec => ecId.includes(rec.id)).map(rec => rec.id)
-  }
-
-  function getSelectedRows (mspEcs: MspEc[], ecId: string[]) {
-    return mspEcs.filter(rec => ecId.includes(rec.id))
+  function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
+    const selectedVenueIds = selected.map(venue => venue.id)
+    const allVenueIds = mspEcs.flatMap(ec => ec.children?.map(venue => venue.id))
+    return selectedVenueIds.filter(id => allVenueIds.includes(id))
   }
 
   const { data: customerList }
@@ -70,12 +60,25 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }
 
   const handleSave = () => {
-    setSelected(selectedRows ?? [])
+    const selectedVenues = getSelectedVenues(selectedRows)
+    setSelected(selectedVenues ?? [])
     resetFields()
     setVisible(false)
   }
 
-  const columns: TableProps<MspEc>['columns'] = [
+  const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
+    const selVenues = selectedRows.filter(item => !item.isFirstLevel)
+    // customerList?.data.forEach(item => {
+    //   const vvv = selVenues.filter(venue => item.children?.includes(venue))
+    //   if (vvv) {
+    //     const tmpV = _.cloneDeep(item)
+    //     tmpV.children = []
+    //   }
+    // })
+    return selVenues
+  }
+
+  const columns: TableProps<MspEcWithVenue>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
@@ -88,21 +91,9 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
 
   useEffect(() => {
     if (customerList?.data) {
-      const ecIds = selected?.map((ec: MspEc)=> ec.id)
-      const selectKeys = getSelectedKeys(customerList?.data as MspEc[], ecIds)
+      const selectKeys = getSelectedKeys(customerList?.data as MspEcWithVenue[], selected)
       setSelectedKeys(selectKeys)
-      const selRows = getSelectedRows(customerList?.data as MspEc[], ecIds)
-      setSelectedRows(selRows)
-      // const dataWithVenues = customerList.data.map(c => {
-      //   return {
-      //     ...c,
-      //     children: [
-      //     ]
-      //   }
-      // })
-      // setTreeData(dataWithVenues)
     }
-    // setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [customerList?.data])
 
   const content =
@@ -114,11 +105,13 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
         indentSize={20}
         rowKey='id'
         rowSelection={{
-          type: 'checkbox',
           selectedRowKeys: selectedKeys,
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
-          }
+            // eslint-disable-next-line no-console
+            console.log(selRows)
+          },
+          checkStrictly: false
         }}
       />
     </Loader>
