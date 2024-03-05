@@ -19,9 +19,20 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { MspEcWithVenue }                                                from '@acx-ui/msp/utils'
-import { useGetOnePrivilegeGroupQuery, useUpdatePrivilegeGroupMutation } from '@acx-ui/rc/services'
-import { PrivilegeGroup, Venue }                                         from '@acx-ui/rc/utils'
+import { MspEcWithVenue }           from '@acx-ui/msp/utils'
+import {
+  useGetOnePrivilegeGroupQuery,
+  useGetVenuesQuery,
+  useUpdatePrivilegeGroupMutation
+}                          from '@acx-ui/rc/services'
+import {
+  PrivilegeGroup,
+  PrivilegePolicy,
+  PrivilegePolicyEntity,
+  PrivilegePolicyObjectType,
+  Venue,
+  VenueObjectList
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -35,6 +46,17 @@ import * as UI            from '../styledComponents'
 import { choiceCustomerEnum, choiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
+// import { useMspCustomerListQuery } from '@acx-ui/msp/services'
+
+interface PrivilegeGroupData {
+  name?: string,
+  description?: string,
+  roleName?: string,
+  delegation?: boolean,
+  allCustomers?: boolean,
+  policies?: PrivilegePolicy[],
+  policyEntityDTOS?: PrivilegePolicyEntity[]
+}
 
 const AdministrationTabs = () => {
   const { $t } = useIntl()
@@ -73,6 +95,13 @@ interface PrivilegeGroupData {
   delegation?: boolean
 }
 
+const venuesListPayload = {
+  fields: ['name', 'country', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
 export function EditPrivilegeGroup () {
   const intl = useIntl()
   const [selectVenueDrawer, setSelectVenueDrawer] = useState(false)
@@ -95,6 +124,12 @@ export function EditPrivilegeGroup () {
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
         { skip: action !== 'edit' && action !== 'clone' })
 
+  const { data: venuesList } =
+      useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+
+  // const { data: customerList } =
+  //     useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
+  //       { skip: !isOnboardedMsp })
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -135,6 +170,34 @@ export function EditPrivilegeGroup () {
         roleName: formValues.role,
         delegation: false
       }
+      const policies = [] as PrivilegePolicy[]
+      selectedVenus.forEach((venue: Venue) => {
+        policies.push({
+          entityInstanceId: venue.id,
+          objectType: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
+        })
+      })
+      privilegeGroupData.policies =
+        (selectedScope === choiceScopeEnum.SPECIFIC_VENUE && policies.length > 0)
+          ? policies : undefined
+
+      if (isOnboardedMsp) {
+        const policyEntities = [] as PrivilegePolicyEntity[]
+        let venueList = {} as VenueObjectList
+        selectedCustomers.forEach((ec: MspEcWithVenue) => {
+          const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
+          policyEntities.push({
+            tenantId: ec.id,
+            objectList: venueList
+          })
+        })
+        privilegeGroupData.delegation = displayMspScope
+        privilegeGroupData.policyEntityDTOS =
+        (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
+          ? policyEntities : undefined
+      }
+
       await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
         payload: privilegeGroupData }).unwrap()
 
@@ -146,11 +209,23 @@ export function EditPrivilegeGroup () {
 
   useEffect(() => {
     if (privilegeGroup) {
+      const delegation = privilegeGroup.delegation || false
       form.setFieldValue('name', privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
+      setDisplayMspScope(delegation)
+      form.setFieldValue('mspscope', delegation)
+      const venues = (venuesList?.data.filter(venue =>
+        privilegeGroup?.policies?.map(p => p.entityInstanceId).includes(venue.id)) || [])
+      setVenues(venues)
+      setSelectedScope( venues.length > 0
+        ? choiceScopeEnum.SPECIFIC_VENUE : choiceScopeEnum.ALL_VENUES)
+      // const ecsWithSelVenues = customerList?.data.filter(customer =>
+      //   privilegeGroup?.policyEntityDTOS?.map(p =>
+      //     p.tenantId).includes(customer.id)) || []
+      // setCustomers(ecsWithSelVenues)
     }
-  }, [privilegeGroup])
+  }, [privilegeGroup, venuesList?.data])
 
   const DisplaySelectedVenues = () => {
     const fisrtVenue = selectedVenus[0]

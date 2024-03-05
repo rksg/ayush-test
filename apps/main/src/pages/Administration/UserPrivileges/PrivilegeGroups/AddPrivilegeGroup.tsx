@@ -139,8 +139,7 @@ export function AddPrivilegeGroup () {
             objectList: venueList
           })
         })
-        privilegeGroupData.delegation = true
-        // privilegeGroupData.allCustomers = false
+        privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
         (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
           ? policyEntities : undefined
