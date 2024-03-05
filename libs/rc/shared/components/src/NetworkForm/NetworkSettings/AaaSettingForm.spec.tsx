@@ -154,7 +154,8 @@ describe('NetworkForm', () => {
       </MLOContext.Provider>
     </Provider>, { route: { params } })
 
-    await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))
+    await screen.findByText(/MAC Authentication/i)
+    await userEvent.click(await screen.findByTestId('macAuth8021x'))
     expect(await screen.findByText(/MAC Address Format/i)).toBeInTheDocument()
     expect(await screen.findByText('AA-BB-CC-DD-EE-FF')).toBeVisible()
   })

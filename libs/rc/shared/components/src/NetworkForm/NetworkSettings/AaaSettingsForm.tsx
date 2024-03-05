@@ -31,6 +31,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                              from '../NetworkMoreSettings/styledComponents'
 
 const { Option } = Select
 
@@ -172,6 +173,7 @@ function SettingsForm () {
     const enableAccountingService = useWatch('enableAccountingService', form)
     const enableMacAuthentication = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
     const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+    const labelWidth = '516px'
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
@@ -247,24 +249,25 @@ function SettingsForm () {
           )}
         </div>
         {support8021xMacAuth &&
-        <div>
-          <Form.Item>
-            <Form.Item>
-              <label htmlFor={'macAuth8021x'}>{$t({ defaultMessage: 'MAC Authentication' })}</label>
-              <Tooltip.Question
-                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-                placement='bottom'
+        <>
+          <UI.FieldLabel width={labelWidth}>
+            <Space>
+            { $t({ defaultMessage: 'MAC Authentication' }) }
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+            />
+            </Space>
+            <Form.Item
+              name={['wlan', 'macAddressAuthentication']}
+              valuePropName='checked'>
+              <Switch
+                disabled={editMode}
+                onChange={onMacAuthChange}
+                data-testid='macAuth8021x'
               />
-              <Form.Item noStyle
-                name={['wlan', 'macAddressAuthentication']}
-                valuePropName='checked'>
-                <Switch id={'macAuth8021x'}
-                  disabled={editMode}
-                  onChange={onMacAuthChange}
-                />
-              </Form.Item>
             </Form.Item>
-          </Form.Item>
+          </UI.FieldLabel>
           {enableMacAuthentication &&
             <Form.Item
               label={$t({ defaultMessage: 'MAC Address Format' })}
@@ -276,7 +279,7 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           }
-        </div>
+        </>
         }
       </Space>
     )
