@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
@@ -269,6 +270,17 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
+    }),
+    getVenueCityListTemplate: build.query<{ name: string }[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueCityList, params)
+        return{
+          ...req, body: payload
+        }
+      },
+      transformResponse: (result: { cityList: { name: string }[] }) => {
+        return result.cityList
+      }
     })
   })
 })
@@ -311,5 +323,6 @@ export const {
   useGetVenueTemplateDhcpPoolsQuery,
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
-  useUpdateVenueTemplateDhcpProfileMutation
+  useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueCityListTemplateQuery
 } = venueConfigTemplateApi

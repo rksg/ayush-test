@@ -13,22 +13,22 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, TierFeatures, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useVenuesTableQuery,
-  useDeleteVenueMutation,
-  useGetVenueCityListQuery
+  useDeleteVenueMutation, useGetVenueCityListTemplateQuery, useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  usePollingTableQuery
+  usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }                     from '@acx-ui/types'
 import { filterByAccess, hasAccess }          from '@acx-ui/user'
+import { transformToCityListOptions }         from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -318,14 +318,7 @@ export function VenuesTable () {
     pagination: { settingsId }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({
-        key: v.name,
-        value: v.name.split(', ').map(_.startCase).join(', ')
-      })) || true
-    })
-  })
+  const { cityFilterOptions } = useGetVenueCityList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -353,4 +346,25 @@ function shouldShowConfirmation (selectedVenues: Venue[]) {
     return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
   })
   return venues.length > 0
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueCityListTemplateQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
 }
