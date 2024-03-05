@@ -231,7 +231,8 @@ export const transformVenuesData = (
           tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
         ) as [number, number],
         deviceCount: tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.onlineApsSLA?.[1] || 0), 0) : 0,
+          ? tenantData?.reduce((total, venue) => total +
+          (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
         avgConnSuccess: sumData(
           tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
         ) as [number, number],
