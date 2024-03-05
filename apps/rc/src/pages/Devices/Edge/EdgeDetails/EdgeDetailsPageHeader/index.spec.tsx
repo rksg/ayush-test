@@ -14,11 +14,14 @@ import {
 
 import { EdgeDetailsPageHeader } from '.'
 
-const { mockEdgeList, mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('../../HaStatusBadge', () => ({
+  HaStatusBadge: () => <div data-testid='ha-status-badge' />
 }))
 
 const mockedDeleteApi = jest.fn()
@@ -60,6 +63,10 @@ describe('Edge Detail Page Header', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -172,6 +179,17 @@ describe('Edge Detail Page Header', () => {
       expect(resetDialog).not.toBeVisible()
     })
   })
+
+  it('should render HaStatusBadge', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByTestId('ha-status-badge')).toBeVisible()
+  })
 })
 
 describe('Edge Detail Page Header - action show up logic', () => {
@@ -209,6 +227,10 @@ describe('Edge Detail Page Header - action show up logic', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
