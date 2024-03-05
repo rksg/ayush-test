@@ -7,8 +7,7 @@ import { Card, SummaryCard }                                       from '@acx-ui
 import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram } from '@acx-ui/rc/components'
 import {
   useActivateEdgeSdLanNetworkMutation,
-  useDeactivateEdgeSdLanNetworkMutation,
-  useUpdateEdgeSdLanPartialP2Mutation
+  useDeactivateEdgeSdLanNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -30,10 +29,6 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const { $t } = useIntl()
   const { id: serviceId } = data
   const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
-  const [
-    updateEdgeSdLan,
-    { isLoading: isUpdateRequesting }
-  ] = useUpdateEdgeSdLanPartialP2Mutation()
   const [
     activateNetwork,
     { isLoading: isActivateRequesting }
@@ -93,15 +88,21 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     )
   }] : [])]
 
-  const toggleGuestNetwork = async (networkId: string, activate: boolean, cb?: () => void) => {
-    if (activate) {
+  const toggleNetwork = async (
+    isGuest: boolean,
+    networkId: string,
+    activate: boolean,
+    cb?: () => void) => {
+    // - activate network/guestNetwork
+    // - deactivate guestNetwork
+    if (activate || (!activate && isGuest)) {
       await activateNetwork({
         params: {
           serviceId,
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: true
+          isGuestTunnelUtilized: activate
         },
         callback: cb
       }).unwrap()
@@ -116,67 +117,21 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const handleActivateChange = async (
     fieldName: string,
     rowData: NetworkSaveData,
-    checked: boolean,
-    activated: NetworkSaveData[]
+    checked: boolean
   ) => {
     const networkId = rowData.id!
-    const newNetworkIds = activated.map(item => item.id)
-    const payload = {
-      networkIds: newNetworkIds
-    }
     setIsActivateUpdating(true)
 
     try {
       if (data.isGuestTunnelEnabled
       && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
-        if (fieldName === 'activatedNetworks'
-        // eslint-disable-next-line max-len
-        || (fieldName === 'activatedGuestNetworks' && checked && !data.networkIds.includes(networkId))) {
-
-          let updateGuestNetwork = true
-          // directly activated guest network should also activated network tunneled to DC edge
-          if (fieldName === 'activatedGuestNetworks') {
-            payload.networkIds = data.networkIds.concat(networkId)
-          } else {
-            // check diff on guestNetwork when toggle network
-            if ((checked && data.guestNetworkIds.includes(networkId))
-            || (!checked && !data.guestNetworkIds.includes(networkId))) {
-              updateGuestNetwork = false
-            }
-          }
-
-          //Activate network
-          await updateEdgeSdLan({
-            params: { serviceId },
-            payload,
-            callback: async () => {
-              if (updateGuestNetwork) {
-                // TODO: should be blocking after activity fixed
-                // await toggleGuestNetwork(networkId, checked, () => {
-                //   setIsActivateUpdating(false)
-                // })
-                await toggleGuestNetwork(networkId, checked)
-              }
-
-              setIsActivateUpdating(false)
-            } }).unwrap()
-        } else {
-          // deactivate guest network
-          // TODO: should be blocking after activity fixed
-          // await toggleGuestNetwork(networkId, checked, () => {
-          //   setIsActivateUpdating(false)
-          // })
-          await toggleGuestNetwork(networkId, checked)
-          setIsActivateUpdating(false)
-        }
+        const isGuestNetwork = fieldName === 'activatedGuestNetworks'
+        await toggleNetwork(isGuestNetwork, networkId, checked)
       } else {
-        await updateEdgeSdLan({
-          params: { serviceId },
-          payload,
-          callback: () => {
-            setIsActivateUpdating(false)
-          } }).unwrap()
+        await toggleNetwork(false, networkId, checked)
       }
+
+      setIsActivateUpdating(false)
     } catch(err) {
       setIsActivateUpdating(false)
       // eslint-disable-next-line no-console

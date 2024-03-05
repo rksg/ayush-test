@@ -13,7 +13,6 @@ import {
   EdgeUrlsInfo,
   EdgeStatus,
   EdgeSdLanViewDataP2,
-  EdgeSdLanSettingP2,
   EdgeSdLanActivateNetworkPayload,
   EdgeSdLanToggleDmzPayload
 } from '@acx-ui/rc/utils'
@@ -197,39 +196,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         },
         extraOptions: { maxRetries: 5 }
       }),
-    getEdgeSdLanP2: build.query<EdgeSdLanSettingP2, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const cfRequest = createHttpRequest(
-          EdgeSdLanUrls.getEdgeSdLan, arg.params)
-        const cfQuery = await fetchWithBQ(cfRequest)
-        const cfConfig = cfQuery.data as EdgeSdLanSettingP2
-
-        const edgeRequest = createHttpRequest(EdgeUrlsInfo.getEdgeList)
-        const edgeQuery = await fetchWithBQ({
-          ...edgeRequest,
-          body: {
-            fields: [
-              'name',
-              'serialNumber',
-              'venueId',
-              'venueName'
-            ],
-            filters: {
-              serialNumber: [cfConfig.edgeId]
-            }
-          }
-        })
-
-        const edgeInfo = edgeQuery.data as TableResult<EdgeStatus>
-        cfConfig.venueId = edgeInfo.data[0].venueId
-        cfConfig.venueName = edgeInfo.data[0].venueName
-
-        return cfQuery.data
-          ? { data: cfConfig }
-          : { error: cfQuery.error as FetchBaseQueryError }
-      },
-      providesTags: [{ type: 'EdgeSdLanP2', id: 'DETAIL' }]
-    }),
     addEdgeSdLanP2: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params)
@@ -360,7 +326,6 @@ export const {
   useUpdateEdgeSdLanPartialMutation,
   useDeleteEdgeSdLanMutation,
   useGetEdgeSdLanP2ViewDataListQuery,
-  useGetEdgeSdLanP2Query,
   useAddEdgeSdLanP2Mutation,
   useUpdateEdgeSdLanPartialP2Mutation,
   useActivateEdgeSdLanDmzClusterMutation,
