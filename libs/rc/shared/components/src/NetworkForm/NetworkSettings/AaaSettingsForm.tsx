@@ -255,7 +255,8 @@ function SettingsForm () {
             { $t({ defaultMessage: 'MAC Authentication' }) }
             <Tooltip.Question
               title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='bottom'
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
             />
             </Space>
             <Form.Item
