@@ -39,11 +39,11 @@ export interface EdgeSdLanSettingP2 {
   name: string;
   venueId?: string; // UI used
   venueName?: string; // UI used
-  clusterId: string;
+  edgeClusterId: string;
   networkIds: string[];
   tunnelProfileId: string;
   isGuestTunnelEnabled: boolean;
-  guestClusterId: string;
+  guestEdgeClusterId: string;
   guestTunnelProfileId: string;
   guestNetworkIds: string[];
 }
@@ -54,21 +54,21 @@ export interface EdgeSdLanViewDataP2 {
   name?: string
   tags?: string[]
   venueId: string
-  clusterId: string
+  edgeClusterId: string
   networkIds: string[]
   tunnelProfileId: string
   venueName?: string
-  clusterName?: string
+  edgeClusterName?: string
   tunnelProfileName?: string
   networkInfos?: {
     networkId: string
     networkName: string
     }[]
   isGuestTunnelEnabled: boolean
-  guestClusterId: string
+  guestEdgeClusterId: string
   guestTunnelProfileId: string
   guestNetworkIds: string[]
-  guestClusterName?: string
+  guestEdgeClusterName?: string
   guestTunnelProfileName?: string
   guestNetworkInfos?: {
     networkId: string

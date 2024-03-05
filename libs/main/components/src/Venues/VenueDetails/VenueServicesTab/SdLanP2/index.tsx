@@ -54,14 +54,14 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     </TenantLink>
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
-    content: () => <TenantLink to={`/devices/edge/${data.clusterId}/details/overview`}>
-      {data.clusterName}
+    content: () => <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+      {data.edgeClusterName}
     </TenantLink>
   }, ...(data.isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestClusterId}/details/overview`}>
-        {data.guestClusterName}
+      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+        {data.guestEdgeClusterName}
       </TenantLink>
     )
   }] : []),{
@@ -170,7 +170,6 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
             activatedGuest={data.guestNetworkIds}
             onActivateChange={handleActivateChange}
             isUpdating={isActivateUpdating
-              || isUpdateRequesting
               || isActivateRequesting
               || isDeactivateRequesting}
           />

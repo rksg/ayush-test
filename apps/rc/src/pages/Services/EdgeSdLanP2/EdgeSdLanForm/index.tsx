@@ -38,7 +38,7 @@ export const getSdLanFormDefaultValues
 
 export interface EdgeSdLanFormModelP2 extends EdgeSdLanSettingP2 {
   venueName?: string;
-  clusterName?: string;
+  edgeClusterName?: string;
   tunnelProfileName?: string;
   activatedNetworks: EdgeSdLanActivatedNetwork[];
   activatedGuestNetworks: EdgeSdLanActivatedNetwork[];

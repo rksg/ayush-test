@@ -33,15 +33,15 @@ export const DmzSdLanDetailContent = (props: {
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.clusterId}/details/overview`}>
-        {data.clusterName}
+      <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+        {data.edgeClusterName}
       </TenantLink>
     )
   }, {
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestClusterId}/details/overview`}>
-        {data.guestClusterName}
+      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+        {data.guestEdgeClusterName}
       </TenantLink>
     )
   }, {

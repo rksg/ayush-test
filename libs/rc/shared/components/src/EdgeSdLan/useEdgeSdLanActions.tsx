@@ -82,7 +82,7 @@ export const useEdgeSdLanActions = () => {
             activateDmzEdgeCluster({ params: {
               serviceId,
               venueId: payload.venueId,
-              edgeClusterId: payload.guestClusterId
+              edgeClusterId: payload.guestEdgeClusterId
             } }).unwrap(),
 
             activateDmzTunnel({ params: {
@@ -154,11 +154,11 @@ export const useEdgeSdLanActions = () => {
           } }).unwrap())
 
           // doesn't need to deactivateDmzCluster when isGuestTunnelEnabled changed into false
-          if (payload.isGuestTunnelEnabled && !originData.guestClusterId) {
+          if (payload.isGuestTunnelEnabled && !originData.guestEdgeClusterId) {
             actions.push(activateDmzEdgeCluster({ params: {
               serviceId,
               venueId: payload.venueId,
-              edgeClusterId: payload.guestClusterId
+              edgeClusterId: payload.guestEdgeClusterId
             } }).unwrap())
           }
         }

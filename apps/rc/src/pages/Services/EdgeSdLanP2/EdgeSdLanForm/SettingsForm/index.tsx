@@ -27,17 +27,17 @@ export const SettingsForm = () => {
   const params = useParams()
   const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
-  const clusterId = Form.useWatch('clusterId', form)
-  const guestClusterId = Form.useWatch('guestClusterId', form)
+  const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const guestEdgeClusterId = Form.useWatch('guestEdgeClusterId', form)
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
-      fields: ['id', 'clusterId']
+      fields: ['id', 'edgeClusterId']
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
         sdLanBoundEdges: (data?.data
-          ?.flatMap(item => [item.clusterId, item.guestClusterId])
+          ?.flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
           .filter(val => !!val)) ?? [],
         isSdLanBoundEdgesLoading: isLoading
       })
@@ -77,7 +77,8 @@ export const SettingsForm = () => {
       ],
       filters: {
         venueId: [venueId],
-        ...(editMode && { serialNumber: [clusterId, ...(guestClusterId ? [guestClusterId] : [])] }),
+        // eslint-disable-next-line max-len
+        ...(editMode && { serialNumber: [edgeClusterId, ...(guestEdgeClusterId ? [guestEdgeClusterId] : [])] }),
         deviceStatus: Object.values(EdgeStatusEnum)
           .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
@@ -103,17 +104,17 @@ export const SettingsForm = () => {
   }, [venueId, venueOptions])
 
   const onVenueChange = () => {
-    form.setFieldValue('clusterId', undefined)
+    form.setFieldValue('edgeClusterId', undefined)
   }
 
   const onEdgeChange = (val: string) => {
     const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('clusterName', edgeData?.label)
+    form.setFieldValue('edgeClusterrName', edgeData?.label)
   }
 
   const onDmzEdgeChange = (val: string) => {
     const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('guestClusterName', edgeData?.label)
+    form.setFieldValue('guestEdgeClusterName', edgeData?.label)
   }
 
   return (
@@ -167,7 +168,7 @@ export const SettingsForm = () => {
               <Row>
                 <Col span={18}>
                   <Form.Item
-                    name='clusterId'
+                    name='edgeClusterId'
                     label={<>
                       { $t({ defaultMessage: 'Cluster' }) }
                       <Tooltip.Question
@@ -229,7 +230,7 @@ export const SettingsForm = () => {
                   return getFieldValue('isGuestTunnelEnabled')
                     ? (<>
                       <Form.Item
-                        name='guestClusterId'
+                        name='guestEdgeClusterId'
                         label={<>
                           { $t({ defaultMessage: 'DMZ Cluster' }) }
                           <Tooltip.Question
@@ -244,7 +245,7 @@ export const SettingsForm = () => {
                       >
                         <Select
                           loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                          options={edgeOptions?.filter(item => item.value !== clusterId)}
+                          options={edgeOptions?.filter(item => item.value !== edgeClusterId)}
                           placeholder={$t({ defaultMessage: 'Select ...' })}
                           disabled={editMode}
                           onChange={onDmzEdgeChange}

@@ -63,7 +63,7 @@ const EditEdgeSdLan = () => {
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled,
-        guestClusterId: formData.guestClusterId,
+        guestEdgeClusterId: formData.guestEdgeClusterId,
         guestTunnelProfileId: formData.guestTunnelProfileId,
         guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
       } as EdgeSdLanSettingP2

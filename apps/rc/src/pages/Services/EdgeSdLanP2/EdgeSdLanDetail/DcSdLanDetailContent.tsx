@@ -35,9 +35,9 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
     {
       title: $t({ defaultMessage: 'Cluster' }),
       content: () =>
-        data?.clusterId ? (
-          <TenantLink to={`/devices/edge/${data.clusterId}/details/overview`}>
-            {data.clusterName}
+        data?.edgeClusterId ? (
+          <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+            {data.edgeClusterName}
           </TenantLink>
         ) : (
           noDataDisplay
@@ -89,7 +89,8 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
             <NetworkTable networkIds={data?.networkIds ?? []} />
           </Tabs.TabPane>
           <Tabs.TabPane
-            tab={$t({ defaultMessage: 'SmartEdges({count})' }, { count: data?.clusterId ? 1 : 0 })}
+            tab={$t({ defaultMessage: 'SmartEdges({count})' },
+              { count: data?.edgeClusterId ? 1 : 0 })}
             key='se'
           >
             <SmartEdgesTable sdLanData={data} />

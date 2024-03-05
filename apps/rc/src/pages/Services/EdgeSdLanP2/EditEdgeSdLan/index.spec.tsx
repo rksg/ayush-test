@@ -78,7 +78,7 @@ const mockedDmzData = {
   ...sdLanFormDefaultValues,
   name: 'testEditDMZSdLanService',
   venueId: 'mock_venue_id',
-  clusterId: 'mock_edge_id',
+  edgeClusterId: 'mock_edge_id',
   networkIds: ['network_1'],
   activatedNetworks: [{
     id: 'network_1',
@@ -86,7 +86,7 @@ const mockedDmzData = {
   }],
   tunnelProfileId: 't-tunnelProfile-id',
   isGuestTunnelEnabled: true,
-  guestClusterId: 'mock_edge_id_2',
+  guestEdgeClusterId: 'mock_edge_id_2',
   guestTunnelProfileId: 't-tunnelProfile-id-2',
   guestNetworkIds: ['network_4'],
   activatedGuestNetworks: [{
@@ -146,7 +146,7 @@ describe('Edit SD-LAN service', () => {
         networkIds: mockedDCData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
-        guestClusterId: mockedDCData.guestClusterId,
+        guestEdgeClusterId: mockedDCData.guestEdgeClusterId,
         guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
         guestNetworkIds: mockedDCData.activatedGuestNetworks.map(network => network.id!)
       })
@@ -166,7 +166,7 @@ describe('Edit SD-LAN service', () => {
       ...sdLanFormDefaultValues,
       name: 'testEditDMZSdLanService',
       venueId: 'mock_venue_id',
-      clusterId: 'mock_edge_id',
+      edgeClusterId: 'mock_edge_id',
       networkIds: ['network_1'],
       activatedNetworks: [{
         id: 'network_1',
@@ -174,7 +174,7 @@ describe('Edit SD-LAN service', () => {
       }],
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
-      guestClusterId: 'mock_edge_id_2',
+      guestEdgeClusterId: 'mock_edge_id_2',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworkIds: ['network_4'],
       activatedGuestNetworks: [{
@@ -207,7 +207,7 @@ describe('Edit SD-LAN service', () => {
         networkIds: mockedDmzData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
-        guestClusterId: mockedDmzData.guestClusterId,
+        guestEdgeClusterId: mockedDmzData.guestEdgeClusterId,
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId,
         guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(network => network.id!)
       })

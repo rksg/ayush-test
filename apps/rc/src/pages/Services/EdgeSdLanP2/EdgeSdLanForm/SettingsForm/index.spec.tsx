@@ -136,7 +136,7 @@ describe('Edge SD-LAN form: settings', () => {
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
       '0000000005')
-    expect(mockedSetFieldValue).toBeCalledWith('guestClusterName', 'Smart Edge 5')
+    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeClusterName', 'Smart Edge 5')
   })
 
   it('should query specific venue and edge when edit mode', async () => {
@@ -146,7 +146,7 @@ describe('Edge SD-LAN form: settings', () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('venueId', expectedVenueId)
-      form.setFieldValue('clusterId', expectedClusterId)
+      form.setFieldValue('edgeClusterId', expectedClusterId)
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
     })
@@ -216,7 +216,7 @@ describe('Edge SD-LAN form: settings', () => {
       return form
     })
     const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataListP2[0] }]
-    mockedSdLanDuplicateEdge[0].clusterId = mockEdgeList.data[4].serialNumber
+    mockedSdLanDuplicateEdge[0].edgeClusterId = mockEdgeList.data[4].serialNumber
 
     mockServer.use(
       rest.post(
@@ -270,7 +270,7 @@ const checkBasicSettings = async () => {
     .findAllByTestId('loadingIcon'))
 
   expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
-  expect(mockedSetFieldValue).toBeCalledWith('clusterId', undefined)
+  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterId', undefined)
 
   // select edge
   await userEvent.selectOptions(
@@ -278,5 +278,5 @@ const checkBasicSettings = async () => {
     '0000000002')
 
   // ensure related data to set into form
-  expect(mockedSetFieldValue).toBeCalledWith('clusterName', 'Smart Edge 2')
+  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterName', 'Smart Edge 2')
 }

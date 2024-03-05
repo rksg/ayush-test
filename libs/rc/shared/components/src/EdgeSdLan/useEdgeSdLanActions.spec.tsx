@@ -109,11 +109,11 @@ describe('useEdgeSdLanActions', () => {
     const mockedAddData = {
       name: 'testAddDMZSdLanService',
       venueId: 'mocked_venue_id',
-      clusterId: '0000000002',
+      edgeClusterId: '0000000002',
       networkIds: ['network_1'],
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
-      guestClusterId: '0000000005',
+      guestEdgeClusterId: '0000000005',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworkIds: ['network_1']
     } as EdgeSdLanSettingP2
@@ -225,11 +225,11 @@ describe('useEdgeSdLanActions', () => {
       id: 'mocked_service_id',
       name: 'testEditDMZSdLanService',
       venueId: 'mocked_venue_id',
-      clusterId: '0000000002',
+      edgeClusterId: '0000000002',
       networkIds: ['network_4'],
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
-      guestClusterId: '0000000003',
+      guestEdgeClusterId: '0000000003',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworkIds: ['network_4']
     } as EdgeSdLanSettingP2
@@ -278,14 +278,14 @@ describe('useEdgeSdLanActions', () => {
     it('change DC to DMZ scenario', async () => {
       const mockedData = _.cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
-      mockedData.guestClusterId = ''
+      mockedData.guestEdgeClusterId = ''
       mockedData.guestTunnelProfileId = ''
       mockedData.guestNetworkIds = []
       const mockedPayload = {
         ...mockedData,
         isGuestTunnelEnabled: true,
         networkIds: ['network_1', 'network_3'],
-        guestClusterId: '0000000003',
+        guestEdgeClusterId: '0000000003',
         guestTunnelProfileId: 't-tunnelProfile-id-3',
         guestNetworkIds: ['network_1','network_3']
       }
