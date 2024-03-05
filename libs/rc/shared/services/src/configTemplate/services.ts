@@ -128,20 +128,6 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         })
       }
-    }),
-    getEnhancedDhcpTemplateList: build.query<TableResult<DHCPSaveData>, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedDhcpList),
-      providesTags: [{ type: 'DhcpTemplate', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, useCasesToRefreshDhcpTemplateList, () => {
-            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
-              { type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }
-            ]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -157,8 +143,7 @@ export const {
   useCreateOrUpdateDhcpTemplateMutation,
   useDeleteDhcpTemplateMutation,
   useGetDhcpTemplateListQuery,
-  useLazyGetDhcpTemplateListQuery,
-  useGetEnhancedDhcpTemplateListQuery
+  useLazyGetDhcpTemplateListQuery
 } = servicesConfigTemplateApi
 
 

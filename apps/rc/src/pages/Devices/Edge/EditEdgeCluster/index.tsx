@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, Tabs }                                   from '@acx-ui/components'
 import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
-import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
+import { CommonOperation, Device, EdgeStatusEnum, getUrl }            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
 import { ClusterDetails }   from './ClusterDetails'
@@ -23,14 +23,20 @@ const EditEdgeCluster = () => {
   }))
   const {
     currentClusterStatus,
-    isClusterStatusLoading
+    isClusterStatusLoading,
+    isClusterAllOperational = false
   } = useGetEdgeClusterListForTableQuery({ payload: {
     filters: { clusterId: [clusterId], isCluster: [true] }
   } },{
     selectFromResult: ({ data, isLoading }) => {
+      const currentClusterStatus = data?.data[0]
       return {
-        currentClusterStatus: data?.data[0],
-        isClusterStatusLoading: isLoading
+        currentClusterStatus,
+        isClusterStatusLoading: isLoading,
+        isClusterAllOperational: (currentClusterStatus?.edgeList?.length ?? 0) > 1 &&
+        currentClusterStatus?.edgeList?.length ===
+        currentClusterStatus?.edgeList?.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.OPERATIONAL).length
       }
     }
   })
@@ -87,7 +93,15 @@ const EditEdgeCluster = () => {
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             {
               Object.entries(tabs).map(([k, v]) =>
-                (<Tabs.TabPane tab={v.title} key={k} />))
+                (
+                  <Tabs.TabPane
+                    tab={v.title}
+                    key={k}
+                    disabled={
+                      k !== 'cluster-details' && !isClusterAllOperational
+                    }
+                  />
+                ))
             }
           </Tabs>
         }
