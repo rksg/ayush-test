@@ -68,20 +68,6 @@ const tenantInstallerDetail = {
   upgradeGroup: 'production'
 }
 
-const tenantMSPDetail = {
-  createdDate: '2022-12-24T01:06:03.205+00:00',
-  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
-  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
-  id: '3061bd56e37445a8993ac834c01e2710',
-  isActivated: true,
-  maintenanceState: false,
-  name: 'Din Tai Fung',
-  ruckusUser: false,
-  status: 'active',
-  tenantType: 'MSP',
-  updatedDate: '2022-12-24T01:06:05.021+00:00',
-  upgradeGroup: 'production'
-}
 const integratorCustomersList = {
   data: [{
     accountType: 'TRIAL',
@@ -428,12 +414,6 @@ describe('Layout', () => {
   it('should render layout correctly for non-var', async () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantNonVarDetail }
-    })
-    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
-      return { data: integratorCustomersList }
-    })
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile2 }
     })
     render(
       <Provider>
