@@ -2,8 +2,9 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }                                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
 import { EdgeService, EdgeServiceTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { TenantLink, useSearchParams }                                                            from '@acx-ui/react-router-dom'
+import { TenantLink }                                                                             from '@acx-ui/react-router-dom'
 
 import { getEdgeServiceTypeString } from '../utils'
 
@@ -39,9 +40,7 @@ const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
-  const [searchParams] = useSearchParams()
-  const isSdLanP2 = searchParams.get('sdlanp2') !== null
-    && serviceData.serviceType === EdgeServiceTypeEnum.SD_LAN
+  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -49,7 +48,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
 
   const drawerContent =(
     <Form
-      labelCol={{ span: getDrawerFormLebelColMap(isSdLanP2
+      labelCol={{ span: getDrawerFormLebelColMap(isEdgeSdLanPhase2Enabled
         ? EdgeServiceTypeEnum.SD_LAN_P2
         : serviceData.serviceType) }}
       labelAlign='left'
@@ -58,12 +57,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
         label={$t({ defaultMessage: 'Service Name' })}
         children={
           <TenantLink
-            to={getServiceDetailUrl(
-              isSdLanP2
-                ? EdgeServiceTypeEnum.SD_LAN_P2
-                : serviceData.serviceType,
-              serviceData.serviceId
-            )}>
+            to={getServiceDetailUrl(serviceData.serviceType, serviceData.serviceId)}>
             {serviceData.serviceName}
           </TenantLink>
         }
@@ -73,7 +67,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
         children={getEdgeServiceTypeString($t, serviceData.serviceType)}
       />
       {
-        isSdLanP2
+        isEdgeSdLanPhase2Enabled
           ? <SdLanDetailsP2 serviceData={serviceData} />
           : getContentByType(serviceData)
       }
@@ -115,12 +109,6 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, serviceId: string
     case EdgeServiceTypeEnum.SD_LAN:
       return getServiceDetailsLink({
         type: ServiceType.EDGE_SD_LAN,
-        oper: ServiceOperation.DETAIL,
-        serviceId: serviceId
-      })
-    case EdgeServiceTypeEnum.SD_LAN_P2:
-      return getServiceDetailsLink({
-        type: ServiceType.EDGE_SD_LAN_P2,
         oper: ServiceOperation.DETAIL,
         serviceId: serviceId
       })

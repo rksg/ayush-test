@@ -46,7 +46,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const infoFields = [{
     title: $t({ defaultMessage: 'Service Name' }),
     content: () => <TenantLink to={getServiceDetailsLink({
-      type: ServiceType.EDGE_SD_LAN_P2,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.DETAIL,
       serviceId: serviceId!
     })}>

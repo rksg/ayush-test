@@ -113,7 +113,7 @@ const EdgeSdLanTable = () => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}
@@ -261,7 +261,7 @@ const EdgeSdLanTable = () => {
           pathname:
             `${basePath.pathname}/` +
             getServiceDetailsLink({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,
               serviceId: selectedRows[0].id!
             })
@@ -305,7 +305,7 @@ const EdgeSdLanTable = () => {
         extra={filterByAccess([
           <TenantLink
             to={getServiceRoutePath({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
             })}
           >

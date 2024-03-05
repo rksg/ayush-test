@@ -111,7 +111,7 @@ describe('SD-LAN Table P2', () => {
     await click(screen.getByRole('button', { name: 'Edit' }))
 
     const editPath = getServiceDetailsLink({
-      type: ServiceType.EDGE_SD_LAN_P2,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.EDIT,
       serviceId: 'mocked-sd-lan-1'
     })

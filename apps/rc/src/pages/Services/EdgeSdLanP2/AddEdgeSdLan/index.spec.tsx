@@ -64,7 +64,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 const targetPath = getServiceRoutePath({
-  type: ServiceType.EDGE_SD_LAN_P2,
+  type: ServiceType.EDGE_SD_LAN,
   oper: ServiceOperation.LIST
 })
 const mockedDmzData = {

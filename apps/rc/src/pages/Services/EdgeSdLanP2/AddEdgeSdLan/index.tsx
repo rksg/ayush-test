@@ -17,7 +17,7 @@ const AddEdgeSdLanP2 = () => {
   const navigate = useNavigate()
 
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
 

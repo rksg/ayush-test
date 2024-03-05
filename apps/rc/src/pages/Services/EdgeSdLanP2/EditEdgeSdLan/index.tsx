@@ -24,7 +24,7 @@ const EditEdgeSdLan = () => {
   const navigate = useNavigate()
   const params = useParams()
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
   const linkToServiceList = useTenantLink(cfListRoute)

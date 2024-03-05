@@ -63,7 +63,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
   const isEditMode = Boolean(editData)
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   }))
 
