@@ -40,25 +40,32 @@ function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
+  const brand360 = useTenantLink('/brand360', 'v')
   const navigate = useNavigate()
   const params = useParams()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
+
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
-
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
-
+  const isShowBrand360 =
+    tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR ||
+    tenantType === AccountType.MSP
+  const indexPath = isGuestManager
+    ? '/users/guestsManager'
+    : isShowBrand360
+      ? '/brand360'
+      : '/dashboard'
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -73,6 +80,14 @@ function Layout () {
       })
     }
   }, [isGuestManager, isDPSKAdmin, params['*']])
+  useEffect(() => {
+    if (isShowBrand360) {
+      navigate({
+        ...brand360,
+        pathname: `${brand360.pathname}`
+      })
+    }
+  }, [isShowBrand360])
 
   useEffect(() => {
     if (data && userProfile) {

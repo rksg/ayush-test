@@ -53,7 +53,35 @@ const tenantLSPDetail = {
   updatedDate: '2022-12-24T01:06:05.021+00:00',
   upgradeGroup: 'production'
 }
+const tenantInstallerDetail = {
+  createdDate: '2022-12-24T01:06:03.205+00:00',
+  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  id: '3061bd56e37445a8993ac834c01e2710',
+  isActivated: true,
+  maintenanceState: false,
+  name: 'Din Tai Fung',
+  ruckusUser: false,
+  status: 'active',
+  tenantType: 'MSP_INSTALLER',
+  updatedDate: '2022-12-24T01:06:05.021+00:00',
+  upgradeGroup: 'production'
+}
 
+const tenantMSPDetail = {
+  createdDate: '2022-12-24T01:06:03.205+00:00',
+  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
+  id: '3061bd56e37445a8993ac834c01e2710',
+  isActivated: true,
+  maintenanceState: false,
+  name: 'Din Tai Fung',
+  ruckusUser: false,
+  status: 'active',
+  tenantType: 'MSP',
+  updatedDate: '2022-12-24T01:06:05.021+00:00',
+  upgradeGroup: 'production'
+}
 const integratorCustomersList = {
   data: [{
     accountType: 'TRIAL',
@@ -304,7 +332,7 @@ describe('Layout', () => {
     await waitFor(async () => expect(await screen.findByText('MSP Customers')).toBeInTheDocument())
   })
 
-  it('should show menu options in case of LSP has no REC data', async () => {
+  it('should show menu options in case of LSP has REC data', async () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantLSPDetail }
     })
@@ -322,7 +350,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.getByRole('menuitem', { name: 'Brand 360' })).toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeVisible()
     await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
     await waitFor(async () => expect(await screen.findByText('MSP Customers')).not.toBeVisible())
   })
@@ -401,7 +429,12 @@ describe('Layout', () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantNonVarDetail }
     })
-
+    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
+      return { data: integratorCustomersList }
+    })
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile2 }
+    })
     render(
       <Provider>
         <Layout />
@@ -426,5 +459,22 @@ describe('Layout', () => {
       </Provider>, { route: { params } })
 
     expect(await screen.findByRole('menuitem', { name: 'Config Templates' })).toBeVisible()
+  })
+  it('should render layout correctly for MSP_INSTALLER', async () => {
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantInstallerDetail }
+    })
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeNull()
+    expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
+    expect(await screen.findByText('My Customers')).toBeVisible()
   })
 })
