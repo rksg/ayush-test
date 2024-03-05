@@ -31,7 +31,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import * as UI                              from '../NetworkMoreSettings/styledComponents'
+import * as UI                     from '../NetworkMoreSettings/styledComponents'
 
 const { Option } = Select
 
@@ -252,12 +252,12 @@ function SettingsForm () {
         <>
           <UI.FieldLabel width={labelWidth}>
             <Space>
-            { $t({ defaultMessage: 'MAC Authentication' }) }
-            <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='right'
-              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
+              { $t({ defaultMessage: 'MAC Authentication' }) }
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
             </Space>
             <Form.Item
               name={['wlan', 'macAddressAuthentication']}
