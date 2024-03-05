@@ -20,14 +20,17 @@ import {
   renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
-  useDeleteAAAPolicyTemplateMutation,
   useDelAppPolicyMutation,
   useDelDevicePolicyMutation,
   useDeleteAccessControlProfileMutation,
   useDeleteDpskTemplateMutation,
+  useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
-  useGetConfigTemplateListQuery
+  useDeleteVenueTemplateMutation,
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
+  useGetConfigTemplateListQuery,
+  useDeleteDhcpTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -39,7 +42,8 @@ import {
   getConfigTemplateEditPath,
   ServiceType,
   ServiceOperation,
-  serviceTypeLabelMapping
+  serviceTypeLabelMapping,
+  AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -47,13 +51,13 @@ import { getIntl }                                 from '@acx-ui/utils'
 
 import {
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, createAccessControlPolicyMenuItem,
+  AccessControlSubPolicyVisibility,
+  createAccessControlPolicyMenuItem, INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
 import * as UI                   from './styledComponents'
-
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -79,8 +83,17 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
+          setAccessControlSubPolicyVisible({
+            ...INIT_STATE,
+            [selectedRow.type]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
@@ -254,6 +267,7 @@ function useDeleteMutation () {
   const [ deleteDevice ] = useDelDevicePolicyMutation()
   const [ deleteApplication ] = useDelAppPolicyMutation()
   const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -264,7 +278,8 @@ function useDeleteMutation () {
     [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet
+    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }
 
@@ -299,7 +314,8 @@ function getAddTemplateMenuProps (props: {
         key: 'add-service',
         label: $t({ defaultMessage: 'Services' }),
         children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
+          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
         ]
       }
     ]

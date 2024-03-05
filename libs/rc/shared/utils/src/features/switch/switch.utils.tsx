@@ -15,6 +15,8 @@ import {
   SWITCH_SERIAL_PATTERN
 } from '../../types'
 
+import { compareSwitchVersion } from './switch.firmware.utils'
+
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
   ['CRJ', 'ICX7750-48C'],
@@ -700,6 +702,17 @@ export const getAdminPassword = (
       />
       : $t({ defaultMessage: 'Custom' })
     )
+}
+
+export const isFirmwareSupportAdminPassword = (
+  firmwareVersion: string
+) => {
+  if (firmwareVersion.includes('09010')) {
+    return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
+  } else if (firmwareVersion.includes('10010')) {
+    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
+  }
+  return false
 }
 
 export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {

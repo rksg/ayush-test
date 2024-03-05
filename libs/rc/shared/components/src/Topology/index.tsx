@@ -82,8 +82,19 @@ export function TopologyGraph (props:{ venueId?: string,
 
       const { edges, nodes } = topologyGraphData as GraphData
 
-      const uiEdges: Link[] = edges.map(
-        (edge, idx) => { return { ...edge, id: 'edge_'+idx } as Link })
+      let uiEdges: Link[] = []
+      edges.forEach((edge, idx) => {
+        if(nodes.find(node => node.id === edge.to && node.isConnectedCloud)){
+          const newEdge = {
+            ...edge,
+            from: edge.to,
+            to: edge.from
+          }
+          uiEdges.push({ ...newEdge, id: 'edge_'+idx } as Link)
+        } else {
+          uiEdges.push({ ...edge, id: 'edge_'+idx } as Link)
+        }
+      })
 
       // Add nodes to the graph.
 
@@ -133,6 +144,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
       // getting all root nodes to connect to default cloud node
       const rootNodes = uiNodes.filter((node) => {
+        if(node.config?.type == DeviceTypes.Switch && !node.config?.isConnectedCloud) return
         if (node.id !== 'cloud_id' && !allTargetNodes.includes(node.id)) {
           return node
         }
@@ -141,9 +153,9 @@ export function TopologyGraph (props:{ venueId?: string,
 
       // if 2 switches are interconnected with 2 edges then it needs to
       // find if any / both nodes connected to cloud. For this purpose we are using
-      // cloudPort check
+      // check cloudPort and node is connected to cloud
       uiNodes.forEach(node => {
-        if(node.config?.cloudPort)
+        if(node.config?.cloudPort && node.config?.isConnectedCloud)
           rootNodes.push(node)
       })
 
