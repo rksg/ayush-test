@@ -11,12 +11,12 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }      from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
-  useGetEdgeListQuery,
   useDeleteEdgeSdLanMutation,
-  useGetEdgeSdLanP2ViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -45,11 +45,14 @@ const venueOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const edgeOptionsDefaultPayload = {
-  fields: ['name', 'serialNumber'],
-  pageSize: 10000,
+const clusterOptionsDefaultPayload = {
+  fields: [
+    'name',
+    'clusterId'
+  ],
   sortField: 'name',
-  sortOrder: 'ASC'
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 const EdgeSdLanTable = () => {
@@ -87,19 +90,19 @@ const EdgeSdLanTable = () => {
     }
   )
 
-  const { edgeOptions } = useGetEdgeListQuery(
-    { payload: edgeOptionsDefaultPayload },
+  const { clusterOptions } = useGetEdgeClusterListQuery(
+    { payload: clusterOptionsDefaultPayload },
     {
-      selectFromResult: ({ data }) => {
+      selectFromResult: ({ data, isLoading }) => {
         return {
-          edgeOptions: data?.data.map((item) => ({
-            value: item.name,
-            key: item.serialNumber
-          }))
+          clusterOptions: data?.data.map(item => ({
+            value: item.name!,
+            key: item.clusterId!
+          })),
+          isLoading
         }
       }
-    }
-  )
+    })
 
   const columns: TableProps<EdgeSdLanViewDataP2>['columns'] = [
     {
@@ -142,7 +145,7 @@ const EdgeSdLanTable = () => {
       key: 'edgeClusterId',
       dataIndex: 'edgeClusterId',
       sorter: true,
-      filterable: edgeOptions,
+      filterable: clusterOptions,
       render: (__, row) => {
         return <TenantLink
           to={`/devices/edge/${row.edgeClusterId}/details/overview`}
@@ -156,7 +159,7 @@ const EdgeSdLanTable = () => {
       key: 'guestEdgeClusterId',
       dataIndex: 'guestEdgeClusterId',
       sorter: true,
-      filterable: edgeOptions,
+      filterable: clusterOptions,
       render: (__, row) => {
         return row.guestEdgeClusterId ? <TenantLink
           to={`/devices/edge/${row.guestEdgeClusterId}/details/overview`}
@@ -210,7 +213,7 @@ const EdgeSdLanTable = () => {
       dataIndex: 'guestTunnelProfileId',
       sorter: true,
       render: (__, row) => {
-        return <TenantLink
+        return row.guestTunnelProfileId ? <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.TUNNEL_PROFILE,
             oper: PolicyOperation.DETAIL,
@@ -218,7 +221,7 @@ const EdgeSdLanTable = () => {
           })}
         >
           {row.guestTunnelProfileName}
-        </TenantLink> }
+        </TenantLink> : '' }
     },
     {
       title: $t({ defaultMessage: 'Health' }),

@@ -28,7 +28,7 @@ import { mockedVenueList } from '../../__tests__/fixtures'
 import { SettingsForm } from '.'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -61,13 +61,13 @@ jest.mock('antd', () => {
 
 const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
-const mockedReqEdgesList = jest.fn()
+const mockedReqClusterList = jest.fn()
 
 describe('Edge SD-LAN form: settings', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockClear()
     mockedReqVenuesList.mockClear()
-    mockedReqEdgesList.mockClear()
+    mockedReqClusterList.mockClear()
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -85,10 +85,10 @@ describe('Edge SD-LAN form: settings', () => {
         }
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (req, res, ctx) => {
-          mockedReqEdgesList(req.body)
-          return res(ctx.json(mockEdgeList))
+          mockedReqClusterList(req.body)
+          return res(ctx.json(mockEdgeClusterList))
         }
       )
     )
@@ -135,13 +135,13 @@ describe('Edge SD-LAN form: settings', () => {
     // select DMZ edge
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
-      '0000000005')
-    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeClusterName', 'Smart Edge 5')
+      'clusterId_5')
+    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeClusterName', 'Edge Cluster 5')
   })
 
   it('should query specific venue and edge when edit mode', async () => {
     const expectedVenueId = 'venue_00005'
-    const expectedClusterId = '0000000005'
+    const expectedClusterId = 'clusterId_5'
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -171,12 +171,12 @@ describe('Edge SD-LAN form: settings', () => {
     })
 
     await waitFor(() => {
-      expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+      expect(mockedReqClusterList).toBeCalledWith({
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
           venueId: [expectedVenueId],
-          serialNumber: [expectedClusterId],
-          deviceStatus: Object.values(EdgeStatusEnum)
+          clusterId: [expectedClusterId],
+          clusterStatus: Object.values(EdgeStatusEnum)
             .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
@@ -216,7 +216,7 @@ describe('Edge SD-LAN form: settings', () => {
       return form
     })
     const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataListP2[0] }]
-    mockedSdLanDuplicateEdge[0].edgeClusterId = mockEdgeList.data[4].serialNumber
+    mockedSdLanDuplicateEdge[0].edgeClusterId = mockEdgeClusterList.data[4].clusterId
 
     mockServer.use(
       rest.post(
@@ -242,11 +242,11 @@ describe('Edge SD-LAN form: settings', () => {
 
     await screen.findByText('Cluster')
     await waitFor(() => {
-      expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+      expect(mockedReqClusterList).toBeCalledWith({
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
           venueId: [mockedVenueList.data[4].id],
-          deviceStatus: Object.values(EdgeStatusEnum)
+          clusterStatus: Object.values(EdgeStatusEnum)
             .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
@@ -275,8 +275,8 @@ const checkBasicSettings = async () => {
   // select edge
   await userEvent.selectOptions(
     await within(formBody).findByRole('combobox', { name: 'Cluster' }),
-    '0000000002')
+    'clusterId_2')
 
   // ensure related data to set into form
-  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterName', 'Smart Edge 2')
+  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterName', 'Edge Cluster 2')
 }

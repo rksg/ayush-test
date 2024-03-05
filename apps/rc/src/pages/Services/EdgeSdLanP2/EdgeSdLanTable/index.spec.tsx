@@ -9,9 +9,10 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 import EdgeSdLanTable from '.'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 const mockedUsedNavigate = jest.fn()
-const mockedGetEdgeList = jest.fn()
+const mockedGetClusterList = jest.fn()
 const mockedDeleteReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -28,7 +29,7 @@ describe('SD-LAN Table P2', () => {
     }
 
     mockedUsedNavigate.mockReset()
-    mockedGetEdgeList.mockReset()
+    mockedGetClusterList.mockReset()
     mockedDeleteReq.mockReset()
 
     mockServer.use(
@@ -41,10 +42,10 @@ describe('SD-LAN Table P2', () => {
         (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (_, res, ctx) => {
-          mockedGetEdgeList()
-          return res(ctx.json(mockEdgeList))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => {
+          mockedGetClusterList()
+          return res(ctx.json(mockEdgeClusterList))
         }
       ),
       rest.delete(
@@ -68,7 +69,7 @@ describe('SD-LAN Table P2', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     screen.getByRole('columnheader', { name: 'Cluster' })
-    await waitFor(() => expect(mockedGetEdgeList).toBeCalled())
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(3)
     screen.getByRole('row', { name: /SE_Cluster 3/i })

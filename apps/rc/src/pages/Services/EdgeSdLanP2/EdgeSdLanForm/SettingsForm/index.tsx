@@ -8,12 +8,11 @@ import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { InformationSolid }                        from '@acx-ui/icons'
 import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
-  useGetEdgeListQuery,
+  useGetEdgeClusterListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeStatusEnum,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
@@ -64,39 +63,37 @@ export const SettingsForm = () => {
       }
     } })
 
-  const {
-    edgeOptions,
-    isLoading: isEdgeOptionsLoading
-  } = useGetEdgeListQuery({
-    params,
-    payload: {
+  const { clusterOptions, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
+    { payload: {
       fields: [
         'name',
-        'serialNumber',
-        'venueId'
+        'clusterId',
+        'venueId',
+        'clusterStatus'
       ],
       filters: {
         venueId: [venueId],
         // eslint-disable-next-line max-len
-        ...(editMode && { serialNumber: [edgeClusterId, ...(guestEdgeClusterId ? [guestEdgeClusterId] : [])] }),
-        deviceStatus: Object.values(EdgeStatusEnum)
-          .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+        ...(editMode && { clusterId: [edgeClusterId, ...(guestEdgeClusterId ? [guestEdgeClusterId] : [])] })
+        // TODO: need confirm
+        // clusterStatus: Object.values(EdgeStatusEnum)
+        //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
       } } },
-  {
-    skip: !venueId || isSdLanBoundEdgesLoading,
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        edgeOptions: data?.data
-          .filter(item => editMode ? true : sdLanBoundEdges.indexOf(item.serialNumber) === -1)
-          .map(item => ({
-            label: item.name,
-            value: item.serialNumber,
-            venueId: item.venueId
-          })),
-        isLoading
+    {
+      skip: !venueId || isSdLanBoundEdgesLoading,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterOptions: data?.data
+            .filter(item => editMode ? true : sdLanBoundEdges.indexOf(item.clusterId!) === -1)
+            .map(item => ({
+              label: item.name,
+              value: item.clusterId,
+              venueId: item.venueId
+            })),
+          isLoading
+        }
       }
-    }
-  })
+    })
 
   // prepare venue info
   useEffect(() => {
@@ -107,13 +104,13 @@ export const SettingsForm = () => {
     form.setFieldValue('edgeClusterId', undefined)
   }
 
-  const onEdgeChange = (val: string) => {
-    const edgeData = edgeOptions?.filter(i => i.value === val)[0]
+  const onEdgeClusterChange = (val: string) => {
+    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
     form.setFieldValue('edgeClusterrName', edgeData?.label)
   }
 
-  const onDmzEdgeChange = (val: string) => {
-    const edgeData = edgeOptions?.filter(i => i.value === val)[0]
+  const onDmzClusterChange = (val: string) => {
+    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
     form.setFieldValue('guestEdgeClusterName', edgeData?.label)
   }
 
@@ -182,11 +179,11 @@ export const SettingsForm = () => {
                     }]}
                   >
                     <Select
-                      loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                      options={edgeOptions}
+                      loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                      options={clusterOptions}
                       placeholder={$t({ defaultMessage: 'Select ...' })}
                       disabled={editMode}
-                      onChange={onEdgeChange}
+                      onChange={onEdgeClusterChange}
                     />
 
                   </Form.Item>
@@ -244,11 +241,11 @@ export const SettingsForm = () => {
                         }]}
                       >
                         <Select
-                          loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                          options={edgeOptions?.filter(item => item.value !== edgeClusterId)}
+                          loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                          options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
                           placeholder={$t({ defaultMessage: 'Select ...' })}
                           disabled={editMode}
-                          onChange={onDmzEdgeChange}
+                          onChange={onDmzClusterChange}
                         />
                       </Form.Item>
                       <UI.ClusterSelectorHelper>
