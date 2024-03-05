@@ -188,7 +188,7 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
   const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]
 
   // eslint-disable-next-line max-len
-  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode && !isTemplate })
+  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode || !isTemplate })
 
   return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }

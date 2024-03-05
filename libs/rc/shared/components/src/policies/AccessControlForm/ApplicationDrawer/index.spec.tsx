@@ -7,10 +7,11 @@ import { Form }              from 'antd'
 import { SliderSingleProps } from 'antd/lib/slider'
 import { rest }              from 'msw'
 
-import { AccessControlUrls }                              from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }               from '@acx-ui/test-utils'
 
+import { enhancedApplicationPolicyListResponse }                                       from '../../AccessControl/__tests__/fixtures'
 import { applicationDetail, avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../__tests__/fixtures'
 
 import { ApplicationDrawer } from './index'
@@ -118,7 +119,8 @@ describe('ApplicationDrawer Component with view mode', () => {
             ctx.json(applicationDetail)
           )
         }
-      ))
+      ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))
   })
 
   it('Render ApplicationDrawer component successfully with viewMode', async () => {
@@ -139,7 +141,7 @@ describe('ApplicationDrawer Component with view mode', () => {
 
     await screen.findByText('viewText')
 
-    fireEvent.click(screen.getByText('viewText'))
+    await userEvent.click(screen.getByText('viewText'))
 
     expect(getApplicationDetail).toHaveBeenCalled()
 
@@ -190,7 +192,8 @@ describe('ApplicationDrawer Component', () => {
             ctx.json(applicationDetail)
           )
         }
-      ))
+      ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))
   })
   it('Render ApplicationDrawer component successfully with new added profile', async () => {
     render(

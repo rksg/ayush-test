@@ -6,9 +6,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AccessControlUrls }                  from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, render, screen, within }                from '@acx-ui/test-utils'
+
+import { enhancedLayer2PolicyListResponse } from '../AccessControl/__tests__/fixtures'
 
 import { Layer2Drawer } from './Layer2Drawer'
 
@@ -71,19 +73,18 @@ jest.mock('antd', () => {
 })
 
 describe('Layer2Drawer Component', () => {
-  it('Render Layer2Drawer component successfully', async () => {
-    mockServer.use(rest.get(
-      AccessControlUrls.getL2AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer2)
-      )
-    ), rest.post(
-      AccessControlUrls.addL2AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer2Response)
-      )
-    ))
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(queryLayer2))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(AccessControlUrls.addL2AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer2Response)))
+    )
+  })
 
+  it('Render Layer2Drawer component successfully', async () => {
     render(
       <Provider>
         <Form>
@@ -154,18 +155,6 @@ describe('Layer2Drawer Component', () => {
   })
 
   it('Render Layer2Drawer component clear list successfully', async () => {
-    mockServer.use(rest.get(
-      AccessControlUrls.getL2AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer2)
-      )
-    ), rest.post(
-      AccessControlUrls.addL2AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer2Response)
-      )
-    ))
-
     render(
       <Provider>
         <Form>
@@ -223,11 +212,6 @@ describe('Layer2Drawer Component', () => {
 
   it('Render Layer2Drawer component in viewMode successfully', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getL2AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer2)
-      )
-    ), rest.get(
       AccessControlUrls.getL2AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer2Detail)

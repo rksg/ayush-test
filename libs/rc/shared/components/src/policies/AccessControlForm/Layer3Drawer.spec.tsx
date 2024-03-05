@@ -6,9 +6,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AccessControlUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, render, screen }                        from '@acx-ui/test-utils'
+
+import { enhancedLayer3PolicyListResponse } from '../AccessControl/__tests__/fixtures'
 
 import { layer3PolicyListResponse } from './__tests__/fixtures'
 import { Layer3Drawer }             from './Layer3Drawer'
@@ -202,14 +204,18 @@ const subnetSetting = async () => {
 }
 
 describe('Layer3Drawer Component', () => {
-  it('Render Layer3Drawer component with anyIp option successfully', async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.post(AccessControlUrls.addL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3Response))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
     )
+  })
 
+  it('Render Layer3Drawer component with anyIp option successfully', async () => {
     render(
       <Provider>
         <Form>
@@ -241,26 +247,13 @@ describe('Layer3Drawer Component', () => {
       (_, res, ctx) => res(
         ctx.json(queryLayer3Update)
       )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
+    ))
 
     await screen.findByRole('option', { name: 'layer3-test' })
 
   })
 
   it.skip('Render Layer3Drawer component with ip option successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addL3AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer3Response)
-      )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
-
     render(
       <Provider>
         <Form>
@@ -288,16 +281,6 @@ describe('Layer3Drawer Component', () => {
   })
 
   it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addL3AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer3Response)
-      )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
-
     render(
       <Provider>
         <Form>
@@ -372,11 +355,6 @@ describe('Layer3Drawer Component', () => {
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3)
-      )
-    ), rest.get(
       AccessControlUrls.getL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer3Detail)
