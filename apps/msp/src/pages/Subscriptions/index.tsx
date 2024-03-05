@@ -324,7 +324,8 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
+        status: (response?.status === 'FUTURE') ? 'VALID' : response?.status
       }
     })
 
