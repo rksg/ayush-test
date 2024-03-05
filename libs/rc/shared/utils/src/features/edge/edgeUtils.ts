@@ -232,3 +232,23 @@ export async function lanPortsubnetValidator (
   }
   return Promise.resolve()
 }
+
+export const validateSubnetIsConsistent = (
+  allIps: { ip?: string, subnet?: string }[],
+  value?: string
+) => {
+  if(!allIps || allIps.length < 2 || !value) return Promise.resolve()
+  const { $t } = getIntl()
+  for(let i=0; i<allIps.length; i++) {
+    for(let j=i+1; j<allIps.length; j++) {
+      if(i === allIps.length - 1) break
+      const first = new Netmask(`${allIps[i].ip}/${allIps[i].subnet}`)
+      const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
+      if(first.first !== second.first || first.last !== second.last) {
+        // eslint-disable-next-line max-len
+        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
+      }
+    }
+  }
+  return Promise.resolve()
+}

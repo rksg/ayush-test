@@ -42,7 +42,7 @@ const mockedAllNodeData = [
     nodeName: 'Smart Edge 1',
     serialNumber: 'serialNumber-1',
     interfaceName: 'lag0',
-    ip: '192.168.11.136',
+    ip: '192.168.12.135',
     subnet: '255.255.255.0'
   },
   {
@@ -69,7 +69,7 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     expect(screen.getByText('Select Cluster Interface: Smart Edge 1')).toBeVisible()
     expect(screen.getByRole('combobox', { name: /Set cluster interface on/i })).toHaveValue('lag0')
-    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.11.136')
+    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.12.135')
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toHaveValue('255.255.255.0')
   })
 
@@ -87,7 +87,7 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     expect(screen.getByText('Select Cluster Interface: Smart Edge 1')).toBeVisible()
     expect(screen.getByRole('combobox', { name: /Set cluster interface on/i })).toHaveValue('lag0')
-    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.11.136')
+    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.12.135')
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toHaveValue('255.255.255.0')
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await waitFor(() => expect(mockedHandleFinishFn).toBeCalledWith(mockedAllNodeData[0]))
