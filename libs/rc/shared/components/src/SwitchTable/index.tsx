@@ -344,7 +344,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       key: 'extIp',
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
-      sorter: false,
+      sorter: true,
       show: false,
       render: (_: React.ReactNode, row: SwitchRow) => {
         return row.isFirstLevel ? row.extIp || noDataDisplay : ''
