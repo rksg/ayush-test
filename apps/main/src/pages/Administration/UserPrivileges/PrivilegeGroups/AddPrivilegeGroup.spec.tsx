@@ -107,7 +107,6 @@ describe('Add Privilege Group', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Select venues' }))
     await userEvent.click(screen.getByRole('radio', { name: 'All Venues' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Select customers' }))
     await userEvent.click(screen.getByRole('radio', { name: 'All Customers' }))
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))

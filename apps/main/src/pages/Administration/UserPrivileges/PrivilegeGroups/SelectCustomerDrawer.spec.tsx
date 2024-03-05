@@ -46,7 +46,7 @@ const customerList = {
       apSwLicenses: 50,
       installerCount: 0,
       integratorCount: 0,
-      children: [{ name: 'Venue B', id: 'BB', selected: false }]
+      children: [{ name: 'Venue B', id: 'BBB', selected: false }]
     },
     {
       id: '5d4b605aa0604241b2cd7a238b7d5c56',
@@ -259,6 +259,8 @@ describe('SelectCustomerDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(customerList.data.length + 1)
+    expect(checkboxes[1]).toBeChecked()
+    expect(checkboxes[2]).toBeChecked()
     await userEvent.click(checkboxes[1])
     await userEvent.click(checkboxes[2])
 

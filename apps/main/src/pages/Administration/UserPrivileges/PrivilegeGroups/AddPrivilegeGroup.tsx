@@ -347,18 +347,18 @@ export function AddPrivilegeGroup () {
             {isOnboardedMsp ? <MspScopeForm /> : <ScopeForm />}
           </Col>
         </Row>
-        <SelectVenuesDrawer
+        {selectVenueDrawer && <SelectVenuesDrawer
           visible={selectVenueDrawer}
           selected={selectedVenus}
           setVisible={setSelectVenueDrawer}
           setSelected={setSelectedVenus}
-        />
-        <SelectCustomerDrawer
+        />}
+        {selectCustomerDrawer && <SelectCustomerDrawer
           visible={selectCustomerDrawer}
           selected={selectedCustomers}
           setVisible={setSelectCustomerDrawer}
           setSelected={setSelectedCustomers}
-        />
+        />}
 
       </StepsForm.StepForm>
     </StepsForm>

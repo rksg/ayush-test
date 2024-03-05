@@ -114,8 +114,6 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
           selectedRowKeys: selectedKeys,
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
-            // eslint-disable-next-line no-console
-            console.log(selRows)
           },
           checkStrictly: false
         }}
