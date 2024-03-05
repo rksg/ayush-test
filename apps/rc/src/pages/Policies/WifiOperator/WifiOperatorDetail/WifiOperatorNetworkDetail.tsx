@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps }                              from '@acx-ui/components'
@@ -6,7 +8,6 @@ import { WifiNetwork, useTableQuery }                           from '@acx-ui/rc
 import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
 
 import { SimpleListTooltip } from '../../../../../../../libs/rc/shared/components/src/SimpleListTooltip'
-import { useEffect, useState } from 'react'
 
 const defaultPayload = {
   fields: [
@@ -26,7 +27,7 @@ const WifiOperatorNetworkDetail = () => {
   const params = useParams()
   const { policyId } = params
   const [detailData, setDetailData] = useState<WifiNetwork[]>([])
-  const [networkFilters, setNetworkFilters] = useState<{id: string[]}>({ id: [] })
+  const [networkFilters, setNetworkFilters] = useState<{ id: string[] }>({ id: [] })
 
   const defaultWifiOperatorPayload = {
     fields: ['id', 'networkIds', 'friendlyNames', 'friendlyNameCount'],
@@ -91,7 +92,9 @@ const WifiOperatorNetworkDetail = () => {
     if (!data)
       return
 
-    const networkIdList = data?.data.filter(item => item.networkIds).flatMap(policy => policy.networkIds) ?? []
+    const networkIdList = data?.data
+      .filter(item => item.networkIds)
+      .flatMap(policy => policy.networkIds) ?? []
     if (networkIdList && networkIdList.length > 0) {
       const newNetworkFilters = { id: networkIdList as string[] }
       setNetworkFilters(newNetworkFilters)
@@ -100,9 +103,8 @@ const WifiOperatorNetworkDetail = () => {
         filters: newNetworkFilters
       })
     }
-    
   }, [data])
-  
+
   useEffect(()=>{
     if (tableQuery.data?.data) {
       setDetailData(tableQuery.data?.data)

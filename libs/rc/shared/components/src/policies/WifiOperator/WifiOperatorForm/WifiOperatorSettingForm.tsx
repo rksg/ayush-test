@@ -1,6 +1,5 @@
 import { Button, Form, Input, Space } from 'antd'
 import TextArea                       from 'antd/lib/input/TextArea'
-import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
 import { GridCol, GridRow, Select, StepsFormLegacy, Subtitle }             from '@acx-ui/components'
