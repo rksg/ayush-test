@@ -247,7 +247,7 @@ function SettingsForm () {
           )}
         </div>
         {support8021xMacAuth &&
-        <>
+        <div>
           <Form.Item>
             <Form.Item
               noStyle
@@ -277,7 +277,7 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           }
-        </>
+        </div>
         }
       </Space>
     )
