@@ -268,7 +268,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
               validateDuplicateAclName(value, aclsTable.filter(item => item.aclRules === value)) :
               validateDuplicateAclName(value, aclsTable) }
           ]}
-          children={<Input style={{ width: '400px' }} disabled={editMode}/>}
+          children={<Input style={{ width: '400px' }} />}
         />
         <Form.Item
           name='aclType'
