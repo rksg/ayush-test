@@ -5,6 +5,7 @@ import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   CalendarOutlined,
@@ -70,10 +71,13 @@ function ApplyCalendar ({
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
+  const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT)
   const onApply = (date: Moment) => {
     const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
     if (futureTime <= date){
-      scheduleRecommendation({ id, type, scheduledAt: date.toISOString() })
+      scheduleRecommendation({
+        id, type, scheduledAt: date.toISOString(), isRecommendationRevertEnabled
+      })
     } else {
       showToast({
         type: 'error',
@@ -169,7 +173,9 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
-const getAvailableActions = (recommendation: RecommendationActionType) => {
+const getAvailableActions = (
+  recommendation: RecommendationActionType, isRecommendationRevertEnabled: boolean
+) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {
@@ -217,7 +223,10 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(appliedOnce && recommendation.code.startsWith('c-crrm')),
+            disabled: !(isRecommendationRevertEnabled &&
+              appliedOnce &&
+              recommendation.code.startsWith('c-crrm')
+            ),
             type: 'Revert',
             initialDate: 'futureDate'
           })
@@ -262,7 +271,7 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
         {
           icon: actions.schedule({
             ...props,
-            disabled: !recommendation.code.startsWith('c-crrm'),
+            disabled: !(isRecommendationRevertEnabled && recommendation.code.startsWith('c-crrm')),
             type: 'Revert',
             initialDate: 'futureDate'
           })
@@ -291,7 +300,8 @@ const getAvailableActions = (recommendation: RecommendationActionType) => {
 
 export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
   const { recommendation } = props
-  const actionButtons = getAvailableActions(recommendation)
+  const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT)
+  const actionButtons = getAvailableActions(recommendation, isRecommendationRevertEnabled)
   return <UI.Actions>
     {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
   </UI.Actions>

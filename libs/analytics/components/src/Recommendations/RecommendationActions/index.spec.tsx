@@ -1,6 +1,7 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { Provider, recommendationUrl }                          from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
 
@@ -237,6 +238,7 @@ describe('RecommendationActions', () => {
   })
   it('does not allow scheduling', async () => {
     [
+      'applyfailed',
       'beforeapplyinterrupted',
       'afterapplyinterrupted',
       'reverted',
@@ -297,7 +299,7 @@ describe('RecommendationActions', () => {
       )
       const inputs = await within(container).findAllByPlaceholderText('Select date')
       const input = inputs.filter(input => input.getAttribute('disabled') === null)
-      expect(input).toHaveLength(2)
+      expect(input).toHaveLength(1)
     })
     it('applyfailed with regular recommendation', async () => {
       const recommendation = { ...mockedCrrm,
@@ -321,7 +323,7 @@ describe('RecommendationActions', () => {
       )
       const inputs = await within(container).findAllByPlaceholderText('Select date')
       const input = inputs.filter(input => input.getAttribute('disabled') === null)
-      expect(input).toHaveLength(1)
+      expect(input).toHaveLength(0)
     })
   })
   it('should handle cancel mutation correctly', async () => {
@@ -356,6 +358,60 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(await screen.findByText('Scheduled time cannot be before 07/15/2023 14:15'))
       .toBeVisible()
+  })
+  describe('isRecommendationRevertEnable', () => {
+    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+    it('does not allow scheduling', async () => {
+      [
+        'beforeapplyinterrupted',
+        'afterapplyinterrupted',
+        'reverted',
+        'applyscheduleinprogress',
+        'revertscheduleinprogress'
+      ].forEach(async (statusEnum) => {
+        const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+        const div = document.createElement('div')
+        const { container } = render(
+          <RecommendationActions {...{ recommendation }} />,
+          { wrapper: Provider, container: div }
+        )
+        const inputs = await within(container).findAllByPlaceholderText('Select date')
+        const input = inputs.find(input => input.getAttribute('disabled') === null)
+        expect(input).toBeUndefined()
+      })
+    })
+    it('2st applyscheduled with continuous recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyscheduled',
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'applyscheduled' }
+        ]
+      } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(2)
+    })
+    it('applyfailed with continuous recommendation', async () => {
+      const recommendation = {
+        ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
   })
 })
 
