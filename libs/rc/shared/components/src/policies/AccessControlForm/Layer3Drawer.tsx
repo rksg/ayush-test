@@ -49,9 +49,9 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 
-import { AddModeProps, editModeProps }                           from './AccessControlForm'
-import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY } from './constants'
-import { useScrollLock }                                         from './ScrollLock'
+import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
+import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import { useScrollLock }                                                                from './ScrollLock'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -1114,21 +1114,9 @@ const GetL3AclPolicyListInstance = (requestId: string): {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const defaultPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'name'
-    ],
-    page: 1,
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'DESC'
-  }
-
   const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
     params: params,
-    payload: defaultPayload
+    payload: QUERY_DEFAULT_PAYLOAD
   },
   {
     selectFromResult ({ data }) {

@@ -23,7 +23,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import AccessControlComponent from './AccessControlComponent'
+import AccessControlComponent    from './AccessControlComponent'
+import { QUERY_DEFAULT_PAYLOAD } from './constants'
 
 type AccessControlSettingFormProps = {
   editMode: boolean,
@@ -164,20 +165,8 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const defaultPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'name'
-    ],
-    page: 1,
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'DESC'
-  }
-
   const tableQuery = useGetAccessControlProfileTemplateListQuery({
-    params, payload: defaultPayload
+    params, payload: QUERY_DEFAULT_PAYLOAD
   }, { skip: !isTemplate })
 
   const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]

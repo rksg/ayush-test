@@ -41,9 +41,9 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 
-import { AddModeProps, editModeProps }     from './AccessControlForm'
-import { PROFILE_MAX_COUNT_LAYER2_POLICY } from './constants'
-import { useScrollLock }                   from './ScrollLock'
+import { AddModeProps, editModeProps }                            from './AccessControlForm'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import { useScrollLock }                                          from './ScrollLock'
 
 
 const { useWatch } = Form
@@ -719,21 +719,9 @@ const GetL2AclPolicyListInstance = (requestId: string): {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const defaultPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'name'
-    ],
-    page: 1,
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'DESC'
-  }
-
   const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
     params: params,
-    payload: defaultPayload
+    payload: QUERY_DEFAULT_PAYLOAD
   }, {
     selectFromResult ({ data }) {
       return {

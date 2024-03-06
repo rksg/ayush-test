@@ -41,9 +41,9 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }     from '../AccessControlForm'
-import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
-import { useScrollLock }                   from '../ScrollLock'
+import { AddModeProps, editModeProps }                            from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
+import { useScrollLock }                                          from '../ScrollLock'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -701,21 +701,9 @@ const GetDeviceAclPolicyListInstance = (requestId: string): {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const defaultPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'name'
-    ],
-    page: 1,
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'DESC'
-  }
-
   const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
     params: params,
-    payload: defaultPayload
+    payload: QUERY_DEFAULT_PAYLOAD
   }, {
     selectFromResult ({ data }) {
       return {
