@@ -11,7 +11,6 @@ import {
   useLazyGetApAntennaTypeSettingsQuery,
   useLazyGetVenueAntennaTypeQuery,
   useLazyGetVenueQuery,
-  useResetApAntennaTypeSettingsMutation,
   useUpdateApAntennaTypeSettingsMutation
 } from '@acx-ui/rc/services'
 import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueExtended, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
@@ -56,11 +55,6 @@ export function AntennaSection () {
 
   const [updateApAntTypeSettings, { isLoading: isUpdatingAntTypeSettings }]
    = useUpdateApAntennaTypeSettingsMutation()
-
-  // Call reset if user want follow venue settings
-  const [resetApAntTypeSettings, { isLoading: isResettingAntTypeSettings }]
-   = useResetApAntennaTypeSettingsMutation()
-
 
   useEffect(() => {
     if (apDetails) {
@@ -139,15 +133,11 @@ export function AntennaSection () {
   const handleUpdateAntennaType = async () => {
     try {
       const params = paramsRef.current
-      if (isUseVenueSettingsRef.current) {
-        await resetApAntTypeSettings({ params }).unwrap()
-      } else {
-        const payload = {
-          useVenueSettings: false,
-          antennaType: form.getFieldValue('antennaType')
-        }
-        await updateApAntTypeSettings({ params, payload }).unwrap()
+      const payload = {
+        useVenueSettings: isUseVenueSettingsRef.current,
+        antennaType: form.getFieldValue('antennaType')
       }
+      await updateApAntTypeSettings({ params, payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -155,7 +145,7 @@ export function AntennaSection () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingAntTypeSettings|| isResettingAntTypeSettings
+    isFetching: isUpdatingAntTypeSettings
   }]}>
     <VenueSettingsHeader venue={venue}
       isUseVenueSettings={isUseVenueSettings}

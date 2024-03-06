@@ -9,10 +9,11 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   edgePortIpValidator,
-  lanPortsubnetValidator,
   optionSorter,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { ClusterInterfaceTableType } from '.'
 
@@ -35,7 +36,10 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
 
   useEffect(() => {
     if (visible){
-      form.setFieldsValue(editData)
+      form.setFieldsValue({
+        ...editData,
+        ip: editData?.ip?.split('/')[0]
+      })
     }
   }, [editData])
 
@@ -78,9 +82,19 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
     }
   }
 
-  const getSubnetInfoWithoutCurrent = () => {
-    return allNodeData?.filter(item => item.serialNumber !== editData?.serialNumber)
-      .map(item => ({ ip: item.ip ?? '', subnetMask: item.subnet ?? '' })) ?? []
+  const getAllNodesSubnetInfo = () => {
+    const allSubnetInfo = allNodeData?.filter(item =>
+      item.serialNumber !== editData?.serialNumber)
+      .map(item => ({ ip: item.ip, subnet: item.subnet }))
+    allSubnetInfo?.push({
+      ip: form.getFieldValue('ip'),
+      subnet: form.getFieldValue('subnet')
+    })
+    return allSubnetInfo ?? []
+  }
+
+  const getAllNodesIp = () => {
+    return getAllNodesSubnetInfo().map(item => item.ip ?? '')
   }
 
   const drawerContent = (
@@ -125,12 +139,18 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
                 edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
               },
               {
-                validator: () =>
-                  lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent()),
-                message: $t({ defaultMessage: 'The subnet range overlaps with other nodes.' })
+                validator: (_, value) =>
+                  validateSubnetIsConsistent(getAllNodesSubnetInfo(), value),
+                message: $t({ defaultMessage: `The ip setting is not 
+                  in the same subnet as other nodes.` })
+              },
+              {
+                validator: (_, value) =>
+                  validateUniqueIp(getAllNodesIp(), value)
               }
             ]}
             children={<Input />}
+            validateFirst
           />
         </Col>
       </Row>
@@ -173,4 +193,18 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
       width={'400px'}
     />
   )
+}
+
+const isUnique = (value: string, index: number, array: string[]) => {
+  return array.indexOf(value) === array.lastIndexOf(value)
+}
+
+const validateUniqueIp = (ips: string[], value?: string) => {
+  if(!Boolean(value)) return Promise.resolve()
+  const { $t } = getIntl()
+
+  if(ips.every(isUnique)) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
 }
