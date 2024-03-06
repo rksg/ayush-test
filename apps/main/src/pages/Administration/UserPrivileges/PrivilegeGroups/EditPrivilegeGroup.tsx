@@ -299,7 +299,6 @@ export function EditPrivilegeGroup () {
 
   const ScopeForm = () => {
     return <Form.Item
-      name='scope'
       label={intl.$t({ defaultMessage: 'Scope' })}
       initialValue={choiceScopeEnum.ALL_VENUES}>
       <Radio.Group

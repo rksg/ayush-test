@@ -198,8 +198,10 @@ const customerList = {
   ]
 }
 
-let selectedVenueList = {} as VenueObjectList
-selectedVenueList['com.ruckus.cloud.venue.model.venue'] = ['BBB']
+let firstSelectedVenueList = {} as VenueObjectList
+firstSelectedVenueList['com.ruckus.cloud.venue.model.venue'] = ['BBB']
+let secondSelectedVenueList = {} as VenueObjectList
+secondSelectedVenueList['com.ruckus.cloud.venue.model.venue'] = ['AAA']
 const privilegeGroup = {
   allCustomers: false,
   delegation: true,
@@ -213,7 +215,10 @@ const privilegeGroup = {
   }],
   policyEntityDTOS: [{
     tenantId: '07da017483044526875ae33acbd0117e',
-    objectList: selectedVenueList
+    objectList: firstSelectedVenueList
+  }, {
+    tenantId: '3756dcf148c2473ba0c3dd8b811a9bcd',
+    objectList: secondSelectedVenueList
   }]
 }
 
@@ -223,7 +228,6 @@ describe('Edit Privilege Group', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f',
       groupId: 'abc'
-      // action: 'edit'
     }
     jest.spyOn(services, 'useUpdatePrivilegeGroupMutation')
     mspServices.useGetMspProfileQuery = jest.fn().mockImplementation(() => {
@@ -279,7 +283,7 @@ describe('Edit Privilege Group', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
-  xit('should save correctly', async () => {
+  it('should save correctly', async () => {
     render(
       <Provider>
         <EditPrivilegeGroup />
@@ -335,11 +339,8 @@ describe('Edit Privilege Group', () => {
         route: { params }
       }
     )
-    // expect(await screen.findByText('some name')).toBeVisible()
-    // expect(screen.getByText('some description')).toBeVisible()
-    // expect(screen.getByText('Read Only')).toBeVisible()
-
     // Select venues
+    await userEvent.click(screen.getByRole('radio', { name: 'All Venues' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
     expect(await screen.findByText('new venue')).toBeVisible()
     await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[0])
@@ -354,17 +355,21 @@ describe('Edit Privilege Group', () => {
     expect(screen.getByText('test')).toBeVisible()
 
     // Select customers
+    await userEvent.click(screen.getByRole('radio', { name: 'All Customers' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
+    expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venue)')).toBeVisible()
     expect(screen.getByText('Amy (1 Venue)')).toBeVisible()
     await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[1])
     await screen.findByText('Select Customers')
-    await screen.findByText('AC Hotel Atlanta Airport Gateway')
+    await screen.findByText('int 1')
     expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     await userEvent.click(screen.getAllByRole('checkbox')[3])
     await userEvent.click(screen.getAllByRole('checkbox')[4])
+    await userEvent.click(screen.getAllByRole('checkbox')[5])
     await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
-    expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venue)')).toBeVisible()
+    expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (1 Venue)')).toBeNull()
     expect(screen.queryByText('Amy (1 Venue)')).toBeNull()
+    expect(screen.getByText('int 1 (1 Venue)')).toBeVisible()
 
     // Add
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -383,7 +388,7 @@ describe('Edit Privilege Group', () => {
       search: ''
     })
   })
-  xit('should render correctly for not onboarded msp', async () => {
+  it('should render correctly for not onboarded msp', async () => {
     jest.spyOn(router, 'useLocation').mockReturnValue({})
     render(
       <Provider>
@@ -402,6 +407,8 @@ describe('Edit Privilege Group', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
     await screen.findByText('Select Venues')
     await screen.findByText('new venue')
+    await screen.findByText('new venue 2')
+    await screen.findByText('test')
     expect(screen.getAllByRole('checkbox')).toHaveLength(4)
     await userEvent.click(screen.getAllByRole('checkbox')[2])
     expect(screen.getByRole('button', { name: 'Save Selection' })).toBeEnabled()
