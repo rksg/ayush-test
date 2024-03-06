@@ -24,7 +24,7 @@ const EditEdgeCluster = () => {
   const {
     currentClusterStatus,
     isClusterStatusLoading,
-    isClusterAllOperational = false
+    isAllNodesNeverContactedCloud = true
   } = useGetEdgeClusterListForTableQuery({ payload: {
     filters: { clusterId: [clusterId], isCluster: [true] }
   } },{
@@ -33,10 +33,9 @@ const EditEdgeCluster = () => {
       return {
         currentClusterStatus,
         isClusterStatusLoading: isLoading,
-        isClusterAllOperational: (currentClusterStatus?.edgeList?.length ?? 0) > 1 &&
-        currentClusterStatus?.edgeList?.length ===
+        isAllNodesNeverContactedCloud: currentClusterStatus?.edgeList?.length ===
         currentClusterStatus?.edgeList?.filter(item =>
-          item.deviceStatus === EdgeStatusEnum.OPERATIONAL).length
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length
       }
     }
   })
@@ -98,7 +97,7 @@ const EditEdgeCluster = () => {
                     tab={v.title}
                     key={k}
                     disabled={
-                      k !== 'cluster-details' && !isClusterAllOperational
+                      k !== 'cluster-details' && isAllNodesNeverContactedCloud
                     }
                   />
                 ))

@@ -339,7 +339,8 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      render: (data, row) => row.ip?.split('/')[0]
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),

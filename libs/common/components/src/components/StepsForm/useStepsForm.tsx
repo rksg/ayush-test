@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { Col, Form, Row, Space, Steps }    from 'antd'
 import _                                   from 'lodash'
@@ -10,9 +10,9 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
-import type { InternalStepFormProps }               from './types'
-import type { FormInstance, FormProps, StepsProps } from 'antd'
-import type { UseStepsFormConfig }                  from 'sunflower-antd'
+import type { InternalStepFormProps }                           from './types'
+import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
+import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
 function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
@@ -37,6 +37,17 @@ type UseStepsFormParam <T> = Omit<
     submit?: string
     pre?: string
     cancel?: string
+    apply?: string
+  }
+
+  customSubmit?: {
+    label: string,
+    onCustomFinish: (values: T) => Promise<boolean | void>
+  }
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
   }
 }
 
@@ -47,11 +58,16 @@ export function useStepsForm <T> ({
   onFinish,
   onCancel,
   onFinishFailed,
+  customSubmit,
+  alert,
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  // states for customSubmit
+  const [customSubmitLoading, setCustomSubmitLoading] = useState(false)
+  const [customSubmitting, setCustomSubmitting] = useState(false)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
@@ -61,19 +77,23 @@ export function useStepsForm <T> ({
   const form = formConfig.form as FormInstance<T>
   const props = formConfig.formProps as FormProps<T>
   const currentStep = steps[formConfig.current]
+  const isSubmitting = submitting || customSubmitting
+
   function guardSubmit (callback: (done: () => void) => void) {
     setSubmitting(true)
     callback(() => setSubmitting(false))
   }
 
+  function validationFailedHandler (errorInfo: ValidateErrorEntity) {
+    // eslint-disable-next-line no-console
+    const errorHandler = currentStep?.props.onFinishFailed || console.log
+    errorHandler(errorInfo)
+  }
+
   function handleAsyncSubmit <T> (promise: Promise<T>) {
     const timeout = setTimeout(setLoading, 50, true)
     return promise
-      .catch((errorInfo: ValidateErrorEntity) => {
-        // eslint-disable-next-line no-console
-        const errorHandler = currentStep?.props.onFinishFailed || console.log
-        errorHandler(errorInfo)
-      })
+      .catch(validationFailedHandler)
       .finally(() => {
         clearTimeout(timeout)
         setLoading(false)
@@ -119,6 +139,24 @@ export function useStepsForm <T> ({
     })
   }
 
+  // customSubmit's StepsForm submit handler
+  // this is not related to current step's submit
+  const customSubmitHandler = () => {
+    const values = form.getFieldsValue(true)
+    setCustomSubmitting(true)
+    onCurrentStepFinish(values, () => {
+      const timeout = setTimeout(setCustomSubmitLoading, 50, true)
+      form.validateFields()
+        .then(() => customSubmit?.onCustomFinish?.(values))
+        .catch(validationFailedHandler)
+        .finally(() => {
+          clearTimeout(timeout)
+          setCustomSubmitLoading(false)
+          setCustomSubmitting(false)
+        })
+    })
+  }
+
   const formProps: FormProps<T> = {
     layout: 'vertical',
     // omit defaultFormValues for preventing warning: React does not recognize the `defaultFormValues` prop on a DOM element.
@@ -131,7 +169,7 @@ export function useStepsForm <T> ({
     initialValues: config.defaultFormValues,
     requiredMark: true,
     preserve: true,
-    disabled: submitting,
+    disabled: isSubmitting,
     onFinishFailed: onFinishFailed
   }
 
@@ -153,7 +191,7 @@ export function useStepsForm <T> ({
     {steps.map(({ props }) => <Steps.Step
       key={props.name}
       title={props.title}
-      disabled={submitting || (!editMode && newConfig.current < props.step)}
+      disabled={isSubmitting || (!editMode && newConfig.current < props.step)}
     />)}
   </UI.Steps>
 
@@ -181,6 +219,7 @@ export function useStepsForm <T> ({
     apply: <Button
       type='primary'
       loading={loading}
+      disabled={customSubmitLoading}
       onClick={() => submit()}
       children={labels.apply}
     />,
@@ -194,9 +233,19 @@ export function useStepsForm <T> ({
       : <Button
         type='primary'
         loading={loading}
+        disabled={customSubmitLoading}
         onClick={() => submit()}
         children={labels.submit}
+      />,
+    customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
+      ? <Button
+        type='primary'
+        loading={customSubmitLoading}
+        disabled={loading}
+        onClick={() => customSubmitHandler()}
+        children={customSubmit.label}
       />
+      : undefined
   }
 
   let buttonsLayout: React.ReactNode
@@ -205,10 +254,12 @@ export function useStepsForm <T> ({
       {buttons.cancel}
       <Space align='center' size={12}>
         {buttons.pre}
+        {buttons.customSubmit}
         {buttons.submit}
       </Space>
     </>
   } else buttonsLayout = <>
+    {buttons.customSubmit}
     {editMode ? buttons.apply : buttons.submit}
     {buttons.cancel}
   </>
@@ -220,6 +271,11 @@ export function useStepsForm <T> ({
       children={buttonsLayout}
     />
   </UI.ActionsContainer>
+
+  const alertEl = alert?.message && alert?.type && <UI.AlertContainer
+    data-testid='steps-form-alert'
+    {...alert}
+  />
 
   const currentStepEl = steps[newConfig.current]
 
@@ -233,6 +289,7 @@ export function useStepsForm <T> ({
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
       <Row gutter={20}>{formLayout}</Row>
+      { alert ? alertEl : null}
       {buttonEls}
     </Form>
   </UI.Wrapper>
