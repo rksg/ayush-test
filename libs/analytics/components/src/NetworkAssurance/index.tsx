@@ -13,6 +13,7 @@ import { DateRange }                  from '@acx-ui/utils'
 import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
+import { HealthTabs }      from '../HealthTabs'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
 
@@ -35,12 +36,15 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
+  const switchHealthEnabled = useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
-    component: <HealthPage/>,
+    component: switchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: false, withIncidents: false })
   }
+
   const serviceGuardTab = {
     key: NetworkAssuranceTabEnum.SERVICE_GUARD,
     url: 'serviceValidation',

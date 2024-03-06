@@ -145,6 +145,11 @@ function AllRoutes () {
       </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        <Route path=':activeSubTab'
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />}>
+          <Route path='tab/:categoryTab'
+            element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        </Route>
         <Route index={false}
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
