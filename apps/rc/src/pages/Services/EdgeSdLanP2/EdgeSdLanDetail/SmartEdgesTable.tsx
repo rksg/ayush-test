@@ -30,7 +30,7 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
     if (sdLanData.isGuestTunnelEnabled) {
       tableData.push({
         id: sdLanData.guestEdgeClusterId,
-        edgeClusterName: sdLanData.guestEdgeClusterId!,
+        edgeClusterName: sdLanData.guestEdgeClusterName!,
         vxlanTunnelNum: undefined,
         vlanNum: undefined
       })

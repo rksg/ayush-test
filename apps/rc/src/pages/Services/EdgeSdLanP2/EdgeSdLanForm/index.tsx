@@ -78,10 +78,10 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
   }
 
   useEffect(() => {
-    if(form && isEditMode) {
+    if(form) {
       form.setFieldsValue(initFormValues)
     }
-  }, [isEditMode, form, initFormValues])
+  }, [form, initFormValues])
 
   return (<StepsForm
     form={form}

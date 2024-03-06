@@ -203,13 +203,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         },
         extraOptions: { maxRetries: 5 }
       }),
-    // getEdgeSdLanP2: build.query<TableResult<EdgeSdLanSetting>, RequestPayload>({
-    //   query: ({ params }) => {
-    //     const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanList, params)
-    //     return { ...req }
-    //   },
-    //   providesTags: [{ type: 'EdgeSdLanP2', id: 'DETAIL' }]
-    // }),
     getEdgeSdLanP2: build.query<EdgeSdLanSettingP2, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         const sdLanRequest = createHttpRequest(
@@ -217,61 +210,50 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         const sdLanQuery = await fetchWithBQ(sdLanRequest)
         const sdLanConfig = sdLanQuery.data as EdgeSdLanSettingP2
 
-        const guestSettingsReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz,
-          params,
-          versionHeader)
-        const edgeGuestSettingQuery = await fetchWithBQ(guestSettingsReq)
+        if (sdLanConfig) {
+          const guestSettingsReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz,
+            params,
+            versionHeader)
+          const edgeGuestSettingQuery = await fetchWithBQ(guestSettingsReq)
 
-        const sdLanStatusReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
-        const sdLanStatusQuery = await fetchWithBQ({
-          ...sdLanStatusReq,
-          body: {
-            filters: { id: [params!.serviceId] }
-          }
-        })
+          const sdLanStatusReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+          const sdLanStatusQuery = await fetchWithBQ({
+            ...sdLanStatusReq,
+            body: {
+              filters: { id: [params!.serviceId] }
+            }
+          })
 
-        const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
-        const edgeClusterQuery = await fetchWithBQ({
-          ...clusterReq,
-          body: {
-            fields: [
-              'name',
-              'clusterId',
-              'venueId',
-              'venueName'
-            ],
-            filters: { clusterId: [sdLanConfig.edgeClusterId] }
-          }
-        })
+          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+          const edgeClusterQuery = await fetchWithBQ({
+            ...clusterReq,
+            body: {
+              fields: [
+                'name',
+                'clusterId',
+                'venueId',
+                'venueName'
+              ],
+              filters: { clusterId: [sdLanConfig.edgeClusterId] }
+            }
+          })
 
-        const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeSdLanViewDataP2>
-        const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
-        const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
-        let sdLanData = {} as EdgeSdLanSettingP2
-        if (sdLanConfig && sdLanInfo && guestSettings) {
+          const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeSdLanViewDataP2>
+          const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
+          const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
           // eslint-disable-next-line max-len
-          sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
-        }
+          const sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
 
-        return sdLanConfig && sdLanInfo && guestSettings
-          ? { data: sdLanData }
-          : { error: (sdLanQuery.error
-              || sdLanStatusQuery.error
-              || edgeGuestSettingQuery.error) as FetchBaseQueryError }
+          return (sdLanInfo && guestSettings && clusterInfo)
+            ? { data: sdLanData }
+            : { error: (sdLanStatusQuery.error
+              || edgeGuestSettingQuery.error
+              || edgeClusterQuery.data) as FetchBaseQueryError }
+        } else {
+          return { error: sdLanQuery.error as FetchBaseQueryError }
+        }
       },
       providesTags: [{ type: 'EdgeSdLanP2', id: 'DETAIL' }]
-      // async onCacheEntryAdded (requestArgs, api) {
-      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
-      //     onActivityMessageReceived(msg, [
-      //       'Add SD-LAN',
-      //       'Update SD-LAN'
-      //     ], () => {
-      //       api.dispatch(edgeSdLanApi.util.invalidateTags([
-      //         { type: 'EdgeSdLanP2', id: 'DETAIL' }
-      //       ]))
-      //     })
-      //   })
-      // }
     }),
     addEdgeSdLanP2: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

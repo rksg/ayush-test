@@ -64,11 +64,24 @@ export const mockedSdLanService = {
 }
 
 export const mockedSdLanServiceP2 = {
-  ...mockedSdLanService,
+  id: mockedSdLanService.id,
+  name: mockedSdLanService.name,
+  venueId: mockedSdLanService.venueId,
+  venueName: mockedSdLanService.venueName,
+  edgeClusterId: mockedSdLanService.edgeId,
+  networkIds: mockedSdLanService.networkIds,
+  tunnelProfileId: mockedSdLanService.tunnelProfileId,
   isGuestTunnelEnabled: false,
-  guestEdgeId: '',
+  guestEdgeClusterId: '',
   guestTunnelProfileId: '',
   guestNetworkIds: []
+}
+
+export const mockedSdLanServiceP2Dmz = {
+  id: 'mocked-sd-lan-1',
+  name: 'Mocked_SDLAN_1',
+  edgeClusterId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843'
 }
 
 export const mockedSdLanDataListP2 = [{
