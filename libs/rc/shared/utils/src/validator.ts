@@ -933,33 +933,18 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   return Promise.resolve()
 }
 
-export function checkAclName (aclName: string, aclType: string) {
+export function checkAclName (aclName: string) {
   const { $t } = getIntl()
-  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
-    try {
-      const iName = parseInt(aclName, 10)
-      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
-        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
-      }
-      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
-        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
-      }
-      return Promise.resolve()
-    } catch (e) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-  } else {
-    if (!aclName.match(/^[a-zA-Z_].*/)) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-    if (aclName.match(/.*[\"]/)) {
-      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
-    }
-    if (aclName === 'test') {
-      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
-    }
-    return Promise.resolve()
+  if (!/^[a-zA-Z]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
   }
+  if (/["]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+  }
+  if (aclName.toLowerCase() === 'test') {
+    return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+  }
+  return Promise.resolve()
 }
 
 export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {
