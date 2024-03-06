@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
-import { venueApi }                                                                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo, getConfigTemplatePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                             from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer }                                       from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }                                                   from '@acx-ui/feature-toggle'
+import { venueApi }                                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, VenueConfigTemplateUrlsInfo, WifiUrlsInfo, getConfigTemplatePath } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                  from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer }                                            from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -45,7 +45,7 @@ describe('VenueEdit', () => {
         (_, res, ctx) => res(ctx.json(venueLed))),
       rest.get(CommonUrlsInfo.getVenueApModels.url,
         (_, res, ctx) => res(ctx.json(venueApModels))),
-      rest.get(ConfigTemplateUrlsInfo.getVenueTemplate.url,
+      rest.get(VenueConfigTemplateUrlsInfo.getVenueTemplate.url,
         (req, res, ctx) => res(ctx.json(venueData)))
     )
   })

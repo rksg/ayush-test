@@ -27,6 +27,7 @@ const mockVenuesData = {
       incidentCount: 5,
       ssidComplianceSLA: [1, 2],
       onlineApsSLA: [3, 4],
+      onlineSwitchesSLA: [1, 2],
       connectionSuccessSLA: [5, 6],
       timeToConnectSLA: [7, 8],
       clientThroughputSLA: [9, 10]
@@ -36,6 +37,7 @@ const mockVenuesData = {
       incidentCount: 3,
       ssidComplianceSLA: [2, 3],
       onlineApsSLA: [4, 5],
+      onlineSwitchesSLA: [3, 4],
       connectionSuccessSLA: [6, 7],
       timeToConnectSLA: [8, 9],
       clientThroughputSLA: [10, 11]
@@ -45,6 +47,7 @@ const mockVenuesData = {
       incidentCount: null,
       ssidComplianceSLA: [null, null],
       onlineApsSLA: [null, null],
+      onlineSwitchesSLA: [null, null],
       connectionSuccessSLA: [null, null],
       timeToConnectSLA: [null, null],
       clientThroughputSLA: [null, null]
@@ -54,6 +57,7 @@ const mockVenuesData = {
       incidentCount: 0,
       ssidComplianceSLA: [0, 0],
       onlineApsSLA: [0, 0],
+      onlineSwitchesSLA: [0, 0],
       connectionSuccessSLA: [0, 0],
       timeToConnectSLA: [0, 0],
       clientThroughputSLA: [0, 0]
@@ -172,7 +176,7 @@ describe('transformVenuesData', () => {
         lsp: 'IntegratorName',
         p1Incidents: 8,
         ssidCompliance: [3, 5],
-        deviceCount: 9,
+        deviceCount: 15,
         avgConnSuccess: [11, 13],
         avgTTC: [15, 17],
         avgClientThroughput: [19, 21],
@@ -205,7 +209,7 @@ describe('transformVenuesData', () => {
     expect(transformed).toEqual([])
   })
   it('calcSLA should handle [0,0]', () => {
-    expect(calcSLA([0,0])).toEqual(0)
+    expect(calcSLA([0,0])).toEqual(null)
   })
 })
 

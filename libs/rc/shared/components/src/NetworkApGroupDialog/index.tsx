@@ -37,8 +37,7 @@ import {
   getVlanString,
   NetworkVenue,
   NetworkSaveData,
-  IsNetworkSupport6g,
-  WlanSecurityEnum
+  IsNetworkSupport6g
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -290,18 +289,6 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       })
   }
 
-  function validateRadioBandForDsaeNetwork (radios: string[]) {
-    if (wlan?.wlanSecurity
-         && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
-         && radios.length
-         && radios.length === 1
-         && radios.includes(RadioTypeEnum._6_GHz)) {
-      return Promise.reject($t({ defaultMessage:
-        'Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
-    }
-    return Promise.resolve()
-  }
-
   return (
     <Modal
       {...props}
@@ -350,10 +337,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
                       label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true },
-                        {
-                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
-                        }]}
+                      rules={[{ required: true }]}
                       labelCol={{ span: 5 }}>
                       <RadioSelect />
                     </Form.Item>
