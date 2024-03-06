@@ -1,13 +1,25 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }                                                                                                                         from '@acx-ui/components'
-import { EdgeStatusLight, useEdgeClusterActions }                                                                                                                     from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery, useVenuesListQuery }                                                                                                     from '@acx-ui/rc/services'
-import { ClusterNodeStatusEnum, ClusterStatusEnum, CommonOperation, Device, EdgeClusterTableDataType, activeTab, allowRebootForStatus, getUrl, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                             from '@acx-ui/user'
-import { getIntl }                                                                                                                                                    from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip }                     from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeClusterActions }                 from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
+  ClusterNodeStatusEnum,
+  ClusterStatusEnum,
+  CommonOperation,
+  Device,
+  EdgeClusterTableDataType,
+  activeTab,
+  allowRebootForStatus,
+  getUrl,
+  usePollingTableQuery,
+  genUrl,
+  CommonCategory
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -213,9 +225,26 @@ export const EdgeClusterTable = () => {
       onClick: () => {},
       disabled: true
     },{
-      label: $t({ defaultMessage: 'Run Cluster HA setup wizard' }),
-      onClick: () => {},
-      disabled: true
+      label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
+      onClick: (selectedRows) => {
+        if(selectedRows[0].isFirstLevel) {
+          navigate({
+            ...basePath,
+            pathname:
+              `${basePath.pathname}${genUrl([
+                CommonCategory.Device,
+                Device.EdgeCluster,
+                selectedRows[0].clusterId!,
+                'configure'
+              ])}`
+          })
+        } else {
+          // do nothing
+        }
+      },
+      disabled: (selectedRows) => {
+        return !selectedRows[0]?.isFirstLevel
+      }
     }
   ]
 

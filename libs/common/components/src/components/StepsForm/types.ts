@@ -1,4 +1,6 @@
-import type { FormProps } from 'antd'
+import { ReactNode } from 'react'
+
+import type { AlertProps, FormProps } from 'antd'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <T = any> = Omit<
@@ -19,6 +21,17 @@ export type StepsFormProps <T = any> = Omit<
     submit?: string
     pre?: string
     cancel?: string
+    apply?: string
+  }
+
+  customSubmit?: {
+    label: string,
+    onCustomFinish: (values: T) => Promise<boolean | void>
+  }
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
   }
 }
 
