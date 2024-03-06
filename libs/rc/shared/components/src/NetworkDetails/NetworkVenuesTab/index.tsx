@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -25,7 +25,9 @@ import {
   useNetworkVenueListV2Query,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useUpdateNetworkVenueTemplateMutation, useGetVenueCityListTemplateQuery, useGetVenueCityListQuery
+  useUpdateNetworkVenueTemplateMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -579,7 +581,7 @@ function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const venueCityListTemplate = useGetVenueCityListTemplateQuery({ params }, {
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),

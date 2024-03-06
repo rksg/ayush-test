@@ -271,7 +271,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
     }),
-    getVenueCityListTemplate: build.query<{ name: string }[], RequestPayload>({
+    getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueCityList, params)
         return{
@@ -324,5 +324,5 @@ export const {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
-  useGetVenueCityListTemplateQuery
+  useGetVenueTemplateCityListQuery
 } = venueConfigTemplateApi

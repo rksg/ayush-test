@@ -13,11 +13,13 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, TierFeatures, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useVenuesTableQuery,
-  useDeleteVenueMutation, useGetVenueCityListTemplateQuery, useGetVenueCityListQuery
+  useDeleteVenueMutation,
+  useGetVenueCityListQuery,
+  useGetVenueTemplateCityListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
@@ -352,7 +354,7 @@ function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const venueCityListTemplate = useGetVenueCityListTemplateQuery({ params }, {
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),
