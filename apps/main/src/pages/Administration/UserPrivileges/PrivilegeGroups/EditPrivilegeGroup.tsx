@@ -19,6 +19,7 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
+import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
   useGetOnePrivilegeGroupQuery,
@@ -39,6 +40,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { AccountType } from '@acx-ui/utils'
 
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
@@ -46,7 +48,6 @@ import * as UI            from '../styledComponents'
 import { choiceCustomerEnum, choiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
-// import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 
 interface PrivilegeGroupData {
   name?: string,
@@ -102,13 +103,21 @@ const venuesListPayload = {
   sortOrder: 'ASC'
 }
 
+const customerListPayload = {
+  fields: ['name', 'id'],
+  filters: { tenantType: [AccountType.MSP_EC] },
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
 export function EditPrivilegeGroup () {
   const intl = useIntl()
   const [selectVenueDrawer, setSelectVenueDrawer] = useState(false)
   const [selectCustomerDrawer, setSelectCustomerDrawer] = useState(false)
   const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
   const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
-  const [selectedVenus, setVenues] = useState([] as Venue[])
+  const [selectedVenues, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
 
@@ -127,9 +136,9 @@ export function EditPrivilegeGroup () {
   const { data: venuesList } =
       useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
-  // const { data: customerList } =
-  //     useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
-  //       { skip: !isOnboardedMsp })
+  const { data: customerList } =
+      useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
+        { skip: !isOnboardedMsp })
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -171,7 +180,7 @@ export function EditPrivilegeGroup () {
         delegation: false
       }
       const policies = [] as PrivilegePolicy[]
-      selectedVenus.forEach((venue: Venue) => {
+      selectedVenues.forEach((venue: Venue) => {
         policies.push({
           entityInstanceId: venue.id,
           objectType: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
@@ -183,9 +192,9 @@ export function EditPrivilegeGroup () {
 
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
-        let venueList = {} as VenueObjectList
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
           const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
             tenantId: ec.id,
@@ -220,19 +229,38 @@ export function EditPrivilegeGroup () {
       setVenues(venues)
       setSelectedScope( venues.length > 0
         ? choiceScopeEnum.SPECIFIC_VENUE : choiceScopeEnum.ALL_VENUES)
-      // const ecsWithSelVenues = customerList?.data.filter(customer =>
-      //   privilegeGroup?.policyEntityDTOS?.map(p =>
-      //     p.tenantId).includes(customer.id)) || []
-      // setCustomers(ecsWithSelVenues)
+
+      const ecCustomers = (customerList?.data.filter(customer =>
+        privilegeGroup?.policyEntityDTOS?.map(p => p.tenantId).includes(customer.id)) || [])
+      const ecCustomersWithVenue: MspEcWithVenue[] = []
+      ecCustomers.forEach((ec) => {
+        const custPolicyEntities = privilegeGroup?.policyEntityDTOS?.find(p => p.tenantId === ec.id)
+        const venueIds = custPolicyEntities
+          ? custPolicyEntities.objectList
+            ? custPolicyEntities.objectList['com.ruckus.cloud.venue.model.venue'] as string[]
+            : []
+          : []
+        ecCustomersWithVenue.push(
+          {
+            ...ec,
+            children: venueIds.map(venueId => {
+              return { id: venueId, selected: true, name: '' }
+            })
+          }
+        )
+      })
+      setCustomers(ecCustomersWithVenue)
+      setSelectedMspScope(ecCustomersWithVenue.length > 0
+        ? choiceCustomerEnum.SPECIFIC_CUSTOMER : choiceCustomerEnum.ALL_CUSTOMERS)
     }
-  }, [privilegeGroup, venuesList?.data])
+  }, [privilegeGroup, venuesList?.data, customerList?.data])
 
   const DisplaySelectedVenues = () => {
-    const fisrtVenue = selectedVenus[0]
-    const restVenue = selectedVenus.slice(1)
+    const firstVenue = selectedVenues[0]
+    const restVenue = selectedVenues.slice(1)
     return <>
-      <UI.VenueList key={fisrtVenue.id}>
-        {fisrtVenue.name}
+      <UI.VenueList key={firstVenue.id}>
+        {firstVenue.name}
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -291,13 +319,13 @@ export function EditPrivilegeGroup () {
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
           >Select venues</Button>
         </Space>
       </Radio.Group>
-      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
   }
@@ -330,13 +358,13 @@ export function EditPrivilegeGroup () {
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
           >Select venues</Button>
         </Space>
       </Radio.Group>
-      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
 
@@ -423,7 +451,7 @@ export function EditPrivilegeGroup () {
         </Row>
         {selectVenueDrawer && <SelectVenuesDrawer
           visible={selectVenueDrawer}
-          selected={selectedVenus}
+          selected={selectedVenues}
           setVisible={setSelectVenueDrawer}
           setSelected={setSelectedVenus}
         />}

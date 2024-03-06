@@ -292,4 +292,25 @@ describe('SelectCustomerDrawer', () => {
     expect(mockedCloseDialog).toHaveBeenCalledTimes(2)
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
+  it('should close drawer correctly', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <SelectCustomerDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          setSelected={jest.fn()}
+          selected={[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/userPrivileges/privilegeGroups/create' }
+      })
+
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Select Customers')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save Selection' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedCloseDialog).toHaveBeenCalledWith(false)
+  })
 })

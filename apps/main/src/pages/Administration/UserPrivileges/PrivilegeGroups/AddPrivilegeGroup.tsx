@@ -66,7 +66,7 @@ export function AddPrivilegeGroup () {
   const [selectCustomerDrawer, setSelectCustomerDrawer] = useState(false)
   const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
   const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
-  const [selectedVenus, setVenues] = useState([] as Venue[])
+  const [selectedVenues, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
 
@@ -86,7 +86,7 @@ export function AddPrivilegeGroup () {
     setSelectCustomerDrawer(true)
   }
 
-  const setSelectedVenus = (selected: Venue[]) => {
+  const setSelectedVenues = (selected: Venue[]) => {
     setVenues(selected)
   }
 
@@ -118,7 +118,7 @@ export function AddPrivilegeGroup () {
         delegation: false
       }
       const policies = [] as PrivilegePolicy[]
-      selectedVenus.forEach((venue: Venue) => {
+      selectedVenues.forEach((venue: Venue) => {
         policies.push({
           entityInstanceId: venue.id,
           objectType: PrivilegePolicyObjectType.OBJ_TYPE_VENUE
@@ -130,9 +130,9 @@ export function AddPrivilegeGroup () {
 
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
-        let venueList = {} as VenueObjectList
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
           const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
             tenantId: ec.id,
@@ -154,11 +154,11 @@ export function AddPrivilegeGroup () {
   }
 
   const DisplaySelectedVenues = () => {
-    const fisrtVenue = selectedVenus[0]
-    const restVenue = selectedVenus.slice(1)
+    const firstVenue = selectedVenues[0]
+    const restVenue = selectedVenues.slice(1)
     return <>
-      <UI.VenueList key={fisrtVenue.id}>
-        {fisrtVenue.name}
+      <UI.VenueList key={firstVenue.id}>
+        {firstVenue.name}
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -178,8 +178,9 @@ export function AddPrivilegeGroup () {
     const restCustomer = selectedCustomers.slice(1)
     return <>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({firstCustomer.children.filter(v => v.selected).length}
-        {firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
+        {firstCustomer.name} ({firstCustomer.children.every(v => v.selected) ?
+          'All Venues' : (firstCustomer.children.filter(v => v.selected).length + ' ' +
+        (firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'))})
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -188,8 +189,9 @@ export function AddPrivilegeGroup () {
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({ec.children.filter(v => v.selected).length}
-          {ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
+          {ec.name} ({ec.children.every(v => v.selected) ?
+            'All Venues' : (ec.children.filter(v => v.selected).length + ' ' +
+          (ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'))})
         </UI.VenueList>
       )}
     </>
@@ -197,7 +199,7 @@ export function AddPrivilegeGroup () {
 
   const ScopeForm = () => {
     return <Form.Item
-      name='scope'
+      // name='scope'
       label={intl.$t({ defaultMessage: 'Scope' })}
       initialValue={choiceScopeEnum.ALL_VENUES}>
       <Radio.Group
@@ -217,13 +219,13 @@ export function AddPrivilegeGroup () {
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
           >Select venues</Button>
         </Space>
       </Radio.Group>
-      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
   }
@@ -256,13 +258,13 @@ export function AddPrivilegeGroup () {
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenus.length > 0}
+            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
           >Select venues</Button>
         </Space>
       </Radio.Group>
-      {selectedVenus.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
 
@@ -348,9 +350,9 @@ export function AddPrivilegeGroup () {
         </Row>
         {selectVenueDrawer && <SelectVenuesDrawer
           visible={selectVenueDrawer}
-          selected={selectedVenus}
+          selected={selectedVenues}
           setVisible={setSelectVenueDrawer}
-          setSelected={setSelectedVenus}
+          setSelected={setSelectedVenues}
         />}
         {selectCustomerDrawer && <SelectCustomerDrawer
           visible={selectCustomerDrawer}
