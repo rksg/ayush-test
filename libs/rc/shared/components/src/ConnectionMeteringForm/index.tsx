@@ -77,7 +77,7 @@ export enum ConnectionMeteringFormMode {
 export interface ConnectionMeteringFormProps {
   mode: ConnectionMeteringFormMode
   useModalMode?: boolean
-  modalCallback?: (result:ConnectionMetering | undefined )=>void
+  modalCallback?: (result: string | undefined )=>void
 }
 
 export interface ConnectingMeteringFormField extends ConnectionMetering {
@@ -199,7 +199,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     const targetmetering = meteringList.data.find(
       metering => metering.id === idAfterCreatedRef.current)
     if (targetmetering) {
-      modalCallback?.(targetmetering)
+      modalCallback?.(targetmetering.id)
     }
   }, [idAfterCreatedRef, meteringList])
 

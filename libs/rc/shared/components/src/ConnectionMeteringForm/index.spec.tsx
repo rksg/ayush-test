@@ -140,7 +140,7 @@ describe('ConnectionMeteringForm', () => {
         }
       ),
       rest.get(
-        ConnectionMeteringUrls.getConnectionMeteringList.url,
+        replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
         (req, res, ctx) => {
           return res(ctx.json(list))
         }
