@@ -44,8 +44,7 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useConfigTemplate,
-  layer3ProtocolLabelMapping,
-  useTableQuery
+  layer3ProtocolLabelMapping
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -1122,25 +1121,27 @@ const GetL3AclPolicyListInstance = (requestId: string): {
       'name'
     ],
     page: 1,
+    pageSize: 10000,
     sortField: 'name',
     sortOrder: 'DESC'
   }
 
-  const settingsId = 'policies-access-control-layer3-table-template'
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetL3AclPolicyTemplateListQuery,
-    defaultPayload,
-    pagination: { settingsId: settingsId, pageSize: 10000 }
+  const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
+    params: params,
+    payload: defaultPayload
+  },
+  {
+    selectFromResult ({ data }) {
+      return {
+        layer3SelectOptions: data?.data?.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) ?? [],
+        layer3List: data?.data.map(item => item.name) ?? []
+      }
+    },
+    skip: !isTemplate
   })
-
-  const useL3PolicyTemplateList = {
-    layer3SelectOptions: tableQuery?.data?.data?.map(
-      item => {
-        return <Option key={item.id}>{item.name}</Option>
-      }) ?? [],
-    layer3List: tableQuery?.data?.data?.map(item => item.name) ?? []
-  }
 
 
   const useL3PolicyList = useL3AclPolicyListQuery({

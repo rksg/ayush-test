@@ -37,8 +37,7 @@ import {
   sortProp,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
-  useTableQuery
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -735,26 +734,27 @@ const GetAppAclPolicyListInstance = (requestId: string): {
       'name'
     ],
     page: 1,
+    pageSize: 10000,
     sortField: 'name',
     sortOrder: 'DESC'
   }
 
-  const settingsId = 'policies-access-control-application-table-template'
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetAppPolicyTemplateListQuery,
-    defaultPayload,
-    pagination: { settingsId: settingsId, pageSize: 10000 }
+  const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
+    params: params,
+    payload: defaultPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        appSelectOptions: data?.data?.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) ?? [],
+        appList: data?.data?.map(item => item.name) ?? [],
+        appIdList: data?.data?.map(item => item.id) ?? []
+      }
+    },
+    skip: !isTemplate
   })
-
-  const useAppPolicyTemplateList = {
-    appSelectOptions: tableQuery?.data?.data?.map(
-      item => {
-        return <Option key={item.id}>{item.name}</Option>
-      }) ?? [],
-    appList: tableQuery?.data?.data?.map(item => item.name) ?? [],
-    appIdList: tableQuery?.data?.data?.map(item => item.id) ?? []
-  }
 
   const useAppPolicyList = useAppPolicyListQuery({
     params: { ...params, requestId: requestId }

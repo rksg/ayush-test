@@ -19,8 +19,7 @@ import {
   AccessControlInfoType,
   AclEmbeddedObject,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher,
-  useTableQuery
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -172,23 +171,19 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
       'name'
     ],
     page: 1,
+    pageSize: 10000,
     sortField: 'name',
     sortOrder: 'DESC'
   }
 
-  const settingsId = 'policies-access-control-set-table-template'
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetAccessControlProfileTemplateListQuery,
-    defaultPayload,
-    pagination: { settingsId: settingsId, pageSize: 10000 }
-  })
-
+  const tableQuery = useGetAccessControlProfileTemplateListQuery({
+    params, payload: defaultPayload
+  }, { skip: !isTemplate })
 
   const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]
 
   // eslint-disable-next-line max-len
-  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode || !isTemplate })
+  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode || isTemplate })
 
   return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }

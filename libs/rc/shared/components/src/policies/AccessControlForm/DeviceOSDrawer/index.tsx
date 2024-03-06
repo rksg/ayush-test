@@ -36,7 +36,7 @@ import {
   sortProp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate, useTableQuery
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -708,26 +708,26 @@ const GetDeviceAclPolicyListInstance = (requestId: string): {
       'name'
     ],
     page: 1,
+    pageSize: 10000,
     sortField: 'name',
     sortOrder: 'DESC'
   }
 
-  const settingsId = 'policies-access-control-device-table-template'
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetDevicePolicyTemplateListQuery,
-    defaultPayload,
-    pagination: { settingsId: settingsId, pageSize: 10000 }
+  const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
+    params: params,
+    payload: defaultPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        deviceSelectOptions: data?.data?.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) ?? [],
+        deviceList: data?.data?.map(item => item.name) ?? []
+      }
+    },
+    skip: !isTemplate
   })
-
-
-  const useDevicePolicyTemplateList = {
-    deviceSelectOptions: tableQuery?.data?.data?.map(
-      item => {
-        return <Option key={item.id}>{item.name}</Option>
-      }) ?? [],
-    deviceList: tableQuery?.data?.data?.map(item => item.name) ?? []
-  }
 
   const useDevicePolicyList = useDevicePolicyListQuery({
     params: { ...params, requestId: requestId }
