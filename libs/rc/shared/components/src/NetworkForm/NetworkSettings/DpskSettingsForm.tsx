@@ -25,6 +25,7 @@ import {
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -36,6 +37,7 @@ const { useWatch } = Form
 
 export function DpskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
     if((editMode || cloneMode) && data){
@@ -50,6 +52,10 @@ export function DpskSettingsForm () {
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
         authRadiusId: data.authRadiusId||data.authRadius?.id
       })
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
 
