@@ -3,7 +3,7 @@ import React from 'react'
 import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
-import { AuthRoute }                         from '@acx-ui/user'
+// import { AuthRoute }                         from '@acx-ui/user' // TODO: RBAC
 
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
@@ -41,8 +41,12 @@ function AllRoutes () {
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
-          <Route path='dashboard' element={<AuthRoute role='admin'><Dashboard /></AuthRoute>} />
-          <Route path='userprofile' element={<AuthRoute role='user'><UserProfile /></AuthRoute>} />
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='userprofile' element={<UserProfile />} />
+          {/* TODO: RBAC
+            <Route path='dashboard' element={<AuthRoute role='admin'><Dashboard /></AuthRoute>} />
+            <Route path='userprofile' element={<AuthRoute role='user'><UserProfile /></AuthRoute>} />
+          */}
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
