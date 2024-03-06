@@ -52,20 +52,21 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
-
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+
   const isShowBrand360 =
     tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR ||
-    tenantType === AccountType.MSP
+    tenantType === AccountType.MSP_NON_VAR
+
   const indexPath = isGuestManager
     ? '/users/guestsManager'
     : isShowBrand360
       ? '/brand360'
       : '/dashboard'
+
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
