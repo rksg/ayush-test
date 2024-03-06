@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 import { FormInstance } from 'antd'
 
@@ -77,12 +77,17 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
   }
 
+  useEffect(() => {
+    if(form && isEditMode) {
+      form.setFieldsValue(initFormValues)
+    }
+  }, [isEditMode, form, initFormValues])
+
   return (<StepsForm
     form={form}
     onCancel={() => navigate(linkToServiceList)}
     onFinish={handleFinish}
     editMode={isEditMode}
-    initialValues={initFormValues}
   >
     {
       steps.map((item, index) =>

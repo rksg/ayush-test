@@ -31,7 +31,7 @@ export const SettingsForm = () => {
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
-      fields: ['id', 'edgeClusterId']
+      fields: ['id', 'edgeClusterId', 'guestEdgeClusterId']
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
@@ -76,8 +76,9 @@ export const SettingsForm = () => {
         // eslint-disable-next-line max-len
         ...(editMode && { clusterId: [edgeClusterId, ...(guestEdgeClusterId ? [guestEdgeClusterId] : [])] })
         // TODO: need confirm
-        // clusterStatus: Object.values(EdgeStatusEnum)
-        //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+        // clusterStatus: Object.values(ClusterStatusEnum)
+        //   .filter(v => v === ClusterStatusEnum.CLUSTER_READY
+        //     || v === ClusterStatusEnum.CLUSTER_UNHEALTHY)
       } } },
     {
       skip: !venueId || isSdLanBoundEdgesLoading,

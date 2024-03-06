@@ -81,7 +81,7 @@ export interface EdgeSdLanViewDataP2 {
 }
 
 export interface EdgeSdLanActivateNetworkPayload {
-  isGuestTunnelUtilized: boolean
+  isGuestTunnelUtilized?: boolean
 }
 
 export interface EdgeSdLanToggleDmzPayload {

@@ -95,20 +95,12 @@ export const useEdgeSdLanActions = () => {
                 params: {
                   serviceId,
                   wifiNetworkId: item
-                }
+                }, payload: { isGuestTunnelUtilized: false }
               }).unwrap()
             }),
 
             ...payload.guestNetworkIds.map((item) => {
-              return activateNetwork({
-                params: {
-                  serviceId,
-                  wifiNetworkId: item
-                },
-                payload: {
-                  isGuestTunnelUtilized: true
-                }
-              }).unwrap()
+              return activateGuestNetwork(serviceId!, item)
             })]
           : [
             ...payload.networkIds.map((item) => {
@@ -116,7 +108,7 @@ export const useEdgeSdLanActions = () => {
                 params: {
                   serviceId,
                   wifiNetworkId: item
-                }
+                }, payload: { isGuestTunnelUtilized: false }
               }).unwrap()
             })]
 
@@ -136,10 +128,13 @@ export const useEdgeSdLanActions = () => {
       | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { payload, callback } = req
-    const { id: serviceId, ...submitPayload } = payload
+    const serviceId = payload.id
 
     return await updateEdgeSdLan({
-      payload: submitPayload,
+      payload: {
+        name: payload.name,
+        tunnelProfileId: payload.tunnelProfileId
+      },
       params: { serviceId },
       callback: async () => {
         const actions = []
@@ -190,7 +185,7 @@ export const useEdgeSdLanActions = () => {
           params: {
             serviceId,
             wifiNetworkId: item
-          }
+          }, payload: { isGuestTunnelUtilized: false }
         }).unwrap()))
         actions.push(...rmNetworks.map((item) => deactivateNetwork({ params: {
           serviceId,

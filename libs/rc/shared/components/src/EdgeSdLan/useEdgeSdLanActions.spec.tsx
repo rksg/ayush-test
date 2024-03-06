@@ -149,7 +149,7 @@ describe('useEdgeSdLanActions', () => {
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: 'network_3',
         serviceId: 'mocked_service_id'
-      }, '')
+      }, { isGuestTunnelUtilized: false })
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: 'network_1',
         serviceId: 'mocked_service_id'
@@ -176,7 +176,7 @@ describe('useEdgeSdLanActions', () => {
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: 'network_1',
         serviceId: 'mocked_service_id'
-      }, '')
+      }, { isGuestTunnelUtilized: false })
     })
 
     it('should handle relation requests failed', async () => {
