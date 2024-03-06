@@ -9,7 +9,6 @@ import {
 } from '@acx-ui/components'
 import {
   useGetConnectionMeteringByIdQuery,
-  useGetConnectionMeteringListQuery,
   useAddConnectionMeteringMutation,
   useUpdateConnectionMeteringMutation
 } from '@acx-ui/rc/services'
@@ -93,10 +92,6 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   const { mode, useModalMode, modalCallback } = props
   const form = useRef<StepsFormLegacyInstance<ConnectingMeteringFormField>>()
   const originData = useRef<ConnectionMetering>()
-  const idAfterCreatedRef = useRef<string>()
-  const { data: meteringList } = useGetConnectionMeteringListQuery(
-    { payload: { pageSize: '2147483647', page: '1' } },
-    { skip: !useModalMode || mode === ConnectionMeteringFormMode.EDIT })
   const tablePath = mode === ConnectionMeteringFormMode.CREATE ?
     getPolicyRoutePath( { type: PolicyType.CONNECTION_METERING,
       oper: PolicyOperation.LIST }) :
@@ -150,7 +145,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
       }
 
       if (useModalMode) {
-        idAfterCreatedRef.current = result?.id
+        modalCallback?.(result?.id)
       } else {
         navigate(linkToPolicies, { replace: true })
       }
@@ -189,19 +184,6 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     }
   }, [data, isLoading])
 
-
-  // This is for the new DPSK configuration flow,
-  // in the new flow, the create API only responds with the request ID and the entity ID instead of the whole entity,
-  // when the create process completes, we should find this entity for the modal callback
-  useEffect(() => {
-    if (!idAfterCreatedRef.current || !meteringList?.data) return
-
-    const targetmetering = meteringList.data.find(
-      metering => metering.id === idAfterCreatedRef.current)
-    if (targetmetering) {
-      modalCallback?.(targetmetering.id)
-    }
-  }, [idAfterCreatedRef, meteringList])
 
   const buttonLabel = {
     submit: mode === ConnectionMeteringFormMode.CREATE ?
