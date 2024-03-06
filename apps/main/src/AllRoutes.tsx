@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { PageNoPermissions, PageNotFound }                                 from '@acx-ui/components'
-import { useStreamActivityMessagesQuery }               from '@acx-ui/rc/services'
-import { Route, TenantNavigate, rootRoutes, AuthRoute } from '@acx-ui/react-router-dom'
+import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
+import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
+import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
+import { AuthRoute }                         from '@acx-ui/user'
 
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'

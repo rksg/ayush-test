@@ -1,7 +1,8 @@
 import { storiesOf } from '@storybook/react'
 
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+
 import { PageNoPermissions } from '.'
-import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 
 storiesOf('PageNoPermissions', module)
   .add('PageNoPermissions', () =>

@@ -1,5 +1,8 @@
+import { ReactElement } from 'react'
+
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { TenantNavigate }    from '@acx-ui/react-router-dom'
 import { RolesEnum as Role } from '@acx-ui/types'
 
 import { UserProfile } from './types'
@@ -68,4 +71,14 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+}
+
+function hasRbac (props:{ role: string, children: ReactElement }) { // TODO:
+  const { profile } = getUserProfile()
+  // console.log(profile, props)
+  return profile && props.role === 'admin'
+}
+
+export function AuthRoute (props: { role: string, children: ReactElement }) {
+  return !hasRbac(props) ? <TenantNavigate replace to='/no-permissions' /> : props.children
 }
