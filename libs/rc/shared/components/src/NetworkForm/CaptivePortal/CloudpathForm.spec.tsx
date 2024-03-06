@@ -19,6 +19,7 @@ import {
   mockedCloudPathAuthRadius,
   mockedCloudPathAcctRadius
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathForm } from './CloudpathForm'
@@ -60,12 +61,25 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test WISPr network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: true, cloneMode: true, data: cloudPathDataNone
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: true, data: cloudPathDataNone
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <CloudpathForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
     const insertInput = await screen.findByLabelText(/Enrollment Workflow URL/)
     fireEvent.change(insertInput, { target: { value: 'http://ruckus.abc.com' } })
     fireEvent.blur(insertInput)

@@ -69,6 +69,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
           tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
           key='networks'
         />
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Services' })}
+          key='services'
+        />
       </Tabs>
     )
   }
