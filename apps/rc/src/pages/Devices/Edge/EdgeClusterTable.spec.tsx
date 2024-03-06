@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                           from '@acx-ui/rc/services'
-import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                   from '@acx-ui/store'
+import { edgeApi }                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -31,6 +31,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./HaStatusBadge', () => ({
+  HaStatusBadge: () => <div data-testid='ha-status-badge' />
+}))
+
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 describe('Edge Cluster Table', () => {
@@ -45,6 +49,10 @@ describe('Edge Cluster Table', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -63,6 +71,12 @@ describe('Edge Cluster Table', () => {
     await userEvent.click(within(rows[0]).getByRole('button'))
     const subRows = screen.getAllByRole('row', { name: /Smart Edge/i })
     expect(subRows.length).toBe(2)
+
+    expect((await screen.findAllByText('Single Node')).length).toBe(1)
+    expect((await screen.findAllByText('Ready (2/2)')).length).toBe(1)
+    expect((await screen.findAllByText('Cluster Forming')).length).toBe(1)
+    expect((await screen.findAllByText('Disconnected')).length).toBe(1)
+    expect((await screen.findAllByText('Cluster Setup Required')).length).toBe(1)
   })
 
   it('should delete selected items successfully', async () => {
