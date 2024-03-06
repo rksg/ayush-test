@@ -16,6 +16,7 @@ import {
   partialDpskNetworkEntity,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
@@ -54,7 +55,12 @@ describe('DpskSettingsForm', () => {
   it('should render DPSK form successfully', async () => {
     const { asFragment } = render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form><DpskSettingsForm /></Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -66,7 +72,14 @@ describe('DpskSettingsForm', () => {
   it('should render Cloudpath Server form successfully', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -84,21 +97,37 @@ describe('DpskSettingsForm', () => {
           data: partialDpskNetworkEntity,
           setData: jest.fn()
         }}>
-          <Form><DpskSettingsForm /></Form>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn
+          }}>
+            <Form>
+              <DpskSettingsForm />
+            </Form>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       }
     )
+    await userEvent.click(await screen.findByRole('combobox', { name: /DPSK Service/i }))
+    await userEvent.click(await screen.findByText('DPSK Service 3'))
 
     expect(await screen.findByText('Keyboard Friendly')).toBeVisible()
-    expect(await screen.findByText('22 Characters')).toBeVisible()
+    expect(await screen.findByText('24 Characters')).toBeVisible()
   })
 
   it('should display DPSK service detail when select the dropdown list', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -115,7 +144,14 @@ describe('DpskSettingsForm', () => {
   it('should open the Add DPSK Service modal', async () => {
     render(
       <Provider>
-        <Form><DpskSettingsForm /></Form>
+        <MLOContext.Provider value={{
+          isDisableMLO: true,
+          disableMLO: jest.fn
+        }}>
+          <Form>
+            <DpskSettingsForm />
+          </Form>
+        </MLOContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -142,7 +178,14 @@ describe('DpskSettingsForm', () => {
           data: { ...partialDpskNetworkEntity, enableAuthProxy: true },
           setData: jest.fn()
         }}>
-          <Form><DpskSettingsForm /></Form>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn
+          }}>
+            <Form>
+              <DpskSettingsForm />
+            </Form>
+          </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
