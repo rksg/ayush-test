@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { MenuProps } from 'antd'
 import moment        from 'moment'
@@ -12,13 +12,25 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }                                            from '@acx-ui/formatter'
-import { ConfigTemplateLink, PolicyConfigTemplateLink, renderConfigTemplateDetailsLink } from '@acx-ui/rc/components'
+import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
 import {
+  ConfigTemplateLink,
+  PolicyConfigTemplateLink,
+  ServiceConfigTemplateLink,
+  renderConfigTemplateDetailsComponent
+} from '@acx-ui/rc/components'
+import {
+  useDelAppPolicyMutation,
+  useDelDevicePolicyMutation,
+  useDeleteAccessControlProfileMutation,
+  useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useDeleteVenueTemplateMutation,
-  useGetConfigTemplateListQuery
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
+  useGetConfigTemplateListQuery,
+  useDeleteDhcpTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -27,16 +39,25 @@ import {
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
-  getConfigTemplateEditPath
+  getConfigTemplateEditPath,
+  ServiceType,
+  ServiceOperation,
+  serviceTypeLabelMapping,
+  AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 import { getIntl }                                 from '@acx-ui/utils'
 
+import {
+  AccessControlSubPolicyDrawers,
+  AccessControlSubPolicyVisibility,
+  createAccessControlPolicyMenuItem, INIT_STATE,
+  useAccessControlSubPolicyVisible
+} from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
 import * as UI                   from './styledComponents'
-
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -47,6 +68,8 @@ export function ConfigTemplateList () {
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
+  // eslint-disable-next-line max-len
+  const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -60,8 +83,17 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
+          setAccessControlSubPolicyVisible({
+            ...INIT_STATE,
+            [selectedRow.type]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
@@ -96,7 +128,7 @@ export function ConfigTemplateList () {
   const actions: TableProps<ConfigTemplate>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Template' }),
-      dropdownMenu: getAddTemplateMenuProps()
+      dropdownMenu: getAddTemplateMenuProps({ setAccessControlSubPolicyVisible })
     }
   ]
 
@@ -128,6 +160,10 @@ export function ConfigTemplateList () {
         setVisible={setAppliedToTenantDrawerVisible}
         selectedTemplates={selectedTemplates}
       />}
+      <AccessControlSubPolicyDrawers
+        accessControlSubPolicyVisible={accessControlSubPolicyVisible}
+        setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
+      />
     </>
   )
 }
@@ -142,6 +178,10 @@ function useColumns (props: templateColumnProps) {
   const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
+  const typeFilterOptions = Object.keys(ConfigTemplateType).map((key =>
+    ({ key, value: key })
+  ))
+
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
       key: 'name',
@@ -150,31 +190,32 @@ function useColumns (props: templateColumnProps) {
       sorter: true,
       searchable: true,
       render: (_, row) => {
-        return renderConfigTemplateDetailsLink(row.type, row.id!, row.name)
+        return renderConfigTemplateDetailsComponent(row.type, row.id!, row.name)
       }
     },
     {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },
@@ -220,19 +261,37 @@ function useDeleteMutation () {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
+  const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
+  const [ deleteLayer2 ] = useDelL2AclPolicyMutation()
+  const [ deleteLayer3 ] = useDelL3AclPolicyMutation()
+  const [ deleteDevice ] = useDelDevicePolicyMutation()
+  const [ deleteApplication ] = useDelAppPolicyMutation()
+  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
-    [ConfigTemplateType.VENUE]: deleteVenueTemplate
+    [ConfigTemplateType.VENUE]: deleteVenueTemplate,
+    [ConfigTemplateType.DPSK]: deleteDpskTemplate,
+    [ConfigTemplateType.LAYER_2_POLICY]: deleteLayer2,
+    [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
+    [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
+    [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
+    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }
 
-function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
+function getAddTemplateMenuProps (props: {
+  setAccessControlSubPolicyVisible: Dispatch<SetStateAction<AccessControlSubPolicyVisibility>>
+}): Omit<MenuProps, 'placement'> {
+  const { setAccessControlSubPolicyVisible } = props
   const { $t } = getIntl()
 
   return {
     expandIcon: <UI.MenuExpandArrow />,
+    subMenuCloseDelay: 0.2,
     items: [
       {
         key: 'add-wifi-network',
@@ -247,13 +306,40 @@ function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
       }, {
         key: 'add-policy',
         label: $t({ defaultMessage: 'Policies' }),
-        children: [{
-          key: 'add-aaa',
-          label: <PolicyConfigTemplateLink type={PolicyType.AAA} oper={PolicyOperation.CREATE}>
-            {$t(policyTypeLabelMapping[PolicyType.AAA])}
-          </PolicyConfigTemplateLink>
-        }]
+        children: [
+          createPolicyMenuItem(PolicyType.AAA, 'add-aaa'),
+          createAccessControlPolicyMenuItem(setAccessControlSubPolicyVisible)
+        ]
+      }, {
+        key: 'add-service',
+        label: $t({ defaultMessage: 'Services' }),
+        children: [
+          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
+          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
+        ]
       }
     ]
+  }
+}
+
+export function createPolicyMenuItem (policyType: PolicyType, key: string) {
+  const { $t } = getIntl()
+
+  return {
+    key,
+    label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
+      {$t(policyTypeLabelMapping[policyType])}
+    </PolicyConfigTemplateLink>
+  }
+}
+
+function createServiceMenuItem (serviceType: ServiceType, key: string) {
+  const { $t } = getIntl()
+
+  return {
+    key,
+    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
+      {$t(serviceTypeLabelMapping[serviceType])}
+    </ServiceConfigTemplateLink>
   }
 }

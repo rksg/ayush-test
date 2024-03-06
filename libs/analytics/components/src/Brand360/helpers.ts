@@ -17,12 +17,12 @@ type SortResult = -1 | 0 | 1
 export interface Common {
   lsp: string
   p1Incidents: number
-  guestExp: number
-  ssidCompliance: number
+  guestExp: number | null
+  ssidCompliance: number | null
   deviceCount: number
-  avgConnSuccess: number,
-  avgTTC: number,
-  avgClientThroughput: number
+  avgConnSuccess: number | null,
+  avgTTC: number | null,
+  avgClientThroughput: number | null
 }
 export interface Property extends Common {
   property: string
@@ -42,7 +42,7 @@ export interface TransformedMap {
   [key: string]: TransformedItem;
 }
 
-export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : null)
 export const noDataCheck = (val:number | null) => val === 0 || val === null ? true : false
 export const checkNaN = (val: number) => (!isNaN(val) ? val : 0)
 function checkPropertiesForNaN (
@@ -62,7 +62,7 @@ const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) =
     const sum = validValues?.reduce((acc, value) =>(acc as number) + (value as number), 0)
     return (sum as number) / validValues.length
   } else {
-    return 0
+    return null
   }
 }
 export const transformToLspView = (properties: Response[]): Lsp[] => {
@@ -165,8 +165,8 @@ export function computePastRange (
 export const slaKpiConfig = {
   incident: {
     getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'LSP health' })
-      : defineMessage({ defaultMessage: 'Property health' }),
+      ? defineMessage({ defaultMessage: 'LSP Health' })
+      : defineMessage({ defaultMessage: 'Property Health' }),
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
@@ -231,7 +231,8 @@ export const transformVenuesData = (
           tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
         ) as [number, number],
         deviceCount: tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.onlineApsSLA?.[1] || 0), 0) : 0,
+          ? tenantData?.reduce((total, venue) => total +
+          (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
         avgConnSuccess: sumData(
           tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
         ) as [number, number],

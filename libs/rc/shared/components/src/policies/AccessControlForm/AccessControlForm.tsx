@@ -17,7 +17,12 @@ import {
   AccessControlProfile,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, AccessControlFormFields, getPolicyListRoutePath
+  PolicyOperation,
+  AccessControlFormFields,
+  getPolicyListRoutePath,
+  useConfigTemplate,
+  useConfigTemplateBreadcrumb,
+  useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -128,11 +133,13 @@ export const convertToPayload = (
 
 export const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
+  const templateBasePath = useConfigTemplateTenantLink('')
   const { editMode } = props
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
@@ -158,11 +165,20 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         }).unwrap()
       }
 
-      navigate(linkToPolicies, { replace: true })
+      navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Network Control' }) },
+    {
+      text: $t({ defaultMessage: 'Policies & Profiles' }),
+      link: getPolicyListRoutePath(true)
+    },
+    { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
+  ])
 
   return (
     <>
@@ -170,19 +186,12 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         title={editMode
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(linkToPolicies, { replace: true })}
+        onCancel={() => navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
         <StepsFormLegacy.StepForm<AccessControlProfile>

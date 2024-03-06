@@ -10,15 +10,17 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, Modal, ModalType, StepsFormLegacy }              from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useGetDpskListQuery }                                    from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, StepsFormLegacy }                from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   DpskSaveData,
   transformDpskNetwork,
   DpskNetworkType,
-  transformAdvancedDpskExpirationText
+  transformAdvancedDpskExpirationText,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -35,6 +37,7 @@ const { useWatch } = Form
 
 export function DpskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
     if((editMode || cloneMode) && data){
@@ -49,6 +52,10 @@ export function DpskSettingsForm () {
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
         authRadiusId: data.authRadiusId||data.authRadius?.id
       })
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
 
@@ -74,7 +81,6 @@ export function DpskSettingsForm () {
 function SettingsForm () {
   const form = Form.useFormInstance()
   const { editMode, data, setData } = useContext(NetworkFormContext)
-  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const isCloudpathEnabled = useWatch('isCloudpathEnabled')
   const dpskWlanSecurity = useWatch('dpskWlanSecurity')
@@ -84,21 +90,8 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
-  const onSecurityProtocolChange= (value: WlanSecurityEnum) => {
-    if(value === WlanSecurityEnum.WPA23Mixed){
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    } else {
-      disableMLO(false)
-    }
-  }
   useEffect(()=>{
     form.setFieldsValue({ ...data })
-
-    if (editMode && data && data?.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) {
-      disableMLO(true)
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-    }
   },[data])
 
   useEffect(() => {
@@ -123,7 +116,7 @@ function SettingsForm () {
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed ? securityDescription : null}
         >
-          <Select onChange={onSecurityProtocolChange}>
+          <Select>
             <Option value={WlanSecurityEnum.WPA2Personal}>
               { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
             </Option>
@@ -172,7 +165,10 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const { data: dpskList } = useGetDpskListQuery({})
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery
+  )
+
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {

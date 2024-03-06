@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Loader, Tabs }                                                                                                               from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                     from '@acx-ui/feature-toggle'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType }                                                                                        from '@acx-ui/rc/utils'
+import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                     from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -19,9 +19,10 @@ import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES) && !isTemplate
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE) && !isTemplate
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
@@ -110,21 +111,25 @@ export function VenueServicesTab () {
             <NetworkSegmentation />
           </Tabs.TabPane>
         }
-        <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
-          <MdnsProxyInstances />
-        </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Client Isolation Allowlist' })}
-          key={PolicyType.CLIENT_ISOLATION}
-        >
-          <ClientIsolationAllowList />
-        </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Rogue APs' })}
-          key={PolicyType.ROGUE_AP_DETECTION}
-        >
-          <VenueRogueAps />
-        </Tabs.TabPane>
+        {
+          !isTemplate && <>
+            <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
+              <MdnsProxyInstances />
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Client Isolation Allowlist' })}
+              key={PolicyType.CLIENT_ISOLATION}
+            >
+              <ClientIsolationAllowList />
+            </Tabs.TabPane>
+            <Tabs.TabPane
+              tab={$t({ defaultMessage: 'Rogue APs' })}
+              key={PolicyType.ROGUE_AP_DETECTION}
+            >
+              <VenueRogueAps />
+            </Tabs.TabPane>
+          </>
+        }
         {
           isEdgeEnabled && isAppliedFirewall && !isEdgeLoading && isEdgeReady &&
           <Tabs.TabPane

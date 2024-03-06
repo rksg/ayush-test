@@ -14,9 +14,9 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse,
   externalProviders
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { WISPrForm } from './WISPrForm'
@@ -45,15 +45,11 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -73,8 +69,18 @@ describe.skip('CaptiveNetworkForm-WISPr', () => {
       value={{
         editMode: false, cloneMode: true, data: wisprDataWPA2
       }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><WISPrForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    >
+      <MLOContext.Provider value={{
+        isDisableMLO: false,
+        disableMLO: jest.fn()
+      }}>
+        <StepsFormLegacy>
+          <StepsFormLegacy.StepForm>
+            <WISPrForm />
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      </MLOContext.Provider>
+    </NetworkFormContext.Provider></Provider>, { route: { params } })
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])

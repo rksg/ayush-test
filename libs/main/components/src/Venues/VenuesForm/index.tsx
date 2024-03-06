@@ -19,11 +19,9 @@ import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
-  useGetVenueQuery,
   useUpdateVenueMutation,
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
-  useGetVenueTemplateQuery,
   useLazyGetVenuesTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -33,9 +31,13 @@ import {
   checkObjectNotExists,
   generatePageHeaderTitle,
   redirectPreviousPage,
-  useBreadcrumb,
+  useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  useConfigTemplateLazyQueryFnSwitcher,
+  Venue,
+  TableResult,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -46,8 +48,9 @@ import {
 import { RequestPayload }     from '@acx-ui/types'
 import { validationMessages } from '@acx-ui/utils'
 
-import { MessageMapping }   from '../MessageMapping'
-import { VenueEditContext } from '../VenueEdit'
+import { MessageMapping }      from '../MessageMapping'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }    from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -147,8 +150,10 @@ export function VenuesForm () {
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
-  const addVenue = useAddInstance()
-  const updateVenue = useUpdateInstance()
+  // eslint-disable-next-line max-len
+  const [ addVenue ] = useConfigTemplateMutationFnSwitcher(useAddVenueMutation, useAddVenueTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateVenue ] = useConfigTemplateMutationFnSwitcher(useUpdateVenueMutation, useUpdateVenueTemplateMutation)
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -159,12 +164,12 @@ export function VenuesForm () {
   const [countryCode, setCountryCode] = useState('')
 
   const { action } = useParams()
-  const { data } = useGetInstance()
+  const { data } = useGetVenueInstance()
   const previousPath = usePreviousPath()
 
   // Config Template related states
   const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useBreadcrumb([
+  const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
   ])
   const pageTitle = generatePageHeaderTitle({
@@ -230,7 +235,10 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const venuesList = useGetLazyInstances()
+  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>(
+    useLazyVenuesListQuery, useLazyGetVenuesTemplateListQuery
+  )
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject(intl.$t(validationMessages.name))
@@ -429,41 +437,6 @@ export function VenuesForm () {
       </StepsFormLegacy>
     </>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ addVenue ] = useAddVenueMutation()
-  const [ addVenueTemplate ] = useAddVenueTemplateMutation()
-
-  return isTemplate ? addVenueTemplate : addVenue
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ updateVenue ] = useUpdateVenueMutation()
-  const [ updateVenueTemplate ] = useUpdateVenueTemplateMutation()
-
-  return isTemplate ? updateVenueTemplate : updateVenue
-}
-
-function useGetInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId } = useParams()
-  // eslint-disable-next-line max-len
-  const venueResult = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId || isTemplate })
-  // eslint-disable-next-line max-len
-  const venueTemplateResult = useGetVenueTemplateQuery({ params: { venueId } }, { skip: !venueId || !isTemplate })
-
-  return isTemplate ? venueTemplateResult : venueResult
-}
-
-function useGetLazyInstances () {
-  const { isTemplate } = useConfigTemplate()
-  const [ venuesList ] = useLazyVenuesListQuery()
-  const [ venuesTemplateList ] = useLazyGetVenuesTemplateListQuery()
-
-  return isTemplate ? venuesTemplateList : venuesList
 }
 
 function usePreviousPath (): string {

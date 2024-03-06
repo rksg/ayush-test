@@ -450,6 +450,6 @@ export interface MspRecCustomer {
 }
 
 export enum MspEcTierEnum {
-  Essential = 'Gold',
+  Essentials = 'Gold',
   Professional = 'Platinum'
 }

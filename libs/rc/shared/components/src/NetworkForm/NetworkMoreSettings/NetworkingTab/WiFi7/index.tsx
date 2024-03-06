@@ -3,17 +3,25 @@ import { useEffect, useState, useContext } from 'react'
 
 import { Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
-import { get, isUndefined }    from 'lodash'
+import _, { get, isUndefined } from 'lodash'
 import { useIntl }             from 'react-intl'
 
+import { Tooltip }                                                from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import {
+  NetworkSaveData,
+  WlanSecurityEnum,
+  MultiLinkOperationOptions,
+  IsNetworkSupport6g,
+  IsSecuritySupport6g,
+  NetworkTypeEnum
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import { Tooltip }                                                                                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                                                      from '@acx-ui/icons'
-import { NetworkSaveData, WlanSecurityEnum, MultiLinkOperationOptions, IsNetworkSupport6g, IsSecuritySupport6g } from '@acx-ui/rc/utils'
-
-import { MLOContext } from '../../../NetworkForm'
-import * as UI        from '../../../NetworkMoreSettings/styledComponents'
+import { MLOContext }     from '../../../NetworkForm'
+import NetworkFormContext from '../../../NetworkFormContext'
+import * as UI            from '../../../NetworkMoreSettings/styledComponents'
 
 interface Option {
   index: number
@@ -270,12 +278,15 @@ const CheckboxGroup = ({ wlanData } : { wlanData : NetworkSaveData | null }) => 
   )
 }
 
-function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
+function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const { setData, data: wlanData } = useContext(NetworkFormContext)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
-  const { isDisableMLO } = useContext(MLOContext)
+  const params = useParams()
+  const editMode = params.action === 'edit'
+  const { isDisableMLO, disableMLO } = useContext(MLOContext)
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
   const [
     wifi7Enabled,
@@ -295,6 +306,22 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
     }
   }, [wifi7Enabled])
 
+  /* eslint-disable */
+  useEffect(()=>{
+    if(editMode && wlanData !== null){
+
+      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK && IsNetworkSupport6g(wlanData))
+
+      disableMLO(shouldMLOBeDisable)
+
+      if (shouldMLOBeDisable) {
+        const cloneData = _.cloneDeep(wlanData)
+        _.set(cloneData, 'wlan.advancedCustomization.multiLinkOperationEnabled', false)
+        setData && setData(cloneData)
+      }
+    }
+  }, [])
+  /* eslint-enable */
   return (
     <>
       <UI.Subtitle>
@@ -347,6 +374,7 @@ function WiFi7 ({ wlanData } : { wlanData : NetworkSaveData | null }) {
               <UI.FieldLabel width='250px'>
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
+                  {/* eslint-disable max-len */}
                   <Tooltip.Question
                     title={$t({ defaultMessage: `Allows Wi-Fi 7 devices to utilize multiple radio channels simultaneously.
                       Increases network efficiency and better throughput.

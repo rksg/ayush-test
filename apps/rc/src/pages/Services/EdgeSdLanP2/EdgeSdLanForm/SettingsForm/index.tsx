@@ -23,8 +23,7 @@ import {
 import { EdgeSdLanFormModelP2 } from '..'
 import { messageMappings }      from '../messageMappings'
 
-import * as UI             from './styledComponents'
-import { TopologyDiagram } from './TopologyDiagram'
+import * as UI from './styledComponents'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
@@ -325,7 +324,10 @@ export const SettingsForm = () => {
           dependencies={['isGuestTunnelEnabled']}
         >
           {({ getFieldValue }) => {
-            return <TopologyDiagram isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')} />
+            return <UI.StyledDiagram
+              isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')}
+              vertical={true}
+            />
           }}
         </Form.Item>
       </Col>

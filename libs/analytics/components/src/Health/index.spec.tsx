@@ -32,6 +32,9 @@ describe('HealthPage', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })

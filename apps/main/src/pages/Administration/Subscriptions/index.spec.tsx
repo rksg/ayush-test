@@ -222,4 +222,37 @@ describe('Subscriptions', () => {
     expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
     expect(screen.queryAllByText('SmartEdge').length).toBe(0)
   })
+
+  it('should show banner on no subscription active error', async () => {
+
+    mockServer.use(rest.get(
+      AdministrationUrlsInfo.getEntitlementsList.newApi
+        ? AdministrationUrlsInfo.getEntitlementsList.url
+        : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
+      (req, res, ctx) => {
+        return res(ctx.status(417), ctx.json({
+          errors: [{
+            code: 'ENTITLEMENT-10003',
+            message: `Cannot display subscription data: entitlement ID is missing.
+            At least one tenant subscription must be active.`
+          }]
+        }))
+      }
+    ))
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
+      .toBeVisible()
+    const refreshButton = await screen.findByTestId('bannerRefreshLink')
+    await userEvent.click(refreshButton)
+    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
+  })
 })

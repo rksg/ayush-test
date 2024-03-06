@@ -11,7 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   transformVLAN,
   transformAps,
@@ -20,7 +20,8 @@ import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
   useSdLanScopedNetworks,
-  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsLink
+  checkSdLanScopedNetworkDeactivateAction,
+  renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -28,7 +29,12 @@ import {
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useVenueNetworkTableV2Query,
+  useVenueNetworkListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -43,7 +49,8 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate, getConfigTemplatePath
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -85,10 +92,15 @@ export function VenueNetworksTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
-    defaultPayload,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -105,17 +117,17 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
   const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
 
   useEffect(()=>{
@@ -144,7 +156,7 @@ export function VenueNetworksTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
-  const linkToAddNetworkTemplate = useTenantLink(getConfigTemplatePath('networks/wireless/add'), 'v')
+  const linkToAddNetworkTemplate = useConfigTemplateTenantLink('networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -188,8 +200,7 @@ export function VenueNetworksTab () {
 
   const getTenantLink = (row: Network) => {
     return isTemplate
-      // eslint-disable-next-line max-len
-      ? renderConfigTemplateDetailsLink(ConfigTemplateType.NETWORK, row.id, row.name)
+      ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
       // eslint-disable-next-line max-len
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
   }

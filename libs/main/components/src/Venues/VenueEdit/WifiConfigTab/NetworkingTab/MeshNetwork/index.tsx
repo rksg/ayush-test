@@ -10,15 +10,19 @@ import { Features, useIsSplitOn }                                           from
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
-  useUpdateVenueMeshMutation
+  useUpdateVenueMeshMutation,
+  useGetVenueTemplateSettingsQuery,
+  useUpdateVenueTemplateMeshMutation
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                           from '@acx-ui/utils'
+import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
+import { validationMessages }                                          from '@acx-ui/utils'
 
-import { VenueEditContext } from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
+const LABEL_WIDTH = '180px'
 
 const MeshInfoIcon = () => {
   const { $t } = useIntl()
@@ -48,7 +52,10 @@ export function MeshNetwork () {
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
-  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
+  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueMeshMutation,
+    useUpdateVenueTemplateMeshMutation
+  )
 
   const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
@@ -72,7 +79,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useGetVenueSettingsQuery({ params })
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery,
+    useGetVenueTemplateSettingsQuery
+  )
 
   useEffect(() => {
     if (data) {
@@ -301,7 +311,7 @@ export function MeshNetwork () {
     isLoading: !data || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
-    <StepsFormLegacy.FieldLabel width={'160px'}>
+    <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
       {$t({ defaultMessage: 'Mesh Network' })}
       {(hasMeshAPs && meshEnabled)?
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
@@ -339,7 +349,7 @@ export function MeshNetwork () {
           </li>
         </ul>
       </MeshInfoBlock>
-      <MeshSsidDiv labelWidth={'160px'} isEditMode={isSsidEditMode}>
+      <MeshSsidDiv labelWidth={LABEL_WIDTH} isEditMode={isSsidEditMode}>
         {$t({ defaultMessage: 'Mesh Network Name' })}
         <Form.Item children={
           <Input
@@ -365,14 +375,14 @@ export function MeshNetwork () {
         }
       </MeshSsidDiv>
       {ssidError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
           <div />
           <ErrorMessageDiv>
             {ssidError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <MeshPassphraseDiv labelWidth={'160px'} isEditMode={isPassphraseEditMode}>
+      <MeshPassphraseDiv labelWidth={LABEL_WIDTH} isEditMode={isPassphraseEditMode}>
         {$t({ defaultMessage: 'Mesh PSK' })}
         <Form.Item children={
           <Input.TextArea
@@ -402,14 +412,14 @@ export function MeshNetwork () {
         }
       </MeshPassphraseDiv>
       {passphraseError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
           <div />
           <ErrorMessageDiv>
             {passphraseError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <StepsFormLegacy.FieldLabel width={'160px'}>
+      <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
         {$t({ defaultMessage: 'Mesh Radio' })}
         <Form.Item >
           <Radio.Group
@@ -424,7 +434,7 @@ export function MeshNetwork () {
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       { supportZeroTouchMesh &&
-        <ZeroTouchMeshDiv labelWidth={'160px'}>
+        <ZeroTouchMeshDiv labelWidth={LABEL_WIDTH}>
           {$t({ defaultMessage: 'Zero Touch Mesh' })}
           <Form.Item
             valuePropName='checked'

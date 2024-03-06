@@ -14,6 +14,7 @@ export enum Features {
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   AP_SNMP = 'wifi-consumer-ap-snmp-toggle',
   AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
+  AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
@@ -106,7 +107,6 @@ export enum Features {
   SWITCH_STACK_NAME_DISPLAY_TOGGLE = 'switch-stack-name-display-toggle',
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
-  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
@@ -148,12 +148,15 @@ export enum Features {
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
+  WIFI_API_V2_TOGGLE = 'wifi-api-network-activations-by-query-v2-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
-  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle'
+  RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
+  SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
