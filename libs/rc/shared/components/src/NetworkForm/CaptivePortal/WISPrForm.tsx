@@ -478,7 +478,7 @@ export function WISPrForm () {
           extra={networkSecurityDescription()}
           children={
             <Select
-              placeholder={$t({ defaultMessage: 'Select...' })}
+              placeholder={$t({ defaultMessage: 'None' })}
               options={networkSecurityOptions}
               onChange={(selected: string) => {
                 let security = data?.wlan?.wlanSecurity

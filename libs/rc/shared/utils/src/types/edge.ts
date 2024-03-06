@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                                        from '..'
-import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                                                                                    from '..'
+import { ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
@@ -58,6 +58,9 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   firewallName?: string
   upTime?: number
   clusterInterface?: string
+  haStatus?: NodeClusterRoleEnum
+  clusterNodeStatus?: ClusterNodeStatusEnum
+  clusterId?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -377,7 +380,6 @@ export interface EdgeClusterStatus {
   venueId?: string
   venueName?: string
   clusterStatus?: string
-  haStatus?: string
   edgeList?: EdgeStatus[]
 }
 

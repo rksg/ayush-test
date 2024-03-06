@@ -67,7 +67,7 @@ describe('DHCP Detail Page', () => {
     )
   })
 
-  it.skip('should render detail page', async () => {
+  it('should render detail page', async () => {
     render(
       <Provider>
         <DHCPDetail />
@@ -78,6 +78,9 @@ describe('DHCP Detail Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
+
+    const targetData = list.data[0]
+    expect(screen.getByRole('row', { name: new RegExp(targetData.name) })).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {

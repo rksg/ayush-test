@@ -61,3 +61,5 @@ export function RadioCard ({
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }
+
+RadioCard.Radio = Radio
