@@ -1,15 +1,21 @@
 import { Params } from 'react-router-dom'
 
 import {
-  CommonResult, DpskMutationResult, DpskSaveData,
+  CommonResult, DHCPSaveData, DpskMutationResult, DpskSaveData,
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { ApiInfo }               from '@acx-ui/utils'
+import { baseConfigTemplateApi }      from '@acx-ui/store'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { createDpskHttpRequest } from '../service'
+import { createDpskHttpRequest, transformDhcpResponse } from '../service'
+
+import {
+  commonQueryFn,
+  useCasesToRefreshDhcpTemplateList,
+  useCasesToRefreshDpskTemplateList
+} from './common'
 
 export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -78,13 +84,46 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'DpskTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'CREATE_POOL_TEMPLATE_RECORD',
-            'UPDATE_POOL_TEMPLATE_RECORD',
-            'DELETE_POOL_TEMPLATE_RECORD'
-          ], () => {
+          onActivityMessageReceived(msg, useCasesToRefreshDpskTemplateList, () => {
             api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
               { type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getDhcpTemplate: build.query<DHCPSaveData | null, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getDhcp),
+      transformResponse: transformDhcpResponse,
+      providesTags: [{ type: 'DhcpTemplate', id: 'DETAIL' }]
+    }),
+    createOrUpdateDhcpTemplate: build.mutation<DHCPSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(params?.serviceId
+          ? ServicesConfigTemplateUrlsInfo.updateDhcp
+          : ServicesConfigTemplateUrlsInfo.addDhcp
+        , params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
+    }),
+    deleteDhcpTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteDhcp),
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
+    }),
+    getDhcpTemplateList: build.query<DHCPSaveData[], RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getDhcpList),
+      providesTags: [{ type: 'DhcpTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshDhcpTemplateList, () => {
+            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
+              { type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }
             ]))
           })
         })
@@ -99,7 +138,12 @@ export const {
   useUpdateDpskTemplateMutation,
   useGetEnhancedDpskTemplateListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
-  useDeleteDpskTemplateMutation
+  useDeleteDpskTemplateMutation,
+  useGetDhcpTemplateQuery,
+  useCreateOrUpdateDhcpTemplateMutation,
+  useDeleteDhcpTemplateMutation,
+  useGetDhcpTemplateListQuery,
+  useLazyGetDhcpTemplateListQuery
 } = servicesConfigTemplateApi
 
 

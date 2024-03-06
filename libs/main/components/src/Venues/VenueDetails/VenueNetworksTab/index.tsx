@@ -200,7 +200,6 @@ export function VenueNetworksTab () {
 
   const getTenantLink = (row: Network) => {
     return isTemplate
-      // eslint-disable-next-line max-len
       ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
       // eslint-disable-next-line max-len
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>

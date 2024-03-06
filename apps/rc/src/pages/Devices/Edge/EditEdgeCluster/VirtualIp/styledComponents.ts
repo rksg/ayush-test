@@ -5,7 +5,3 @@ export const EdgeNameHeadLine = styled.div`
   margin-top: 20px;
   margin-bottom: 10px;
 `
-
-export const Mt15 = styled.div`
-  margin-top: 15px;
-`

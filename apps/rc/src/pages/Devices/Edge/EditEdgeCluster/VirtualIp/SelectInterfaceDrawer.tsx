@@ -6,22 +6,19 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                           from '@acx-ui/components'
-import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask } from '@acx-ui/rc/utils'
-import { getIntl }                                                  from '@acx-ui/utils'
+import { Drawer, Select }                                                                                     from '@acx-ui/components'
+import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 import { VirtualIpFormType } from '.'
-
-const Netmask = require('netmask').Netmask
 
 interface SelectInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   handleFinish: (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => void
   currentVipIndex?: number
-  currentCluster?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterTableDataType
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
   }
@@ -33,23 +30,10 @@ interface SelectInterfaceDrawerFormType {
   [key: string]: { port: string }
 }
 
-const optionSorter = (
-  a: DefaultOptionType,
-  b: DefaultOptionType
-) => {
-  if ( (a.label ?? '') < (b.label ?? '') ){
-    return -1
-  }
-  if ( (a.label ?? '') > (b.label ?? '') ){
-    return 1
-  }
-  return 0
-}
-
 export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   const {
     visible, setVisible, currentVipIndex = 0,
-    currentCluster, handleFinish: handleOk , editData,
+    currentClusterStatus, handleFinish: handleOk , editData,
     selectedInterfaces, lanInterfaces
   } = props
   const { $t } = useIntl()
@@ -73,8 +57,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   }, [lanInterfaces])
 
   useEffect(() => {
-    form.resetFields()
     if(visible && editData) {
+      form.resetFields()
       const tmp = {} as SelectInterfaceDrawerFormType
       for(let [k, v] of Object.entries(editData)) {
         tmp[k] = { port: v?.portName ?? '' }
@@ -132,7 +116,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     >
       <Row gutter={[16, 10]}>
         {
-          currentCluster?.edgeList?.map(item => (
+          currentClusterStatus?.edgeList?.map(item => (
             <Col key={`node-${item.serialNumber}`} span={24}>
               <UI.EdgeNameHeadLine>{item.name}</UI.EdgeNameHeadLine>
               <Form.Item
@@ -166,10 +150,22 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                 }
                 children={
                   <Select
-                    options={filterPortOptions(
-                      lanInterfacesOptions[item.serialNumber],
-                      item.serialNumber
-                    )}
+                    children={
+                      filterPortOptions(
+                        lanInterfacesOptions[item.serialNumber],
+                        item.serialNumber
+                      )?.map(option => (
+                        <Select.Option
+                          key={option.value}
+                          value={option.value}
+                          children={option.label}
+                          disabled={
+                            !lanInterfaces?.[item.serialNumber]?.find(item =>
+                              item.portName === option.value)?.ip
+                          }
+                        />
+                      ))
+                    }
                   />
                 }
                 validateFirst
@@ -204,21 +200,4 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       footer={footer}
     />
   )
-}
-
-const validateSubnetIsConsistent = (allIps: { ip?: string, subnet?: string }[], value?: string) => {
-  if(!allIps || allIps.length < 2 || !value) return Promise.resolve()
-  const { $t } = getIntl()
-  for(let i=0; i<allIps.length; i++) {
-    for(let j=i+1; j<allIps.length; j++) {
-      if(i === allIps.length - 1) break
-      const first = new Netmask(`${allIps[i].ip}/${allIps[i].subnet}`)
-      const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
-      if(first.first !== second.first || first.last !== second.last) {
-        // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
-      }
-    }
-  }
-  return Promise.resolve()
 }

@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgeSubInterfaceFixtures } from '@acx-ui/rc/utils'
+import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
 import {
   render,
   screen
@@ -12,7 +12,7 @@ const mockedSetVisibleFn = jest.fn()
 const mockedHandleFinishFn = jest.fn()
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgeSubInterfaceFixtures
+const { mockLanInterfaces } = EdgePortConfigFixtures
 const mockeSelectedInterface = [{
   interfaces: Object.fromEntries(Object.entries(mockLanInterfaces)
     .map(([k, v]) => [k, v[0]])),
@@ -27,7 +27,7 @@ describe('VirtualIp - SelectInterfaceDrawer', () => {
         setVisible={mockedSetVisibleFn}
         handleFinish={mockedHandleFinishFn}
         currentVipIndex={0}
-        currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
       />
     )
     expect(screen.getByText('Select Interfaces: #1 Virtual IP')).toBeVisible()
@@ -43,7 +43,7 @@ describe('VirtualIp - SelectInterfaceDrawer', () => {
         setVisible={mockedSetVisibleFn}
         handleFinish={mockedHandleFinishFn}
         currentVipIndex={0}
-        currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
         lanInterfaces={mockLanInterfaces}
       />
     )
@@ -61,7 +61,7 @@ describe('VirtualIp - SelectInterfaceDrawer', () => {
         setVisible={mockedSetVisibleFn}
         handleFinish={mockedHandleFinishFn}
         currentVipIndex={0}
-        currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
         lanInterfaces={mockLanInterfaces}
         selectedInterfaces={mockeSelectedInterface}
       />
@@ -80,7 +80,7 @@ describe('VirtualIp - SelectInterfaceDrawer', () => {
         setVisible={mockedSetVisibleFn}
         handleFinish={mockedHandleFinishFn}
         currentVipIndex={0}
-        currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
         lanInterfaces={mockLanInterfaces}
         selectedInterfaces={mockeSelectedInterface}
         editData={mockeSelectedInterface[0].interfaces}
@@ -101,7 +101,7 @@ describe('VirtualIp - SelectInterfaceDrawer', () => {
         setVisible={mockedSetVisibleFn}
         handleFinish={mockedHandleFinishFn}
         currentVipIndex={0}
-        currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+        currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
         lanInterfaces={mockLanInterfaces}
         selectedInterfaces={mockeSelectedInterface}
         editData={mockeSelectedInterface[0].interfaces}

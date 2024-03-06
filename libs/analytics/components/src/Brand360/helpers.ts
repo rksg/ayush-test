@@ -18,11 +18,11 @@ export interface Common {
   lsp: string
   p1Incidents: number
   guestExp: number | null
-  ssidCompliance: number
+  ssidCompliance: number | null
   deviceCount: number
-  avgConnSuccess: number,
-  avgTTC: number,
-  avgClientThroughput: number
+  avgConnSuccess: number | null,
+  avgTTC: number | null,
+  avgClientThroughput: number | null
 }
 export interface Property extends Common {
   property: string
@@ -42,7 +42,7 @@ export interface TransformedMap {
   [key: string]: TransformedItem;
 }
 
-export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : null)
 export const noDataCheck = (val:number | null) => val === 0 || val === null ? true : false
 export const checkNaN = (val: number) => (!isNaN(val) ? val : 0)
 function checkPropertiesForNaN (
@@ -231,7 +231,8 @@ export const transformVenuesData = (
           tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
         ) as [number, number],
         deviceCount: tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.onlineApsSLA?.[1] || 0), 0) : 0,
+          ? tenantData?.reduce((total, venue) => total +
+          (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
         avgConnSuccess: sumData(
           tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
         ) as [number, number],
