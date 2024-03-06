@@ -36,12 +36,15 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
-  const switchHealthEnabled = useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
-    component: switchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
+    component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: false, withIncidents: false })
   }
 
