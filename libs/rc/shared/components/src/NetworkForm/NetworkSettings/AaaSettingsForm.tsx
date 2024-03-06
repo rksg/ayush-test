@@ -31,7 +31,6 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import * as UI                     from '../NetworkMoreSettings/styledComponents'
 
 const { Option } = Select
 
