@@ -11,7 +11,6 @@ import {
 
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
@@ -362,7 +361,7 @@ export function checkVlanMember (value: string) {
       const nums = item.split('-').map((x: string) => Number(x))
       return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
     }
-    return num > 0 && num < 4095
+    return Number(num) > 0 && Number(num) < 4095
   }).filter((x:boolean) => !x).length === 0
 
   if (isValid) {
