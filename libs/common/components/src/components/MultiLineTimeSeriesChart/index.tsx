@@ -266,7 +266,7 @@ export function MultiLineTimeSeriesChart <
         lineStyle: { width: 1.2 },
         yAxisIndex: seriesYAxisIndexes ? seriesYAxisIndexes[i] : 0,
         ...(seriesChartTypes && seriesChartTypes[i] === 'area'
-          ? { areaStyle: {}, lineStyle: { width: 0 } }
+          ? { areaStyle: { opacity: 0.5 }, lineStyle: { width: 1 } }
           : {}),
         ...(i === 0 ? {
           markArea: props.markers ? {
