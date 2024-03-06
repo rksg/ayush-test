@@ -91,7 +91,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       render: (_, row: Common) =>
         <span
           style={{
-            color: !isNaN(row?.ssidCompliance)
+            color: !isNaN(row?.ssidCompliance) && !isNull(row?.ssidCompliance)
               ? row?.ssidCompliance >= parseFloat(thresholdSSID as string)/100
                 ? pColor
                 : nColor
