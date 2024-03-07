@@ -113,7 +113,7 @@ export const EdgeClusterTable = () => {
       align: 'center',
       render: (_, row) => {
         return (
-          row.haStatus &&
+          !row.isFirstLevel &&
           <HaStatusBadge
             haStatus={row.haStatus}
           />
@@ -275,7 +275,7 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
       </Col>
       <Col>
         <Tooltip.Question
-          title={$t({ defaultMessage: `The cluster function requires 
+          title={$t({ defaultMessage: `The cluster function requires
         at least two nodes to operate` })}
           placement='bottom'
           iconStyle={{ width: 16, marginTop: 5 }}
