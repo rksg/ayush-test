@@ -65,11 +65,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 const mockedUseConfigTemplate = jest.fn()
-const mockedUseConfigTemplateBreadcrumb = jest.fn()
+const mockedUsePolicyListBreadcrumb = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate(),
-  useConfigTemplateBreadcrumb: () => mockedUseConfigTemplateBreadcrumb()
+  usePolicyListBreadcrumb: () => mockedUsePolicyListBreadcrumb()
 }))
 
 describe('AccessControlForm Component', () => {
@@ -117,7 +117,7 @@ describe('AccessControlForm Component', () => {
 
   afterEach(() => {
     mockedUseConfigTemplate.mockRestore()
-    mockedUseConfigTemplateBreadcrumb.mockRestore()
+    mockedUsePolicyListBreadcrumb.mockRestore()
   })
 
   it('Render AccessControlForm component successfully', async () => {
@@ -144,7 +144,7 @@ describe('AccessControlForm Component', () => {
 
   it('Render AccessControlForm component successfully when isTemplate is true', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    mockedUseConfigTemplateBreadcrumb.mockReturnValue([
+    mockedUsePolicyListBreadcrumb.mockReturnValue([
       {
         text: 'Configuration Templates',
         link: CONFIG_TEMPLATE_LIST_PATH,
@@ -171,11 +171,11 @@ describe('AccessControlForm Component', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
 
-    mockedUseConfigTemplateBreadcrumb.mockRestore()
+    mockedUsePolicyListBreadcrumb.mockRestore()
   })
 
   it('should render breadcrumb correctly', async () => {
-    mockedUseConfigTemplateBreadcrumb.mockReturnValue([
+    mockedUsePolicyListBreadcrumb.mockReturnValue([
       { text: 'Network Control' },
       {
         text: 'Policies & Profiles',
