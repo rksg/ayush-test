@@ -2,7 +2,7 @@ import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { mockBrandTimeseries, franchisorZones } from './__tests__/fixtures'
-import { api }                                  from './services'
+import { api, calcGranularityForBrand360 }      from './services'
 
 describe('services', () => {
   beforeEach(() => {
@@ -81,5 +81,33 @@ describe('services', () => {
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(franchisorZones.data)
+  })
+
+  it('should calc granularity for brand360 correctly', async () => {
+    const dates = [
+      {
+        start: '2024-03-01T00:00:00+00:00',
+        end: '2024-03-01T08:00:00+00:00',
+        g: 'PT15M'
+      },
+      {
+        start: '2024-03-01T00:00:00+00:00',
+        end: '2024-03-02T00:00:00+00:00',
+        g: 'PT1H'
+      },
+      {
+        start: '2024-03-01T00:00:00+00:00',
+        end: '2024-03-08T08:00:00+00:00',
+        g: 'PT24H'
+      },
+      {
+        start: '2024-02-01T00:00:00+00:00',
+        end: '2024-03-08T08:00:00+00:00',
+        g: 'PT72H'
+      }
+    ]
+    dates.forEach(({ start, end, g }) => {
+      expect(calcGranularityForBrand360(start, end)).toEqual(g)
+    })
   })
 })
