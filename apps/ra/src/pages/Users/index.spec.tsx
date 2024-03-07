@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 
 import { rbacApi }                     from '@acx-ui/analytics/services'
 import { ManagedUser }                 from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { rbacApiURL, store, Provider } from '@acx-ui/store'
 import {
   mockServer,
@@ -221,7 +222,8 @@ describe('Users Page', () => {
     await userEvent.click(await screen.findByText('3rd Party'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
   })
-  it('should show update sso button correctly', async () => {
+  it('should show ConfigureSSO button correctly when ruckus-ai-sso-toggle is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockRbacUserResponse(mockMangedUsers)
     mockSSOResponse('samlFile')
     render(<Users />, { wrapper: Provider })
@@ -231,5 +233,15 @@ describe('Users Page', () => {
     expect(updateSSOBtn).toBeVisible()
     fireEvent.click(updateSSOBtn)
     expect(await screen.findByTestId('importSSOFileDrawer')).toBeVisible()
+  })
+  it('should hide ConfigureSSO correctly when ruckus-ai-sso-toggle is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockRbacUserResponse(mockMangedUsers)
+    mockSSOResponse('samlFile')
+    render(<Users />, { wrapper: Provider })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const updateSSOBtn = await screen.findByText('Configure SSO')
+    expect(updateSSOBtn).not.toBeVisible()
   })
 })
