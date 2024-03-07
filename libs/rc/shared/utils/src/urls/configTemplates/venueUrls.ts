@@ -185,5 +185,10 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
     newApi: true
+  },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
+    newApi: true
   }
 }
