@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { FormInstance } from 'antd'
 
@@ -70,18 +70,20 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     await onFinish(formData)
   }
 
-  const initFormValues = getSdLanFormDefaultValues(editData)
-  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  if (!isEditMode) {
-    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+  const initFormValues = useMemo(() => {
+    const initValues = getSdLanFormDefaultValues(editData)
+    const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+    if (!isEditMode) {
+      initValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+      initValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+    }
+    return initValues
   }
+  , [isEditMode, editData])
 
   useEffect(() => {
-    if(form) {
-      form.setFieldsValue(initFormValues)
-    }
-  }, [form, initFormValues])
+    form.setFieldsValue(initFormValues)
+  }, [initFormValues])
 
   return (<StepsForm
     form={form}
