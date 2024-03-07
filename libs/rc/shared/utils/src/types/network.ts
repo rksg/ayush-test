@@ -129,6 +129,10 @@ export interface NetworkSaveData {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization |
       GuestWlanAdvancedCustomization
+    macAddressAuthenticationConfiguration?: {
+      macAddressAuthentication?: boolean
+      macAuthMacFormat?: string
+    }
   };
   wlanSecurity?: WlanSecurityEnum
   dpskWlanSecurity?: WlanSecurityEnum
