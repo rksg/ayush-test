@@ -13,15 +13,21 @@ import {
   EdgeUrlsInfo,
   EdgeStatus,
   EdgeSdLanViewDataP2,
-  EdgeSdLanSettingP2,
   EdgeSdLanActivateNetworkPayload,
-  EdgeSdLanToggleDmzPayload
+  EdgeSdLanToggleDmzPayload,
+  EdgeSdLanSettingP2,
+  EdgeClusterStatus
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
 import { serviceApi } from './service'
+
+const versionHeader = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
 
 export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
   endpoints: (build) => ({
@@ -198,44 +204,66 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         extraOptions: { maxRetries: 5 }
       }),
     getEdgeSdLanP2: build.query<EdgeSdLanSettingP2, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const cfRequest = createHttpRequest(
-          EdgeSdLanUrls.getEdgeSdLan, arg.params)
-        const cfQuery = await fetchWithBQ(cfRequest)
-        const cfConfig = cfQuery.data as EdgeSdLanSettingP2
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        const sdLanRequest = createHttpRequest(
+          EdgeSdLanUrls.getEdgeSdLan, params, versionHeader)
+        const sdLanQuery = await fetchWithBQ(sdLanRequest)
+        const sdLanConfig = sdLanQuery.data as EdgeSdLanSettingP2
 
-        const edgeRequest = createHttpRequest(EdgeUrlsInfo.getEdgeList)
-        const edgeQuery = await fetchWithBQ({
-          ...edgeRequest,
-          body: {
-            fields: [
-              'name',
-              'serialNumber',
-              'venueId',
-              'venueName'
-            ],
-            filters: {
-              serialNumber: [cfConfig.edgeId]
+        if (sdLanConfig) {
+          const guestSettingsReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz,
+            params,
+            versionHeader)
+          const edgeGuestSettingQuery = await fetchWithBQ(guestSettingsReq)
+
+          const sdLanStatusReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+          const sdLanStatusQuery = await fetchWithBQ({
+            ...sdLanStatusReq,
+            body: {
+              filters: { id: [params!.serviceId] }
             }
+          })
+
+          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+          const edgeClusterQuery = await fetchWithBQ({
+            ...clusterReq,
+            body: {
+              fields: [
+                'name',
+                'clusterId',
+                'venueId',
+                'venueName'
+              ],
+              filters: { clusterId: [sdLanConfig.edgeClusterId] }
+            }
+          })
+
+          const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeSdLanViewDataP2>
+          const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
+          const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
+          let sdLanData = sdLanConfig
+          if (sdLanInfo && guestSettings && clusterInfo) {
+          // eslint-disable-next-line max-len
+            sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
           }
-        })
 
-        const edgeInfo = edgeQuery.data as TableResult<EdgeStatus>
-        cfConfig.venueId = edgeInfo.data[0].venueId
-        cfConfig.venueName = edgeInfo.data[0].venueName
-
-        return cfQuery.data
-          ? { data: cfConfig }
-          : { error: cfQuery.error as FetchBaseQueryError }
+          return (sdLanInfo && guestSettings && clusterInfo)
+            ? { data: sdLanData }
+            : { error: (sdLanStatusQuery.error
+              || edgeGuestSettingQuery.error
+              || edgeClusterQuery.data) as FetchBaseQueryError }
+        } else {
+          return { error: sdLanQuery.error as FetchBaseQueryError }
+        }
       },
       providesTags: [{ type: 'EdgeSdLanP2', id: 'DETAIL' }]
     }),
     addEdgeSdLanP2: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params)
+        const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeSdLanP2', id: 'LIST' }],
@@ -256,10 +284,10 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     updateEdgeSdLanPartialP2: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial, params)
+        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeSdLanP2', id: 'LIST' }],
@@ -279,29 +307,45 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     activateEdgeSdLanDmzCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return { ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzCluster, params) }
+        return {
+          ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzCluster,
+            params,
+            versionHeader)
+        }
       }
     }),
     deactivateEdgeSdLanDmzCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return { ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzCluster, params) }
+        return {
+          ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzCluster,
+            params,
+            versionHeader)
+        }
       }
     }),
     activateEdgeSdLanDmzTunnelProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return { ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzTunnelProfile, params) }
+        return {
+          ...createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanDmzTunnelProfile,
+            params,
+            versionHeader)
+        }
       }
     }),
     deactivateEdgeSdLanDmzTunnelProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return { ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzTunnelProfile, params) }
+        return {
+          ...createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanDmzTunnelProfile,
+            params,
+            versionHeader)
+        }
       }
     }),
     // eslint-disable-next-line max-len
     activateEdgeSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanNetwork, params)
-        return { ...req, body: payload }
+        const req = createHttpRequest(EdgeSdLanUrls.activateEdgeSdLanNetwork, params, versionHeader)
+        return { ...req, body: JSON.stringify(payload) }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
@@ -318,9 +362,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       }
     }),
     deactivateEdgeSdLanNetwork: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork, params)
-        return { ...req, body: payload }
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeSdLanNetwork,
+          params,
+          versionHeader)
+        return { ...req }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
@@ -338,18 +384,36 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     toggleEdgeSdLanDmz: build.mutation<CommonResult, RequestPayload<EdgeSdLanToggleDmzPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.toggleEdgeSdLanDmz, params)
-        return { ...req, body: payload }
+        const req = createHttpRequest(EdgeSdLanUrls.toggleEdgeSdLanDmz, params, versionHeader)
+        return { ...req, body: JSON.stringify(payload) }
       }
     }),
     getEdgeSdLanIsDmz: build.query<EdgeSdLanToggleDmzPayload, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz, params)
-        return { ...req, body: payload }
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz, params, versionHeader)
+        return { ...req }
       }
     })
   })
 })
+
+const transformSdLanGetData = (
+  profile: EdgeSdLanSettingP2,
+  statusData: EdgeSdLanViewDataP2,
+  clusterInfo: EdgeClusterStatus,
+  guestSettings: EdgeSdLanToggleDmzPayload
+): EdgeSdLanSettingP2 => {
+  profile.venueId = clusterInfo.venueId
+  profile.venueName = clusterInfo.venueName
+  profile.isGuestTunnelEnabled = guestSettings.isGuestTunnelEnabled
+  return {
+    ...profile,
+    networkIds: statusData.networkIds,
+    guestEdgeClusterId: statusData.guestEdgeClusterId,
+    guestTunnelProfileId: statusData.guestTunnelProfileId,
+    guestNetworkIds: statusData.guestNetworkIds
+  }
+}
 
 export const {
   useGetEdgeSdLanListQuery,
