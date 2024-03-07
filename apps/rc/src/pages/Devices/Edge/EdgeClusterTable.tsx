@@ -114,11 +114,9 @@ export const EdgeClusterTable = () => {
       render: (_, row) => {
         return (
           row.haStatus &&
-            ((row.edgeList?.length ?? 0) < 2
-              ? <HaStatusBadge/>
-              : <HaStatusBadge
-                haStatus={row.haStatus}
-              />)
+          <HaStatusBadge
+            haStatus={row.haStatus}
+          />
         )
       }
     },
