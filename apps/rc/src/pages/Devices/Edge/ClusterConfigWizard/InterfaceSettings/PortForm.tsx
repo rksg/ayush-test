@@ -1,14 +1,18 @@
 import { useContext } from 'react'
 
-import { Form, Input, Space, Typography } from 'antd'
-import { useIntl }                        from 'react-intl'
+import { Form, Space, Typography } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import { NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { useStepFormContext }     from '@acx-ui/components'
+import { NodesTabs, TypeForm }    from '@acx-ui/rc/components'
+import { ClusterNetworkSettings } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 export const PortForm = () => {
   const { $t } = useIntl()
+  const { form } = useStepFormContext()
+  const portSettings = Form.useWatch('portSettings', form) as ClusterNetworkSettings['portSettings']
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   const header = <Space direction='vertical' size={5}>
@@ -25,17 +29,11 @@ export const PortForm = () => {
   const content = <NodesTabs
     nodeList={clusterInfo?.edgeList}
     content={
-      <Form.List
-        name='portSettings'
-        initialValue={[{}]}
-      >
-        {(fields) => fields.map(
-          () => <>
-            <Form.Item name={[0, 'test1']} children={<Input />} />
-            <Form.Item name={[0, 'test2']} children={<Input />} />
-          </>
-        )}
-      </Form.List>
+      (serialNumber) => (
+        <>
+          {portSettings.find(item => item.serialNumber === serialNumber)?.ports.length}
+        </>
+      )
     }
   />
 

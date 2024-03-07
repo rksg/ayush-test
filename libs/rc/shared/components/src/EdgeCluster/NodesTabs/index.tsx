@@ -5,7 +5,7 @@ import { EdgeStatus } from '@acx-ui/rc/utils'
 
 interface NodesTabsProps {
   nodeList?: EdgeStatus[]
-  content: React.ReactElement
+  content: (serialNumber?: string) => React.ReactElement
 }
 
 export const NodesTabs = (props: NodesTabsProps) => {
@@ -17,7 +17,7 @@ export const NodesTabs = (props: NodesTabsProps) => {
         return <Tabs.TabPane
           key={node.serialNumber}
           tab={node.name}
-          children={React.cloneElement(content, { name: [node.serialNumber, content.props.name] })}
+          children={content(node.serialNumber)}
         />
       })
     }
