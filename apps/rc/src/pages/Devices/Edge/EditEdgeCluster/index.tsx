@@ -3,12 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, Tabs }                                   from '@acx-ui/components'
 import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
-import { CommonOperation, Device, getUrl }                            from '@acx-ui/rc/utils'
+import { CommonOperation, Device, EdgeStatusEnum, getUrl }            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import { ClusterDetails }  from './ClusterDetails'
-import { EdgeClusterDhcp } from './EdgeClusterDhcp'
-import { VirtualIp }       from './VirtualIp'
+import { ClusterDetails }   from './ClusterDetails'
+import { ClusterInterface } from './ClusterInterface'
+import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
+import { VirtualIp }        from './VirtualIp'
 
 
 const EditEdgeCluster = () => {
@@ -22,14 +23,19 @@ const EditEdgeCluster = () => {
   }))
   const {
     currentClusterStatus,
-    isClusterStatusLoading
+    isClusterStatusLoading,
+    isAllNodesNeverContactedCloud = true
   } = useGetEdgeClusterListForTableQuery({ payload: {
     filters: { clusterId: [clusterId], isCluster: [true] }
   } },{
     selectFromResult: ({ data, isLoading }) => {
+      const currentClusterStatus = data?.data[0]
       return {
-        currentClusterStatus: data?.data[0],
-        isClusterStatusLoading: isLoading
+        currentClusterStatus,
+        isClusterStatusLoading: isLoading,
+        isAllNodesNeverContactedCloud: currentClusterStatus?.edgeList?.length ===
+        currentClusterStatus?.edgeList?.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length
       }
     }
   })
@@ -52,13 +58,15 @@ const EditEdgeCluster = () => {
     'virtual-ip': {
       title: $t({ defaultMessage: 'Virtual IP' }),
       content: <VirtualIp
-        currentCluster={currentClusterStatus}
+        currentClusterStatus={currentClusterStatus}
         currentVipConfig={currentCluster?.virtualIpSettings}
       />
     },
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
-      content: <div children={'cluster-interface'} />
+      content: <ClusterInterface
+        currentClusterStatus={currentClusterStatus}
+      />
     },
     'dhcp': {
       title: $t({ defaultMessage: 'DHCP' }),
@@ -84,7 +92,15 @@ const EditEdgeCluster = () => {
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             {
               Object.entries(tabs).map(([k, v]) =>
-                (<Tabs.TabPane tab={v.title} key={k} />))
+                (
+                  <Tabs.TabPane
+                    tab={v.title}
+                    key={k}
+                    disabled={
+                      k !== 'cluster-details' && isAllNodesNeverContactedCloud
+                    }
+                  />
+                ))
             }
           </Tabs>
         }

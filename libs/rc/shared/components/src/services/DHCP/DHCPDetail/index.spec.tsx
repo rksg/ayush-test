@@ -9,7 +9,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import DHCPServiceDetail from '.'
+import { DHCPDetail } from '.'
 
 const list = {
   fields: ['name', 'switches', 'id', 'aggregatedApStatus'],
@@ -67,10 +67,10 @@ describe('DHCP Detail Page', () => {
     )
   })
 
-  it.skip('should render detail page', async () => {
+  it('should render detail page', async () => {
     render(
       <Provider>
-        <DHCPServiceDetail />
+        <DHCPDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
@@ -78,22 +78,20 @@ describe('DHCP Detail Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
+
+    const targetData = list.data[0]
+    expect(screen.getByRole('row', { name: new RegExp(targetData.name) })).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <DHCPServiceDetail />
+        <DHCPDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'DHCP'
-    })).toBeVisible()
-
+    expect(screen.getByRole('link', { name: 'My Services' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'DHCP for Wi-Fi' })).toBeVisible()
   })
 })
