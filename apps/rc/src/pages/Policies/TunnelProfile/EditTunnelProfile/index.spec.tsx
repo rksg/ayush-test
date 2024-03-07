@@ -115,7 +115,7 @@ describe('EditTunnelProfile', () => {
       expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     })
     expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
-    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    expect(screen.getByRole('switch')).toBeDisabled()
     await (await screen.findAllByRole('radio')).forEach(item => {
       expect(item).toBeDisabled()
     })
