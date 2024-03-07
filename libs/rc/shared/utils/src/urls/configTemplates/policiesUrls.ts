@@ -131,7 +131,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteAccessControlProfile: {
     method: 'delete',
-    url: '/templates/accessControlProfiles/:policyId',
+    url: '/templates/accessControlProfiles/:templateId',
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
     newApi: true
   },
