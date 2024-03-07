@@ -217,7 +217,7 @@ const EdgeSdLanTable = () => {
           to={getPolicyDetailsLink({
             type: PolicyType.TUNNEL_PROFILE,
             oper: PolicyOperation.DETAIL,
-            policyId: row.guestTunnelProfileId!
+            policyId: row.guestTunnelProfileId
           })}
         >
           {row.guestTunnelProfileName}

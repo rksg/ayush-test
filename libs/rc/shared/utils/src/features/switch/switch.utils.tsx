@@ -7,6 +7,7 @@ import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
+  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
@@ -717,4 +718,19 @@ export const isFirmwareSupportAdminPassword = (
 
 export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
   (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}
+
+export const checkSwitchUpdateFields = function (
+  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+) {
+  const fields = Object.keys(values ?? {})
+  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
+    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
+      return [ ...result, key ]
+    }
+    return result
+  }, [])
 }

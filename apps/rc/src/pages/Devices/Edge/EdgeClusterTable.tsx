@@ -1,11 +1,27 @@
-import { useIntl } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps }                                                                                        from '@acx-ui/components'
-import { EdgeStatusLight, useEdgeClusterActions }                                                                           from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery }                                                                               from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, allowRebootForStatus, usePollingTableQuery, getUrl, Device, CommonOperation, activeTab } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                   from '@acx-ui/user'
+import { Loader, Table, TableProps, Tooltip }                     from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeClusterActions }                 from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
+  ClusterNodeStatusEnum,
+  ClusterStatusEnum,
+  CommonOperation,
+  Device,
+  EdgeClusterTableDataType,
+  activeTab,
+  allowRebootForStatus,
+  getUrl,
+  usePollingTableQuery,
+  genUrl,
+  CommonCategory
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
+import { getIntl }                                from '@acx-ui/utils'
+
+import { HaStatusBadge } from './HaStatusBadge'
 
 const defaultPayload = {
   fields: [
@@ -37,6 +53,21 @@ export const EdgeClusterTable = () => {
       searchTargetFields: ['name', 'virtualIp']
     }
   })
+  const { venueOptions = [] } = useVenuesListQuery(
+    {
+      payload: {
+        fields: ['name', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    }, {
+      selectFromResult: ({ data }) => {
+        return {
+          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+        }
+      }
+    })
 
   const columns: TableProps<EdgeClusterTableDataType>['columns'] = [
     {
@@ -62,7 +93,10 @@ export const EdgeClusterTable = () => {
       title: $t({ defaultMessage: 'Cluster Status' }),
       key: 'clusterStatus',
       dataIndex: 'clusterStatus',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        return row.clusterStatus && getClusterStatus(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Node Status' }),
@@ -75,7 +109,16 @@ export const EdgeClusterTable = () => {
     {
       title: $t({ defaultMessage: 'HA Status' }),
       key: 'haStatus',
-      dataIndex: 'haStatus'
+      dataIndex: 'haStatus',
+      align: 'center',
+      render: (_, row) => {
+        return (
+          row.haStatus &&
+          <HaStatusBadge
+            haStatus={row.haStatus}
+          />
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Type' }),
@@ -113,6 +156,8 @@ export const EdgeClusterTable = () => {
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,
+      filterable: venueOptions,
+      filterKey: 'venueId',
       render: (_, row) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
@@ -180,9 +225,26 @@ export const EdgeClusterTable = () => {
       onClick: () => {},
       disabled: true
     },{
-      label: $t({ defaultMessage: 'Run Cluster HA setup wizard' }),
-      onClick: () => {},
-      disabled: true
+      label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
+      onClick: (selectedRows) => {
+        if(selectedRows[0].isFirstLevel) {
+          navigate({
+            ...basePath,
+            pathname:
+              `${basePath.pathname}${genUrl([
+                CommonCategory.Device,
+                Device.EdgeCluster,
+                selectedRows[0].clusterId!,
+                'configure'
+              ])}`
+          })
+        } else {
+          // do nothing
+        }
+      },
+      disabled: (selectedRows) => {
+        return !selectedRows[0]?.isFirstLevel
+      }
     }
   ]
 
@@ -201,4 +263,40 @@ export const EdgeClusterTable = () => {
       />
     </Loader>
   )
+}
+
+const getClusterStatus = (data: EdgeClusterTableDataType) => {
+  const { $t } = getIntl()
+  const defaultMessage = $t({ defaultMessage: 'Cluster Setup Required' })
+  if((data.edgeList?.length ?? 0) < 2){
+    return <Row align='middle' justify='center' gutter={[2, 0]}>
+      <Col>
+        {$t({ defaultMessage: 'Single Node' })}
+      </Col>
+      <Col>
+        <Tooltip.Question
+          title={$t({ defaultMessage: `The cluster function requires 
+        at least two nodes to operate` })}
+          placement='bottom'
+          iconStyle={{ width: 16, marginTop: 5 }}
+        />
+      </Col>
+    </Row>
+  }
+  switch(data.clusterStatus) {
+    case ClusterStatusEnum.CLUSTER_CONFIGS_NEEDED:
+      return defaultMessage
+    case ClusterStatusEnum.CLUSTER_IS_FORMING:
+      return $t({ defaultMessage: 'Cluster Forming' })
+    case ClusterStatusEnum.CLUSTER_READY:
+      return $t({ defaultMessage: 'Ready ({ready}/{total})' }, {
+        ready: data.edgeList?.filter(item =>
+          item.clusterNodeStatus === ClusterNodeStatusEnum.CLUSTER_NODE_READY).length ?? 0,
+        total: data.edgeList?.length ?? 0
+      })
+    case ClusterStatusEnum.CLUSTER_UNHEALTHY:
+      return $t({ defaultMessage: 'Disconnected' })
+    default:
+      return defaultMessage
+  }
 }
