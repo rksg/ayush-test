@@ -594,8 +594,8 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input = await screen
-      .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
+    const input = await screen.findByPlaceholderText('Search Switch, Model,' +
+      ' Serial Number, MAC Address, IP Address, Ext. IP Address')
 
     expect(input).toBeVisible()
   })
