@@ -72,7 +72,7 @@ function open_localhost(tab) {
 
   if (matchedIds) {
     redirectUrl = matchedMspIds
-      ? `http://localhost:3000/${matchedIds[0]}/v/dashboard/mspCustomers`
+      ? `http://localhost:3000/${matchedIds[0]}/v`
       : `http://localhost:3000/${matchedIds[0]}/t`
   } else {
     console.log('Tenant id not found in url');
