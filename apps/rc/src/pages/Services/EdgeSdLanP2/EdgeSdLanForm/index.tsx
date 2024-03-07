@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { FormInstance } from 'antd'
 
@@ -38,9 +38,8 @@ export const getSdLanFormDefaultValues
 
 export interface EdgeSdLanFormModelP2 extends EdgeSdLanSettingP2 {
   venueName?: string;
-  edgeName?: string;
+  edgeClusterName?: string;
   tunnelProfileName?: string;
-  corePortName?: string;
   activatedNetworks: EdgeSdLanActivatedNetwork[];
   activatedGuestNetworks: EdgeSdLanActivatedNetwork[];
 }
@@ -63,7 +62,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
   const isEditMode = Boolean(editData)
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   }))
 
@@ -71,12 +70,20 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     await onFinish(formData)
   }
 
-  const initFormValues = getSdLanFormDefaultValues(editData)
-  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  if (!isEditMode) {
-    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+  const initFormValues = useMemo(() => {
+    const initValues = getSdLanFormDefaultValues(editData)
+    const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+    if (!isEditMode) {
+      initValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+      initValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+    }
+    return initValues
   }
+  , [isEditMode, editData])
+
+  useEffect(() => {
+    form.setFieldsValue(initFormValues)
+  }, [initFormValues])
 
   return (<StepsForm
     form={form}
