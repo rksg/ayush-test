@@ -244,7 +244,7 @@ function useDeleteMutation () {
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
     [ConfigTemplateType.VENUE]: deleteVenueTemplate,
     [ConfigTemplateType.DPSK]: deleteDpskTemplate,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.ACCESS_CONTROL]: deleteAccessControlSet,
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }

@@ -3,7 +3,7 @@ import { PolicyType, ConfigTemplateType } from '../types'
 
 export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, PolicyType>> = {
   [ConfigTemplateType.RADIUS]: PolicyType.AAA,
-  [ConfigTemplateType.ACCESS_CONTROL_SET]: PolicyType.ACCESS_CONTROL
+  [ConfigTemplateType.ACCESS_CONTROL]: PolicyType.ACCESS_CONTROL
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {

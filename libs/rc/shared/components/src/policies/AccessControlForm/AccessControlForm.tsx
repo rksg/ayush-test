@@ -3,30 +3,24 @@ import { useRef } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import {
-  PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
-} from '@acx-ui/components'
+import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddAccessControlProfileMutation,
-  useUpdateAccessControlProfileMutation
-} from '@acx-ui/rc/services'
-import {
   useAddAccessControlProfileTemplateMutation,
+  useUpdateAccessControlProfileMutation,
   useUpdateAccessControlProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
+  AccessControlFormFields,
   AccessControlInfoType,
   AccessControlProfile,
   getPolicyRoutePath,
-  PolicyType,
   PolicyOperation,
-  AccessControlFormFields,
-  getPolicyListRoutePath,
+  PolicyType,
   useConfigTemplate,
-  useConfigTemplateBreadcrumb,
-  useConfigTemplateTenantLink, useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateTenantLink,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -177,14 +171,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
     }
   }
 
-  const breadcrumb = useConfigTemplateBreadcrumb([
-    { text: $t({ defaultMessage: 'Network Control' }) },
-    {
-      text: $t({ defaultMessage: 'Policies & Profiles' }),
-      link: getPolicyListRoutePath(true)
-    },
-    { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
-  ])
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 
   return (
     <>

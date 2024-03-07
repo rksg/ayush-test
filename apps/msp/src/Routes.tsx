@@ -8,7 +8,7 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm, AccessControlDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -118,6 +118,18 @@ function ConfigTemplatesRoutes () {
             type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
           })}
           element={<AccessControlForm editMode={false}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT
+          })}
+          element={<AccessControlForm editMode={true}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL
+          })}
+          element={<AccessControlDetail />}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
