@@ -113,7 +113,7 @@ export const EdgeClusterTable = () => {
       align: 'center',
       render: (_, row) => {
         return (
-          row.haStatus &&
+          !row.isFirstLevel &&
           <HaStatusBadge
             haStatus={row.haStatus}
           />
