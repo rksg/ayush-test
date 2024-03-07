@@ -50,10 +50,5 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
     newApi: true
-  },
-  getEnhancedDhcpList: {
-    method: 'post',
-    url: '/templates/enhancedDhcpConfigServiceProfiles/query',
-    newApi: true
   }
 }
