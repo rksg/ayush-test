@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls }                 from '@acx-ui/rc/utils'
-import { Path, To }                                                         from '@acx-ui/react-router-dom'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls }      from '@acx-ui/rc/utils'
+import { Path, To }                                              from '@acx-ui/react-router-dom'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockNetworkResult }  from '../__tests__/fixtures'
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { mockNetworkResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                            from '../WifiCallingFormContext'
 
 import { WifiCallingConfigureForm } from './WifiCallingConfigureForm'
 
@@ -150,6 +150,10 @@ describe('WifiCallingConfigureForm', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      ),
+      rest.post(
+        WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
       )
     )
   })
@@ -178,11 +182,11 @@ describe('WifiCallingConfigureForm', () => {
 
     await screen.findByText('abc.com')
 
-    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
-      { target: { value: 'descriptionTest' } })
+    await userEvent.type(screen.getByRole('textbox', { name: /description/i }),
+      'descriptionTest')
 
-    fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
-      { target: { value: 'service-name-test' } })
+    await userEvent.type(screen.getByRole('textbox', { name: /service name/i }),
+      'service-name-test')
 
     await userEvent.click(screen.getByText('Scope'))
 

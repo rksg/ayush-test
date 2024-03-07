@@ -6,7 +6,7 @@ import { rest }  from 'msw'
 
 import { serviceApi }                           from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
+  CommonUrlsInfo, ConfigTemplateUrlsInfo,
   EPDG,
   QosPriorityEnum,
   WifiCallingFormContextType, WifiCallingUrls
@@ -125,7 +125,10 @@ describe('WifiCallingNetworkTable', () => {
       (_, res, ctx) => res(
         ctx.json(wifiCallingResponse)
       )
-    ))
+    ), rest.post(
+      ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+      (req, res, ctx) => res(ctx.json(wifiCallingNetworkList))
+    ),)
 
     render(
       <WifiCallingFormContext.Provider value={{

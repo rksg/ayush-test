@@ -6,10 +6,10 @@ import { EPDG, QosPriorityEnum, WifiCallingUrls }     from '@acx-ui/rc/utils'
 import { Provider, store }                            from '@acx-ui/store'
 import { act, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext         from '../WifiCallingFormContext'
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
-
 
 
 const wifiCallingResponse = {
@@ -99,6 +99,9 @@ describe('WifiCallingSettingForm', () => {
       (_, res, ctx) => res(
         ctx.json(wifiCallingSettingTable)
       )
+    ), rest.post(
+      WifiCallingUrls.getEnhancedWifiCallingList.url,
+      (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
     ))
     render(
       <WifiCallingFormContext.Provider value={{

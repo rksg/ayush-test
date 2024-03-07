@@ -4,10 +4,10 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps }                                  from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps }                                                                  from '@acx-ui/components'
+import { useGetNetworkTemplateListQuery, useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  Network, NetworkTypeEnum, networkTypes,
+  Network, NetworkTypeEnum, networkTypes, useConfigTemplate,
   useTableQuery,
   WifiCallingActionPayload,
   WifiCallingActionTypes
@@ -28,6 +28,7 @@ const defaultPayload = {
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
@@ -80,7 +81,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
     defaultPayload
   })
 

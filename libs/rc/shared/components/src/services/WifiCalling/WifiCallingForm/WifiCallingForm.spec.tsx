@@ -5,8 +5,8 @@ import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/uti
 import { Provider }                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen }            from '@acx-ui/test-utils'
 
-import { mockNetworkResult }  from '../__tests__/fixtures'
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { mockNetworkResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                            from '../WifiCallingFormContext'
 
 import { WifiCallingForm } from './WifiCallingForm'
 
@@ -128,6 +128,10 @@ describe('WifiCallingForm', () => {
       rest.get(
         WifiCallingUrls.getWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
+      ),
+      rest.post(
+        WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
       ),
       rest.get(
         WifiCallingUrls.getWifiCalling.url,
