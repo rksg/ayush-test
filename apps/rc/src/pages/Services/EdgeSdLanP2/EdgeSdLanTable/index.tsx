@@ -158,11 +158,11 @@ const EdgeSdLanTable = () => {
       sorter: true,
       filterable: edgeOptions,
       render: (__, row) => {
-        return <TenantLink
+        return row.guestEdgeId ? <TenantLink
           to={`/devices/edge/${row.guestEdgeId}/details/overview`}
         >
           {row.guestEdgeName}
-        </TenantLink>
+        </TenantLink> : ''
       }
     },
     {
@@ -210,15 +210,15 @@ const EdgeSdLanTable = () => {
       dataIndex: 'guestTunnelProfileId',
       sorter: true,
       render: (__, row) => {
-        return <TenantLink
+        return row.guestTunnelProfileId ? <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.TUNNEL_PROFILE,
             oper: PolicyOperation.DETAIL,
-            policyId: row.guestTunnelProfileId!
+            policyId: row.guestTunnelProfileId
           })}
         >
           {row.guestTunnelProfileName}
-        </TenantLink> }
+        </TenantLink> : '' }
     },
     {
       title: $t({ defaultMessage: 'Health' }),

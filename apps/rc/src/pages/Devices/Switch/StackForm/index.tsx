@@ -32,18 +32,19 @@ import {
   Table,
   Tabs,
   Tooltip,
-  Alert
+  Alert,
+  showToast
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
 import {
+  switchApi,
   useGetSwitchQuery,
   useConvertToStackMutation,
   useSaveSwitchMutation,
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
-  useLazyGetStackMemberListQuery,
   useLazyGetSwitchListQuery,
   useGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
@@ -59,8 +60,8 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
-  StackMember,
   isSameModelFamily,
+  checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
   getStackUnitsMinLimitation,
   convertInputToUppercase
@@ -71,6 +72,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
@@ -143,7 +145,6 @@ export function StackForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
   const [previousPath, setPreviousPath] = useState('')
@@ -212,7 +213,7 @@ export function StackForm () {
       setCurrentVenueAboveTenFw(venueAboveTenFw || '')
 
       if (!!switchDetail.model?.includes('ICX7650')) {
-        formRef?.current?.setFieldValue('rearModule',
+        formRef?.current?.setFieldValue('rearModuleOption',
           formRef.current?.getFieldValue('rearModule') === 'stack-40g')
       }
 
@@ -221,33 +222,8 @@ export function StackForm () {
       }
 
       const getStackMembersList = async () => {
-        const stackMembersPayload = {
-          fields: [
-            'activeUnitId',
-            'unitId',
-            'unitStatus',
-            'name',
-            'deviceStatus',
-            'model',
-            'serialNumber',
-            'activeSerial',
-            'switchMac',
-            'ip',
-            'venueName',
-            'uptime'
-          ],
-          filters: { activeUnitId: [''] }
-        }
-
-        stackMembersPayload.filters.activeUnitId = [switchDetail?.activeSerial || '']
-        const stackMembersList = switchDetail?.activeSerial
-          ? (await getStackMemberList({
-            params: { tenantId, switchId }, payload: stackMembersPayload
-          }, false))
-          : []
-
-        const stackMembers = _.get(stackMembersList, 'data.data').map(
-          (item: { id: string; model: undefined }, index: number) => {
+        const stackMembers = switchData?.stackMembers?.map(
+          (item: { id: string; model: string }, index: number) => {
             const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
@@ -261,18 +237,13 @@ export function StackForm () {
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
-                !!switchDetail.cliApplied ||
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
                 switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
-          })
+          }) ?? []
 
-        const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
-        const syncedStackMembers
-        = stackMembers?.filter((stack: StackMember) => stackMemberIds?.includes(stack.id))
-
-        setTableData(syncedStackMembers)
-        setRowKey(syncedStackMembers?.length)
+        setTableData(stackMembers)
+        setRowKey(stackMembers?.length)
       }
 
       getStackMembersList()
@@ -328,6 +299,7 @@ export function StackForm () {
   useEffect(() => {
     if (activeSerialNumber) {
       const switchModel = getSwitchModel(activeSerialNumber) || ''
+      setIsIcx7650(switchModel.includes('ICX7650'))
       const miniMembers = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
       setTableData(data => [...data].splice(0, miniMembers))
     }
@@ -377,6 +349,18 @@ export function StackForm () {
 
   }
 
+  const transformSwitchData = (switchData: Switch) => {
+    // transform stack member data for compare data
+    const members = switchData?.stackMembers?.reduce((result, current, index) => ({
+      ...result,
+      [`serialNumber${index+1}`]: current.id
+    }), {})
+    return {
+      ...switchData,
+      ...members
+    }
+  }
+
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
     if (hasBlockingTsb()) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
@@ -396,7 +380,8 @@ export function StackForm () {
         jumboMode: false,
         igmpSnooping: 'none',
         spanningTreePriority: '',
-        initialVlanId: values?.initialVlanId
+        initialVlanId: values?.initialVlanId,
+        ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
       }
       await saveSwitch({ params: { tenantId } , payload }).unwrap()
 
@@ -415,13 +400,6 @@ export function StackForm () {
         showTsbBlockedSwitchErrorDialog()
         return
       }
-    }
-    if (readOnly) {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
     }
 
     try {
@@ -444,14 +422,39 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId }, payload })
+        .unwrap()
+        .then(() => {
+          const transformedSwitchData = transformSwitchData(switchData as Switch)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData)
+          const noChange = updatedFields.length === 0
+          // TODO: should disable apply button while no changes
+          const onlyChangeDescription
+            = updatedFields.includes('description') && updatedFields.length === 1
+
+          // These cases won't trigger activity service: UpdateSwitch
+          if (noChange || onlyChangeDescription) {
+            store.dispatch(
+              switchApi.util.invalidateTags([
+                { type: 'Switch', id: 'DETAIL' },
+                { type: 'Switch', id: 'SWITCH' }
+              ])
+            )
+            showToast({
+              type: 'success',
+              content: $t(
+                { defaultMessage: 'Update switch {switchName} configuration success' },
+                { switchName: payload?.name }
+              )
+            })
+          }
+        })
 
       dataFetchedRef.current = false
 
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
+      if (!deviceOnline) { // only one tab
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -745,10 +748,9 @@ export function StackForm () {
           redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
         }
         buttonLabel={{
-          submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-            editMode ?
-              $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-          cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+          submit: editMode ?
+            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+          cancel: $t({ defaultMessage: 'Cancel' })
         }}
       >
         <StepsFormLegacy.StepForm>
@@ -772,8 +774,6 @@ export function StackForm () {
                     <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />}
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                  {readOnly &&
-                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Col span={14} style={{ padding: '0' }}>
                     <Form.Item
                       name='venueId'
@@ -797,14 +797,15 @@ export function StackForm () {
                       label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
                       rules={[{ max: 255 }]}
                     >
-                      <Input disabled={readOnly} />
+                      <Input />
                     </Form.Item>
                     {!isStackSwitches && <Form.Item
                       name='description'
                       label={$t({ defaultMessage: 'Description' })}
                       rules={[{ max: 64 }]}
                       initialValue={''}
-                    ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
+                    ><Input.TextArea rows={4} maxLength={180} />
+                    </Form.Item>}
                     {!editMode && !isStackSwitches && <Form.Item
                       name='initialVlanId'
                       label={
@@ -884,7 +885,6 @@ export function StackForm () {
                           type='link'
                           size='small'
                           disabled={tableData.length >= 12}
-                          hidden={readOnly}
                         >
                           {$t({ defaultMessage: 'Add another member' })}
                         </Button>
@@ -915,6 +915,8 @@ export function StackForm () {
                   <Input /></Form.Item>
                 {editMode &&
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                    {readOnly &&
+                      <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                     <SwitchStackSetting
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}

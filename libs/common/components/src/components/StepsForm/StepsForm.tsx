@@ -42,6 +42,7 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
     editMode: editMode,
     defaultFormValues: props.initialValues,
     buttonLabel: props.buttonLabel,
+    customSubmit: props.customSubmit,
     onFinish: props.onFinish,
     onCancel: props.onCancel,
     onFinishFailed: props.onFinishFailed
