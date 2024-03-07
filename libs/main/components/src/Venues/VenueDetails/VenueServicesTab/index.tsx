@@ -23,7 +23,7 @@ export function VenueServicesTab () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES) && !isTemplate
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE) && !isTemplate
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
 
   const { $t } = useIntl()
 
@@ -75,7 +75,7 @@ export function VenueServicesTab () {
     { payload: {
       filters: { venueId: [venueId] }
     } }, {
-      skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanPhase2Enabled),
+      skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
       selectFromResult: ({ data }) => ({
         edgeSdLanData: data?.data?.[0] })
     })

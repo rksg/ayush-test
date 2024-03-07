@@ -82,9 +82,9 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
 }
 
 const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  return isEdgeSdLanPhase2Enabled
+  return isEdgeSdLanHaEnabled
     ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
     : <EdgeSdLan data={props.data as EdgeSdLanViewData}/>
 }

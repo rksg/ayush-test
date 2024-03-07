@@ -40,7 +40,7 @@ const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -48,7 +48,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
 
   const drawerContent =(
     <Form
-      labelCol={{ span: getDrawerFormLebelColMap(isEdgeSdLanPhase2Enabled
+      labelCol={{ span: getDrawerFormLebelColMap(isEdgeSdLanHaEnabled
         ? EdgeServiceTypeEnum.SD_LAN_P2
         : serviceData.serviceType) }}
       labelAlign='left'
@@ -67,7 +67,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
         children={getEdgeServiceTypeString($t, serviceData.serviceType)}
       />
       {
-        isEdgeSdLanPhase2Enabled
+        isEdgeSdLanHaEnabled
           ? <SdLanDetailsP2 serviceData={serviceData} />
           : getContentByType(serviceData)
       }

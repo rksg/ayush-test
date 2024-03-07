@@ -299,7 +299,7 @@ const edgeSdLanRoutes = (isP2Enabled: boolean) => {
 
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -494,8 +494,8 @@ function ServiceRoutes () {
         element={<EditFirewall />}
       />
 
-      {(isEdgeSdLanPhase2Enabled || isEdgeSdLanEnabled)
-        && edgeSdLanRoutes(isEdgeSdLanPhase2Enabled)}
+      {(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled)
+        && edgeSdLanRoutes(isEdgeSdLanHaEnabled)}
     </Route>
   )
 }
