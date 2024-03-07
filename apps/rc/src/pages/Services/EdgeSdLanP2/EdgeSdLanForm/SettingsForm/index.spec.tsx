@@ -138,7 +138,7 @@ describe('Edge SD-LAN form: settings', () => {
     expect(mockedSetFieldValue).toBeCalledWith('guestEdgeClusterName', 'Edge Cluster 5')
   })
 
-  it('should query specific venue and edge when edit mode', async () => {
+  it('should query specific venue when edit mode', async () => {
     const expectedVenueId = 'venue_00005'
     const expectedClusterId = 'clusterId_5'
 
@@ -173,8 +173,7 @@ describe('Edge SD-LAN form: settings', () => {
       expect(mockedReqClusterList).toBeCalledWith({
         fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
-          venueId: [expectedVenueId],
-          clusterId: [expectedClusterId]
+          venueId: [expectedVenueId]
           // TODO: need confirm
           // clusterStatus: Object.values(EdgeStatusEnum)
           //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
@@ -253,6 +252,43 @@ describe('Edge SD-LAN form: settings', () => {
       })
     })
     expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
+  })
+  it('should be able to configure guest cluster when it is empty in edit mode', async () => {
+    const expectedClusterId = 'clusterId_5'
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        id: 'mocked-sd-lan-2',
+        venueId: 'v_2',
+        venueName: 'airport',
+        edgeClusterId: expectedClusterId,
+        isGuestTunnelEnabled: false
+      })
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current} editMode>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    const icons = await within(formBody).findAllByTestId('loadingIcon')
+    await waitForElementToBeRemoved(icons)
+    const dmzToggleBtn = await within(formBody).findByRole('switch')
+    // default DMZ is not enabled
+    expect(dmzToggleBtn).not.toBeChecked()
+    // turn on DMZ
+    await userEvent.click(dmzToggleBtn)
+    const dmzSelector = await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
+    expect(dmzSelector).not.toBeDisabled()
+    expect(dmzSelector).toBeVisible()
+    expect(within(dmzSelector)
+      .queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
+    expect(within(dmzSelector)
+      .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
   })
 })
 

@@ -88,6 +88,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     onCancel={() => navigate(linkToServiceList)}
     onFinish={handleFinish}
     editMode={isEditMode}
+    initialValues={initFormValues}
   >
     {
       steps.map((item, index) =>

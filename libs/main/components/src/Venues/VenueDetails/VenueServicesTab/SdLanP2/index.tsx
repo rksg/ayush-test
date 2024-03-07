@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { Col, Row, Space, Typography } from 'antd'
-import { useIntl }                     from 'react-intl'
+import { Col, Row, Typography } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { Card, SummaryCard }                                       from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram } from '@acx-ui/rc/components'
+import { Card, SummaryCard }                                                     from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   useActivateEdgeSdLanNetworkMutation,
   useDeactivateEdgeSdLanNetworkMutation
@@ -140,7 +140,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   }
 
   return (
-    <Space direction='vertical' size={30}>
+    <SpaceWrapper fullWidth direction='vertical' size={30}>
       <Card>
         <SdLanTopologyDiagram
           isGuestTunnelEnabled={data.isGuestTunnelEnabled}
@@ -175,7 +175,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
           />
         </Col>
       </Row>
-    </Space>
+    </SpaceWrapper>
   )
 }
 
