@@ -587,9 +587,7 @@ describe('SwitchTable', () => {
   })
 
   it('should search correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.EXPORT_DEVICE ? true : false
-    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
