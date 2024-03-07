@@ -40,7 +40,6 @@ function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
-  const brand360 = useTenantLink('/brand360', 'v')
   const navigate = useNavigate()
   const params = useParams()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
@@ -81,14 +80,6 @@ function Layout () {
       })
     }
   }, [isGuestManager, isDPSKAdmin, params['*']])
-  useEffect(() => {
-    if (isShowBrand360) {
-      navigate({
-        ...brand360,
-        pathname: `${brand360.pathname}`
-      })
-    }
-  }, [isShowBrand360])
 
   useEffect(() => {
     if (data && userProfile) {
