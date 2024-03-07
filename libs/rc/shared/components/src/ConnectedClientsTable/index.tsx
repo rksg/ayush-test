@@ -517,7 +517,12 @@ export const ConnectedClientsTable = (props: {
     selectedRowKeys: tableSelected.selectedRowKeys,
     onChange: (newSelectedRowKeys: React.Key[], newSelectedRows: ClientList[]) => {
       const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).length === 0
-      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortal(row.networkType)).length !== 0
+      const isOtherNetworkExist = newSelectedRows.filter((row) => {
+        if (row.serialNumber === undefined) {
+          return false
+        }
+        return !isEqualCaptivePortal(row.networkType)
+      }).length !== 0
       setTableSelected({
         selectedRowKeys: newSelectedRowKeys,
         selectRows: newSelectedRows,
@@ -528,10 +533,7 @@ export const ConnectedClientsTable = (props: {
           }
         }
       })
-    },
-    getCheckboxProps: (record: ClientList) => ({
-      disabled: record.serialNumber === undefined
-    })
+    }
   }
 
   const rowActions: TableProps<ClientList>['rowActions'] = [
