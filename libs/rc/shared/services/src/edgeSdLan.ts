@@ -241,7 +241,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeSdLanViewDataP2>
           const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
           const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
-          let sdLanData = {}
+          let sdLanData = sdLanConfig
           if (sdLanInfo && guestSettings && clusterInfo) {
           // eslint-disable-next-line max-len
             sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
