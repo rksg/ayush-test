@@ -150,7 +150,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         />
       </Col>
       <Col span={14}>
-        <UI.StyledSpace size={30} align='center'>
+        <UI.StyledSpace align='center'>
           <UI.FormItemWrapper>
             <Form.Item
               label={$t({ defaultMessage: 'Force Fragmentation' })}

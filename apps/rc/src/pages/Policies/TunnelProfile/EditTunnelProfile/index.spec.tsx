@@ -51,8 +51,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
@@ -87,7 +86,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
@@ -111,7 +110,10 @@ describe('EditTunnelProfile', () => {
       , { route: { path: editViewPath, params } }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(async () => {
+      expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    })
     expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
     await (await screen.findAllByRole('radio')).forEach(item => {
@@ -168,7 +170,7 @@ describe('EditTunnelProfile', () => {
         , { route: { path: editViewPath, params } }
       )
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqNSG).toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
