@@ -5,6 +5,7 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
+  ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
   EdgeCluster,
@@ -826,6 +827,38 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterNetworkSettings: build.query<ClusterNetworkSettings, RequestPayload>({
+      queryFn: async ({ params }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const result = {} as ClusterNetworkSettings
+        const getClusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeCluster, params)
+        const clusterInfo = (await fetchWithBQ(getClusterReq)).data as EdgeCluster
+        result.virtualIpSettings = clusterInfo?.virtualIpSettings?.virtualIps
+        const lagSettings = []
+        const portSettings = []
+        for(let edge of clusterInfo.smartEdges) {
+          const params = { serialNumber: edge.serialNumber }
+          const getEdgeLagReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, params)
+          const edgeLagData = (await fetchWithBQ(getEdgeLagReq)).data as TableResult<EdgeLag>
+          if(edgeLagData.data) {
+            lagSettings.push({
+              serialNumber: edge.serialNumber,
+              lags: edgeLagData.data
+            })
+          }
+          const getEdgePortReq = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+          const edgePortData = (await fetchWithBQ(getEdgePortReq)).data as EdgePortConfig
+          if(edgePortData) {
+            portSettings.push({
+              serialNumber: edge.serialNumber,
+              ports: edgePortData.ports
+            })
+          }
+        }
+        result.lagSettings = lagSettings
+        result.portSettings = portSettings
+        return { data: result }
+      }
     })
   })
 })
@@ -930,5 +963,6 @@ export const {
   useGetAllInterfacesByTypeQuery,
   usePatchEdgeClusterMutation,
   useGetEdgeClusterQuery,
-  usePatchEdgeClusterNetworkSettingsMutation
+  usePatchEdgeClusterNetworkSettingsMutation,
+  useGetEdgeClusterNetworkSettingsQuery
 } = edgeApi

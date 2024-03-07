@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import { Form, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }     from '@acx-ui/components'
 import { NodesTabs, TypeForm }    from '@acx-ui/rc/components'
 import { ClusterNetworkSettings } from '@acx-ui/rc/utils'
 
@@ -11,8 +10,6 @@ import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 export const PortForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext()
-  const portSettings = Form.useWatch('portSettings', form) as ClusterNetworkSettings['portSettings']
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   const header = <Space direction='vertical' size={5}>
@@ -26,23 +23,38 @@ export const PortForm = () => {
     </Typography.Text>
   </Space>
 
-  const content = <Form.Item name='portSettings'>
-    <NodesTabs
-      nodeList={clusterInfo?.edgeList}
-      content={
-        (serialNumber) => (
-          <>
-            {portSettings.find(item => item.serialNumber === serialNumber)?.ports.length}
-          </>
-        )
-      }
-    />
-  </Form.Item>
+  const content = <Form.Item
+    name='portSettings'
+    children={<PortSettingView />}
+  />
 
   return (
     <TypeForm
       header={header}
       content={content}
+    />
+  )
+}
+
+interface PortSettingViewProps {
+  value?: ClusterNetworkSettings['portSettings']
+  onChange?: (data: unknown) => void
+}
+
+const PortSettingView = (props: PortSettingViewProps) => {
+  const { value, onChange } = props
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+
+  return (
+    <NodesTabs
+      nodeList={clusterInfo?.edgeList}
+      content={
+        (serialNumber) => (
+          <>
+            {value?.find(item => item.serialNumber === serialNumber)?.ports.length}
+          </>
+        )
+      }
     />
   )
 }
