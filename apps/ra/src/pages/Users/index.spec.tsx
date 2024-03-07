@@ -241,7 +241,7 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
-    const updateSSOBtn = await screen.findByText('Configure SSO')
-    expect(updateSSOBtn).not.toBeVisible()
+    const updateSSOBtn = screen.queryByText('Configure SSO')
+    expect(updateSSOBtn).toBeNull()
   })
 })
