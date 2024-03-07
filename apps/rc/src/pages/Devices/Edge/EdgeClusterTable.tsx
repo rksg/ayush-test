@@ -225,6 +225,8 @@ export const EdgeClusterTable = () => {
       onClick: () => {},
       disabled: true
     },{
+      visible: (selectedRows) =>
+        (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
       onClick: (selectedRows) => {
         if(selectedRows[0].isFirstLevel) {
@@ -243,7 +245,7 @@ export const EdgeClusterTable = () => {
         }
       },
       disabled: (selectedRows) => {
-        return !selectedRows[0]?.isFirstLevel
+        return !((selectedRows[0]?.edgeList?.length ?? 0) > 1)
       }
     }
   ]

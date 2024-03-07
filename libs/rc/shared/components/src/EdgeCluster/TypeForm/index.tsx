@@ -1,14 +1,14 @@
 import { ReactElement, ReactNode } from 'react'
 
 interface TypeFormProps {
+  header?: ReactNode
   content: ReactElement
-  header?: () => ReactNode
 }
 
 export const TypeForm = (props: TypeFormProps) => {
   const { content, header } = props
   return <div>
-    {header && header()}
+    {header}
     {content}
   </div>
 }

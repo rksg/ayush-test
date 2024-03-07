@@ -4,7 +4,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { InterfaceSettings } from './InterfaceSettings'
+import { InterfaceSettings } from '.'
 
 describe('InterfaceSettings', () => {
   let params: { tenantId: string, clusterId:string, settingType:string }
