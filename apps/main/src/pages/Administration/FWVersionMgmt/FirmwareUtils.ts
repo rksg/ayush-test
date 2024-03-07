@@ -108,7 +108,7 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
   return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
-type VersionLabelType = {
+export type VersionLabelType = {
   name: string,
   category: FirmwareCategory,
   onboardDate?: string,

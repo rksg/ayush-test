@@ -16,7 +16,10 @@ import {
   EdgeFirmwareVersion,
   SwitchFirmwareStatus,
   SwitchFirmware,
-  ApModelFamily
+  ApModelFamily,
+  FirmwareVenuePerApModel,
+  ApModelFirmwares,
+  VenueApModelFirmwaresUpdatePayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -411,6 +414,47 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+    }),
+    getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params)
+        return { ...req }
+      },
+      transformResponse (result: FirmwareVenuePerApModel[] ) {
+        return {
+          data: result,
+          page: 1,
+          totalCount: result.length
+        } as TableResult<FirmwareVenuePerApModel>
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
+            api.dispatch(firmwareApi.util.invalidateTags([
+              { type: 'Firmware', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getAllApModelFirmwareList: build.query<ApModelFirmwares[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList, params)
+        return { ...req }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<VenueApModelFirmwaresUpdatePayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
   })
 })
@@ -454,5 +498,8 @@ export const {
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
   useGetScheduledFirmwareQuery,
-  useLazyGetScheduledFirmwareQuery
+  useLazyGetScheduledFirmwareQuery,
+  useGetVenueApModelFirmwareListQuery,
+  useGetAllApModelFirmwareListQuery,
+  usePatchVenueApModelFirmwaresMutation
 } = firmwareApi

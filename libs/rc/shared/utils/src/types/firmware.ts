@@ -330,3 +330,25 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }
   }
 }
+
+export interface FirmwareVenuePerApModel {
+  id: string;
+  name: string;
+  isFirmwareUpToDate: boolean;
+  currentApFirmwares: { apModel: string, firmware: string }[];
+  lastScheduleUpdate: string;
+  nextSchedules: Schedule[];
+}
+
+export interface ApModelFirmwares {
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  releaseDate: string;
+  onboardDate: string;
+  supportedApModels?: string[];
+}
+
+export interface VenueApModelFirmwaresUpdatePayload {
+  targetFirmwares: { apModel: string, firmware: string }[]
+}
