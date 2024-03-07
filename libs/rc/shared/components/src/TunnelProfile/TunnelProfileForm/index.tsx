@@ -11,7 +11,6 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy }  from '@acx-ui/components'
 import { Features }         from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
@@ -97,10 +96,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
         <Form.Item
           name='mtuType'
           label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
+          tooltip={$t(MessageMapping.mtu_tooltip)}
           extra={
             <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
-              <UI.InfoIcon />
-              { $t(MessageMapping.mtu_help_msg) }
+              {
+                mtuType === MtuTypeEnum.MANUAL
+                  ? (<><UI.InfoIcon />
+                    { $t(MessageMapping.mtu_help_msg) }</>)
+                  : null
+              }
             </Space>
           }
           children={
@@ -145,21 +149,27 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           }
         />
       </Col>
-      <Col span={24}>
-        <StepsFormLegacy.FieldLabel width='140px'>
-          {$t({ defaultMessage: 'Force Fragmentation' })}
+      <Col span={14}>
+        <UI.StyledSpace size={30} align='center'>
+          <UI.FormItemWrappe>
+            <Form.Item
+              label={$t({ defaultMessage: 'Force Fragmentation' })}
+              tooltip={$t(MessageMapping.force_fragment_tooltip)}
+            />
+          </UI.FormItemWrappe>
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'
             children={<Switch
-              // eslint-disable-next-line max-len
+            // eslint-disable-next-line max-len
               disabled={isDefaultTunnelProfile || !!disabledFields?.includes('forceFragmentation')}/>}
           />
-        </StepsFormLegacy.FieldLabel>
+        </UI.StyledSpace>
       </Col>
       <Col span={24}>
         <Form.Item
-          label={$t({ defaultMessage: 'Idle Period' })}
+          label={$t({ defaultMessage: 'Tunnel Idle Timeout' })}
+          tooltip={$t(MessageMapping.idle_timeout_tooltip)}
         >
           <Space>
             <Form.Item
@@ -193,7 +203,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <Form.Item
             name='type'
             label={$t({ defaultMessage: 'Tunnel Type' })}
-            tooltip={$t(MessageMapping.tunnel_type_help_msg)}
+            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
           >
             <Select
               disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}

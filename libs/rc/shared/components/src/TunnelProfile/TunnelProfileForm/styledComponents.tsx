@@ -8,3 +8,9 @@ path {
   stroke: var(--acx-primary-white) !important;
 }
 `
+
+export const FormItemWrappe = styled.div`
+  & .ant-form-item-control {
+      display: none;
+  }
+`
