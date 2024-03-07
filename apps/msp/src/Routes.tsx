@@ -38,9 +38,7 @@ function Init () {
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
-    to={{
-      pathname: basePath.pathname
-    }}
+    to={{ pathname: basePath.pathname }}
   />
 }
 
