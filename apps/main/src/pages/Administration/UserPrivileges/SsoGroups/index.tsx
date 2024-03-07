@@ -137,7 +137,7 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Group' }),
             entityValue: rows.length === 1
-              ? rows[0].name !== ' ' ? rows[0].name : rows[0].groupId
+              ? rows[0].name?.trim() || rows[0].groupId
               : undefined,
             numOfEntities: rows.length
           },

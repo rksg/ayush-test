@@ -74,13 +74,11 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
     const adminExistingError = errData.find(e => e.code === 'TNT-10000' || e.code === 'TNT-10303')
 
     if (adminInvitedError) {
+      message = isMspEc
       // eslint-disable-next-line max-len
-      message = $t({ defaultMessage: 'The email address belongs to a user of another RUCKUS One tenant. You may add this user as a 3rd party administrator.' })
-
-      if (isMspEc) {
-        // eslint-disable-next-line max-len
-        message = $t({ defaultMessage: 'The email address belongs to a user of another Cloud Portal account.' })
-      }
+        ? $t({ defaultMessage: 'The email address belongs to a user of another Cloud Portal account.' })
+      // eslint-disable-next-line max-len
+        : $t({ defaultMessage: 'The email address belongs to a user of another RUCKUS One tenant. You may add this user as a 3rd party administrator.' })
     } else if (adminExistingError) {
       // eslint-disable-next-line max-len
       message = $t({ defaultMessage: 'The email address belongs to an administrator that already exists.' })

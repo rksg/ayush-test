@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -55,6 +56,10 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     }
   }, [privilegeGroupList])
 
+  const customRoleOption = (privilegeGroupData && privilegeGroupData.length > 0)
+    ? _.uniq(privilegeGroupData.filter(item => !!item.roleName).map(c=>c.roleName))
+    : []
+
   const handleClickAdd = () => {
     navigate({
       ...linkAddPriviledgePath,
@@ -96,7 +101,10 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleName',
       dataIndex: 'roleName',
-      filterable: true,
+      filterable: customRoleOption?.map(role => ({
+        key: role as string,
+        value: roleStringMap[role as RolesEnum]
+          ? $t(roleStringMap[role as RolesEnum]) : role as string })),
       render: (_, row) => {
         return roleStringMap[row.roleName as RolesEnum]
           ? $t(roleStringMap[row.roleName as RolesEnum]) : row.roleName

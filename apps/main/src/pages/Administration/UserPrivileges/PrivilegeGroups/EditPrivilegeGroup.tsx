@@ -45,7 +45,7 @@ import { AccountType } from '@acx-ui/utils'
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
 
-import { choiceCustomerEnum, choiceScopeEnum } from './AddPrivilegeGroup'
+import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
 
@@ -115,8 +115,8 @@ export function EditPrivilegeGroup () {
   const intl = useIntl()
   const [selectVenueDrawer, setSelectVenueDrawer] = useState(false)
   const [selectCustomerDrawer, setSelectCustomerDrawer] = useState(false)
-  const [selectedScope, setSelectedScope ] = useState(choiceScopeEnum.ALL_VENUES)
-  const [selectedMspScope, setSelectedMspScope ] = useState(choiceCustomerEnum.ALL_CUSTOMERS)
+  const [selectedScope, setSelectedScope ] = useState(ChoiceScopeEnum.ALL_VENUES)
+  const [selectedMspScope, setSelectedMspScope ] = useState(ChoiceCustomerEnum.ALL_CUSTOMERS)
   const [selectedVenues, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
@@ -158,13 +158,13 @@ export function EditPrivilegeGroup () {
 
   const onScopeChange = (e: RadioChangeEvent) => {
     setSelectedScope(e.target.value)
-    if (e.target.value === choiceScopeEnum.ALL_VENUES)
+    if (e.target.value === ChoiceScopeEnum.ALL_VENUES)
       setSelectVenueDrawer(false)
   }
 
   const onCustomerChange = (e: RadioChangeEvent) => {
     setSelectedMspScope(e.target.value)
-    if (e.target.value === choiceCustomerEnum.ALL_CUSTOMERS)
+    if (e.target.value === ChoiceCustomerEnum.ALL_CUSTOMERS)
       setSelectCustomerDrawer(false)
   }
 
@@ -187,7 +187,7 @@ export function EditPrivilegeGroup () {
         })
       })
       privilegeGroupData.policies =
-        (selectedScope === choiceScopeEnum.SPECIFIC_VENUE && policies.length > 0)
+        (selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && policies.length > 0)
           ? policies : undefined
 
       if (isOnboardedMsp) {
@@ -203,7 +203,7 @@ export function EditPrivilegeGroup () {
         })
         privilegeGroupData.delegation = displayMspScope
         privilegeGroupData.policyEntityDTOS =
-        (selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
+        (selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER && policyEntities.length > 0)
           ? policyEntities : undefined
       }
 
@@ -228,7 +228,7 @@ export function EditPrivilegeGroup () {
         privilegeGroup?.policies?.map(p => p.entityInstanceId).includes(venue.id)) || [])
       setVenues(venues)
       setSelectedScope( venues.length > 0
-        ? choiceScopeEnum.SPECIFIC_VENUE : choiceScopeEnum.ALL_VENUES)
+        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
 
       const ecCustomers = (customerList?.data.filter(customer =>
         privilegeGroup?.policyEntityDTOS?.map(p => p.tenantId).includes(customer.id)) || [])
@@ -251,7 +251,7 @@ export function EditPrivilegeGroup () {
       })
       setCustomers(ecCustomersWithVenue)
       setSelectedMspScope(ecCustomersWithVenue.length > 0
-        ? choiceCustomerEnum.SPECIFIC_CUSTOMER : choiceCustomerEnum.ALL_CUSTOMERS)
+        ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
@@ -265,7 +265,7 @@ export function EditPrivilegeGroup () {
           type='link'
           style={{ marginLeft: '40px' }}
           onClick={onClickSelectVenue}
-        >Change</Button>
+        >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restVenue.map(venue =>
         <UI.VenueList key={venue.id}>
@@ -286,7 +286,7 @@ export function EditPrivilegeGroup () {
           type='link'
           style={{ marginLeft: '40px' }}
           onClick={onClickSelectCustomer}
-        >Change</Button>
+        >{intl.$t({ defaultMessage: 'Change' })}</Button>
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
@@ -300,31 +300,31 @@ export function EditPrivilegeGroup () {
   const ScopeForm = () => {
     return <Form.Item
       label={intl.$t({ defaultMessage: 'Scope' })}
-      initialValue={choiceScopeEnum.ALL_VENUES}>
+      initialValue={ChoiceScopeEnum.ALL_VENUES}>
       <Radio.Group
         value={selectedScope}
         onChange={onScopeChange}
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={choiceScopeEnum.ALL_VENUES}
-            value={choiceScopeEnum.ALL_VENUES}>
+            key={ChoiceScopeEnum.ALL_VENUES}
+            value={ChoiceScopeEnum.ALL_VENUES}>
             {intl.$t({ defaultMessage: 'All Venues' })}
           </Radio>
           <Radio
-            key={choiceScopeEnum.SPECIFIC_VENUE}
-            value={choiceScopeEnum.SPECIFIC_VENUE}>
+            key={ChoiceScopeEnum.SPECIFIC_VENUE}
+            value={ChoiceScopeEnum.SPECIFIC_VENUE}>
             {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
+            hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
-          >Select venues</Button>
+          >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
         </Space>
       </Radio.Group>
-      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
   }
@@ -338,7 +338,7 @@ export function EditPrivilegeGroup () {
       }
     />
     <Form.Item
-      initialValue={choiceScopeEnum.ALL_VENUES}>
+      initialValue={ChoiceScopeEnum.ALL_VENUES}>
       <Radio.Group
         style={{ marginLeft: 22 }}
         value={selectedScope}
@@ -346,24 +346,24 @@ export function EditPrivilegeGroup () {
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={choiceScopeEnum.ALL_VENUES}
-            value={choiceScopeEnum.ALL_VENUES}>
+            key={ChoiceScopeEnum.ALL_VENUES}
+            value={ChoiceScopeEnum.ALL_VENUES}>
             {intl.$t({ defaultMessage: 'All Venues' })}
           </Radio>
           <Radio
-            key={choiceScopeEnum.SPECIFIC_VENUE}
-            value={choiceScopeEnum.SPECIFIC_VENUE}>
+            key={ChoiceScopeEnum.SPECIFIC_VENUE}
+            value={ChoiceScopeEnum.SPECIFIC_VENUE}>
             {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
-            hidden={selectedScope === choiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
+            hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
             type='link'
             onClick={onClickSelectVenue}
-          >Select venues</Button>
+          >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
         </Space>
       </Radio.Group>
-      {selectedVenues.length > 0 && selectedScope === choiceScopeEnum.SPECIFIC_VENUE &&
+      {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
     </Form.Item>
 
@@ -377,7 +377,7 @@ export function EditPrivilegeGroup () {
       }
     />
     <Form.Item
-      initialValue={choiceCustomerEnum.ALL_CUSTOMERS}
+      initialValue={ChoiceCustomerEnum.ALL_CUSTOMERS}
       hidden={!displayMspScope}>
       <Radio.Group
         style={{ marginLeft: 22 }}
@@ -386,26 +386,26 @@ export function EditPrivilegeGroup () {
       >
         <Space direction={'vertical'} size={12}>
           <Radio
-            key={choiceCustomerEnum.ALL_CUSTOMERS}
-            value={choiceCustomerEnum.ALL_CUSTOMERS}>
+            key={ChoiceCustomerEnum.ALL_CUSTOMERS}
+            value={ChoiceCustomerEnum.ALL_CUSTOMERS}>
             {intl.$t({ defaultMessage: 'All Customers' })}
           </Radio>
           <Radio
-            key={choiceCustomerEnum.SPECIFIC_CUSTOMER}
-            value={choiceCustomerEnum.SPECIFIC_CUSTOMER}>
+            key={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}
+            value={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}>
             {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
           </Radio>
           <Button
             style={{ marginLeft: '22px' }}
             hidden={selectedMspScope ===
-              choiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
+              ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
             type='link'
             onClick={onClickSelectCustomer}
           >Select customers</Button>
         </Space>
       </Radio.Group>
 
-      {selectedCustomers.length > 0 && selectedMspScope === choiceCustomerEnum.SPECIFIC_CUSTOMER &&
+      {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
 
     </Form.Item></>

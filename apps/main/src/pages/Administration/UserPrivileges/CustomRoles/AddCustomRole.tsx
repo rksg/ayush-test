@@ -76,12 +76,7 @@ export function AddCustomRole () {
     const description = form.getFieldValue('description')
     try {
       await form.validateFields()
-      const checkedScopes: Array<string> = []
-      scopes.forEach(s => {
-        if (form.getFieldValue(s)) {
-          checkedScopes.push(s)
-        }
-      })
+      const checkedScopes = scopes.filter((s) => form.getFieldValue(s))
       const roleData: CustomRoleData = {
         name: name,
         description: description,

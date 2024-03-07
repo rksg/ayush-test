@@ -118,6 +118,10 @@ const UsersTable = (props: UsersTableProps) => {
     }
   }
 
+  const privilegeGroupOption = (adminList && adminList.length > 0)
+    ? _.uniq(adminList.filter(item => !!item.role).map(c=>c.role))
+    : []
+
   const columns:TableProps<Administrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -151,7 +155,10 @@ const UsersTable = (props: UsersTableProps) => {
       title: $t({ defaultMessage: 'Privilege Group' }),
       key: 'role',
       dataIndex: 'role',
-      filterable: true,
+      filterable: privilegeGroupOption?.map(role => ({
+        key: role as string,
+        value: roleStringMap[role as RolesEnum]
+          ? $t(roleStringMap[role as RolesEnum]) : role as string })),
       sorter: { compare: sortProp('role', defaultSort) },
       render: function (_, row) {
         return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : row.role
