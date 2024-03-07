@@ -15,37 +15,40 @@ const EditTunnelProfile = () => {
   const { policyId } = useParams()
   const [form] = Form.useForm()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const { data: tunnelProfileData, isLoading } = useGetTunnelProfileByIdQuery(
+  const {
+    data: tunnelProfileData,
+    isFetching
+  } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }
   )
   const { updateTunnelProfile } = useTunnelProfileActions()
 
-  const { edgeSdLanData, isSdLanLoading } = useGetEdgeSdLanViewDataListQuery(
+  const { edgeSdLanData, isSdLanFetching } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
       filters: { tunnelProfileId: [policyId] }
     } },
     {
       skip: !isEdgeSdLanReady,
-      selectFromResult: ({ data, isLoading }) => ({
+      selectFromResult: ({ data, isFetching }) => ({
         edgeSdLanData: data?.data?.[0],
-        isSdLanLoading: isLoading
+        isSdLanFetching: isFetching
       })
     }
   )
 
   const {
     nsgId,
-    isNSGLoading
+    isNSGFetching
   } = useGetNetworkSegmentationViewDataListQuery({
     payload: {
       filters: { vxlanTunnelProfileId: [policyId] }
     }
   }, {
     skip: !isEdgeSdLanReady,
-    selectFromResult: ({ data, isLoading }) => {
+    selectFromResult: ({ data, isFetching }) => {
       return {
         nsgId: data?.data[0]?.id,
-        isNSGLoading: isLoading
+        isNSGFetching: isFetching
       }
     }
   })
@@ -59,7 +62,9 @@ const EditTunnelProfile = () => {
     formInitValues.disabledFields = ['type']
 
   return (
-    <Loader states={[{ isLoading: isLoading || isSdLanLoading || isNSGLoading }]}>
+    <Loader states={[{
+      isLoading: isFetching || isSdLanFetching || isNSGFetching
+    }]}>
       <TunnelProfileForm
         form={form}
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}

@@ -151,12 +151,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       </Col>
       <Col span={14}>
         <UI.StyledSpace size={30} align='center'>
-          <UI.FormItemWrappe>
+          <UI.FormItemWrapper>
             <Form.Item
               label={$t({ defaultMessage: 'Force Fragmentation' })}
               tooltip={$t(MessageMapping.force_fragment_tooltip)}
             />
-          </UI.FormItemWrappe>
+          </UI.FormItemWrapper>
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'

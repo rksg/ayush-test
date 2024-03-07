@@ -1,6 +1,7 @@
-import styled from 'styled-components'
+import { Space } from 'antd'
+import styled    from 'styled-components'
 
-import { InformationSolid } from '@acx-ui/icons'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 export const InfoIcon = styled(InformationSolid)`
 path {
@@ -9,7 +10,22 @@ path {
 }
 `
 
-export const FormItemWrappe = styled.div`
+export const QuestionIcon = styled(QuestionMarkCircleOutlined)`
+  width: 16px;
+  height: 16px;
+  display: block;
+`
+export const StyledSpace = styled(Space)`
+  width: 100%;
+  margin-bottom: var(--acx-descriptions-space);
+  justify-content: space-between;
+  & .ant-form-item {
+      margin: 0;
+  }
+`
+
+
+export const FormItemWrapper = styled.div`
   & .ant-form-item-control {
       display: none;
   }
