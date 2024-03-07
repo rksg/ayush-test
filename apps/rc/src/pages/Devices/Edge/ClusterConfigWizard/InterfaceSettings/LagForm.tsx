@@ -26,16 +26,18 @@ export const LagForm = () => {
     </Typography.Text>
   </Space>
 
-  const content = <NodesTabs
-    nodeList={clusterInfo?.edgeList}
-    content={
-      (serialNumber) => (
-        <>
-          {lagSettings.find(item => item.serialNumber === serialNumber)?.lags.length}
-        </>
-      )
-    }
-  />
+  const content = <Form.Item name='lagSettings'>
+    <NodesTabs
+      nodeList={clusterInfo?.edgeList}
+      content={
+        (serialNumber) => (
+          <>
+            {lagSettings.find(item => item.serialNumber === serialNumber)?.lags.length}
+          </>
+        )
+      }
+    />
+  </Form.Item>
 
   return (
     <TypeForm

@@ -26,16 +26,18 @@ export const PortForm = () => {
     </Typography.Text>
   </Space>
 
-  const content = <NodesTabs
-    nodeList={clusterInfo?.edgeList}
-    content={
-      (serialNumber) => (
-        <>
-          {portSettings.find(item => item.serialNumber === serialNumber)?.ports.length}
-        </>
-      )
-    }
-  />
+  const content = <Form.Item name='portSettings'>
+    <NodesTabs
+      nodeList={clusterInfo?.edgeList}
+      content={
+        (serialNumber) => (
+          <>
+            {portSettings.find(item => item.serialNumber === serialNumber)?.ports.length}
+          </>
+        )
+      }
+    />
+  </Form.Item>
 
   return (
     <TypeForm
