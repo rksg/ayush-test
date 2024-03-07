@@ -161,11 +161,13 @@ const EdgeSdLanTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: (__, row) => {
-        return row.guestEdgeClusterId ? <TenantLink
-          to={`/devices/edge/${row.guestEdgeClusterId}/details/overview`}
-        >
-          {row.guestEdgeClusterName}
-        </TenantLink> : ''
+        return (row.isGuestTunnelEnabled && row.guestEdgeClusterId)
+          ? <TenantLink
+            to={`/devices/edge/${row.guestEdgeClusterId}/details/overview`}
+          >
+            {row.guestEdgeClusterName}
+          </TenantLink>
+          : ''
       }
     },
     {
@@ -213,15 +215,17 @@ const EdgeSdLanTable = () => {
       dataIndex: 'guestTunnelProfileId',
       sorter: true,
       render: (__, row) => {
-        return row.guestTunnelProfileId ? <TenantLink
-          to={getPolicyDetailsLink({
-            type: PolicyType.TUNNEL_PROFILE,
-            oper: PolicyOperation.DETAIL,
-            policyId: row.guestTunnelProfileId
-          })}
-        >
-          {row.guestTunnelProfileName}
-        </TenantLink> : '' }
+        return (row.isGuestTunnelEnabled && row.guestTunnelProfileId)
+          ? <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.TUNNEL_PROFILE,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.guestTunnelProfileId
+            })}
+          >
+            {row.guestTunnelProfileName}
+          </TenantLink>
+          : '' }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
