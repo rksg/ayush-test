@@ -39,6 +39,7 @@ export enum Features {
   EDGES_SCHEDULE_UPGRADE_TOGGLE = 'acx-ui-edges-schedule-upgrade-toggle',
   EDGES_SD_LAN_PHASE2_TOGGLE = 'acx-ui-edges-sdlan-phase2-toggle',
   EDGES_SD_LAN_TOGGLE = 'acx-ui-edges-centralized-forwarding-toggle',
+  EDGES_SD_LAN_HA_TOGGLE = 'edge-sdlan-ha-toggle',
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_TOGGLE = 'acx-ui-edges-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
