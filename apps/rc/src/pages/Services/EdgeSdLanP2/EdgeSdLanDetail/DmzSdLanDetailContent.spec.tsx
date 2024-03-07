@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Edge SD-LAN Detail - DC', () => {
+describe('Edge SD-LAN Detail - DMZ', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -67,9 +67,9 @@ describe('Edge SD-LAN Detail - DC', () => {
     const seTab = await screen.findByRole('tab', { name: /SmartEdges/i })
     await userEvent.click(seTab)
     expect(await screen.findByRole('row',
-      { name: 'vSE-b490 12 37' })).toBeVisible()
+      { name: 'SE_Cluster 0 12 37' })).toBeVisible()
     expect(await screen.findByRole('row',
-      { name: /Smart Edge 3/i })).toBeVisible()
+      { name: /SE_Cluster 3/i })).toBeVisible()
   })
   it('should handle with empty venueId', async () => {
     const dataWoVenueId = _.cloneDeep(mockedSdLanData)

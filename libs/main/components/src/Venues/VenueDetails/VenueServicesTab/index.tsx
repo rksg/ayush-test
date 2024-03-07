@@ -23,6 +23,8 @@ export function VenueServicesTab () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES) && !isTemplate
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE) && !isTemplate
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
+
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
@@ -73,7 +75,7 @@ export function VenueServicesTab () {
     { payload: {
       filters: { venueId: [venueId] }
     } }, {
-      skip: !isEdgeEnabled || !isEdgeSdLanReady,
+      skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
       selectFromResult: ({ data }) => ({
         edgeSdLanData: data?.data?.[0] })
     })
@@ -140,7 +142,7 @@ export function VenueServicesTab () {
           </Tabs.TabPane>
         }
         {
-          edgeSdLanData && isEdgeEnabled && isEdgeReady && isEdgeSdLanReady &&
+          edgeSdLanData && isEdgeEnabled && isEdgeReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'SD-LAN' })}
             key={ServiceType.EDGE_SD_LAN}

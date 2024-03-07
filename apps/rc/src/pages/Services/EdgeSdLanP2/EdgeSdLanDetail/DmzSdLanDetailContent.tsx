@@ -1,8 +1,7 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card, SummaryCard, Tabs } from '@acx-ui/components'
-import { SdLanTopologyDiagram }    from '@acx-ui/rc/components'
+import { Card, SummaryCard, Tabs }            from '@acx-ui/components'
+import { SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   getPolicyDetailsLink,
   PolicyType,
@@ -33,15 +32,15 @@ export const DmzSdLanDetailContent = (props: {
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
-        {data.edgeName}
+      <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+        {data.edgeClusterName}
       </TenantLink>
     )
   }, {
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeId}/details/overview`}>
-        {data.guestEdgeName}
+      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+        {data.guestEdgeClusterName}
       </TenantLink>
     )
   }, {
@@ -70,7 +69,7 @@ export const DmzSdLanDetailContent = (props: {
     )
   }]
 
-  return <Space direction='vertical' size={30}>
+  return <SpaceWrapper fullWidth direction='vertical' size={30}>
     <SummaryCard data={sdLanInfo} />
     <Card>
       <SdLanTopologyDiagram
@@ -105,5 +104,5 @@ export const DmzSdLanDetailContent = (props: {
         </Tabs.TabPane>
       </Tabs>
     </Card>
-  </Space>
+  </SpaceWrapper>
 }
