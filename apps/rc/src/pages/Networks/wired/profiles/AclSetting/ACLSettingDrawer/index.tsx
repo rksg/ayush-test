@@ -22,7 +22,7 @@ import { ACLRuleModal } from './ACLRuleModal'
 
 export interface ACLSettingDrawerProps {
   rule?: Acl
-  setRule: (r: Acl) => void
+  setRule: (oldRule: Acl, newRule: Acl) => void
   editMode: boolean
   visible: boolean
   setVisible: (v: boolean) => void
@@ -90,7 +90,7 @@ interface ACLSettingFormProps {
   form: FormInstance<Acl>
   editMode: boolean
   rule?: Acl
-  setRule: (r: Acl) => void
+  setRule: (oldRule: Acl, newRule: Acl) => void
   aclType: string
   setAclType: (r: string) => void
   aclsTable: Acl[]
@@ -247,7 +247,11 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         layout='vertical'
         form={form}
         onFinish={(data: Acl) => {
-          setRule(data)
+          if(editMode && rule){
+            setRule(rule, data)
+          }else{
+            setRule({} as Acl, data)
+          }
           form.resetFields()
         }}
       >
