@@ -298,3 +298,28 @@ z-index: 5;
   z-index: 1;
 }
 `
+
+export const DescriptionTextWrapper = css`
+  .greyText {
+    color: var(--acx-neutrals-50);
+  }
+`
+
+export const DescriptionWrapper = css`
+  & .ant-checkbox-wrapper-in-form-item {
+    color: var(--acx-neutrals-60);
+  }
+
+  & .description {
+    font-size: var(--acx-body-4-font-size);
+  }
+
+  & .descriptionsWrapper {
+    margin-left: 24px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  ${DescriptionTextWrapper}
+`
+
