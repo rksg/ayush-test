@@ -39,7 +39,7 @@ export const DmzSdLanDetailContent = (props: {
   }, {
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
         {data.guestEdgeClusterName}
       </TenantLink>
     )
