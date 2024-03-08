@@ -87,7 +87,6 @@ export const useEdgeClusterActions = () => {
       title: $t({ defaultMessage: 'Send OTP' }),
       content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
       onOk: () => {
-        console.log(data)
         const requests = []
         for(let item of data) {
           if(!item.isFirstLevel) {
