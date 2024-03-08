@@ -67,7 +67,7 @@ export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true,
@@ -127,7 +127,7 @@ export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
       onClose={onClose}
       footer={footer}
       destroyOnClose={resetField}
-      width={420}
+      width={445}
     >
       {content}
     </Drawer>

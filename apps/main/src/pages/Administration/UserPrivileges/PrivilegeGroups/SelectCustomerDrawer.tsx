@@ -86,7 +86,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
 
   const columns: TableProps<MspEcWithVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Customer' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true,
@@ -144,7 +144,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
       onClose={onClose}
       footer={footer}
       destroyOnClose={resetField}
-      width={420}
+      width={445}
     >
       {content}
     </Drawer>

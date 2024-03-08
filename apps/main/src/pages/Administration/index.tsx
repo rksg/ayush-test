@@ -69,16 +69,15 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       onChange={onTabChange}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='accountSettings' />
-      { hasAdministratorTab && isAbacToggleEnabled ?
-        ( <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Users & Privileges' })}
-          key='userPrivileges' /> )
-
-        :
-        ( <Tabs.TabPane
-          tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
-            : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
-          key='administrators' /> )
+      { hasAdministratorTab && (
+        isAbacToggleEnabled
+          ? ( <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Users & Privileges' })}
+            key='userPrivileges' /> )
+          : ( <Tabs.TabPane
+            tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
+              : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
+            key='administrators' /> ) )
       }
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })}

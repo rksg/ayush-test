@@ -113,7 +113,7 @@ describe('SelectVenuesDrawer', () => {
 
     expect(await screen.findByRole('dialog')).toBeVisible()
 
-    const input = screen.getByPlaceholderText('Search Name')
+    const input = screen.getByPlaceholderText('Search Venue')
     await userEvent.type(input, 'new')
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!

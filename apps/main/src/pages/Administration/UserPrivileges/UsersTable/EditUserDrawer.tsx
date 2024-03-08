@@ -75,6 +75,11 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
     }
   }
 
+  const onClose = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
   const handleSubmit = async () => {
     const formValues = form.getFieldsValue(true)
 
@@ -115,6 +120,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
       title={$t({ defaultMessage: 'Edit User' })}
       visible={visible}
       keyboard={false}
+      onClose={onClose}
       width={500}
       footer={
         <Drawer.FormFooter
