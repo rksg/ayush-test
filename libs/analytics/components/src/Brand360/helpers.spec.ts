@@ -209,7 +209,7 @@ describe('transformVenuesData', () => {
     expect(transformed).toEqual([])
   })
   it('calcSLA should handle [0,0]', () => {
-    expect(calcSLA([0,0])).toEqual(0)
+    expect(calcSLA([0,0])).toEqual(null)
   })
 })
 

@@ -6,15 +6,12 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                                         from '@acx-ui/components'
-import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask, optionSorter } from '@acx-ui/rc/utils'
-import { getIntl }                                                                from '@acx-ui/utils'
+import { Drawer, Select }                                                                                     from '@acx-ui/components'
+import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 import { VirtualIpFormType } from '.'
-
-const Netmask = require('netmask').Netmask
 
 interface SelectInterfaceDrawerProps {
   visible: boolean
@@ -94,7 +91,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber].portName).filter(item => item !== undefined)
+      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
     const editPortName = editData?.[targetSerialNumber]?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)
@@ -203,21 +200,4 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       footer={footer}
     />
   )
-}
-
-const validateSubnetIsConsistent = (allIps: { ip?: string, subnet?: string }[], value?: string) => {
-  if(!allIps || allIps.length < 2 || !value) return Promise.resolve()
-  const { $t } = getIntl()
-  for(let i=0; i<allIps.length; i++) {
-    for(let j=i+1; j<allIps.length; j++) {
-      if(i === allIps.length - 1) break
-      const first = new Netmask(`${allIps[i].ip}/${allIps[i].subnet}`)
-      const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
-      if(first.first !== second.first || first.last !== second.last) {
-        // eslint-disable-next-line max-len
-        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
-      }
-    }
-  }
-  return Promise.resolve()
 }

@@ -9,6 +9,7 @@ import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -23,6 +24,7 @@ export function OnboardingForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -31,6 +33,10 @@ export function OnboardingForm () {
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
   return (<>

@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
@@ -48,13 +49,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
   PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />
-}))
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useSearchParams: () => [{
-    get: mockedUseSearchParams
-  }]
 }))
 
 describe('Edge Detail Services Tab - Service Detail Drawer', () => {
@@ -207,7 +201,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
 
   describe('SD-LAN Phase2', () => {
     beforeEach(() => {
-      mockedUseSearchParams.mockReturnValue('')
+      // mock SDLAN HA(i,e p2) enabled
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     it('should render DMZ scenario detail successfully', async () => {

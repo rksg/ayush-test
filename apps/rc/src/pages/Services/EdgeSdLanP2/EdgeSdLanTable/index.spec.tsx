@@ -9,9 +9,10 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 import EdgeSdLanTable from '.'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
 const mockedUsedNavigate = jest.fn()
-const mockedGetEdgeList = jest.fn()
+const mockedGetClusterList = jest.fn()
 const mockedDeleteReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -28,7 +29,7 @@ describe('SD-LAN Table P2', () => {
     }
 
     mockedUsedNavigate.mockReset()
-    mockedGetEdgeList.mockReset()
+    mockedGetClusterList.mockReset()
     mockedDeleteReq.mockReset()
 
     mockServer.use(
@@ -41,10 +42,10 @@ describe('SD-LAN Table P2', () => {
         (_, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (_, res, ctx) => {
-          mockedGetEdgeList()
-          return res(ctx.json(mockEdgeList))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => {
+          mockedGetClusterList()
+          return res(ctx.json(mockEdgeClusterList))
         }
       ),
       rest.delete(
@@ -68,14 +69,14 @@ describe('SD-LAN Table P2', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     screen.getByRole('columnheader', { name: 'Cluster' })
-    await waitFor(() => expect(mockedGetEdgeList).toBeCalled())
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(3)
-    screen.getByRole('row', { name: /Smart Edge 3/i })
+    screen.getByRole('row', { name: /SE_Cluster 3/i })
     // eslint-disable-next-line max-len
-    expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Smart Edge 3\s*2\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
+    expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*SE_Cluster 0\s*SE_Cluster 3\s*2\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
     // eslint-disable-next-line max-len
-    expect(rows[1]).toHaveTextContent(/Mocked_SDLAN_2\s*Mocked-Venue-2\s*vSE-b491\s*1\s*Mocked_tunnel-2\s*Good/)
+    expect(rows[1]).toHaveTextContent(/Mocked_SDLAN_2\s*Mocked-Venue-2\s*SE_Cluster 1\s*1\s*Mocked_tunnel-2\s*Good/)
   })
 
   it('should display network names when hover', async () => {
@@ -88,9 +89,7 @@ describe('SD-LAN Table P2', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
-    expect(rows.length).toBe(3)
-
+    await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
     await screen.findByText('Mocked_network')
@@ -111,7 +110,7 @@ describe('SD-LAN Table P2', () => {
     await click(screen.getByRole('button', { name: 'Edit' }))
 
     const editPath = getServiceDetailsLink({
-      type: ServiceType.EDGE_SD_LAN_P2,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.EDIT,
       serviceId: 'mocked-sd-lan-1'
     })
@@ -185,15 +184,14 @@ describe('SD-LAN Table P2', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Cluster' })
-    const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+    screen.getByRole('columnheader', { name: 'Cluster' })
+    const row = await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     // eslint-disable-next-line max-len
-    expect(rows[0]).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*vSE-b490\s*Smart Edge 3\s*2\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
+    expect(row).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*SE_Cluster 0\s*SE_Cluster 3\s*2\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
 
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
-    expect(await screen.findByRole('tooltip'))
-      .toHaveTextContent('')
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('')
   })
   it('should display service health Good if alarm summary is undefined', async () => {
     const cfListNoAlarm = _.cloneDeep(mockedSdLanDataListP2)
@@ -219,9 +217,9 @@ describe('SD-LAN Table P2', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Cluster' })
-    await screen.findByText(/sdLan_good_health/i)
+    screen.getByRole('columnheader', { name: 'Cluster' })
+    await screen.findByRole('row', { name: /sdLan_good_health/i })
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'sdLan_good_health Mocked-Venue-1 vSE-b490 Smart Edge 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })
+    screen.getByRole('row', { name: 'sdLan_good_health Mocked-Venue-1 SE_Cluster 0 SE_Cluster 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })
   })
 })

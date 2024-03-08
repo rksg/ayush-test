@@ -1,9 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-import { Col, Divider, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
-import TextArea                                                                               from 'antd/lib/input/TextArea'
-import { useIntl }                                                                            from 'react-intl'
-import { useParams }                                                                          from 'react-router-dom'
+import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
+import TextArea                                                                      from 'antd/lib/input/TextArea'
+import { useIntl }                                                                   from 'react-intl'
+import { useParams }                                                                 from 'react-router-dom'
 
 import { Alert, Button, Select, Subtitle, useStepFormContext }                                            from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                                                             from '@acx-ui/icons'
@@ -150,12 +150,6 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                 children={$t({ defaultMessage: 'Add another SmartEdge' })}
                 onClick={() => formListRef.current?.add()}
                 disabled={(smartEdges?.length ?? 0) >= maxNodeCount}
-              />
-              <Divider type='vertical' />
-              <Button
-                type='link'
-                children={$t({ defaultMessage: 'Import from file' })}
-                disabled={true}
               />
             </Col>
             {
