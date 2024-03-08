@@ -1016,6 +1016,8 @@ export function ManageIntegrator () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1072,6 +1074,8 @@ export function ManageIntegrator () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst
