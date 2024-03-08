@@ -36,7 +36,7 @@ export const allowResetForStatus = (edgeStatus: string) => {
   return stringStatus.includes(edgeStatus)
 }
 
-export const allowSendOTPForStatus = (edgeStatus: string) => {
+export const allowSendOtpForStatus = (edgeStatus: string) => {
   const stringStatus: string[] = unconfigedEdgeStatuses
   return stringStatus.includes(edgeStatus)
 }

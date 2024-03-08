@@ -1,7 +1,12 @@
 import { useIntl } from 'react-intl'
 
 import { showActionModal }                                                            from '@acx-ui/components'
-import { useDeleteEdgeClusterMutation, useDeleteEdgeMutation, useRebootEdgeMutation } from '@acx-ui/rc/services'
+import {
+  useDeleteEdgeClusterMutation,
+  useDeleteEdgeMutation,
+  useRebootEdgeMutation,
+  useSendOtpMutation
+} from '@acx-ui/rc/services'
 import { EdgeClusterTableDataType, EdgeStatus }                                       from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../useEdgeActions'
@@ -11,6 +16,7 @@ export const useEdgeClusterActions = () => {
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
   const [ invokeDeleteEdgeCluster ] = useDeleteEdgeClusterMutation()
+  const [ invokeSendOtp ] = useSendOtpMutation()
 
   const reboot = (data: EdgeStatus[], callback?: () => void) => {
     showActionModal({
@@ -75,8 +81,27 @@ export const useEdgeClusterActions = () => {
     showDeleteModal(data, handleOk)
   }
 
+  const sendEdgeOnboardOtp = (data: EdgeClusterTableDataType[], callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Send OTP' }),
+      content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
+      onOk: () => {
+        console.log(data)
+        const requests = []
+        for(let item of data) {
+          if(!item.isFirstLevel) {
+            requests.push(invokeSendOtp({ params: { serialNumber: item.serialNumber } }))
+          }
+        }
+        Promise.all(requests).then(() => callback?.())
+      }
+    })
+  }
+
   return {
     reboot,
-    deleteNodeAndCluster
+    deleteNodeAndCluster,
+    sendEdgeOnboardOtp
   }
 }

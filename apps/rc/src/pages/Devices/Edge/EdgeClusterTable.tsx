@@ -12,7 +12,7 @@ import {
   EdgeClusterTableDataType,
   activeTab,
   allowRebootForStatus,
-  allowSendOTPForStatus,
+  allowSendOtpForStatus,
   getUrl,
   usePollingTableQuery,
   genUrl,
@@ -42,7 +42,7 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot } = useEdgeClusterActions()
+  const { deleteNodeAndCluster, reboot, sendEdgeOnboardOtp } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
@@ -215,11 +215,10 @@ export const EdgeClusterTable = () => {
     {
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
-          selectedRows.filter(row => !allowSendOTPForStatus(row?.deviceStatus)).length === 0),
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (selectedRows, clearSelection) => {
-        alert("IN")
-        //deleteNodeAndCluster(selectedRows, clearSelection)
+        sendEdgeOnboardOtp(selectedRows, clearSelection)
       }
     },
     {
