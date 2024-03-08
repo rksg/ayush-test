@@ -12,6 +12,7 @@ import {
   EdgeClusterTableDataType,
   activeTab,
   allowRebootForStatus,
+  allowSendOTPForStatus,
   getUrl,
   usePollingTableQuery,
   genUrl,
@@ -209,6 +210,16 @@ export const EdgeClusterTable = () => {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         deleteNodeAndCluster(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => !allowSendOTPForStatus(row?.deviceStatus)).length === 0),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (selectedRows, clearSelection) => {
+        alert("IN")
+        //deleteNodeAndCluster(selectedRows, clearSelection)
       }
     },
     {
