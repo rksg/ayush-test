@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal }                                                            from '@acx-ui/components'
+import { showActionModal } from '@acx-ui/components'
 import {
   useDeleteEdgeClusterMutation,
   useDeleteEdgeMutation,
   useRebootEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatus }                                       from '@acx-ui/rc/utils'
+import { EdgeClusterTableDataType, EdgeStatus } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../useEdgeActions'
 
