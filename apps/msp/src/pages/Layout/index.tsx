@@ -30,6 +30,7 @@ import { getJwtTokenPayload, isDelegationMode, AccountType }                    
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
+import { useGetTenantSettingsQuery } from '@acx-ui/analytics/services'
 
 function Layout () {
   const { $t } = useIntl()
@@ -44,6 +45,7 @@ function Layout () {
   const params = useParams()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const settings = useGetTenantSettingsQuery()
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
@@ -100,7 +102,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId, settings.data)}
       content={
         <>
           <CloudMessageBanner />

@@ -17,8 +17,18 @@ import {
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
-export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
-{ sliceType: string, slaThreshold?: Partial<Settings>, data: Response[], isLSP?: boolean }) {
+interface BrandTableProps {
+  sliceType: string
+  slaThreshold?: Partial<Settings>
+  data: Response[]
+  isLSP?: boolean
+  lspLabel: string
+  propertyLabel: string
+}
+
+export function BrandTable ({
+  sliceType, slaThreshold, data, isLSP, lspLabel, propertyLabel
+}: BrandTableProps) {
   const { $t } = useIntl()
   const thresholds = slaThreshold || getDefaultSettings()
   const thresholdP1Incidents = thresholds['sla-p1-incidents-count' as keyof typeof slaThreshold]
@@ -112,7 +122,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
   ]
   const lspCols: TableProps<Pick<Lsp,'lsp' | 'propertyCount'>>['columns'] = [
     {
-      title: $t({ defaultMessage: 'LSP' }),
+      title: lspLabel,
       dataIndex: 'lsp',
       key: 'lsp',
       searchable: true,
@@ -121,7 +131,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
       render: (_, row: Pick<Lsp,'lsp' | 'propertyCount'>, __, highlightFn: CallableFunction) =>
         <span>{highlightFn(row?.lsp)}</span>
     }, {
-      title: $t({ defaultMessage: 'Property Count' }),
+      title: $t({ defaultMessage: '{propertyLabel} Count' }, { propertyLabel }),
       dataIndex: 'propertyCount',
       key: 'propertyCount',
       searchable: false,
@@ -130,7 +140,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
     }
   ]
   const propertyCols: TableProps<Pick<Property, 'property' | 'lsp'>>['columns'] = [{
-    title: $t({ defaultMessage: 'Property' }),
+    title: propertyLabel,
     dataIndex: 'property',
     key: 'property',
     fixed: 'left',
@@ -139,7 +149,7 @@ export function BrandTable ({ sliceType, slaThreshold, data, isLSP }:
     render: (_, row: Pick<Property, 'property' | 'lsp'>, __, highlightFn: CallableFunction) =>
       <span>{highlightFn(row?.property)}</span>
   }, {
-    title: $t({ defaultMessage: 'LSP' }),
+    title: lspLabel,
     dataIndex: 'lsp',
     key: 'lsp',
     fixed: 'left',

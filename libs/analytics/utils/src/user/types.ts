@@ -56,6 +56,9 @@ export type Settings = {
   franchisee: string
   zone: string
   sso: string
+  'brand-name': string
+  'lsp-name': string
+  'property-name': string
 }
 
 export type ManagedUser = {

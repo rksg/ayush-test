@@ -6,6 +6,10 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { BrandTable } from './Table'
 
+const nameProps = {
+  lspLabel: 'LSP',
+  propertyLabel: 'Property'
+}
 
 describe('Brand 360 Table', () => {
   it('should render table correctly for proptery view', async () => {
@@ -20,7 +24,7 @@ describe('Brand 360 Table', () => {
       avgTTC: [1,10] as [number, number],
       avgClientThroughput: [1,10] as [number, number]
     }]
-    render(<BrandTable sliceType='property' data={data}/>, {
+    render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -41,7 +45,7 @@ describe('Brand 360 Table', () => {
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
     }]
-    render(<BrandTable sliceType='property' data={data}/>, {
+    render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -67,7 +71,11 @@ describe('Brand 360 Table', () => {
       avgTTC: [5,10] as [number, number],
       avgClientThroughput: [5,10] as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data}/>, {
+    render(<BrandTable
+      sliceType='lsp'
+      slaThreshold={slaThreshold}
+      data={data}
+      {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -93,7 +101,12 @@ describe('Brand 360 Table', () => {
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data}/>, {
+    render(<BrandTable
+      sliceType='lsp'
+      slaThreshold={slaThreshold}
+      data={data}
+      {...nameProps}
+    />, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -114,7 +127,12 @@ describe('Brand 360 Table', () => {
       avgTTC: [1,10] as [number, number],
       avgClientThroughput: [1,10] as [number, number]
     }]
-    render(<BrandTable sliceType='property' data={data} isLSP={true}/>, {
+    render(<BrandTable
+      sliceType='property'
+      data={data}
+      isLSP={true}
+      {...nameProps}
+    />, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }

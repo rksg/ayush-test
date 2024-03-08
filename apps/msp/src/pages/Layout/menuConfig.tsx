@@ -26,13 +26,15 @@ import { TenantType, useParams }                          from '@acx-ui/react-ro
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
+import { Settings, useBrand360Names } from '@acx-ui/analytics/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean, parentMspId?: string) {
+  isDogfood?: boolean, parentMspId?: string, settings?: Partial<Settings>) {
   const { $t } = useIntl()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
+  const { brand } = useBrand360Names(settings)
   const [hideMenuesforHsp, setHideMenuesforHsp] = useState<boolean>(false)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -102,7 +104,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   return [
     ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
       uri: '/brand360',
-      label: $t({ defaultMessage: 'Brand 360' }),
+      label: brand,
       tenantType: 'v' as TenantType,
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid

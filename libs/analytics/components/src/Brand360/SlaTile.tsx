@@ -13,10 +13,10 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import type { Settings }      from '@acx-ui/analytics/utils'
-import { Card }               from '@acx-ui/components'
-import { UpArrow, DownArrow } from '@acx-ui/icons'
-import { noDataDisplay }      from '@acx-ui/utils'
+import { Settings, useBrand360Names } from '@acx-ui/analytics/utils'
+import { Card }                       from '@acx-ui/components'
+import { UpArrow, DownArrow }         from '@acx-ui/icons'
+import { noDataDisplay }              from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
 import { ComplianceSetting }                                          from './ComplianceSetting'
@@ -161,15 +161,17 @@ export function SlaTile ({
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
+  const { lsp, property } = useBrand360Names(settings)
+  const name = sliceType === 'lsp' ? lsp : property
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
   return <Card title={chartKey === 'compliance'
     ? {
-      title: $t(getTitle(sliceType)),
+      title: $t(getTitle(), { name }),
       icon: <ComplianceSetting settings={settings} />
     }
-    : $t(getTitle(sliceType))}
+    : $t(getTitle(), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
