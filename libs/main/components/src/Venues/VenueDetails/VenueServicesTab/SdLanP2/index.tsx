@@ -54,13 +54,14 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     </TenantLink>
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
-    content: () => <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
-      {data.edgeClusterName}
-    </TenantLink>
+    content: () => (
+      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+        {data.edgeClusterName}
+      </TenantLink>)
   }, ...(data.isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
         {data.guestEdgeClusterName}
       </TenantLink>
     )
