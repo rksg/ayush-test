@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { Settings, useBrand360Names }               from '@acx-ui/analytics/utils'
 import { LayoutProps }                              from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -26,7 +27,6 @@ import { TenantType, useParams }                          from '@acx-ui/react-ro
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
-import { Settings, useBrand360Names } from '@acx-ui/analytics/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
   isDogfood?: boolean, parentMspId?: string, settings?: Partial<Settings>) {

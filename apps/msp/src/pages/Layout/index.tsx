@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { useGetTenantSettingsQuery } from '@acx-ui/analytics/services'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -30,7 +31,6 @@ import { getJwtTokenPayload, isDelegationMode, AccountType }                    
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
-import { useGetTenantSettingsQuery } from '@acx-ui/analytics/services'
 
 function Layout () {
   const { $t } = useIntl()
@@ -102,7 +102,13 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId, settings.data)}
+      menuConfig={useMenuConfig(
+        tenantType,
+        hasLicense,
+        isDogfood,
+        data?.mspEc?.parentMspId,
+        settings.data
+      )}
       content={
         <>
           <CloudMessageBanner />
