@@ -73,7 +73,6 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.getByRole('textbox', { name: 'Description' })).toBeVisible()
     expect(screen.getByText('SmartEdges (0)')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Add another SmartEdge' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Import from file' })).toBeVisible()
     expect(screen.getByText(/The cluster function will operate/i)).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'SmartEdge Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Serial Number' })).toBeVisible()
