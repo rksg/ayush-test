@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                               from '@acx-ui/rc/services'
 import { EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
+import { Provider, store }                                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                       from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
@@ -31,6 +32,8 @@ describe('EditTunnelProfile', () => {
       tenantId: tenantId,
       policyId: 'testPolicyId'
     }
+
+    store.dispatch(tunnelProfileApi.util.resetApiState())
 
     mockServer.use(
       rest.put(
@@ -138,6 +141,9 @@ describe('EditTunnelProfile', () => {
     const mockedReqSdLan = jest.fn()
     const mockedReqNSG = jest.fn()
     beforeEach(() => {
+      store.dispatch(edgeSdLanApi.util.resetApiState())
+      store.dispatch(nsgApi.util.resetApiState())
+
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
         if (flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_TOGGLE) return true
         return false
