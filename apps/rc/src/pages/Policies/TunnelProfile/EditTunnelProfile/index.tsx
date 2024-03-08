@@ -40,8 +40,10 @@ const EditTunnelProfile = () => {
     {
       skip: !isEdgeSdLanHaReady,
       selectFromResult: ({ data, isFetching }) => ({
-        isSdLanHaUsed: data?.data.some(sdlan =>
-          sdlan.tunnelProfileId === policyId || sdlan.guestTunnelProfileId === policyId),
+        isSdLanHaUsed: data?.data.some(sdlan => {
+          return sdlan.tunnelProfileId === policyId
+               || (sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId)
+        }),
         isDMZUsed: data?.data?.some(sdlan =>
           sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId),
         isSdLanHaFetching: isFetching
