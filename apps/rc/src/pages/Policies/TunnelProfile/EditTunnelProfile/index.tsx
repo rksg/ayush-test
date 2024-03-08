@@ -24,27 +24,26 @@ const EditTunnelProfile = () => {
 
   const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
-      filters: { tunnelProfileId: [policyId], guestTunnelProfileId: [policyId] }
+      filters: { tunnelProfileId: [policyId] }
     } },
     {
       skip: isEdgeSdLanHaReady || !isEdgeSdLanReady,
       selectFromResult: ({ data, isFetching }) => ({
         isSdLanP1Used: !!data?.data?.[0],
-        isTestUsed: data?.data?.some(sdlan => !!sdlan.networkIds),
         isSdLanP1Fetching: isFetching
       })
     }
   )
 
   const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeSdLanP2ViewDataListQuery(
-    { payload: {
-      filters: { tunnelProfileId: [policyId], guestTunnelProfileId: [policyId] }
-    } },
+    { payload: {} },
     {
       skip: !isEdgeSdLanHaReady,
       selectFromResult: ({ data, isFetching }) => ({
-        isSdLanHaUsed: !!data?.data[0],
-        isDMZUsed: data?.data?.some(sdlan => sdlan.isGuestTunnelEnabled),
+        isSdLanHaUsed: data?.data.some(sdlan =>
+          sdlan.tunnelProfileId === policyId || sdlan.guestTunnelProfileId === policyId),
+        isDMZUsed: data?.data?.some(sdlan =>
+          sdlan.isGuestTunnelEnabled && sdlan.guestTunnelProfileId === policyId),
         isSdLanHaFetching: isFetching
       })
     }
