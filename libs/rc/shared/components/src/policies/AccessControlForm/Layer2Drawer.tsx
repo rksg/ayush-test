@@ -18,8 +18,8 @@ import {
 import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
+  useGetEnhancedL2AclProfileListQuery,
   useGetL2AclPolicyQuery,
-  useL2AclPolicyListQuery,
   useUpdateL2AclPolicyMutation
 } from '@acx-ui/rc/services'
 import {
@@ -32,8 +32,9 @@ import {
   AccessStatus,
   CommonResult,
   defaultSort,
+  L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp, useConfigTemplate,
+  sortProp, TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -134,7 +135,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [ updateL2AclPolicy ] = useConfigTemplateMutationFnSwitcher(
     useUpdateL2AclPolicyMutation, useUpdateL2AclPolicyTemplateMutation)
 
-  const { layer2SelectOptions, layer2List } = GetL2AclPolicyListInstance(requestId)
+  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(editMode.isEdit)
 
   const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher(
     useGetL2AclPolicyQuery,
@@ -713,44 +714,21 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   )
 }
 
-const GetL2AclPolicyListInstance = (requestId: string): {
+const useGetL2AclPolicyListInstance = (isEdit: boolean): {
   layer2SelectOptions: JSX.Element[], layer2List: string[]
 } => {
-  const params = useParams()
-  const { isTemplate } = useConfigTemplate()
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>(
+    useGetEnhancedL2AclProfileListQuery,
+    useGetL2AclPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
 
-  const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
-    params: params,
-    payload: QUERY_DEFAULT_PAYLOAD
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer2SelectOptions: data?.data?.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer2List: data?.data?.map(item => item.name) ?? []
-      }
-    },
-    skip: !isTemplate
-  })
-
-  const useL2PolicyList = useL2AclPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer2SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer2List: data ? data.map(item => item.name) : []
-      }
-    },
-    skip: isTemplate
-  })
-
-
-
-  return isTemplate ? useL2PolicyTemplateList : useL2PolicyList
+  return {
+    layer2SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer2List: data?.data?.map(item => item.name) ?? []
+  }
 }

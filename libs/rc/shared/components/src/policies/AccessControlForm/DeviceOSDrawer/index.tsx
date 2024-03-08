@@ -17,8 +17,8 @@ import {
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
-  useDevicePolicyListQuery,
   useGetDevicePolicyQuery,
+  useGetEnhancedDeviceProfileListQuery,
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
 import {
@@ -36,7 +36,7 @@ import {
   sortProp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate
+  TableResult, DevicePolicy
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -167,7 +167,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [ updateDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
     useUpdateDevicePolicyMutation, useUpdateDevicePolicyTemplateMutation)
 
-  const { deviceSelectOptions, deviceList } = GetDeviceAclPolicyListInstance(requestId)
+  const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(editMode.isEdit)
 
   const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher(
     useGetDevicePolicyQuery,
@@ -695,42 +695,21 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   )
 }
 
-const GetDeviceAclPolicyListInstance = (requestId: string): {
+const useGetDeviceAclPolicyListInstance = (isEdit: boolean): {
   deviceSelectOptions: JSX.Element[], deviceList: string[]
 } => {
-  const params = useParams()
-  const { isTemplate } = useConfigTemplate()
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>(
+    useGetEnhancedDeviceProfileListQuery,
+    useGetDevicePolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
 
-  const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
-    params: params,
-    payload: QUERY_DEFAULT_PAYLOAD
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        deviceSelectOptions: data?.data?.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        deviceList: data?.data?.map(item => item.name) ?? []
-      }
-    },
-    skip: !isTemplate
-  })
-
-  const useDevicePolicyList = useDevicePolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        deviceSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        deviceList: data? data.map(item => item.name) : []
-      }
-    },
-    skip: isTemplate
-  })
-
-  return isTemplate ? useDevicePolicyTemplateList : useDevicePolicyList
+  return {
+    deviceSelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    deviceList: data?.data?.map(item => item.name) ?? []
+  }
 }

@@ -14,6 +14,7 @@ import {
   AccessControlFormFields,
   AccessControlInfoType,
   AccessControlProfile,
+  generatePolicyPageHeaderTitle,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -176,9 +177,7 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Access Control Policy' })
-          : $t({ defaultMessage: 'Add Access Control Policy' })}
+        title={generatePolicyPageHeaderTitle(editMode, isTemplate, PolicyType.ACCESS_CONTROL)}
         breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>

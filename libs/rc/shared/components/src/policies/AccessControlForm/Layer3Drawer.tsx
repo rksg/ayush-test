@@ -24,8 +24,8 @@ import {
 import { Drag }                  from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
+  useGetEnhancedL3AclProfileListQuery,
   useGetL3AclPolicyQuery,
-  useL3AclPolicyListQuery,
   useUpdateL3AclPolicyMutation
 } from '@acx-ui/rc/services'
 import {
@@ -43,8 +43,7 @@ import {
   subnetMaskIpRegExp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplate,
-  layer3ProtocolLabelMapping
+  layer3ProtocolLabelMapping, TableResult, L3AclPolicy
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -177,7 +176,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [ updateL3AclPolicy ] = useConfigTemplateMutationFnSwitcher(
     useUpdateL3AclPolicyMutation, useUpdateL3AclPolicyTemplateMutation)
 
-  const { layer3SelectOptions, layer3List } = GetL3AclPolicyListInstance(requestId)
+  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
 
 
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher(
@@ -1108,45 +1107,22 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 }
 
-const GetL3AclPolicyListInstance = (requestId: string): {
+const useGetL3AclPolicyListInstance = (isEdit: boolean): {
   layer3SelectOptions: JSX.Element[], layer3List: string[]
 } => {
-  const params = useParams()
-  const { isTemplate } = useConfigTemplate()
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>(
+    useGetEnhancedL3AclProfileListQuery,
+    useGetL3AclPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
 
-  const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
-    params: params,
-    payload: QUERY_DEFAULT_PAYLOAD
-  },
-  {
-    selectFromResult ({ data }) {
-      return {
-        layer3SelectOptions: data?.data?.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer3List: data?.data.map(item => item.name) ?? []
-      }
-    },
-    skip: !isTemplate
-  })
-
-
-  const useL3PolicyList = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer3SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer3List: data ? data.map(item => item.name) : []
-      }
-    },
-    skip: isTemplate
-  })
-
-  return isTemplate ? useL3PolicyTemplateList : useL3PolicyList
+  return {
+    layer3SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer3List: data?.data.map(item => item.name) ?? []
+  }
 }
 

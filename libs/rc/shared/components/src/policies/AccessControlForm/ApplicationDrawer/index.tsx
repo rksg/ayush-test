@@ -17,10 +17,10 @@ import {
 } from '@acx-ui/components'
 import {
   useAddAppPolicyMutation,
-  useAppPolicyListQuery,
   useAvcAppListQuery,
   useAvcCategoryListQuery,
   useGetAppPolicyQuery,
+  useGetEnhancedApplicationProfileListQuery,
   useUpdateAppPolicyMutation
 } from '@acx-ui/rc/services'
 import {
@@ -30,12 +30,11 @@ import {
   useUpdateAppPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  ApplicationAclType,
+  ApplicationAclType, ApplicationPolicy,
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp,
-  useConfigTemplate,
+  sortProp, TableResult,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -206,7 +205,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [ updateAppPolicy ] = useConfigTemplateMutationFnSwitcher(
     useUpdateAppPolicyMutation, useUpdateAppPolicyTemplateMutation)
 
-  const { appSelectOptions, appList, appIdList } = GetAppAclPolicyListInstance(requestId)
+  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(editMode.isEdit)
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher(
     useGetAppPolicyQuery,
@@ -721,45 +720,23 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   )
 }
 
-const GetAppAclPolicyListInstance = (requestId: string): {
+const useGetAppAclPolicyListInstance = (isEdit: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
-  const params = useParams()
-  const { isTemplate } = useConfigTemplate()
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>(
+    useGetEnhancedApplicationProfileListQuery,
+    useGetAppPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
 
-  const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
-    params: params,
-    payload: QUERY_DEFAULT_PAYLOAD
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        appSelectOptions: data?.data?.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        appList: data?.data?.map(item => item.name) ?? [],
-        appIdList: data?.data?.map(item => item.id) ?? []
-      }
-    },
-    skip: !isTemplate
-  })
-
-  const useAppPolicyList = useAppPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        appSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        appList: data ? data.map(item => item.name) : [],
-        appIdList: data ? data.map(item => item.id) : []
-      }
-    },
-    skip: isTemplate
-  })
-
-  return isTemplate ? useAppPolicyTemplateList : useAppPolicyList
+  return {
+    appSelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    appList: data?.data?.map(item => item.name) ?? [],
+    appIdList: data?.data?.map(item => item.id) ?? []
+  }
 }
 

@@ -75,6 +75,17 @@ jest.mock('@acx-ui/rc/utils', () => ({
 describe('AccessControlForm Component', () => {
   beforeEach(async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUsePolicyListBreadcrumb.mockReturnValue([
+      { text: 'Network Control' },
+      {
+        text: 'Policies & Profiles',
+        link: getPolicyListRoutePath(true)
+      },
+      {
+        text: 'Access Control',
+        link: getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
+      }
+    ])
     mockServer.use(
       rest.post(AccessControlUrls.addAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclResponse))),
@@ -175,17 +186,6 @@ describe('AccessControlForm Component', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    mockedUsePolicyListBreadcrumb.mockReturnValue([
-      { text: 'Network Control' },
-      {
-        text: 'Policies & Profiles',
-        link: getPolicyListRoutePath(true)
-      },
-      {
-        text: 'Access Control',
-        link: getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-      }
-    ])
     render(
       <Provider>
         <AccessControlForm editMode={false}/>
