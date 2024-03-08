@@ -22,14 +22,14 @@ export function useBrand360Names (settings: Partial<Settings> | undefined): Bran
     let names: Brand360Names = {
       brand: $t({ defaultMessage: 'Brand 360' }),
       lsp: $t({ defaultMessage: 'LSP' }),
-      property: $t({ defaultMessage: 'Property' }),
+      property: $t({ defaultMessage: 'Property' })
     }
 
     const keys = Object.keys(names) as Array<keyof Brand360Names>
     if (settings) {
       for (const key of keys) {
         if (mapper[key] in settings) {
-          names = { ...names, [key]: settings![mapper[key]]!  }
+          names = { ...names, [key]: settings![mapper[key]]! }
         }
       }
     }

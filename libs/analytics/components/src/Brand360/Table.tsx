@@ -1,4 +1,3 @@
-
 import { isNaN, isNull } from 'lodash'
 import { useIntl }       from 'react-intl'
 
