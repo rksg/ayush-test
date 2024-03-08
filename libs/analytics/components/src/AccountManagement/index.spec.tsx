@@ -9,9 +9,16 @@ jest.mock('../Support', () => ({
 }))
 
 describe('AccountManagement', () => {
-  it('should render Support', async () => {
+  it('should render', async () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByTestId('Support')).toBeVisible()
+    expect(await screen.findByText('Onboarded Systems')).toBeVisible()
+    expect(await screen.findByText('Users')).toBeVisible()
+    expect(await screen.findByText('Labels')).toBeVisible()
+    expect(await screen.findByText('Resource Groups')).toBeVisible()
+    expect(await screen.findByText('Support')).toBeVisible()
+    expect(await screen.findByText('Licenses')).toBeVisible()
+    expect(await screen.findByText('Schedules')).toBeVisible()
+    expect(await screen.findByText('Webhooks')).toBeVisible()
   })
 })
