@@ -27,13 +27,32 @@ describe('Support', ()=>{
   it('should update support status', async () => {
     mockServer.use(
       rest.put(`${rbacApiURL}/accounts/1`,
-        (_req, res, ctx) => res(ctx.json({ data: 'OK ' })))
+        (_req, res, ctx) => res(ctx.text('OK')))
     )
     render(<Provider><Support /></Provider>)
     const checkbox = await screen.findByRole('checkbox')
     expect(checkbox).not.toBeChecked()
     await userEvent.click(checkbox)
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(checkbox).toBeChecked()
+    await new Promise(r => setTimeout(r, 1))
+    expect(await screen.findByRole('checkbox')).toBeChecked()
+  })
+
+  it('should handle update failed', async () => {
+    setUserProfile({
+      accountId: '2',
+      tenants: [{ id: '2', support: false }] as unknown as Tenant[]
+    } as UserProfile)
+    mockServer.use(
+      rest.put(`${rbacApiURL}/accounts/2`,
+        (_req, res, ctx) => res(ctx.text('')))
+    )
+    render(<Provider><Support /></Provider>)
+    const checkbox = await screen.findByRole('checkbox')
+    expect(await screen.findByRole('checkbox')).not.toBeChecked()
+    await userEvent.click(checkbox)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await new Promise(r => setTimeout(r, 1))
+    expect(await screen.findByRole('checkbox')).not.toBeChecked()
   })
 })
