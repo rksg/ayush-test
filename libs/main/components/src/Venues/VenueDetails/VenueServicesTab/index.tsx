@@ -52,7 +52,7 @@ export function VenueServicesTab () {
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: !!!edgeData?.serialNumber || !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: !!data?.id,
         isEdgeDhcpLoading: isLoading
