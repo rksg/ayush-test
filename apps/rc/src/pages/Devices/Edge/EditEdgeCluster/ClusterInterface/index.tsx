@@ -219,7 +219,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
       await updateNetworkConfig({
         params: {
           venueId: currentClusterStatus?.venueId,
-          edgeClusterId: clusterId
+          clusterId: clusterId
         },
         payload
       }).unwrap()
