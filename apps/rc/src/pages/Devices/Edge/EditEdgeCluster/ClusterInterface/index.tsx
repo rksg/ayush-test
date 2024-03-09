@@ -92,7 +92,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     const lagData = await getEdgeLagList({
       params: {
         venueId: currentClusterStatus?.venueId,
-        clusterId,
+        edgeClusterId: clusterId,
         serialNumber: newInterfaceData.serialNumber },
       payload: { page: 1, pageSize: 20 }
     })
@@ -219,7 +219,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
       await updateNetworkConfig({
         params: {
           venueId: currentClusterStatus?.venueId,
-          clusterId
+          edgeClusterId: clusterId
         },
         payload
       }).unwrap()
