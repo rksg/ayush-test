@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react'
 
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
-import { StepsForm, StepsFormProps }                       from '@acx-ui/components'
+import { Loader, StepsForm, StepsFormProps }               from '@acx-ui/components'
 import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
 import { useGetEdgeClusterNetworkSettingsQuery }           from '@acx-ui/rc/services'
 import { useTenantLink }                                   from '@acx-ui/react-router-dom'
@@ -27,7 +27,10 @@ export const InterfaceSettings = () => {
       type={CompatibilityStatusEnum.PASS}
     />
   })
-  const { data: clusterNetworkSettings } = useGetEdgeClusterNetworkSettingsQuery({
+  const {
+    data: clusterNetworkSettings,
+    isFetching: isClusterNetworkSettingsFetching
+  } = useGetEdgeClusterNetworkSettingsQuery({
     params: {
       venueId: clusterInfo?.venueId,
       clusterId: clusterInfo?.clusterId
@@ -65,22 +68,24 @@ export const InterfaceSettings = () => {
   }
 
   return (
-    <StepsForm
-      alert={alertData}
-      onFinish={handleFinish}
-      onCancel={handleCancel}
-      initialValues={clusterNetworkSettings}
-    >
-      {
-        steps.map((item, index) =>
-          <StepsForm.StepForm
-            key={`step-${index}`}
-            name={index.toString()}
-            title={item.title}
-          >
-            {item.content}
-          </StepsForm.StepForm>)
-      }
-    </StepsForm>
+    <Loader states={[{ isLoading: isClusterNetworkSettingsFetching }]}>
+      <StepsForm
+        alert={alertData}
+        onFinish={handleFinish}
+        onCancel={handleCancel}
+        initialValues={clusterNetworkSettings}
+      >
+        {
+          steps.map((item, index) =>
+            <StepsForm.StepForm
+              key={`step-${index}`}
+              name={index.toString()}
+              title={item.title}
+            >
+              {item.content}
+            </StepsForm.StepForm>)
+        }
+      </StepsForm>
+    </Loader>
   )
 }
