@@ -230,9 +230,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getLagSubInterfaces: {
     method: 'get',
-    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
-    // eslint-disable-next-line max-len
-    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
+    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
     newApi: true
   },
   addLagSubInterfaces: {

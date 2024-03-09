@@ -43,11 +43,7 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetLagSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: {
-      venueId: venueId as string,
-      edgeClusterId: clusterId as string,
-      serialNumber: serialNumber as string,
-      lagId: lagId.toString() }
+    apiParams: { serialNumber, lagId: lagId.toString() }
   })
   const [addSubInterface] = useAddLagSubInterfacesMutation()
   const [updateSubInterface] = useUpdateLagSubInterfacesMutation()
