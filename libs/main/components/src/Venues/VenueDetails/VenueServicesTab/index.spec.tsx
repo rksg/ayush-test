@@ -216,9 +216,10 @@ describe('Venue service tab', () => {
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetEdgeDhcpFn).not.toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
-
+        expect(mockedGetEdgeDhcpFn).not.toBeCalled()
+        await screen.findByTestId(/rc-tabpane-SD-LAN/)
+        expect( screen.getAllByTestId(/rc-tabpane-/).length).toBe(7)
         // tab: DHCP - SmartEdge
         expect(screen.queryByTestId(/rc-tabpane-SmartEdge/)).toBeNull()
         expect(screen.queryByTestId(/rc-tabpane-Firewall/)).toBeNull()
@@ -236,13 +237,13 @@ describe('Venue service tab', () => {
 
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
-        await waitFor(() => expect(mockedGetEdgeDhcpFn).not.toBeCalled())
         await waitFor(() => expect(mockedGetSdLanListFn).toBeCalled())
-
+        expect(mockedGetEdgeDhcpFn).not.toBeCalled()
+        await screen.findByTestId(/rc-tabpane-SD-LAN/)
+        expect( screen.getAllByTestId(/rc-tabpane-/).length).toBe(8)
         expect(screen.queryByTestId(/rc-tabpane-SmartEdge/)).toBeNull()
       })
 
-      // jest.mocked(useIsSplitOn).mockReturnValue(true)
       it('should render sdlan tab when sdlan-ha FF enabled, P1 FF disabled', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
           ff !== Features.EDGES_SD_LAN_TOGGLE
@@ -278,8 +279,7 @@ describe('Venue service tab', () => {
         await waitFor(() => expect(mockedGetEdgeListFn).toBeCalled())
         await waitFor(() => expect(mockedGetNsgListFn).toBeCalled())
         await waitFor(() => expect(mockedGetEdgeDhcpFn).toBeCalled())
-        await waitFor(() => expect(mockedGetSdLanListFn).not.toBeCalled())
-
+        expect(mockedGetSdLanListFn).not.toBeCalled()
         expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(8)
       })
     })
