@@ -1,6 +1,5 @@
-import userEvent               from '@testing-library/user-event'
-import { mockEdgeClusterList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/general'
-import { rest }                from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
@@ -18,6 +17,7 @@ import { EdgeOverview } from '.'
 const { mockEdgeData: currentEdge } = EdgeGeneralFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
