@@ -126,6 +126,7 @@ export const InterfaceSettings = () => {
 
   const handleFinish = async (value: unknown) => {
     // TODO
+    // eslint-disable-next-line no-console
     console.log(value)
   }
 

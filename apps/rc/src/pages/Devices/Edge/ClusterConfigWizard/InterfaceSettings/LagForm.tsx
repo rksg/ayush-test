@@ -116,12 +116,15 @@ export const LagForm = (props: {
       nodeList={clusterInfo?.edgeList}
       content={
         (serialNumber) => (
-          <Table
-            columns={basicColumns}
-            dataSource={basicData}
-            rowActions={actions}
-            rowSelection={{ defaultSelectedRowKeys: [] }}
-          />
+          <>
+            {serialNumber}
+            <Table
+              columns={basicColumns}
+              dataSource={basicData}
+              rowActions={actions}
+              rowSelection={{ defaultSelectedRowKeys: [] }}
+            />
+          </>
         )
       }
     />

@@ -78,8 +78,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
-  console.log(physicalPortIfName, portType, portEnabled)
-
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
   const isCurrentPortCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag

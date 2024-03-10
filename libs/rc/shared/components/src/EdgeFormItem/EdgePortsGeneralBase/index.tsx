@@ -7,9 +7,7 @@ import { useIntl }            from 'react-intl'
 import { Tabs, Tooltip }                                                               from '@acx-ui/components'
 import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
-
-import { PortConfigForm }     from './PortConfigForm'
-import { getInnerPortFormID } from './utils'
+import { PortConfigForm } from './PortConfigForm'
 
 export interface EdgePortConfigFormType {
   [portId: string]: EdgePortWithStatus[]

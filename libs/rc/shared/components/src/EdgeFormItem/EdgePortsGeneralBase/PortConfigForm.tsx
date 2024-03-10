@@ -4,20 +4,17 @@ import {
   Col,
   Form,
   Row } from 'antd'
-import { FormInstance } from 'antd/es/form/Form'
-import TextArea         from 'antd/lib/input/TextArea'
-import _                from 'lodash'
-import { useIntl }      from 'react-intl'
+import TextArea    from 'antd/lib/input/TextArea'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm } from '../PortCommonForm'
 
 import * as UI from './styledComponents'
-// import { getInnerPortFormID } from './utils'
 
 interface ConfigFormProps {
-  formRef: FormInstance
   formListItemKey: string
   id: string
   statusData?: EdgePortInfo
@@ -31,7 +28,6 @@ const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
   const {
-    formRef: form,
     id,
     statusData,
     formListItemKey,
@@ -42,7 +38,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   } = props
 
   const { $t } = useIntl()
-  // const form = useFormInstance()
+  const form = useFormInstance()
 
   const getFieldPath = useCallback((fieldName: string) =>
     [formListItemKey, fieldName],
@@ -60,7 +56,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     form.validateFields()
   }, [id, form])
 
-  console.log('corePortEnabled', form.getFieldValue(getFieldFullPath('corePortEnabled')))
   return (
     <>
       <UI.IpAndMac>
