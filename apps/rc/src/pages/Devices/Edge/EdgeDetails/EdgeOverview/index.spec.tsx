@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent               from '@testing-library/user-event'
+import { mockEdgeClusterList } from 'libs/rc/shared/utils/src/features/edge/__tests__/fixtures/general'
+import { rest }                from 'msw'
 
 import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
@@ -76,6 +77,14 @@ describe('Edge Detail Overview', () => {
         (_req, res, ctx) => {
           return res(
             ctx.json(mockEdgeLagStatusList)
+          )
+        }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeClusterList)
           )
         }
       )
