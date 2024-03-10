@@ -134,7 +134,7 @@ export const SelectType = () => {
           ))}
         </Row>
       </Radio.Group>
-      {!isHardwareCompatible &&
+      {clusterInfo && !isHardwareCompatible &&
         <Row>
           <Col span={24}>
             <UI.WarningTitle level={3}>

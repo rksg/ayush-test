@@ -1,7 +1,32 @@
+import { NamePath } from 'antd/lib/form/interface'
+import _            from 'lodash'
+
 import { EdgeLag, EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+
+import { EdgePortConfigFormType } from '.'
 
 export const INNER_PORT_FORM_ID_PREFIX = 'port_'
 export const getInnerPortFormID = (index: number | string) => `${INNER_PORT_FORM_ID_PREFIX}${index}`
+export const getFieldFullPath = (
+  id: string, fieldName: string, fieldHeadPath?: string[]) => {
+  return (fieldHeadPath ?? [])
+    .concat([getInnerPortFormID(id), '0', fieldName]) as NamePath
+}
+
+export const transformApiDataToFormListData =
+(apiData: EdgePort[]): EdgePortConfigFormType => {
+  const mapByIfName = _.keyBy(apiData, 'interfaceName')
+  const formData:EdgePortConfigFormType = {}
+
+  _.forEach(mapByIfName, (val, key) => {
+    formData[key] = [val]
+  })
+  return formData
+}
+export const transformFormListDataToApiData =
+(formData: EdgePortConfigFormType): EdgePort[] => {
+  return _.flatMap(formData, (v) => v)
+}
 
 export const getEnabledCorePortInfo = (portsData: EdgePort[], lagData: EdgeLag[]) : {
     key: string | undefined,

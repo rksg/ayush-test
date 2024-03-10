@@ -128,8 +128,8 @@ export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
 export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
-export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
-export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
+export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
+export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
 export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
 export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'

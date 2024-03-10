@@ -3,17 +3,13 @@ import { useContext } from 'react'
 import { Form, Space, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }  from '@acx-ui/components'
-import { NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { NodesTabs, TypeForm }    from '@acx-ui/rc/components'
+import { ClusterNetworkSettings } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { InterfaceSettingsFormType } from '.'
-
 export const LagForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext()
-  const lagSettings = Form.useWatch('lagSettings', form) as InterfaceSettingsFormType['lagSettings']
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   const header = <Space direction='vertical' size={5}>
@@ -27,23 +23,38 @@ export const LagForm = () => {
     </Typography.Text>
   </Space>
 
-  const content = <Form.Item name='lagSettings'>
-    <NodesTabs
-      nodeList={clusterInfo?.edgeList}
-      content={
-        (serialNumber) => (
-          <>
-            {serialNumber}
-          </>
-        )
-      }
-    />
-  </Form.Item>
+  const content = <Form.Item
+    name='lagSettings'
+    children={<LagSettingView />}
+  />
 
   return (
     <TypeForm
       header={header}
       content={content}
+    />
+  )
+}
+
+interface LagSettingViewProps {
+  value?: ClusterNetworkSettings['lagSettings']
+  onChange?: (data: unknown) => void
+}
+
+const LagSettingView = (props: LagSettingViewProps) => {
+  const { value, onChange } = props
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+
+  return (
+    <NodesTabs
+      nodeList={clusterInfo?.edgeList}
+      content={
+        (serialNumber) => (
+          <>
+            {value?.find(item => item.serialNumber === serialNumber)?.lags.length}
+          </>
+        )
+      }
     />
   )
 }

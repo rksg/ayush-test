@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { NoData, Tabs, Tooltip }   from '@acx-ui/components'
+import { EdgeLagStatus, EdgePort } from '@acx-ui/rc/utils'
 
 import { EdgePortsDataContext } from '../PortDataProvider'
 
@@ -12,22 +13,22 @@ import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
 interface SubInterfaceProps {
   serialNumber: string
+  portData: EdgePort[]
   lagData?: EdgeLagStatus[]
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-  const { serialNumber/*, portData*/, lagData } = props
+  const { serialNumber, portData, lagData } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
-  const portsData = useContext(EdgePortsDataContext)
-  const portData = portsData.portData as EdgePortWithStatus[]
+  const { portStatus } = useContext(EdgePortsDataContext)
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
   }
 
   useEffect(() => {
-    const unLagPortIdx = portData.findIndex(item => !item.isLagPort)
+    const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
     setCurrentTab(
       unLagPortIdx > -1 ?
         `port_${portData[unLagPortIdx].id}` :
@@ -43,27 +44,27 @@ const SubInterface = (props: SubInterfaceProps) => {
         onChange={handleTabChange}
       >
         {
-          portData.map((item) =>
+          portStatus.map((item) =>
             <Tabs.TabPane
               tab={
-                item.isLagPort
+                item.isLagMember
                   ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
                     and is not available for adding sub-interfaces.` })}>
-                    {getEdgePortDisplayName(item)}
+                    {_.capitalize(item.portName)}
                   </Tooltip>
-                  : getEdgePortDisplayName(item)
+                  : _.capitalize(item.portName)
               }
-              key={'port_' + item.id}
+              key={'port_' + item.portName}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
-                  ip={item.statusIp}
+                  ip={item.ip!}
                   mac={item.mac}
-                  portId={item.id}
+                  portId={item.portName}
                 />
               }
-              disabled={item.isLagPort}
+              disabled={item.isLagMember}
             />
           )
         }

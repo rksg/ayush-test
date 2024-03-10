@@ -22,9 +22,10 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
       fields: [
         'name',
         'clusterId',
-        'venueId',
         'haStatus',
-        'edgeList'
+        'edgeList',
+        'venueId',
+        'venueName'
       ],
       filters: { clusterId: [clusterId] },
       sortField: 'name',

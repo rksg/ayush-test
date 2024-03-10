@@ -51,7 +51,7 @@ export const CompatibilityErrorDetails = <RecordType,>
       {data.map((item) => {
         return <SingleNodeDetails
           key={`singleNodeDetails-${item.nodeId}`}
-          title={item.nodeName}
+          title={item.nodeId}
           fields={fields}
           data={item.errors}
         />

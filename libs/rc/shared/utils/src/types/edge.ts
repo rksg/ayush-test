@@ -3,6 +3,7 @@ import type { TimeStamp } from '@acx-ui/types'
 import { FirmwareCategory, SkippedVersion }                                                                                                                                                    from '..'
 import { ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
+export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
 export interface EdgeGeneralSetting {
@@ -88,12 +89,12 @@ export interface EdgePort {
 }
 
 export interface EdgePortWithStatus extends EdgePort {
-  statusIp: string
+  statusIp?: string
   isLagPort?: boolean
 }
 
 export interface EdgePortConfig {
-  ports: EdgePort[]
+  ports: EdgePort[] | EdgePortWithStatus[]
 }
 
 export interface EdgeSubInterface extends EdgePort {
@@ -129,8 +130,8 @@ export interface EdgePortStatus {
   sortIdx: number
   vlan: string
   subnet: string
-  interfaceName?: string
-  serialNumber?: string
+  interfaceName?: EdgeSerialNumber
+  serialNumber?: EdgeSerialNumber
   isCorePort?: string
 }
 
@@ -390,9 +391,10 @@ Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
 }
 
 export interface EdgePortInfo {
-  serialNumber: string
+  serialNumber: EdgeSerialNumber
   portName: string
   ip: string
+  mac: string
   subnet: string
   portType: EdgePortTypeEnum
   isCorePort: boolean
@@ -400,14 +402,16 @@ export interface EdgePortInfo {
   portEnabled: boolean
 }
 
+export type EdgeNodesPortsInfo = Record<EdgeSerialNumber, EdgePortInfo[]>
+
 export interface ClusterNetworkSettings {
   virtualIpSettings: VirtualIpSetting[]
   portSettings: {
-    serialNumber: string,
+    serialNumber: EdgeSerialNumber,
     ports: EdgePort[]
   }[]
   lagSettings: {
-    serialNumber: string,
+    serialNumber: EdgeSerialNumber,
     lags: EdgeLag[]
   }[]
 }

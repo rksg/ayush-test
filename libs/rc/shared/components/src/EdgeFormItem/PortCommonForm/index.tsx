@@ -10,7 +10,6 @@ import {
   EdgeLag,
   EdgePort,
   EdgePortTypeEnum,
-  EdgePortWithStatus,
   edgePortIpValidator,
   getEdgePortTypeOptions,
   lanPortsubnetValidator,
@@ -18,7 +17,7 @@ import {
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo, getInnerPortFormID, isWANPortExist } from '../EdgePortsGeneral/utils'
+import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
 
 import * as UI from './styledComponents'
 
@@ -33,11 +32,13 @@ interface formFieldsPropsType {
 }
 interface EdgePortCommonFormProps {
   formRef: FormInstance,
+  fieldHeadPath: string[],
+  portsDataRootPath: string[],
   portsData: EdgePort[],
   lagData?: EdgeLag[],
   isEdgeSdLanRun: boolean,
   isListForm?: boolean,
-  formListItemKey?: number,
+  formListItemKey: string,
   formListID?: string,
   formFieldsProps?: formFieldsPropsType
 }
@@ -46,11 +47,13 @@ const { useWatch } = Form
 export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const {
     formRef: form,
+    fieldHeadPath = [],
+    portsDataRootPath,
     isEdgeSdLanRun,
     portsData,
     lagData,
     isListForm = true,
-    formListItemKey = 0,
+    formListItemKey = '0',
     formListID,
     formFieldsProps
   } = props
@@ -65,9 +68,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getFieldFullPath = useCallback((fieldName: string) => {
     return isListForm
-      ? [getInnerPortFormID(formListID!), ...getFieldPath(fieldName)]
+      ? [...fieldHeadPath, fieldName]
       : [fieldName]
-  }, [isListForm, formListID, getFieldPath])
+  }, [isListForm, fieldHeadPath])
 
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
@@ -75,6 +78,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
+  console.log(physicalPortIfName, portType, portEnabled)
 
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
@@ -108,14 +112,15 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   }
 
   const getSubnetInfoWithoutCurrent = () => {
-    return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
-      .filter(item => item[0] !== getInnerPortFormID(formListID!)
-        && _.get(item[1], getFieldPath('enabled'))
-        && !!_.get(item[1], getFieldPath('ip'))
-        && !!_.get(item[1], getFieldPath('subnet')))
+    const formValues = _.get(form.getFieldsValue(true), portsDataRootPath)
+    return Object.entries<EdgePort[]>(formValues)
+      .filter(item => item[0] !== formListID
+        && _.get(item[1], getFieldFullPath('enabled'))
+        && !!_.get(item[1], getFieldFullPath('ip'))
+        && !!_.get(item[1], getFieldFullPath('subnet')))
       .map(item => ({
-        ip: _.get(item[1], getFieldPath('ip')),
-        subnetMask: _.get(item[1], getFieldPath('subnet'))
+        ip: _.get(item[1], getFieldFullPath('ip')),
+        subnetMask: _.get(item[1], getFieldFullPath('subnet'))
       }))
   }
 

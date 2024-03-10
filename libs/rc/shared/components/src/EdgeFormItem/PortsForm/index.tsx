@@ -3,22 +3,23 @@ import { ReactNode, useContext, useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tabs, TabsType }                from '@acx-ui/components'
+import { Loader, Tabs, TabsType }        from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
 
 import { EditContext } from '../EdgeEditContext'
 
-import Lag                              from './Lag'
-import { EdgePortsDataContextProvider } from './PortDataProvider'
-import PortsGeneral                     from './PortsGeneral'
-import SubInterface                     from './SubInterface'
+import Lag                                                    from './Lag'
+import { EdgePortsDataContext, EdgePortsDataContextProvider } from './PortDataProvider'
+import PortsGeneral                                           from './PortsGeneral'
+import SubInterface                                           from './SubInterface'
 
 export enum EdgePortTabEnum {
   PORTS_GENERAL = 'ports-general',
   LAG = 'lag',
 SUB_INTERFACE = 'sub-interface'
 }
+
 export interface EdgePortsFormProps {
   serialNumber: string
   onTabChange: (tabID: string) => void
@@ -28,7 +29,7 @@ export interface EdgePortsFormProps {
   tabsType?: TabsType
 }
 
-export const EdgePortsForm = (props: EdgePortsFormProps) => {
+const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   const {
     serialNumber,
     onTabChange,
@@ -39,6 +40,8 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   } = props
   const { $t } = useIntl()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
+  const portsCxtData = useContext(EdgePortsDataContext)
+
   const {
     activeSubTab: activeSubTabInContext,
     setActiveSubTab: setActiveSubTabInContext,
@@ -94,6 +97,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
       title: $t({ defaultMessage: 'Sub-Interface' }),
       content: <SubInterface
         serialNumber={serialNumber}
+        portData={portsCxtData.portData!}
         lagData={lagData?.data || []}
       />
     }
@@ -108,7 +112,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   }
 
   return (
-    <EdgePortsDataContextProvider serialNumber={serialNumber}>
+    <Loader states={[{ isLoading: portsCxtData.isFetching }]}>
       <Tabs
         destroyInactiveTabPane={true}
         onChange={handleTabChange}
@@ -126,6 +130,12 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
               {tabs[key as keyof typeof tabs].content}
             </Tabs.TabPane>)}
       </Tabs>
-    </EdgePortsDataContextProvider>
+    </Loader>
   )
+}
+
+export const EdgePortsForm = (props: EdgePortsFormProps) => {
+  return <EdgePortsDataContextProvider serialNumber={props.serialNumber}>
+    <EdgePhysicalPortsForm {...props}/>
+  </EdgePortsDataContextProvider>
 }

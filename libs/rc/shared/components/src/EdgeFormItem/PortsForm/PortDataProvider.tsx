@@ -1,21 +1,21 @@
 import { createContext } from 'react'
 
-import { Loader }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { useGetEdgeLagListQuery, useGetEdgePortListWithStatusQuery } from '@acx-ui/rc/services'
-import { appendIsLagPortOnPortConfig, EdgeLag, EdgePortWithStatus }  from '@acx-ui/rc/utils'
+import { Loader }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { useGetEdgeLagListQuery, useGetEdgesPortStatusQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
+import { EdgeLag, EdgePort, EdgePortInfo }                                           from '@acx-ui/rc/utils'
 
 export interface EdgePortsDataContextType {
-  portData: EdgePortWithStatus[] | undefined
+  portData: EdgePort[]
+  portStatus: EdgePortInfo[]
   lagData?: EdgeLag[]
-  isLoading: boolean
   isFetching: boolean
 }
 
 export const EdgePortsDataContext = createContext({
-  portData: [] as EdgePortWithStatus[],
-  isLoading: true,
-  isFetching: false
+  portData: [] as EdgePort[],
+  portStatus: [] as EdgePortInfo[],
+  isFetching: true
 } as EdgePortsDataContextType)
 
 type EdgePortsDataContextProviderProps = React.PropsWithChildren<{
@@ -26,18 +26,18 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
   const {
-    data: portsWithStatusData,
-    isLoading: isPortStatusLoading,
-    isFetching: isPortStatusFetching
-  } = useGetEdgePortListWithStatusQuery({
-    params: { serialNumber },
-    payload: {
-      fields: ['port_id','ip'],
-      filters: { serialNumber: [serialNumber] }
-    }
+    data: portData, isFetching: isPortFetching
+  } = useGetPortConfigQuery({
+    payload: { edgeIds: [serialNumber] }
   })
 
-  const { lagData = [], isLagLoading, isLagFetching } = useGetEdgeLagListQuery({
+  const {
+    data: portStatus, isFetching: isPortStatusFetching
+  } = useGetEdgesPortStatusQuery({
+    payload: { edgeIds: [serialNumber] }
+  })
+
+  const { lagData, isLagFetching } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
       page: 1,
@@ -45,29 +45,23 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
     }
   },{
     skip: !isEdgeLagEnabled,
-    selectFromResult ({ data, isLoading, isFetching }) {
+    selectFromResult ({ data, isFetching }) {
       return {
         lagData: data?.data,
-        isLagLoading: isLoading,
         isLagFetching: isFetching
       }
     }
   })
 
-  const portDataWitIsLag = appendIsLagPortOnPortConfig(portsWithStatusData, lagData)
-  const isLoading = isPortStatusLoading || isLagLoading
-  const isFetching = isPortStatusFetching || isLagFetching
+  const isFetching = isPortFetching || isPortStatusFetching || isLagFetching
 
   return <EdgePortsDataContext.Provider value={{
-    portData: portDataWitIsLag,
-    lagData: lagData,
-    isLoading,
+    portData: portData?.ports ?? [],
+    portStatus: portStatus?.[serialNumber] ?? [],
+    lagData: lagData ?? [],
     isFetching
   }}>
-    <Loader states={[{
-      isLoading: isLoading,
-      isFetching: isFetching }]}
-    >
+    <Loader states={[{ isLoading: isFetching }]}>
       {props.children}
     </Loader>
   </EdgePortsDataContext.Provider>

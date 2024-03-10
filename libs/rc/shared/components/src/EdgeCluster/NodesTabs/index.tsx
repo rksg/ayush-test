@@ -4,8 +4,9 @@ import { Tabs }       from '@acx-ui/components'
 import { EdgeStatus } from '@acx-ui/rc/utils'
 
 interface NodesTabsProps {
+  value?: Record<string, unknown>
   nodeList?: EdgeStatus[]
-  content: (serialNumber?: string) => React.ReactElement
+  content: (serialNumber: string) => React.ReactElement
 }
 
 export const NodesTabs = (props: NodesTabsProps) => {

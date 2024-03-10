@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
+import _                       from 'lodash'
 
 import {
   Filter
@@ -15,6 +16,7 @@ import {
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNodesPortsInfo,
   EdgePasswordDetail,
   EdgePortConfig,
   EdgePortInfo,
@@ -22,6 +24,7 @@ import {
   EdgePortTypeEnum,
   EdgePortWithStatus,
   EdgeResourceUtilizationData,
+  EdgeSerialNumber,
   EdgeService,
   EdgeStaticRouteConfig,
   EdgeStatus,
@@ -859,6 +862,28 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         result.portSettings = portSettings
         return { data: result }
       }
+    }),
+    getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { edgeIds } = payload as { edgeIds: EdgeSerialNumber[] }
+        const result = {} as EdgeNodesPortsInfo
+
+        for(let edgeId of edgeIds) {
+          const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
+          const params = { serialNumber: edgeId }
+          const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+          const edgePortList = await fetchWithBQ({ ...edgePortListReq, body: {} })
+          tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
+
+          const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+          const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: {} })
+          tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
+          // filter ports
+          result[edgeId] = convertToEdgePortInfo(tmp, true)
+        }
+
+        return { data: result }
+      }
     })
   })
 })
@@ -877,13 +902,15 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
   return data
 }
 
-const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[]) => {
-  return interfaces.map(item => {
+const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], physicalOnly?: boolean) => {
+  const data = interfaces.map(item => {
+    const isPhysicalPort = item.hasOwnProperty('interfaceName')
+    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
+
     let portName = ''
     let portType: EdgePortTypeEnum
     let isLagMember = false
-    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
-    if (item.hasOwnProperty('interfaceName')) {
+    if (isPhysicalPort) {
       portName = (item as EdgePortStatus).interfaceName ?? ''
       portType = (item as EdgePortStatus).type ?? ''
       isLagMember = lagList.some(lag =>
@@ -893,17 +920,21 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[]) =
       portName = (item as EdgeLagStatus).name
       portType = (item as EdgeLagStatus).portType
     }
-    return {
+
+    return (physicalOnly && !isPhysicalPort) ? '' : {
       serialNumber: item.serialNumber ?? '',
       portName,
       portType,
       isLagMember,
       ip: item.ip ?? '',
+      mac: item.mac ?? '',
       subnet: item.subnet ?? '',
       isCorePort: item.isCorePort === 'Enabled',
       portEnabled: item.adminStatus === 'Enabled'
     }
   })
+
+  return data.filter(d => !!d) as EdgePortInfo[]
 }
 
 export const {
@@ -929,6 +960,7 @@ export const {
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery,
+  useLazyGetEdgePortsStatusListQuery,
   useGetEdgeSubInterfacesStatusListQuery,
   useRebootEdgeMutation,
   useFactoryResetEdgeMutation,
@@ -964,5 +996,6 @@ export const {
   usePatchEdgeClusterMutation,
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
-  useGetEdgeClusterNetworkSettingsQuery
+  useGetEdgeClusterNetworkSettingsQuery,
+  useGetEdgesPortStatusQuery
 } = edgeApi

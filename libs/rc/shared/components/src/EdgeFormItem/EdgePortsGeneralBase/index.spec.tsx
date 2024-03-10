@@ -14,7 +14,7 @@ import {
 
 import { EdgePortTabEnum } from '../PortsForm'
 
-import { EdgePortsGeneral } from './'
+import { EdgePortsGeneral } from '.'
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')

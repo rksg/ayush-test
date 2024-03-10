@@ -25,13 +25,11 @@ interface EdgeLagTableType extends EdgeLag {
 
 const Lag = (props: LagProps) => {
 
-  const { serialNumber, lagStatusList, isLoading /*portList*/ } = props
+  const { serialNumber, lagStatusList, isLoading } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
-  const portsData = useContext(EdgePortsDataContext)
-  const portList = portsData.portData
-  const lagList = portsData.lagData
+  const { portData, lagData: lagList } = useContext(EdgePortsDataContext)
   const lagData = lagList?.map(item => ({
     ...item,
     adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
@@ -124,7 +122,7 @@ const Lag = (props: LagProps) => {
         <Row>
           <Col>
             {
-              `${getEdgePortDisplayName((portList?.find(port =>
+              `${getEdgePortDisplayName((portData.find(port =>
                 port.id === lagmember.portId)))} (${lagmember.portEnabled ?
                 $t({ defaultMessage: 'Enabled' }) :
                 $t({ defaultMessage: 'Disabled' })})`
@@ -197,7 +195,7 @@ const Lag = (props: LagProps) => {
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}
         data={currentEditData}
-        portList={portList}
+        portList={portData}
         existedLagList={lagData}
       />
     </Loader>

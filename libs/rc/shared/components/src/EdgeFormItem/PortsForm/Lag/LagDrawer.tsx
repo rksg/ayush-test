@@ -58,8 +58,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
-  const portsData = useContext(EdgePortsDataContext)
-  const portData = portsData.portData
+  const portDataCtx = useContext(EdgePortsDataContext)
+  const { portData } = portDataCtx
 
   const getEdgeSdLanPayload = {
     filters: { edgeId: [serialNumber] },
@@ -374,8 +374,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
 
         return <EdgePortCommonForm
           formRef={form}
-          portsData={portData as EdgePort[]}
-          lagData={getMergedLagData(portsData, allValues)}
+          fieldHeadPath={[]}
+          portsDataRootPath={[]}
+          formListItemKey=''
+          portsData={portData}
+          lagData={getMergedLagData(portDataCtx, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           formFieldsProps={{

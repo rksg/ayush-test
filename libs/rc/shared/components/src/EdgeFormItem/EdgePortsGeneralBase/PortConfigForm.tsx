@@ -4,50 +4,63 @@ import {
   Col,
   Form,
   Row } from 'antd'
-import TextArea    from 'antd/lib/input/TextArea'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { FormInstance } from 'antd/es/form/Form'
+import TextArea         from 'antd/lib/input/TextArea'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
 
-
-import { EdgeLag } from '@acx-ui/rc/utils'
+import { EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
 
 import { EdgePortCommonForm } from '../PortCommonForm'
 
-import * as UI                from './styledComponents'
-import { getInnerPortFormID } from './utils'
-
-import { EdgePortConfigFormType } from '.'
+import * as UI from './styledComponents'
+// import { getInnerPortFormID } from './utils'
 
 interface ConfigFormProps {
-  formListKey: number
+  formRef: FormInstance
+  formListItemKey: string
   id: string
+  statusData?: EdgePortInfo
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
+  fieldHeadPath: string[]
+  portsDataRootPath: string[]
 }
 
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
-  const { id, formListKey, isEdgeSdLanRun, lagData } = props
+  const {
+    formRef: form,
+    id,
+    statusData,
+    formListItemKey,
+    isEdgeSdLanRun,
+    lagData,
+    fieldHeadPath = [],
+    portsDataRootPath
+  } = props
+
   const { $t } = useIntl()
-  const form = useFormInstance<EdgePortConfigFormType>()
+  // const form = useFormInstance()
 
   const getFieldPath = useCallback((fieldName: string) =>
-    [formListKey, fieldName],
-  [formListKey])
+    [formListItemKey, fieldName],
+  [formListItemKey])
 
   const getFieldFullPath = useCallback((fieldName: string) =>
-    [getInnerPortFormID(id), ...getFieldPath(fieldName)],
-  [id, getFieldPath])
+    fieldHeadPath.concat([fieldName]),
+  [fieldHeadPath])
 
-  const statusIp = useWatch(getFieldFullPath('statusIp'), form)
-  const mac = useWatch(getFieldFullPath('mac'), form)
+  useWatch(getFieldFullPath('id'), form)
+  const statusIp = statusData?.ip
+  const mac = statusData?.mac
 
   useLayoutEffect(() => {
     form.validateFields()
-  }, [mac, form])
+  }, [id, form])
 
-
+  console.log('corePortEnabled', form.getFieldValue(getFieldFullPath('corePortEnabled')))
   return (
     <>
       <UI.IpAndMac>
@@ -76,14 +89,16 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             }}
           >
             {() => {
-              const allValues = form.getFieldsValue(true) as EdgePortConfigFormType
+              const allPortsValues = _.get(form.getFieldsValue(true), portsDataRootPath)
 
               return <EdgePortCommonForm
                 formRef={form}
-                portsData={_.flatten(Object.values(allValues))}
+                portsData={_.flatten(Object.values(allPortsValues))}
                 lagData={lagData}
                 isEdgeSdLanRun={isEdgeSdLanRun}
-                formListItemKey={formListKey}
+                formListItemKey={formListItemKey}
+                fieldHeadPath={fieldHeadPath}
+                portsDataRootPath={portsDataRootPath}
                 formListID={id}
               />
             }}
