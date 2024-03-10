@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
-import _                       from 'lodash'
 
 import {
   Filter

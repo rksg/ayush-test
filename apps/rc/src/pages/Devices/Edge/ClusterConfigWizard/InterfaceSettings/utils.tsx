@@ -30,14 +30,14 @@ export const getPortFormCompatibilityFields = () => {
     title: 'Number of Ports',
     render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
       <Typography.Text
-        type={errors.ports.isError ? 'danger' : 'success'}
+        type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
   }, {
     key: 'corePorts',
     title: 'Number of Core Ports',
     render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
       <Typography.Text
-        type={errors.corePorts.isError ? 'danger' : 'success'}
+        type={errors.corePorts.isError ? 'danger' : undefined}
         children={errors.corePorts.value} />
   }, {
     key: 'portTypes',
@@ -45,10 +45,12 @@ export const getPortFormCompatibilityFields = () => {
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
       return Object.keys(errors.portTypes)
-        .map((portType) => <Typography.Text
-          type={errors.portTypes[portType].isError ? 'danger' : 'success'}
-          children={portType}
-        />)
+        .map((portType) => errors.portTypes[portType].value
+          ? <Typography.Text
+            type={errors.portTypes[portType].isError ? 'danger' : undefined}
+            children={portType}
+          />
+          : '')
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
