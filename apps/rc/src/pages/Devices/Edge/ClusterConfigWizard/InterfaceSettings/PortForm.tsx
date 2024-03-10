@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import { FormInstance }            from 'antd/es/form/Form'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
@@ -12,7 +11,7 @@ import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgesPortStatusQuery } from '
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { InterfaceSettingsFormType } from '.'
+import { InterfaceSettingsFormType } from './types'
 
 export const PortForm = () => {
   const { $t } = useIntl()
@@ -91,7 +90,6 @@ const PortSettingView = (props: PortSettingViewProps) => {
           (serialNumber) => {
             const portsConfigs = _.get(portSettings, [serialNumber])
             const lagData = _.get(nodesLagData, [serialNumber])
-
 
             // only display when portConfig has data
             return portsConfigs

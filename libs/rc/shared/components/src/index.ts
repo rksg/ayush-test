@@ -199,6 +199,7 @@ export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
+export * from './EdgeCluster/CompatibilityErrorDetails/types'
 
 export * from './services'
 export * from './policies'
