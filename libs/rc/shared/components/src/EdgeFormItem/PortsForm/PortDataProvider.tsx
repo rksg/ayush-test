@@ -63,7 +63,7 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
       pageSize: 10
     }
   },{
-    skip: !isEdgeLagEnabled,
+    skip: !isEdgeLagEnabled || !venueId || !edgeClusterId,
     selectFromResult ({ data, isLoading, isFetching }) {
       return {
         lagData: data?.data,
