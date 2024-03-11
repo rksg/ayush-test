@@ -283,7 +283,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please select a LAG Name' })
           }]}
-          children={<Select options={getUseableLagOptions(existedLagList)} disabled={isEditMode} />}
+          children={
+            <Select
+              options={getUseableLagOptions(existedLagList)}
+              disabled={isEditMode}
+              placeholder=''
+            />
+          }
           noStyle
           hasFeedback
         />
