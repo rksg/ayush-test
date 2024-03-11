@@ -146,20 +146,21 @@ describe('helpers', () => {
 
 
 describe('transformLookupAndMappingData', () => {
-  it('transforms mapping data correctly for msp ec resp', () => {
+  it('transforms mapping data correctly', () => {
     const data = {
       data: [
         {
           id: '1', name: 'Name1', tenantType: 'Type1',
-          integrator: 'Integrator1', integrators: ['Integrator1']
+          integrators: ['Integrator1'] // msp ec
         },
-        { id: '2', name: 'Name2', tenantType: 'Type2' }
+        {
+          id: '2', name: 'Name2', tenantType: 'Type2',
+          integrator: '2' // lsp
+        },
+        { id: '3', name: 'Name3', tenantType: 'Type3' } // from msp ec
       ]
     }
-    const transformed = transformLookupAndMappingData(
-      data as ECList,
-      false
-    )
+    const transformed = transformLookupAndMappingData(data as ECList)
     expect(transformed['1']).toEqual({
       name: 'Name1',
       type: 'Type1',
@@ -169,27 +170,14 @@ describe('transformLookupAndMappingData', () => {
     expect(transformed['2']).toEqual({
       name: 'Name2',
       type: 'Type2',
-      integrators: [],
+      integrators: ['2'],
       content: [data.data[1]]
     })
-  })
-  it('transforms mapping data correctly for lsp ec resp', () => {
-
-    const transformed = transformLookupAndMappingData(
-      mockMappingData as ECList,
-      true
-    )
-    expect(transformed['1']).toEqual({
-      name: 'Name1',
-      type: 'Type1',
-      integrators: ['Integrator1'],
-      content: [mockMappingData.data[0]]
-    })
-    expect(transformed['2']).toEqual({
-      name: 'Name2',
-      type: 'Type2',
+    expect(transformed['3']).toEqual({
+      name: 'Name3',
+      type: 'Type3',
       integrators: [],
-      content: [mockMappingData.data[1]]
+      content: [data.data[2]]
     })
   })
   it('handles empty data', () => {

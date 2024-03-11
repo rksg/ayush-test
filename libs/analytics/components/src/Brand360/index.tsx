@@ -99,7 +99,7 @@ export function Brand360 () {
   const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
 
   const lookupAndMappingData = propertiesData?.data
-    ? transformLookupAndMappingData(propertiesData.data, isLSP)
+    ? transformLookupAndMappingData(propertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData

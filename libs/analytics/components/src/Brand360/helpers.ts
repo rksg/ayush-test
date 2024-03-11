@@ -205,21 +205,15 @@ export const slaKpiConfig = {
 
 export type ECList = TableResult<MspEc & { integrators?: string[] }>
 
-export const transformLookupAndMappingData = (mappingData : ECList, isLSP: boolean) => {
+export const transformLookupAndMappingData = (mappingData : ECList) => {
   const groupedById= groupBy(mappingData?.data, 'id')
   return Object.keys(groupedById).reduce((newObj, key) => {
     newObj[key] = {
       name: groupedById[key][0].name,
       type: groupedById[key][0].tenantType,
-      ...(isLSP
-        ? {
-          integrators: groupedById[key][0].integrator
-            ? [groupedById[key][0]?.integrator as string] : []
-        }
-        : {
-          integrators: groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []
-        }
-      ),
+      integrators: groupedById[key][0].integrator
+        ? [groupedById[key][0]?.integrator as string]
+        : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
       content: groupedById[key]
     }
     return newObj
