@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Col, Form, Row } from 'antd'
+import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useNavigate }    from 'react-router-dom'
 
@@ -68,7 +69,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
           const interfaces = {} as { [key: string]: EdgePortInfo }
           for(let config of currentConfig.ports) {
             const tmp = lanInterfaces?.[config.serialNumber].find(item =>
-              item.portName === config.portName)
+              _.toLower(item.portName) === _.toLower(config.portName))
             interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
           }
           editVipConfig.push({

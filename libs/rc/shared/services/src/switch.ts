@@ -102,7 +102,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           fetchWithBQ(genStackMemberPayload(arg, id))
         ))
         stacks.forEach((id:string, index:number) => {
-          stackMembers[id] = allStacksMember[index]?.data.data
+          stackMembers[id] = allStacksMember[index]?.data?.data
         })
 
         const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {

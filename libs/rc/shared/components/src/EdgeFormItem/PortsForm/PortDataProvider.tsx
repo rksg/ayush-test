@@ -1,9 +1,9 @@
 import { createContext } from 'react'
 
-import { Loader }                                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
-import { useGetEdgeLagListQuery, useGetEdgesPortStatusQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
-import { EdgeLag, EdgePort, EdgePortInfo }                                           from '@acx-ui/rc/utils'
+import { Loader }                                                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { useGetEdgeLagListQuery, useGetEdgeListQuery, useGetEdgesPortStatusQuery, useGetPortConfigQuery } from '@acx-ui/rc/services'
+import { EdgeLag, EdgePort, EdgePortInfo }                                                                from '@acx-ui/rc/utils'
 
 export interface EdgePortsDataContextType {
   portData: EdgePort[]
@@ -25,6 +25,25 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   const { serialNumber } = props
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
+  const { venueId, edgeClusterId } = useGetEdgeListQuery(
+    { payload: {
+      fields: [
+        'name',
+        'serialNumber',
+        'venueId',
+        'clusterId'
+      ],
+      filters: { serialNumber: [serialNumber] }
+    } },
+    {
+      skip: !!!serialNumber || !isEdgeLagEnabled,
+      selectFromResult: ({ data }) => ({
+        venueId: data?.data[0].venueId,
+        edgeClusterId: data?.data[0].clusterId
+      })
+    }
+  )
+
   const {
     data: portData, isFetching: isPortFetching
   } = useGetPortConfigQuery({
@@ -38,13 +57,13 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   })
 
   const { lagData, isLagFetching } = useGetEdgeLagListQuery({
-    params: { serialNumber },
+    params: { venueId, edgeClusterId, serialNumber },
     payload: {
       page: 1,
       pageSize: 10
     }
   },{
-    skip: !isEdgeLagEnabled,
+    skip: !isEdgeLagEnabled || !venueId || !edgeClusterId,
     selectFromResult ({ data, isFetching }) {
       return {
         lagData: data?.data,
