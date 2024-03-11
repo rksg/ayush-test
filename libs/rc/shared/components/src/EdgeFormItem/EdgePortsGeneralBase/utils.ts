@@ -5,12 +5,10 @@ import { EdgeLag, EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 import { EdgePortConfigFormType } from '.'
 
-export const INNER_PORT_FORM_ID_PREFIX = 'port_'
-export const getInnerPortFormID = (index: number | string) => `${INNER_PORT_FORM_ID_PREFIX}${index}`
 export const getFieldFullPath = (
-  id: string, fieldName: string, fieldHeadPath?: string[]) => {
+  interfaceName: string, fieldName: string, fieldHeadPath?: string[]) => {
   return (fieldHeadPath ?? [])
-    .concat([getInnerPortFormID(id), '0', fieldName]) as NamePath
+    .concat([interfaceName, '0', fieldName]) as NamePath
 }
 
 export const transformApiDataToFormListData =

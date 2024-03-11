@@ -80,18 +80,6 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     }
   })
 
-  // TODO: is needed?
-  // useEffect(() => {
-  //   if(!dataRef.current) {
-  //     dataRef.current = data
-  //     return
-  //   }
-  //   if(!isEqual(dataRef.current, data)) {
-  //     dataRef.current = data
-  //     form.resetFields()
-  //   }
-  // }, [data])
-
   useEffect(() => {
     setCurrentTab(unLagPort)
   }, [unLagPort])
