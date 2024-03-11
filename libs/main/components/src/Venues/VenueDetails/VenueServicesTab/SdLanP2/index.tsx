@@ -1,14 +1,13 @@
 import { useState } from 'react'
 
-import { Col, Row, Space, Typography } from 'antd'
-import { useIntl }                     from 'react-intl'
+import { Col, Row, Typography } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { Card, SummaryCard }                                       from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram } from '@acx-ui/rc/components'
+import { Card, SummaryCard }                                                     from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   useActivateEdgeSdLanNetworkMutation,
-  useDeactivateEdgeSdLanNetworkMutation,
-  useUpdateEdgeSdLanPartialP2Mutation
+  useDeactivateEdgeSdLanNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -31,10 +30,6 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const { id: serviceId } = data
   const [isActivateUpdating, setIsActivateUpdating] = useState<boolean>(false)
   const [
-    updateEdgeSdLan,
-    { isLoading: isUpdateRequesting }
-  ] = useUpdateEdgeSdLanPartialP2Mutation()
-  const [
     activateNetwork,
     { isLoading: isActivateRequesting }
   ] = useActivateEdgeSdLanNetworkMutation()
@@ -46,7 +41,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const infoFields = [{
     title: $t({ defaultMessage: 'Service Name' }),
     content: () => <TenantLink to={getServiceDetailsLink({
-      type: ServiceType.EDGE_SD_LAN_P2,
+      type: ServiceType.EDGE_SD_LAN,
       oper: ServiceOperation.DETAIL,
       serviceId: serviceId!
     })}>
@@ -59,14 +54,15 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     </TenantLink>
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
-    content: () => <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
-      {data.edgeName}
-    </TenantLink>
+    content: () => (
+      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+        {data.edgeClusterName}
+      </TenantLink>)
   }, ...(data.isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeId}/details/overview`}>
-        {data.guestEdgeName}
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
+        {data.guestEdgeClusterName}
       </TenantLink>
     )
   }] : []),{
@@ -93,15 +89,21 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     )
   }] : [])]
 
-  const toggleGuestNetwork = async (networkId: string, activate: boolean, cb?: () => void) => {
-    if (activate) {
+  const toggleNetwork = async (
+    isGuest: boolean,
+    networkId: string,
+    activate: boolean,
+    cb?: () => void) => {
+    // - activate network/guestNetwork
+    // - deactivate guestNetwork
+    if (activate || (!activate && isGuest)) {
       await activateNetwork({
         params: {
           serviceId,
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: true
+          isGuestTunnelUtilized: activate
         },
         callback: cb
       }).unwrap()
@@ -116,67 +118,21 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   const handleActivateChange = async (
     fieldName: string,
     rowData: NetworkSaveData,
-    checked: boolean,
-    activated: NetworkSaveData[]
+    checked: boolean
   ) => {
     const networkId = rowData.id!
-    const newNetworkIds = activated.map(item => item.id)
-    const payload = {
-      networkIds: newNetworkIds
-    }
     setIsActivateUpdating(true)
 
     try {
       if (data.isGuestTunnelEnabled
       && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
-        if (fieldName === 'activatedNetworks'
-        // eslint-disable-next-line max-len
-        || (fieldName === 'activatedGuestNetworks' && checked && !data.networkIds.includes(networkId))) {
-
-          let updateGuestNetwork = true
-          // directly activated guest network should also activated network tunneled to DC edge
-          if (fieldName === 'activatedGuestNetworks') {
-            payload.networkIds = data.networkIds.concat(networkId)
-          } else {
-            // check diff on guestNetwork when toggle network
-            if ((checked && data.guestNetworkIds.includes(networkId))
-            || (!checked && !data.guestNetworkIds.includes(networkId))) {
-              updateGuestNetwork = false
-            }
-          }
-
-          //Activate network
-          await updateEdgeSdLan({
-            params: { serviceId },
-            payload,
-            callback: async () => {
-              if (updateGuestNetwork) {
-                // TODO: should be blocking after activity fixed
-                // await toggleGuestNetwork(networkId, checked, () => {
-                //   setIsActivateUpdating(false)
-                // })
-                await toggleGuestNetwork(networkId, checked)
-              }
-
-              setIsActivateUpdating(false)
-            } }).unwrap()
-        } else {
-          // deactivate guest network
-          // TODO: should be blocking after activity fixed
-          // await toggleGuestNetwork(networkId, checked, () => {
-          //   setIsActivateUpdating(false)
-          // })
-          await toggleGuestNetwork(networkId, checked)
-          setIsActivateUpdating(false)
-        }
+        const isGuestNetwork = fieldName === 'activatedGuestNetworks'
+        await toggleNetwork(isGuestNetwork, networkId, checked)
       } else {
-        await updateEdgeSdLan({
-          params: { serviceId },
-          payload,
-          callback: () => {
-            setIsActivateUpdating(false)
-          } }).unwrap()
+        await toggleNetwork(false, networkId, checked)
       }
+
+      setIsActivateUpdating(false)
     } catch(err) {
       setIsActivateUpdating(false)
       // eslint-disable-next-line no-console
@@ -185,7 +141,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
   }
 
   return (
-    <Space direction='vertical' size={30}>
+    <SpaceWrapper fullWidth direction='vertical' size={30}>
       <Card>
         <SdLanTopologyDiagram
           isGuestTunnelEnabled={data.isGuestTunnelEnabled}
@@ -215,13 +171,12 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
             activatedGuest={data.guestNetworkIds}
             onActivateChange={handleActivateChange}
             isUpdating={isActivateUpdating
-              || isUpdateRequesting
               || isActivateRequesting
               || isDeactivateRequesting}
           />
         </Col>
       </Row>
-    </Space>
+    </SpaceWrapper>
   )
 }
 

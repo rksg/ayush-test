@@ -39,8 +39,9 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   const isVar = tenantType === AccountType.VAR
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
-  const isIntegrator =
+  const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsSplitOn(Features.CONFIG_TEMPLATE), tenantType)
 
@@ -85,23 +86,21 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
 
   const { data: integratorListData } = useIntegratorCustomerListQuery({
     params, payload: integratorPayload },
-  { skip: !isIntegrator })
-
+  { skip: !isTechPartner })
   useEffect(() => {
     // if account is not tech partner (integrator / installer) / LSP
     // then will have FF check else we will call useIntegratorCustomerListQuery
     // and will check if data is available and based on that will show and hide
     // Brand 360 and RUCKUS END Customer menue options
-    if (isIntegrator) {
+    if (isTechPartner) {
       setHideMenuesforHsp(!integratorListData?.data?.length)
     } else {
       setHideMenuesforHsp(!isHspSupportEnabled)
     }
-  }, [isHspSupportEnabled, isIntegrator, integratorListData])
+  }, [isHspSupportEnabled, isTechPartner, integratorListData])
 
-
-  const config: LayoutProps['menuConfig'] = [
-    ...(!hideMenuesforHsp && isBrand360 ? [{
+  return [
+    ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
       uri: '/brand360',
       label: $t({ defaultMessage: 'Brand 360' }),
       tenantType: 'v' as TenantType,
@@ -124,7 +123,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
           label: $t({ defaultMessage: 'RUCKUS End Customers' })
         }])
         ]),
-        ...((isNonVarMSP || isIntegrator) ? [] : [{
+        ...((isNonVarMSP || isTechPartner) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,
           label: isSupport
@@ -133,7 +132,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         }])
       ]
     },
-    ...((isVar || isIntegrator || isSupport) ? [] : [{
+    ...((isVar || isTechPartner || isSupport) ? [] : [{
       uri: '/integrators',
       label: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v' as TenantType,
@@ -147,7 +146,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
     }]),
-    ...((isIntegrator || isSupport)? [] : [{
+    ...((isTechPartner || isSupport)? [] : [{
       uri: '/mspLicenses',
       label: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v' as TenantType,
@@ -162,7 +161,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid
       }] : []),
-    ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
+    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Settings' }),
@@ -171,6 +170,5 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         activeIcon: ConfigurationSolid,
         adminItem: true
       }])
-  ]
-  return config
+  ] as LayoutProps['menuConfig']
 }

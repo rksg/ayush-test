@@ -113,7 +113,7 @@ export const EdgeClusterTable = () => {
       align: 'center',
       render: (_, row) => {
         return (
-          row.haStatus &&
+          !row.isFirstLevel &&
           <HaStatusBadge
             haStatus={row.haStatus}
           />
@@ -165,6 +165,13 @@ export const EdgeClusterTable = () => {
           </TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
@@ -251,6 +258,7 @@ export const EdgeClusterTable = () => {
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
@@ -275,7 +283,7 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
       </Col>
       <Col>
         <Tooltip.Question
-          title={$t({ defaultMessage: `The cluster function requires 
+          title={$t({ defaultMessage: `The cluster function requires
         at least two nodes to operate` })}
           placement='bottom'
           iconStyle={{ width: 16, marginTop: 5 }}

@@ -5,26 +5,89 @@ import {
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
   useAddEdgeSdLanP2Mutation,
-  useDeactivateEdgeSdLanDmzClusterMutation,
-  useDeactivateEdgeSdLanDmzTunnelProfileMutation,
   useDeactivateEdgeSdLanNetworkMutation,
+  useToggleEdgeSdLanDmzMutation,
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
-import { CatchErrorDetails, CommonErrorsResult, CommonResult, EdgeSdLanSettingP2 } from '@acx-ui/rc/utils'
+import {
+  CatchErrorDetails,
+  CommonErrorsResult,
+  CommonResult,
+  EdgeSdLanSettingP2
+} from '@acx-ui/rc/utils'
 
 export const useEdgeSdLanActions = () => {
   const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
   const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialP2Mutation()
 
-  // TODO: waiting for backend ready
-  // const [toggleDmz] = useToggleEdgeSdLanDmzMutation()
+  const [toggleDmz] = useToggleEdgeSdLanDmzMutation()
   const [activateDmzEdgeCluster] = useActivateEdgeSdLanDmzClusterMutation()
   const [activateDmzTunnel] = useActivateEdgeSdLanDmzTunnelProfileMutation()
   const [activateNetwork] = useActivateEdgeSdLanNetworkMutation()
-
-  const [deactivateDmzEdgeCluster] = useDeactivateEdgeSdLanDmzClusterMutation()
-  const [deactivateDmzTunnel] = useDeactivateEdgeSdLanDmzTunnelProfileMutation()
   const [deactivateNetwork] = useDeactivateEdgeSdLanNetworkMutation()
+
+  const activateGuestEdgeCluster =
+  (serviceId: string, payload: EdgeSdLanSettingP2): Promise<CommonResult> => {
+    return activateDmzEdgeCluster({ params: {
+      serviceId,
+      venueId: payload.venueId,
+      edgeClusterId: payload.guestEdgeClusterId
+    } }).unwrap()
+  }
+
+  const activateGuestTunnel =
+  (serviceId: string, payload: EdgeSdLanSettingP2): Promise<CommonResult> => {
+    return activateDmzTunnel({ params: {
+      serviceId,
+      tunnelProfileId: payload.guestTunnelProfileId
+    } }).unwrap()
+  }
+
+  const toggleGuestTunnelEnable =
+  (serviceId: string, enabled: boolean): Promise<CommonResult> => {
+    return toggleDmz({ params: {
+      serviceId
+    }, payload: {
+      isGuestTunnelEnabled: enabled
+    } }).unwrap()
+  }
+
+  const toggleGuestNetwork =
+  (serviceId: string, networkId: string, activated: boolean): Promise<CommonResult> => {
+    return activateNetwork({
+      params: {
+        serviceId,
+        wifiNetworkId: networkId
+      },
+      payload: {
+        isGuestTunnelUtilized: activated
+      }
+    }).unwrap()
+  }
+
+  const activateDcNetwork =
+  (serviceId: string, networkId: string): Promise<CommonResult> => {
+    return toggleGuestNetwork(serviceId, networkId, false)
+  }
+
+  const deactivateDcNetwork =
+  (serviceId: string, networkId: string): Promise<CommonResult> => {
+    return deactivateNetwork({ params: {
+      serviceId,
+      wifiNetworkId: networkId
+    } }).unwrap()
+  }
+
+  const activateGuestNetwork =
+  (serviceId: string, networkId: string): Promise<CommonResult> => {
+    return toggleGuestNetwork(serviceId, networkId, true)
+  }
+
+  const deactivateGuestNetwork =
+    (serviceId: string, networkId: string): Promise<CommonResult> => {
+      return toggleGuestNetwork(serviceId, networkId, false)
+    }
+
 
   const addSdLan = async (req: {
     payload: EdgeSdLanSettingP2,
@@ -37,39 +100,40 @@ export const useEdgeSdLanActions = () => {
       payload,
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
-        const actions = payload.isGuestTunnelEnabled
-          ? [
-            // TODO: waiting for backend ready
-            // toggleDmz({ params: {
-            //   serviceId
-            // }, payload: {
-            //   isGuestTunnelEnabled: true
-            // } }).unwrap(),
-            activateDmzEdgeCluster({ params: {
-              serviceId,
-              venueId: payload.venueId,
-              edgeClusterId: payload.guestEdgeId
-            } }).unwrap(),
-            activateDmzTunnel({ params: {
-              serviceId,
-              tunnelProfileId: payload.guestTunnelProfileId
-            } }).unwrap(),
-            ...payload.guestNetworkIds.map((item) => {
-              return activateNetwork({
-                params: {
-                  serviceId,
-                  wifiNetworkId: item
-                },
-                payload: {
-                  isGuestTunnelUtilized: true
-                }
-              }).unwrap()
-            })]
+        const dcNetworkIds = payload.isGuestTunnelEnabled
+          ? _.difference(payload.networkIds, payload.guestNetworkIds)
           : []
 
+        const optActions = []
+        const allResults = []
+
+        if (payload.isGuestTunnelEnabled) {
+          const requiredActions = [
+            activateGuestEdgeCluster(serviceId!, payload),
+            activateGuestTunnel(serviceId!, payload)
+          ]
+
+          try {
+            const reqResult = await Promise.all(requiredActions)
+            allResults.push(...reqResult)
+
+            optActions.push(...[
+              toggleGuestTunnelEnable(serviceId!, true),
+              ...dcNetworkIds.map((item) => activateDcNetwork(serviceId!, item)),
+              ...payload.guestNetworkIds.map((item) => activateGuestNetwork(serviceId!, item))
+            ])
+          } catch(error) {
+            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+            return
+          }
+        } else {
+          optActions.push(...[
+            ...payload.networkIds.map((item) => activateDcNetwork(serviceId!, item))])
+        }
+
         try {
-          const reqResult = await Promise.all(actions)
-          callback?.(reqResult)
+          const reqResult = await Promise.all(optActions)
+          callback?.(allResults.concat(reqResult))
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
         }
@@ -83,68 +147,68 @@ export const useEdgeSdLanActions = () => {
       | CommonErrorsResult<CatchErrorDetails>)) => void
   }) => {
     const { payload, callback } = req
-    const { id: serviceId, ...submitPayload } = payload
+    const serviceId = payload.id
 
     return await updateEdgeSdLan({
-      payload: submitPayload,
+      payload: {
+        name: payload.name,
+        tunnelProfileId: payload.tunnelProfileId
+      },
       params: { serviceId },
       callback: async () => {
+        // eslint-disable-next-line max-len
+        const isGuestTunnelChanged = originData.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
         const actions = []
+        const allResults = []
 
         // diff `originData` vs `req.payload`
-        // isGuestTunnelEnabled changed
-        if (originData.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled) {
-          // TODO: waiting for backend ready
-          // actions.push(toggleDmz({ params: {
-          //   serviceId
-          // }, payload: {
-          //   isGuestTunnelEnabled: payload.isGuestTunnelEnabled
-          // } }).unwrap())
-          actions.push((payload.isGuestTunnelEnabled
-            ? activateDmzEdgeCluster
-            : deactivateDmzEdgeCluster)({ params: {
-            serviceId,
-            venueId: payload.venueId,
-            edgeClusterId: payload.guestEdgeId
-          } }).unwrap())
-        }
+        if (isGuestTunnelChanged) {
+          // doesn't need to handle deactivateDmzCluster when isGuestTunnelEnabled changed into false
 
-        if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
-          if (originData.guestTunnelProfileId) {
-            actions.push(deactivateDmzTunnel({ params: {
-              serviceId,
-              tunnelProfileId: originData.guestTunnelProfileId
-            } }).unwrap())
+          const requiredActions = []
+          // DC scenario into DMZ scenario
+          if (payload.isGuestTunnelEnabled && !originData.guestEdgeClusterId) {
+            requiredActions.push(activateGuestEdgeCluster(serviceId!, payload))
+            requiredActions.push(activateGuestTunnel(serviceId!, payload))
+
+            try {
+              const reqResult = await Promise.all(requiredActions)
+              allResults.push(...reqResult)
+            } catch(error) {
+              // if the required field: DmzEdgeCluster/ DMZTunnelProfile failed
+              // non need to trigger furthur actions
+              callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+              return
+            }
           }
 
-          if (payload.guestTunnelProfileId) {
-            actions.push(activateDmzTunnel({ params: {
-              serviceId,
-              tunnelProfileId: payload.guestTunnelProfileId
-            } }).unwrap())
+          actions.push(toggleGuestTunnelEnable(serviceId!, payload.isGuestTunnelEnabled))
+        } else {
+          // for change guest tunnel: only need to do PUT
+          if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
+            actions.push(activateGuestTunnel(serviceId!, payload))
           }
         }
 
-        // eslint-disable-next-line max-len
-        const deactivateItems = _.difference(originData.guestNetworkIds, payload.guestNetworkIds)
-        const activateItems = _.difference(payload.guestNetworkIds, originData.guestNetworkIds)
-        actions.push(...activateItems.map((item) => activateNetwork({
-          params: {
-            serviceId,
-            wifiNetworkId: item
-          },
-          payload: {
-            isGuestTunnelUtilized: true
-          }
-        }).unwrap()))
-        actions.push(...deactivateItems.map((item) => deactivateNetwork({ params: {
-          serviceId,
-          wifiNetworkId: item
-        } }).unwrap()))
+        const rmNetworks = _.difference(originData.networkIds, payload.networkIds)
+        const addNetworks = _.difference(payload.networkIds, originData.networkIds)
+        const rmGuestNetworks = _.difference(originData.guestNetworkIds, payload.guestNetworkIds)
+        const addGuestNetworks = _.difference(payload.guestNetworkIds, originData.guestNetworkIds)
+
+        const activateDcNetworks = _.difference(addNetworks, addGuestNetworks)
+        const deactivateDmzNetworks = _.difference(rmGuestNetworks, rmNetworks)
+        actions.push(...activateDcNetworks.map((item) => activateDcNetwork(serviceId!, item)))
+        actions.push(...rmNetworks.map((item) => deactivateDcNetwork(serviceId!, item)))
+
+        // handle guestNetworkIds changes
+        actions.push(...addGuestNetworks.map((item) => activateGuestNetwork(serviceId, item)))
+        actions.push(...deactivateDmzNetworks.map(
+          (item) => deactivateGuestNetwork(serviceId, item))
+        )
 
         try {
           const relationActs = await Promise.all(actions)
-          callback?.(relationActs)
+          callback?.(allResults.concat(relationActs))
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
         }

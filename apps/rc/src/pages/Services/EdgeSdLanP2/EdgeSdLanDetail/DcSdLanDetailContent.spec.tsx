@@ -65,7 +65,7 @@ describe('Edge SD-LAN Detail - DC', () => {
     const seTab = await screen.findByRole('tab', { name: 'SmartEdges(1)' })
     await userEvent.click(seTab)
     expect(await screen.findByRole('row',
-      { name: 'vSE-b491 20 15' })).toBeVisible()
+      { name: 'SE_Cluster 1 20 15' })).toBeVisible()
   })
 
   it('should handle with empty data', async () => {

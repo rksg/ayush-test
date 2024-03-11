@@ -705,15 +705,19 @@ export const getAdminPassword = (
     )
 }
 
+export const isFirmwareVersionAbove10 = (
+  firmwareVersion: string
+) => {
+  return firmwareVersion.slice(3,6) === '100'
+}
+
 export const isFirmwareSupportAdminPassword = (
   firmwareVersion: string
 ) => {
-  if (firmwareVersion.includes('09010')) {
-    return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
-  } else if (firmwareVersion.includes('10010')) {
+  if (isFirmwareVersionAbove10(firmwareVersion)) {
     return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
   }
-  return false
+  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
 }
 
 export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {

@@ -7,10 +7,8 @@ import { edgeApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   EdgeGeneralFixtures,
-  EdgePortConfigFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
-  EdgeStatusEnum,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -28,9 +26,8 @@ import { mockedVenueList } from '../../__tests__/fixtures'
 
 import { SettingsForm } from '.'
 
-const { mockedSdLanDataList } = EdgeSdLanFixtures
-const { mockEdgeList } = EdgeGeneralFixtures
-const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -63,13 +60,13 @@ jest.mock('antd', () => {
 
 const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
-const mockedReqEdgesList = jest.fn()
+const mockedReqClusterList = jest.fn()
 
 describe('Edge SD-LAN form: settings', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockClear()
     mockedReqVenuesList.mockClear()
-    mockedReqEdgesList.mockClear()
+    mockedReqClusterList.mockClear()
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -77,7 +74,7 @@ describe('Edge SD-LAN form: settings', () => {
     mockServer.use(
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -87,16 +84,10 @@ describe('Edge SD-LAN form: settings', () => {
         }
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (req, res, ctx) => {
-          mockedReqEdgesList(req.body)
-          return res(ctx.json(mockEdgeList))
-        }
-      ),
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (_, res, ctx) => {
-          return res(ctx.json(mockEdgePortConfig))
+          mockedReqClusterList(req.body)
+          return res(ctx.json(mockEdgeClusterList))
         }
       )
     )
@@ -143,18 +134,18 @@ describe('Edge SD-LAN form: settings', () => {
     // select DMZ edge
     await userEvent.selectOptions(
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
-      '0000000005')
-    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeName', 'Smart Edge 5')
+      'clusterId_5')
+    expect(mockedSetFieldValue).toBeCalledWith('guestEdgeClusterName', 'Edge Cluster 5')
   })
 
-  it('should query specific venue and edge when edit mode', async () => {
+  it('should query specific venue when edit mode', async () => {
     const expectedVenueId = 'venue_00005'
-    const expectedEdgeId = '0000000005'
+    const expectedClusterId = 'clusterId_5'
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('venueId', expectedVenueId)
-      form.setFieldValue('edgeId', expectedEdgeId)
+      form.setFieldValue('edgeClusterId', expectedClusterId)
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
     })
@@ -179,19 +170,15 @@ describe('Edge SD-LAN form: settings', () => {
     })
 
     await waitFor(() => {
-      expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+      expect(mockedReqClusterList).toBeCalledWith({
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
-          venueId: [expectedVenueId],
-          serialNumber: [expectedEdgeId],
-          deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+          venueId: [expectedVenueId]
+          // TODO: need confirm
+          // clusterStatus: Object.values(EdgeStatusEnum)
+          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
-    })
-
-    await waitFor(() => {
-      expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
     })
   })
 
@@ -227,8 +214,8 @@ describe('Edge SD-LAN form: settings', () => {
       const [ form ] = Form.useForm()
       return form
     })
-    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataList[0] }]
-    mockedSdLanDuplicateEdge[0].edgeId = mockEdgeList.data[4].serialNumber
+    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataListP2[0] }]
+    mockedSdLanDuplicateEdge[0].edgeClusterId = mockEdgeClusterList.data[4].clusterId
 
     mockServer.use(
       rest.post(
@@ -254,16 +241,54 @@ describe('Edge SD-LAN form: settings', () => {
 
     await screen.findByText('Cluster')
     await waitFor(() => {
-      expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+      expect(mockedReqClusterList).toBeCalledWith({
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
         filters: {
-          venueId: [mockedVenueList.data[4].id],
-          deviceStatus: Object.values(EdgeStatusEnum)
-            .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+          venueId: [mockedVenueList.data[4].id]
+          // TODO: need confirm
+          // clusterStatus: Object.values(EdgeStatusEnum)
+          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
     expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
+  })
+  it('should be able to configure guest cluster when it is empty in edit mode', async () => {
+    const expectedClusterId = 'clusterId_5'
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        id: 'mocked-sd-lan-2',
+        venueId: 'v_2',
+        venueName: 'airport',
+        edgeClusterId: expectedClusterId,
+        isGuestTunnelEnabled: false
+      })
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current} editMode>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    const icons = await within(formBody).findAllByTestId('loadingIcon')
+    await waitForElementToBeRemoved(icons)
+    const dmzToggleBtn = await within(formBody).findByRole('switch')
+    // default DMZ is not enabled
+    expect(dmzToggleBtn).not.toBeChecked()
+    // turn on DMZ
+    await userEvent.click(dmzToggleBtn)
+    const dmzSelector = await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
+    expect(dmzSelector).not.toBeDisabled()
+    expect(dmzSelector).toBeVisible()
+    expect(within(dmzSelector)
+      .queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
+    expect(within(dmzSelector)
+      .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
   })
 })
 
@@ -282,16 +307,13 @@ const checkBasicSettings = async () => {
     .findAllByTestId('loadingIcon'))
 
   expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
-  expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
+  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterId', undefined)
 
   // select edge
   await userEvent.selectOptions(
     await within(formBody).findByRole('combobox', { name: 'Cluster' }),
-    '0000000002')
+    'clusterId_2')
 
   // ensure related data to set into form
-  expect(mockedSetFieldValue).toBeCalledWith('edgeName', 'Smart Edge 2')
-  await waitFor(() => {
-    expect(mockedSetFieldValue).toBeCalledWith('corePortMac', 'port2')
-  })
+  expect(mockedSetFieldValue).toBeCalledWith('edgeClusterName', 'Edge Cluster 2')
 }
