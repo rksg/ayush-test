@@ -206,22 +206,26 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEdgeLagList: {
     method: 'get',
-    url: '/edges/:serialNumber/linkAggregationGroups',
+    //url: '/edges/:serialNumber/linkAggregationGroups',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags',
     newApi: true
   },
   addEdgeLag: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups',
+    //url: '/edges/:serialNumber/linkAggregationGroups',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags',
     newApi: true
   },
   updateEdgeLag: {
     method: 'put',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId',
     newApi: true
   },
   deleteEdgeLag: {
     method: 'delete',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId',
     newApi: true
   },
   getLagSubInterfaces: {
@@ -231,22 +235,30 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addLagSubInterfaces: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
     newApi: true
   },
   updateLagSubInterfaces: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   deleteLagSubInterfaces: {
     method: 'delete',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   importLagSubInterfacesCSV: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
     newApi: true
   },
   getLagSubInterfacesStatus: {

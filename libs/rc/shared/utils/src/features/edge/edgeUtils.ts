@@ -201,6 +201,14 @@ const validateVirtualEdgeSerialNumber = (value: string) => {
   return Promise.resolve()
 }
 
+const isVirtualEdgeSerial = (value: string) => {
+  return new RegExp(/^96[0-9A-Z]{32}$/i).test(value)
+}
+
+export const deriveEdgeModel = (serial: string) => {
+  return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+}
+
 export const optionSorter = (
   a: DefaultOptionType,
   b: DefaultOptionType

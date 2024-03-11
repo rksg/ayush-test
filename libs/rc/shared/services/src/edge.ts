@@ -840,9 +840,6 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
       item.diskUsed = item?.diskUsedKb * 1024
     if (item?.diskTotalKb)
       item.diskTotal = item?.diskTotalKb * 1024
-    if (data.length < 2)
-      // remove the HA status for 1 node case
-      delete item.haStatus
   })
   return data
 }
