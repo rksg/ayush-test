@@ -4,22 +4,22 @@ import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
 import { useIntl }                        from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip, cssStr } from '@acx-ui/components'
 
 import * as UI from '../styledComponents'
 
-interface ApFirmwareUpdateGroupProps {
+export interface ApFirmwareUpdateGroupProps {
   apModels: string[]
   versionOptions: DefaultOptionType[]
   update: (apModels: string[], version: string | undefined) => void
-  defaultVersion?: string
+  defaultVersion: string
 }
 
 export function ApFirmwareUpdateGroup (props: ApFirmwareUpdateGroupProps) {
   const { $t } = useIntl()
   const { apModels, versionOptions, update, defaultVersion } = props
   // eslint-disable-next-line max-len
-  const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion ?? versionOptions[0].value)
+  const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
   const onSelectedVersionChange = (e: RadioChangeEvent) => {
     setSelectedVersion(e.target.value)
@@ -64,7 +64,11 @@ function GroupTitle (props: { apModels: string[] }) {
     </UI.TitleActive>
     {isMoreDevicesTooltipShown &&
       <Tooltip
-        children={<div>{$t({ defaultMessage: 'See more devices' })}</div>}
+        children={
+          <div style={{ color: cssStr('--acx-accents-blue-50') }}>
+            {$t({ defaultMessage: 'See more devices' })}
+          </div>
+        }
         title={
           <ul>{apModels.map(apModel => <li key={apModel}>{apModel}</li>)}</ul>
         }

@@ -61,6 +61,7 @@ import { DowngradeDialog }         from './DowngradeDialog'
 import { RevertDialog }            from './RevertDialog'
 import { UpdateNowDialog }         from './UpdateNowDialog'
 import { useApEolFirmware }        from './useApEolFirmware'
+import { UpdateNowPerApModel } from './UpdateNowPerApModel'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -547,9 +548,10 @@ function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
     }
     : {}
 
-  return isEolApPhase2Enabled
-    ? <AdvancedUpdateNowDialog {...props} />
-    : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
+  return <UpdateNowPerApModel onCancel={props.onCancel} />
+  // return isEolApPhase2Enabled
+  //   ? <AdvancedUpdateNowDialog {...props} />
+  //   : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
 }
 
 interface RevertDialogSwitcherProps {

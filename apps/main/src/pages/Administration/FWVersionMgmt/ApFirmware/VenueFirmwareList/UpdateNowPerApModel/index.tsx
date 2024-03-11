@@ -1,14 +1,19 @@
 import { useState } from 'react'
 
-import { Space, Switch }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Space, Switch } from 'antd'
+import { useIntl }       from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
+import { Modal }                              from '@acx-ui/components'
+import { VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
 
 import * as UI                          from '../styledComponents'
 import { firmwareNote1, firmwareNote2 } from '../UpdateNowDialog'
 
-import { ApFirmwareUpdateGroupPanel } from './ApFirmwareUpdateGroupPanel'
+import { ApFirmwareUpdateGroupPanel }      from './ApFirmwareUpdateGroupPanel'
+import { ApFirmwareUpdateIndividualPanel } from './ApFirmwareUpdateIndividualPanel'
+
+
+export type TargetFirmwaresType = VenueApModelFirmwaresUpdatePayload['targetFirmwares']
 
 enum UpdateMode {
   GROUP,
@@ -24,10 +29,6 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
   const { onCancel } = props
   const [disableSave, setDisableSave] = useState(false)
   const [updateMode, setUpdateMode] = useState<UpdateMode>(UpdateMode.GROUP)
-  const panelMap: Record<UpdateMode, React.ReactNode> = {
-    [UpdateMode.GROUP]: <ApFirmwareUpdateGroupPanel />,
-    [UpdateMode.INDIVIDUAL]: <UI.Section>Individual</UI.Section>
-  }
 
   const triggerSubmit = () => {
   }
@@ -39,6 +40,18 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
   const onUpdateModeChange = (checked: boolean) => {
     setUpdateMode(checked ? UpdateMode.INDIVIDUAL : UpdateMode.GROUP)
   }
+
+  const updateTargetFirmwares = (targetFirmwares: TargetFirmwaresType = []) => {
+    const compactedTargetFirmwares = targetFirmwares.filter(fw => fw.firmware)
+    setDisableSave(compactedTargetFirmwares.length === 0)
+  }
+
+  const panelMap: Record<UpdateMode, Function> = {
+    [UpdateMode.GROUP]: ApFirmwareUpdateGroupPanel,
+    [UpdateMode.INDIVIDUAL]: ApFirmwareUpdateIndividualPanel
+  }
+
+  const ActivePanel = panelMap[updateMode]
 
   return (
     <Modal
@@ -58,7 +71,7 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
         />
         <span>{$t({ defaultMessage: 'Update firmware by AP model' })}</span>
       </Space>
-      {panelMap[updateMode]}
+      <ActivePanel updateTargetFirmwares={updateTargetFirmwares} />
       <UI.Section>
         <UI.Ul>
           <UI.Li>{$t(firmwareNote1)}</UI.Li>

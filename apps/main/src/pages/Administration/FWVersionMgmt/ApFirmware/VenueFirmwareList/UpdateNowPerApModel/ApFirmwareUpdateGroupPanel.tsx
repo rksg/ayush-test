@@ -1,20 +1,20 @@
 
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
+import _ from 'lodash'
 
-import { FirmwareCategory, VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
-import { getIntl }                                              from '@acx-ui/utils'
+import { FirmwareCategory } from '@acx-ui/rc/utils'
+import { getIntl }          from '@acx-ui/utils'
 
 import { VersionLabelType, getVersionLabel } from '../../../FirmwareUtils'
 import * as UI                               from '../styledComponents'
 
-import { ApFirmwareUpdateGroup } from './ApFirmwareUpdateGroup'
+import { ApFirmwareUpdateGroup, ApFirmwareUpdateGroupProps } from './ApFirmwareUpdateGroup'
+
+import { TargetFirmwaresType } from '.'
 
 type RowDataType = { apModels: string[], firmwares: VersionLabelType[] }
-type DisplayDataType = { apModels: string[], firmwares: DefaultOptionType[], defaultValue: string }
-type TargetFirmwaresType = VenueApModelFirmwaresUpdatePayload['targetFirmwares']
+type DisplayDataType = Omit<ApFirmwareUpdateGroupProps, 'update'>
 
 const data: RowDataType[] = [
   {
@@ -47,12 +47,26 @@ const data: RowDataType[] = [
   }
 ]
 
-export function ApFirmwareUpdateGroupPanel () {
-  const displayData: DisplayDataType[] = convertToDisplayData(data)
-  const [ targetFirmwares, setTargetFirmwares ] = useTargetFirmwares(data)
+interface ApFirmwareUpdateGroupPanelPrpos {
+  updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void
+}
 
-  const updatePayload = (apModels: string[], version: string | undefined) => {
-    setTargetFirmwares(updateTargetFirmwares(targetFirmwares, apModels, version))
+export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrpos) {
+  const { updateTargetFirmwares } = props
+  const displayData: DisplayDataType[] = convertToDisplayData(data)
+  const targetFirmwares = useRef<TargetFirmwaresType>()
+
+  useEffect(() => {
+    // Ensure that 'updateTargetFirmwares' only call once when the componnent intializes
+    if (!data || targetFirmwares.current) return
+
+    targetFirmwares.current = convertToTargetFirmwaresType(data)
+    updateTargetFirmwares(targetFirmwares.current)
+  }, [data])
+
+  const update = (apModels: string[], version: string | undefined) => {
+    targetFirmwares.current = patchTargetFirmwares(targetFirmwares.current!, apModels, version)
+    updateTargetFirmwares(targetFirmwares.current)
   }
 
   return (<>
@@ -60,9 +74,9 @@ export function ApFirmwareUpdateGroupPanel () {
       return <UI.Section key={item.apModels.join('')}>
         <ApFirmwareUpdateGroup
           apModels={item.apModels}
-          versionOptions={item.firmwares}
-          update={updatePayload}
-          defaultVersion={item.defaultValue}
+          versionOptions={item.versionOptions}
+          update={update}
+          defaultVersion={item.defaultVersion}
         />
       </UI.Section>
     })}
@@ -74,38 +88,38 @@ function convertToDisplayData (data: RowDataType[]): DisplayDataType[] {
 
   return data.map(item => ({
     apModels: item.apModels,
-    firmwares: item.firmwares.map(firmware => ({
+    versionOptions: item.firmwares.map(firmware => ({
       value: firmware.name,
       label: getVersionLabel(intl, firmware)
     })),
-    defaultValue: getDefaultValueFromDataFirmwares(item.firmwares)
+    defaultVersion: getDefaultValueFromFirmwares(item.firmwares)
   }))
 }
 
-function useTargetFirmwares (data: RowDataType[]) {
-  const defaultTargetFirmwares = data.map(initTargetFirmwares).flat()
-  return useState<TargetFirmwaresType>(defaultTargetFirmwares)
+function convertToTargetFirmwaresType (data: RowDataType[]): TargetFirmwaresType {
+  return data.map(initTargetFirmwares).flat()
 }
 
-function getDefaultValueFromDataFirmwares (firmwares: RowDataType['firmwares']): string {
+function getDefaultValueFromFirmwares (firmwares: RowDataType['firmwares']): string {
   return firmwares[0].name
 }
 
 function initTargetFirmwares (data: RowDataType): TargetFirmwaresType {
   return data.apModels.map(apModel => {
-    return { apModel, firmware: getDefaultValueFromDataFirmwares(data.firmwares) }
+    return { apModel, firmware: getDefaultValueFromFirmwares(data.firmwares) }
   })
 }
 
-function updateTargetFirmwares (
-  targetFirmwares: TargetFirmwaresType,
-  apModels: string[],
-  version: string | undefined
-): TargetFirmwaresType {
+// eslint-disable-next-line max-len
+function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModels: string[], version: string | undefined): TargetFirmwaresType {
   const result = [...targetFirmwares]
 
   if (version) {
-    result.forEach(fw => apModels.includes(fw.apModel) && (fw.firmware = version))
+    apModels.forEach(apModel => {
+      const targetIndex = result.findIndex(existing => existing.apModel === apModel)
+      // eslint-disable-next-line max-len
+      result.splice((targetIndex === -1 ? result.length : targetIndex), 1, { apModel, firmware: version })
+    })
   } else {
     _.remove(result, (fw) => apModels.includes(fw.apModel))
   }
