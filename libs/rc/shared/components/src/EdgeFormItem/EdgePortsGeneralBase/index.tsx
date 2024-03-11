@@ -50,9 +50,11 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
   let tabs = [] as TabData[]
   Object.keys(data)?.forEach((formlistItemKey) => {
     const portConfig = data[formlistItemKey][0]
-
     const innerPortFormID = portConfig.interfaceName!
     const portStatus = _.find(statusData, { portName: portConfig.interfaceName })
+    const isLagPort = lagData?.some(lag => lag.lagMembers
+      ? lag.lagMembers.filter(member => member?.portId === portConfig.id)[0]
+      : false)
 
     tabs.push({
       label: getEdgePortDisplayName(portConfig),
@@ -70,10 +72,10 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
           />
         )}
       </Form.List>,
-      isLagPort: portStatus?.isLagMember
+      isLagPort: isLagPort
     })
 
-    if(!unLagPort && !portStatus?.isLagMember) {
+    if(!unLagPort && !isLagPort) {
       unLagPort = innerPortFormID
     }
   })

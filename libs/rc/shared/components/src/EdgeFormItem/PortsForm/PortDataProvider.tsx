@@ -26,18 +26,22 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
   const {
-    data: portData, isFetching: isPortFetching
+    data: portData,
+    isLoading: isPortLoading,
+    isFetching: isPortFetching
   } = useGetPortConfigQuery({
     params: { serialNumber }
   })
 
   const {
-    data: portStatus, isFetching: isPortStatusFetching
+    data: portStatus,
+    isLoading: isPortStatusLoading,
+    isFetching: isPortStatusFetching
   } = useGetEdgesPortStatusQuery({
     payload: { edgeIds: [serialNumber] }
   })
 
-  const { lagData, isLagFetching } = useGetEdgeLagListQuery({
+  const { lagData, isLagLoading, isLagFetching } = useGetEdgeLagListQuery({
     params: { serialNumber },
     payload: {
       page: 1,
@@ -45,14 +49,16 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
     }
   },{
     skip: !isEdgeLagEnabled,
-    selectFromResult ({ data, isFetching }) {
+    selectFromResult ({ data, isLoading, isFetching }) {
       return {
         lagData: data?.data,
+        isLagLoading: isLoading,
         isLagFetching: isFetching
       }
     }
   })
 
+  const isLoading = isPortLoading || isPortStatusLoading || isLagLoading
   const isFetching = isPortFetching || isPortStatusFetching || isLagFetching
 
   return <EdgePortsDataContext.Provider value={{
@@ -61,7 +67,7 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
     lagData: lagData ?? [],
     isFetching
   }}>
-    <Loader states={[{ isLoading: isFetching }]}>
+    <Loader states={[{ isLoading, isFetching }]}>
       {props.children}
     </Loader>
   </EdgePortsDataContext.Provider>

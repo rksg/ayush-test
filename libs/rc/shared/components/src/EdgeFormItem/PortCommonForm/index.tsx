@@ -74,15 +74,17 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const mac = useWatch(getFieldFullPath('mac'), form)
   const portType = useWatch(getFieldFullPath('portType'), form)
-  const portEnabled = useWatch(getFieldFullPath('enabled'), form)
+  // eslint-disable-next-line max-len
+  const portEnabled = useWatch(getFieldFullPath((_.get(formFieldsProps, 'enabled')?.name as string) ?? 'enabled'), form)
 
   const lagId = form.getFieldValue(getFieldFullPath('id'))
   const physicalPortIfName = form.getFieldValue(getFieldFullPath('interfaceName'))
+
   const corePortInfo = getEnabledCorePortInfo(portsData, lagData || [])
   const hasCorePortEnabled = !!corePortInfo.key
-  const isCurrentPortCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
+  const isCurrentInterfaceCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
-    : corePortInfo.key === physicalPortIfName))
+    : corePortInfo.key === physicalPortIfName)) /* || corePortEnabled*/
 
   // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
   // 2. corePort should be grey-out when one of the following NOT matches :
@@ -94,13 +96,6 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //     - only allowed 1 core port enabled
   //     - must be LAN port type
   const hasWANPort = isWANPortExist(portsData, lagData || [])
-  const isCorePortDisabled = corePortInfo.isExistingCorePortInLagMember
-    ? false
-    : ((hasWANPort && !isCurrentPortCorePortEnabled)
-      || (isEdgeSdLanRun
-        ? hasCorePortEnabled
-        // eslint-disable-next-line max-len
-        : ((hasCorePortEnabled && !isCurrentPortCorePortEnabled) || portType !== EdgePortTypeEnum.LAN)))
 
   const getCurrentSubnetInfo = () => {
     return {
@@ -113,6 +108,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     const formValues = portsDataRootPath.length
       ? _.get(form.getFieldsValue(true), portsDataRootPath)
       : form.getFieldsValue(true)
+
     return Object.entries<EdgePort[]>(formValues)
       .filter(item => item[0] !== formListID
         && _.get(item[1], getFieldFullPath('enabled'))
@@ -126,7 +122,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
     if(
-      (portType === EdgePortTypeEnum.LAN && isCurrentPortCorePortEnabled === false) ||
+      (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) ||
       portType === EdgePortTypeEnum.CLUSTER
     ) {
       return (
@@ -163,7 +159,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       )
     } else if (portType === EdgePortTypeEnum.WAN
       // only core port enabled LAN port can configure `ipMode`
-      || (portType === EdgePortTypeEnum.LAN && isCurrentPortCorePortEnabled)) {
+      || (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled)) {
       return (
         <>
           <Form.Item
@@ -257,6 +253,19 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       name={getFieldPath('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
       {..._.get(formFieldsProps, 'portType')}
+      rules={[
+        { required: true },
+        { validator: (_, value) => {
+          if (!corePortInfo.isExistingCorePortInLagMember
+              && hasCorePortEnabled && value === EdgePortTypeEnum.WAN ) {
+            return Promise.reject(
+              $t({ defaultMessage: 'WAN port cannot be used when Core Port exist' })
+            )
+          } else {
+            return Promise.resolve()
+          }
+        } }
+      ]}
     >
       <Select>
         {(_.get(formFieldsProps, 'portType')?.options ?? portTypeOptions).map((item) => {
@@ -293,7 +302,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   {..._.get(formFieldsProps, 'corePortEnabled')}
                 >
                   <Checkbox
-                    disabled={isCorePortDisabled}
+                    disabled={corePortInfo.isExistingCorePortInLagMember
+                      ? false
+                      : ((hasWANPort && !isCurrentInterfaceCorePortEnabled)
+                        || (isEdgeSdLanRun
+                          ? hasCorePortEnabled
+                          // eslint-disable-next-line max-len
+                          : ((hasCorePortEnabled && !isCurrentInterfaceCorePortEnabled) || portType !== EdgePortTypeEnum.LAN)))
+                    }
                   >
                     {
                       // eslint-disable-next-line max-len
