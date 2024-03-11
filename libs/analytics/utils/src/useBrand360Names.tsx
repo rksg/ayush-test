@@ -19,21 +19,18 @@ const mapper: Record<keyof Brand360Names, keyof Settings> = {
 export function useBrand360Names (settings: Partial<Settings> | undefined): Brand360Names {
   const { $t } = useIntl()
   return useMemo(() => {
-    let names: Brand360Names = {
+    const names: Brand360Names = {
       brand: $t({ defaultMessage: 'Brand 360' }),
       lsp: $t({ defaultMessage: 'LSP' }),
       property: $t({ defaultMessage: 'Property' })
     }
 
-    const keys = Object.keys(names) as Array<keyof Brand360Names>
-    if (settings) {
-      for (const key of keys) {
-        if (mapper[key] in settings) {
-          names = { ...names, [key]: settings![mapper[key]]! }
-        }
-      }
-    }
+    if (!settings) return names
 
-    return names
+    return Object.entries(mapper).reduce((acc, [key, settingKey]) => {
+      const value = settings[settingKey]
+      if (value) acc[key as keyof Brand360Names] = value
+      return acc
+    }, names)
   }, [settings, $t])
 }
