@@ -38,7 +38,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const { portData, portStatus, lagData, isFetching } = useContext(EdgePortsDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
-  const { edgeSdLanData, isEdgeSdLanFetching }
+  const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
     = useGetEdgeSdLanViewDataListQuery(
       { payload: {
         filters: { edgeId: [serialNumber] },
@@ -46,8 +46,9 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       } },
       {
         skip: !isEdgeSdLanReady,
-        selectFromResult: ({ data, isFetching }) => ({
+        selectFromResult: ({ data, isLoading, isFetching }) => ({
           edgeSdLanData: data?.data?.[0],
+          isEdgeSdLanLoading: isLoading,
           isEdgeSdLanFetching: isFetching
         })
       }
@@ -145,7 +146,8 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   return <Loader states={[{
-    isLoading: isFetching || isEdgeSdLanFetching
+    isLoading: isEdgeSdLanLoading,
+    isFetching: isFetching || isEdgeSdLanFetching
   }]}>
     {portData.length > 0 ?
       <StepsForm

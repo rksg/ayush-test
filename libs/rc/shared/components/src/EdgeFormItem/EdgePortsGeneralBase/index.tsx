@@ -1,11 +1,12 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import { Form, FormInstance } from 'antd'
-import _                      from 'lodash'
-import { useIntl }            from 'react-intl'
+import { Form }    from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Tabs, Tooltip }                                                               from '@acx-ui/components'
 import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+
 
 import { PortConfigForm } from './PortConfigForm'
 
@@ -20,17 +21,16 @@ interface TabData {
   isLagPort?: boolean
 }
 
-interface PortsGeneralProps<T> {
+interface PortsGeneralProps {
   statusData: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
-  form: FormInstance<T>
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
 }
 
-export const EdgePortsGeneralBase = <T,>(props: PortsGeneralProps<T>) => {
+export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
   const {
     statusData,
     lagData,
@@ -42,14 +42,15 @@ export const EdgePortsGeneralBase = <T,>(props: PortsGeneralProps<T>) => {
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string>('')
   const form = Form.useFormInstance()
-  const data = (fieldHeadPath
+  const data = (fieldHeadPath.length
     ? _.get(form.getFieldsValue(true), fieldHeadPath)
     : form.getFieldsValue(true)) as { [portId:string ]: EdgePort[] }
 
   let unLagPort = ''
   let tabs = [] as TabData[]
-  Object.keys(data).forEach((formlistItemKey) => {
+  Object.keys(data)?.forEach((formlistItemKey) => {
     const portConfig = data[formlistItemKey][0]
+
     const innerPortFormID = portConfig.interfaceName!
     const portStatus = _.find(statusData, { portName: portConfig.interfaceName })
 
@@ -59,10 +60,8 @@ export const EdgePortsGeneralBase = <T,>(props: PortsGeneralProps<T>) => {
       content: <Form.List name={fieldHeadPath.concat([innerPortFormID])}>
         {(fields) => fields.map(
           ({ key }) => <PortConfigForm
-            formRef={form}
             formListItemKey={key+''}
             fieldHeadPath={fieldHeadPath.concat([innerPortFormID, `${key}`])}
-            portsDataRootPath={fieldHeadPath}
             key={`${innerPortFormID}_${key}`}
             id={portConfig.interfaceName!}
             isEdgeSdLanRun={isEdgeSdLanRun}
@@ -78,8 +77,6 @@ export const EdgePortsGeneralBase = <T,>(props: PortsGeneralProps<T>) => {
       unLagPort = innerPortFormID
     }
   })
-
-
 
   // TODO: is needed?
   // useEffect(() => {

@@ -21,7 +21,6 @@ interface ConfigFormProps {
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
-  portsDataRootPath: string[]
 }
 
 const { useWatch, useFormInstance } = Form
@@ -33,8 +32,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     formListItemKey,
     isEdgeSdLanRun,
     lagData,
-    fieldHeadPath = [],
-    portsDataRootPath
+    fieldHeadPath = []
   } = props
 
   const { $t } = useIntl()
@@ -55,6 +53,10 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   useLayoutEffect(() => {
     form.validateFields()
   }, [id, form])
+
+  const portsDataRootPath = fieldHeadPath.length
+    ? fieldHeadPath.slice(0, fieldHeadPath.length - 2)
+    : []
 
   return (
     <>
@@ -84,7 +86,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             }}
           >
             {() => {
-              const allPortsValues = _.get(form.getFieldsValue(true), portsDataRootPath)
+              const allPortsValues = portsDataRootPath.length
+                ? _.get(form.getFieldsValue(true), portsDataRootPath)
+                : form.getFieldsValue(true)
 
               return <EdgePortCommonForm
                 formRef={form}
