@@ -36,6 +36,16 @@ export const allowResetForStatus = (edgeStatus: string) => {
   return stringStatus.includes(edgeStatus)
 }
 
+export const allowSendOtpForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = unconfigedEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
+export const allowSendFactoryResetStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = rebootableEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
 export const rebootableEdgeStatuses = [
   EdgeStatusEnum.OPERATIONAL,
   EdgeStatusEnum.APPLYING_CONFIGURATION,
@@ -43,6 +53,8 @@ export const rebootableEdgeStatuses = [
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
 export const resettabaleEdgeStatuses = rebootableEdgeStatuses
+
+export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
 export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
