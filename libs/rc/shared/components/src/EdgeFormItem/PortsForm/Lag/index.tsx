@@ -5,7 +5,7 @@ import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal }                                            from '@acx-ui/components'
-import { useDeleteEdgeLagMutation }                                                                       from '@acx-ui/rc/services'
+import { useDeleteEdgeLagMutation, useGetEdgeListQuery }                                                  from '@acx-ui/rc/services'
 import { EdgeLag, EdgeLagStatus, defaultSort, sortProp, getEdgePortDisplayName, getEdgePortIpModeString } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                      from '@acx-ui/user'
 
@@ -36,6 +36,25 @@ const Lag = (props: LagProps) => {
     ...item,
     adminStatus: lagStatusList.find(status => status.lagId === item.id)?.adminStatus ?? ''
   }))
+
+  const { venueId, edgeClusterId } = useGetEdgeListQuery(
+    { payload: {
+      fields: [
+        'name',
+        'serialNumber',
+        'venueId',
+        'clusterId'
+      ],
+      filters: { serialNumber: [serialNumber] }
+    } },
+    {
+      skip: !!!serialNumber,
+      selectFromResult: ({ data }) => ({
+        venueId: data?.data[0].venueId,
+        edgeClusterId: data?.data[0].clusterId
+      })
+    }
+  )
 
   const [deleteEdgeLag] = useDeleteEdgeLagMutation()
 
@@ -171,6 +190,8 @@ const Lag = (props: LagProps) => {
           },
           onOk: () => {
             deleteEdgeLag({ params: {
+              venueId: venueId,
+              edgeClusterId: edgeClusterId,
               serialNumber: serialNumber,
               lagId: targetData.id.toString()
             } }).then(clearSelection)
