@@ -127,7 +127,8 @@ const TunnelProfileTable = () => {
       key: 'personalIdentityNetworkIds',
       dataIndex: 'personalIdentityNetworkIds',
       align: 'center',
-      filterable: nsgOptions,
+      show: isEdgePinReady,
+      filterable: isEdgePinReady? nsgOptions : false,
       sorter: true,
       render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
