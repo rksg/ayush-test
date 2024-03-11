@@ -7,7 +7,7 @@ import { useGetTenantSettingsQuery }                         from '@acx-ui/analy
 import type { Settings }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
-  useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
 import {
@@ -91,7 +91,7 @@ export function Brand360 () {
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
-  const mspPropertiesData = useMspCustomerListDropdownQuery(
+  const mspPropertiesData = useMspECListQuery(
     { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
@@ -99,7 +99,7 @@ export function Brand360 () {
   const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
 
   const lookupAndMappingData = propertiesData?.data
-    ? transformLookupAndMappingData(propertiesData.data)
+    ? transformLookupAndMappingData(propertiesData.data, isLSP)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData
