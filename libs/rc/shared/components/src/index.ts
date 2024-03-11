@@ -63,6 +63,7 @@ export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
+export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidget, MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {

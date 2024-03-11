@@ -3,7 +3,7 @@ import { useIntl }     from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery, useGetEnhancedIdentityProviderListQuery }         from '@acx-ui/rc/services'
+import { useGetApSnmpViewModelQuery, useGetIdentityProviderListQuery }                 from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -38,7 +38,7 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }, { skip: !supportApSnmp }).data?.totalCount || 0
-  const IdentityProviderTotalCount = useGetEnhancedIdentityProviderListQuery({
+  const IdentityProviderTotalCount = useGetIdentityProviderListQuery({
     params,
     payload: {
       fields: ['id']

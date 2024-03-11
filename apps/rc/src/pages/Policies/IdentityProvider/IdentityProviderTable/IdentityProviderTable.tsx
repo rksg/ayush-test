@@ -4,10 +4,9 @@ import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/component
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useDeleteIdentityProviderListMutation,
-  useGetEnhancedIdentityProviderListQuery,
-  useNetworkListQuery,
-  useGetVenuesQuery
+  useDeleteIdentityProviderMutation,
+  useGetIdentityProviderListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -18,8 +17,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   IdentityProviderViewModel,
-  Network,
-  Venue
+  Network
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
@@ -27,21 +25,24 @@ import { filterByAccess, hasAccess }                               from '@acx-ui
 import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
+  fields: ['id', 'name', 'naiRealms', 'plmns', 'roamingConsortiumOIs',
+    'authRadiusId', 'accountingRadiusId', 'networkIds', 'venueIds' ],
   searchString: '',
   filters: {}
 }
+
 
 export default function IdentityProviderTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteIdentityProviderListMutation()
+  const [ deleteFn ] = useDeleteIdentityProviderMutation()
 
   const settingsId = 'policies-identity-provider-table'
+
   const tableQuery = useTableQuery<IdentityProviderViewModel>({
-    useQuery: useGetEnhancedIdentityProviderListQuery,
+    useQuery: useGetIdentityProviderListQuery,
     defaultPayload,
     pagination: { settingsId }
   })
@@ -72,7 +73,7 @@ export default function IdentityProviderTable () {
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
             type: PolicyType.IDENTITY_PROVIDER,
             oper: PolicyOperation.EDIT,
-            policyId: id
+            policyId: id!
           })
         })
       }
@@ -101,7 +102,7 @@ export default function IdentityProviderTable () {
           </TenantLink>
         ])}
       />
-      <Loader states={[tableQuery]}>
+      <Loader states={[{ isLoading: false } /*tableQuery*/]}>
         <Table<IdentityProviderViewModel>
           settingsId={settingsId}
           columns={useColumns()}
@@ -137,22 +138,6 @@ function useColumns () {
     selectFromResult: ({ data }: { data?: { data: Network[] } }) => ({
       networkNameMap: data?.data
         ? data.data.map(network => ({ key: network.id, value: network.name }))
-        : emptyResult
-    })
-  })
-  const { venueNameMap }: { venueNameMap: KeyValue<string, string>[] } = useGetVenuesQuery({
-    params: { tenantId: params.tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 2048
-    }
-  }, {
-    selectFromResult: ({ data }: { data?: { data: Venue[] } }) => ({
-      venueNameMap: data?.data
-        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
         : emptyResult
     })
   })
@@ -200,20 +185,40 @@ function useColumns () {
       )
     },
     {
-      key: 'roamingConsortiumOI',
+      key: 'roamConsortiumOI',
       title: $t({ defaultMessage: 'Roaming Consortium OI' }),
-      dataIndex: 'roamingConsortiumOIs',
+      dataIndex: 'roamConsortiumOIs',
       align: 'center',
       sorter: true,
-      render: (_, { roamingConsortiumOIs }) => (
-        roamingConsortiumOIs
+      render: (_, { roamConsortiumOIs }) => (
+        roamConsortiumOIs
           ? <SimpleListTooltip
-            items={roamingConsortiumOIs.map(oi => oi.name + ' (' + oi.organizationId + ')')}
-            displayText={(roamingConsortiumOIs).length}
+            items={roamConsortiumOIs.map(oi => oi.name + ' (' + oi.organizationId + ')')}
+            displayText={(roamConsortiumOIs).length}
             title={$t({ defaultMessage: 'Roaming Consortium OI' })}
           />
           : ''
       )
+    },
+    {
+      key: 'authRadiusCount',
+      title: $t({ defaultMessage: 'Auth Service' }),
+      dataIndex: 'authRadiusCount',
+      align: 'center',
+      sorter: false,
+      render: (_, { authRadiusId }) => {
+        return authRadiusId ? 1 : 0
+      }
+    },
+    {
+      key: 'accountingRadiusCount',
+      title: $t({ defaultMessage: 'Accounting Service' }),
+      dataIndex: 'accountingRadiusCount',
+      align: 'center',
+      sorter: false,
+      render: (_, { accountingRadiusId }) => {
+        return accountingRadiusId ? 1 : 0
+      }
     },
     {
       key: 'networkCount',
@@ -222,29 +227,13 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: true,
+      sorter: false,
       render: (_, { networkIds }) => {
         if (!networkIds || networkIds.length === 0) return 0
 
         return <SimpleListTooltip
           items={networkNameMap.filter(kv => networkIds.includes(kv.key)).map(kv => kv.value)}
           displayText={networkIds.length} />
-      }
-    },
-    {
-      key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueCount',
-      align: 'center',
-      filterKey: 'venueIds',
-      filterable: venueNameMap,
-      sorter: true,
-      render: (_, { venueIds }) => {
-        if (!venueIds || venueIds.length === 0) return 0
-
-        return <SimpleListTooltip
-          items={venueNameMap.filter(kv => venueIds.includes(kv.key)).map(kv => kv.value)}
-          displayText={venueIds.length} />
       }
     }
   ]

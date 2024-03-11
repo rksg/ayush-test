@@ -1,0 +1,187 @@
+import {
+  IdentityProvider,
+  IdentityProviderActionPayload,
+  IdentityProviderActionType
+} from '@acx-ui/rc/utils'
+
+import { updateRowId } from '../utils'
+
+
+export const IdentityProviderFormReducer = (
+  state: IdentityProvider, action: IdentityProviderActionPayload
+): IdentityProvider => {
+  switch (action.type) {
+    case IdentityProviderActionType.NAME:
+      return {
+        ...state,
+        name: action.payload.name
+      }
+    case IdentityProviderActionType.ADD_REALM:
+      if (!state.naiRealms) {
+        return {
+          ...state,
+          naiRealms: [
+            action.payload
+          ]
+        }
+      }
+      return {
+        ...state,
+        naiRealms: [
+          ...state.naiRealms,
+          action.payload
+        ]
+      }
+    case IdentityProviderActionType.UPDATE_ENTIRE_REALM:
+      return {
+        ...state,
+        naiRealms: [...action.payload]
+      }
+    case IdentityProviderActionType.UPDATE_REALM:
+      return {
+        ...state,
+        naiRealms: state.naiRealms.map((value, index) => {
+          if (index === action.payload.rowId) {
+            return {
+              name: action.payload.name,
+              encoding: action.payload.encoding,
+              eap: action.payload.eap
+            }
+          }
+          return value
+        })
+      }
+    case IdentityProviderActionType.DELETE_REALM:
+      if (state.naiRealms) {
+        const rowIds = action.payload.rowIds
+        const filteredRealms = state.naiRealms.filter(r => rowIds.indexOf(r.rowId!) === -1)
+
+        return {
+          ...state,
+          naiRealms: [...updateRowId(filteredRealms)]
+        }
+      }
+      return {
+        ...state
+      }
+    case IdentityProviderActionType.ADD_PLMN:
+      if (!state.plmns) {
+        return {
+          ...state,
+          plmns: [
+            action.payload
+          ]
+        }
+      }
+      return {
+        ...state,
+        plmns: [
+          ...state.plmns,
+          action.payload
+        ]
+      }
+    case IdentityProviderActionType.UPDATE_ENTIRE_PLMN:
+      return {
+        ...state,
+        plmns: [...action.payload]
+      }
+    case IdentityProviderActionType.UPDATE_PLMN:
+      return {
+        ...state,
+        plmns: state.plmns?.map((value, index) => {
+          if (index === action.payload.rowId) {
+            return {
+              mcc: action.payload.mcc,
+              mnc: action.payload.mnc
+            }
+          }
+          return value
+        })
+      }
+    case IdentityProviderActionType.DELETE_PLMN:
+      if (state.plmns) {
+        const rowIds = action.payload.rowIds
+        const filteredPlmns = state.plmns.filter(r => rowIds.indexOf(r.rowId!) === -1)
+
+        return {
+          ...state,
+          plmns: [...updateRowId(filteredPlmns)]
+        }
+      }
+      return {
+        ...state
+      }
+    case IdentityProviderActionType.ADD_ROI:
+      if (!state.roamConsortiumOIs) {
+        return {
+          ...state,
+          roamConsortiumOIs: [
+            action.payload
+          ]
+        }
+      }
+      return {
+        ...state,
+        roamConsortiumOIs: [
+          ...state.roamConsortiumOIs,
+          action.payload
+        ]
+      }
+    case IdentityProviderActionType.UPDATE_ENTIRE_ROI:
+      return {
+        ...state,
+        roamConsortiumOIs: [...action.payload]
+      }
+    case IdentityProviderActionType.UPDATE_ROI:
+      return {
+        ...state,
+        roamConsortiumOIs: state.roamConsortiumOIs?.map((value, index) => {
+          if (index === action.payload.rowId) {
+            return {
+              name: action.payload.name,
+              organizationId: action.payload.organizationId
+            }
+          }
+          return value
+        })
+      }
+    case IdentityProviderActionType.DELETE_ROI:
+      if (state.roamConsortiumOIs) {
+        const rowIds = action.payload.rowIds
+        const filteredOIs = state.roamConsortiumOIs.filter(r => rowIds.indexOf(r.rowId!) === -1)
+
+        return {
+          ...state,
+          roamConsortiumOIs: [...updateRowId(filteredOIs)]
+        }
+      }
+      return {
+        ...state
+      }
+    case IdentityProviderActionType.AUTH_RADIUS_ID:
+      return {
+        ...state,
+        authRadiusId: action.payload.authRadiusId
+      }
+    case IdentityProviderActionType.ACCOUNT_RADIUS_ENABLED:
+      return {
+        ...state,
+        accountingRadiusEnabled: action.payload.accountingRadiusEnabled
+      }
+    case IdentityProviderActionType.ACCOUNT_RADIUS_ID:
+      return {
+        ...state,
+        accountingRadiusId: action.payload.accountingRadiusId
+      }
+    case IdentityProviderActionType.DYNAMIC_VLAN:
+      return {
+        ...state,
+        dynamicVlan: action.payload.dynamicVlan
+      }
+    case IdentityProviderActionType.UPDATE_STATE:
+      return {
+        ...state,
+        ...action.payload.state
+      }
+  }
+}

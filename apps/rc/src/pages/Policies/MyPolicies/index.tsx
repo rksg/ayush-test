@@ -9,7 +9,7 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
-  useGetEnhancedIdentityProviderListQuery,
+  useGetIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
@@ -131,8 +131,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetEnhancedIdentityProviderListQuery({
-        params, payload: defaultPayload
+      totalCount: useGetIdentityProviderListQuery({
+        params, payload: { tenantId: params.tenantId }
       }, { skip: !supportHotspot20R1 }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
