@@ -156,7 +156,7 @@ export function AddPrivilegeGroup () {
   const DisplaySelectedVenues = () => {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <>
+    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -169,14 +169,13 @@ export function AddPrivilegeGroup () {
         <UI.VenueList key={venue.id}>
           {venue.name}
         </UI.VenueList>
-      )}
-    </>
+      )}</div>
   }
 
   const DisplaySelectedCustomers = () => {
     const firstCustomer = selectedCustomers[0]
     const restCustomer = selectedCustomers.slice(1)
-    return <>
+    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
         {firstCustomer.name} ({firstCustomer.children.every(v => v.selected) ?
           'All Venues' : (firstCustomer.children.filter(v => v.selected).length + ' ' +
@@ -193,123 +192,157 @@ export function AddPrivilegeGroup () {
             'All Venues' : (ec.children.filter(v => v.selected).length + ' ' +
           (ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'))})
         </UI.VenueList>
-      )}
-    </>
+      )}</div>
   }
 
   const ScopeForm = () => {
-    return <Form.Item
-      // name='scope'
-      label={intl.$t({ defaultMessage: 'Scope' })}
-      initialValue={ChoiceScopeEnum.ALL_VENUES}>
-      <Radio.Group
-        value={selectedScope}
-        onChange={onScopeChange}
-      >
-        <Space direction={'vertical'} size={12}>
-          <Radio
-            key={ChoiceScopeEnum.ALL_VENUES}
-            value={ChoiceScopeEnum.ALL_VENUES}>
-            {intl.$t({ defaultMessage: 'All Venues' })}
-          </Radio>
-          <Radio
-            key={ChoiceScopeEnum.SPECIFIC_VENUE}
-            value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-            {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
-          </Radio>
-          <Button
-            style={{ marginLeft: '22px' }}
-            hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
-            type='link'
-            onClick={onClickSelectVenue}
-          >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
-        </Space>
-      </Radio.Group>
+    return <>
+      <Form.Item
+        name='scope'
+        label={intl.$t({ defaultMessage: 'Scope' })}
+        initialValue={ChoiceScopeEnum.ALL_VENUES}
+        rules={[
+          { validator: () =>{
+            if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
+              return Promise.reject(
+                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+              )
+            }
+            return Promise.resolve()}
+          }
+        ]}>
+        <Radio.Group
+          value={selectedScope}
+          onChange={onScopeChange}
+        >
+          <Space direction={'vertical'} size={12}>
+            <Radio
+              key={ChoiceScopeEnum.ALL_VENUES}
+              value={ChoiceScopeEnum.ALL_VENUES}>
+              {intl.$t({ defaultMessage: 'All Venues' })}
+            </Radio>
+            <Radio
+              key={ChoiceScopeEnum.SPECIFIC_VENUE}
+              value={ChoiceScopeEnum.SPECIFIC_VENUE}>
+              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+            </Radio>
+            <Button
+              style={{ marginLeft: '22px' }}
+              hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
+              type='link'
+              onClick={onClickSelectVenue}
+            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
-    </Form.Item>
+    </>
   }
 
   const MspScopeForm = () => {
-    return <><Form.Item
-      name='ownscope'
-      label={intl.$t({ defaultMessage: 'Scope' })}
-      children={
-        <Checkbox checked={true} children={intl.$t({ defaultMessage: 'Own Account' })} />
-      }
-    />
-    <Form.Item
-      initialValue={ChoiceScopeEnum.ALL_VENUES}>
-      <Radio.Group
-        style={{ marginLeft: 22 }}
-        value={selectedScope}
-        onChange={onScopeChange}
-      >
-        <Space direction={'vertical'} size={12}>
-          <Radio
-            key={ChoiceScopeEnum.ALL_VENUES}
-            value={ChoiceScopeEnum.ALL_VENUES}>
-            {intl.$t({ defaultMessage: 'All Venues' })}
-          </Radio>
-          <Radio
-            key={ChoiceScopeEnum.SPECIFIC_VENUE}
-            value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-            {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
-          </Radio>
-          <Button
-            style={{ marginLeft: '22px' }}
-            hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
-            type='link'
-            onClick={onClickSelectVenue}
-          >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
-        </Space>
-      </Radio.Group>
+    return <>
+      <Form.Item
+        name='ownscope'
+        label={intl.$t({ defaultMessage: 'Scope' })}
+        children={
+          <Checkbox checked={true} children={intl.$t({ defaultMessage: 'Own Account' })} />
+        }
+      />
+      <Form.Item
+        name='mspvenues'
+        initialValue={ChoiceScopeEnum.ALL_VENUES}
+        rules={[
+          { validator: () =>{
+            if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
+              return Promise.reject(
+                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+              )
+            }
+            return Promise.resolve()}
+          }
+        ]}>
+        <Radio.Group
+          style={{ marginLeft: 22 }}
+          value={selectedScope}
+          onChange={onScopeChange}
+        >
+          <Space direction={'vertical'} size={12}>
+            <Radio
+              key={ChoiceScopeEnum.ALL_VENUES}
+              value={ChoiceScopeEnum.ALL_VENUES}>
+              {intl.$t({ defaultMessage: 'All Venues' })}
+            </Radio>
+            <Radio
+              key={ChoiceScopeEnum.SPECIFIC_VENUE}
+              value={ChoiceScopeEnum.SPECIFIC_VENUE}>
+              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+            </Radio>
+            <Button
+              style={{ marginLeft: '22px' }}
+              hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
+              type='link'
+              onClick={onClickSelectVenue}
+            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
         <DisplaySelectedVenues />}
-    </Form.Item>
 
-    <Form.Item
-      name='mspscope'
-      valuePropName='checked'
-      children={
-        <Checkbox checked={displayMspScope}
-          onChange={e => setDisplayMspScope(e.target.checked)}
-          children={intl.$t({ defaultMessage: 'MSP Customers' })} />
-      }
-    />
-    <Form.Item
-      initialValue={ChoiceCustomerEnum.ALL_CUSTOMERS}
-      hidden={!displayMspScope}>
-      <Radio.Group
-        style={{ marginLeft: 22 }}
-        value={selectedMspScope}
-        onChange={onCustomerChange}
-      >
-        <Space direction={'vertical'} size={12}>
-          <Radio
-            key={ChoiceCustomerEnum.ALL_CUSTOMERS}
-            value={ChoiceCustomerEnum.ALL_CUSTOMERS}>
-            {intl.$t({ defaultMessage: 'All Customers' })}
-          </Radio>
-          <Radio
-            key={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}
-            value={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}>
-            {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
-          </Radio>
-          <Button
-            style={{ marginLeft: '22px' }}
-            hidden={selectedMspScope ===
+      <Form.Item
+        name='mspscope'
+        valuePropName='checked'
+        children={
+          <Checkbox checked={displayMspScope}
+            onChange={e => setDisplayMspScope(e.target.checked)}
+            children={intl.$t({ defaultMessage: 'MSP Customers' })} />
+        }
+      />
+      <Form.Item
+        name='mspcustomers'
+        initialValue={ChoiceCustomerEnum.ALL_CUSTOMERS}
+        hidden={!displayMspScope}
+        rules={[
+          { validator: () =>{
+            if(selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER
+            && selectedCustomers.length === 0) {
+              return Promise.reject(
+                `${intl.$t({ defaultMessage: 'Please select customer(s)' })} `
+              )
+            }
+            return Promise.resolve()}
+          }
+        ]}>
+        <Radio.Group
+          style={{ marginLeft: 22 }}
+          value={selectedMspScope}
+          onChange={onCustomerChange}
+        >
+          <Space direction={'vertical'} size={12}>
+            <Radio
+              key={ChoiceCustomerEnum.ALL_CUSTOMERS}
+              value={ChoiceCustomerEnum.ALL_CUSTOMERS}>
+              {intl.$t({ defaultMessage: 'All Customers' })}
+            </Radio>
+            <Radio
+              key={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}
+              value={ChoiceCustomerEnum.SPECIFIC_CUSTOMER}>
+              {intl.$t({ defaultMessage: 'Specific Customer(s)' })}
+            </Radio>
+            <Button
+              style={{ marginLeft: '22px' }}
+              hidden={selectedMspScope ===
               ChoiceCustomerEnum.ALL_CUSTOMERS || selectedCustomers.length > 0}
-            type='link'
-            onClick={onClickSelectCustomer}
-          >Select customers</Button>
-        </Space>
-      </Radio.Group>
-
+              type='link'
+              onClick={onClickSelectCustomer}
+            >Select customers</Button>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
       {selectedCustomers.length > 0 && selectedMspScope === ChoiceCustomerEnum.SPECIFIC_CUSTOMER &&
         <DisplaySelectedCustomers />}
-
-    </Form.Item></>
+    </>
   }
 
   const PrivilegeGroupForm = () => {
