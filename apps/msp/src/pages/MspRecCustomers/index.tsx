@@ -551,7 +551,8 @@ export function MspRecCustomers () {
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+                type='primary'>{ isHspSupportEnabled ? $t({ defaultMessage: 'Add Property' })
+                  : $t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
           : [
