@@ -159,7 +159,8 @@ export enum Features {
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
-  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle'
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
+  RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
