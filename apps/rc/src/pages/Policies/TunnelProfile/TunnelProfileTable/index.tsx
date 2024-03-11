@@ -20,6 +20,7 @@ const TunnelProfileTable = () => {
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
   const isSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -39,6 +40,7 @@ const TunnelProfileTable = () => {
       pageSize: 10000
     }
   }, {
+    skip: !isEdgePinReady,
     selectFromResult: ({ data }) => ({
       nsgOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
