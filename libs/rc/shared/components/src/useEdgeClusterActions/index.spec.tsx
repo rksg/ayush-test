@@ -12,6 +12,7 @@ const mockedBuckDeleteApi = jest.fn()
 const mockedDeleteClusterApi = jest.fn()
 const mockedRebootApi = jest.fn()
 const mockedSendOtp = jest.fn()
+const mockedFactoryReset = jest.fn()
 
 const { mockEdgeList, mockEdgeClusterList } = EdgeGeneralFixtures
 
@@ -48,6 +49,13 @@ describe('useEdgeClusterActions', () => {
         EdgeUrlsInfo.sendOtp.url,
         (req, res, ctx) => {
           mockedSendOtp()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.factoryReset.url,
+        (req, res, ctx) => {
+          mockedFactoryReset()
           return res(ctx.status(202))
         }
       )
@@ -130,6 +138,34 @@ describe('useEdgeClusterActions', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'OK' }))
     await waitFor(() => {
       expect(mockedSendOtp).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+  it('should reset and recover successfully', async () => {
+    const mockedCallback = jest.fn()
+    const { result } = renderHook(() => useEdgeClusterActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { sendFactoryReset } = result.current
+    const clusterData = mockEdgeClusterList.data
+      .map(item => ({ ...item, isFirstLevel: true })).slice(2,4)
+    const nodeData = mockEdgeList.data[4]
+    sendFactoryReset(
+      [...clusterData, nodeData] as EdgeClusterTableDataType[],
+      mockedCallback
+    )
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent('Reset & Recover the Edge')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Reset' }))
+    await waitFor(() => {
+      expect(mockedFactoryReset).toBeCalledTimes(1)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)

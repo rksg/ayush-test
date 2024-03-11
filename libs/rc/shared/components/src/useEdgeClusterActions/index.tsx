@@ -107,8 +107,8 @@ export const useEdgeClusterActions = () => {
       type: 'confirm',
       title: $t(
         // eslint-disable-next-line max-len
-        { defaultMessage: 'Reset & Recover {count, plural, one {edgeName} other {edgeNames}}?' },
-        { count: data.length, edgeName: data[0].name, edgeNames: 'these Edges' }
+        { defaultMessage: 'Reset & Recover the {count, plural, one {Edge} other {Edges}}' },
+        { count: data.length }
       ),
       content: (
         <UI.Content>

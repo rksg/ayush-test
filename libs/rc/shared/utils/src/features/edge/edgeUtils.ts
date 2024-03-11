@@ -42,8 +42,8 @@ export const allowSendOtpForStatus = (edgeStatus: string) => {
 }
 
 export const allowSendFactoryResetStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = unconfigedEdgeStatuses
-  return !stringStatus.includes(edgeStatus)
+  const stringStatus: string[] = rebootableEdgeStatuses
+  return stringStatus.includes(edgeStatus)
 }
 
 export const rebootableEdgeStatuses = [
