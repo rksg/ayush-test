@@ -5,10 +5,16 @@ import TextArea                                                                 
 import { useIntl }                                                                   from 'react-intl'
 import { useParams }                                                                 from 'react-router-dom'
 
-import { Alert, Button, Select, Subtitle, useStepFormContext }                                            from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                             from '@acx-ui/icons'
-import { useVenuesListQuery }                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatusEnum, PRODUCT_CODE_VIRTUAL_EDGE, edgeSerialNumberValidator } from '@acx-ui/rc/utils'
+import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
+import { useVenuesListQuery }                                  from '@acx-ui/rc/services'
+import {
+  EdgeClusterTableDataType,
+  EdgeStatusEnum,
+  PRODUCT_CODE_VIRTUAL_EDGE,
+  edgeSerialNumberValidator,
+  deriveEdgeModel
+} from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
 
@@ -61,7 +67,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         smartEdges: editData.edgeList?.map(item => ({
           name: item.name,
           serialNumber: item.serialNumber,
-          model: item.type,
+          model: deriveEdgeModel(item.serialNumber),
           isEdit: true
         }))
       })
@@ -215,9 +221,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
     }
   }), [operations])
 
+  const onSerialChanged = (index: number, serial: string) => {
+    let { smartEdges } = form.getFieldsValue()
+    if (smartEdges[index]) {
+      smartEdges[index].model = deriveEdgeModel(serial)
+      form.setFieldsValue({ smartEdges })
+    }
+  }
+
   return <>
     {
-      fields.map(field =>
+      fields.map((field, idx) =>
         <Row key={field.key} align='middle' gutter={20}>
           <Col span={7}>
             <Form.Item
@@ -238,14 +252,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
                 { required: true },
                 { validator: (_, value) => edgeSerialNumberValidator(value) }
               ]}
-              children={<Input disabled={smartEdges?.[field.name]?.isEdit} />}
+              children={<Input disabled={smartEdges?.[field.name]?.isEdit}
+                onChange={
+                  (e) => onSerialChanged(idx, e.target.value)
+                } />}
               validateFirst
             />
           </Col>
           <Col span={3}>
             <Form.Item
               label={$t({ defaultMessage: 'Model' })}
-              children={smartEdges?.[field.name]?.model ??'-'}
+              children={smartEdges?.[field.name]?.model ?? '-'}
             />
           </Col>
           <Col span={4}>

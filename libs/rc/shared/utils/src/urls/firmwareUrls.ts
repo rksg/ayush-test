@@ -171,9 +171,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueEdgeFirmwareList: {
-    method: 'get',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    method: 'post',
+    url: '/edgeFirmwares/schedules/query',
     newApi: true
   },
   getAvailableEdgeFirmwareVersions: {
@@ -184,8 +183,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateEdgeFirmware: {
     method: 'PATCH',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares',
     newApi: true
   },
   getEdgeUpgradePreferences: {
@@ -202,14 +200,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true
   },
   updateEdgeVenueSchedules: {
     method: 'post',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true
   },
   getScheduledFirmware: {

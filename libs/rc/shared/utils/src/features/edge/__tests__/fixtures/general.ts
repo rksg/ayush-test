@@ -3,7 +3,7 @@ import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeServiceTypeEnum, NodeClus
 export const mockEdgeList = {
   fields: [
     'name','deviceStatus','type','model','serialNumber','ip',
-    'ports','venueName','venueId','tags'
+    'ports','venueName','venueId','tags','clusterId'
   ],
   totalCount: 5,
   page: 1,

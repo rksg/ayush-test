@@ -4,7 +4,9 @@ import { IntlProvider }                             from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures,
+import {
+  EdgeGeneralFixtures,
+  EdgeLagFixtures,
   EdgePortConfigFixtures,
   EdgePortWithStatus,
   EdgeSubInterface,
@@ -29,6 +31,7 @@ import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
@@ -89,6 +92,10 @@ describe('EditEdge ports - sub-interface', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeUrlsInfo.getSubInterfaces.url,
         (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
