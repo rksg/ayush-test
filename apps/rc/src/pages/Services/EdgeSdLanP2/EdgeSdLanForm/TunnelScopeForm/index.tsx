@@ -40,6 +40,7 @@ const NetworksTable = (props: NetworksTableProps) => {
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id', 'type', 'mtuType'],
+  filters: { type: [TunnelTypeEnum.VLAN_VXLAN] },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -84,7 +85,6 @@ export const TunnelScopeForm = () => {
   // eslint-disable-next-line max-len
   const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
   const dcTunnelProfileOptions = (tunnelProfileData
-    ?.filter(item => item.type === TunnelTypeEnum.VLAN_VXLAN)
     ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
   const isSdLanDefaultExist = dcTunnelProfileOptions
     .filter(item => isVlanVxlanDefaultTunnelProfile(item.value)).length > 0
@@ -109,14 +109,20 @@ export const TunnelScopeForm = () => {
       && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
       && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
       if (fieldName === 'activatedNetworks') {
-        // eslint-disable-next-line max-len
-        const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
-        // eslint-disable-next-line max-len
-        const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
-        form.setFieldsValue({
-          [fieldName]: newSelected,
-          activatedGuestNetworks: newSelectedGuestNetworks
-        })
+        const updateContent = {
+          [fieldName]: newSelected
+        } as Record<string, unknown>
+
+        // vlan pooling enabled cannot be a guest network
+        const isVlanPooling = !_.isNil(data.wlan?.advancedCustomization?.vlanPool)
+        if (!isVlanPooling || (isVlanPooling && !checked)) {
+          // eslint-disable-next-line max-len
+          const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
+          // eslint-disable-next-line max-len
+          updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)
+        }
+
+        form.setFieldsValue(updateContent)
       } else {
         // eslint-disable-next-line max-len
         const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]

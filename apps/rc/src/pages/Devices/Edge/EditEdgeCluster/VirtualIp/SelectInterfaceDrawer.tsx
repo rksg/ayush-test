@@ -91,7 +91,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber].portName).filter(item => item !== undefined)
+      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
     const editPortName = editData?.[targetSerialNumber]?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)

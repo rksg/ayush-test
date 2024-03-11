@@ -37,6 +37,7 @@ export const EdgeDetailsPageHeader = () => {
   const edgeStatusPayload = {
     fields: [
       'name',
+      'venueId',
       'venueName',
       'type',
       'serialNumber',

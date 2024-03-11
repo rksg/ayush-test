@@ -1,37 +1,43 @@
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
+  AAAForm, AAAPolicyDetail,
+  AccessControlDetail,
+  AccessControlForm,
+  AccessControlTable,
+  AdaptivePolicySetForm,
+  ClientIsolationForm,
+  ConnectionMeteringFormMode,
+  DHCPDetail,
+  DHCPForm,
+  DpskForm,
+  MacRegistrationListForm,
+  NetworkForm,
+  PortalForm,
+  ResidentPortalForm,
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
   RogueAPDetectionTable,
-  ConnectionMeteringFormMode,
-  ResidentPortalForm,
-  DpskForm,
-  AdaptivePolicySetForm,
-  MacRegistrationListForm,
-  AccessControlForm,
-  AAAForm, AAAPolicyDetail,
+  SyslogDetailView, SyslogForm,
   VLANPoolForm,
-  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
-  NetworkForm, DHCPDetail,
-  AccessControlDetail, AccessControlTable
+  WifiCallingConfigureForm, WifiCallingDetailView,
+  WifiCallingForm
 } from '@acx-ui/rc/components'
 import {
+  PolicyOperation,
+  PolicyType,
+  ServiceOperation,
+  ServiceType,
+  getAdaptivePolicyDetailRoutePath,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   getSelectServiceRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  getServiceRoutePath,
-  PolicyOperation,
-  PolicyType,
-  ServiceOperation,
-  ServiceType,
-  getAdaptivePolicyDetailRoutePath
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
 import Edges                                        from './pages/Devices/Edge'
@@ -56,7 +62,7 @@ import Wired                                        from './pages/Networks/wired
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
 import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
-import { NetworksList, NetworkTabsEnum }            from './pages/Networks/wireless'
+import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
@@ -277,59 +283,103 @@ function NetworkRoutes () {
   )
 }
 
-const edgeSdLanRoutes = () => {
+const edgeSdLanRoutes = (isP2Enabled: boolean) => {
   return <>
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.LIST })}
-      element={<EdgeSdLanTable />}
+      element={isP2Enabled ? <EdgeSdLanTableP2 /> : <EdgeSdLanTable />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.CREATE })}
-      element={<AddEdgeSdLan />}
+      element={isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={<EditEdgeSdLan />}
+      element={isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.DETAIL })}
-      element={<EdgeSdLanDetail />}
+      element={isP2Enabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetail />}
     />
   </>
 }
 
-const edgeSdLanPhase2Routes = () => {
-  return <><Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.CREATE })}
-    element={<AddEdgeSdLanP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.EDIT })}
-    element={<EditEdgeSdLanP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.LIST })}
-    element={<EdgeSdLanTableP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.DETAIL })}
-    element={<EdgeSdLanDetailP2 />}
-  />
+const edgeDhcpRoutes = () => {
+  return <>
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_DHCP,
+        oper: ServiceOperation.CREATE
+      })}
+      element={<AddDHCP/>}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_DHCP,
+        oper: ServiceOperation.LIST
+      })}
+      element={<EdgeDhcpTable/>}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_DHCP,
+        oper: ServiceOperation.DETAIL
+      })}
+      element={<EdgeDHCPDetail/>}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_DHCP,
+        oper: ServiceOperation.EDIT
+      })}
+      element={<EditDhcp />}
+    />
   </>
 }
 
+const edgeFirewallRoutes = () => {
+  return <>
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_FIREWALL,
+        oper: ServiceOperation.LIST
+      })}
+      element={<FirewallTable />}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_FIREWALL,
+        oper: ServiceOperation.DETAIL
+      })}
+      element={<FirewallDetail />}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_FIREWALL,
+        oper: ServiceOperation.CREATE
+      })}
+      element={<AddFirewall />}
+    />
+    <Route
+      path={getServiceRoutePath({
+        type: ServiceType.EDGE_FIREWALL,
+        oper: ServiceOperation.EDIT
+      })}
+      element={<EditFirewall />}
+    />
+  </>
+}
 
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -377,10 +427,6 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={<DHCPForm/>}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
-        element={<AddDHCP/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
@@ -467,18 +513,6 @@ function ServiceRoutes () {
         element={<PortalTable/>}
       />
       <Route
-        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
-        element={<EdgeDhcpTable/>}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.DETAIL })}
-        element={<EdgeDHCPDetail/>}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
-        element={<EditDhcp />}
-      />
-      <Route
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.LIST })}
@@ -502,30 +536,15 @@ function ServiceRoutes () {
           oper: ServiceOperation.EDIT })}
         element={<ResidentPortalForm editMode={true} />}
       />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.LIST })}
-        element={<FirewallTable />}
-      />
-      <Route
-        path={getServiceRoutePath({
-          type: ServiceType.EDGE_FIREWALL,
-          oper: ServiceOperation.DETAIL
-        })}
-        element={<FirewallDetail />}
-      />
-      <Route
-        path={getServiceRoutePath({
-          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}
-        element={<AddFirewall />}
-      />
-      <Route
-        path={getServiceRoutePath({
-          type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
-        element={<EditFirewall />}
-      />
 
-      {isEdgeSdLanEnabled && edgeSdLanRoutes()}
-      {isEdgeSdLanPhase2Enabled && edgeSdLanPhase2Routes()}
+      {(isEdgeHaReady && isEdgeDhcpHaReady)
+        && edgeDhcpRoutes()}
+
+      {(isEdgeHaReady && isEdgeFirewallHaReady)
+        && edgeFirewallRoutes()}
+
+      {(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled)
+        && edgeSdLanRoutes(isEdgeSdLanHaEnabled)}
     </Route>
   )
 }

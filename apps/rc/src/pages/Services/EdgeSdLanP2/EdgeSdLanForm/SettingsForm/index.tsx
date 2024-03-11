@@ -5,18 +5,14 @@ import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
 import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
 import { InformationSolid }                        from '@acx-ui/icons'
 import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
-  useGetEdgeLagListQuery,
-  useGetEdgeListQuery,
+  useGetEdgeClusterListQuery,
   useGetEdgeSdLanP2ViewDataListQuery,
-  useGetPortConfigQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeStatusEnum,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
@@ -28,20 +24,19 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
-  const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
+  const { form, editMode, initialValues } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
-  const edgeId = Form.useWatch('edgeId', form)
-  const guestEdgeId = Form.useWatch('guestEdgeId', form)
+  const edgeClusterId = Form.useWatch('edgeClusterId', form)
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
-      fields: ['id', 'edgeId']
+      fields: ['id', 'edgeClusterId', 'guestEdgeClusterId']
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
         sdLanBoundEdges: (data?.data
-          ?.flatMap(item => [item.edgeId, item.guestEdgeId])
+          ?.filter(item => item.id !== params.serviceId)
+          .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
           .filter(val => !!val)) ?? [],
         isSdLanBoundEdgesLoading: isLoading
       })
@@ -68,103 +63,54 @@ export const SettingsForm = () => {
       }
     } })
 
-  const {
-    edgeOptions,
-    isLoading: isEdgeOptionsLoading
-  } = useGetEdgeListQuery({
-    params,
-    payload: {
+  const { clusterOptions, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
+    { payload: {
       fields: [
         'name',
-        'serialNumber',
-        'venueId'
+        'clusterId',
+        'venueId',
+        'clusterStatus'
       ],
       filters: {
-        venueId: [venueId],
-        ...(editMode && { serialNumber: [edgeId, ...(guestEdgeId ? [guestEdgeId] : [])] }),
-        deviceStatus: Object.values(EdgeStatusEnum)
-          .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
+        venueId: [venueId]
+        // TODO: need confirm
+        // clusterStatus: Object.values(ClusterStatusEnum)
+        //   .filter(v => v === ClusterStatusEnum.CLUSTER_READY
+        //     || v === ClusterStatusEnum.CLUSTER_UNHEALTHY)
       } } },
-  {
-    skip: !venueId || isSdLanBoundEdgesLoading,
-    selectFromResult: ({ data, isLoading }) => {
-      return {
-        edgeOptions: data?.data
-          .filter(item => editMode ? true : sdLanBoundEdges.indexOf(item.serialNumber) === -1)
-          .map(item => ({
-            label: item.name,
-            value: item.serialNumber,
-            venueId: item.venueId
-          })),
-        isLoading
+    {
+      skip: !venueId || isSdLanBoundEdgesLoading,
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterOptions: data?.data
+            .filter(item => sdLanBoundEdges.indexOf(item.clusterId!) === -1)
+            .map(item => ({
+              label: item.name,
+              value: item.clusterId,
+              venueId: item.venueId
+            })),
+          isLoading
+        }
       }
-    }
-  })
-
-  // get corePort by portsConfig API
-  const { portsConfig } = useGetPortConfigQuery({
-    params: { serialNumber: edgeId }
-  }, {
-    skip: !edgeId,
-    selectFromResult: ({ data }) => {
-      return {
-        portsConfig: data?.ports
-      }
-    }
-  })
-
-  const { lagsConfig } = useGetEdgeLagListQuery({
-    params: { serialNumber: edgeId },
-    payload: {
-      page: 1,
-      pageSize: 10
-    }
-  },{
-    skip: !isEdgeLagEnabled || !edgeId,
-    selectFromResult ({ data }) {
-      return {
-        lagsConfig: data?.data
-      }
-    }
-  })
+    })
 
   // prepare venue info
   useEffect(() => {
     form.setFieldValue('venueName', venueOptions?.filter(i => i.value === venueId)[0]?.label)
   }, [venueId, venueOptions])
 
-  // prepare corePort info
-  useEffect(() => {
-    if (!portsConfig) return
-
-    // find corePort
-    let corePortMac
-    portsConfig?.forEach((port) => {
-      if (port.corePortEnabled) {
-        corePortMac = port.interfaceName
-      }
-    })
-    lagsConfig?.forEach((lag) => {
-      if (lag.corePortEnabled && lag.lagEnabled) {
-        corePortMac = lag.id
-      }
-    })
-
-    form.setFieldValue('corePortMac', corePortMac)
-  }, [portsConfig, lagsConfig])
-
   const onVenueChange = () => {
-    form.setFieldValue('edgeId', undefined)
+    form.setFieldValue('edgeClusterId', undefined)
   }
 
-  const onEdgeChange = (val: string) => {
-    const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('edgeName', edgeData?.label)
+  const onEdgeClusterChange = (val: string) => {
+    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
+    form.setFieldValue('edgeClusterName', edgeData?.label)
   }
 
-  const onDmzEdgeChange = (val: string) => {
-    const edgeData = edgeOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('guestEdgeName', edgeData?.label)
+  const onDmzClusterChange = (val: string) => {
+    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
+    form.setFieldValue('guestEdgeClusterName', edgeData?.label)
   }
 
   return (
@@ -218,7 +164,7 @@ export const SettingsForm = () => {
               <Row>
                 <Col span={18}>
                   <Form.Item
-                    name='edgeId'
+                    name='edgeClusterId'
                     label={<>
                       { $t({ defaultMessage: 'Cluster' }) }
                       <Tooltip.Question
@@ -232,11 +178,11 @@ export const SettingsForm = () => {
                     }]}
                   >
                     <Select
-                      loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                      options={edgeOptions}
+                      loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                      options={clusterOptions}
                       placeholder={$t({ defaultMessage: 'Select ...' })}
                       disabled={editMode}
-                      onChange={onEdgeChange}
+                      onChange={onEdgeClusterChange}
                     />
 
                   </Form.Item>
@@ -280,7 +226,7 @@ export const SettingsForm = () => {
                   return getFieldValue('isGuestTunnelEnabled')
                     ? (<>
                       <Form.Item
-                        name='guestEdgeId'
+                        name='guestEdgeClusterId'
                         label={<>
                           { $t({ defaultMessage: 'DMZ Cluster' }) }
                           <Tooltip.Question
@@ -294,11 +240,11 @@ export const SettingsForm = () => {
                         }]}
                       >
                         <Select
-                          loading={isEdgeOptionsLoading || isSdLanBoundEdgesLoading}
-                          options={edgeOptions?.filter(item => item.value !== edgeId)}
+                          loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                          options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
                           placeholder={$t({ defaultMessage: 'Select ...' })}
-                          disabled={editMode}
-                          onChange={onDmzEdgeChange}
+                          disabled={editMode && !!initialValues?.guestEdgeClusterId}
+                          onChange={onDmzClusterChange}
                         />
                       </Form.Item>
                       <UI.ClusterSelectorHelper>

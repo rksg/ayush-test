@@ -91,7 +91,10 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     oldInterfaceData?: EdgePortInfo
   ) => {
     const lagData = await getEdgeLagList({
-      params: { serialNumber: newInterfaceData.serialNumber },
+      params: {
+        venueId: currentClusterStatus?.venueId,
+        edgeClusterId: clusterId,
+        serialNumber: newInterfaceData.serialNumber },
       payload: { page: 1, pageSize: 20 }
     })
     let lags = lagData.data?.data
@@ -218,7 +221,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
       await updateNetworkConfig({
         params: {
           venueId: currentClusterStatus?.venueId,
-          clusterId
+          clusterId: clusterId
         },
         payload
       }).unwrap()
@@ -233,8 +236,8 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
         type: 'confirm',
         title: $t({ defaultMessage: 'Change Cluster Interface' }),
         content: $t({
-          defaultMessage: `Are you sure you want to change the cluster interface to 
-          different port/LAG? The currently used port/LAG as the cluster interface 
+          defaultMessage: `Are you sure you want to change the cluster interface to
+          different port/LAG? The currently used port/LAG as the cluster interface
           will be disabled.`
         }),
         okText: $t({ defaultMessage: 'Change' }),
