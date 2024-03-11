@@ -1,11 +1,12 @@
 import { useContext } from 'react'
 
 import { Form, Space, Typography } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                from '@acx-ui/components'
-import { EdgeLagTable, NodesTabs, TypeForm } from '@acx-ui/rc/components'
-import { EdgeLag }                           from '@acx-ui/rc/utils'
+import { useStepFormContext }                                        from '@acx-ui/components'
+import { EdgeLagTable, NodesTabs, TypeForm }                         from '@acx-ui/rc/components'
+import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -49,7 +50,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const { form } = useStepFormContext()
   // eslint-disable-next-line max-len
-  const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings'] | undefined
+  const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
 
   const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
     const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
@@ -60,6 +61,30 @@ const LagSettingView = (props: LagSettingViewProps) => {
         lags: [...(targetLagSettings?.lags ?? []), lagData]
       }
     ])
+
+    // reset physical port config when it is selected as LAG member
+    lagData.lagMembers.forEach(member => {
+      let portInterfaceName: (string | undefined)
+      for (let ifName in portSettings?.[serialNumber]) {
+        if (portSettings?.[serialNumber][ifName][0].id === member.portId) {
+          portInterfaceName = ifName
+        }
+      }
+
+      const isUnconfigPort = _.get(portSettings, serialNumber)
+        ?.[member.portId]?.[0]?.portType === EdgePortTypeEnum.UNCONFIGURED
+
+      if (!isUnconfigPort && portInterfaceName) {
+        const data = {
+          ...(_.get(portSettings, [serialNumber, portInterfaceName, '0'])),
+          ...edgePhysicalPortInitialConfigs
+        }
+
+        // update Form.List need to use setFieldValue
+        form.setFieldValue(['portSettings', serialNumber, portInterfaceName], [data])
+      }
+    })
+
   }
 
   const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {

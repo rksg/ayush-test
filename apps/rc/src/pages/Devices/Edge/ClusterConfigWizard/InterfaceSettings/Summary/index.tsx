@@ -44,7 +44,7 @@ export const Summary = () => {
           <Col span={12}>
             {
               vipConfig?.map((item, index) => (
-                <VipCard index={index + 1} data={item} />
+                <VipCard key={item.vip} index={index + 1} data={item} />
               ))
             }
           </Col>

@@ -84,7 +84,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const hasCorePortEnabled = !!corePortInfo.key
   const isCurrentInterfaceCorePortEnabled = (hasCorePortEnabled && (corePortInfo.isLag
     ? corePortInfo.key === (lagId + '')
-    : corePortInfo.key === physicalPortIfName)) /* || corePortEnabled*/
+    : corePortInfo.key === physicalPortIfName))
 
   // 1. when the corePort is joined as lagMember, will ignore all the grey-out rule
   // 2. corePort should be grey-out when one of the following NOT matches :
@@ -272,9 +272,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           return <Select.Option
             key={item.value}
             value={item.value}
-            disabled={corePortInfo.isExistingCorePortInLagMember
-              ? false
-              : (hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN)}
+            disabled={!corePortInfo.isExistingCorePortInLagMember
+              && hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN}
           >
             {item.label}
           </Select.Option>
@@ -302,13 +301,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   {..._.get(formFieldsProps, 'corePortEnabled')}
                 >
                   <Checkbox
-                    disabled={corePortInfo.isExistingCorePortInLagMember
-                      ? false
-                      : ((hasWANPort && !isCurrentInterfaceCorePortEnabled)
+                    disabled={!corePortInfo.isExistingCorePortInLagMember
+                      && (
+                        (hasWANPort && !isCurrentInterfaceCorePortEnabled)
                         || (isEdgeSdLanRun
                           ? hasCorePortEnabled
                           // eslint-disable-next-line max-len
-                          : ((hasCorePortEnabled && !isCurrentInterfaceCorePortEnabled) || portType !== EdgePortTypeEnum.LAN)))
+                          : ((hasCorePortEnabled && !isCurrentInterfaceCorePortEnabled) || portType !== EdgePortTypeEnum.LAN))
+                      )
                     }
                   >
                     {
@@ -338,11 +338,11 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   {..._.get(formFieldsProps, 'enabled')}
                   // Not allow to enable WAN port when core port exist
                   children={<Switch
-                    disabled={corePortInfo.isExistingCorePortInLagMember
-                      ? false
-                      : hasCorePortEnabled
-                        ? !portEnabled && portType === EdgePortTypeEnum.WAN
-                        : false} />
+                    disabled={!corePortInfo.isExistingCorePortInLagMember
+                      && hasCorePortEnabled
+                      && !portEnabled
+                      && portType === EdgePortTypeEnum.WAN
+                    } />
                   }
                 />
               </StepsFormLegacy.FieldLabel>
