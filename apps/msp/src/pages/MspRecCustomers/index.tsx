@@ -540,7 +540,8 @@ export function MspRecCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS End Customers' })}
+        title={isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
+          : $t({ defaultMessage: 'RUCKUS End Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [

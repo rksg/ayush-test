@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { ToastProps }                                                                        from '@acx-ui/components'
-import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                                            from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
@@ -513,6 +513,25 @@ describe('AddRecCustomer', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should show Brand properties instead of ruckus end customer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add Brand Property Account')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Brand Properties'
+    })).toBeVisible()
+
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Brand Property')
   })
 
 })
