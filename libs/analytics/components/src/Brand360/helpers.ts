@@ -35,7 +35,6 @@ interface TransformedItem {
   name: string
   type: string
   content: object[]
-  integrator?: string
   integrators?: string[]
 }
 
