@@ -5,9 +5,14 @@ import TextArea                                  from 'antd/lib/input/TextArea'
 import _                                         from 'lodash'
 import { useIntl }                               from 'react-intl'
 
-import { Drawer, StepsForm, showActionModal }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { useAddEdgeLagMutation, useGetEdgeSdLanViewDataListQuery, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
+import { Drawer, StepsForm, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import {
+  useAddEdgeLagMutation,
+  useGetEdgeListQuery,
+  useGetEdgeSdLanViewDataListQuery,
+  useUpdateEdgeLagMutation
+} from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -65,6 +70,26 @@ export const LagDrawer = (props: LagDrawerProps) => {
     filters: { edgeId: [serialNumber] },
     fields: ['id', 'edgeId', 'corePortMac']
   }
+
+  const { venueId, edgeClusterId } = useGetEdgeListQuery(
+    { payload: {
+      fields: [
+        'name',
+        'serialNumber',
+        'venueId',
+        'clusterId'
+      ],
+      filters: { serialNumber: [serialNumber] }
+    } },
+    {
+      skip: !!!serialNumber,
+      selectFromResult: ({ data }) => ({
+        venueId: data?.data[0].venueId,
+        edgeClusterId: data?.data[0].clusterId
+      })
+    }
+  )
+
   const { edgeSdLanData }
     = useGetEdgeSdLanViewDataListQuery(
       { payload: getEdgeSdLanPayload },
@@ -149,7 +174,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
       }
 
       const requestPayload = {
-        params: { serialNumber, lagId: id.toString() },
+        params: { venueId, edgeClusterId, serialNumber, lagId: id.toString() },
         payload: payload
       }
 
