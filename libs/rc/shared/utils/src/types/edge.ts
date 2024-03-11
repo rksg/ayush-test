@@ -382,6 +382,7 @@ export interface EdgeClusterStatus {
   venueName?: string
   clusterStatus?: string
   edgeList?: EdgeStatus[]
+  description?: string
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,

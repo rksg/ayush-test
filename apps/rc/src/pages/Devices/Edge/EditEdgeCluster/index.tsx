@@ -1,10 +1,10 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, Tabs }                                   from '@acx-ui/components'
-import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
-import { CommonOperation, Device, EdgeStatusEnum, getUrl }            from '@acx-ui/rc/utils'
-import { useTenantLink }                                              from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, Tabs }                           from '@acx-ui/components'
+import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { CommonOperation, Device, EdgeStatusEnum, getUrl }    from '@acx-ui/rc/utils'
+import { useTenantLink }                                      from '@acx-ui/react-router-dom'
 
 import { ClusterDetails }   from './ClusterDetails'
 import { ClusterInterface } from './ClusterInterface'
@@ -25,7 +25,7 @@ const EditEdgeCluster = () => {
     currentClusterStatus,
     isClusterStatusLoading,
     isAllNodesNeverContactedCloud = true
-  } = useGetEdgeClusterListForTableQuery({ payload: {
+  } = useGetEdgeClusterListQuery({ payload: {
     filters: { clusterId: [clusterId], isCluster: [true] }
   } },{
     selectFromResult: ({ data, isLoading }) => {

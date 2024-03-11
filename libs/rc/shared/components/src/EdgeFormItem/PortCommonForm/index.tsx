@@ -110,7 +110,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   }
 
   const getSubnetInfoWithoutCurrent = () => {
-    const formValues = _.get(form.getFieldsValue(true), portsDataRootPath)
+    const formValues = portsDataRootPath.length
+      ? _.get(form.getFieldsValue(true), portsDataRootPath)
+      : form.getFieldsValue(true)
     return Object.entries<EdgePort[]>(formValues)
       .filter(item => item[0] !== formListID
         && _.get(item[1], getFieldFullPath('enabled'))

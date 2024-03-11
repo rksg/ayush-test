@@ -1,26 +1,35 @@
 import { useContext, useState } from 'react'
 
-import { Form }        from 'antd'
-import _               from 'lodash'
-import { useIntl }     from 'react-intl'
-import { useNavigate } from 'react-router-dom'
+import { Form }                   from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, StepsFormProps }               from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
-import { useGetEdgeClusterNetworkSettingsQuery }           from '@acx-ui/rc/services'
-import { useTenantLink }                                   from '@acx-ui/react-router-dom'
+import { Loader, StepsForm, StepsFormProps }                                                 from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }                                   from '@acx-ui/rc/components'
+import { useGetEdgeClusterNetworkSettingsQuery, usePatchEdgeClusterNetworkSettingsMutation } from '@acx-ui/rc/services'
+import { useTenantLink }                                                                     from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { LagForm }                                                                                 from './LagForm'
-import { PortForm }                                                                                from './PortForm'
-import { InterfacePortFormCompatibility, InterfaceSettingsFormType }                               from './types'
-import { getPortFormCompatibilityFields, interfaceCompatibilityCheck, transformFromApiToFormData } from './utils'
+import { LagForm }                                                   from './LagForm'
+import { PortForm }                                                  from './PortForm'
+import { Summary }                                                   from './Summary'
+import { InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+import {
+  getPortFormCompatibilityFields,
+  interfaceCompatibilityCheck,
+  transformFromApiToFormData,
+  transformFromFormToApiData
+} from './utils'
+import { VirtualIpForm } from './VirtualIpForm'
 
 export const InterfaceSettings = () => {
+  const { clusterId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
+  const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const errorFieldsConfig = getPortFormCompatibilityFields()
@@ -42,10 +51,11 @@ export const InterfaceSettings = () => {
   },{
     skip: !Boolean(clusterInfo),
     selectFromResult: ({ data, isFetching }) => ({
-      clusterNetworkSettings: transformFromApiToFormData(data),
+      clusterNetworkSettings: transformFromApiToFormData(data, clusterInfo),
       isFetching
     })
   })
+  const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
   const doCompatibleCheck = (typeKey: string) => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
@@ -81,10 +91,7 @@ export const InterfaceSettings = () => {
     {
       title: $t({ defaultMessage: 'LAG' }),
       id: 'lagSettings',
-      content: <LagForm
-        setAlertBarData={setAlertData}
-        compatibilityCheck={interfaceCompatibilityCheck}
-      />,
+      content: <LagForm />,
       onValuesChange: (type: string) => handleValuesChange(type),
       onFinish: async (typeKey: string) => {
         const lagData = _.get(configWizardForm.getFieldsValue(true), typeKey)
@@ -107,7 +114,7 @@ export const InterfaceSettings = () => {
     {
       title: $t({ defaultMessage: 'Cluster Virtual IP' }),
       id: 'virtualIpSettings',
-      content: <>Cluster Virtual IP</>,
+      content: <VirtualIpForm />,
       onValuesChange: (type: string) => handleValuesChange(type),
       onFinish: async (typeKey: string) => {
         const virtualIPData = _.get(configWizardForm.getFieldsValue(true), typeKey)
@@ -120,14 +127,40 @@ export const InterfaceSettings = () => {
     {
       title: $t({ defaultMessage: 'Summary' }),
       id: 'summary',
-      content: <>Summary</>
+      content: <Summary />
     }
   ]
 
-  const handleFinish = async (value: unknown) => {
-    // TODO
-    // eslint-disable-next-line no-console
-    console.log(value)
+  const invokeUpdateApi = async (
+    value: InterfaceSettingsFormType,
+    callback: () => void
+  ) => {
+    try {
+      await updateNetworkConfig({
+        params: {
+          venueId: clusterInfo?.venueId,
+          clusterId
+        },
+        payload: transformFromFormToApiData(value)
+      }).unwrap()
+      callback()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const applyAndFinish = async (value: InterfaceSettingsFormType) => {
+    invokeUpdateApi(
+      value,
+      () => navigate(clusterListPage)
+    )
+  }
+
+  const applyAndContinue = async (value: InterfaceSettingsFormType) => {
+    invokeUpdateApi(
+      value,
+      () => navigate(selectTypePage)
+    )
   }
 
   const handleCancel = () => {
@@ -139,9 +172,16 @@ export const InterfaceSettings = () => {
       <StepsForm<InterfaceSettingsFormType>
         form={configWizardForm}
         alert={alertData}
-        onFinish={handleFinish}
+        onFinish={applyAndFinish}
         onCancel={handleCancel}
         initialValues={clusterNetworkSettings}
+        buttonLabel={{
+          submit: $t({ defaultMessage: 'Apply & Finish' })
+        }}
+        customSubmit={{
+          label: $t({ defaultMessage: 'Apply & Continue' }),
+          onCustomFinish: applyAndContinue
+        }}
       >
         {
           steps.map((item, index) =>

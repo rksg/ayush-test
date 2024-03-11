@@ -1,13 +1,15 @@
 import { useContext, useEffect } from 'react'
 
-import { Checkbox, Form, Select, Space, Switch } from 'antd'
-import TextArea                                  from 'antd/lib/input/TextArea'
-import _                                         from 'lodash'
-import { useIntl }                               from 'react-intl'
+import { Checkbox, Form, Space, Switch } from 'antd'
+import TextArea                          from 'antd/lib/input/TextArea'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
 
-import { Drawer, StepsForm, showActionModal }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { useAddEdgeLagMutation, useGetEdgeSdLanViewDataListQuery, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
+import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import {
+  useGetEdgeSdLanViewDataListQuery
+} from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -21,16 +23,18 @@ import {
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
-import { EdgePortCommonForm }                             from '../../PortCommonForm'
-import { EdgePortsDataContext, EdgePortsDataContextType } from '../PortDataProvider'
+import { EdgePortCommonForm }                             from '../EdgeFormItem/PortCommonForm'
+import { EdgePortsDataContext, EdgePortsDataContextType } from '../EdgeFormItem/PortsForm/PortDataProvider'
 
 interface LagDrawerProps {
-  serialNumber: string
+  serialNumber?: string
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: EdgeLag
   portList?: EdgePort[]
   existedLagList?: EdgeLag[]
+  onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
+  onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
 }
 
 const defaultFormValues = {
@@ -47,7 +51,10 @@ const defaultFormValues = {
 
 export const LagDrawer = (props: LagDrawerProps) => {
 
-  const { serialNumber, visible, setVisible, data, portList, existedLagList } = props
+  const {
+    serialNumber = '', visible, setVisible, data, portList,
+    existedLagList, onAdd, onEdit
+  } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
@@ -56,8 +63,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const [form] = Form.useForm()
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
-  const [addEdgeLag] = useAddEdgeLagMutation()
-  const [updateEdgeLag] = useUpdateEdgeLagMutation()
   const portDataCtx = useContext(EdgePortsDataContext)
   const { portData } = portDataCtx
 
@@ -69,7 +74,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
     = useGetEdgeSdLanViewDataListQuery(
       { payload: getEdgeSdLanPayload },
       {
-        skip: !isEdgeSdLanReady,
+        skip: !isEdgeSdLanReady || !Boolean(serialNumber),
         selectFromResult: ({ data, isLoading }) => ({
           edgeSdLanData: data?.data?.[0],
           isLoading
@@ -143,22 +148,12 @@ export const LagDrawer = (props: LagDrawerProps) => {
     try {
       const formData = form.getFieldsValue(true)
       // exclude id first, then add it when need
-      const { id, ...otherFormData } = formData
-      const payload = {
-        ...convertEdgePortsConfigToApiPayload(otherFormData)
-      }
-
-      const requestPayload = {
-        params: { serialNumber, lagId: id.toString() },
-        payload: payload
-      }
+      const payload = convertEdgePortsConfigToApiPayload(formData) as EdgeLag
 
       if(data) {
-        await updateEdgeLag(requestPayload).unwrap()
+        await onEdit(serialNumber, payload)
         handleClose()
       } else {
-        requestPayload.payload.id = id
-
         const portConfig = formData.lagMembers.length > 0
           ? portList?.find(item => (formData.lagMembers as EdgeLag['lagMembers'])
             .filter(member => member.portId === item.id))
@@ -177,12 +172,12 @@ export const LagDrawer = (props: LagDrawerProps) => {
             }),
             okText: $t({ defaultMessage: 'Replace with LAG settings' }),
             onOk: async () => {
-              await addEdgeLag(requestPayload).unwrap()
+              await onAdd(serialNumber, payload)
               handleClose()
             }
           })
         } else {
-          await addEdgeLag(requestPayload).unwrap()
+          await onAdd(serialNumber, payload)
           handleClose()
         }
       }

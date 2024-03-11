@@ -1,9 +1,12 @@
-import { EdgeLag, EdgePort, EdgeSerialNumber, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { ClusterNetworkSettings, EdgePort, EdgeSerialNumber } from '@acx-ui/rc/utils'
+
+import { VirtualIpFormType } from '../../EditEdgeCluster/VirtualIp'
 
 export interface InterfaceSettingsFormType {
   portSettings: Record<EdgeSerialNumber, { [portId:string]: EdgePort[] }>
-  lagSettings: Record<EdgeSerialNumber, EdgeLag[]>
-  virtualIpSettings: VirtualIpSetting[]
+  lagSettings: ClusterNetworkSettings['lagSettings']
+  timeout: number
+  vipConfig: VirtualIpFormType['vipConfig']
 }
 
 export interface InterfacePortFormCompatibility {

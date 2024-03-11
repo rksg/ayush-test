@@ -5,15 +5,15 @@ import TextArea                                                                 
 import { useIntl }                                                                            from 'react-intl'
 import { useParams }                                                                          from 'react-router-dom'
 
-import { Alert, Button, Select, Subtitle, useStepFormContext }                                            from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                             from '@acx-ui/icons'
-import { useVenuesListQuery }                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatusEnum, PRODUCT_CODE_VIRTUAL_EDGE, edgeSerialNumberValidator } from '@acx-ui/rc/utils'
+import { Alert, Button, Select, Subtitle, useStepFormContext }                                     from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                                                      from '@acx-ui/icons'
+import { useVenuesListQuery }                                                                      from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeStatusEnum, PRODUCT_CODE_VIRTUAL_EDGE, edgeSerialNumberValidator } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
 
 interface EdgeClusterSettingFormProps {
-  editData?: EdgeClusterTableDataType
+  editData?: EdgeClusterStatus
 }
 
 export interface EdgeClusterSettingFormType {

@@ -112,25 +112,23 @@ const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   }
 
   return (
-    <Loader states={[{ isLoading: portsCxtData.isFetching }]}>
-      <Tabs
-        destroyInactiveTabPane={true}
-        onChange={handleTabChange}
-        defaultActiveKey={Object.keys(tabs)[0]}
-        activeKey={activeSubTab}
-        type={tabsType ?? 'card'}
-      >
-        {Object.keys(tabs)
-          .map((key) =>
-            <Tabs.TabPane
-              tab={`${tabs[key as keyof typeof tabs].title}
+    <Tabs
+      destroyInactiveTabPane={true}
+      onChange={handleTabChange}
+      defaultActiveKey={Object.keys(tabs)[0]}
+      activeKey={activeSubTab}
+      type={tabsType ?? 'card'}
+    >
+      {Object.keys(tabs)
+        .map((key) =>
+          <Tabs.TabPane
+            tab={`${tabs[key as keyof typeof tabs].title}
               ${(activeSubTabInContext.key === key && isDirty) ? '*' : ''}`}
-              key={key}
-            >
-              {tabs[key as keyof typeof tabs].content}
-            </Tabs.TabPane>)}
-      </Tabs>
-    </Loader>
+            key={key}
+          >
+            {tabs[key as keyof typeof tabs].content}
+          </Tabs.TabPane>)}
+    </Tabs>
   )
 }
 

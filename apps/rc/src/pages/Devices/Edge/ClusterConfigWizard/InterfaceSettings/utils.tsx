@@ -1,27 +1,95 @@
 import { Typography } from 'antd'
 import _              from 'lodash'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
-import { ClusterNetworkSettings, EdgeSerialNumber }            from '@acx-ui/rc/utils'
+import type { CompatibilityNodeError, SingleNodeDetailsField }                                         from '@acx-ui/rc/components'
+import { ClusterNetworkSettings, EdgeClusterStatus, EdgePortInfo, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
+
+import { VirtualIpFormType } from '../../EditEdgeCluster/VirtualIp'
 
 import { InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
 export const transformFromApiToFormData =
- (apiData?: ClusterNetworkSettings):InterfaceSettingsFormType => {
+ (apiData?: ClusterNetworkSettings, clusterInfo?: EdgeClusterStatus):InterfaceSettingsFormType => {
+   const portSettings = _.reduce(apiData?.portSettings,
+     (result, port) => {
+       result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
+       return result
+     }, {} as InterfaceSettingsFormType['portSettings'])
+
+   const virtualIpSettings = apiData?.virtualIpSettings
+   const timeout = apiData?.virtualIpSettings?.[0]?.timeoutSeconds ?? 3
+   const editVipConfig = [] as VirtualIpFormType['vipConfig']
+   const lanInterfaces = getLanInterfaces(apiData?.lagSettings, portSettings, clusterInfo)
+   if(virtualIpSettings && lanInterfaces) {
+     for(let i=0; i<virtualIpSettings.length; i++) {
+       const currentConfig = virtualIpSettings[i]
+       const interfaces = {} as { [key: string]: EdgePortInfo }
+       for(let config of currentConfig.ports) {
+         const tmp = lanInterfaces?.[config.serialNumber].find(item =>
+           item.portName === config.portName)
+         interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
+       }
+       editVipConfig.push({
+         vip: currentConfig.virtualIp,
+         interfaces
+       })
+     }
+   }
+
    return {
-     portSettings: _.reduce(apiData?.portSettings,
-       (result, port) => {
-         result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
-         return result
-       }, {} as InterfaceSettingsFormType['portSettings']),
-     lagSettings: _.reduce(apiData?.lagSettings,
-       (result, lag) => {
-         result[lag.serialNumber] = lag.lags
-         return result
-       }, {} as InterfaceSettingsFormType['lagSettings']),
-     virtualIpSettings: apiData?.virtualIpSettings ?? []
+     portSettings,
+     lagSettings: apiData?.lagSettings,
+     timeout,
+     vipConfig: editVipConfig
    } as InterfaceSettingsFormType
  }
+
+export const getLanInterfaces = (
+  lagdata?: InterfaceSettingsFormType['lagSettings'],
+  portData?: InterfaceSettingsFormType['portSettings'],
+  clusterInfo?: EdgeClusterStatus
+) => {
+  const result = {} as { [key: string]: EdgePortInfo[] }
+  const edgeNodeList = clusterInfo?.edgeList ?? []
+
+  for(let edgeNode of edgeNodeList) {
+    const lanLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
+      ?.lags.filter(item => item.portType === EdgePortTypeEnum.LAN)
+      .map(item => ({
+        serialNumber: edgeNode.serialNumber,
+        portName: `lag${item.id}`,
+        ip: item.ip ?? '',
+        subnet: item.subnet ?? '',
+        mac: '',
+        portType: item.portType,
+        isCorePort: item.corePortEnabled,
+        isLagMember: false,
+        portEnabled: item.lagEnabled
+      })) ?? []
+
+    const lanPorts = portData?.[edgeNode.serialNumber] ?
+      Object.values(portData[edgeNode.serialNumber])
+        .flat().filter(item => item.portType === EdgePortTypeEnum.LAN)
+        .map(item => ({
+          serialNumber: edgeNode.serialNumber,
+          portName: item.interfaceName ?? '',
+          ip: item.ip,
+          subnet: item.subnet,
+          mac: item.mac,
+          portType: item.portType,
+          isCorePort: item.corePortEnabled,
+          isLagMember: false,
+          portEnabled: item.enabled
+        })) : []
+
+    result[edgeNode.serialNumber] = [
+      ...lanLags,
+      ...lanPorts
+    ]
+  }
+
+  return result
+}
 
 
 export const getPortFormCompatibilityFields = () => {
@@ -147,5 +215,34 @@ export const interfaceCompatibilityCheck = (portSettings: InterfaceSettingsFormT
     ports: portsCheck,
     corePorts: corePortsCheck,
     portTypes: portTypesCheck
+  }
+}
+
+export const transformFromFormToApiData =
+(data: InterfaceSettingsFormType): ClusterNetworkSettings => {
+  const portSettings = []
+  for(let [k, v] of Object.entries(data.portSettings)) {
+    portSettings.push({
+      serialNumber: k,
+      ports: Object.values(v).flat()
+    })
+  }
+  const virtualIpSettings = data.vipConfig.map(item => {
+    const ports = Object.entries(item.interfaces).map(([, v2]) => {
+      return {
+        serialNumber: v2.serialNumber,
+        portName: v2.portName
+      }
+    })
+    return {
+      virtualIp: item.vip,
+      timeoutSeconds: data.timeout,
+      ports
+    }
+  })
+  return {
+    lagSettings: data.lagSettings,
+    portSettings,
+    virtualIpSettings
   }
 }

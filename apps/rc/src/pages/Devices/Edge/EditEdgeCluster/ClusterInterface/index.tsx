@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClusterNetworkSettings,
-  EdgeClusterTableDataType, EdgeIpModeEnum,
+  EdgeClusterStatus,
+  EdgeIpModeEnum,
   EdgeLag,
   EdgePortInfo,
   EdgePortTypeEnum,
@@ -29,7 +30,7 @@ import * as CommUI from '../styledComponents'
 import { EditClusterInterfaceDrawer } from './EditClusterInterfaceDrawer'
 
 interface ClusterInterfaceProps {
-  currentClusterStatus?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
 }
 
 export interface ClusterInterfaceTableType {

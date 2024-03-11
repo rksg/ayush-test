@@ -841,11 +841,11 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         for(let edge of clusterInfo.smartEdges) {
           const params = { serialNumber: edge.serialNumber }
           const getEdgeLagReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, params)
-          const edgeLagData = (await fetchWithBQ(getEdgeLagReq)).data as TableResult<EdgeLag>
-          if(edgeLagData.data) {
+          const edgeLagData = (await fetchWithBQ(getEdgeLagReq)).data as PaginationQueryResult<EdgeLag>
+          if(edgeLagData.content) {
             lagSettings.push({
               serialNumber: edge.serialNumber,
-              lags: edgeLagData.data
+              lags: edgeLagData.content
             })
           }
           const getEdgePortReq = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)

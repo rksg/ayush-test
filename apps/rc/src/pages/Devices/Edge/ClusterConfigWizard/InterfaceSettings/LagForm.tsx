@@ -1,104 +1,19 @@
 import { useContext } from 'react'
 
 import { Form, Space, Typography } from 'antd'
-import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormProps, Table, TableProps, showToast, useStepFormContext }     from '@acx-ui/components'
-import type { CompatibilityNodeError }                                          from '@acx-ui/rc/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { useStepFormContext }                from '@acx-ui/components'
+import { EdgeLagTable, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { EdgeLag }                           from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
-import { getLagFormCompatibilityFields }                             from './utils'
+import { InterfaceSettingsFormType } from './types'
 
-// TODO: only test
-const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name'
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    align: 'center'
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address'
-  }
-]
-
-const basicData = [
-  {
-    key: '1',
-    name: 'John Doe',
-    age: 32,
-    address: 'sample address'
-  },
-  {
-    key: '2',
-    name: 'Jane Doe',
-    age: 33,
-    address: 'new address'
-  },
-  {
-    key: '3',
-    name: 'Will Smith',
-    age: 45,
-    address: 'address'
-  }
-]
-// TODO: only test
-
-export const LagForm = (props: {
-  setAlertBarData: (alert: StepsFormProps<Record<string, unknown>>['alert']) => void,
-  compatibilityCheck: (portSettings: InterfaceSettingsFormType) => {
-    results: CompatibilityNodeError<InterfacePortFormCompatibility>[],
-    isError: boolean,
-    ports: boolean,
-    corePorts: boolean,
-    portTypes: boolean
-  }
-}) => {
-  const { setAlertBarData, compatibilityCheck } = props
+export const LagForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext()
-  // const lagSettings = Form.useWatch('lagSettings', form) as InterfaceSettingsFormType['lagSettings']
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
-
-  const actions: TableProps<(typeof basicData)[0]>['rowActions'] = [
-    {
-      label: 'Edit',
-      onClick: () => {
-        const formData = _.get(form.getFieldsValue(true), 'lagSettings')
-
-        const checkResult = compatibilityCheck(formData)
-        if (checkResult.isError) {
-          setAlertBarData({
-            type: 'error',
-            message: <CompatibilityStatusBar
-              key='step0'
-              type={CompatibilityStatusEnum.FAIL}
-              fields={getLagFormCompatibilityFields()}
-              errors={checkResult.results}
-            />
-          })
-        }
-      }
-    },
-    {
-      label: 'Delete',
-      onClick: (selectedRows) => showToast({
-        type: 'info',
-        content: `Delete ${selectedRows.length} item(s)`
-      })
-    }
-  ]
 
   const header = <Space direction='vertical' size={5}>
     <Typography.Title level={2}>
@@ -111,29 +26,83 @@ export const LagForm = (props: {
     </Typography.Text>
   </Space>
 
-  const content = <Form.Item name='lagSettings'>
-    <NodesTabs
-      nodeList={clusterInfo?.edgeList}
-      content={
-        (serialNumber) => (
-          <>
-            {serialNumber}
-            <Table
-              columns={basicColumns}
-              dataSource={basicData}
-              rowActions={actions}
-              rowSelection={{ defaultSelectedRowKeys: [] }}
-            />
-          </>
-        )
-      }
-    />
-  </Form.Item>
+  const content = <Form.Item
+    name='lagSettings'
+    children={<LagSettingView />}
+  />
 
   return (
     <TypeForm
       header={header}
       content={content}
+    />
+  )
+}
+
+interface LagSettingViewProps {
+  value?: InterfaceSettingsFormType['lagSettings']
+  onChange?: (data: unknown) => void
+}
+
+const LagSettingView = (props: LagSettingViewProps) => {
+  const { value, onChange } = props
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { form } = useStepFormContext()
+  // eslint-disable-next-line max-len
+  const portSettings = form.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings'] | undefined
+
+  const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
+    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    onChange?.([
+      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      {
+        serialNumber,
+        lags: [...(targetLagSettings?.lags ?? []), lagData]
+      }
+    ])
+  }
+
+  const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {
+    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    onChange?.([
+      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      {
+        serialNumber,
+        lags: [...(targetLagSettings?.lags.filter(item => item.id !== lagData.id) ?? []), lagData]
+      }
+    ])
+  }
+
+  const handleDelete = async (serialNumber: string, id: string) => {
+    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    onChange?.([
+      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      {
+        serialNumber,
+        lags: targetLagSettings?.lags.filter(item => item.id !== Number(id))
+      }
+    ])
+  }
+
+  return (
+    <NodesTabs
+      nodeList={clusterInfo?.edgeList}
+      content={
+        (serialNumber) => (
+          <EdgeLagTable
+            serialNumber={serialNumber}
+            lagList={value?.find(item => item.serialNumber === serialNumber)?.lags}
+            portList={
+              portSettings?.[serialNumber] ?
+                Object.values(portSettings?.[serialNumber]).flat() :
+                []
+            }
+            onAdd={handleAdd}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )
+      }
     />
   )
 }
