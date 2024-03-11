@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -232,6 +232,10 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetTa
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail', () => () => {
   return <div data-testid='AdaptivePolicySetDetail' />
+})
+
+jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
+  return <div data-testid='AddEdgeDhcp' />
 })
 
 jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
@@ -608,85 +612,106 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
   })
 
+  test('should not navigate to create Edge DHCP page', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.queryByTestId('AddEdgeDhcp')).toBeNull()
+  })
+
+  test('should not navigate to create Edge firewall page', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.queryByTestId('AddEdgeFirewall')).toBeNull()
+  })
+
   describe('RcRoutes: Services > Edge SD-LAN service', () => {
-    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+    const addFormPath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
+    const editFormPath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    const listPagePath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST })
+    const detailPagePath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
-    test('should navigate to create Edge SD-LAN page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE }),
-          wrapRoutes: false
-        }
-      })
-      expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
+    const getRouteData = (tailPath: string) => ({
+      route: {
+        path: '/tenantId/t/' + tailPath,
+        wrapRoutes: false
+      }
     })
 
-    test('should navigate to edit Edge SD-LAN page', async () => {
-      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + path,
-          wrapRoutes: false
-        }
+    describe('Only P1 enabled', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
+        flag === Features.EDGES_SD_LAN_TOGGLE
+      ))
+
+      test('should navigate to create Edge SD-LAN P1 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+        expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
       })
-      expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
+
+      test('should navigate to edit Edge SD-LAN P1 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+        expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
+      })
+      test('should navigate to Edge SD-LAN P1 list page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+        expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
+      })
+      test('should navigate to Edge SD-LAN P1 detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+        expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+      })
     })
-    test('should navigate to Edge SD-LAN list page', async () => {
-      const path = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST })
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + path,
-          wrapRoutes: false
-        }
+
+    describe('Only P2 enabled', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
+        flag === Features.EDGES_SD_LAN_HA_TOGGLE
+      ))
+
+      test('should navigate to create Edge SD-LAN P2 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+        expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
       })
-      expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
+      test('should navigate to edit Edge SD-LAN P2 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+        expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
+      })
+      test('should navigate to Edge SD-LAN P2 list page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+        expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+      })
+      test('should navigate to Edge SD-LAN P2 detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+        expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
+      })
     })
-    test('should navigate to Edge SD-LAN detail page', async () => {
-      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + path,
-          wrapRoutes: false
-        }
+
+    describe('P1 & P2 enabled', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+      test('should navigate to create Edge SD-LAN P2 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+        expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
       })
-      expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
-    })
-    test('should navigate to create Edge SD-LAN Phase2 page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.CREATE }),
-          wrapRoutes: false
-        }
+      test('should navigate to edit Edge SD-LAN P2 page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+        expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
       })
-      expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
-    })
-    test('should navigate to edit Edge SD-LAN Phase2 page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' }),
-          wrapRoutes: false
-        }
+      test('should navigate to Edge SD-LAN P2 list page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+        expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
       })
-      expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
-    })
-    test('should navigate to Edge SD-LAN Phase2 list page', async () => {
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.LIST }),
-          wrapRoutes: false
-        }
+      test('should navigate to Edge SD-LAN P2 detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+        expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
       })
-      expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
-    })
-    test('should navigate to Edge SD-LAN Phase2 detail page', async () => {
-      const path = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN_P2, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/' + path,
-          wrapRoutes: false
-        }
-      })
-      expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
     })
   })
 })

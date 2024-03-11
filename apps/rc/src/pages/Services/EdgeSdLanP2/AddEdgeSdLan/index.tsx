@@ -17,7 +17,7 @@ const AddEdgeSdLanP2 = () => {
   const navigate = useNavigate()
 
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
 
@@ -47,15 +47,14 @@ const AddEdgeSdLanP2 = () => {
       const payload = {
         name: formData.name,
         venueId: formData.venueId,
-        edgeId: formData.edgeId,
-        corePortMac: formData.corePortMac,
+        edgeClusterId: formData.edgeClusterId,
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled
       } as EdgeSdLanSettingP2
 
       if (formData.isGuestTunnelEnabled) {
-        payload.guestEdgeId = formData.guestEdgeId
+        payload.guestEdgeClusterId = formData.guestEdgeClusterId
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }

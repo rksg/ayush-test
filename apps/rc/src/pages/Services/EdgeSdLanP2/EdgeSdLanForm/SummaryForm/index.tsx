@@ -47,7 +47,7 @@ export const SummaryForm = () => {
             <StyledAntdDescriptions.Item
               label={$t({ defaultMessage: 'Cluster' })}
             >
-              {formValues.edgeName}
+              {formValues.edgeClusterName}
             </StyledAntdDescriptions.Item>
           </StyledAntdDescriptions>
 
@@ -61,7 +61,7 @@ export const SummaryForm = () => {
               <StyledAntdDescriptions.Item
                 label={$t({ defaultMessage: 'DMZ Cluster' })}
               >
-                {formValues.guestEdgeName}
+                {formValues.guestEdgeClusterName}
               </StyledAntdDescriptions.Item>
             }
           </StyledAntdDescriptions>
