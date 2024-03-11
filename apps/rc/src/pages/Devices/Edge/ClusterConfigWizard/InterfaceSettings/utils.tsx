@@ -1,12 +1,31 @@
 import { Typography } from 'antd'
 import _              from 'lodash'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField }                                         from '@acx-ui/rc/components'
-import { ClusterNetworkSettings, EdgeClusterStatus, EdgePortInfo, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
+import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
+import {
+  ClusterNetworkSettings,
+  EdgeClusterStatus,
+  EdgePortInfo,
+  EdgePortTypeEnum,
+  EdgeSerialNumber
+} from '@acx-ui/rc/utils'
 
-import { VirtualIpFormType } from '../../EditEdgeCluster/VirtualIp'
+import {
+  VirtualIpConfigFormType,
+  VirtualIpFormType,
+  defaultHaTimeoutValue
+} from '../../EditEdgeCluster/VirtualIp'
 
-import { InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+
+const initialNodeCompatibleResult = {
+  nodeId: '',
+  errors: {
+    ports: { value: 0 },
+    corePorts: { value: 0 },
+    portTypes: {}
+  }
+} as CompatibilityNodeError<InterfacePortFormCompatibility>
 
 export const transformFromApiToFormData =
  (apiData?: ClusterNetworkSettings, clusterInfo?: EdgeClusterStatus):InterfaceSettingsFormType => {
@@ -17,7 +36,7 @@ export const transformFromApiToFormData =
      }, {} as InterfaceSettingsFormType['portSettings'])
 
    const virtualIpSettings = apiData?.virtualIpSettings
-   const timeout = apiData?.virtualIpSettings?.[0]?.timeoutSeconds ?? 3
+   const timeout = apiData?.virtualIpSettings?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
    const editVipConfig = [] as VirtualIpFormType['vipConfig']
    const lanInterfaces = getLanInterfaces(apiData?.lagSettings, portSettings, clusterInfo)
    if(virtualIpSettings && lanInterfaces) {
@@ -35,6 +54,9 @@ export const transformFromApiToFormData =
        })
      }
    }
+
+   // initialized empty data
+   if(editVipConfig.length === 0) editVipConfig.push({} as VirtualIpConfigFormType)
 
    return {
      portSettings,
@@ -129,7 +151,7 @@ export const getLagFormCompatibilityFields = () => {
     title: 'Number of LAGs',
     render: (errors:CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
       <Typography.Text
-        type={errors.ports.isError ? 'danger' : 'success'}
+        type={errors.ports.isError ? 'danger' : undefined}
         children={errors.ports.value} />
   }, {
     key: 'corePorts',
@@ -137,7 +159,7 @@ export const getLagFormCompatibilityFields = () => {
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) =>
       <Typography.Text
-        type={errors.ports.isError ? 'danger' : 'success'}
+        type={errors.corePorts.isError ? 'danger' : undefined}
         children={errors.corePorts.value} />
   }, {
     key: 'portTypes',
@@ -146,46 +168,17 @@ export const getLagFormCompatibilityFields = () => {
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
       return Object.keys(errors.portTypes)
         .map((portType) => <Typography.Text
-          type={errors.portTypes[portType].isError ? 'danger' : 'success'}
+          type={errors.portTypes[portType].isError ? 'danger' : undefined}
           children={portType}
         />)
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
 
-export const interfaceCompatibilityCheck = (portSettings: InterfaceSettingsFormType) => {
-  // eslint-disable-next-line max-len
-  const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
-
-  Object.entries(portSettings).forEach(([serialNumber, portsData]) => {
-    let result = {
-      nodeId: '',
-      errors: {
-        ports: { value: 0 },
-        corePorts: { value: 0 },
-        portTypes: {}
-      }
-    } as CompatibilityNodeError<InterfacePortFormCompatibility>
-
-    // do counting
-    _.values(portsData).flat().forEach(port => {
-      result.nodeId = serialNumber
-      result.errors.ports.value++
-      if (port.corePortEnabled) result.errors.corePorts.value++
-      if (!result.errors.portTypes[port.portType]) {
-        result.errors.portTypes[port.portType] = {
-          isError: false, value: 1
-        }
-      } else {
-        // eslint-disable-next-line max-len
-        result.errors.portTypes[port.portType].value = result.errors.portTypes[port.portType].value++
-      }
-    })
-
-    checkResult[serialNumber] = result
-  })
-
-  let results = _.values(checkResult)
+const getCompatibleCheckResult = (
+  countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>
+): CompatibilityCheckResult => {
+  let results = _.values(countResult)
   const portsCheck = _.every(results,
     (result) => _.isEqual(result.errors.ports.value, results[0].errors.ports.value))
   const corePortsCheck = _.every(results,
@@ -215,7 +208,84 @@ export const interfaceCompatibilityCheck = (portSettings: InterfaceSettingsFormT
     ports: portsCheck,
     corePorts: corePortsCheck,
     portTypes: portTypesCheck
-  }
+  } as CompatibilityCheckResult
+}
+
+export const interfaceCompatibilityCheck = (
+  portSettings:InterfaceSettingsFormType['portSettings'],
+  nodeList: EdgeClusterStatus['edgeList']
+): CompatibilityCheckResult => {
+  // eslint-disable-next-line max-len
+  const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
+
+  nodeList?.forEach((node) => {
+    const { name: nodeName, serialNumber } = node
+    const portsData = _.get(portSettings, serialNumber)
+    const result = _.cloneDeep(initialNodeCompatibleResult)
+    // append node info
+    result.nodeId = serialNumber
+    result.nodeName = nodeName
+
+    // no port exist
+    if (!portsData) {
+      checkResult[serialNumber] = result
+      return
+    }
+
+    // do counting
+    Object.values(portsData).flat().forEach(port => {
+      result.errors.ports.value++
+      if (port.corePortEnabled) result.errors.corePorts.value++
+      if (!result.errors.portTypes[port.portType]) {
+        result.errors.portTypes[port.portType] = {
+          isError: false, value: 1
+        }
+      } else {
+        // eslint-disable-next-line max-len
+        result.errors.portTypes[port.portType].value = result.errors.portTypes[port.portType].value++
+      }
+    })
+
+    checkResult[serialNumber] = result
+  })
+
+  return getCompatibleCheckResult(checkResult)
+}
+
+export const lagSettingsCompatibleCheck = (
+  lagSettings: InterfaceSettingsFormType['lagSettings'],
+  nodeList: EdgeClusterStatus['edgeList']
+): CompatibilityCheckResult => {
+  // eslint-disable-next-line max-len
+  const checkResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>> = {}
+
+  nodeList?.forEach((node) => {
+    const { name: nodeName, serialNumber } = node
+    const lags = _.find(lagSettings, { serialNumber })
+    const lagsData = lags?.lags
+    const result = _.cloneDeep(initialNodeCompatibleResult)
+    // append node info
+    result.nodeId = serialNumber
+    result.nodeName = nodeName
+
+    // do counting
+    lagsData?.forEach(lag => {
+      result.errors.ports.value++
+      if (lag.corePortEnabled) result.errors.corePorts.value++
+      if (!result.errors.portTypes[lag.portType]) {
+        result.errors.portTypes[lag.portType] = {
+          isError: false, value: 1
+        }
+      } else {
+        // eslint-disable-next-line max-len
+        result.errors.portTypes[lag.portType].value = result.errors.portTypes[lag.portType].value++
+      }
+    })
+
+    checkResult[serialNumber] = result
+  })
+
+  return getCompatibleCheckResult(checkResult)
 }
 
 export const transformFromFormToApiData =

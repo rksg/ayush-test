@@ -1,3 +1,4 @@
+import { CompatibilityNodeError }                             from '@acx-ui/rc/components'
 import { ClusterNetworkSettings, EdgePort, EdgeSerialNumber } from '@acx-ui/rc/utils'
 
 import { VirtualIpFormType } from '../../EditEdgeCluster/VirtualIp'
@@ -14,4 +15,12 @@ export interface InterfacePortFormCompatibility {
     corePorts: { isError?: boolean, value: number },
     portTypes: { [portType:string]:
        { isError?: boolean, value: number } }
+}
+
+export interface CompatibilityCheckResult {
+  results: CompatibilityNodeError<InterfacePortFormCompatibility>[]
+  isError: boolean
+  ports: boolean,
+  corePorts: boolean,
+  portTypes: boolean
 }

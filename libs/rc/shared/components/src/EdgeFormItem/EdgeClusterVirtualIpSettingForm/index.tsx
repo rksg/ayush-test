@@ -50,16 +50,13 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
   return (
     <Row gutter={[16, 30]}>
       <Col span={24}>
-        <Form.List
-          name='vipConfig'
-          initialValue={[{}]}
-        >
+        <Form.List name='vipConfig'>
           {
             (fields, { add, remove }) => (
               <Row gutter={[16, 20]}>
                 {
                   fields.map((field, index) =>
-                    <Col key={`vip-${index}`} span={24}>
+                    <Col key={`vip-${field.key}`} span={24}>
                       <VipCard
                         field={field}
                         index={index}
@@ -106,7 +103,6 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
             </>
           }
           name='timeout'
-          initialValue={3}
         >
           <Slider
             tooltipVisible={false}

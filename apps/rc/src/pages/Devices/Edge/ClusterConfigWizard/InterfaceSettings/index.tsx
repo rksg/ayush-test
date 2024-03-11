@@ -5,24 +5,36 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, StepsFormProps }                                                 from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum }                                   from '@acx-ui/rc/components'
-import { useGetEdgeClusterNetworkSettingsQuery, usePatchEdgeClusterNetworkSettingsMutation } from '@acx-ui/rc/services'
-import { useTenantLink }                                                                     from '@acx-ui/react-router-dom'
+import { Loader, StepsForm, StepsFormProps }               from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
+import {
+  useGetEdgeClusterNetworkSettingsQuery,
+  usePatchEdgeClusterNetworkSettingsMutation
+} from '@acx-ui/rc/services'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { LagForm }                                                   from './LagForm'
-import { PortForm }                                                  from './PortForm'
-import { Summary }                                                   from './Summary'
-import { InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
+import { LagForm }            from './LagForm'
+import { PortForm }           from './PortForm'
+import { Summary }            from './Summary'
 import {
+  CompatibilityCheckResult,
+  InterfacePortFormCompatibility,
+  InterfaceSettingsFormType
+} from './types'
+import {
+  getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
+  lagSettingsCompatibleCheck,
   transformFromApiToFormData,
   transformFromFormToApiData
 } from './utils'
 import { VirtualIpForm } from './VirtualIpForm'
+
+const lagCompatibleErrorFields = getLagFormCompatibilityFields()
+const portCompatibleErrorFields = getPortFormCompatibilityFields()
 
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
@@ -32,8 +44,6 @@ export const InterfaceSettings = () => {
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
-  const errorFieldsConfig = getPortFormCompatibilityFields()
-
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
     type: 'success',
@@ -57,9 +67,18 @@ export const InterfaceSettings = () => {
   })
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
-  const doCompatibleCheck = (typeKey: string) => {
+  const doCompatibleCheck = (typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
-    const checkResult = interfaceCompatibilityCheck(formData)
+    let checkResult: CompatibilityCheckResult
+    let errorFieldsConfig
+    if (typeKey === 'lagSettings') {
+      errorFieldsConfig = lagCompatibleErrorFields
+      checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
+    } else {
+      errorFieldsConfig = portCompatibleErrorFields
+      checkResult = interfaceCompatibilityCheck(formData, clusterInfo?.edgeList)
+    }
+
 
     setAlertData({
       type: checkResult.isError?'error':'success',
@@ -94,9 +113,6 @@ export const InterfaceSettings = () => {
       content: <LagForm />,
       onValuesChange: (type: string) => handleValuesChange(type),
       onFinish: async (typeKey: string) => {
-        const lagData = _.get(configWizardForm.getFieldsValue(true), typeKey)
-        // eslint-disable-next-line no-console
-        console.log('lagData', lagData)
         const checkResult = doCompatibleCheck(typeKey)
         return !checkResult.isError
       }
@@ -114,15 +130,7 @@ export const InterfaceSettings = () => {
     {
       title: $t({ defaultMessage: 'Cluster Virtual IP' }),
       id: 'virtualIpSettings',
-      content: <VirtualIpForm />,
-      onValuesChange: (type: string) => handleValuesChange(type),
-      onFinish: async (typeKey: string) => {
-        const virtualIPData = _.get(configWizardForm.getFieldsValue(true), typeKey)
-        // eslint-disable-next-line no-console
-        console.log('virtualIPData', virtualIPData)
-        // TODO: Virtual IP CompatibilityCheck
-        return true
-      }
+      content: <VirtualIpForm />
     },
     {
       title: $t({ defaultMessage: 'Summary' }),

@@ -22,15 +22,22 @@ interface VirtualIpProps {
   currentVipConfig?: EdgeCluster['virtualIpSettings']
 }
 
-export interface VirtualIpFormType {
-  timeout: number
-  vipConfig: {
+export interface VirtualIpConfigFormType {
     interfaces: {
       [key: string]: EdgePortInfo
     }
     vip: string
-  }[]
 }
+export interface VirtualIpFormType {
+  timeout: number
+  vipConfig: VirtualIpConfigFormType[]
+}
+
+export const defaultHaTimeoutValue = 3
+const defaultVirtualIpFormValues = {
+  timeout: defaultHaTimeoutValue,
+  vipConfig: [{}]
+} as VirtualIpFormType
 
 export const VirtualIp = (props: VirtualIpProps) => {
   const { currentClusterStatus, currentVipConfig } = props
@@ -53,7 +60,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
 
   useEffect(() => {
     if(currentVipConfig) {
-      const timeout = currentVipConfig.virtualIps?.[0]?.timeoutSeconds ?? 3
+      const timeout = currentVipConfig.virtualIps?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
       const editVipConfig = [] as VirtualIpFormType['vipConfig']
       if(lanInterfaces) {
         for(let i=0; i<currentVipConfig.virtualIps.length; i++) {
@@ -70,10 +77,13 @@ export const VirtualIp = (props: VirtualIpProps) => {
           })
         }
       }
+
       form.setFieldsValue({
         timeout,
         vipConfig: editVipConfig
       })
+    } else {
+      form.setFieldsValue(defaultVirtualIpFormValues)
     }
   }, [currentVipConfig, lanInterfaces])
 
