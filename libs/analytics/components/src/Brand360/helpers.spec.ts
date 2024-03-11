@@ -146,11 +146,38 @@ describe('helpers', () => {
 
 
 describe('transformLookupAndMappingData', () => {
-  it('transforms mapping data correctly', () => {
+  it('transforms mapping data correctly for msp ec resp', () => {
+    const data = {
+      data: [
+        {
+          id: '1', name: 'Name1', tenantType: 'Type1',
+          integrator: 'Integrator1', integrators: ['Integrator1']
+        },
+        { id: '2', name: 'Name2', tenantType: 'Type2' }
+      ]
+    }
+    const transformed = transformLookupAndMappingData(
+      data as ECList,
+      false
+    )
+    expect(transformed['1']).toEqual({
+      name: 'Name1',
+      type: 'Type1',
+      integrators: ['Integrator1'],
+      content: [data.data[0]]
+    })
+    expect(transformed['2']).toEqual({
+      name: 'Name2',
+      type: 'Type2',
+      integrators: [],
+      content: [data.data[1]]
+    })
+  })
+  it('transforms mapping data correctly for lsp ec resp', () => {
 
     const transformed = transformLookupAndMappingData(
       mockMappingData as ECList,
-      false
+      true
     )
     expect(transformed['1']).toEqual({
       name: 'Name1',
@@ -165,7 +192,6 @@ describe('transformLookupAndMappingData', () => {
       content: [mockMappingData.data[1]]
     })
   })
-
   it('handles empty data', () => {
     const transformed = transformLookupAndMappingData({ data: [] } as unknown as ECList, true)
     expect(transformed).toEqual({})
