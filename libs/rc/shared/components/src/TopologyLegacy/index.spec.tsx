@@ -6,7 +6,7 @@ import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, Devic
 import { Provider, store }                                                                                                        from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                                       from '@acx-ui/test-utils'
 
-import { TopologyGraph } from '.'
+import { TopologyGraphLegacy } from '.'
 
 
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -354,7 +354,7 @@ describe('Topology', () => {
     )
 
     const { asFragment } = render(<Provider>
-      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/></Provider>,{
+      <TopologyGraphLegacy showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/></Provider>,{
       route: { params }
     })
 
@@ -459,7 +459,7 @@ describe('Topology', () => {
         (req, res, ctx) => { return res(ctx.json(scaleData)) })
     )
     const { asFragment } = await render(<Provider>
-      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>,{
+      <TopologyGraphLegacy showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>,{
       route: { params }
     })
 
@@ -485,7 +485,7 @@ describe('Topology', () => {
     )
 
     const { asFragment } = await render(<Provider>
-      <TopologyGraph
+      <TopologyGraphLegacy
         showTopologyOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
         venueId={params.venueId}
         deviceMac='5C:DF:89:2A:AF:01' /></Provider>,{
