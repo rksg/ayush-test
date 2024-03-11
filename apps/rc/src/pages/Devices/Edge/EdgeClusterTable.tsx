@@ -12,6 +12,8 @@ import {
   EdgeClusterTableDataType,
   activeTab,
   allowRebootForStatus,
+  allowSendOtpForStatus,
+  allowSendFactoryResetStatus,
   getUrl,
   usePollingTableQuery,
   genUrl,
@@ -41,7 +43,12 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot } = useEdgeClusterActions()
+  const {
+    deleteNodeAndCluster,
+    reboot,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
+  } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
@@ -216,6 +223,26 @@ export const EdgeClusterTable = () => {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         deleteNodeAndCluster(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendEdgeOnboardOtp(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => {
+            return !allowSendFactoryResetStatus(row?.deviceStatus)
+          }).length === 0),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendFactoryReset(selectedRows, clearSelection)
       }
     },
     {

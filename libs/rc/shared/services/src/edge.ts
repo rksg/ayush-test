@@ -720,6 +720,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           if(item.edgeList) {
             tmp.children = item.edgeList
             delete item.edgeList
+            if (tmp.children.length < 2)
+              // remove the HA status for 1 node case
+              tmp.children.forEach((edgeStat: EdgeStatus) => delete edgeStat.haStatus)
             EdgeStatusTransformer(tmp.children)
           }
           return tmp
