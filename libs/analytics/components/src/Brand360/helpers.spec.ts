@@ -1,5 +1,3 @@
-import { MspEc }       from '@acx-ui/msp/utils'
-import { TableResult } from '@acx-ui/rc/utils'
 
 import {
   computePastRange,
@@ -17,7 +15,10 @@ import type { BrandVenuesSLA } from './services'
 
 const mockMappingData = {
   data: [
-    { id: '1', name: 'Name1', tenantType: 'Type1', integrator: 'Integrator1', integrators: ['Integrator1'] },
+    {
+      id: '1', name: 'Name1', tenantType: 'Type1',
+      integrator: 'Integrator1', integrators: ['Integrator1']
+    },
     { id: '2', name: 'Name2', tenantType: 'Type2', integrators: [] }
   ]
 }
