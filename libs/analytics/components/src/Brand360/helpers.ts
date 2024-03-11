@@ -67,7 +67,18 @@ const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) =
   }
 }
 export const transformToLspView = (properties: Response[]): Lsp[] => {
-  const lsps = groupBy(properties, (p) => p.lsp)
+  const lsps = properties.reduce((lspMap, p) => {
+    p.lsps.forEach(lsp => {
+      if (lspMap[lsp]) {
+        lspMap[lsp as keyof typeof lspMap] = [...lspMap[lsp as keyof typeof lspMap], p]
+      } else {
+        lspMap[lsp as keyof typeof lspMap] = [p]
+      }
+    })
+
+    return lspMap
+  }, {} as { [key: string]: Response[] })
+
   return Object.entries(lsps).map(([lsp, properties], ind) => {
     const {
       connSuccess,
@@ -150,7 +161,8 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       avgConnSuccess,
       avgClientThroughput,
       avgTTC,
-      guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC)
+      guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC),
+      lsp: property.lsps.join(', ')
     } as Property
   })
 
@@ -233,8 +245,7 @@ export const transformVenuesData = (
     mappingData?.integrators?.length && newObj.push({
       id: `${mappingData?.name}-${ind}`,
       property: mappingData?.name,
-      lsp: mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name)
-        .join(', ') as string,
+      lsps: mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name),
       p1Incidents: tenantData
         ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
       ssidCompliance: sumData(

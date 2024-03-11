@@ -23,7 +23,7 @@ export const calcGranularityForBrand360 = (
 
 export interface Response {
   id?: string
-  lsp: string
+  lsps: string[]
   p1Incidents: number
   ssidCompliance: [number, number]
   deviceCount: number

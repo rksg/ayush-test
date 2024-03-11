@@ -77,14 +77,17 @@ describe('helpers', () => {
         avgConnSuccess: [null, null],
         avgClientThroughput: [null, null],
         avgTTC: [null, null],
-        ssidCompliance: [null, null]
+        ssidCompliance: [null, null],
+        lsps: []
       }])).toEqual([
         {
           avgClientThroughput: null,
           avgConnSuccess: null,
           avgTTC: null,
           guestExp: null,
-          ssidCompliance: null
+          ssidCompliance: null,
+          lsps: [],
+          lsp: ''
         }
       ])
     })
@@ -178,7 +181,7 @@ describe('transformVenuesData', () => {
     expect(transformed).toEqual([
       {
         property: 'Property1',
-        lsp: 'IntegratorName',
+        lsps: ['IntegratorName'],
         p1Incidents: 8,
         ssidCompliance: [3, 5],
         deviceCount: 15,
@@ -201,7 +204,7 @@ describe('transformVenuesData', () => {
         avgConnSuccess: '--',
         avgTTC: '--',
         deviceCount: 0,
-        lsp: 'IntegratorName',
+        lsps: ['IntegratorName'],
         p1Incidents: 0,
         property: 'Property1',
         ssidCompliance: '--',
