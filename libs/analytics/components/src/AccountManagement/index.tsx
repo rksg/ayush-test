@@ -83,7 +83,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
     const tab = tabs.find(({ key }) => key === tabKey)
     tab?.component && navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/admin/${tab?.url || tab}`
+      pathname: `${basePath.pathname}/admin/${tab?.url || tab.key}`
     })
   }
   const tabs = useTabs()
