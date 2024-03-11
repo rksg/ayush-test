@@ -170,6 +170,7 @@ export function ManageCustomer () {
   const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -686,7 +687,9 @@ export function ManageCustomer () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
         </Form.Item>
@@ -882,7 +885,9 @@ export function ManageCustomer () {
         />
         <Form.Item
           name='admin_role'
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
           style={{ width: '300px' }}
           rules={[{ required: true }]}
           initialValue={RolesEnum.PRIME_ADMIN}
@@ -1277,7 +1282,9 @@ export function ManageCustomer () {
           <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
           <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
