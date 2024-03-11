@@ -23,6 +23,11 @@ import { RequestPayload }    from '@acx-ui/types'
 import { CloudVersion }      from '@acx-ui/user'
 import { createHttpRequest } from '@acx-ui/utils'
 
+const v1Header = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
   endpoints: (build) => ({
     getUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
@@ -332,7 +337,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
       query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList)
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueEdgeFirmwareList, undefined,v1Header)
         return {
           ...req
         }
@@ -353,7 +358,11 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getAvailableEdgeFirmwareVersions: build.query<EdgeFirmwareVersion[], RequestPayload>({
       query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions)
+        const req = createHttpRequest(
+          FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions,
+          undefined,
+          v1Header
+        )
         return {
           ...req
         }
@@ -361,11 +370,11 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'EdgeFirmware', id: 'AVAILABLE_LIST' }]
     }),
     updateEdgeFirmwareNow: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeFirmware)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeFirmware, params, v1Header)
         return {
           ...req,
-          body: { ...(payload as Object), state: 'UPDATE_NOW' }
+          body: JSON.stringify({ ...(payload as Object), state: 'UPDATE_NOW' })
         }
       },
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
@@ -390,21 +399,29 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'PREFERENCES' }]
     }),
     skipEdgeUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          FirmwareUrlsInfo.skipEdgeUpgradeSchedules,
+          params,
+          v1Header
+        )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     }),
     updateEdgeVenueSchedules: build.mutation<CommonResult, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.updateEdgeVenueSchedules)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          FirmwareUrlsInfo.updateEdgeVenueSchedules,
+          params,
+          v1Header
+        )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
