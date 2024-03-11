@@ -93,8 +93,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
 
             // only display when portConfig has data
             return portsConfigs
-              ? <EdgePortsGeneralBase<InterfaceSettingsFormType>
-                form={form}  // configWizard's formInstance
+              ? <EdgePortsGeneralBase
                 lagData={lagData}
                 statusData={portsStatus?.[serialNumber] ?? []}
                 isEdgeSdLanRun={!!edgeSdLanData}

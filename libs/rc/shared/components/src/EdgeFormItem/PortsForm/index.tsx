@@ -3,7 +3,7 @@ import { ReactNode, useContext, useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, Tabs, TabsType }        from '@acx-ui/components'
+import { Tabs, TabsType }                from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
 

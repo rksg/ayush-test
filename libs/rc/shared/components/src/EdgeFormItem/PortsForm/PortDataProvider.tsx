@@ -28,7 +28,7 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   const {
     data: portData, isFetching: isPortFetching
   } = useGetPortConfigQuery({
-    payload: { edgeIds: [serialNumber] }
+    params: { serialNumber }
   })
 
   const {

@@ -55,12 +55,13 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     )
 
   const handleFormChange = async (changedValues: Object) => {
+    // due to form.List, must use the trailling 0
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]
-      const id = changedPortName.toString().split('_')[1]
+      const interfaceName = changedPortName.toString()
       if (changedField['portType']) {
-        handlePortTypeChange(changedPortName, changedField['portType'], id)
+        handlePortTypeChange(changedPortName, changedField['portType'], interfaceName)
       }
 
       let hasError = false
@@ -90,7 +91,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   const handlePortTypeChange = (_: string, changedValue: StoreValue,
-    id: string) => {
+    interfaceName: string) => {
     // TODO: need to confirm if we should display this whenever user change port type
     // if (isEdgeSdLanReady && isEdgeSdLanRun) {
     //   showActionModal({
@@ -102,11 +103,11 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     // }
 
     if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
-      form.setFieldValue(getFieldFullPath(id, 'ipMode'), EdgeIpModeEnum.STATIC)
+      form.setFieldValue(getFieldFullPath(interfaceName, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
-      const initialPortType = portData.find(port => port.id === id)?.portType
+      const initialPortType = portData.find(port => port.interfaceName === interfaceName)?.portType
       if (initialPortType !== EdgePortTypeEnum.WAN) {
-        form.setFieldValue(getFieldFullPath(id, 'natEnabled'), true)
+        form.setFieldValue(getFieldFullPath(interfaceName, 'natEnabled'), true)
       }
     }
   }
@@ -145,6 +146,8 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     }
   }
 
+  const formData = transformApiDataToFormListData(portData)
+
   return <Loader states={[{
     isLoading: isEdgeSdLanLoading,
     isFetching: isFetching || isEdgeSdLanFetching
@@ -152,15 +155,14 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     {portData.length > 0 ?
       <StepsForm
         form={form}
-        initialValues={transformApiDataToFormListData(portData)}
+        initialValues={formData}
         onFinish={handleFinish}
         onCancel={onCancel}
         onValuesChange={handleFormChange}
         buttonLabel={buttonLabel ?? { submit: $t({ defaultMessage: 'Apply Ports General' }) }}
       >
         <StepsForm.StepForm onFinishFailed={handleFinishFailed}>
-          <EdgePortsGeneralBase<EdgePortConfigFormType>
-            form={form}
+          <EdgePortsGeneralBase
             statusData={portStatus}
             lagData={lagData}
             isEdgeSdLanRun={!!edgeSdLanData}
