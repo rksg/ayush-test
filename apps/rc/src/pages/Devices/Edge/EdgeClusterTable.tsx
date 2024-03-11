@@ -167,6 +167,13 @@ export const EdgeClusterTable = () => {
           </TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
@@ -273,6 +280,7 @@ export const EdgeClusterTable = () => {
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}

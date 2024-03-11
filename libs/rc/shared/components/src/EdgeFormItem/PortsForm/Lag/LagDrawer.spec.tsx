@@ -1,14 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                            from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                 from '@acx-ui/test-utils'
 
 import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagDrawer } from './LagDrawer'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
 const noCoreLagList = mockedEdgeLagList.content.map(item => ({ ...item, corePortEnabled: false }))
@@ -47,6 +48,10 @@ describe('EditEdge ports - LAG Drawer', () => {
 
   beforeEach(() => {
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.post(
         EdgeUrlsInfo.addEdgeLag.url,
         (req, res, ctx) => res(ctx.status(202))
