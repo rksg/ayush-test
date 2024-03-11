@@ -52,7 +52,10 @@ export type Settings = {
   'sla-guest-experience': string
   'sla-brand-ssid-compliance': string
   'brand-ssid-compliance-matcher': string
-  'sso': string
+  franchisor: string
+  franchisee: string
+  zone: string
+  sso: string
   'brand-name': string
   'lsp-name': string
   'property-name': string
