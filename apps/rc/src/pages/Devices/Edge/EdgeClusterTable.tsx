@@ -43,7 +43,12 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot, sendEdgeOnboardOtp, sendFactoryReset } = useEdgeClusterActions()
+  const {
+    deleteNodeAndCluster,
+    reboot,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
+  } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
