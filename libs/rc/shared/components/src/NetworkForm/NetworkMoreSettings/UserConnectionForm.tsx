@@ -13,6 +13,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Fieldset, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }      from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -42,6 +43,9 @@ const minutesMapping: { [key:string]:number }={
 const oneDay = 1440
 const oneHour = 60
 export function UserConnectionForm () {
+
+  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
+
 
   const { $t } = useIntl()
   const { useWatch } = Form
@@ -387,6 +391,13 @@ export function UserConnectionForm () {
               <Select data-testid='macCredentialsDurationUnit' disabled={!checkDuration}>
                 <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                {
+                  isSessionDurationEnable &&
+                  <>
+                    <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
+                    <Option value={'Weeks'}>{$t({ defaultMessage: 'Weeks' })}</Option>
+                  </>
+                }
               </Select>
             </Form.Item>
             <Form.Item
