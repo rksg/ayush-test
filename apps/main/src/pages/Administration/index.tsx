@@ -22,6 +22,7 @@ import LocalRadiusServer from './LocalRadiusServer'
 import Notifications     from './Notifications'
 import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
+import UserPrivileges    from './UserPrivileges'
 
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
@@ -31,6 +32,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -67,11 +69,15 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       onChange={onTabChange}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='accountSettings' />
-      { hasAdministratorTab &&
-      ( <Tabs.TabPane
-        tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
-          : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
-        key='administrators' /> )
+      { hasAdministratorTab && (
+        isAbacToggleEnabled
+          ? ( <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Users & Privileges' })}
+            key='userPrivileges' /> )
+          : ( <Tabs.TabPane
+            tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
+              : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
+            key='administrators' /> ) )
       }
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })}
@@ -93,6 +99,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
 const tabPanes = {
   accountSettings: AccountSettings,
   administrators: Administrators,
+  userPrivileges: UserPrivileges,
   onpremMigration: OnpremMigration,
   notifications: Notifications,
   subscriptions: Subscriptions,
