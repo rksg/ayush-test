@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { switchApi }              from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider, store }        from '@acx-ui/store'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   cleanup,
   mockServer,
@@ -587,15 +587,13 @@ describe('SwitchTable', () => {
   })
 
   it('should search correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.EXPORT_DEVICE ? true : false
-    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input = await screen
-      .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
+    const input = await screen.findByPlaceholderText('Search Switch, Model,' +
+      ' Serial Number, MAC Address, IP Address, Ext. IP Address')
 
     expect(input).toBeVisible()
   })

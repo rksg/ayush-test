@@ -1,6 +1,6 @@
 import { Brand360 }                                         from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
@@ -20,8 +20,9 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                                                   from '@acx-ui/store'
+import { AccountType, getJwtTokenPayload }                            from '@acx-ui/utils'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
@@ -35,14 +36,33 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
+function Init () {
+  const { tenantType } = getJwtTokenPayload()
+  const isShowBrand360 =
+    tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR
+  const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
+  return <Navigate
+    replace
+    to={{ pathname: basePath.pathname }}
+  />
+}
+
 export default function MspRoutes () {
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const navigateToDashboard = isHspSupportEnabled
+    ? '/dashboard/mspRecCustomers'
+    : '/dashboard/mspCustomers'
+
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
       <Route path='*' element={<PageNotFound />} />
-      <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
+      <Route index element={<Init />} />
       <Route
         path='dashboard'
-        element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
+        element={<TenantNavigate replace to={navigateToDashboard} tenantType='v'/>}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
