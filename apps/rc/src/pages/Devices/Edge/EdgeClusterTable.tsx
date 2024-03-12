@@ -17,7 +17,8 @@ import {
   getUrl,
   usePollingTableQuery,
   genUrl,
-  CommonCategory
+  CommonCategory,
+  EdgeStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -279,7 +280,10 @@ export const EdgeClusterTable = () => {
         }
       },
       disabled: (selectedRows) => {
-        return !selectedRows[0]?.edgeList?.length
+        const nodeList = selectedRows[0]?.edgeList ?? []
+        return !nodeList.length ||
+        nodeList.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 0
       }
     }
   ]
@@ -306,7 +310,7 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
   const { $t } = getIntl()
   const defaultMessage = $t({ defaultMessage: 'Cluster Setup Required' })
   if((data.edgeList?.length ?? 0) < 2){
-    return <Row align='middle' justify='center' gutter={[2, 0]}>
+    return <Row align='middle' gutter={[2, 0]}>
       <Col>
         {$t({ defaultMessage: 'Single Node' })}
       </Col>

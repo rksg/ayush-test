@@ -202,6 +202,13 @@ export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSetti
 export { EdgeLagTable } from './EdgeLagTable'
 export * from './EdgeCluster/CompatibilityErrorDetails/types'
 export { EdgeClusterVirtualIpSettingForm } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
+export { EdgeClusterInterfaceSettingForm } from './EdgeFormItem/EdgeClusterInterfaceSettingForm'
+export type {
+  EdgeClusterInterfaceSettingFormType
+} from './EdgeFormItem/EdgeClusterInterfaceSettingForm'
+export {
+  useClusterInterfaceActions
+} from './EdgeFormItem/EdgeClusterInterfaceSettingForm/useClusterInterfaceActions'
 
 export * from './services'
 export * from './policies'
