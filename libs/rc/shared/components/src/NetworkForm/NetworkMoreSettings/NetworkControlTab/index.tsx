@@ -46,6 +46,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
   const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   const showSingleSessionIdAccounting = !isRadiusOptionsSupport
     && hasAccountingRadius(data, wlanData)
@@ -130,7 +131,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
       filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
     }
   }, {
-    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled || !isEdgePinReady,
     selectFromResult: ({ data }) => {
       return {
         nsgId: _.get(data?.data.filter(item => item.networkIds.length > 0), ['0', 'id'])
@@ -329,13 +330,13 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
           <UI.Description>
             {
               $t({
-                defaultMessage: `All networks under the same Network Segmentation
+                defaultMessage: `All networks under the same Personal Identity Network
                 share the same tunnel profile. Go `
               })
             }
             &nbsp;
             <Space size={1}></Space>
-            { nsgId &&
+            { nsgId && isEdgePinReady &&
             <TenantLink to={getServiceDetailsLink({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.DETAIL,

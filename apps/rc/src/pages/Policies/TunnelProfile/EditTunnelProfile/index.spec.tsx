@@ -145,7 +145,9 @@ describe('EditTunnelProfile', () => {
       store.dispatch(nsgApi.util.resetApiState())
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_TOGGLE) return true
+        if (flag === Features.EDGES_SD_LAN_TOGGLE ||
+          flag === Features.EDGES_TOGGLE ||
+          flag === Features.EDGE_PIN_HA_TOGGLE) return true
         return false
       })
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
