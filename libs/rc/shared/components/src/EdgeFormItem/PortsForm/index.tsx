@@ -9,10 +9,10 @@ import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
 
 import { EditContext } from '../EdgeEditContext'
 
-import Lag                                                    from './Lag'
-import { EdgePortsDataContext, EdgePortsDataContextProvider } from './PortDataProvider'
-import PortsGeneral                                           from './PortsGeneral'
-import SubInterface                                           from './SubInterface'
+import Lag                              from './Lag'
+import { EdgePortsDataContextProvider } from './PortDataProvider'
+import PortsGeneral                     from './PortsGeneral'
+import SubInterface                     from './SubInterface'
 
 export enum EdgePortTabEnum {
   PORTS_GENERAL = 'ports-general',
@@ -40,7 +40,6 @@ const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   } = props
   const { $t } = useIntl()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
-  const portsCxtData = useContext(EdgePortsDataContext)
 
   const {
     activeSubTab: activeSubTabInContext,
@@ -97,7 +96,6 @@ const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
       title: $t({ defaultMessage: 'Sub-Interface' }),
       content: <SubInterface
         serialNumber={serialNumber}
-        portData={portsCxtData.portData!}
         lagData={lagData?.data || []}
       />
     }
