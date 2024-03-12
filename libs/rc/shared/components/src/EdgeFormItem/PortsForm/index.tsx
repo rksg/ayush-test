@@ -19,6 +19,7 @@ export enum EdgePortTabEnum {
   LAG = 'lag',
 SUB_INTERFACE = 'sub-interface'
 }
+
 export interface EdgePortsFormProps {
   serialNumber: string
   onTabChange: (tabID: string) => void
@@ -28,7 +29,7 @@ export interface EdgePortsFormProps {
   tabsType?: TabsType
 }
 
-export const EdgePortsForm = (props: EdgePortsFormProps) => {
+const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   const {
     serialNumber,
     onTabChange,
@@ -39,6 +40,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   } = props
   const { $t } = useIntl()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
+
   const {
     activeSubTab: activeSubTabInContext,
     setActiveSubTab: setActiveSubTabInContext,
@@ -108,24 +110,28 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   }
 
   return (
-    <EdgePortsDataContextProvider serialNumber={serialNumber}>
-      <Tabs
-        destroyInactiveTabPane={true}
-        onChange={handleTabChange}
-        defaultActiveKey={Object.keys(tabs)[0]}
-        activeKey={activeSubTab}
-        type={tabsType ?? 'card'}
-      >
-        {Object.keys(tabs)
-          .map((key) =>
-            <Tabs.TabPane
-              tab={`${tabs[key as keyof typeof tabs].title}
+    <Tabs
+      destroyInactiveTabPane={true}
+      onChange={handleTabChange}
+      defaultActiveKey={Object.keys(tabs)[0]}
+      activeKey={activeSubTab}
+      type={tabsType ?? 'card'}
+    >
+      {Object.keys(tabs)
+        .map((key) =>
+          <Tabs.TabPane
+            tab={`${tabs[key as keyof typeof tabs].title}
               ${(activeSubTabInContext.key === key && isDirty) ? '*' : ''}`}
-              key={key}
-            >
-              {tabs[key as keyof typeof tabs].content}
-            </Tabs.TabPane>)}
-      </Tabs>
-    </EdgePortsDataContextProvider>
+            key={key}
+          >
+            {tabs[key as keyof typeof tabs].content}
+          </Tabs.TabPane>)}
+    </Tabs>
   )
+}
+
+export const EdgePortsForm = (props: EdgePortsFormProps) => {
+  return <EdgePortsDataContextProvider serialNumber={props.serialNumber}>
+    <EdgePhysicalPortsForm {...props}/>
+  </EdgePortsDataContextProvider>
 }

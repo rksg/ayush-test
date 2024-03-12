@@ -14,11 +14,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ClusterNetworkSettings,
-  EdgeClusterTableDataType, EdgeIpModeEnum,
+  EdgeClusterStatus,
+  EdgeIpModeEnum,
   EdgeLag,
-  EdgePort,
   EdgePortInfo,
-  EdgePortTypeEnum
+  EdgePortTypeEnum,
+  EdgePortWithStatus
 } from '@acx-ui/rc/utils'
 import { useTenantLink }             from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -29,7 +30,7 @@ import * as CommUI from '../styledComponents'
 import { EditClusterInterfaceDrawer } from './EditClusterInterfaceDrawer'
 
 interface ClusterInterfaceProps {
-  currentClusterStatus?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
 }
 
 export interface ClusterInterfaceTableType {
@@ -139,7 +140,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     const portData = await getPortConfig({
       params: { serialNumber: newInterfaceData.serialNumber }
     })
-    let ports = portData.data?.ports
+    let ports: EdgePortWithStatus[] = portData.data?.ports as EdgePortWithStatus[]
     ports = ports?.map(item =>{
       let portType = item.portType
       let ipMode = item.ipMode
@@ -155,6 +156,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
       } else if(item.interfaceName === oldInterfaceData?.portName) {
         enabled = false
       }
+
       return {
         ...item,
         portType,
@@ -163,7 +165,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
         subnet,
         enabled
       }
-    }) as EdgePort[]
+    })
     return [
       ...(payload.portSettings ?? []),
       {
