@@ -216,7 +216,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      mac: 'F6:C9:AE:00:DD:B5'
     },
     {
       serialNumber: 'serialNumber-1',
@@ -226,7 +227,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.UNCONFIGURED,
       isCorePort: false,
       isLagMember: true,
-      portEnabled: true
+      portEnabled: true,
+      mac: 'BE:B9:DD:95:1B:DF'
     },
     {
       serialNumber: 'serialNumber-1',
@@ -236,7 +238,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.CLUSTER,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      mac: 'C1:8E:2D:38:E1:3E'
     }
   ],
   'serialNumber-2': [
@@ -248,7 +251,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      mac: '0E:4E:BF:EF:DF:0E'
     },
     {
       serialNumber: 'serialNumber-2',
@@ -258,7 +262,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.UNCONFIGURED,
       isCorePort: false,
       isLagMember: true,
-      portEnabled: true
+      portEnabled: true,
+      mac: '63:0C:EE:F6:EB:10'
     },
     {
       serialNumber: 'serialNumber-2',
@@ -268,7 +273,8 @@ export const mockClusterInterfaceOptionData = {
       portType: EdgePortTypeEnum.CLUSTER,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      mac: 'EB:BC:53:A1:12:CD'
     }
   ]
 }
