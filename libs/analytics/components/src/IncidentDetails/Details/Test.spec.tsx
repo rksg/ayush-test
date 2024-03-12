@@ -167,7 +167,7 @@ describe('Test', () => {
         component: SwitchMemoryHigh,
         fakeIncident: fakeIncidentSwitchMemory,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: ['switchDetail']
       },
       {

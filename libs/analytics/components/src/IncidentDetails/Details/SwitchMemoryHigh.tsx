@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { unitOfTime } from 'moment-timezone'
+import { useIntl }    from 'react-intl'
 
 import {
   calculateSeverity,
@@ -11,6 +12,8 @@ import { FixedAutoSizer }                 from '../../DescriptionSection/styledC
 import { SwitchDetail }                   from '../Charts/SwitchDetail'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 
@@ -25,6 +28,15 @@ export const SwitchMemoryHigh = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.SwitchMemoryUtilizationChart
+  ]
+
+  const buffer = {
+    front: { value: 10, unit: 'days' as unitOfTime.Base },
+    back: { value: 1, unit: 'second' as unitOfTime.Base }
+  }
 
   return (
     <>
@@ -52,6 +64,14 @@ export const SwitchMemoryHigh = (incident: Incident) => {
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '203px' }}>
           <SwitchDetail incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
+          <TimeSeries
+            incident={incident}
+            charts={timeSeriesCharts}
+            minGranularity='PT1H'
+            buffer={buffer}
+          />
         </GridCol>
       </GridRow>
     </>
