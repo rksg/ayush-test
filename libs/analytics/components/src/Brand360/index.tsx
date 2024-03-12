@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 
 import moment from 'moment-timezone'
 
-import { useGetTenantSettingsQuery }                         from '@acx-ui/analytics/services'
-import { Settings, useBrand360Names }                        from '@acx-ui/analytics/utils'
+import { useGetBrand360Config }                              from '@acx-ui/analytics/services'
+import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
   useMspCustomerListDropdownQuery,
@@ -66,8 +66,8 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 })
 
 export function Brand360 () {
-  const settingsQuery = useGetTenantSettingsQuery()
-  const { brand, lsp, property } = useBrand360Names(settingsQuery.data)
+  const { names, settingsQuery } = useGetBrand360Config()
+  const { brand, lsp, property } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
   const isLSP = tenantType === AccountType.MSP_INTEGRATOR
     || tenantType === AccountType.MSP_INSTALLER
@@ -153,6 +153,8 @@ export function Brand360 () {
             prevData={prevData}
             currData={currData}
             settings={settings as Settings}
+            lsp={lsp}
+            property={property}
           />
         </Loader>
       </GridCol>)}

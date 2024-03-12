@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Settings, useBrand360Names }               from '@acx-ui/analytics/utils'
 import { LayoutProps }                              from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -29,12 +28,11 @@ import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
 
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean, parentMspId?: string, settings?: Partial<Settings>) {
+  brand: string, isDogfood?: boolean, parentMspId?: string) {
   const { $t } = useIntl()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
-  const { brand } = useBrand360Names(settings)
   const [hideMenuesforHsp, setHideMenuesforHsp] = useState<boolean>(false)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])

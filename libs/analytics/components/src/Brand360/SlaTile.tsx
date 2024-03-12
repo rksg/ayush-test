@@ -13,10 +13,10 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Settings, useBrand360Names } from '@acx-ui/analytics/utils'
-import { Card }                       from '@acx-ui/components'
-import { UpArrow, DownArrow }         from '@acx-ui/icons'
-import { noDataDisplay }              from '@acx-ui/utils'
+import { Settings }           from '@acx-ui/analytics/utils'
+import { Card }               from '@acx-ui/components'
+import { UpArrow, DownArrow } from '@acx-ui/icons'
+import { noDataDisplay }      from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
 import { ComplianceSetting }                                          from './ComplianceSetting'
@@ -35,6 +35,8 @@ interface SlaTileProps {
   currData: FranchisorTimeseries | undefined
   sliceType: SliceType
   settings: Settings
+  lsp: string
+  property: string
 }
 
 const { Text } = Typography
@@ -157,11 +159,12 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  settings
+  settings,
+  lsp,
+  property
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
-  const { lsp, property } = useBrand360Names(settings)
   const name = sliceType === 'lsp' ? lsp : property
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
