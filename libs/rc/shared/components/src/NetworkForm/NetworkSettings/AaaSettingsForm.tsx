@@ -53,8 +53,7 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthenticationConfiguration:
-            data.wlan?.macAddressAuthenticationConfiguration
+          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
         }
       })
     }
