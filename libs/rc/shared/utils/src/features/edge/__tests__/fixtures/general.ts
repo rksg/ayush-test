@@ -3,7 +3,7 @@ import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeServiceTypeEnum, NodeClus
 export const mockEdgeList = {
   fields: [
     'name','deviceStatus','type','model','serialNumber','ip',
-    'ports','venueName','venueId','tags'
+    'ports','venueName','venueId','tags','clusterId'
   ],
   totalCount: 5,
   page: 1,
@@ -177,12 +177,16 @@ export const mockEdgeClusterList = {
           model: 'model 1',
           serialNumber: 'serialNumber-1',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '3',
           venueName: 'Venue 1',
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949424
         },
         {
           name: 'Smart Edge 2',
@@ -191,12 +195,16 @@ export const mockEdgeClusterList = {
           model: 'model 1',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '3',
           venueName: 'Venue 1',
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949420
         }
       ]
     },
@@ -248,13 +256,13 @@ export const mockEdgeClusterList = {
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
       edgeList: [
         {
-          name: 'Smart Edge 3',
+          name: 'Smart Edge 4',
           deviceStatus: '1_01_NeverContactedCloud',
           type: 'Virtual',
           model: 'model 1',
-          serialNumber: '0000000005',
+          serialNumber: 'serialNumber-4',
           ip: '0.0.0.0',
-          ports: '80',
+          ports: '2',
           venueName: 'Venue 3',
           venueId: '0000000003',
           tags: ['Tag1', 'Tag2'],

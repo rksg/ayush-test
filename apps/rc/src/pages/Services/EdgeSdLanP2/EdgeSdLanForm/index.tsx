@@ -38,9 +38,8 @@ export const getSdLanFormDefaultValues
 
 export interface EdgeSdLanFormModelP2 extends EdgeSdLanSettingP2 {
   venueName?: string;
-  edgeName?: string;
+  edgeClusterName?: string;
   tunnelProfileName?: string;
-  corePortName?: string;
   activatedNetworks: EdgeSdLanActivatedNetwork[];
   activatedGuestNetworks: EdgeSdLanActivatedNetwork[];
 }
@@ -63,7 +62,7 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
   const isEditMode = Boolean(editData)
 
   const linkToServiceList = useTenantLink(getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   }))
 

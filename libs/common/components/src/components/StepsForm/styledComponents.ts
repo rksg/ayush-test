@@ -1,5 +1,5 @@
-import { Typography, Steps as AntSteps, Space } from 'antd'
-import styled, { css }                          from 'styled-components/macro'
+import { Typography, Steps as AntSteps, Space, Alert as AntAlert, AlertProps } from 'antd'
+import styled, { css }                                                         from 'styled-components/macro'
 
 import modifyVars                  from '../../theme/modify-vars'
 import { Subtitle }                from '../Subtitle'
@@ -243,4 +243,58 @@ export const MultiSelect = styled.div`
       border-right-width: 1px;
     }
   }
+`
+export const AlertContainer = styled(AntAlert)<{ type: AlertProps['type'] }>`
+position: fixed;
+width: calc(
+  100%
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+min-width: calc(
+  ${modifyVars['@screen-xl']}
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+bottom: calc(
+  32px
+  + var(--acx-steps-form-actions-vertical-space) * 2
+);
+padding: 10px 0;
+&.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  border: none;
+  svg {
+    font-size: var(--acx-body-3-font-size);
+    display: block;
+  }
+  .ant-btn {
+    font-size: var(--acx-body-4-font-size);
+  }
+}
+background-color: var(--acx-neutrals-10);
+&.ant-alert.ant-alert-success, &.ant-alert.ant-alert-success::before {
+  background-color: var(--acx-semantics-green-10);
+}
+&.ant-alert.ant-alert-info, &.ant-alert.ant-alert-info::before {
+  background-color: var(--acx-accents-orange-10);
+}
+&.ant-alert.ant-alert-warning, &.ant-alert.ant-alert-warning::before {
+  background-color: #fffbe6;
+}
+&.ant-alert.ant-alert-error, &.ant-alert.ant-alert-error::before {
+  background-color: var(--acx-semantics-red-10);
+}
+z-index: 5;
+&::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+& > .ant-alert-content {
+  z-index: 1;
+}
 `
