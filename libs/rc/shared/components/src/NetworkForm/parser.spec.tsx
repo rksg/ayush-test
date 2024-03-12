@@ -238,5 +238,28 @@ describe('NetworkForm parser', () => {
       // eslint-disable-next-line max-len
       expect(tranferSettingsToSave(incomingData, true)).not.toHaveProperty(['wlan', 'vlanId'])
     })
+
+    it('verify the AAASetting data with macAddressAuthenticationConfiguration.macAuthMacFormat in editMode', () => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.AAA,
+        authRadiusId: '',
+        authRadius: {
+          primary: {
+            ip: '1.1.1.1'
+          }
+        },
+        wlan: {
+          advancedCustomization: {},
+          macAddressAuthenticationConfiguration: {
+            macAddressAuthentication: true,
+            macAuthMacFormat: 'Lower'
+          }
+        },
+        enableAccountingService: false
+      } as unknown as NetworkSaveData
+
+      // eslint-disable-next-line max-len
+      expect(tranferSettingsToSave(incomingData, true)).toHaveProperty(['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat'])
+    })
   })
 })
