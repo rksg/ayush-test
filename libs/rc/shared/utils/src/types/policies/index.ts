@@ -11,6 +11,7 @@ export * from './radiusAttributeGroup'
 export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
+export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -33,7 +34,10 @@ export enum PolicyType {
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  CONNECTION_METERING = 'Data Usage Metering'
+  CONNECTION_METERING = 'Data Usage Metering',
+  CERTIFICATE_TEMPLATE = 'Certificate Template',
+  CERTIFICATE_AUTHORITY = 'Certificate Authority',
+  CERTIFICATE = 'Certificate'
 }
 
 export enum PolicyTechnology {

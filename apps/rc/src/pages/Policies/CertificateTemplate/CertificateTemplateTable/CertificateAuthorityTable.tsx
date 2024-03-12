@@ -1,0 +1,190 @@
+import { useState } from 'react'
+
+import { Col, Row, Typography } from 'antd'
+import { Modal as AntModal }    from 'antd'
+import moment                   from 'moment'
+import { useIntl }              from 'react-intl'
+
+import { Loader, TableProps, Table, Button, Tooltip, showActionModal }                          from '@acx-ui/components'
+import { useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery }             from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                            from '@acx-ui/user'
+
+import EditCertificateAuthorityForm               from '../CertificateAuthorityForm/EditCertificateAuthorityForm'
+import { DEFAULT_PLACEHOLDER, getTooltipContent } from '../certificateTemplateUtils'
+import { deleteDescription }                      from '../contentsMap'
+
+import DetailDrawer from './DetailDrawer'
+
+
+
+export default function CertificateAuthorityTable () {
+  const { $t } = useIntl()
+  const { Text } = Typography
+  const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
+  const [detailData, setDetailData] = useState<CertificateAuthority | null>(null)
+  const [deleteCertificateAuthority] = useDeleteCertificateAuthorityMutation()
+  const [modal, contextHolder] = AntModal.useModal()
+  const settingsId = 'certificate-authority-table'
+  const tableQuery = useTableQuery({
+    useQuery: useGetCertificateAuthoritiesQuery,
+    defaultPayload: {
+      filters: {}
+    },
+    search: {
+      searchTargetFields: ['name', 'commonName', 'publicKeyShaThumbprint'],
+      searchString: ''
+    },
+    apiParams: {},
+    pagination: { settingsId }
+  })
+
+  const columns: TableProps<CertificateAuthority>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      searchable: true,
+      sorter: true,
+      fixed: 'left',
+      defaultSortOrder: 'ascend',
+      render: (_, row) => {
+        return (
+          <Button type='link'
+            onClick={() => {
+              setDetailData(row)
+              setDetailDrawerOpen(true)
+            }}>
+            {row.name}
+          </Button>)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Templates' }),
+      dataIndex: 'templateCount',
+      key: 'templateCount',
+      render: (_, row) => {
+        return (
+          <Tooltip
+            placement='bottom'
+            title={getTooltipContent(row.templateNames || [],
+              $t({ defaultMessage: 'Certificate Templates' }))}>
+            <Text
+              data-testid='template-count-tooltip'
+              underline={(row.templateCount || 0) > 0}>
+              {row.templateCount || DEFAULT_PLACEHOLDER}
+            </Text>
+          </Tooltip>)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Common Name' }),
+      dataIndex: 'commonName',
+      searchable: true,
+      key: 'commonName'
+    },
+    {
+      title: $t({ defaultMessage: 'SHA Fingerprint' }),
+      dataIndex: 'publicKeyShaThumbprint',
+      searchable: true,
+      key: 'publicKeyShaThumbprint'
+    },
+    {
+      title: $t({ defaultMessage: 'Expires' }),
+      dataIndex: 'expireDate',
+      key: 'expireDate',
+      render: (_, { expireDate }) => {
+        return moment(expireDate).format(EXPIRATION_DATE_FORMAT)
+      }
+    }
+  ]
+
+  const showEditModal = (selectedRow: CertificateAuthority) => {
+    const modalRef = modal.confirm({})
+    const content = <EditCertificateAuthorityForm data={selectedRow} modal={modalRef} />
+    modalRef.update({
+      title: $t({ defaultMessage: 'Edit Certificate Authority' }),
+      okText: $t({ defaultMessage: 'Apply' }),
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      maskClosable: false,
+      keyboard: false,
+      content,
+      icon: <> </>
+    })
+  }
+
+  const showDeleteModal = (selectedRow: CertificateAuthority, clearSelection: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: 'CA',
+        entityValue: selectedRow.name,
+        numOfEntities: 1,
+        confirmationText: 'Delete',
+        extraContent: <>
+          <Row style={{ marginTop: 10 }}>
+            <Col>
+              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+              <Text> {$t(deleteDescription.CA_DETAIL)} </Text>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+              <Text> {$t(deleteDescription.UNDONE)} </Text>
+            </Col>
+          </Row>
+        </>
+      },
+      onOk: () => {
+        deleteCertificateAuthority({
+          params: { caId: selectedRow.id }
+        }).then(() => {
+          clearSelection()
+          setDetailDrawerOpen(false)
+        })
+      }
+    })
+  }
+
+  const rowActions: TableProps<CertificateAuthority>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([selectedRow]) => {
+        showEditModal(selectedRow)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([selectedRow], clearSelection) => {
+        showDeleteModal(selectedRow, clearSelection)
+      }
+    }
+  ]
+
+  return (
+    <>
+      <Loader states={[tableQuery]}>
+        <Table<CertificateAuthority>
+          settingsId={settingsId}
+          columns={columns}
+          dataSource={tableQuery?.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: 'radio' }}
+          rowKey='id'
+          searchableWidth={430}
+        />
+      </Loader>
+      <DetailDrawer
+        open={detailDrawerOpen}
+        setOpen={setDetailDrawerOpen}
+        data={detailData}
+        type={CertificateCategoryType.CERTIFICATE_AUTHORITY}
+      />
+      {contextHolder}
+    </>
+  )
+}

@@ -50,7 +50,10 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ADAPTIVE_POLICY_SET]: 'adaptivePolicySet',
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
   [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
-  [PolicyType.CONNECTION_METERING]: 'connectionMetering'
+  [PolicyType.CONNECTION_METERING]: 'connectionMetering',
+  [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
+  [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
+  [PolicyType.CERTIFICATE]: 'certificate'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
