@@ -34,11 +34,12 @@ export const EdgeDhcp = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
     { params: { edgeId: serialNumber } },
     {
-      skip: !!!serialNumber,
+      skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data }) => ({
         isLeaseTimeInfinite: data?.leaseTime === -1
       })
@@ -75,7 +76,7 @@ export const EdgeDhcp = () => {
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   },{
-    skip: !isEdgeReady
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady
   })
   const { hasNsg } = useGetEdgeServiceListQuery({
     payload: {
@@ -83,7 +84,7 @@ export const EdgeDhcp = () => {
       filters: { edgeId: [serialNumber] }
     }
   }, {
-    skip: !isEdgeReady,
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
     selectFromResult: ({ data, isLoading }) => ({
       hasNsg: isLoading || data?.data.some(
         service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION

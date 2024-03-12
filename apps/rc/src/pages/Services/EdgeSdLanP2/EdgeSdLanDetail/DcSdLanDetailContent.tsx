@@ -35,7 +35,7 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
       title: $t({ defaultMessage: 'Cluster' }),
       content: () =>
         data?.edgeClusterId ? (
-          <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+          <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
             {data.edgeClusterName}
           </TenantLink>
         ) : (

@@ -148,7 +148,7 @@ const EdgeSdLanTable = () => {
       filterable: clusterOptions,
       render: (__, row) => {
         return <TenantLink
-          to={`/devices/edge/${row.edgeClusterId}/details/overview`}
+          to={`devices/edge/cluster/${row.edgeClusterId}/edit/cluster-details`}
         >
           {row.edgeClusterName}
         </TenantLink>
@@ -163,7 +163,7 @@ const EdgeSdLanTable = () => {
       render: (__, row) => {
         return (row.isGuestTunnelEnabled && row.guestEdgeClusterId)
           ? <TenantLink
-            to={`/devices/edge/${row.guestEdgeClusterId}/details/overview`}
+            to={`devices/edge/cluster/${row.guestEdgeClusterId}/edit/cluster-details`}
           >
             {row.guestEdgeClusterName}
           </TenantLink>
