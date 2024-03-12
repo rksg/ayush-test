@@ -26,7 +26,7 @@ export const fetchBrandProperties = () => {
     ] = [ sample(pcts), sample(pcts), sample(pcts) ]
     return {
       property,
-      lsp: sample(lsps), // TODO fetch from RC api and merge
+      lsps: [sample(lsps)], // TODO fetch from RC api and merge
       p1Incidents: sample(nums) || 0,
       ssidCompliance: sample(pcts) || [0, 0],
       deviceCount: sample(nums) || 0,
