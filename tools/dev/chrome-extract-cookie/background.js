@@ -97,10 +97,14 @@ function open_localhostRA(tab) {
     return;
   }
 
+  const link = url.pathname.startsWith('/analytics')
+    ? 'http://localhost:3333/'
+    : `http://localhost:3333${url.pathname}${url.search}`
+
   chrome.tabs.create({
     active: true,
     index: tab.index + 1,
-    url: `http://localhost:3333${url.pathname}${url.search}`
+    url: link
   }, (tab) => {
     console.log('tab opened');
   });
