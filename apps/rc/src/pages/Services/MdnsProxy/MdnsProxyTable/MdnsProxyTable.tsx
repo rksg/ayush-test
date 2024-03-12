@@ -165,7 +165,7 @@ function useColumns () {
               rules={rules}
             />}
             children={rules.length}
-            showStyle={true}
+            dottedUnderline={true}
           />
           : 0
         )

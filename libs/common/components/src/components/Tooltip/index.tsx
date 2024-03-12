@@ -14,14 +14,14 @@ Tooltip.defaultProps = {
 }
 
 type ExtendedTooltipProps = TooltipProps &{
-  showStyle?: boolean
+  dottedUnderline?: boolean
 }
 
 function Tooltip (props: ExtendedTooltipProps) {
-  return <UI.TooltipHeader $tooltip={props.showStyle ? true : false} >
+  return <UI.TooltipWrapper $dottedUnderline={props.dottedUnderline ? true : false} >
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
-  </UI.TooltipHeader>
+  </UI.TooltipWrapper>
 }
 
 export { Tooltip, TooltipProps }

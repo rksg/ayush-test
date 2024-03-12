@@ -169,6 +169,7 @@ function useColumns () {
             items={clientEntries}
             displayText={(clientEntries).length}
             title={$t({ defaultMessage: 'MAC Address' })}
+            dottedUnderline={true}
           />
           : 0
       }

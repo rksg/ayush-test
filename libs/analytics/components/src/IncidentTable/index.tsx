@@ -244,7 +244,7 @@ export function IncidentTable ({ filters }: {
         return <Tooltip
           placement='top'
           title={formattedPath(value.path, value.sliceValue)}
-          showStyle={true}
+          dottedUnderline={true}
         >
           {highlightFn(value.scope)}
         </Tooltip>

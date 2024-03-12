@@ -273,7 +273,11 @@ export function RecommendationTable (
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={value.scope}>
+        return <Tooltip
+          placement='top'
+          title={value.scope}
+          dottedUnderline={true}
+        >
           {highlightFn(value.sliceValue)}
         </Tooltip>
       },
@@ -290,7 +294,7 @@ export function RecommendationTable (
         return <Tooltip
           placement='top'
           title={code === 'unknown' ? '' : statusTooltip}
-          showStyle={true}
+          dottedUnderline={true}
         >
           <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>

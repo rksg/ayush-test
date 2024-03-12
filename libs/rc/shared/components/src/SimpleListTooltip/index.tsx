@@ -12,6 +12,7 @@ export interface SimpleListTooltipProps {
   textForMore?: string
   isValueUnique?: boolean,
   totalCountOfItems?: number
+  dottedUnderline?: boolean
 }
 
 export function SimpleListTooltip (props: SimpleListTooltipProps) {
@@ -22,7 +23,8 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
     title,
     maximum = 10,
     isValueUnique = true,
-    totalCountOfItems
+    totalCountOfItems,
+    dottedUnderline
   } = props
 
   const needDisplayMore = (totalCountOfItems ?? items.length) > maximum
@@ -38,6 +40,6 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
   </SimpleListUl>
 
   return (
-    <Tooltip title={displayedComp}>{displayText}</Tooltip>
+    <Tooltip title={displayedComp} dottedUnderline={dottedUnderline}>{displayText}</Tooltip>
   )
 }

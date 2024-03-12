@@ -95,7 +95,11 @@ export default function AdaptivePolicyTable () {
         render: (_, row) => {
           const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
-            <SimpleListTooltip items={policySets} displayText={policySets.length} />
+            <SimpleListTooltip
+              items={policySets}
+              displayText={policySets.length}
+              dottedUnderline={true}
+            />
         }
       }
     ]

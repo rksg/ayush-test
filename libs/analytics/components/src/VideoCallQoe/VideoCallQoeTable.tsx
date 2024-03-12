@@ -138,7 +138,7 @@ export function VideoCallQoeTable () {
 
         const invalidReason = messageMapping[row.invalidReason as keyof typeof messageMapping]
         return (
-          <Tooltip placement='top' title={$t(invalidReason)} showStyle={true}>
+          <Tooltip placement='top' title={$t(invalidReason)} dottedUnderline={true}>
             <UI.Invalid>
               {meetingStatus}
             </UI.Invalid>

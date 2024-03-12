@@ -196,7 +196,7 @@ function useColumns (
       align: 'center',
       sorter: true,
       render: (_, row) => (
-        <CountAndNamesTooltip data={row.v2Agents} maxShow={25}/>
+        <CountAndNamesTooltip data={row.v2Agents} maxShow={25} dottedUnderline={true}/>
       )
     },
     {
@@ -206,7 +206,7 @@ function useColumns (
       align: 'center',
       sorter: true,
       render: (_, row) => (
-        <CountAndNamesTooltip data={row.v3Agents} maxShow={25}/>
+        <CountAndNamesTooltip data={row.v3Agents} maxShow={25} dottedUnderline={true}/>
       )
     },
     {

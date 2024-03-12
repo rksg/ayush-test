@@ -10,12 +10,13 @@ interface CountAndNamesTooltipProps {
     data?: CountAndNames
     maxShow?: number,
     placement?: TooltipPlacement,
-    linkUrl?: string
+    linkUrl?: string,
+    dottedUnderline?: boolean
 }
 
 export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
   const { $t } = useIntl()
-  const { data, maxShow = 10, placement, linkUrl='' } = props
+  const { data, maxShow = 10, placement, linkUrl='', dottedUnderline } = props
   const { count, names } = data || {}
   const countDisplay = transformDisplayNumber(count)
   const namesLen = (names && names.length) || 0
@@ -40,7 +41,11 @@ export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
     const tootipTitle = truncateData.map(n => <div key={n}>{n}</div>)
 
     return (
-      <Tooltip title={tootipTitle} placement={placement || 'bottom'} >
+      <Tooltip
+        title={tootipTitle}
+        placement={placement || 'bottom'}
+        dottedUnderline={dottedUnderline}
+      >
         { countComponent(linkUrl!, countDisplay) }
       </Tooltip>
     )
