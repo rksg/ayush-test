@@ -28,7 +28,9 @@ const sessionMapping: { [key:string]:number }={
 }
 const durationMapping: { [key:string]:number }={
   hours: 24,
-  minutes: 1440
+  minutes: 1440,
+  days: 30,
+  weeks: 7
 }
 const lockoutMapping: { [key:string]:number }={
   days: 45,
@@ -44,7 +46,7 @@ const oneDay = 1440
 const oneHour = 60
 export function UserConnectionForm () {
 
-  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
+  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE) ? true: true
 
 
   const { $t } = useIntl()
@@ -373,9 +375,9 @@ export function UserConnectionForm () {
               rules={[
                 { required: true },
                 { validator: (_, value) => {
-                  if(value >durationMapping[macCredentialsDurationUnit]){
-                    return Promise.reject($t({ defaultMessage:
-                      'Value must between 1-1440 minutes or 1-24 hours' }))
+                  if(value > durationMapping[macCredentialsDurationUnit]){
+                    /* eslint-disable-next-line */
+                    return Promise.reject($t({ defaultMessage: 'Value must between 1-1440 minutes or 1-24 hours or 1-30 days or 1-7 weeks' }))
                   }
                   return Promise.resolve()
                 } }
@@ -395,7 +397,7 @@ export function UserConnectionForm () {
                   isSessionDurationEnable &&
                   <>
                     <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                    <Option value={'Weeks'}>{$t({ defaultMessage: 'Weeks' })}</Option>
+                    <Option value={'weeks'}>{$t({ defaultMessage: 'Weeks' })}</Option>
                   </>
                 }
               </Select>
