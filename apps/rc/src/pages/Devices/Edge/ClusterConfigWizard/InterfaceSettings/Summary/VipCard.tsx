@@ -45,7 +45,7 @@ export const VipCard = (props: VipCardProps) => {
                 Object.entries(data.interfaces).map(([k, v]) => {
                   const targetNode = clusterInfo?.edgeList?.find(item =>
                     item.serialNumber === k)
-                  return <Col span={24}>
+                  return <Col span={24} key={k}>
                     {`${targetNode?.name ?? ''} - ${_.capitalize(v.portName)}`}
                   </Col>
                 })

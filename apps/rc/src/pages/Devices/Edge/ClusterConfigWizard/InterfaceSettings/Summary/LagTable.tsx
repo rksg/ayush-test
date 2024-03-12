@@ -120,7 +120,7 @@ export const LagTable = (props: LagTableProps) => {
       []
     return lagMembers?.map(
       lagmember =>
-        <Row>
+        <Row key={lagmember.portId}>
           <Col>
             {
               `${getEdgePortDisplayName((portList?.find(port =>

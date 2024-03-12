@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
 import TextArea                          from 'antd/lib/input/TextArea'
@@ -23,8 +23,8 @@ import {
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
-import { EdgePortCommonForm }                             from '../EdgeFormItem/PortCommonForm'
-import { EdgePortsDataContext, EdgePortsDataContextType } from '../EdgeFormItem/PortsForm/PortDataProvider'
+import { getEnabledCorePortInfo } from '../EdgeFormItem/EdgePortsGeneralBase/utils'
+import { EdgePortCommonForm }     from '../EdgeFormItem/PortCommonForm'
 
 interface LagDrawerProps {
   serialNumber?: string
@@ -63,9 +63,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
   const [form] = Form.useForm()
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
-  const portDataCtx = useContext(EdgePortsDataContext)
-  const { portData } = portDataCtx
-
   const getEdgeSdLanPayload = {
     filters: { edgeId: [serialNumber] },
     fields: ['id', 'edgeId', 'corePortMac']
@@ -87,8 +84,16 @@ export const LagDrawer = (props: LagDrawerProps) => {
   useEffect(() => {
     if(visible) {
       form.resetFields()
+      const corePortInfo = getEnabledCorePortInfo(portList ?? [], existedLagList ?? [])
+      const hasCorePortEnabled = !!corePortInfo.key
+      let defaultPortType = defaultFormValues.portType
+      if (hasCorePortEnabled && !corePortInfo.isExistingCorePortInLagMember) {
+        defaultPortType = EdgePortTypeEnum.LAN
+      }
+
       form.setFieldsValue({
         ...defaultFormValues,
+        portType: defaultPortType,
         ...data
       })
     }
@@ -156,10 +161,10 @@ export const LagDrawer = (props: LagDrawerProps) => {
       } else {
         const portConfig = formData.lagMembers.length > 0
           ? portList?.find(item => (formData.lagMembers as EdgeLag['lagMembers'])
-            .filter(member => member.portId === item.id))
+            .filter(member => member.portId === item.id)[0])
           : undefined
 
-        if(portConfig?.portType === EdgePortTypeEnum.WAN ||
+        if (portConfig?.portType === EdgePortTypeEnum.WAN ||
           portConfig?.portType === EdgePortTypeEnum.LAN) {
           showActionModal({
             type: 'confirm',
@@ -378,8 +383,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
           fieldHeadPath={[]}
           portsDataRootPath={[]}
           formListItemKey=''
-          portsData={portData}
-          lagData={getMergedLagData(portDataCtx, allValues)}
+          portsData={portList ?? []}
+          lagData={getMergedLagData(existedLagList, allValues)}
           isEdgeSdLanRun={isEdgeSdLanRun}
           isListForm={false}
           formFieldsProps={{
@@ -429,16 +434,18 @@ const forceUpdateCondition = (prev:unknown, cur: unknown) => {
 }
 
 // Merge changed lag data and current lag data form api
-const getMergedLagData = (portsData: EdgePortsDataContextType, changedLag: EdgeLag) => {
-  let lagData
-  if (portsData.lagData) {
-    lagData = _.cloneDeep(portsData.lagData)
+const getMergedLagData = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) => {
+  let updatedLagData
+  if (lagData) {
+    updatedLagData = _.cloneDeep(lagData)
     const targetIdx = lagData.findIndex(item => item.id === changedLag.id)
     if (targetIdx !== -1) {
-      lagData[targetIdx] = changedLag
+      updatedLagData[targetIdx] = changedLag
     } else {
-      lagData.push(changedLag)
+      updatedLagData.push(changedLag)
     }
+  } else {
+    updatedLagData = [changedLag]
   }
-  return lagData
+  return updatedLagData
 }

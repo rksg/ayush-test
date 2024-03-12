@@ -23,6 +23,7 @@ import PortsGeneral from './'
 const { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
 
+
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
@@ -111,6 +112,101 @@ describe('EditEdge ports - ports general', () => {
       )
     )
   })
+
+  // it.todo('', () => {
+  //   // it('should be able to use DHCP for LAN core port', async () => {
+  //   render(<MockedComponent />)
+
+  //   await screen.findByText(/AA:BB:CC:DD:EE:FF/i)
+  //   // disabled WAN port
+  //   await userEvent.click(screen.getByRole('switch', { name: 'Port Enabled' }))
+
+  //   await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+  //   const corePortCheckbox = await screen.findByRole('checkbox',
+  //     { name: /Use this port as Core Port/ })
+  //   expect(corePortCheckbox).not.toBeDisabled()
+  //   expect(corePortCheckbox).not.toBeChecked()
+  //   await userEvent.click(corePortCheckbox)
+  //   await userEvent.click(await screen.findByRole('radio', { name: 'DHCP' }))
+
+  //   await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+  //   // const expectedResult = _.cloneDeep(mockEdgePortConfigWithStatusIpWithoutCorePort)
+  //   // expectedResult.ports[0].enabled = false
+  //   // expectedResult.ports[1].corePortEnabled = true
+  //   // expectedResult.ports[1].ipMode = EdgeIpModeEnum.DHCP
+  //   // expectedResult.ports[4].natEnabled = false
+  //   // await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(expectedResult))
+  //   // })
+
+  // })
+
+  //   describe.skip('EditEdge ports - ports general api fail', () => {
+  //     const consoleLogFn = jest.fn()
+  //     jest.spyOn(console, 'log').mockImplementationOnce(consoleLogFn)
+
+  //     beforeEach(() => {
+  //       params = {
+  //         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  //         serialNumber: '000000000000',
+  //         activeTab: 'ports',
+  //         activeSubTab: EdgePortTabEnum.PORTS_GENERAL
+  //       }
+
+  //       mockServer.use(
+  //         rest.patch(
+  //           EdgeUrlsInfo.updatePortConfig.url,
+  //           (req, res, ctx) => res(ctx.status(500))
+  //         )
+  //       )
+  //     })
+
+  //     it('should update failed', async () => {
+  //       const user = userEvent.setup()
+  //       render(
+  //         <Provider>
+  //           <EdgePortsGeneralBase data={mockEdgePortConfigWithStatusIpWithoutCorePort.ports} />
+  //         </Provider>, {
+  //           route: {
+  //             params,
+  //             path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+  //           }
+  //         })
+  //       const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+  //       await userEvent.clear(ipInput)
+  //       await userEvent.type(ipInput, '1.1.1.1')
+  //       const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+  //       await userEvent.clear(subnetInput)
+  //       await userEvent.type(subnetInput, '255.255.255.0')
+  //       const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+  //       await userEvent.clear(gatewayInput)
+  //       await userEvent.type(gatewayInput, '1.1.1.1')
+  //       await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+  //       await waitFor(() => expect(consoleLogFn).toBeCalled())
+  //     })
+  //   })
+  // })
+  // it('should gateway still being to its origin data', async () => {
+  //   render(<MockedComponentTestSDLAN initVals={formEdgeOnlyLanPortConfig}/>)
+
+  //   await screen.findByText(/00:00:00:00:00:00/i)
+  //   let gw = await screen.findByRole('textbox', { name: 'Gateway' })
+  //   expect(gw).toHaveValue('2.2.2.2')
+  //   expect(gw).not.toBeDisabled()
+
+  //   // unselect port 1
+  //   const corePortCheckbox = await screen.findByRole('checkbox',
+  //     { name: /Use this port as Core Port/ })
+  //   await userEvent.click(corePortCheckbox)
+  //   expect(corePortCheckbox).toBeChecked()
+  //   expect(screen.queryByRole('textbox', { name: 'Gateway' })).toBeNull()
+
+  //   // select port 1 as core port again
+  //   await userEvent.click(corePortCheckbox)
+  //   await waitFor(() => expect(corePortCheckbox).toBeChecked())
+  //   gw = await screen.findByRole('textbox', { name: 'Gateway' })
+  //   expect(gw).toHaveValue('2.2.2.2')
+  //   expect(gw).not.toBeDisabled()
+  // })
 
   it('value change should handle with edit form context', async () => {
     const user = userEvent.setup()

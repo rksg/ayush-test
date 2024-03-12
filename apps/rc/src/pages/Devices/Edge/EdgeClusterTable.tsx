@@ -281,7 +281,7 @@ export const EdgeClusterTable = () => {
       },
       disabled: (selectedRows) => {
         const nodeList = selectedRows[0]?.edgeList ?? []
-        return nodeList.length < 1 ||
+        return !nodeList.length ||
         nodeList.filter(item =>
           item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 0
       }

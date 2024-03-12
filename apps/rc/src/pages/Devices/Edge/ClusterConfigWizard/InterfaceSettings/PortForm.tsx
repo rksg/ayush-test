@@ -49,10 +49,10 @@ const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
-
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const [activeTab, setActiveTab] = useState<string>('')
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+
   const { data: portsStatus, isFetching } = useGetEdgesPortStatusQuery({
     payload: {
       edgeIds: clusterInfo?.edgeList?.map(node => node.serialNumber)
@@ -89,7 +89,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
         content={
           (serialNumber) => {
             const portsConfigs = _.get(portSettings, [serialNumber])
-            const lagData = _.get(nodesLagData, [serialNumber])
+            const lagData = _.find(nodesLagData, { serialNumber })?.lags ?? []
 
             // only display when portConfig has data
             return portsConfigs

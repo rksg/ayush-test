@@ -842,8 +842,12 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         const lagSettings = []
         const portSettings = []
         for(let edge of clusterInfo.smartEdges) {
-          const params = { serialNumber: edge.serialNumber }
-          const getEdgeLagReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, params)
+          const apiParams = {
+            venueId: params?.venueId,
+            edgeClusterId: params?.clusterId,
+            serialNumber: edge.serialNumber
+          }
+          const getEdgeLagReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, apiParams)
           const edgeLagData = (await fetchWithBQ(getEdgeLagReq)).data as PaginationQueryResult<EdgeLag>
           if(edgeLagData.content) {
             lagSettings.push({
@@ -851,7 +855,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
               lags: edgeLagData.content
             })
           }
-          const getEdgePortReq = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+          const getEdgePortReq = createHttpRequest(EdgeUrlsInfo.getPortConfig, apiParams)
           const edgePortData = (await fetchWithBQ(getEdgePortReq)).data as EdgePortConfig
           if(edgePortData) {
             portSettings.push({

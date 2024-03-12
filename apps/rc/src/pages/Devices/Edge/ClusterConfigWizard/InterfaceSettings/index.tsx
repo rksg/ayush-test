@@ -11,7 +11,8 @@ import {
   useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { convertEdgePortsConfigToApiPayload, EdgePort } from '@acx-ui/rc/utils'
+import { useTenantLink }                                from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -66,6 +67,8 @@ export const InterfaceSettings = () => {
     })
   })
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
+
+  const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
 
   const doCompatibleCheck = (typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
@@ -123,6 +126,18 @@ export const InterfaceSettings = () => {
       content: <PortForm />,
       onValuesChange: (type: string) => handleValuesChange(type),
       onFinish: async (typeKey: string) => {
+        // eslint-disable-next-line max-len
+        const allValues = (configWizardForm.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']) ?? {}
+        for (let nodeSN in allValues) {
+          for (let portIfName in allValues[nodeSN]) {
+            allValues[nodeSN][portIfName].forEach((item, idx) => {
+              // eslint-disable-next-line max-len
+              allValues[nodeSN][portIfName][idx] = convertEdgePortsConfigToApiPayload(item) as EdgePort
+            })
+          }
+        }
+        configWizardForm.setFieldValue(['portSettings'], allValues)
+
         const checkResult = doCompatibleCheck(typeKey)
         return !checkResult.isError
       }
@@ -179,7 +194,7 @@ export const InterfaceSettings = () => {
     <Loader states={[{ isLoading: isFetching }]}>
       <StepsForm<InterfaceSettingsFormType>
         form={configWizardForm}
-        alert={alertData}
+        alert={isSingleNode ? undefined : alertData}
         onFinish={applyAndFinish}
         onCancel={handleCancel}
         initialValues={clusterNetworkSettings}
