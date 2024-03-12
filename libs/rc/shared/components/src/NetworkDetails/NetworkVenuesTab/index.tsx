@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -21,11 +21,13 @@ import {
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
   useNetworkVenueTableQuery,
-  useGetVenueCityListQuery,
   useNetworkVenueTableV2Query,
   useNetworkVenueListV2Query,
   useAddNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation, useUpdateNetworkVenueTemplateMutation
+  useDeleteNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -41,8 +43,9 @@ import {
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
+import { transformToCityListOptions } from '@acx-ui/utils'
 
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
@@ -116,14 +119,7 @@ export function NetworkVenuesTab () {
     pagination: { settingsId }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({
-        key: v.name,
-        value: v.name.split(', ').map(_.startCase).join(', ')
-      })) || true
-    })
-  })
+  const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -579,4 +575,25 @@ export function NetworkVenuesTab () {
       </Form.Provider>
     </Loader>
   )
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
 }

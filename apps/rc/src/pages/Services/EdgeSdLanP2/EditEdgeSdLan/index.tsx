@@ -29,7 +29,7 @@ const EditEdgeSdLan = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const { editEdgeSdLan } = useEdgeSdLanActions()
-  const { data, isLoading } = useGetEdgeSdLanP2Query({ params })
+  const { data, isFetching } = useGetEdgeSdLanP2Query({ params })
 
   const steps = [
     {
@@ -88,7 +88,7 @@ const EditEdgeSdLan = () => {
           { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
-      <Loader states={[{ isLoading }]}>
+      <Loader states={[{ isLoading: isFetching }]}>
         <EdgeSdLanFormP2
           form={form}
           steps={steps}

@@ -14,6 +14,9 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const navigate = useNavigate()
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgePingTraceRouteReady = useIsSplitOn(Features.EDGES_PING_TRACEROUTE_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -47,7 +50,10 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
           key='services'
         />
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
+      {
+        isEdgeHaReady && isEdgeDhcpHaReady &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )
