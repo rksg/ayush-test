@@ -46,7 +46,8 @@ jest.mock('antd', () => {
 
 const {
   mockEdgePortConfigWithStatusIpWithoutCorePort,
-  mockEdgePortConfig
+  mockEdgePortConfig,
+  mockPortInfo
 } = EdgePortConfigFixtures
 // eslint-disable-next-line max-len
 const formEdgePortConfig = transformApiDataToFormListData(mockEdgePortConfig.ports)
@@ -55,26 +56,13 @@ const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData
 
 const mockedOnTabChange = jest.fn()
 
-const mockedPortInfo = mockEdgePortConfig.ports.map(p => ({
-  serialNumber: 'serialNumber-1',
-  portName: p.interfaceName,
-  ip: `${p.ip}/24`,
-  mac: p.mac,
-  subnet: '',
-  portType: p.portType,
-  isCorePort: p.corePortEnabled,
-  isLagMember: [''].indexOf(p.interfaceName) !== -1,
-  portEnabled: p.enabled
-}))
-
 const mockedProps = {
-  statusData: mockedPortInfo,
+  statusData: mockPortInfo,
   isEdgeSdLanRun: false,
   activeTab: '',
   onTabChange: mockedOnTabChange,
   fieldHeadPath: []
 }
-
 
 describe('EditEdge ports - ports general', () => {
 

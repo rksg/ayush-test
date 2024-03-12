@@ -11,17 +11,20 @@ import { EdgePortsDataContext } from '../PortDataProvider'
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
+// ifName: interface name
+const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
+  return _.find(portData, { interfaceName: ifName })?.id ?? ''
+}
 interface SubInterfaceProps {
   serialNumber: string
-  portData: EdgePort[]
   lagData?: EdgeLagStatus[]
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-  const { serialNumber, portData, lagData } = props
+  const { serialNumber, lagData } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
-  const { portStatus } = useContext(EdgePortsDataContext)
+  const { portData, portStatus } = useContext(EdgePortsDataContext)
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
@@ -29,12 +32,13 @@ const SubInterface = (props: SubInterfaceProps) => {
 
   useEffect(() => {
     const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
-    setCurrentTab(
-      unLagPortIdx > -1 ?
-        `port_${portData[unLagPortIdx].id}` :
-        `lag_${lagData?.[0].lagId}`
-    )
-  }, [portData, lagData])
+    if (unLagPortIdx > -1) {
+      const portId = findPortIdByIfName(portData, portStatus[unLagPortIdx].portName)
+      setCurrentTab(`port_${portId}`)
+    } else {
+      setCurrentTab(`lag_${lagData?.[0].lagId}`)
+    }
+  }, [portData, portStatus, lagData])
 
   return (
     portData.length > 0 ?
@@ -44,8 +48,10 @@ const SubInterface = (props: SubInterfaceProps) => {
         onChange={handleTabChange}
       >
         {
-          portStatus.map((item) =>
-            <Tabs.TabPane
+          portStatus.map((item) => {
+            const portId = findPortIdByIfName(portData, item.portName)
+
+            return <Tabs.TabPane
               tab={
                 item.isLagMember
                   ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
@@ -54,18 +60,19 @@ const SubInterface = (props: SubInterfaceProps) => {
                   </Tooltip>
                   : _.capitalize(item.portName)
               }
-              key={'port_' + item.portName}
+              key={`port_${portId}`}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
                   ip={item.ip!}
                   mac={item.mac}
-                  portId={item.portName}
+                  portId={portId}
                 />
               }
               disabled={item.isLagMember}
             />
+          }
           )
         }
         {

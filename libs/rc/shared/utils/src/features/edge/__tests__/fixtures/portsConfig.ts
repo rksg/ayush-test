@@ -78,6 +78,18 @@ export const mockEdgePortConfig = {
   ]
 }
 
+export const mockPortInfo = mockEdgePortConfig.ports.map(p => ({
+  serialNumber: 'serialNumber-1',
+  portName: p.interfaceName,
+  ip: `${p.ip}/24`,
+  mac: p.mac,
+  subnet: '',
+  portType: p.portType,
+  isCorePort: p.corePortEnabled,
+  isLagMember: [''].indexOf(p.interfaceName) !== -1,
+  portEnabled: p.enabled
+}))
+
 export const mockEdgePortConfigWithStatusIp = {
   ports: [
     {
