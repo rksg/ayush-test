@@ -277,59 +277,34 @@ function NetworkRoutes () {
   )
 }
 
-const edgeSdLanRoutes = () => {
+const edgeSdLanRoutes = (isP2Enabled: boolean) => {
   return <>
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.LIST })}
-      element={<EdgeSdLanTable />}
+      element={isP2Enabled ? <EdgeSdLanTableP2 /> : <EdgeSdLanTable />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.CREATE })}
-      element={<AddEdgeSdLan />}
+      element={isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={<EditEdgeSdLan />}
+      element={isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.DETAIL })}
-      element={<EdgeSdLanDetail />}
+      element={isP2Enabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetail />}
     />
   </>
 }
 
-const edgeSdLanPhase2Routes = () => {
-  return <><Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.CREATE })}
-    element={<AddEdgeSdLanP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.EDIT })}
-    element={<EditEdgeSdLanP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.LIST })}
-    element={<EdgeSdLanTableP2 />}
-  />
-  <Route
-    path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.DETAIL })}
-    element={<EdgeSdLanDetailP2 />}
-  />
-  </>
-}
-
-
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanPhase2Enabled = useIsSplitOn(Features.EDGES_SD_LAN_PHASE2_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -524,8 +499,8 @@ function ServiceRoutes () {
         element={<EditFirewall />}
       />
 
-      {isEdgeSdLanEnabled && edgeSdLanRoutes()}
-      {isEdgeSdLanPhase2Enabled && edgeSdLanPhase2Routes()}
+      {(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled)
+        && edgeSdLanRoutes(isEdgeSdLanHaEnabled)}
     </Route>
   )
 }

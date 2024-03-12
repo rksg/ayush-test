@@ -20,8 +20,9 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                                                   from '@acx-ui/store'
+import { AccountType, getJwtTokenPayload }                            from '@acx-ui/utils'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
@@ -35,11 +36,23 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
+function Init () {
+  const { tenantType } = getJwtTokenPayload()
+  const isShowBrand360 =
+    tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR
+  const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
+  return <Navigate
+    replace
+    to={{ pathname: basePath.pathname }}
+  />
+}
+
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
       <Route path='*' element={<PageNotFound />} />
-      <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
+      <Route index element={<Init />} />
       <Route
         path='dashboard'
         element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
