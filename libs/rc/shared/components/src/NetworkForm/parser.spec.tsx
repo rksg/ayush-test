@@ -239,7 +239,7 @@ describe('NetworkForm parser', () => {
       expect(tranferSettingsToSave(incomingData, true)).not.toHaveProperty(['wlan', 'vlanId'])
     })
 
-    it('verify the AAASetting data with macAddressAuthenticationConfiguration.macAuthMacFormat in editMode', () => {
+    it('verify AAASetting with macAddressAuthenticationConfiguration in editMode',() => {
       const incomingData: NetworkSaveData = {
         type: NetworkTypeEnum.AAA,
         authRadiusId: '',

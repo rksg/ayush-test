@@ -53,10 +53,8 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthenticationConfiguration: {
-            macAddressAuthentication: data.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication,
-            macAuthMacFormat: data.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
-          }
+          macAddressAuthenticationConfiguration:
+            data.wlan?.macAddressAuthenticationConfiguration
         }
       })
     }
@@ -172,7 +170,8 @@ function SettingsForm () {
     const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = useWatch('enableAccountingService', form)
-    const enableMacAuthentication = useWatch<boolean>(['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
+    const enableMacAuthentication = useWatch<boolean>(
+      ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
     const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
