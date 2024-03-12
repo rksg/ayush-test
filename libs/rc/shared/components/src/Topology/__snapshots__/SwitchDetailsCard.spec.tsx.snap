@@ -254,29 +254,6 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                       </div>
                     </td>
                   </tr>
-                  <tr
-                    class="ant-descriptions-row"
-                  >
-                    <td
-                      class="ant-descriptions-item"
-                      colspan="1"
-                    >
-                      <div
-                        class="ant-descriptions-item-container"
-                      >
-                        <span
-                          class="ant-descriptions-item-label"
-                        >
-                          Last Seen
-                        </span>
-                        <span
-                          class="ant-descriptions-item-content"
-                        >
-                          11/12/2022 00:00
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>

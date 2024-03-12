@@ -89,6 +89,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
               }}
               id={node.data.id}
               className={'node tree-node'}
+              data-testid={`node_${node.data.id}`}
             >
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}

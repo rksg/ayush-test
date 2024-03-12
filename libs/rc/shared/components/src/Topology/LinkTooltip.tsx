@@ -149,23 +149,22 @@ onClose: () => void
           /* TODO: does we get PoE usage if poe disabled?
           How to calculate and set unit for PoE? */
         }
-
-        { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'PoE' })}
-            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
-            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
-              : $t({ defaultMessage: 'Off' })} />
-        }
-
         <Descriptions.Item
-          label={$t({ defaultMessage: 'From Port' })}
+          label={tooltipEdge?.correspondingPort ?
+            $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
           children={tooltipEdge?.connectedPort || noDataDisplay} />
 
         {tooltipEdge?.correspondingPort &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'To Port' })}
             children={tooltipEdge?.correspondingPort || noDataDisplay} />
+        }
+        { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'PoE' })}
+            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
+            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
+              : $t({ defaultMessage: 'Off' })} />
         }
       </Descriptions>
     </Card>

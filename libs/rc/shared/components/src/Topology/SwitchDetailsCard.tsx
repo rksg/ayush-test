@@ -81,11 +81,12 @@ export function SwitchDetailsCard (props: {
         label={$t({ defaultMessage: 'MAC Address' })}
         children={switchDetail?.switchMac || noDataDisplay} />
 
-      {/* IP Address  */}
+      {/* IP Address  */
+        switchDetail?.deviceStatus !== SwitchStatusEnum.DISCONNECTED &&
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
         children={switchDetail?.ipAddress || noDataDisplay} />
-
+      }
       {/* Status  */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
@@ -111,21 +112,24 @@ export function SwitchDetailsCard (props: {
         }
       />
 
-      {/* Uptime  */}
+      {/* Uptime  */
+        switchDetail?.deviceStatus !== SwitchStatusEnum.DISCONNECTED &&
       <Descriptions.Item
         label={$t({ defaultMessage: 'Uptime' })}
         children={switchDetail?.uptime || noDataDisplay} />
-
-      {/* Clients count  */}
+      }
+      {/* Clients count  */
+        switchDetail?.deviceStatus !== SwitchStatusEnum.DISCONNECTED &&
       <Descriptions.Item
         label={$t({ defaultMessage: 'Clients Connected' })}
         children={switchDetail?.clientCount || noDataDisplay} />
-
+      }
       {/* Last seen for offline devices */
-        switchDetail?.lastSeenTime &&
+        switchDetail?.deviceStatus === SwitchStatusEnum.DISCONNECTED &&
+        switchDetail?.syncDataEndTime &&
       <Descriptions.Item
         label={$t({ defaultMessage: 'Last Seen' })}
-        children={formatter(DateFormatEnum.DateTimeFormat)(switchDetail?.lastSeenTime)} />
+        children={formatter(DateFormatEnum.DateTimeFormat)(switchDetail?.syncDataEndTime)} />
       }
     </Descriptions>
   </Loader>

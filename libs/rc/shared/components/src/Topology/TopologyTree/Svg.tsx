@@ -111,10 +111,16 @@ const Svg: any = (props: any) => {
   }
 
   return (
-    <svg ref={refSvg} style={{ width, height }}>
+    <svg ref={refSvg} style={{ width, height }} data-testid='topologyGraph'>
       <g className='d3-tree-main' ref={refMain}>
         <g transform={`translate(${translate}) scale(${scale})`}>
-          {nodes && <Links links={links as any} linksInfo={linksInfo} onClick={onLinkClick} />}
+          {nodes &&
+            <Links
+              links={links as any}
+              linksInfo={linksInfo}
+              onClick={onLinkClick}
+            />
+          }
           {links && (
             <Nodes
               nodes={nodes}

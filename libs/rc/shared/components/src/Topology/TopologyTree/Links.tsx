@@ -146,6 +146,7 @@ export const Links: React.FC<LinksProps> = (props) => {
             className={`edgePath ${linkClass} ${link.source.data.id}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
+            data-testid={`link_${link.source.data.id}_${link.target.data.id}`}
           >
             <path
               d={linkCustom(link, linksInfo)}
