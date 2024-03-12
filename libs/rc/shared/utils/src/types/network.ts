@@ -5,6 +5,7 @@ import {
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
+import { ConnectionCapability } from '../models/ConnectionCapability'
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
@@ -144,6 +145,15 @@ export interface NetworkSaveData {
   enableOwe?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
+  useHotspot20?: boolean
+  hotspot20Settings?: {
+    allowInternetAccess?: boolean
+    accessNetworkType?:
+      PRIVATE
+    ipv4AddressType?:
+      SINGLE_NATED_PRIVATE
+    connectionCapability?: ConnectionCapability
+  }
 }
 
 export enum MaxRateEnum {

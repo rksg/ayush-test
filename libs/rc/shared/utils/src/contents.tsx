@@ -139,6 +139,9 @@ export const WifiNetworkMessages = {
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
+  }),
+  ENABLE_HOTSPOT_20_TOOLTIP: defineMessage({
+    defaultMessage: 'Hotspot 2.0 (Passpoint) provides seamless Wi-Fi with enhanced security and roaming capabilities'
   })
 }
 

@@ -31,6 +31,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                     from '../NetworkMoreSettings/styledComponents'
 
 const { Option } = Select
 
@@ -79,10 +80,12 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, setData, data } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportHotspot20 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const labelWidth = '516px'
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -133,10 +136,41 @@ function SettingsForm () {
     form.setFieldValue(['wlan', 'managementFrameProtection'], managementFrameProtection)
   }
 
+  const onHotspot20Change = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        useHotspot20: checked
+      }
+    })
+  }
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
+        {supportHotspot20 &&
+          <UI.FieldLabel width={labelWidth}>
+            <Space>
+              { $t({ defaultMessage: 'Use Hotspot 2.0' }) }
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_HOTSPOT_20_TOOLTIP)}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item
+              name={['wlan', 'useHotspot20']}
+              initialValue={false}
+              valuePropName='checked'>
+              <Switch
+                disabled={editMode}
+                onChange={onHotspot20Change}
+                data-testid='hotspot8021x'
+              />
+            </Form.Item>
+          </UI.FieldLabel>
+        }
         {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
