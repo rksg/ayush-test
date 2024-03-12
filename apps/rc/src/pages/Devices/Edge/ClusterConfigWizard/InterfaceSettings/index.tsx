@@ -68,6 +68,8 @@ export const InterfaceSettings = () => {
   })
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
+  const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
+
   const doCompatibleCheck = (typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
@@ -192,7 +194,7 @@ export const InterfaceSettings = () => {
     <Loader states={[{ isLoading: isFetching }]}>
       <StepsForm<InterfaceSettingsFormType>
         form={configWizardForm}
-        alert={alertData}
+        alert={isSingleNode ? undefined : alertData}
         onFinish={applyAndFinish}
         onCancel={handleCancel}
         initialValues={clusterNetworkSettings}

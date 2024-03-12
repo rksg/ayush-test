@@ -110,6 +110,10 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
       dataIndex: 'adminStatus',
+      render: (_data, row) => {
+        return row.adminStatus ? row.adminStatus :
+          row.lagEnabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+      },
       sorter: { compare: sortProp('adminStatus', defaultSort) }
     }
   ]
