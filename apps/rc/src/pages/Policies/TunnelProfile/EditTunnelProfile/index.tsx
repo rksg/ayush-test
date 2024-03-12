@@ -60,7 +60,7 @@ const EditTunnelProfile = () => {
       filters: { vxlanTunnelProfileId: [policyId] }
     }
   }, {
-    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady || isEdgePinReady),
+    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady) || !isEdgePinReady,
     selectFromResult: ({ data, isFetching }) => {
       return {
         nsgId: data?.data[0]?.id,
