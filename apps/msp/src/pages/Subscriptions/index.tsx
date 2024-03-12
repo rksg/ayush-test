@@ -38,6 +38,8 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                            from '@acx-ui/types'
+import { hasRoles }                             from '@acx-ui/user'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -62,6 +64,7 @@ export function Subscriptions () {
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -358,7 +361,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
+              hidden={!isAssignedActive || !isMspSelfAssignmentEnabled || !isAdmin}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>
