@@ -12,6 +12,8 @@ import {
   EdgeClusterTableDataType,
   activeTab,
   allowRebootForStatus,
+  allowSendOtpForStatus,
+  allowSendFactoryResetStatus,
   getUrl,
   usePollingTableQuery,
   genUrl,
@@ -41,7 +43,12 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot } = useEdgeClusterActions()
+  const {
+    deleteNodeAndCluster,
+    reboot,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
+  } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
@@ -165,6 +172,13 @@ export const EdgeClusterTable = () => {
           </TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
@@ -214,6 +228,26 @@ export const EdgeClusterTable = () => {
     {
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendEdgeOnboardOtp(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => {
+            return !allowSendFactoryResetStatus(row?.deviceStatus)
+          }).length === 0),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendFactoryReset(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (selectedRows, clearSelection) => {
@@ -251,6 +285,7 @@ export const EdgeClusterTable = () => {
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}

@@ -43,6 +43,10 @@ export enum Features {
   EDGES_SD_LAN_HA_TOGGLE = 'edge-sdlan-ha-toggle',
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_TOGGLE = 'acx-ui-edges-toggle',
+  EDGE_HA_TOGGLE = 'edge-ha-toggle',
+  EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
+  EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
+  EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
@@ -154,11 +158,11 @@ export enum Features {
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
-  EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
-  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle'
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
+  RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

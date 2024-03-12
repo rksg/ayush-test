@@ -2,6 +2,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, Tabs }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import { useGetEdgeClusterListForTableQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
 import { CommonOperation, Device, EdgeStatusEnum, getUrl }            from '@acx-ui/rc/utils'
 import { useTenantLink }                                              from '@acx-ui/react-router-dom'
@@ -16,6 +17,7 @@ const EditEdgeCluster = () => {
   const { $t } = useIntl()
   const { activeTab, clusterId } = useParams()
   const navigate = useNavigate()
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const basePath = useTenantLink(getUrl({
     feature: Device.EdgeCluster,
     oper: CommonOperation.Edit,
@@ -48,7 +50,7 @@ const EditEdgeCluster = () => {
     skip: !currentClusterStatus?.venueId
   })
 
-  const tabs = {
+  const basicTabs = {
     'cluster-details': {
       title: $t({ defaultMessage: 'Cluster Details' }),
       content: <ClusterDetails
@@ -67,17 +69,20 @@ const EditEdgeCluster = () => {
       content: <ClusterInterface
         currentClusterStatus={currentClusterStatus}
       />
-    },
-    'dhcp': {
-      title: $t({ defaultMessage: 'DHCP' }),
-      content: <EdgeClusterDhcp />
     }
   }
 
-  const onTabChange = (tab: string) => {
+  const clusterTabs = !isEdgeDhcpHaReady
+    ? basicTabs
+    : Object.assign(basicTabs, { dhcp: {
+      title: $t({ defaultMessage: 'DHCP' }),
+      content: <EdgeClusterDhcp />
+    } })
+
+  const onTabChange = (finalTabs: string) => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
+      pathname: `${basePath.pathname}/${finalTabs}`
     })
   }
 
@@ -91,7 +96,7 @@ const EditEdgeCluster = () => {
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             {
-              Object.entries(tabs).map(([k, v]) =>
+              Object.entries(clusterTabs).map(([k, v]) =>
                 (
                   <Tabs.TabPane
                     tab={v.title}
@@ -105,7 +110,7 @@ const EditEdgeCluster = () => {
           </Tabs>
         }
       />
-      {tabs[activeTab as keyof typeof tabs]?.content}
+      {clusterTabs[activeTab as keyof typeof clusterTabs]?.content}
     </Loader>
   )
 }

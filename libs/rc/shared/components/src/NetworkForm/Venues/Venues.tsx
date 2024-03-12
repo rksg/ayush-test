@@ -12,8 +12,8 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useNetworkVenueListQuery }      from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -26,7 +26,7 @@ import {
   RadioTypeEnum,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum
+  SchedulerTypeEnum, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -84,6 +84,7 @@ interface VenuesProps {
 
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
+  const { isTemplate } = useConfigTemplate()
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -99,7 +100,10 @@ export function Venues (props: VenuesProps) {
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    }
   })
 
   const [tableData, setTableData] = useState<Venue[]>([])

@@ -99,6 +99,26 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
     }
   }, [isHspSupportEnabled, isTechPartner, integratorListData])
 
+
+  const mspCustomersMenu = {
+    uri: '/dashboard/mspCustomers',
+    tenantType: 'v' as TenantType,
+    label: $t({ defaultMessage: 'MSP Customers' })
+  }
+
+  const recCustomerMenu = (hideMenuesforHsp || isSupport ? [] : [{
+    uri: '/dashboard/mspRecCustomers',
+    tenantType: 'v' as TenantType,
+    label: isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
+      : $t({ defaultMessage: 'RUCKUS End Customers' })
+  }])
+
+  const hspMspMenues = (isVar || isDogfood)
+    ? []
+    : (isHspSupportEnabled
+      ? [...recCustomerMenu, mspCustomersMenu]
+      : [ mspCustomersMenu, ...recCustomerMenu])
+
   return [
     ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
       uri: '/brand360',
@@ -112,17 +132,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
-        ...(isVar || isDogfood ? [] : [{
-          uri: '/dashboard/mspCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'MSP Customers' })
-        },
-        ...(hideMenuesforHsp || isSupport ? [] : [{
-          uri: '/dashboard/mspRecCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'RUCKUS End Customers' })
-        }])
-        ]),
+        ...hspMspMenues,
         ...((isNonVarMSP || isTechPartner) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,
