@@ -38,7 +38,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const { $t } = useIntl()
   const form = useFormInstance()
 
-  const getFieldPath = useCallback((fieldName: string) =>
+  const getFieldPathBaseFormList = useCallback((fieldName: string) =>
     [formListItemKey, fieldName],
   [formListItemKey])
 
@@ -71,7 +71,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
       <Row gutter={20}>
         <Col span={6}>
           <Form.Item
-            name={getFieldPath('name')}
+            name={getFieldPathBaseFormList('name')}
             label={$t({ defaultMessage: 'Description' })}
             rules={[
               { max: 63 }

@@ -60,12 +60,13 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   const { $t } = useIntl()
   const portTypeOptions = getEdgePortTypeOptions($t)
 
-  const getFieldPath = useCallback((fieldName: string) => {
+  const getFieldPathBaseFormList = useCallback((fieldName: string) => {
     return isListForm
       ? [formListItemKey, fieldName]
       : [fieldName]
   }, [isListForm, formListItemKey])
 
+  // already includes `formListItemKey`
   const getFieldFullPath = useCallback((fieldName: string) => {
     return isListForm
       ? [...fieldHeadPath, fieldName]
@@ -110,13 +111,15 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       : form.getFieldsValue(true)
 
     return Object.entries<EdgePort[]>(formValues)
-      .filter(item => item[0] !== formListID
-        && _.get(item[1], getFieldFullPath('enabled'))
-        && !!_.get(item[1], getFieldFullPath('ip'))
-        && !!_.get(item[1], getFieldFullPath('subnet')))
+      .filter(item => {
+        return item[0] !== formListID
+        && _.get(item[1], getFieldPathBaseFormList('enabled'))
+        && !!_.get(item[1], getFieldPathBaseFormList('ip'))
+        && !!_.get(item[1], getFieldPathBaseFormList('subnet'))
+      })
       .map(item => ({
-        ip: _.get(item[1], getFieldFullPath('ip')),
-        subnetMask: _.get(item[1], getFieldFullPath('subnet'))
+        ip: _.get(item[1], getFieldPathBaseFormList('ip')),
+        subnetMask: _.get(item[1], getFieldPathBaseFormList('subnet'))
       }))
   }
 
@@ -128,7 +131,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       return (
         <>
           <Form.Item
-            name={getFieldPath('ip')}
+            name={getFieldPathBaseFormList('ip')}
             label={$t({ defaultMessage: 'IP Address' })}
             validateFirst
             rules={[
@@ -145,7 +148,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             children={<Input />}
           />
           <Form.Item
-            name={getFieldPath('subnet')}
+            name={getFieldPathBaseFormList('subnet')}
             label={$t({ defaultMessage: 'Subnet Mask' })}
             validateFirst
             rules={[
@@ -163,7 +166,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       return (
         <>
           <Form.Item
-            name={getFieldPath('ipMode')}
+            name={getFieldPathBaseFormList('ipMode')}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
             rules={[{
@@ -186,7 +189,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           {ipMode === EdgeIpModeEnum.STATIC &&
             <>
               <Form.Item
-                name={getFieldPath('ip')}
+                name={getFieldPathBaseFormList('ip')}
                 label={$t({ defaultMessage: 'IP Address' })}
                 validateFirst
                 rules={[
@@ -203,7 +206,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 children={<Input />}
               />
               <Form.Item
-                name={getFieldPath('subnet')}
+                name={getFieldPathBaseFormList('subnet')}
                 label={$t({ defaultMessage: 'Subnet Mask' })}
                 validateFirst
                 rules={[
@@ -214,7 +217,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 children={<Input />}
               />
               <Form.Item
-                name={getFieldPath('gateway')}
+                name={getFieldPathBaseFormList('gateway')}
                 label={$t({ defaultMessage: 'Gateway' })}
                 validateFirst
                 rules={[
@@ -231,7 +234,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             <StepsFormLegacy.FieldLabel width='120px'>
               {$t({ defaultMessage: 'Use NAT Service' })}
               <Form.Item
-                name={getFieldPath('natEnabled')}
+                name={getFieldPathBaseFormList('natEnabled')}
                 valuePropName='checked'
                 {..._.get(formFieldsProps, 'natEnabled')}
                 children={<Switch />}
@@ -250,7 +253,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   return <>
     <Form.Item
-      name={getFieldPath('portType')}
+      name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
       {..._.get(formFieldsProps, 'portType')}
       rules={[
@@ -296,7 +299,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
             <>
               {_portType === EdgePortTypeEnum.LAN &&
                 <Form.Item
-                  name={getFieldPath('corePortEnabled')}
+                  name={getFieldPathBaseFormList('corePortEnabled')}
                   valuePropName='checked'
                   {..._.get(formFieldsProps, 'corePortEnabled')}
                 >
@@ -333,7 +336,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   _.get(formFieldsProps, 'enabled')?.title ?? $t({ defaultMessage: 'Port Enabled' })
                 }
                 <Form.Item
-                  name={getFieldPath('enabled')}
+                  name={getFieldPathBaseFormList('enabled')}
                   valuePropName='checked'
                   {..._.get(formFieldsProps, 'enabled')}
                   // Not allow to enable WAN port when core port exist

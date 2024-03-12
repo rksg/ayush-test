@@ -279,7 +279,7 @@ export const EdgeClusterTable = () => {
         }
       },
       disabled: (selectedRows) => {
-        return !((selectedRows[0]?.edgeList?.length ?? 0) > 1)
+        return !selectedRows[0]?.edgeList?.length
       }
     }
   ]
