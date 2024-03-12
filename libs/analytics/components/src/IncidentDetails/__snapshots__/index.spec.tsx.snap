@@ -374,15 +374,15 @@ exports[`incident details should render incident details correctly 1`] = `
                             <span
                               class="ant-descriptions-item-content"
                             >
-                              <div
-                                class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                              <span
+                                class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                               >
                                 <span
                                   class="styledComponents__TextContent-sc-1l4qm8r-0"
                                 >
                                   RuckusAP (70:CA:97:01:A0:C0)
                                 </span>
-                              </div>
+                              </span>
                             </span>
                           </div>
                         </td>
@@ -1091,15 +1091,15 @@ exports[`incident details should render incident details correctly when there is
                             <span
                               class="ant-descriptions-item-content"
                             >
-                              <div
-                                class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                              <span
+                                class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                               >
                                 <span
                                   class="styledComponents__TextContent-sc-1l4qm8r-0"
                                 >
                                   RuckusAP (70:CA:97:01:A0:C0)
                                 </span>
-                              </div>
+                              </span>
                             </span>
                           </div>
                         </td>

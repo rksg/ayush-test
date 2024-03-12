@@ -377,15 +377,15 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -976,15 +976,15 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -1575,15 +1575,15 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -2214,15 +2214,15 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -2808,15 +2808,15 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -3402,15 +3402,15 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -4036,15 +4036,15 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -4635,15 +4635,15 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -5234,15 +5234,15 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 19-US-CA-D19-Andre-Home
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -5833,15 +5833,15 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 Phong_Vegas1 (20:58:69:08:37:10)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -6395,15 +6395,15 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 AlphaNet_5_1
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -6997,15 +6997,15 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 vishnu_11ac
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -7559,15 +7559,15 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 Default Zone
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -8161,15 +8161,15 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 vishnu_11ac
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -8726,15 +8726,15 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 East Side
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -9299,15 +9299,15 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 East Side
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -9860,15 +9860,15 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 Outdoor
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -10437,15 +10437,15 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 RuckusAP (70:CA:97:01:A0:C0)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -11002,15 +11002,15 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 RuckusAP (70:CA:97:01:A0:C0)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -11567,15 +11567,15 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 RuckusAP (70:CA:97:01:A0:C0)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -12132,15 +12132,15 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 RuckusAP (70:CA:97:01:A0:C0)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -12697,15 +12697,15 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 RuckusAP (70:CA:97:01:A0:C0)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -13222,15 +13222,15 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 ICX8200-24 Router (38:45:3B:3C:EC:70)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -13690,15 +13690,15 @@ exports[`Test Details should render NetSzNetLatency correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 AP-MEM-vSZ-61
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -14158,15 +14158,15 @@ exports[`Test Details should render NetTime correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 AP-MEM-vSZ-61
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -14626,15 +14626,15 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 ICX8200-24 Router (38:45:3B:3C:EC:70)
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -15107,15 +15107,15 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 Unknown
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -15588,15 +15588,15 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 Unknown
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>
@@ -16155,15 +16155,15 @@ exports[`Test Details should render Ttc correctly 1`] = `
                           <span
                             class="ant-descriptions-item-content"
                           >
-                            <div
-                              class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                            <span
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                             >
                               <span
                                 class="styledComponents__TextContent-sc-1l4qm8r-0"
                               >
                                 EDU-MeshZone_orig
                               </span>
-                            </div>
+                            </span>
                           </span>
                         </div>
                       </td>

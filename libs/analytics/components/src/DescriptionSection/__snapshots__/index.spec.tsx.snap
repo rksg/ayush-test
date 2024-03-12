@@ -2,8 +2,8 @@
 
 exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+  <span
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
   >
     <span
       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -14,14 +14,14 @@ exports[`DescriptionRow should match snapshot 1`] = `
         Children
       </div>
     </span>
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionRow should match snapshot 2`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+  <span
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
   >
     <span
       class="styledComponents__TextContent-sc-1l4qm8r-0"
@@ -32,7 +32,7 @@ exports[`DescriptionRow should match snapshot 2`] = `
         Children
       </div>
     </span>
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
@@ -99,8 +99,8 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -109,7 +109,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                         data-testid="children-0"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>
@@ -145,8 +145,8 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -155,7 +155,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                         data-testid="children-1"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>
@@ -191,8 +191,8 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -201,7 +201,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                         data-testid="children-2"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>
@@ -282,8 +282,8 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -292,7 +292,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                         data-testid="children-0"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>
@@ -306,8 +306,8 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -316,7 +316,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                         data-testid="children-1"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>
@@ -330,8 +330,8 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 <span
                   class="ant-descriptions-item-content"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0 jbaunv"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 ipfnmp"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -340,7 +340,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                         data-testid="children-2"
                       />
                     </span>
-                  </div>
+                  </span>
                 </span>
               </div>
             </td>

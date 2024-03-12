@@ -8,8 +8,8 @@ exports[`ProgressBar should match snapshot 1`] = `
     <div>
       0
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -43,7 +43,7 @@ exports[`ProgressBar should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -51,8 +51,8 @@ exports[`ProgressBar should match snapshot 1`] = `
     <div>
       33.33
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -86,7 +86,7 @@ exports[`ProgressBar should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -94,8 +94,8 @@ exports[`ProgressBar should match snapshot 1`] = `
     <div>
       50
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -129,7 +129,7 @@ exports[`ProgressBar should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -137,8 +137,8 @@ exports[`ProgressBar should match snapshot 1`] = `
     <div>
       66.66
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -172,7 +172,7 @@ exports[`ProgressBar should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -180,8 +180,8 @@ exports[`ProgressBar should match snapshot 1`] = `
     <div>
       100
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -215,7 +215,7 @@ exports[`ProgressBar should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -228,8 +228,8 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     <div>
       0
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -252,7 +252,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -260,8 +260,8 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     <div>
       33.33
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -284,7 +284,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -292,8 +292,8 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     <div>
       50
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -316,7 +316,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -324,8 +324,8 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     <div>
       66.66
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -348,7 +348,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
   <div
     style="width: 100px;"
@@ -356,8 +356,8 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
     <div>
       100
     </div>
-    <div
-      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+    <span
+      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
     >
       <div
         class="ant-progress-wrapper"
@@ -380,7 +380,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
           </div>
         </div>
       </div>
-    </div>
+    </span>
   </div>
 </DocumentFragment>
 `;

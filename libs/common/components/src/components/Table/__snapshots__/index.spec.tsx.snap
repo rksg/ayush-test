@@ -58,14 +58,14 @@ exports[`Table component renders compact table 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th
@@ -244,14 +244,14 @@ exports[`Table component renders form table 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th
@@ -467,14 +467,14 @@ exports[`Table component renders nested table 1`] = `
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                                 >
                                   Age
-                                  <div
-                                    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                  <span
+                                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                   >
                                     <svg
                                       class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                       data-testid="InformationOutlined"
                                     />
-                                  </div>
+                                  </span>
                                 </span>
                               </th>
                               <th
@@ -818,14 +818,14 @@ exports[`Table component renders stickyPagination table 1`] = `
                                   class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                                 >
                                   Age
-                                  <div
-                                    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                  <span
+                                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                   >
                                     <svg
                                       class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                       data-testid="InformationOutlined"
                                     />
-                                  </div>
+                                  </span>
                                 </span>
                               </th>
                               <th
@@ -1120,14 +1120,14 @@ exports[`Table component should render correctly 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th
@@ -1452,14 +1452,14 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th
@@ -1957,14 +1957,14 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th
@@ -2358,14 +2358,14 @@ exports[`Table component should render multi select table and render action butt
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                 >
                                   <svg
                                     class="styledComponents__InformationTooltip-sc-1abm7iv-0"
                                     data-testid="InformationOutlined"
                                   />
-                                </div>
+                                </span>
                               </span>
                             </th>
                             <th

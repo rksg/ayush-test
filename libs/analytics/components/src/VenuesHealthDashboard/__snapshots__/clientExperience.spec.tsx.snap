@@ -37,14 +37,14 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                   >
                     <svg
                       class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
                       data-testid="HistoricalOutlined"
                     />
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
@@ -102,8 +102,8 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -126,7 +126,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -151,8 +151,8 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -175,7 +175,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -200,8 +200,8 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -224,7 +224,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -249,8 +249,8 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -273,7 +273,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -298,8 +298,8 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -322,7 +322,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -387,14 +387,14 @@ exports[`Client Experience should render widget with proper data 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                   >
                     <svg
                       class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
                       data-testid="HistoricalOutlined"
                     />
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
@@ -452,8 +452,8 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -476,7 +476,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -501,8 +501,8 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -525,7 +525,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -550,8 +550,8 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -574,7 +574,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -599,8 +599,8 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -623,7 +623,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -648,8 +648,8 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   <div
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
-                    <div
-                      class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                    <span
+                      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                     >
                       <div
                         class="ant-progress-wrapper"
@@ -672,7 +672,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
