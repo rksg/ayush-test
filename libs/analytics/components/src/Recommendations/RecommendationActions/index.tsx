@@ -25,7 +25,7 @@ import * as UI from './styledComponents'
 // eslint-disable-next-line max-len
 const applyFooterMsg = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
 
-const actionTooltip = {
+export const actionTooltip = {
   Apply: {
     text: defineMessage({ defaultMessage: 'Apply' }),
     icon: <CheckMarkCircleOutline />
@@ -169,7 +169,7 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
-const getAvailableActions = (recommendation: RecommendationActionType) => {
+export const getAvailableActions = (recommendation: RecommendationActionType) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
   const props = { ...recommendation }
   if (isMuted) {

@@ -19,7 +19,7 @@ import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions, isCrrmOptimizationMatched } from './RecommendationActions'
+import { RecommendationActions, isCrrmOptimizationMatched, getAvailableActions, actionTooltip } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -134,6 +134,7 @@ export const crrmStateSort = (itemA: RecommendationListItem, itemB: Recommendati
   return defaultSort(stateA.order, stateB.order)
 }
 
+
 export function RecommendationTable (
   { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
 ) {
@@ -151,7 +152,6 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
       label: $t(selectedRecommendation?.isMuted
@@ -166,7 +166,21 @@ export function RecommendationTable (
       disabled: selectedRecommendation
         && selectedRecommendation.statusEnum
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
-    }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...(selectedRecommendation ? getAvailableActions(selectedRecommendation as any)
+      .filter(action => !action.icon.props.disabled)
+      .map((action) => {
+        return {
+          label: $t(actionTooltip
+            ?.[action.icon?.props?.type as keyof typeof actionTooltip]?.text),
+          onClick: async () => {
+            const { id, isMuted } = selectedRecommendation
+            await muteRecommendation({ id, mute: !isMuted }).unwrap()
+            setSelectedRowData([])
+          }
+        }
+      }): [])
   ]
 
   const optimizationTooltipText = get('IS_MLISA_SA')
@@ -357,11 +371,7 @@ export function RecommendationTable (
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
-            row && setSelectedRowData([{
-              id: row.id,
-              isMuted: row.isMuted,
-              statusEnum: row.statusEnum
-            }])
+            row && setSelectedRowData([row])
           }
         }}
         rowKey='id'
