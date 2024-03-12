@@ -8,7 +8,6 @@ import { TableResult }   from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
-import type { SliceType }                from './useSliceType'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
@@ -176,9 +175,7 @@ export function computePastRange (
 
 export const slaKpiConfig = {
   incident: {
-    getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'LSP Health' })
-      : defineMessage({ defaultMessage: 'Property Health' }),
+    getTitle: () => defineMessage({ defaultMessage: '{name} Health' }),
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
