@@ -16,7 +16,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 10,
       ssidCompliance: [10,100] as [number, number],
       deviceCount: 2,
@@ -37,7 +37,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 0,
       ssidCompliance: '--' as unknown as [number, number],
       deviceCount: 0,
@@ -63,7 +63,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 10,
       ssidCompliance: [50,100] as [number, number],
       deviceCount: 2,
@@ -93,7 +93,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 0,
       ssidCompliance: '--' as unknown as [number, number],
       deviceCount: 0,
@@ -119,7 +119,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 10,
       ssidCompliance: [10,100] as [number, number],
       deviceCount: 2,

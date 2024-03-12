@@ -21,7 +21,7 @@ import type { FranchisorTimeseries, Response } from './services'
 
 const tableNoData = [{
   property: 'p',
-  lsp: 'l',
+  lsps: ['l'],
   p1Incidents: 0,
   ssidCompliance: '--' as unknown as [number, number],
   deviceCount: 0,

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, FirmwareUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider, rbacApiURL }                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -459,5 +459,23 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'testBrand' })).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(await screen.findByText('My Customers')).toBeVisible()
+  })
+
+  it('should render menues correctly for HSP', async () => {
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+      await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
+      await waitFor(async () => expect(await screen.findByText('Brand Properties'))
+        .toBeInTheDocument())
+    })
   })
 })

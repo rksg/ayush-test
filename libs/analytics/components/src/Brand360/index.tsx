@@ -6,7 +6,7 @@ import { useGetBrand360Config }                              from '@acx-ui/analy
 import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
-  useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
 import {
@@ -91,7 +91,7 @@ export function Brand360 () {
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
-  const mspPropertiesData = useMspCustomerListDropdownQuery(
+  const mspPropertiesData = useMspECListQuery(
     { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
