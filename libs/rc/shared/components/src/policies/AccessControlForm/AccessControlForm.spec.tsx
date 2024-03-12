@@ -115,12 +115,20 @@ describe('AccessControlForm Component', () => {
         (_, res, ctx) => res(ctx.json(avcCat))),
       rest.get(AccessControlUrls.getAvcApp.url,
         (_, res, ctx) => res(ctx.json(avcApp))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies.url,
         (req, res , ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse)))
     )
@@ -143,7 +151,7 @@ describe('AccessControlForm Component', () => {
     )
 
     const header = screen.getByRole('heading', {
-      name: /add access control policy/i
+      name: /add access control/i
     })
 
     expect(header).toBeInTheDocument()
@@ -174,7 +182,7 @@ describe('AccessControlForm Component', () => {
     )
 
     const header = screen.getByRole('heading', {
-      name: /add access control policy/i
+      name: /add access control template/i
     })
 
     expect(header).toBeInTheDocument()
@@ -216,7 +224,7 @@ describe('AccessControlForm Component', () => {
     )
 
     const header = await screen.findByRole('heading', {
-      name: /add access control policy/i
+      name: /add access control/i
     })
 
     expect(header).toBeInTheDocument()
@@ -239,11 +247,13 @@ describe('AccessControlForm Component', () => {
       name: 'Add'
     }))
 
-    await screen.findByRole('option', { name: 'layer2policy1' })
+    const layer2Data = enhancedLayer2PolicyListResponse.data
+
+    await screen.findByRole('option', { name: layer2Data[0].name })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'layer2policy1' })
+      screen.getByRole('option', { name: layer2Data[0].name })
     )
 
     await userEvent.click(screen.getByRole('button', {
@@ -264,7 +274,7 @@ describe('AccessControlForm Component', () => {
     )
 
     const header = screen.getByRole('heading', {
-      name: /edit access control policy/i
+      name: /edit access control/i
     })
 
     expect(header).toBeInTheDocument()

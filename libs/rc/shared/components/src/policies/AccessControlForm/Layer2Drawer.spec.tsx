@@ -14,32 +14,6 @@ import { enhancedLayer2PolicyListResponse } from '../AccessControl/__tests__/fix
 
 import { Layer2Drawer } from './Layer2Drawer'
 
-const queryLayer2 = [
-  {
-    id: 'dee8918e1c40474a9f779b39ee672c5b',
-    name: 'block2layer',
-    macAddressesCount: 1,
-    description: 'des',
-    networksCount: 0
-  },
-  {
-    id: '36ec4826b5da48cc8118eda83aa4080f',
-    name: 'allowl2',
-    macAddressesCount: 1,
-    networksCount: 0
-  }
-]
-
-const queryLayer2Update = [
-  ...queryLayer2,
-  {
-    id: 'bb8cd612fc1e4374b28f25128070c99b',
-    name: 'allowl2-new',
-    macAddressesCount: 1,
-    networksCount: 0
-  }
-]
-
 const layer2Detail = {
   name: 'blockL2Acl',
   access: 'ALLOW',
@@ -72,11 +46,13 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+const layer2Data = enhancedLayer2PolicyListResponse.data
+
 describe('Layer2Drawer Component', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(AccessControlUrls.getL2AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json(queryLayer2))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
       rest.post(AccessControlUrls.addL2AclPolicy.url,
@@ -97,7 +73,7 @@ describe('Layer2Drawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'allowl2' })
+    await screen.findByRole('option', { name: layer2Data[0].name })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -143,14 +119,25 @@ describe('Layer2Drawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getL2AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer2Update)
-      )
-    ))
+    const newLayer2Policy = {
+      id: 'newLayer2PolicyId',
+      name: 'newLayer2PolicyName',
+      macAddress: '22:32:12:13:23:34',
+      networkIds: []
+    }
 
-    await screen.findByRole('option', { name: 'allowl2-new' })
+    mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json({
+          ...enhancedLayer2PolicyListResponse,
+          data: [
+            ...layer2Data,
+            newLayer2Policy
+          ]
+        })))
+    )
+
+    await screen.findByRole('option', { name: newLayer2Policy.name })
 
   })
 
@@ -167,7 +154,7 @@ describe('Layer2Drawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'allowl2' })
+    await screen.findByRole('option', { name: layer2Data[0].name })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -230,18 +217,18 @@ describe('Layer2Drawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'allowl2' })
+    await screen.findByRole('option', { name: layer2Data[0].name })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'allowl2' })
+      screen.getByRole('option', { name: layer2Data[0].name })
     )
 
     await userEvent.click(screen.getByText(/edit details/i))
 
     await screen.findByText(/layer 2 settings/i)
 
-    await screen.findByText('allowl2')
+    await screen.findByText(layer2Data[0].name)
 
     const dialog = screen.getByRole('dialog')
 

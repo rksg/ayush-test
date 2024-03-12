@@ -203,9 +203,13 @@ const subnetSetting = async () => {
   })
 }
 
+const layer3Data = enhancedLayer3PolicyListResponse.data
+
 describe('Layer3Drawer Component', () => {
   beforeEach(() => {
     mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(AccessControlUrls.addL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3Response))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
@@ -234,22 +238,31 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getByText(/block traffic/i))
 
+    const newLayer3Policy = {
+      id: 'newLayer3PolicyId',
+      name: 'newLayer3PolicyName'
+    }
+
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3-test')
+    }), newLayer3Policy.name)
 
     await anyIpSetting()
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3Update)
-      )
-    ))
+    mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json({
+          ...enhancedLayer3PolicyListResponse,
+          data: [
+            ...layer3Data,
+            newLayer3Policy
+          ]
+        })))
+    )
 
-    await screen.findByRole('option', { name: 'layer3-test' })
+    await screen.findByRole('option', { name: newLayer3Policy.name })
 
   })
 
@@ -373,11 +386,11 @@ describe('Layer3Drawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'l3-010' })
+    await screen.findByRole('option', { name: layer3Data[0].name })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'l3-010' })
+      screen.getByRole('option', { name: layer3Data[0].name })
     )
 
     await userEvent.click(screen.getByText(/edit details/i))

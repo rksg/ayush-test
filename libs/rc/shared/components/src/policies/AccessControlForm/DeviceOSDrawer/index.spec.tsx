@@ -144,6 +144,8 @@ const selectOptionSet = async (device: string, vendor: string) => {
 describe('DeviceOSDrawer Component setting I', () => {
   beforeEach(async () => {
     mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(ctx.json(devicePolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
@@ -291,6 +293,10 @@ describe('DeviceOSDrawer Component setting I', () => {
 describe('DeviceOSDrawer Component setting II', () => {
   beforeEach(async () => {
     mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      ),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(ctx.json(queryDeviceUpdate))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
@@ -543,6 +549,10 @@ describe('DeviceOSDrawer Component setting II', () => {
 describe('DeviceOSDrawer Component setting III', () => {
   beforeEach(async () => {
     mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      ),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (_, res, ctx) => res(ctx.json(queryDevice))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
@@ -633,13 +643,17 @@ describe('DeviceOSDrawer Component setting III', () => {
 
 describe('DeviceOSDrawer Component', () => {
   beforeEach(async () => {
-    mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(devicePolicyListResponse)
-      )
-    ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
-      (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse)))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      ), rest.get(
+        AccessControlUrls.getDevicePolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(devicePolicyListResponse)
+        )
+      ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse)))
     )
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
@@ -715,11 +729,18 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDeviceUpdate)
-      )
+    mockServer.use(rest.post(
+      AccessControlUrls.getEnhancedDevicePolicies.url,
+      (req, res, ctx) => res(ctx.json({
+        ...enhancedDevicePolicyListResponse,
+        data: [
+          ...enhancedDevicePolicyListResponse.data,
+          {
+            id: '84eb837c59e84761a1c836591d43e334',
+            name: 'device1-another'
+          }
+        ]
+      }))
     ))
 
     expect(await screen.findByRole('option', { name: 'device1-another' })).toBeInTheDocument()
@@ -1118,17 +1139,22 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {
-    mockServer.use(rest.get(
-      AccessControlUrls.getDevicePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.get(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(devicePolicyDetailResponse)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))
+      ),
+      rest.get(
+        AccessControlUrls.getDevicePolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryDevice)
+        )
+      ), rest.get(
+        AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(devicePolicyDetailResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -1142,11 +1168,11 @@ describe('DeviceOSDrawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'device2' })
+    await screen.findByRole('option', { name: 'dev2-block' })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'device1' })
+      screen.getByRole('option', { name: 'device-1' })
     )
 
     await userEvent.click(screen.getByText(/edit details/i))
