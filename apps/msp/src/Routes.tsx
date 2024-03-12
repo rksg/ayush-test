@@ -1,6 +1,5 @@
 import { Brand360 }                                         from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
@@ -8,10 +7,12 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm,
+  ConfigTemplateVisibilityController
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
+  ConfigTemplateType,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -103,69 +104,91 @@ function CustomersRoutes () {
 }
 
 function ConfigTemplatesRoutes () {
-  const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
-
-  return isConfigTemplateEnabled ? rootRoutes(
+  return rootRoutes(
     <Route path=':tenantId/v/'>
-      <Route path={getConfigTemplatePath()}
-        element={<LayoutWithConfigTemplateContext />}
-      >
+      <Route path={getConfigTemplatePath()} element={<LayoutWithConfigTemplateContext />}>
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
         <Route path=':activeTab' element={<ConfigTemplate />} />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-          element={<AAAForm edit={false} />}
-        />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
-          element={<AAAForm edit={true} />}
-        />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-          element={<AAAPolicyDetail />}
-        />
-        <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
-          })}
-          element={<AccessControlForm editMode={false}/>}
-        />
-        <Route path='networks/wireless/add' element={<NetworkForm />} />
-        <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
-        <Route path='networks/wireless/:networkId/network-details/:activeTab'
-          element={<NetworkDetails />}
-        />
-        <Route path='venues/add' element={<VenuesForm />} />
-        <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
-        <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
-        <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-          element={<DpskForm />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-          element={<DpskForm editMode={true} />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
-          element={<DpskDetails />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-          element={<DHCPForm/>}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-          element={<DHCPForm editMode={true}/>}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-          element={<DHCPDetail/>}
-        />
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.RADIUS}>
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+            element={<AAAForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+            element={<AAAForm edit={true} />}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+            element={<AAAPolicyDetail />}
+          />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.ACCESS_CONTROL_SET}>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
+            })}
+            element={<AccessControlForm editMode={false}/>}
+          />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.NETWORK}>
+          <Route path='networks/wireless/add' element={<NetworkForm />} />
+          <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
+          <Route path='networks/wireless/:networkId/network-details/:activeTab'
+            element={<NetworkDetails />}
+          />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.VENUE}>
+          <Route path='venues/add' element={<VenuesForm />} />
+          <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
+          <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
+          <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.DPSK}>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            element={<DpskForm />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+            element={<DpskForm editMode={true} />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+            element={<DpskDetails />}
+          />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.DHCP}>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+            element={<DHCPForm/>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
+            element={<DHCPForm editMode={true}/>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
+            element={<DHCPDetail/>}
+          />
+        </ConfigTemplateVisibilityController>
+        <ConfigTemplateVisibilityController type={ConfigTemplateType.VLAN_POOL}>
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
+            element={<div>VLAN POOL Creation</div>}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
+            element={<div>VLAN POOL Edition</div>}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
+            element={<div>VLAN POOL Details</div>}
+          />
+        </ConfigTemplateVisibilityController>
       </Route>
     </Route>
-  ) : null
+  )
 }

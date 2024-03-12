@@ -1,8 +1,7 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
-import { MenuProps } from 'antd'
-import moment        from 'moment'
-import { useIntl }   from 'react-intl'
+import moment      from 'moment'
+import { useIntl } from 'react-intl'
 
 
 import {
@@ -14,9 +13,6 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
 import {
-  ConfigTemplateLink,
-  PolicyConfigTemplateLink,
-  ServiceConfigTemplateLink,
   renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
@@ -33,31 +29,23 @@ import {
   useDeleteDhcpTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  PolicyOperation,
-  PolicyType,
-  policyTypeLabelMapping,
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  ServiceType,
-  ServiceOperation,
-  serviceTypeLabelMapping,
   AccessControlPolicyForTemplateCheckType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
-import { getIntl }                                 from '@acx-ui/utils'
 
 import {
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility,
-  createAccessControlPolicyMenuItem, INIT_STATE,
+  INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
-import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
-import * as UI                   from './styledComponents'
+import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
+import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -78,6 +66,7 @@ export function ConfigTemplateList () {
       searchTargetFields: ['name']
     }
   })
+  const addTemplateMenuProps = useAddTemplateMenuProps()
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
@@ -128,7 +117,7 @@ export function ConfigTemplateList () {
   const actions: TableProps<ConfigTemplate>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Template' }),
-      dropdownMenu: getAddTemplateMenuProps({ setAccessControlSubPolicyVisible })
+      dropdownMenu: addTemplateMenuProps
     }
   ]
 
@@ -279,67 +268,7 @@ function useDeleteMutation () {
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
     [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
-    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
-  }
-}
-
-function getAddTemplateMenuProps (props: {
-  setAccessControlSubPolicyVisible: Dispatch<SetStateAction<AccessControlSubPolicyVisibility>>
-}): Omit<MenuProps, 'placement'> {
-  const { setAccessControlSubPolicyVisible } = props
-  const { $t } = getIntl()
-
-  return {
-    expandIcon: <UI.MenuExpandArrow />,
-    subMenuCloseDelay: 0.2,
-    items: [
-      {
-        key: 'add-wifi-network',
-        label: <ConfigTemplateLink to='networks/wireless/add'>
-          {$t({ defaultMessage: 'Wi-Fi Network' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-venue',
-        label: <ConfigTemplateLink to='venues/add'>
-          {$t({ defaultMessage: 'Venue' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-policy',
-        label: $t({ defaultMessage: 'Policies' }),
-        children: [
-          createPolicyMenuItem(PolicyType.AAA, 'add-aaa'),
-          createAccessControlPolicyMenuItem(setAccessControlSubPolicyVisible)
-        ]
-      }, {
-        key: 'add-service',
-        label: $t({ defaultMessage: 'Services' }),
-        children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
-          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
-        ]
-      }
-    ]
-  }
-}
-
-export function createPolicyMenuItem (policyType: PolicyType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
-      {$t(policyTypeLabelMapping[policyType])}
-    </PolicyConfigTemplateLink>
-  }
-}
-
-function createServiceMenuItem (serviceType: ServiceType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
-      {$t(serviceTypeLabelMapping[serviceType])}
-    </ServiceConfigTemplateLink>
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
+    [ConfigTemplateType.VLAN_POOL]: deleteDhcpTemplate // TODO: Just for testing, remove this when VLAN Pool is implemented
   }
 }

@@ -7,7 +7,8 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
   [ConfigTemplateType.LAYER_2_POLICY]: PolicyType.LAYER_2_POLICY,
   [ConfigTemplateType.LAYER_3_POLICY]: PolicyType.LAYER_3_POLICY,
   [ConfigTemplateType.DEVICE_POLICY]: PolicyType.DEVICE_POLICY,
-  [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY
+  [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY,
+  [ConfigTemplateType.VLAN_POOL]: PolicyType.VLAN_POOL
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {
