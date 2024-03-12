@@ -30,12 +30,21 @@ export type ConnectionQuality = {
   avgTxMCS?: number | null
 }
 
-export type ClientInfoData = {
+export type ClientIncidentsInfo = {
+  incidents: Incident[]
+}
+
+export type ClientConnectionQualities = {
+  connectionQualities: ConnectionQuality[]
+}
+
+export type ClientConnectionInfo = {
   connectionDetailsByAp: object[]
   connectionEvents: ConnectionEvent[]
   connectionQualities: ConnectionQuality[]
-  incidents: Incident[]
 }
+
+export type ClientInfoData = ClientIncidentsInfo & ClientConnectionInfo
 interface Response <T> {
     client: T
 }
@@ -72,27 +81,13 @@ export const b64ToBlob = (b64Data: string) => {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientInfo: build.query<
-    ClientInfoData,
+    ClientConnectionInfo,
     ClientFilter & IncidentsToggleFilter
     >({
       query: (payload) => ({
         document: gql`
-        query ClientInfo($mac: String, $start: DateTime, $end: DateTime, $code: [String]) {
+        query ClientInfo($mac: String, $start: DateTime, $end: DateTime) {
           client(mac: $mac, start: $start, end: $end) {
-            incidents(code: $code) {
-              id
-              path {
-                type
-                name
-              }
-              severity
-              startTime
-              sliceType
-              sliceValue
-              endTime
-              code
-              slaThreshold
-            }
             connectionQualities {
               start
               end
@@ -141,6 +136,44 @@ export const api = dataApi.injectEndpoints({
         variables: {
           mac: payload.clientMac,
           start: payload.startDate,
+          end: payload.endDate
+        }
+      }),
+      providesTags: [
+        { type: 'Monitoring', id: 'CLIENT_INFO' }
+      ],
+      transformResponse: (response: Response<ClientConnectionInfo>) => {
+        return response.client
+      }
+    }),
+    clientIncidentsInfo: build.query<
+    ClientIncidentsInfo,
+    ClientFilter & IncidentsToggleFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+        query ClientIncidentsInfo($mac: String, $start: DateTime, $end: DateTime, $code: [String]) {
+          client(mac: $mac, start: $start, end: $end) {
+            incidents(code: $code) {
+              id
+              path {
+                type
+                name
+              }
+              severity
+              startTime
+              sliceType
+              sliceValue
+              endTime
+              code
+              slaThreshold
+            }
+          }
+        }
+        `,
+        variables: {
+          mac: payload.clientMac,
+          start: payload.startDate,
           end: payload.endDate,
           code: incidentsToggle(payload)
         }
@@ -148,7 +181,36 @@ export const api = dataApi.injectEndpoints({
       providesTags: [
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
-      transformResponse: (response: Response<ClientInfoData>) => {
+      transformResponse: (response: Response<ClientIncidentsInfo>) => {
+        return response.client
+      }
+    }),
+    clientConnectionQualities: build.query<ClientConnectionQualities, ClientFilter>({
+      query: (payload) => ({
+        document: gql`
+        query ClientConnectionQualities($mac: String, $start: DateTime, $end: DateTime) {
+          client(mac: $mac, start: $start, end: $end) {
+            connectionQualities {
+              start
+              end
+              rss
+              snr
+              throughput
+              avgTxMCS
+            }
+          }
+        }
+        `,
+        variables: {
+          mac: payload.clientMac,
+          start: payload.startDate,
+          end: payload.endDate
+        }
+      }),
+      providesTags: [
+        { type: 'Monitoring', id: 'CLIENT_INFO' }
+      ],
+      transformResponse: (response: Response<ClientConnectionQualities>) => {
         return response.client
       }
     }),
@@ -174,4 +236,9 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useClientInfoQuery, useClientPcapMutation } = api
+export const {
+  useClientInfoQuery,
+  useClientPcapMutation,
+  useClientConnectionQualitiesQuery,
+  useClientIncidentsInfoQuery
+} = api

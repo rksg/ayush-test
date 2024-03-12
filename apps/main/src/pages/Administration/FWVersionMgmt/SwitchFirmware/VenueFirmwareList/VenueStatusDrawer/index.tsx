@@ -19,10 +19,11 @@ import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
-import * as UI from '../styledComponents'
+import { toUserDate } from '../../../FirmwareUtils'
+import * as UI        from '../styledComponents'
 
 export interface VenueStatusDrawerProps {
   visible: boolean,
@@ -142,6 +143,14 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
         } else {
           return '--'
         }
+      }
+    }, {
+      key: 'lastStatusUpdateTime',
+      title: $t({ defaultMessage: 'Last Update' }),
+      dataIndex: 'lastStatusUpdateTime',
+      sorter: false,
+      render: function (_, row) {
+        return toUserDate(row.lastStatusUpdateTime || noDataDisplay)
       }
     }
   ]

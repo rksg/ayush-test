@@ -164,7 +164,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getNetworkDeepList.url, (_, res, ctx) =>
         res(ctx.json({ response: [networkResponse] }))
       ),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (_, res, ctx) =>
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venuesResponse))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>

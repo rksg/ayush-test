@@ -38,10 +38,10 @@ import {
   MspEntitlement,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                                    from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }                     from '@acx-ui/user'
-import { createHttpRequest, ignoreErrorModal, PverName } from '@acx-ui/utils'
+import { baseMspApi }                          from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }           from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
@@ -69,13 +69,9 @@ export function useCheckDelegateAdmin () {
 }
 
 export function useDelegateToMspEcPath () {
-  const [getTenantPver] = useLazyGetUserProfilePverQuery()
   const delegateToMspEcPath = async (ecTenantId: string) => {
     try {
-      const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
-      window.location.href = (user?.pver === PverName.R1)
-        ? `/${ecTenantId}/t/dashboard`
-        : `/api/ui/t/${ecTenantId}/dashboard`
+      window.location.href = `/${ecTenantId}/t/dashboard`
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -302,6 +298,18 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    mspECList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+        createHttpRequest(MspUrlsInfo.getMspECList, params, {}, true)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'EC_LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
@@ -844,6 +852,7 @@ export const {
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
   useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
   useIntegratorCustomerListDropdownQuery,

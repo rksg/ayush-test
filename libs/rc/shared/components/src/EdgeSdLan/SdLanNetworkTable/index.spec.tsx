@@ -1,13 +1,14 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockNetworkSaveData, mockDeepNetworkList } from '../__tests__/fixtures'
@@ -19,12 +20,24 @@ const mockedOnChangeFn = jest.fn()
 const mockedGetNetworkDeepList = jest.fn()
 const { click } = userEvent
 
+const services = require('@acx-ui/rc/services')
+
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
     mockedOnChangeFn.mockReset()
     mockedGetNetworkDeepList.mockReset()
 
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
+
+    // mockServer can be removed
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
@@ -38,6 +51,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         }
       )
     )
+
   })
 
   it('should correctly render', async () => {

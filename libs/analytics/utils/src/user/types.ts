@@ -46,12 +46,36 @@ export type Permissions = {
   'franchisor': boolean
 }
 
+
 export type Settings = {
   'sla-p1-incidents-count': string
   'sla-guest-experience': string
   'sla-brand-ssid-compliance': string
   'brand-ssid-compliance-matcher': string
-  franchisor: string
-  franchisee: string
-  zone: string
+  'sso': string
+  'brand-name': string
+  'lsp-name': string
+  'property-name': string
+}
+
+export type ManagedUser = {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  accountId: string
+  accountName: string
+  role: 'admin' | 'network-admin' | 'report-only'
+  tenantId: string
+  resourceGroupId: string
+  resourceGroupName: string
+  updatedAt?: string
+  type: null | string
+  invitation: null | {
+    state: 'pending' | 'accepted' | 'rejected',
+    inviterUser: {
+      firstName: string,
+      lastName: string
+    }
+  }
 }

@@ -17,6 +17,7 @@ import { EdgeOverview } from '.'
 const { mockEdgeData: currentEdge } = EdgeGeneralFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -76,6 +77,14 @@ describe('Edge Detail Overview', () => {
         (_req, res, ctx) => {
           return res(
             ctx.json(mockEdgeLagStatusList)
+          )
+        }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeClusterList)
           )
         }
       )

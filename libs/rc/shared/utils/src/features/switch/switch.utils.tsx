@@ -7,6 +7,7 @@ import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
+  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
@@ -14,6 +15,8 @@ import {
   SWITCH_TYPE,
   SWITCH_SERIAL_PATTERN
 } from '../../types'
+
+import { compareSwitchVersion } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -722,4 +725,38 @@ export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => 
   }
 
   return ranges.join(', ')
+}
+
+export const isFirmwareVersionAbove10 = (
+  firmwareVersion: string
+) => {
+  return firmwareVersion.slice(3,6) === '100'
+}
+
+export const isFirmwareSupportAdminPassword = (
+  firmwareVersion: string
+) => {
+  if (isFirmwareVersionAbove10(firmwareVersion)) {
+    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
+  }
+  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
+}
+
+export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
+  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}
+
+export const checkSwitchUpdateFields = function (
+  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+) {
+  const fields = Object.keys(values ?? {})
+  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
+    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
+      return [ ...result, key ]
+    }
+    return result
+  }, [])
 }

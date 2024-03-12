@@ -240,7 +240,12 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: { checks }
+          rootCauseChecks: {
+            checks,
+            params: {
+              recommendationId: '123'
+            }
+          }
         }
       })
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
@@ -254,7 +259,10 @@ describe('getRootCauseAndRecommendations', () => {
         ...airtimeBusyIncident,
         metadata: {
           dominant: {},
-          rootCauseChecks: { checks }
+          rootCauseChecks: {
+            checks,
+            params: {}
+          }
         }
       })
       expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
@@ -382,6 +390,72 @@ describe('getRootCauseAndRecommendations', () => {
         { isCRRMRaised: true },
         { isChannelFlyEnabled: false },
         { isHighLegacyWifiDevicesCount: true }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when only isLargeMgmtFrameCount is true', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: false },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when isLargeMgmtFrameCount and isChannelFlyEnabled true', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: false },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: false },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: false }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 0
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data when isLargeMgmtFrameCount and isAclbRaised true', () => {
+      const checks = [
+        { isHighDensityWifiDevices: false },
+        { isAclbRaised: true },
+        { isLargeMgmtFrameCount: false },
+        { isHighSsidCountPerRadio: false },
+        { isCRRMRaised: false },
+        { isChannelFlyEnabled: false },
+        { isHighLegacyWifiDevicesCount: false }
       ] as unknown as AirtimeArray
       const params = {
         ssidCountPerRadioSlice: 0

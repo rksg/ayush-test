@@ -64,9 +64,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType  }           from '@acx-ui/utils'
+import { RolesEnum }             from '@acx-ui/types'
+import { useUserProfileContext } from '@acx-ui/user'
+import { AccountType  }          from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
@@ -191,7 +191,7 @@ export function ManageIntegrator () {
   const isEditMode = action === 'edit'
   const tenantType = type
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
@@ -746,7 +746,7 @@ export function ManageIntegrator () {
         <Radio.Group onChange={onChange}>
           <Space direction='vertical'>
             <Radio value={true} disabled={false}>
-              { intl.$t({ defaultMessage: 'Not Limited' }) }
+              { intl.$t({ defaultMessage: 'Not Limited (Integrator)' }) }
             </Radio>
             <UI.FieldLabelAccessPeriod width='275px'>
               <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
@@ -772,7 +772,7 @@ export function ManageIntegrator () {
                 children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
-              <label>Day(s)</label>
+              <label>{intl.$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
             </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>
@@ -1016,6 +1016,8 @@ export function ManageIntegrator () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1072,6 +1074,8 @@ export function ManageIntegrator () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst

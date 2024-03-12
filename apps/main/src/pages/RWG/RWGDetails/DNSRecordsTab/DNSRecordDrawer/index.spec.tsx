@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { initialize }                           from '@googlemaps/jest-mocks'
-import { userEvent, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                 from 'msw'
+import { initialize } from '@googlemaps/jest-mocks'
+import  userEvent     from '@testing-library/user-event'
+import { rest }       from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { rwgApi }                              from '@acx-ui/rc/services'
@@ -27,7 +27,10 @@ const dnsRecord = {
 
 const mockFn = jest.fn()
 const mockedReqFn =jest.fn()
-
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
 
 describe('RWGDetails DNS Records Drawer', () => {
   let params: { tenantId: string, gatewayId: string }
@@ -79,14 +82,13 @@ describe('RWGDetails DNS Records Drawer', () => {
     await waitFor(async () => expect(await screen.findByRole('textbox',
       { name: 'DNS Record Name' })).toHaveValue('wi.fi'))
 
-    await expect(await screen.findByText('Edit DNS Record')).toBeInTheDocument()
+    expect(screen.getByText('Edit DNS Record')).toBeInTheDocument()
 
-    const saveButton = await screen.findByRole('button', { name: 'Apply' })
+    const saveButton = screen.getByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(mockedReqFn).toBeCalled())
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    await waitFor(() => expect(onCloseFn).toBeCalled())
   })
 
   it('should draw drawer for DNS Record add correctly', async () => {
@@ -101,19 +103,19 @@ describe('RWGDetails DNS Records Drawer', () => {
       route: { params }
     })
 
-    await expect(await screen.findByText('Add DNS Record')).toBeInTheDocument()
+    expect(screen.getByText('Add DNS Record')).toBeInTheDocument()
 
-    const dnsInput = await screen.findByLabelText('DNS Record Name')
+    const dnsInput = screen.getByLabelText('DNS Record Name')
     await userEvent.type(dnsInput, 'ruckusdemos1')
 
-    const combo = await screen.findByRole('combobox')
+    const combo = screen.getByRole('combobox')
 
     await userEvent.click(combo)
     await waitFor(() =>
       expect(screen.getAllByText('AAAA')[1]).toBeInTheDocument()
     )
 
-    const options = await screen.findAllByText('AAAA')
+    const options = screen.getAllByText('AAAA')
 
     await userEvent.click(options[1])
 

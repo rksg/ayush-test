@@ -92,7 +92,8 @@ export const SettingsForm = () => {
           .map(item => ({
             label: item.name,
             value: item.serialNumber,
-            venueId: item.venueId
+            venueId: item.venueId,
+            clusterId: item.clusterId
           })),
         isLoading
       }
@@ -112,7 +113,9 @@ export const SettingsForm = () => {
   })
 
   const { lagsConfig } = useGetEdgeLagListQuery({
-    params: { serialNumber: edgeId },
+    params: { venueId: venueId,
+      edgeClusterId: edgeOptions?.filter(i => i.value === edgeId)[0]?.clusterId,
+      serialNumber: edgeId },
     payload: {
       page: 1,
       pageSize: 10
@@ -266,22 +269,24 @@ export const SettingsForm = () => {
                       const isLagCorePort = getFieldValue('isLagCorePort')
                       const edgeName = getFieldValue('edgeName')
 
-                      return <Form.Item
-                        name='corePortMac'
-                        noStyle
-                        rules={[{
-                          required: true
-                        }]}
-                      >
-                        <CorePortFormItem
-                          data={corePort}
-                          name={corePortName}
-                          isLagCorePort={isLagCorePort}
-                          edgeId={edgeId}
-                          edgeName={edgeName}
-                          portsData={portsConfig}
-                        />
-                      </Form.Item>
+                      return edgeId
+                        ? <Form.Item
+                          name='corePortMac'
+                          noStyle
+                          rules={[{
+                            required: true
+                          }]}
+                        >
+                          <CorePortFormItem
+                            data={corePort}
+                            name={corePortName}
+                            isLagCorePort={isLagCorePort}
+                            edgeId={edgeId}
+                            edgeName={edgeName}
+                            portsData={portsConfig}
+                          />
+                        </Form.Item>
+                        : null
                     }}
                   </Form.Item>
                 </Col>

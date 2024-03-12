@@ -305,6 +305,7 @@ describe('Edge centrailized forwarding form: settings', () => {
 
       expect(mockedSetFieldValue).toBeCalledWith('venueName', 'airport')
       expect(mockedSetFieldValue).toBeCalledWith('edgeId', undefined)
+      expect(within(formBody).queryByTestId('rc-CorePortFormItem')).toBeNull()
 
       await userEvent.selectOptions(
         await within(formBody).findByRole('combobox', { name: 'SmartEdge' }),

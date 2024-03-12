@@ -1,7 +1,8 @@
 export enum EdgePortTypeEnum {
   UNCONFIGURED = 'UNCONFIGURED',
   WAN = 'WAN',
-  LAN = 'LAN'
+  LAN = 'LAN',
+  CLUSTER = 'CLUSTER'
 }
 
 export enum EdgeIpModeEnum {
@@ -48,7 +49,8 @@ export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
   NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
-  SD_LAN = 'SDLAN'
+  SD_LAN = 'SDLAN',
+  SD_LAN_P2 = 'SDLAN_P2'
 }
 
 export enum EdgeServiceStatusEnum {
@@ -71,4 +73,23 @@ export enum EdgeLagLacpModeEnum {
 export enum EdgeLagTimeoutEnum {
   SHORT = 'SHORT',
   LONG = 'LONG'
+}
+
+export enum ClusterNodeStatusEnum {
+  CLUSTER_NODE_CONFIGS_NEEDED = 'CLUSTER_NODE_CONFIGS_NEEDED',
+  CLUSTER_NODE_GETTING_READY = 'CLUSTER_NODE_GETTING_READY',
+  CLUSTER_NODE_READY = 'CLUSTER_NODE_READY',
+  CLUSTER_NODE_UNHEALTHY = 'CLUSTER_NODE_UNHEALTHY'
+}
+
+export enum ClusterStatusEnum {
+  CLUSTER_CONFIGS_NEEDED = 'CLUSTER_CONFIGS_NEEDED',
+  CLUSTER_IS_FORMING = 'CLUSTER_IS_FORMING',
+  CLUSTER_READY = 'CLUSTER_READY',
+  CLUSTER_UNHEALTHY = 'CLUSTER_UNHEALTHY'
+}
+
+export enum NodeClusterRoleEnum {
+  CLUSTER_ROLE_ACTIVE = 'CLUSTER_ROLE_ACTIVE',
+  CLUSTER_ROLE_BACKUP = 'CLUSTER_ROLE_BACKUP'
 }

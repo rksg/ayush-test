@@ -1,11 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }         from '@acx-ui/components'
+import { Loader, PageHeader }  from '@acx-ui/components'
+import { useEdgeSdLanActions } from '@acx-ui/rc/components'
 import {
-  useGetEdgeSdLanP2Query,
-  useUpdateEdgeSdLanPartialMutation
-} from '@acx-ui/rc/services'
+  useGetEdgeSdLanP2Query } from '@acx-ui/rc/services'
 import {
   EdgeSdLanSettingP2,
   getServiceListRoutePath,
@@ -15,22 +14,22 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import EdgeSdLanForm, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
-import { SettingsForm }                        from '../EdgeSdLanForm/SettingsForm'
-import { TunnelScopeForm }                     from '../EdgeSdLanForm/TunnelScopeForm'
+import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
+import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
+import { TunnelScopeForm }                       from '../EdgeSdLanForm/TunnelScopeForm'
 
 const EditEdgeSdLan = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
+  const [form] = Form.useForm()
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialMutation()
-  const { data, isLoading } = useGetEdgeSdLanP2Query({ params })
-  const [form] = Form.useForm()
+  const { editEdgeSdLan } = useEdgeSdLanActions()
+  const { data, isFetching } = useGetEdgeSdLanP2Query({ params })
 
   const steps = [
     {
@@ -46,19 +45,33 @@ const EditEdgeSdLan = () => {
   const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     try {
       const payload = {
+        id: params.serviceId,
+        venueId: formData.venueId,
         name: formData.name,
         networkIds: formData.activatedNetworks.map(network => network.id),
-        tunnelProfileId: formData.tunnelProfileId
+        tunnelProfileId: formData.tunnelProfileId,
+        isGuestTunnelEnabled: formData.isGuestTunnelEnabled,
+        guestEdgeClusterId: formData.guestEdgeClusterId,
+        guestTunnelProfileId: formData.guestTunnelProfileId,
+        guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
       } as EdgeSdLanSettingP2
 
-      // TODO: can change `isGuestEnabled` & `guestEdgeId`?
-      if (formData.isGuestTunnelEnabled) {
-        payload.guestTunnelProfileId = formData.guestTunnelProfileId
-        payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
-      }
+      await new Promise(async (resolve, reject) => {
+        await editEdgeSdLan(data! as EdgeSdLanSettingP2, {
+          payload,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
 
-      await updateEdgeSdLan({ params, payload }).unwrap()
-      navigate(linkToServiceList, { replace: true })
+            navigate(linkToServiceList, { replace: true })
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
+      })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -75,8 +88,8 @@ const EditEdgeSdLan = () => {
           { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
-      <Loader states={[{ isLoading }]}>
-        <EdgeSdLanForm
+      <Loader states={[{ isLoading: isFetching }]}>
+        <EdgeSdLanFormP2
           form={form}
           steps={steps}
           onFinish={handleFinish}

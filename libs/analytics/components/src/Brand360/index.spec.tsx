@@ -6,11 +6,16 @@ import type { Settings }                                                        
 import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, rbacApiURL }                                                   from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AccountType }                                                                        from '@acx-ui/utils'
 
 import { mockBrandTimeseries, prevTimeseries, currTimeseries, propertiesMappingData, franchisorZones } from './__tests__/fixtures'
 import { FranchisorTimeseries }                                                                        from './services'
 
 import { Brand360 } from '.'
+
+const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
+const utils = require('@acx-ui/utils')
 
 jest.mock('./Table', () => ({
   BrandTable: ({ sliceType, slaThreshold }: { sliceType: string, slaThreshold: Settings }) =>
@@ -18,9 +23,14 @@ jest.mock('./Table', () => ({
       {sliceType} {JSON.stringify(slaThreshold)}
     </div>
 }))
-const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
+}))
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils')
 }))
 const wrapData = (value: unknown) => ({
   data: {
@@ -59,24 +69,34 @@ describe('Brand360', () => {
         '[{"key": "sla-p1-incidents-count", "value": "1"},{"key": "sla-guest-experience", "value": "2"},{"key": "sla-brand-ssid-compliance", "value": "3"}]'
       )))
     )
-    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+    services.useMspECListQuery = jest.fn().mockImplementation(() => {
+      return { data: propertiesMappingData }
+    })
+    rcServices.useGetTenantDetailsQuery = jest.fn(() => {
+      return { data: { mspEc: { parentMspId: 'parentTenantId' } } }
+    })
+    services.useIntegratorCustomerListDropdownQuery = jest.fn(() => {
       return { data: propertiesMappingData }
     })
     mockGraphqlQuery(dataApiURL, 'FranchisorZones', {
       data: { franchisorZones: franchisorZones.data }
     })
+    utils.getJwtTokenPayload = jest.fn(() => ({
+      tenantId: 'testTenantId',
+      tenantType: AccountType.MSP_REC
+    }))
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2023-12-12T00:00:00+00:00')))
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   afterEach(() => jest.useRealTimers())
-  it('renders widgets', async () => {
+  it('renders msp widgets', async () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findAllByDisplayValue('Last 24 Hours')).toHaveLength(2)
+    expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
     const tiles = await screen.findAllByTestId('brand360Tile')
     expect(tiles).toHaveLength(3)
     tiles.forEach(tile => expect(tile).toBeVisible())
@@ -88,12 +108,12 @@ describe('Brand360', () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
-    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+    services.useMspECListQuery = jest.fn().mockImplementation(() => {
       return { data: null }
     })
     render(<Provider><Brand360 /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findAllByDisplayValue('Last 24 Hours')).toHaveLength(2)
+    expect(await screen.findAllByDisplayValue('Last 8 Hours')).toHaveLength(2)
     const tiles = await screen.findAllByTestId('brand360Tile')
     expect(tiles).toHaveLength(3)
     tiles.forEach(tile => expect(tile).toBeVisible())
@@ -152,5 +172,27 @@ describe('Brand360', () => {
     fireEvent.mouseUp(sliders[0])
     fireEvent.click(await screen.findByText('Reset'))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should show not show option for LSP account', async () => {
+    utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
+      return {
+        acx_account_tier: 'Platinum',
+        acx_account_vertical: 'Default',
+        isBetaFlag: false,
+        tenantType: AccountType.MSP_INTEGRATOR
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
+    mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
+    render(<Provider><Brand360 /></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findAllByText('property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}')).toHaveLength(1)
+    expect(await screen.findByTestId('brand360Table')).toBeVisible()
+    const tiles = await screen.findAllByTestId('brand360Tile')
+    const tile = tiles[0]
+    expect(tile.textContent?.includes('property')).toBeTruthy()
   })
 })

@@ -2,12 +2,15 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
-import { VenueDetailHeader }               from '@acx-ui/rc/utils'
+import {
+  useConfigTemplateBreadcrumb,
+  VenueDetailHeader
+} from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
@@ -37,23 +40,22 @@ function VenuePageHeader () {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/venues/${venueId}`)
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/details`)
+
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+  ])
 
   return (
     <PageHeader
       title={data?.venue?.name || ''}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
-      ]}
+      breadcrumb={breadcrumb}
       extra={[
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
           onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
-            }, {
+            navigate(detailsPath, {
               state: {
                 from: location
               }

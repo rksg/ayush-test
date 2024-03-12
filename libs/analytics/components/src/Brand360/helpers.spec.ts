@@ -1,21 +1,25 @@
-import { MspEc }       from '@acx-ui/msp/utils'
-import { TableResult } from '@acx-ui/rc/utils'
 
 import {
   computePastRange,
   transformLookupAndMappingData,
+  transformToPropertyView,
   transformVenuesData,
   TransformedMap,
   calcSLA,
-  customSort
+  noDataCheck,
+  customSort,
+  ECList
 } from './helpers'
 
 import type { BrandVenuesSLA } from './services'
 
 const mockMappingData = {
   data: [
-    { id: '1', name: 'Name1', tenantType: 'Type1', integrator: 'Integrator1' },
-    { id: '2', name: 'Name2', tenantType: 'Type2' }
+    {
+      id: '1', name: 'Name1', tenantType: 'Type1',
+      integrator: 'Integrator1', integrators: ['Integrator1']
+    },
+    { id: '2', name: 'Name2', tenantType: 'Type2', integrators: [] }
   ]
 }
 const mockVenuesData = {
@@ -25,6 +29,7 @@ const mockVenuesData = {
       incidentCount: 5,
       ssidComplianceSLA: [1, 2],
       onlineApsSLA: [3, 4],
+      onlineSwitchesSLA: [1, 2],
       connectionSuccessSLA: [5, 6],
       timeToConnectSLA: [7, 8],
       clientThroughputSLA: [9, 10]
@@ -34,6 +39,7 @@ const mockVenuesData = {
       incidentCount: 3,
       ssidComplianceSLA: [2, 3],
       onlineApsSLA: [4, 5],
+      onlineSwitchesSLA: [3, 4],
       connectionSuccessSLA: [6, 7],
       timeToConnectSLA: [8, 9],
       clientThroughputSLA: [10, 11]
@@ -43,6 +49,7 @@ const mockVenuesData = {
       incidentCount: null,
       ssidComplianceSLA: [null, null],
       onlineApsSLA: [null, null],
+      onlineSwitchesSLA: [null, null],
       connectionSuccessSLA: [null, null],
       timeToConnectSLA: [null, null],
       clientThroughputSLA: [null, null]
@@ -52,6 +59,7 @@ const mockVenuesData = {
       incidentCount: 0,
       ssidComplianceSLA: [0, 0],
       onlineApsSLA: [0, 0],
+      onlineSwitchesSLA: [0, 0],
       connectionSuccessSLA: [0, 0],
       timeToConnectSLA: [0, 0],
       clientThroughputSLA: [0, 0]
@@ -59,11 +67,37 @@ const mockVenuesData = {
   ]
 }
 const mockLookupAndMappingData = {
-  1: { name: 'Property1', integrator: '2', content: [mockMappingData.data[0]] },
+  1: { name: 'Property1', integrators: ['2'], content: [mockMappingData.data[0]] },
   2: { name: 'IntegratorName', content: [mockMappingData.data[1]] }
 }
 
 describe('helpers', () => {
+  describe('transformToPropertyView', () => {
+    it('should transform null correctly', () => {
+      expect(transformToPropertyView([{
+        avgConnSuccess: [null, null],
+        avgClientThroughput: [null, null],
+        avgTTC: [null, null],
+        ssidCompliance: [null, null],
+        lsps: []
+      }])).toEqual([
+        {
+          avgClientThroughput: null,
+          avgConnSuccess: null,
+          avgTTC: null,
+          guestExp: null,
+          ssidCompliance: null,
+          lsps: [],
+          lsp: ''
+        }
+      ])
+    })
+  })
+  describe('noDataCheck', () => {
+    it('should return true when there is no data', () => {
+      expect(noDataCheck(null)).toBe(true)
+    })
+  })
   describe('computePastRange', () => {
     it('should handle last8hours', () => {
       const startDate = '2023-12-12T00:00:00+00:00'
@@ -113,23 +147,41 @@ describe('helpers', () => {
 
 describe('transformLookupAndMappingData', () => {
   it('transforms mapping data correctly', () => {
-
-    const transformed = transformLookupAndMappingData(mockMappingData as TableResult<MspEc>)
+    const data = {
+      data: [
+        {
+          id: '1', name: 'Name1', tenantType: 'Type1',
+          integrators: ['Integrator1'] // msp ec
+        },
+        {
+          id: '2', name: 'Name2', tenantType: 'Type2',
+          integrator: '2' // lsp
+        },
+        { id: '3', name: 'Name3', tenantType: 'Type3' } // from msp ec
+      ]
+    }
+    const transformed = transformLookupAndMappingData(data as ECList)
     expect(transformed['1']).toEqual({
       name: 'Name1',
       type: 'Type1',
-      integrator: 'Integrator1',
-      content: [mockMappingData.data[0]]
+      integrators: ['Integrator1'],
+      content: [data.data[0]]
     })
     expect(transformed['2']).toEqual({
       name: 'Name2',
       type: 'Type2',
-      content: [mockMappingData.data[1]]
+      integrators: ['2'],
+      content: [data.data[1]]
+    })
+    expect(transformed['3']).toEqual({
+      name: 'Name3',
+      type: 'Type3',
+      integrators: [],
+      content: [data.data[2]]
     })
   })
-
   it('handles empty data', () => {
-    const transformed = transformLookupAndMappingData({ data: [] } as unknown as TableResult<MspEc>)
+    const transformed = transformLookupAndMappingData({ data: [] } as unknown as ECList, true)
     expect(transformed).toEqual({})
   })
 })
@@ -144,14 +196,14 @@ describe('transformVenuesData', () => {
     expect(transformed).toEqual([
       {
         property: 'Property1',
-        lsp: 'IntegratorName',
+        lsps: ['IntegratorName'],
         p1Incidents: 8,
         ssidCompliance: [3, 5],
-        deviceCount: 9,
+        deviceCount: 15,
         avgConnSuccess: [11, 13],
         avgTTC: [15, 17],
         avgClientThroughput: [19, 21],
-        id: 'Property1-IntegratorName-0'
+        id: 'Property1-0'
       }
     ])
   })
@@ -167,11 +219,11 @@ describe('transformVenuesData', () => {
         avgConnSuccess: '--',
         avgTTC: '--',
         deviceCount: 0,
-        lsp: 'IntegratorName',
+        lsps: ['IntegratorName'],
         p1Incidents: 0,
         property: 'Property1',
         ssidCompliance: '--',
-        id: 'Property1-IntegratorName-0'
+        id: 'Property1-0'
       }])
   })
 
@@ -180,7 +232,7 @@ describe('transformVenuesData', () => {
     expect(transformed).toEqual([])
   })
   it('calcSLA should handle [0,0]', () => {
-    expect(calcSLA([0,0])).toEqual(0)
+    expect(calcSLA([0,0])).toEqual(null)
   })
 })
 

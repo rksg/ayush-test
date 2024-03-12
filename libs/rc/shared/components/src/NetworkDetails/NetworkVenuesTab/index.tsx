@@ -21,6 +21,12 @@ import {
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
   useNetworkVenueTableQuery,
+  useNetworkVenueTableV2Query,
+  useNetworkVenueListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useGetVenueTemplateCityListQuery,
   useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -35,10 +41,11 @@ import {
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum
+  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
+import { transformToCityListOptions } from '@acx-ui/utils'
 
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
@@ -95,23 +102,24 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery,
-    defaultPayload,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
+      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
-    }
+    },
+    pagination: { settingsId }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({
-        key: v.name,
-        value: v.name.split(', ').map(_.startCase).join(', ')
-      })) || true
-    })
-  })
+  const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -127,17 +135,17 @@ export function NetworkVenuesTab () {
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
 
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
 
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
@@ -531,10 +539,10 @@ export function NetworkVenuesTab () {
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
-        settingsId='network-venues-table'
+        settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && {
+        rowSelection={hasAccess() && !systemNetwork && !isTemplate && {
           type: 'checkbox'
         }}
         columns={columns}
@@ -567,4 +575,25 @@ export function NetworkVenuesTab () {
       </Form.Provider>
     </Loader>
   )
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
 }

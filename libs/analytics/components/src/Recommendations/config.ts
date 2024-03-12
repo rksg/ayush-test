@@ -5,21 +5,12 @@ import { compareVersion } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
-import { crrmText } from './utils'
+import { CRRMStates } from './states'
+import { crrmText }   from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
-
-export enum CRRMStates {
-  optimized = 'optimized',
-  nonOptimized = 'nonOptimized',
-  verified = 'verified',
-  insufficientLicenses = 'insufficientLicenses',
-  unqualifiedZone = 'unqualifiedZone',
-  noAps = 'noAps',
-  verificationError = 'verificationError'
-}
 
 export type ConfigurationValue =
   string |
@@ -34,7 +25,8 @@ export const crrmStates: Record<CRRMStates, IconValue> = {
   [CRRMStates.insufficientLicenses]: { order: 2, label: defineMessage({ defaultMessage: 'Insufficient Licenses' }) },
   [CRRMStates.unqualifiedZone]: { order: 2, label: defineMessage({ defaultMessage: 'Unqualified Zone' }) },
   [CRRMStates.noAps]: { order: 2, label: defineMessage({ defaultMessage: 'No APs' }) },
-  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) }
+  [CRRMStates.verificationError]: { order: 2, label: defineMessage({ defaultMessage: 'Verification Error' }) },
+  [CRRMStates.unknown]: { order: 2, label: defineMessage({ defaultMessage: 'Unknown' }) }
 }
 
 export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
@@ -179,6 +171,10 @@ export const states = {
   verified: {
     text: crrmStates[CRRMStates.verified].label,
     tooltip: crrmStates[CRRMStates.verified].label
+  },
+  unknown: {
+    text: crrmStates[CRRMStates.unknown].label,
+    tooltip: crrmStates[CRRMStates.unknown].label
   }
 }
 
@@ -544,6 +540,11 @@ export const codes = {
   'verified': {
     category: crrmStates[CRRMStates.verified].label,
     summary: defineMessage({ defaultMessage: 'AI verified and in optimal state' }),
+    priority: priorities.low
+  },
+  'unknown': {
+    category: crrmStates[CRRMStates.unknown].label,
+    summary: defineMessage({ defaultMessage: 'Unknown' }),
     priority: priorities.low
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>

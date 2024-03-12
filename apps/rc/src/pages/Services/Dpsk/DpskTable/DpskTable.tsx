@@ -25,13 +25,12 @@ import {
   DpskDetailsTabKey,
   getServiceListRoutePath,
   PassphraseFormatEnum,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  displayDefaultAccess
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
-
-import { displayDefaultAccess } from '../utils'
 
 const defaultPayload = {
   filters: {}
@@ -47,11 +46,13 @@ export default function DpskTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
 
+  const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
     search: defaultSearch,
-    apiParams: {}
+    apiParams: {},
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
@@ -122,7 +123,7 @@ export default function DpskTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
-          settingsId='dpsk-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

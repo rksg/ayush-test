@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeSdLanUrls } from '@acx-ui/rc/utils'
-import { Provider }                      from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeSdLanUrls, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,9 +16,16 @@ import { mockNetworkSaveData, mockDeepNetworkList, mockedEdgeSdLan } from './__t
 
 import EdgeSdLan from '.'
 
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const mockedEditFn = jest.fn()
 const mockedGetNetworkDeepList = jest.fn()
 
+const services = require('@acx-ui/rc/services')
+
+jest.mock('../SdLanP2', () => ({
+  __esModule: true,
+  default: () => <div data-testid='rc-EdgeSdLanP2'/>
+}))
 describe('Venue Edge SD-LAN Service', () => {
   let params: { tenantId: string, venueId: string }
 
@@ -29,6 +37,15 @@ describe('Venue Edge SD-LAN Service', () => {
 
     mockedEditFn.mockReset()
     mockedGetNetworkDeepList.mockReset()
+
+    services.useVenueNetworkActivationsDataListQuery = jest.fn().mockImplementation(() => {
+      mockedGetNetworkDeepList()
+      return {
+        networkList: mockDeepNetworkList.response,
+        isLoading: false,
+        isFetching: false
+      }
+    })
 
     mockServer.use(
       rest.patch(
@@ -76,6 +93,7 @@ describe('Venue Edge SD-LAN Service', () => {
     const network2 = screen.getByRole('row', { name: /MockedNetwork 2/i })
     expect(within(network2).getByRole('switch')).not.toBeChecked()
     expect(within(network2).getByRole('switch')).not.toBeDisabled()
+    expect(screen.queryByTestId('rc-EdgeSdLanP2')).toBeNull()
   })
 
   it('should correctly deactivate network', async () => {
@@ -122,6 +140,25 @@ describe('Venue Edge SD-LAN Service', () => {
       expect(mockedEditFn).toBeCalledWith({
         networkIds: ['network_1', 'network_3', 'network_2']
       })
+    })
+  })
+  describe('P2 FF enabled', () => {
+    beforeEach(() => {
+    // mock SDLAN HA(i,e p2) enabled
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+    })
+
+    it('should display P2 data', async () => {
+      const mockedEdgeSdLanP2 = mockedSdLanDataListP2[0]
+      render(
+        <Provider>
+          <EdgeSdLan data={mockedEdgeSdLanP2} />
+        </Provider>, {
+          route: { params }
+        })
+
+      // display EdgeSdLanP2 layout
+      expect(await screen.findByTestId('rc-EdgeSdLanP2')).toBeVisible()
     })
   })
 })

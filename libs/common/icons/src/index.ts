@@ -363,4 +363,8 @@ export { ReactComponent as UploadDocument } from './icons/UploadDocument.svg'
 export { ReactComponent as UpArrow } from './icons/UpArrow.svg'
 export { ReactComponent as DownArrow } from './icons/DownArrow.svg'
 
+export { ReactComponent as Port } from './icons/Port.svg'
+export { ReactComponent as SubInterface } from './icons/SubInterface.svg'
+export { ReactComponent as ClusterInterface } from './icons/ClusterInterface.svg'
+
 export * from './styledComponents'

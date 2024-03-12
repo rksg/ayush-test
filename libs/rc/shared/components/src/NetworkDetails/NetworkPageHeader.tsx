@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '@acx-ui/rc/utils'
-import { TenantType }                                          from '@acx-ui/react-router-dom'
-import { useLocation, useNavigate, useTenantLink, useParams }  from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
-import { useDateFilter }                                       from '@acx-ui/utils'
+import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
+import { TenantType }                                                                       from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                   from '@acx-ui/user'
+import { useDateFilter }                                                                    from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
@@ -26,7 +26,9 @@ function NetworkPageHeader ({
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
+  const { isTemplate } = useConfigTemplate()
   const basePath = useTenantLink('/networks/wireless')
+  const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
@@ -83,7 +85,8 @@ function NetworkPageHeader ({
             onClick={() =>
               navigate({
                 ...basePath,
-                pathname: `${basePath.pathname}/${networkId}/edit`
+                // eslint-disable-next-line max-len
+                pathname: `${isTemplate ? templateBasePath.pathname : basePath.pathname}/${networkId}/edit`
               }, {
                 state: {
                   from: location

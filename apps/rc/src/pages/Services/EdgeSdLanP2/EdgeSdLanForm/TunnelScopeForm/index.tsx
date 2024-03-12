@@ -7,6 +7,8 @@ import { ActivatedNetworksTableP2Props, EdgeSdLanP2ActivatedNetworksTable } from
 import { useGetTunnelProfileViewDataListQuery }                             from '@acx-ui/rc/services'
 import {
   getTunnelProfileOptsWithDefault,
+  getVlanVxlanDefaultTunnelProfileOpt,
+  isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
   NetworkSaveData,
   NetworkTypeEnum,
@@ -37,10 +39,8 @@ const NetworksTable = (props: NetworksTableProps) => {
 }
 
 const tunnelProfileDefaultPayload = {
-  fields: ['name', 'id', 'mtuType'],
-  filters: {
-    type: [TunnelTypeEnum.VLAN_VXLAN]
-  },
+  fields: ['name', 'id', 'type', 'mtuType'],
+  filters: { type: [TunnelTypeEnum.VLAN_VXLAN] },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -76,7 +76,7 @@ export const TunnelScopeForm = () => {
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        tunnelProfileData: data?.data,
+        tunnelProfileData: data?.data.filter(tt => !isVlanVxlanDefaultTunnelProfile(tt.id)),
         isTunnelOptionsLoading: isLoading
       }
     }
@@ -84,8 +84,18 @@ export const TunnelScopeForm = () => {
 
   // eslint-disable-next-line max-len
   const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
-  const dmzTunnelProfileOptions = tunnelProfileData?.filter(
-    item => item.mtuType === MtuTypeEnum.MANUAL)
+  const dcTunnelProfileOptions = (tunnelProfileData
+    ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
+  const isSdLanDefaultExist = dcTunnelProfileOptions
+    .filter(item => isVlanVxlanDefaultTunnelProfile(item.value)).length > 0
+  if (!isSdLanDefaultExist) {
+    const vlanVxLanDefault = getVlanVxlanDefaultTunnelProfileOpt()
+    dcTunnelProfileOptions.push(vlanVxLanDefault)
+  }
+
+  const dmzTunnelProfileOptions = (tunnelProfileData
+    ?.filter(item => item.mtuType === MtuTypeEnum.MANUAL)
+    ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
 
   const handleActivateChange = (
     fieldName: string,
@@ -96,15 +106,32 @@ export const TunnelScopeForm = () => {
     const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
 
     if (isGuestTunnelEnabled
-      && fieldName === 'activatedNetworks'
-      && (data.type === NetworkTypeEnum.CAPTIVEPORTAL || data.type === NetworkTypeEnum.OPEN) ) {
-      // eslint-disable-next-line max-len
-      const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
-      const newSelectedGuestNetworks = toggleItemFromSelected(checked, data, activatedGuestNetworks)
-      form.setFieldsValue({
-        [fieldName]: newSelected,
-        activatedGuestNetworks: newSelectedGuestNetworks
-      })
+      && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
+      && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      if (fieldName === 'activatedNetworks') {
+        const updateContent = {
+          [fieldName]: newSelected
+        } as Record<string, unknown>
+
+        // vlan pooling enabled cannot be a guest network
+        const isVlanPooling = !_.isNil(data.wlan?.advancedCustomization?.vlanPool)
+        if (!isVlanPooling || (isVlanPooling && !checked)) {
+          // eslint-disable-next-line max-len
+          const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
+          // eslint-disable-next-line max-len
+          updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)
+        }
+
+        form.setFieldsValue(updateContent)
+      } else {
+        // eslint-disable-next-line max-len
+        const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
+        const newSelectedNetworks = toggleItemFromSelected(checked, data, activatedNetworks)
+        form.setFieldsValue({
+          [fieldName]: newSelected,
+          activatedNetworks: newSelectedNetworks
+        })
+      }
     } else {
       form.setFieldValue(fieldName, newSelected)
     }
@@ -130,7 +157,7 @@ export const TunnelScopeForm = () => {
       <Row>
         <Col span={24}>
           <TunnelProfileFormItem
-            options={tunnelProfileOptions}
+            options={dcTunnelProfileOptions}
             isLoading={isTunnelOptionsLoading}
             onChange={onTunnelChange}
           />
@@ -140,8 +167,7 @@ export const TunnelScopeForm = () => {
         <Row>
           <Col span={24}>
             <DmzTunnelProfileFormItem
-              options={dmzTunnelProfileOptions
-                ?.map(item => ({ label: item.name!, value: item.id! })) ?? []}
+              options={dmzTunnelProfileOptions}
               isLoading={isTunnelOptionsLoading}
               onChange={onDmzTunnelChange}
             />

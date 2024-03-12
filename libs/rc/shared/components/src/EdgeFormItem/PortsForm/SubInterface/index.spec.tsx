@@ -1,13 +1,29 @@
-import { act, renderHook, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                                               from '@testing-library/user-event'
-import { rest }                                                from 'msw'
-import { IntlProvider }                                        from 'react-intl'
-import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
+import userEvent                                    from '@testing-library/user-event'
+import { rest }                                     from 'msw'
+import { IntlProvider }                             from 'react-intl'
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures, EdgePortConfigFixtures, EdgePortWithStatus, EdgeSubInterface, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                    from '@acx-ui/test-utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  EdgeGeneralFixtures,
+  EdgeLagFixtures,
+  EdgePortConfigFixtures,
+  EdgePortWithStatus,
+  EdgeSubInterface,
+  EdgeSubInterfaceFixtures,
+  EdgeUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  act,
+  mockServer,
+  renderHook,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { EdgePortTabEnum }                from '..'
 import { EditContext as EdgeEditContext } from '../../EdgeEditContext'
@@ -15,6 +31,7 @@ import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig } = EdgePortConfigFixtures
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
@@ -75,6 +92,10 @@ describe('EditEdge ports - sub-interface', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeUrlsInfo.getSubInterfaces.url,
         (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))

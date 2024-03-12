@@ -1,12 +1,15 @@
-import _             from 'lodash'
-import { IntlShape } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { IntlShape }         from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                     from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                            from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus } from '../../types'
-import { networkWifiIpRegExp, subnetMaskIpRegExp }                                                            from '../../validator'
+import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
+import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
+
+const Netmask = require('netmask').Netmask
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -33,6 +36,16 @@ export const allowResetForStatus = (edgeStatus: string) => {
   return stringStatus.includes(edgeStatus)
 }
 
+export const allowSendOtpForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = unconfigedEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
+export const allowSendFactoryResetStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = rebootableEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
 export const rebootableEdgeStatuses = [
   EdgeStatusEnum.OPERATIONAL,
   EdgeStatusEnum.APPLYING_CONFIGURATION,
@@ -40,6 +53,8 @@ export const rebootableEdgeStatuses = [
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
 export const resettabaleEdgeStatuses = rebootableEdgeStatuses
+
+export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
 export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
@@ -83,6 +98,10 @@ export const getEdgePortTypeOptions = ($t: IntlShape['$t']) => ([
   {
     label: $t({ defaultMessage: 'LAN' }),
     value: EdgePortTypeEnum.LAN
+  },
+  {
+    label: $t({ defaultMessage: 'Cluster' }),
+    value: EdgePortTypeEnum.CLUSTER
   }
 ])
 
@@ -154,4 +173,102 @@ export const appendIsLagPortOnPortConfig =
 
 export const isEdgeConfigurable = (data: EdgeStatus | undefined):boolean => {
   return data ? data.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD : false
+}
+
+export const getIpWithBitMask = (ipAddress?: string, subnetMask?: string) => {
+  if(!ipAddress || !subnetMask) return ''
+  if(ipAddress.includes('/')) return ipAddress
+  const subnetInfo = new Netmask(ipAddress + '/' + subnetMask)
+  return `${ipAddress}/ ${subnetInfo.bitmask}`
+}
+
+export const getSuggestedIpRange = (ipAddress?: string, subnetMask?: string) => {
+  if(!ipAddress || !subnetMask) return ''
+  if(ipAddress.includes('/')) return ipAddress
+  const subnetInfo = new Netmask(ipAddress + '/' + subnetMask)
+  return `${subnetInfo.base}/ ${subnetInfo.bitmask}`
+}
+
+export const edgeSerialNumberValidator = async (value: string) => {
+  const { $t } = getIntl()
+  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
+    return validateVirtualEdgeSerialNumber(value)
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
+
+const validateVirtualEdgeSerialNumber = (value: string) => {
+  const { $t } = getIntl()
+
+  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  if (value.length !== 34) {
+    return Promise.reject($t({
+      defaultMessage: 'Field must be exactly 34 characters'
+    }))
+  }
+
+  return Promise.resolve()
+}
+
+const isVirtualEdgeSerial = (value: string) => {
+  return new RegExp(/^96[0-9A-Z]{32}$/i).test(value)
+}
+
+export const deriveEdgeModel = (serial: string) => {
+  return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+}
+
+export const optionSorter = (
+  a: DefaultOptionType,
+  b: DefaultOptionType
+) => {
+  if ( (a.label ?? '') < (b.label ?? '') ){
+    return -1
+  }
+  if ( (a.label ?? '') > (b.label ?? '') ){
+    return 1
+  }
+  return 0
+}
+
+export async function lanPortsubnetValidator (
+  currentSubnet: { ip: string, subnetMask: string },
+  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
+) {
+  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
+    return
+  }
+
+  for(let item of allSubnetWithoutCurrent) {
+    try {
+      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
+        item.ip, item.subnetMask)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  return Promise.resolve()
+}
+
+export const validateSubnetIsConsistent = (
+  allIps: { ip?: string, subnet?: string }[],
+  value?: string
+) => {
+  if(!allIps || allIps.length < 2 || !value) return Promise.resolve()
+  const { $t } = getIntl()
+  for(let i=0; i<allIps.length; i++) {
+    for(let j=i+1; j<allIps.length; j++) {
+      if(i === allIps.length - 1) break
+      const first = new Netmask(`${allIps[i].ip}/${allIps[i].subnet}`)
+      const second = new Netmask(`${allIps[j].ip}/${allIps[j].subnet}`)
+      if(first.first !== second.first || first.last !== second.last) {
+        // eslint-disable-next-line max-len
+        return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
+      }
+    }
+  }
+  return Promise.resolve()
 }

@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
-import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
+import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }  from '@acx-ui/test-utils'
 
 import { ConfigTemplateTabKey }                            from '..'
 import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
@@ -17,6 +17,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => mockedLocation
+}))
+
+jest.mock('./AccessControlPolicy', () => ({
+  ...jest.requireActual('./AccessControlPolicy'),
+  AccessControlSubPolicyDrawers: () => <div data-testid='AccessControlSubPolicyDrawers'></div>
 }))
 
 describe('ConfigTemplateList component', () => {
@@ -46,6 +51,32 @@ describe('ConfigTemplateList component', () => {
 
     expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Template 1/i })).toBeVisible()
+
+    // Check type filter is visible or not
+    const typeFilter = screen.getByRole('combobox')
+    await userEvent.click(typeFilter)
+    expect(screen.getByText(ConfigTemplateType.DPSK)).toBeInTheDocument()
+  })
+
+  it('should render appliedToTenant Drawer with data', async () => {
+    render(
+      <Provider>
+        <ConfigTemplateList />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add Template/i })).toBeVisible()
+    const row = await screen.findByRole('row', { name: /Template 1/i })
+    expect(row).toBeVisible()
+    const appliedToButton = await within(row).findByRole('button', {
+      name: /2/i
+    })
+    await userEvent.click(appliedToButton)
+    expect(await screen.findByText(/applied to ec tenants/i)).toBeVisible()
+    await userEvent.click(screen.getByText('Cancel'))
+    expect(screen.queryByText(/applied to ec tenants/i)).toBeNull()
   })
 
   it('should apply template', async () => {
@@ -147,7 +178,7 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -172,7 +203,7 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.templateType === 'NETWORK')!
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

@@ -1,14 +1,11 @@
-import '@testing-library/react'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
-import { mockServer, render, screen }   from '@acx-ui/test-utils'
+import { CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                  from '@acx-ui/test-utils'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import NetworkPageHeader           from './NetworkPageHeader'
-
-
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -32,7 +29,11 @@ describe('NetworkPageHeader', () => {
         (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
       ),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+        (_, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
@@ -113,6 +114,11 @@ describe('NetworkPageHeader', () => {
         }
       }
     )
+
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Configure' })).toBeVisible()
+    )
+    expect(await screen.findByText(/Venues \(1\)/)).toBeVisible()
     expect(await screen.findByText('Configuration Templates')).toBeVisible()
   })
 })

@@ -13,7 +13,9 @@ import {
   PhyTypeConstraintEnum,
   RfBandUsageEnum,
   ManagementFrameMinimumPhyRateEnum,
-  BssMinimumPhyRateEnum } from '@acx-ui/rc/utils'
+  BssMinimumPhyRateEnum,
+  ConfigTemplateUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -72,7 +74,11 @@ describe('Create Network: Venues Step', () => {
     })
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.post(

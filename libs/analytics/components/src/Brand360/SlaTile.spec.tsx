@@ -11,7 +11,9 @@ import {
   fetchBrandProperties,
   mockBrandTimeseries,
   prevTimeseries,
-  currTimeseries
+  currTimeseries,
+  zeroPrevTimeseries,
+  zeroCurrTimeseries
 }         from './__tests__/fixtures'
 import { SlaTile } from './SlaTile'
 
@@ -19,7 +21,7 @@ import type { FranchisorTimeseries, Response } from './services'
 
 const tableNoData = [{
   property: 'p',
-  lsp: 'l',
+  lsps: ['l'],
   p1Incidents: 0,
   ssidCompliance: '--' as unknown as [number, number],
   deviceCount: 0,
@@ -41,6 +43,13 @@ describe('SlaTile', () => {
 
   const { data: { franchisorTimeseries } } = mockBrandTimeseries
 
+  const zeroFranchisorTimeseries = {
+    ...franchisorTimeseries,
+    timeToConnectSLA: franchisorTimeseries.time.map(() => null),
+    connectionSuccessSLA: franchisorTimeseries.time.map(() => null),
+    clientThroughputSLA: franchisorTimeseries.time.map(() => null)
+  } as unknown as FranchisorTimeseries
+
   const baseProps = {
     tableData: fetchBrandProperties() as unknown as Response[],
     chartData: franchisorTimeseries as unknown as FranchisorTimeseries,
@@ -51,7 +60,9 @@ describe('SlaTile', () => {
       'sla-p1-incidents-count': '0',
       'sla-guest-experience': '100',
       'sla-brand-ssid-compliance': '100'
-    } as Settings
+    } as Settings,
+    lsp: 'LSP',
+    property: 'Property'
   }
 
   it('should render correctly by lsp', async () => {
@@ -69,7 +80,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Distressed LSPs')).toBeVisible()
+    expect(await screen.findByText('LSP Health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -77,6 +88,30 @@ describe('SlaTile', () => {
     expect(await screen.findByText('20')).toBeVisible()
   })
 
+  it('should render null changes correctly', async () => {
+    const tiles = chartKeys.map(chartKey => {
+      const props = {
+        ...baseProps,
+        chartData: zeroFranchisorTimeseries,
+        chartKey,
+        prevData: zeroPrevTimeseries,
+        currData: zeroCurrTimeseries,
+        sliceType: 'property' as const
+      }
+      return () => <SlaTile {...props} />
+    })
+    const Test = () => {
+      return <div>
+        {tiles.map((Tile, i) => <Tile key={i} />)}
+      </div>
+    }
+    render(<Test />, { wrapper: Provider })
+    expect(await screen.findByText('Property Health')).toBeVisible()
+    expect(await screen.findByText('Guest Experience')).toBeVisible()
+    expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
+    const graphs = await screen.findAllByTestId('slaChart')
+    expect(graphs).toHaveLength(3)
+  })
   it('should render correctly by property', async () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
@@ -92,13 +127,12 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Distressed Properties')).toBeVisible()
+    expect(await screen.findByText('Property Health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
     expect(graphs).toHaveLength(3)
   })
-
   it('should render empty data by lsp', async () => {
     const tiles = chartKeys.map(chartKey => {
       const props = {
@@ -113,7 +147,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })
@@ -123,7 +159,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Distressed LSPs')).toBeVisible()
+    expect(await screen.findByText('LSP Health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -145,7 +181,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })
@@ -155,7 +193,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Distressed LSPs')).toBeVisible()
+    expect(await screen.findByText('LSP Health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -178,7 +216,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })
@@ -188,7 +228,7 @@ describe('SlaTile', () => {
       </div>
     }
     render(<Test />, { wrapper: Provider })
-    expect(await screen.findByText('Distressed Properties')).toBeVisible()
+    expect(await screen.findByText('Property Health')).toBeVisible()
     expect(await screen.findByText('Guest Experience')).toBeVisible()
     expect(await screen.findByText('Brand SSID Compliance')).toBeVisible()
     const graphs = await screen.findAllByTestId('slaChart')
@@ -204,7 +244,7 @@ describe('SlaTile', () => {
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
-    expect(await screen.findByText('# of Properties with P1 Incident'))
+    expect(await screen.findByText('# of P1 Incidents'))
       .toBeVisible()
     const downIcon = await screen.findByTestId('DownArrow')
     const prevItems = await screen.findAllByRole('listitem')
@@ -225,7 +265,7 @@ describe('SlaTile', () => {
       sliceType: 'property' as const
     }
     render(<SlaTile {...props}/>, { wrapper: Provider })
-    expect(await screen.findByText('# of Properties with P1 Incident'))
+    expect(await screen.findByText('# of P1 Incidents'))
       .toBeVisible()
     const downIcon = screen.queryByTestId('DownArrow')
     expect(downIcon).toBeNull()

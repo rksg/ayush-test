@@ -8,13 +8,13 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }              from '@acx-ui/icons'
 import {
+  useGetVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
 import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                            from '@acx-ui/react-router-dom'
-
+import { TenantLink, useParams }                                                                 from '@acx-ui/react-router-dom'
 
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
 
@@ -215,9 +215,11 @@ Sample 2: Display data on drawer
 export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
+  const { tenantId } = useParams()
   const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName='', apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
-  const [ isInitializing, setIsInitializing ] = useState(data.length === 0)
+  const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
@@ -256,7 +258,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
               'To utilize the {featureName}, ensure that the access points on the venue ' +
               '({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from '
     },
-    { featureName: featureName?.valueOf() ?? '', venueName })
+    { featureName: featureName?.valueOf() ?? '', venueName: venueData?.name ?? venueName })
 
   const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
   const singleTitle = (ApCompatibilityType.VENUE === type)
@@ -265,7 +267,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 
   useEffect(() => {
-    if (visible && data.length === 0 && apCompatibilities?.length === 0) {
+    if (visible && data?.length === 0 && apCompatibilities?.length === 0) {
       const fetchApCompatibilities = async () => {
         try {
           const getApCompatibilities = async () => {
@@ -309,6 +311,12 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     }
   }, [visible, apCompatibilities])
 
+  useEffect(() => {
+    if (isInitializing && data?.length !== 0) {
+      setIsInitializing(false)
+      setApCompatibilities(data)
+    }
+  }, [data])
 
   const getItems = (items: ApCompatibility[]) => items?.map((item: ApCompatibility, index) => {
     const { incompatibleFeatures } = item
@@ -340,10 +348,10 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
             style={detailStyle}
             className='ApCompatibilityDrawerFormItem'
           >
-            {itemDetail?.requiredModel}
+            {itemDetail?.requiredModel?.join(',')}
           </Form.Item>
         }
-        {!apName &&
+        {!apName && type !== ApCompatibilityType.ALONE &&
           <Form.Item
             key={`total_${index}`}
             label={$t({

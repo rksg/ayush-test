@@ -13,9 +13,9 @@ import {
   TableProps,
   Tabs
 } from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { get }                                      from '@acx-ui/config'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -60,7 +60,8 @@ export function Subscriptions () {
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -323,7 +324,8 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
+        status: (response?.status === 'FUTURE') ? 'VALID' : response?.status
       }
     })
 

@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseEdgeSdLanApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'edgeSdLanApi',
-  tagTypes: ['EdgeSdLan'],
+  tagTypes: ['EdgeSdLan', 'EdgeSdLanP2'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

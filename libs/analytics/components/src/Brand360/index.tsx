@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment from 'moment-timezone'
 
-import { useGetTenantSettingsQuery }                         from '@acx-ui/analytics/services'
-import type { Settings }                                     from '@acx-ui/analytics/utils'
+import { useBrand360Config }                                 from '@acx-ui/analytics/services'
+import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
-  useMspCustomerListDropdownQuery
+  useMspECListQuery,
+  useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
+import {
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
 import {
   DateFilter,
   DateRange,
   getDateRangeFilter,
-  getDatePickerValues
+  getDatePickerValues,
+  AccountType
 } from '@acx-ui/utils'
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
@@ -36,10 +40,11 @@ import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
 
-const rcApiPayload = {
+
+const mspPayload = {
   searchString: '',
   filters: {
-    tenantType: ['MSP_INTEGRATOR', 'MSP_REC'],
+    tenantType: [AccountType.MSP_REC, AccountType.MSP_INTEGRATOR],
     status: ['Active']
   },
   fields: ['id', 'name', 'tenantType', 'status'],
@@ -51,13 +56,25 @@ const rcApiPayload = {
   sortOrder: 'ASC'
 }
 
+const getlspPayload = (parentTenantId: string | undefined) => ({
+  ...mspPayload,
+  filters: {
+    mspTenantId: [parentTenantId],
+    tenantType: [AccountType.MSP_REC],
+    status: ['Active']
+  }
+})
+
 export function Brand360 () {
-  const settingsQuery = useGetTenantSettingsQuery()
-  const { $t } = useIntl()
-  const { sliceType, SliceTypeDropdown } = useSliceType()
+  const { names, settingsQuery } = useBrand360Config()
+  const { brand, lsp, property } = names
+  const { tenantId, tenantType } = getJwtTokenPayload()
+  const isLSP = tenantType === AccountType.MSP_INTEGRATOR
+    || tenantType === AccountType.MSP_INSTALLER
+  const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP, lsp, property })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
-    getDateRangeFilter(DateRange.last24Hours)
+    getDateRangeFilter(DateRange.last8Hours)
   )
   const { data } = settingsQuery
   useEffect(() => { data && setSettings(data) }, [data])
@@ -70,10 +87,19 @@ export function Brand360 () {
     ssidRegex: ssid,
     toggles: useIncidentToggles()
   }
-  const mspPropertiesData = useMspCustomerListDropdownQuery(
-    { params: { tenantId: getJwtTokenPayload().tenantId },payload: rcApiPayload })
-  const lookupAndMappingData = mspPropertiesData?.data
-    ? transformLookupAndMappingData(mspPropertiesData.data)
+
+  const tenantDetails = useGetTenantDetailsQuery({ tenantId })
+  const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
+
+  const mspPropertiesData = useMspECListQuery(
+    { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
+  const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
+    { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
+      && !Boolean(parentTenantid) })
+  const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
+
+  const lookupAndMappingData = propertiesData?.data
+    ? transformLookupAndMappingData(propertiesData.data)
     : {}
   const venuesData = useFetchBrandPropertiesQuery(chartPayload, { skip: ssidSkip })
   const tableResults = venuesData.data && lookupAndMappingData
@@ -98,18 +124,19 @@ export function Brand360 () {
     ...currResults
   } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip: ssidSkip })
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
-  return <Loader states={[settingsQuery, mspPropertiesData, venuesData]}>
+  return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader
-      title={$t({ defaultMessage: 'Brand 360' })}
+      title={brand}
       extra={[
         <>
-          <SliceTypeDropdown />
+          { !isLSP ? <SliceTypeDropdown /> : null }
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilterState as CallableFunction}
             showTimePicker
             selectionType={range}
+            showLast8hours
           />
         </>
       ]}
@@ -126,6 +153,8 @@ export function Brand360 () {
             prevData={prevData}
             currData={currData}
             settings={settings as Settings}
+            lsp={lsp}
+            property={property}
           />
         </Loader>
       </GridCol>)}
@@ -138,6 +167,9 @@ export function Brand360 () {
           sliceType={sliceType}
           slaThreshold={settings}
           data={tableResults as Response[]}
+          isLSP={isLSP}
+          lspLabel={lsp}
+          propertyLabel={property}
         />
       </GridCol>
     </GridRow>

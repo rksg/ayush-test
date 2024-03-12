@@ -45,6 +45,7 @@ import {
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -65,6 +66,7 @@ export function WISPrForm () {
     cloneMode,
     setData
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
@@ -76,6 +78,7 @@ export function WISPrForm () {
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch('pskProtocol')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
+  const networkSecurity = useWatch(['networkSecurity'])
   const providerData = useExternalProvidersQuery({ params })
   const [enablePreShared, setEnablePreShared ] = useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
@@ -143,6 +146,24 @@ export function WISPrForm () {
     }
   },[mspEcProfileData])
 
+  /* eslint-disable */
+  useEffect(()=> {
+    console.log(`PSK or OWE: ${networkSecurity}, protocol: ${wlanSecurity}, `)
+    const transNetworkSecurity = WisprSecurityEnum[networkSecurity as keyof typeof WisprSecurityEnum]
+    const transWlanSecurity = PskWlanSecurityEnum[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+    const MLOEffectiveCondition = [
+      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA23Mixed),
+      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA3),
+      (transNetworkSecurity === WisprSecurityEnum.OWE)
+    ].some(Boolean)
+    
+    disableMLO(!MLOEffectiveCondition)
+
+    if (!MLOEffectiveCondition) {
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity, networkSecurity])
+  /* eslint-enable */
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
@@ -457,27 +478,36 @@ export function WISPrForm () {
           extra={networkSecurityDescription()}
           children={
             <Select
-              placeholder={$t({ defaultMessage: 'Select...' })}
+              placeholder={$t({ defaultMessage: 'None' })}
               options={networkSecurityOptions}
               onChange={(selected: string) => {
                 let security = data?.wlan?.wlanSecurity
+                /* eslint-disable */
                 switch(WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
                   case WisprSecurityEnum.PSK:
                     setEnablePreShared(true)
+                    disableMLO(true)
                     security = WlanSecurityEnum.WPA2Personal
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     break
                   case WisprSecurityEnum.OWE:
                     setEnablePreShared(false)
+                    disableMLO(false)
                     security = WlanSecurityEnum.OWE
                     break
                   case WisprSecurityEnum.NONE:
                     // disable secure network
                     setEnablePreShared(false)
+                    disableMLO(true)
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     security = WlanSecurityEnum.None
                     break
                   default:
+                    disableMLO(true)
+                    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
                     return
                 }
+                /* eslint-enable */
                 onProtocolChange(security)
               }}
             />}
@@ -611,7 +641,11 @@ export function WISPrForm () {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
-          networkPortalType={GuestNetworkTypeEnum.WISPr}/>
+          networkPortalType={GuestNetworkTypeEnum.WISPr}
+          wisprWithPsk={enablePreShared}
+          // eslint-disable-next-line max-len
+          wisprWithAlwaysAccept={data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT}
+        />
       </GridCol>
     </GridRow>
     {!(editMode) && <GridRow>

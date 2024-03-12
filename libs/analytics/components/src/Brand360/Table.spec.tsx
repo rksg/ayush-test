@@ -6,13 +6,17 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { BrandTable } from './Table'
 
+const nameProps = {
+  lspLabel: 'LSP',
+  propertyLabel: 'Property'
+}
 
 describe('Brand 360 Table', () => {
   it('should render table correctly for proptery view', async () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 10,
       ssidCompliance: [10,100] as [number, number],
       deviceCount: 2,
@@ -20,7 +24,7 @@ describe('Brand 360 Table', () => {
       avgTTC: [1,10] as [number, number],
       avgClientThroughput: [1,10] as [number, number]
     }]
-    render(<BrandTable sliceType='property' data={data}/>, {
+    render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -33,7 +37,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 0,
       ssidCompliance: '--' as unknown as [number, number],
       deviceCount: 0,
@@ -41,7 +45,7 @@ describe('Brand 360 Table', () => {
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
     }]
-    render(<BrandTable sliceType='property' data={data}/>, {
+    render(<BrandTable sliceType='property' data={data} {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -59,7 +63,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 10,
       ssidCompliance: [50,100] as [number, number],
       deviceCount: 2,
@@ -67,7 +71,11 @@ describe('Brand 360 Table', () => {
       avgTTC: [5,10] as [number, number],
       avgClientThroughput: [5,10] as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data} />, {
+    render(<BrandTable
+      sliceType='lsp'
+      slaThreshold={slaThreshold}
+      data={data}
+      {...nameProps}/>, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -85,7 +93,7 @@ describe('Brand 360 Table', () => {
     const data = [{
       id: '1',
       property: 'p',
-      lsp: 'l',
+      lsps: ['l'],
       p1Incidents: 0,
       ssidCompliance: '--' as unknown as [number, number],
       deviceCount: 0,
@@ -93,7 +101,12 @@ describe('Brand 360 Table', () => {
       avgTTC: '--' as unknown as [number, number],
       avgClientThroughput: '--' as unknown as [number, number]
     }]
-    render(<BrandTable sliceType='lsp' slaThreshold={slaThreshold} data={data} />, {
+    render(<BrandTable
+      sliceType='lsp'
+      slaThreshold={slaThreshold}
+      data={data}
+      {...nameProps}
+    />, {
       wrapper: Provider,
       route: {
         params: { tenantId: 't-id' }
@@ -101,5 +114,31 @@ describe('Brand 360 Table', () => {
     })
     expect(await screen.findByText('Property Count')).toBeVisible()
     expect(screen.getByText('LSP')).toBeVisible()
+  })
+  it('should render table correctly for LSP account', async () => {
+    const data = [{
+      id: '1',
+      property: 'p',
+      lsps: ['l'],
+      p1Incidents: 10,
+      ssidCompliance: [10,100] as [number, number],
+      deviceCount: 2,
+      avgConnSuccess: [10,100] as [number, number],
+      avgTTC: [1,10] as [number, number],
+      avgClientThroughput: [1,10] as [number, number]
+    }]
+    render(<BrandTable
+      sliceType='property'
+      data={data}
+      isLSP={true}
+      {...nameProps}
+    />, {
+      wrapper: Provider,
+      route: {
+        params: { tenantId: 't-id' }
+      }
+    })
+    expect(await screen.findByText('Property')).toBeVisible()
+    expect(screen.queryByText('LSP')).toBeNull()
   })
 })

@@ -13,6 +13,7 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
   useAddRecCustomerMutation,
@@ -64,6 +65,9 @@ export function AddRecCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [addRecCustomer] = useAddRecCustomerMutation()
+
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
@@ -183,15 +187,19 @@ export function AddRecCustomer () {
       })
       const ecDelegations=[] as MspIntegratorDelegated[]
       if (mspIntegrator.length > 0) {
-        ecDelegations.push({
-          delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: mspIntegrator[0].id
+        mspIntegrator.forEach((integrator: MspEc) => {
+          ecDelegations.push({
+            delegation_type: AccountType.MSP_INTEGRATOR,
+            delegation_id: integrator.id
+          })
         })
       }
       if (mspInstaller.length > 0) {
-        ecDelegations.push({
-          delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: mspInstaller[0].id
+        mspInstaller.forEach((installer: MspEc) => {
+          ecDelegations.push({
+            delegation_type: AccountType.MSP_INSTALLER,
+            delegation_id: installer.id
+          })
         })
       }
       const customer: MspRecData = {
@@ -290,7 +298,10 @@ export function AddRecCustomer () {
   const MspAdminsForm = () => {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'RUCKUS End Customer' })}</label>
+        <label>{
+          isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Property' })
+            : intl.$t({ defaultMessage: 'RUCKUS End Customer' })
+        }</label>
         <Form.Item
           children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
@@ -350,13 +361,16 @@ export function AddRecCustomer () {
     <>
       <PageHeader
         title={!isEditMode ?
-          intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' }) :
-          intl.$t({ defaultMessage: 'RUCKUS End Customer Account' })
+          (isHspSupportEnabled ? intl.$t({ defaultMessage: 'Add Brand Property Account' })
+            : intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' })) :
+          (isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Property Account' })
+            : intl.$t({ defaultMessage: 'RUCKUS End Customer Account' }))
         }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {
-            text: intl.$t({ defaultMessage: 'RUCKUS End Customers' }),
+            text: isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Properties' })
+              : intl.$t({ defaultMessage: 'RUCKUS End Customers' }),
             link: '/dashboard/mspRecCustomers', tenantType: 'v'
           }
         ]}

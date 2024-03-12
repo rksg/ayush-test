@@ -50,9 +50,7 @@ import {
   DpskDownloadNewFlowPassphrasesPayload,
   DpskDownloadPassphrasesPayload,
   DpskPassphrasesClientPayload,
-  DpskNewFlowPassphraseClient
-} from '@acx-ui/rc/utils'
-import {
+  DpskNewFlowPassphraseClient,
   CloudpathServer,
   ApplicationPolicy
 } from '@acx-ui/rc/utils'
@@ -218,21 +216,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...dhcpDetailReq
         }
       },
-      transformResponse (dhcpProfile: DHCPSaveData) {
-        _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
-            pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
-          }else{
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
-
-          // eslint-disable-next-line max-len
-          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
-        })
-        return dhcpProfile
-      },
+      transformResponse: transformDhcpResponse,
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
@@ -1024,4 +1008,20 @@ export function createDpskHttpRequest (
     { ...defaultHeaders, ...customHeaders },
     ignoreDelegation
   )
+}
+
+export function transformDhcpResponse (dhcpProfile: DHCPSaveData) {
+  _.each(dhcpProfile.dhcpPools, (pool)=>{
+    if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
+      pool.leaseUnit = LeaseUnit.MINUTES
+      pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+    }else{
+      pool.leaseUnit = LeaseUnit.HOURS
+      pool.leaseTime = pool.leaseTimeHours
+    }
+
+    // eslint-disable-next-line max-len
+    pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
+  })
+  return dhcpProfile
 }

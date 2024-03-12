@@ -20,6 +20,8 @@ export const SummaryForm = () => {
   const { isGuestTunnelEnabled } = formValues
   const activatedNetworks = formValues.activatedNetworks ?? []
   const networkCount = activatedNetworks.length
+  const activatedGuestNetworks = formValues.activatedGuestNetworks ?? []
+  const guestNetworkCount = activatedGuestNetworks.length
 
   return (
     <Row gutter={[10, 30]}>
@@ -45,7 +47,7 @@ export const SummaryForm = () => {
             <StyledAntdDescriptions.Item
               label={$t({ defaultMessage: 'Cluster' })}
             >
-              {formValues.edgeName}
+              {formValues.edgeClusterName}
             </StyledAntdDescriptions.Item>
           </StyledAntdDescriptions>
 
@@ -59,7 +61,7 @@ export const SummaryForm = () => {
               <StyledAntdDescriptions.Item
                 label={$t({ defaultMessage: 'DMZ Cluster' })}
               >
-                {formValues.guestEdgeName}
+                {formValues.guestEdgeClusterName}
               </StyledAntdDescriptions.Item>
             }
           </StyledAntdDescriptions>
@@ -98,13 +100,32 @@ export const SummaryForm = () => {
         <Descriptions>
           <Descriptions.NoLabel>
             <SpaceWrapper direction='vertical' size='small'>
-              {activatedNetworks.map((item: { name: string }) => <React.Fragment key={item.name}>
-                {item.name}
-              </React.Fragment>)}
+              {activatedNetworks
+                .map((item: { name: string }) => <React.Fragment key={item.name}>
+                  {item.name}
+                </React.Fragment>)}
             </SpaceWrapper>
           </Descriptions.NoLabel>
         </Descriptions>
       </Col>
+      { isGuestTunnelEnabled &&
+        <Col span={24}>
+          <Subtitle level={4}>
+            { $t({ defaultMessage: 'Networks tunneling to DMZ ({guestNetworkCount})' },
+              { guestNetworkCount }) }
+          </Subtitle>
+          <Descriptions>
+            <Descriptions.NoLabel>
+              <SpaceWrapper direction='vertical' size='small'>
+                {activatedGuestNetworks
+                  .map((item: { name: string }) => <React.Fragment key={item.name}>
+                    {item.name}
+                  </React.Fragment>)}
+              </SpaceWrapper>
+            </Descriptions.NoLabel>
+          </Descriptions>
+        </Col>
+      }
     </Row>
   )
 }

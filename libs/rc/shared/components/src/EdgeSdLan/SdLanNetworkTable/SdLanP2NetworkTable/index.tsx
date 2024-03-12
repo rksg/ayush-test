@@ -1,8 +1,8 @@
 import { useImperativeHandle, useMemo, forwardRef, useState } from 'react'
 
-import _             from 'lodash'
-import { AlignType } from 'rc-table/lib/interface'
-import { useIntl }   from 'react-intl'
+import { isNil, merge, find }     from 'lodash'
+import { AlignType }              from 'rc-table/lib/interface'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableColumn, TableProps }                                                                                 from '@acx-ui/components'
 import { useVenueNetworkActivationsDataListQuery }                                                                                from '@acx-ui/rc/services'
@@ -14,11 +14,15 @@ import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
 
 import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
 
-
+const dmzTunnelColumnHeaderTooltip = defineMessage({
+  defaultMessage:
+    // eslint-disable-next-line max-len
+    'When \'Forward guest traffic to DMZ\' is activated, the \'Enable tunnel\' toggle turns on automatically. {detailLink}'
+})
 export interface ActivatedNetworksTableP2Props {
   venueId: string,
   isGuestTunnelEnabled: boolean
-  columnsSetting?: Pick<TableColumn<NetworkSaveData, 'text'>, 'key' | 'title'>[],
+  columnsSetting?: Partial<Omit<TableColumn<NetworkSaveData, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
@@ -39,7 +43,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
     const params = useParams()
     const { $t } = useIntl()
     const [networkModalVisible, setNetworkModalVisible] = useState(false)
-
     const { networkList, isLoading, isFetching } = useVenueNetworkActivationsDataListQuery({
       params: { ...params },
       payload: {
@@ -84,7 +87,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         return $t(networkTypes[row.type!])
       }
     }, {
-      title: $t({ defaultMessage: 'Tunnel Data Traffic' }),
+      title: $t({ defaultMessage: 'Enable Tunnel' }),
       key: 'action',
       dataIndex: 'action',
       align: 'center' as AlignType,
@@ -100,21 +103,28 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         />
       }
     }, ...(isGuestTunnelEnabled ? [{
-      title: $t({ defaultMessage: 'Tunnel Guest Traffic' }),
+      title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
+      tooltip: $t(dmzTunnelColumnHeaderTooltip, {
+        detailLink: <a href=''>
+          {$t({ defaultMessage: 'More details about the feature.' })}
+        </a>
+      }),
       key: 'action2',
       dataIndex: 'action2',
       align: 'center' as AlignType,
-      width: 80,
+      width: 120,
       render: (_: unknown, row: NetworkSaveData) => {
-        const isDataTrifficActivated = activated?.includes(row.id!) ?? false
-        // eslint-disable-next-line max-len
-        return ((row.type === NetworkTypeEnum.CAPTIVEPORTAL || row.type === NetworkTypeEnum.OPEN) && isDataTrifficActivated)
+        const isVlanPooling = !isNil(row.wlan?.advancedCustomization?.vlanPool)
+        return row.type === NetworkTypeEnum.CAPTIVEPORTAL
           ? <ActivateNetworkSwitchButtonP2
             fieldName='activatedGuestNetworks'
             row={row}
             rows={networkList!}
             activated={activatedGuest ?? []}
-            disabled={hasAccess() === false}
+            disabled={hasAccess() === false || isVlanPooling}
+            tooltip={isVlanPooling
+              ? $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+              : undefined}
             onChange={onActivateChange}
           />
           : ''
@@ -140,12 +150,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = forwardRef(
         ]}>
           <Table
             rowKey='id'
-            columns={_.mergeWith(defaultColumns, columnsSetting, (obj, src) => {
-              const { key, ...srcOtherProps } = src
-              if(obj.key === src.key) {
-                return { ...obj, ...srcOtherProps }
-              }
-            })}
+            columns={defaultColumns.map(item => merge(item,
+              find(columnsSetting, { key: item.key })))}
             dataSource={networkList}
             actions={filterByAccess(actions)}
           />

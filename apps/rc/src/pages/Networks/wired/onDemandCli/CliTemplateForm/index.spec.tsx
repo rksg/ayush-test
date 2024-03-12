@@ -18,15 +18,16 @@ import {
 
 import {
   cliTemplate,
+  cliTemplateWith200Variables,
   configExamples,
   switchlist,
   templates,
   venues
 } from './__tests__/fixtures'
-import { CliStepConfiguration, maxVariableCount } from './CliStepConfiguration'
-import { CliStepNotice }                          from './CliStepNotice'
-import { CliStepSummary }                         from './CliStepSummary'
-import { CliStepSwitches }                        from './CliStepSwitches'
+import { CliStepConfiguration } from './CliStepConfiguration'
+import { CliStepNotice }        from './CliStepNotice'
+import { CliStepSummary }       from './CliStepSummary'
+import { CliStepSwitches }      from './CliStepSwitches'
 
 import CliTemplateForm from './'
 
@@ -51,7 +52,7 @@ document.createRange = () => {
   return range
 }
 
-async function addVariable (variableName, type) {
+async function addVariable (variableName: string, type: string) {
   await userEvent.click(await screen.findByRole('button', { name: 'Add Variable' }))
   const dialog = await screen.findByRole('dialog')
 
@@ -177,7 +178,9 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       const fontOptions = await screen.findAllByRole('radio')
       const addExampleBtns = await screen.findAllByTestId('add-example-btn')
 
-      await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
+      fireEvent.change(
+        await screen.findByLabelText(/Template Name/), { target: { value: 'test-template' } }
+      )
       await userEvent.click(addExampleBtns[0])
       await userEvent.click(fontOptions[0])
 
@@ -209,7 +212,9 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       const fontOptions = await screen.findAllByRole('radio')
       const addExampleBtns = await screen.findAllByTestId('add-example-btn')
 
-      await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
+      fireEvent.change(
+        await screen.findByLabelText(/Template Name/), { target: { value: 'test-template' } }
+      )
       await userEvent.click(addExampleBtns[0])
       await userEvent.click(fontOptions[0])
 
@@ -241,7 +246,9 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       const fontOptions = await screen.findAllByRole('radio')
       const addExampleBtns = await screen.findAllByTestId('add-example-btn')
 
-      await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
+      fireEvent.change(
+        await screen.findByLabelText(/Template Name/), { target: { value: 'test-template' } }
+      )
       await userEvent.click(addExampleBtns[0])
       await userEvent.click(fontOptions[0])
 
@@ -338,13 +345,14 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
         </Provider>, { route: { params, path: '/:tenantId/networks/wired/:configType/add' } }
       )
 
+      expect(await screen.findByText(/Select the venues or specific switches/)).toBeVisible()
       await userEvent.click(await screen.findByText('My-Venue'))
 
       await waitFor(() => {
         expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
       })
-      const row1 = await screen.findByRole('row', { name: /7150stack/i })
-      await userEvent.click(await within(row1).findByRole('checkbox'))
+      const row = await screen.findByRole('row', { name: /7150stack/i })
+      await userEvent.click(await within(row).findByRole('checkbox'))
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
       expect(onFinishSpy).toBeCalledWith({
         applySwitch: {
@@ -571,16 +579,16 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       expect(await screen.findByText(/Please define variable/i)).toBeVisible()
     })
 
-    it.skip('should limit the number of variables', async () => {
-      const variables = Array.from({ length: maxVariableCount }, (_, i) => {
-        return { name: `v${i+1}`, type: 'STRING', value: 'aaaa' }
-      })
+    it('should limit the number of variables', async () => {
       mockServer.use(
+        rest.get(SwitchUrlsInfo.getCliConfigExamples.url,
+          (_, res, ctx) => res(ctx.json(configExamples))
+        ),
         rest.get(SwitchUrlsInfo.getCliTemplate.url,
-          (_, res, ctx) => res(ctx.json({
-            ...cliTemplate,
-            variables: variables
-          }))
+          (_, res, ctx) => res(ctx.json(cliTemplateWith200Variables))
+        ),
+        rest.put(SwitchUrlsInfo.updateCliTemplate.url,
+          (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
         )
       )
 
@@ -591,16 +599,21 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await waitFor(() => {
         expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
       })
-      expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+
       await userEvent.click(await screen.findByText('CLI Configuration'))
 
       await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
       await screen.findByText('CLI commands')
+      expect(await screen.findByText(/manager active-list/)).toBeVisible()
 
-      await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
-      await screen.findAllByText('v200')
+      const variablesTab = await screen.findByRole('tab', { name: 'Variables' })
+      await userEvent.click(variablesTab)
+      expect(variablesTab.getAttribute('aria-selected')).toBeTruthy()
 
-      const addVariableBtn = await screen.findByRole('button', { name: 'Add Variable' })
+      const tabPanel = await screen.findByRole('tabpanel', { hidden: false })
+      expect(await within(tabPanel).findByText('v200')).toBeVisible()
+
+      const addVariableBtn = await screen.findByTestId('add-variable-btn')
       expect(addVariableBtn).toBeDisabled()
     })
 
@@ -626,6 +639,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
     it('should handle error occurred', async () => {
       const spyLog = jest.spyOn(console, 'log')
+      spyLog.mockReset()
       mockServer.use(
         rest.put(SwitchUrlsInfo.updateCliTemplate.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))

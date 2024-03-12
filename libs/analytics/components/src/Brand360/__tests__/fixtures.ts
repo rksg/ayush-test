@@ -1,4 +1,6 @@
 import { sample } from 'lodash'
+
+import { FranchisorTimeseries } from '../services'
 export const fetchBrandProperties = () => {
   const properties = [
     'AC Hotels', 'Courtyard', 'Fairfield', 'Element' , 'Potea Hotels',
@@ -24,7 +26,7 @@ export const fetchBrandProperties = () => {
     ] = [ sample(pcts), sample(pcts), sample(pcts) ]
     return {
       property,
-      lsp: sample(lsps), // TODO fetch from RC api and merge
+      lsps: [sample(lsps)], // TODO fetch from RC api and merge
       p1Incidents: sample(nums) || 0,
       ssidCompliance: sample(pcts) || [0, 0],
       deviceCount: sample(nums) || 0,
@@ -154,6 +156,50 @@ export const currTimeseries = {
   errors: []
 }
 
+export const zeroPrevTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.5
+  ],
+  timeToConnectSLA: [
+    null
+  ],
+  clientThroughputSLA: [
+    null
+  ],
+  connectionSuccessSLA: [
+    null
+  ],
+  errors: []
+} as unknown as FranchisorTimeseries
+
+export const zeroCurrTimeseries = {
+  time: [
+    '2023-12-11T22:00:00.000Z'
+  ],
+  incidentCount: [
+    20
+  ],
+  ssidComplianceSLA: [
+    0.4
+  ],
+  timeToConnectSLA: [
+    null
+  ],
+  clientThroughputSLA: [
+    null
+  ],
+  connectionSuccessSLA: [
+    null
+  ],
+  errors: []
+} as unknown as FranchisorTimeseries
+
 export const propertiesMappingData = [
   {
     id: '1',
@@ -245,6 +291,7 @@ export const franchisorZones = {
       timeToConnectSLA: [84, 84],
       clientThroughputSLA: [34, 44],
       connectionSuccessSLA: [0, 0],
+      onlineSwitchesSLA: [1, 1],
       onlineApsSLA: [1, 1]
     },
     {
@@ -255,6 +302,7 @@ export const franchisorZones = {
       timeToConnectSLA: [null, null],
       clientThroughputSLA: [null, null],
       connectionSuccessSLA: [null, null],
+      onlineSwitchesSLA: [null, null],
       onlineApsSLA: [null, null]
     },
     {
@@ -265,6 +313,7 @@ export const franchisorZones = {
       timeToConnectSLA: [null, null],
       clientThroughputSLA: [null, null],
       connectionSuccessSLA: [null, null],
+      onlineSwitchesSLA: [null, null],
       onlineApsSLA: [null, null]
     },
     {
@@ -275,6 +324,7 @@ export const franchisorZones = {
       timeToConnectSLA: [84, 84],
       clientThroughputSLA: [34, 44],
       connectionSuccessSLA: [344, 344],
+      onlineSwitchesSLA: [0, 0],
       onlineApsSLA: [1, 1]
     },
     {
@@ -285,6 +335,7 @@ export const franchisorZones = {
       timeToConnectSLA: [39, 42],
       clientThroughputSLA: [12, 40],
       connectionSuccessSLA: [304, 316],
+      onlineSwitchesSLA: [0, 0],
       onlineApsSLA: [1, 1]
     },
     {
@@ -295,6 +346,7 @@ export const franchisorZones = {
       timeToConnectSLA: [11, 12],
       clientThroughputSLA: [7, 7],
       connectionSuccessSLA: [45, 56],
+      onlineSwitchesSLA: [0, 0],
       onlineApsSLA: [1, 1]
     },
     {
@@ -305,6 +357,7 @@ export const franchisorZones = {
       timeToConnectSLA: [0, 0],
       clientThroughputSLA: [0, 0],
       connectionSuccessSLA: [0, 0],
+      onlineSwitchesSLA: [0, 0],
       onlineApsSLA: [0, 0]
     }
   ]

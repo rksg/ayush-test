@@ -1,16 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader }              from '@acx-ui/components'
-import { useAddEdgeSdLanMutation } from '@acx-ui/rc/services'
-import {
-  EdgeSdLanSettingP2,
-  getServiceListRoutePath,
-  getServiceRoutePath,
-  ServiceOperation,
-  ServiceType }
-  from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader }                                                                                      from '@acx-ui/components'
+import { useEdgeSdLanActions }                                                                             from '@acx-ui/rc/components'
+import { EdgeSdLanSettingP2, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
 import EdgeSdLanFormP2, { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
 import { SettingsForm }                          from '../EdgeSdLanForm/SettingsForm'
@@ -23,12 +17,13 @@ const AddEdgeSdLanP2 = () => {
   const navigate = useNavigate()
 
   const cfListRoute = getServiceRoutePath({
-    type: ServiceType.EDGE_SD_LAN_P2,
+    type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const [addEdgeSdLan] = useAddEdgeSdLanMutation()
+  const { addEdgeSdLan } = useEdgeSdLanActions()
+
   const [form] = Form.useForm()
 
   const steps = [
@@ -51,22 +46,35 @@ const AddEdgeSdLanP2 = () => {
     try {
       const payload = {
         name: formData.name,
-        edgeId: formData.edgeId,
-        corePortMac: formData.corePortMac,
+        venueId: formData.venueId,
+        edgeClusterId: formData.edgeClusterId,
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled
       } as EdgeSdLanSettingP2
 
       if (formData.isGuestTunnelEnabled) {
-        payload.isGuestTunnelEnabled = formData.isGuestTunnelEnabled
-        payload.guestEdgeId = formData.guestEdgeId
+        payload.guestEdgeClusterId = formData.guestEdgeClusterId
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworkIds = formData.activatedGuestNetworks.map(network => network.id!)
       }
 
-      await addEdgeSdLan({ payload }).unwrap()
-      navigate(linkToServiceList, { replace: true })
+      await new Promise(async (resolve, reject) => {
+        await addEdgeSdLan({
+          payload,
+          callback: (result) => {
+            // callback is after all RBAC related APIs sent
+            if (Array.isArray(result)) {
+              resolve(true)
+            } else {
+              reject(result)
+            }
+
+            navigate(linkToServiceList, { replace: true })
+          }
+        // need to catch basic service profile failed
+        }).catch(reject)
+      })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)

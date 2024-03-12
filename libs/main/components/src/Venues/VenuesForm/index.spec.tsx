@@ -2,22 +2,28 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import {
+  AdministrationUrlsInfo, CommonUrlsInfo,
+  VenueConfigTemplateUrlsInfo,
+  useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
   venuelist,
   autocompleteResult,
   timezoneResult,
-  successResponse
+  successResponse,
+  mockVenueConfigTemplates
 } from '../__tests__/fixtures'
 
 import { VenuesForm, addressParser } from '.'
@@ -39,9 +45,26 @@ const venueResponse = {
 }
 
 const mockedUsedNavigate = jest.fn()
+const mockedUseLocation = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => mockedUseLocation()
+}))
+
+
+type MutationFnSwitcherTypes = Parameters<typeof useConfigTemplateMutationFnSwitcher>
+type LazyQueryFnSwitcherTypes = Parameters<typeof useConfigTemplateLazyQueryFnSwitcher>
+const mockedMutationFnSwitcher = jest.fn()
+const mockedLazyQueryFnSwitcher = jest.fn()
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  // eslint-disable-next-line max-len
+  useConfigTemplateMutationFnSwitcher: (...args: MutationFnSwitcherTypes) => mockedMutationFnSwitcher(...args),
+  // eslint-disable-next-line max-len
+  useConfigTemplateLazyQueryFnSwitcher: (...args: LazyQueryFnSwitcherTypes) => mockedLazyQueryFnSwitcher(...args),
+  useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
 describe('Venues Form', () => {
@@ -77,9 +100,20 @@ describe('Venues Form', () => {
     initialize()
   })
 
-  it('should render venues form', async () => {
+  beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedMutationFnSwitcher.mockImplementation(fn1 => fn1())
+    mockedLazyQueryFnSwitcher.mockImplementation(fn1 => fn1())
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseLocation.mockReturnValue({ pathname: '', search: '', hash: '', state: {}, key: '' })
+  })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
+  it('should render venues form', async () => {
     render(
       <Provider>
         <VenuesForm />
@@ -105,8 +139,6 @@ describe('Venues Form', () => {
   })
 
   it('venue name not allow white space only', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(
       <Provider>
         <VenuesForm />
@@ -136,7 +168,6 @@ describe('Venues Form', () => {
     expect(address).toEqual(addressResult)
   })
   it('google map is enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -159,7 +190,6 @@ describe('Venues Form', () => {
     expect(await screen.findByText('Map is not enabled')).toBeVisible()
   })
   it('should back to venues list', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenuesForm />
@@ -175,8 +205,6 @@ describe('Venues Form', () => {
     })
   })
   it('should edit venue successfully', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     const params = {
       venueId: '2c16284692364ab6a01f4c60f5941836',
       tenantId: 'tenant-id',
@@ -198,5 +226,52 @@ describe('Venues Form', () => {
 
     const saveButton = screen.getByText('Save')
     await userEvent.click(saveButton)
+  })
+
+  it('should create venue config template successfully', async () => {
+    const mockedPreviousPath = '/configTemplates'
+    mockedUseLocation.mockReturnValue({ state: { from: { pathname: mockedPreviousPath } } })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedMutationFnSwitcher.mockImplementation((fn1, fn2) => fn2())
+    mockedLazyQueryFnSwitcher.mockImplementation((fn1, fn2) => fn2())
+
+    const addTemplateFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        VenueConfigTemplateUrlsInfo.addVenueTemplate.url,
+        (_, res, ctx) => {
+          addTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      ),
+      rest.post(
+        VenueConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/venues/add' }
+      })
+
+    const venueInput = await screen.findByLabelText('Venue Name')
+    await userEvent.type(venueInput, 'test-venue-template')
+    fireEvent.blur(venueInput)
+
+    // Field validation indicator
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    const descriptionInput = screen.getByLabelText('Description')
+    await userEvent.type(descriptionInput, 'My First Venue Template')
+
+    await userEvent.click(screen.getByRole('button', { name: /Add/ }))
+
+    await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(mockedPreviousPath))
   })
 })

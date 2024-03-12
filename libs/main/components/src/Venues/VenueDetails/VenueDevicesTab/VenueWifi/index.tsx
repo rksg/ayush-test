@@ -18,10 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { TenantLink }                            from '@acx-ui/react-router-dom'
-import { EmbeddedReport }                        from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
 
 
 import {
@@ -209,7 +206,7 @@ export function VenueWifi () {
   const [ enabledMesh, setEnabledMesh ] = useState(false)
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const apCompatibilityTenantId = localStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
+  const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
 
   const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
@@ -260,7 +257,7 @@ export function VenueWifi () {
 
   const clickCloseNote = () => {
     if (params.tenantId) {
-      localStorage.setItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY, params.tenantId)
+      sessionStorage.setItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY, params.tenantId)
       setShowCompatibilityNote(false)
     }
   }
@@ -276,13 +273,14 @@ export function VenueWifi () {
               iconStyle={{
                 height: '16px',
                 width: '16px',
+                marginRight: '3px',
                 marginBottom: '-3px',
-                color: cssStr('--acx-semantics-yellow-50')
+                color: cssStr('--acx-accents-orange-50')
               }} />
             <span style={{ lineHeight: '28px' }}>
               {$t({
                 defaultMessage:
-          '  {total} access points are not compatible with certain Wi-Fi features.' },
+          '{total} access points are not compatible with certain Wi-Fi features.' },
               { total: incompatible })}
             </span>
             <Button
@@ -312,7 +310,8 @@ export function VenueWifi () {
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
           <ListSolid />
         </Tooltip>}>
-        <ApTable rowSelection={{ type: 'checkbox' }}
+        <ApTable settingsId='venue-ap-table'
+          rowSelection={{ type: 'checkbox' }}
           searchable={true}
           enableActions={true}
           enableApCompatibleCheck={isApCompatibleCheckEnabled}
@@ -385,9 +384,11 @@ export function VenueMeshApsTable () {
     filters: { venueId: [params.venueId] }
   }
 
+  const settingsId = 'venue-mesh-aps-table'
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   return (
@@ -395,7 +396,7 @@ export function VenueMeshApsTable () {
       tableQuery
     ]}>
       <Table
-        settingsId='venue-mesh-aps-table'
+        settingsId={settingsId}
         columns={getCols(useIntl())}
         dataSource={transformData(tableQuery?.data?.data || [])}
         pagination={tableQuery.pagination}

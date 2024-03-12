@@ -41,7 +41,9 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
-  checkVersionAtLeast09010h
+  checkSwitchUpdateFields,
+  checkVersionAtLeast09010h,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -253,14 +255,6 @@ export function SwitchForm () {
   }
 
   const handleEditSwitch = async (values: Switch) => {
-    if(readOnly){
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
-    }
-
     try {
       let payload = {
         ...values,
@@ -283,7 +277,7 @@ export function SwitchForm () {
       await updateSwitch({ params: { tenantId, switchId } , payload })
         .unwrap()
         .then(() => {
-          const updatedFields = checkUpdateFields(values)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription
@@ -315,19 +309,6 @@ export function SwitchForm () {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
-  }
-
-  const checkUpdateFields = function (values: Switch) {
-    const fields = Object.keys(values ?? {})
-    const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-    const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
-
-    return Object.keys(originalValues ?? {}).reduce((result: string[], key) => {
-      if ((originalValues[key as keyof Switch]) !== currentValues[key as keyof Switch]) {
-        return [ ...result, key ]
-      }
-      return result
-    }, [])
   }
 
   const setFirmwareType = function (value: string) {
@@ -395,10 +376,9 @@ export function SwitchForm () {
         redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
       }
       buttonLabel={{
-        submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-          editMode ?
-            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-        cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+        submit: editMode ?
+          $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+        cancel: $t({ defaultMessage: 'Cancel' })
       }}
     >
       <StepsFormLegacy.StepForm>
@@ -418,8 +398,6 @@ export function SwitchForm () {
                 }
               </Tabs>
               <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                {readOnly &&
-                  <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                 <Form.Item
                   name='venueId'
                   label={<>
@@ -449,7 +427,7 @@ export function SwitchForm () {
                   children={
                     <Input
                       disabled={readOnly || editMode}
-                      style={{ textTransform: 'uppercase' }}
+                      onInput={convertInputToUppercase}
                       onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
                     />
                   }
@@ -534,7 +512,7 @@ export function SwitchForm () {
                       { min: 1, transform: (value) => value.trim() },
                       { max: 255, transform: (value) => value.trim() }
                     ]}
-                    children={<Input disabled={readOnly} />}
+                    children={<Input />}
                   />
 
                   <Form.Item
@@ -548,7 +526,7 @@ export function SwitchForm () {
                     children={<Input.TextArea
                       rows={4}
                       maxLength={180}
-                      disabled={readOnly}/>}
+                    />}
                   />
 
                   <Form.Item
@@ -607,6 +585,7 @@ export function SwitchForm () {
               <Form.Item name='enableStack' initialValue={false} hidden={true}><Input /></Form.Item>
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                  {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <SwitchStackSetting
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}

@@ -1,6 +1,21 @@
 export enum ConfigTemplateType {
   NETWORK = 'NETWORK',
-  RADIUS = 'RADIUS'
+  RADIUS = 'RADIUS',
+  VENUE = 'VENUE',
+  DPSK = 'DPSK',
+  DHCP = 'DHCP',
+  ACCESS_CONTROL_SET = 'ACCESS_CONTROL_SET',
+  LAYER_2_POLICY = 'LAYER_2_POLICY',
+  LAYER_3_POLICY = 'LAYER_3_POLICY',
+  DEVICE_POLICY = 'DEVICE_POLICY',
+  APPLICATION_POLICY = 'APPLICATION_POLICY'
+}
+
+export enum AccessControlPolicyForTemplateCheckType {
+  LAYER_2_POLICY = 'LAYER_2_POLICY',
+  LAYER_3_POLICY = 'LAYER_3_POLICY',
+  DEVICE_POLICY = 'DEVICE_POLICY',
+  APPLICATION_POLICY = 'APPLICATION_POLICY'
 }
 
 export interface ConfigTemplate {
@@ -8,8 +23,8 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  ecTenants: string[],
-  templateType: ConfigTemplateType,
+  appliedOnTenants: string[],
+  type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
 }

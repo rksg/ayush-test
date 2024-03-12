@@ -34,11 +34,12 @@ export const EdgeDhcp = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
     { params: { edgeId: serialNumber } },
     {
-      skip: !!!serialNumber,
+      skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data }) => ({
         isLeaseTimeInfinite: data?.leaseTime === -1
       })
@@ -60,9 +61,11 @@ export const EdgeDhcp = () => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
+  const settingsId = 'edge-dhcp-pools-table'
   const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
-    defaultPayload: getDhcpPoolStatsPayload
+    defaultPayload: getDhcpPoolStatsPayload,
+    pagination: { settingsId }
   })
 
   const getDhcpHostStatsPayload = {
@@ -73,7 +76,7 @@ export const EdgeDhcp = () => {
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   },{
-    skip: !isEdgeReady
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady
   })
   const { hasNsg } = useGetEdgeServiceListQuery({
     payload: {
@@ -81,7 +84,7 @@ export const EdgeDhcp = () => {
       filters: { edgeId: [serialNumber] }
     }
   }, {
-    skip: !isEdgeReady,
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
     selectFromResult: ({ data, isLoading }) => ({
       hasNsg: isLoading || data?.data.some(
         service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION
@@ -96,7 +99,7 @@ export const EdgeDhcp = () => {
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} />
+      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} settingsId={settingsId} />
     },
     leases: {
       title: $t(

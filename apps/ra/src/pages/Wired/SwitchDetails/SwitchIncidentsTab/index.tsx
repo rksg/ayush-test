@@ -17,7 +17,7 @@ export function SwitchIncidentsTab () {
 
   const filters = {
     ...dateFilter,
-    filter: pathToFilter(path)
+    filter: pathToFilter(path.filter((p) => p.type !== 'switchGroup'))
   } as AnalyticsFilter
 
   return <IncidentTabContent filters={filters} disableGraphs/>

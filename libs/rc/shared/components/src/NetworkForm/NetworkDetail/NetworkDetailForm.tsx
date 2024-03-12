@@ -19,7 +19,8 @@ import {
   checkObjectNotExists,
   NetworkVenue,
   networkTypes,
-  useConfigTemplate
+  useConfigTemplate,
+  validateByteLength
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -37,6 +38,7 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
+  const form = Form.useFormInstance()
   const {
     editMode,
     cloneMode,
@@ -46,8 +48,10 @@ export function NetworkDetailForm () {
     createType
   } = useContext(NetworkFormContext)
 
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const [differentSSID, setDifferentSSID] = useState(false)
-  const form = Form.useFormInstance()
+
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
@@ -84,7 +88,7 @@ export function NetworkDetailForm () {
   }
 
   const ssidValidator = async (value: string) => {
-    if (!editMode) { return Promise.resolve() }
+    if (!editMode || isUseWifiApiV2) { return Promise.resolve() }
     const venues = _.get(data, 'venues') || []
     let payload: {
       venueId: string,
@@ -160,8 +164,9 @@ export function NetworkDetailForm () {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => ssidBackendNameRegExp(value) }
+            { validator: (_, value) => ssidBackendNameRegExp(value) },
+            { validator: (_, value) => validateByteLength(value, 32) },
+            { validator: (_, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback
@@ -203,8 +208,9 @@ export function NetworkDetailForm () {
                 message: intl.$t({ defaultMessage: 'The SSID must be at least 2 characters' }) },
               { max: 32,
                 message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
-              { validator: (_, value) => ssidValidator(value) },
-              { validator: (_, value) => ssidBackendNameRegExp(value) }
+              { validator: (_, value) => ssidBackendNameRegExp(value) },
+              { validator: (_, value) => validateByteLength(value, 32) },
+              { validator: (_, value) => ssidValidator(value) }
             ]}
             validateFirst
             hasFeedback

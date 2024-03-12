@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Typography } from 'antd'
 import {
   meanBy,
   mean,
@@ -12,7 +13,7 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import type { Settings }      from '@acx-ui/analytics/utils'
+import { Settings }           from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 import { noDataDisplay }      from '@acx-ui/utils'
@@ -34,7 +35,11 @@ interface SlaTileProps {
   currData: FranchisorTimeseries | undefined
   sliceType: SliceType
   settings: Settings
+  lsp: string
+  property: string
 }
+
+const { Text } = Typography
 
 export const getChartDataKey = (chartKey: ChartKey): string[] => {
   switch (chartKey) {
@@ -46,10 +51,18 @@ export const getChartDataKey = (chartKey: ChartKey): string[] => {
 
 const Subtitle = ({ sliceType }: { sliceType: SliceType }) => {
   const { $t } = useIntl()
-  return <UI.SubtitleWrapper>{sliceType === 'lsp'
-    ? $t({ defaultMessage: '# of LSPs with P1 Incident' })
-    : $t({ defaultMessage: '# of Properties with P1 Incident' })}
+  return <UI.SubtitleWrapper>{sliceType === 'lsp' // TODO get the actual lsp/property count
+    ? $t({ defaultMessage: '# of P1 Incidents' })
+    : $t({ defaultMessage: '# of P1 Incidents' })}
   </UI.SubtitleWrapper>
+}
+
+function calculateMean (keys: string[], data: FranchisorTimeseries) {
+  const values = keys
+    .map(k => data[k as keyof typeof data])
+    .flat()
+    .filter(v => v !== null)
+  return mean(values.length ? values : [0])
 }
 
 const ChangeIcon = ({ chartKey, prevData, currData }
@@ -60,14 +73,8 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 }) => {
   if (!prevData || !currData) return null
   const keys = getChartDataKey(chartKey)
-  const prevValues = keys
-    .map(k => prevData[k as keyof typeof prevData])
-    .flat()
-  const prev = mean(prevValues)
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-  const curr = mean(currValues)
+  const prev = calculateMean(keys, prevData)
+  const curr = calculateMean(keys, currData)
   const change = curr - prev
   if (change === 0) return null
   const { formatter, direction } = slaKpiConfig[chartKey]
@@ -81,10 +88,7 @@ const ChangeIcon = ({ chartKey, prevData, currData }
 const useOverallData = (chartKey: ChartKey, currData: FranchisorTimeseries | undefined) => {
   if (!currData) return null
   const keys = getChartDataKey(chartKey)
-  const currValues = keys
-    .map(k => currData[k as keyof typeof currData])
-    .flat()
-  return mean(currValues)
+  return calculateMean(keys, currData)
 }
 
 const groupBySliceType = (type: SliceType, data?: Response[]) => {
@@ -137,10 +141,13 @@ const TopElementsSwitcher = ({ data, chartKey }:
         }
       }
     }>
-    <div>
-      {topSortedItems.map(([key, val, ind]) =>
-        <li key={key}>{ind}. {key} ({!isNaN(val as number) ? formatter(val) : noDataDisplay})</li>)}
-    </div>
+    <UI.ListContainer>
+      {topSortedItems.map(([key, val, ind]) => <li key={key}>
+        <Text ellipsis={{ suffix: ` (${!isNaN(val as number) ? formatter(val) : noDataDisplay})` }}>
+          {ind}. {key}
+        </Text>
+      </li>)}
+    </UI.ListContainer>
     {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
 }
@@ -152,19 +159,22 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  settings
+  settings,
+  lsp,
+  property
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
+  const name = sliceType === 'lsp' ? lsp : property
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
   return <Card title={chartKey === 'compliance'
     ? {
-      title: $t(getTitle(sliceType)),
+      title: $t(getTitle(), { name }),
       icon: <ComplianceSetting settings={settings} />
     }
-    : $t(getTitle(sliceType))}
+    : $t(getTitle(), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}

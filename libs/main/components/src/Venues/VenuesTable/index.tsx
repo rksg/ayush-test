@@ -18,17 +18,19 @@ import {
   useVenuesListQuery,
   useVenuesTableQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery
+  useGetVenueCityListQuery,
+  useGetVenueTemplateCityListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  usePollingTableQuery
+  usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }                     from '@acx-ui/types'
 import { filterByAccess, hasAccess }          from '@acx-ui/user'
+import { transformToCityListOptions }         from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -231,14 +233,15 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type VenueTableProps = {
+  settingsId?: string,
   tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
   rowSelection?: TableProps<Venue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export const VenueTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+export const VenueTable = ({ settingsId = 'venues-table',
+  tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
@@ -285,7 +288,7 @@ export const VenueTable = (
       { isLoading: false, isFetching: isDeleteVenueUpdating }
     ]}>
       <Table
-        settingsId='venues-table'
+        settingsId={settingsId}
         columns={columns}
         getAllPagesData={tableQuery.getAllPagesData}
         dataSource={tableQuery.data?.data}
@@ -306,23 +309,18 @@ export function VenuesTable () {
   const venuePayload = useDefaultVenuePayload()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
+  const settingsId = 'venues-table'
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: isApCompatibleCheckEnabled ? useVenuesTableQuery: useVenuesListQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
     },
-    enableSelectAllPagesData: ['id', 'name']
+    enableSelectAllPagesData: ['id', 'name'],
+    pagination: { settingsId }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({
-        key: v.name,
-        value: v.name.split(', ').map(_.startCase).join(', ')
-      })) || true
-    })
-  })
+  const { cityFilterOptions } = useGetVenueCityList()
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -336,7 +334,8 @@ export function VenuesTable () {
           </TenantLink>
         ])}
       />
-      <VenueTable tableQuery={tableQuery}
+      <VenueTable settingsId={settingsId}
+        tableQuery={tableQuery}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
         filterables={{ city: cityFilterOptions }} />
@@ -349,4 +348,25 @@ function shouldShowConfirmation (selectedVenues: Venue[]) {
     return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
   })
   return venues.length > 0
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
 }

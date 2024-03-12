@@ -51,6 +51,7 @@ export default function MacRegistrationListsTable () {
     value: ''
   }
 
+  const settingsId = 'mac-reg-list-table'
   const tableQuery = useTableQuery({
     useQuery: useSearchMacRegListsQuery,
     defaultPayload: {
@@ -58,7 +59,8 @@ export default function MacRegistrationListsTable () {
       searchCriteriaList: [
         { ...filter }
       ]
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [
@@ -262,7 +264,7 @@ export default function MacRegistrationListsTable () {
       ]}>
         <Table<MacRegistrationPool>
           enableApiFilter
-          settingsId='mac-reg-list-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
