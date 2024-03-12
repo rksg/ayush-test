@@ -17,7 +17,7 @@ export enum CompatibilityStatusEnum {
 
 interface CompatibilityStatusBarProps<RecordType> {
   type: CompatibilityStatusEnum,
-  fields: SingleNodeDetailsField<RecordType>[],
+  fields?: SingleNodeDetailsField<RecordType>[],
   errors?: CompatibilityNodeError<RecordType>[]
 }
 
@@ -51,7 +51,7 @@ export const CompatibilityStatusBar = <RecordType,>
     <CompatibilityErrorDetails
       visible={visible}
       setVisible={setVisible}
-      fields={fields}
+      fields={fields ?? []}
       data={errors ?? []}
     />
   </>
