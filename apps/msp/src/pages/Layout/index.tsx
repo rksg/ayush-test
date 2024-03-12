@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useGetBrand360Config } from '@acx-ui/analytics/services'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -45,7 +44,6 @@ function Layout () {
   const params = useParams()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const { names: { brand } } = useGetBrand360Config()
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
@@ -102,13 +100,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(
-        tenantType,
-        hasLicense,
-        brand,
-        isDogfood,
-        data?.mspEc?.parentMspId
-      )}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId)}
       content={
         <>
           <CloudMessageBanner />

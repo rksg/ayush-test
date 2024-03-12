@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 import moment from 'moment-timezone'
 
-import { useGetBrand360Config }                              from '@acx-ui/analytics/services'
+import { useBrand360Config }                                 from '@acx-ui/analytics/services'
 import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
@@ -66,7 +66,7 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 })
 
 export function Brand360 () {
-  const { names, settingsQuery } = useGetBrand360Config()
+  const { names, settingsQuery } = useBrand360Config()
   const { brand, lsp, property } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
   const isLSP = tenantType === AccountType.MSP_INTEGRATOR

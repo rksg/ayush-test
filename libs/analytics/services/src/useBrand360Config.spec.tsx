@@ -4,7 +4,7 @@ import type { Settings }                   from '@acx-ui/analytics/utils'
 import { Provider, rbacApiURL }            from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { useGetBrand360Config } from './useBrand360Config'
+import { useBrand360Config } from './useBrand360Config'
 
 
 const defaultSettings = {
@@ -21,11 +21,11 @@ const mockTenantSettings = (settings: Settings) => {
   )
 }
 
-describe('useGetBrand360Config', () => {
+describe('useBrand360Config', () => {
   it('should render names correctly', async () => {
     mockTenantSettings(defaultSettings)
     const { result } = renderHook(
-      () => useGetBrand360Config(),
+      () => useBrand360Config(),
       { wrapper: Provider }
     )
     await waitFor(() => {
@@ -40,7 +40,7 @@ describe('useGetBrand360Config', () => {
   it('should render defaults correctly', async () => {
     mockTenantSettings({} as unknown as Settings)
     const { result } = renderHook(
-      () => useGetBrand360Config(),
+      () => useBrand360Config(),
       { wrapper: Provider }
     )
     await waitFor(() => {
@@ -55,7 +55,7 @@ describe('useGetBrand360Config', () => {
   it('should render defaults with undefined correctly', async () => {
     mockTenantSettings(undefined as unknown as Settings)
     const { result } = renderHook(
-      () => useGetBrand360Config(),
+      () => useBrand360Config(),
       { wrapper: Provider }
     )
     await waitFor(() => {

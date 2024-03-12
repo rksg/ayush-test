@@ -19,7 +19,7 @@ const mapper: Record<keyof Brand360Names, keyof Settings> = {
   property: 'property-name'
 }
 
-export function useGetBrand360Config () {
+export function useBrand360Config () {
   const { $t } = useIntl()
   const settingsQuery = useGetTenantSettingsQuery()
   const settings = settingsQuery.data
