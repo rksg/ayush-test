@@ -113,9 +113,11 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       : $t({ defaultMessage: 'RUCKUS End Customers' })
   }])
 
-  const hspMspMenues = isHspSupportEnabled ?
-    (isVar || isDogfood ? [] : [...recCustomerMenu, mspCustomersMenu])
-    : (isVar || isDogfood ? [] : [ mspCustomersMenu, ...recCustomerMenu])
+  const hspMspMenues = (isVar || isDogfood)
+    ? []
+    : (isHspSupportEnabled
+      ? [...recCustomerMenu, mspCustomersMenu]
+      : [ mspCustomersMenu, ...recCustomerMenu])
 
   return [
     ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
