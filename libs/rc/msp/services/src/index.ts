@@ -304,6 +304,18 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    mspECList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+        createHttpRequest(MspUrlsInfo.getMspECList, params, {}, true)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'EC_LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
         const varCustomerListReq =
@@ -912,6 +924,7 @@ export const {
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
   useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
   useIntegratorCustomerListDropdownQuery,

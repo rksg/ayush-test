@@ -11,6 +11,17 @@ import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }             
 
 const Netmask = require('netmask').Netmask
 
+export const edgePhysicalPortInitialConfigs = {
+  portType: EdgePortTypeEnum.UNCONFIGURED,
+  ipMode: EdgeIpModeEnum.DHCP,
+  ip: '',
+  subnet: '',
+  gateway: '',
+  enabled: true,
+  natEnabled: true,
+  corePortEnabled: false
+}
+
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
 

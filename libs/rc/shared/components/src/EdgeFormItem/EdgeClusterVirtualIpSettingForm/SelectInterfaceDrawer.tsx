@@ -6,8 +6,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                                                                     from '@acx-ui/components'
-import { EdgeClusterTableDataType, EdgePortInfo, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
+import { Drawer, Select }                                                                              from '@acx-ui/components'
+import { EdgeClusterStatus, EdgePortInfo, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -18,7 +18,7 @@ interface SelectInterfaceDrawerProps {
   setVisible: (visible: boolean) => void
   handleFinish: (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => void
   currentVipIndex?: number
-  currentClusterStatus?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
   }
@@ -91,7 +91,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
+      item?.interfaces?.[targetSerialNumber].portName).filter(item => item !== undefined)
     const editPortName = editData?.[targetSerialNumber]?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)
