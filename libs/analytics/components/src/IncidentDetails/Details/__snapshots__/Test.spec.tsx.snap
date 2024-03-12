@@ -15669,41 +15669,8 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 129px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-        >
-          <div
-            class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
-          >
-            <span
-              aria-label="loader"
-              class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-              role="img"
-            >
-              <div
-                aria-busy="true"
-                aria-live="polite"
-                class="ant-spin ant-spin-lg ant-spin-spinning"
-              >
-                <span
-                  class="ant-spin-dot ant-spin-dot-spin"
-                >
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                </span>
-              </div>
-            </span>
-          </div>
-        </div>
+          data-testid="impactedSwitchVLANsDetails"
+        />
       </div>
     </div>
     <div
