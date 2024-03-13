@@ -22,7 +22,7 @@ describe('Topology utils', () => {
     expect(getDeviceColor(ApDeviceStatusEnum.OFFLINE)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(SwitchStatusEnum.INITIALIZING)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(SwitchStatusEnum.DISCONNECTED)).toBe('var(--acx-semantics-red-70)')
+    expect(getDeviceColor(SwitchStatusEnum.DISCONNECTED)).toBe('var(--acx-neutrals-50)')
   })
 
   it('test switchStatus', async () => {
