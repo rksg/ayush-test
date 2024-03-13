@@ -546,7 +546,18 @@ export const codes = {
     category: crrmStates[CRRMStates.unknown].label,
     summary: defineMessage({ defaultMessage: 'Unknown' }),
     priority: priorities.low
-  }
+  },
+  'ai-probe-suppression': {
+    category: categories['Wi-Fi Client Experience'],
+    summary: defineMessage({ defaultMessage: 'Enable AI probe supression' }),
+    priority: priorities.medium,
+    valueFormatter: formatter('enabledFormat'),
+    valueText: defineMessage({ defaultMessage: 'AI probe suppression' }),
+    actionText: defineMessage({ defaultMessage: 'AI probe suppression for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
+    reasonText: defineMessage({ defaultMessage: 'AI probe suppression suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
+    tradeoffText: defineMessage({ defaultMessage: 'This feature may cause a slight increase (~1 secs) in time to connect for a very small percentage of clients since probes are being suppressed.' }),
+    kpis: []
+  },
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
