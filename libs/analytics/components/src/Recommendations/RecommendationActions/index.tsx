@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 
+import { Divider }                from 'antd'
 import _                          from 'lodash'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
@@ -89,7 +90,7 @@ function ApplyCalendar ({
   }
   const futureDate = initialDateOptions.futureDate
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
-    ? $t(applyFooterMsg)
+    ? <><Divider /><UI.ApplyMsgWrapper>{$t(applyFooterMsg)}</UI.ApplyMsgWrapper></>
     : undefined
 
   const disabledDate = useCallback((value: Moment) =>
@@ -134,7 +135,7 @@ function ApplyCalendar ({
     disabled={disabled}
     initialDate={initialDateOptions[initialDate]}
     onApply={onApply}
-    applyFooterMsg={footerMsg}
+    extraFooter={footerMsg}
     disabledDateTime={disabledDateTime}
   />
 }

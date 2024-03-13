@@ -166,7 +166,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
 )
 
 interface DateTimePickerProps {
-  applyFooterMsg?: string;
+  extraFooter?: ReactNode;
   disabled?: boolean;
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
@@ -196,7 +196,7 @@ export function useClosePreviousDateTimePicker (onClose: CallableFunction, visib
 }
 
 export const DateTimePicker = ({
-  applyFooterMsg,
+  extraFooter,
   disabled,
   icon,
   initialDate,
@@ -234,7 +234,7 @@ export const DateTimePicker = ({
           <DateTimePickerFooter
             value={date}
             setValue={setDate}
-            applyFooterMsg={applyFooterMsg}
+            extraFooter={extraFooter}
             onApply={() => {
               onApply(date)
               setOpen(false)
