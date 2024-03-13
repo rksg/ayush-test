@@ -131,11 +131,7 @@ export default function RadiusAttributeGroupTable () {
             // eslint-disable-next-line max-len
             const policyNames = row.externalServiceAssignments.map(assignment => assignment.externalAssignmentIdentifier).flat()
               .filter(id => policyListMap.has(id)).map(id => policyListMap.get(id) ?? '')
-            return <SimpleListTooltip
-              items={policyNames}
-              displayText={policyNames.length}
-              dottedUnderline={true}
-            />
+            return <SimpleListTooltip items={policyNames} displayText={policyNames.length}/>
           }
         }
       ]

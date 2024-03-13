@@ -219,11 +219,7 @@ function useColumns () {
 
         // eslint-disable-next-line max-len
         const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip
-          items={tooltipItems}
-          displayText={row.venueIds.length}
-          dottedUnderline={true}
-        />
+        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
       }
     }
   ]

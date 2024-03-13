@@ -170,11 +170,7 @@ export default function PortalTable () {
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip
-          items={tooltipItems}
-          displayText={networkIds.length}
-          dottedUnderline={true}
-        />
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
       }
     }
   ]

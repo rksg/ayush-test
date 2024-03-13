@@ -91,11 +91,7 @@ export default function RadiusAttributeGroupDetail () {
         render: (_, row) => {
           const policySets = row.policySetNames ?? []
           return policySets.length === 0 ? '0' :
-            <SimpleListTooltip
-              items={policySets}
-              displayText={policySets.length}
-              dottedUnderline={true}
-            />
+            <SimpleListTooltip items={policySets} displayText={policySets.length} />
         }
       }
     ]

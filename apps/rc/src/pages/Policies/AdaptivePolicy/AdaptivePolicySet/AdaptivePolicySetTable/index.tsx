@@ -99,7 +99,7 @@ export default function AdaptivePolicySetTable () {
           return <SimpleListTooltip items={policies}
             displayText={row.mappedPolicyCount}
             totalCountOfItems={row.mappedPolicyCount}
-            dottedUnderline={true}/>
+          />
         }
       },
       {
@@ -122,8 +122,7 @@ export default function AdaptivePolicySetTable () {
 
           return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments]}
             displayText={row.assignmentCount}
-            totalCountOfItems={row.assignmentCount}
-            dottedUnderline={true}/>
+            totalCountOfItems={row.assignmentCount}/>
         }
       }
     ]

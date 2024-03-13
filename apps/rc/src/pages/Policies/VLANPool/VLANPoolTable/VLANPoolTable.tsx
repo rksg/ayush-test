@@ -191,11 +191,7 @@ function useColumns () {
           return $t({ defaultMessage: '{value} ({count} AP Groups)' },
             { value: v.value, count: venueApGroup?.apGroups.length })
         })
-        return <SimpleListTooltip
-          items={tooltipItems}
-          displayText={venueIds.length}
-          dottedUnderline={true}
-        />
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
     }
   ]
