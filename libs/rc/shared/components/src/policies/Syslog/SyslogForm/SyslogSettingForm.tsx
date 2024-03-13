@@ -12,19 +12,22 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm }                               from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery }             from '@acx-ui/rc/services'
+import { StepsForm }                   from '@acx-ui/components'
+import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
   ProtocolEnum,
   PriorityEnum,
   SyslogActionTypes,
-  serverIpAddressRegExp, servicePolicyNameRegExp
+  serverIpAddressRegExp,
+  servicePolicyNameRegExp,
+  protocolLabelMapping,
+  facilityLabelMapping,
+  flowLevelLabelMapping
 } from '@acx-ui/rc/utils'
 
-import { facilityLabelMapping, flowLevelLabelMapping, protocolLabelMapping } from '../contentsMap'
-import SyslogContext                                                         from '../SyslogContext'
+import SyslogContext from '../SyslogContext'
 
 const { Option } = Select
 
