@@ -1,6 +1,7 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
+import { get }                                                  from '@acx-ui/config'
 import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { Provider, recommendationUrl }                          from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
@@ -27,6 +28,7 @@ const mockedCrrm = {
   statusTrail: [{ status: 'new' }]
 }
 
+jest.mock('@acx-ui/config')
 jest.mock('moment-timezone', () => {
   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
   return {
@@ -360,57 +362,69 @@ describe('RecommendationActions', () => {
       .toBeVisible()
   })
   describe('isRecommendationRevertEnable', () => {
-    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
-    it('does not allow scheduling', async () => {
-      [
-        'beforeapplyinterrupted',
-        'afterapplyinterrupted',
-        'reverted',
-        'applyscheduleinprogress',
-        'revertscheduleinprogress'
-      ].forEach(async (statusEnum) => {
-        const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+    function doTests () {
+      it('does not allow scheduling', async () => {
+        [
+          'beforeapplyinterrupted',
+          'afterapplyinterrupted',
+          'reverted',
+          'applyscheduleinprogress',
+          'revertscheduleinprogress'
+        ].forEach(async (statusEnum) => {
+          const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+          const div = document.createElement('div')
+          const { container } = render(
+            <RecommendationActions {...{ recommendation }} />,
+            { wrapper: Provider, container: div }
+          )
+          const inputs = await within(container).findAllByPlaceholderText('Select date')
+          const input = inputs.find(input => input.getAttribute('disabled') === null)
+          expect(input).toBeUndefined()
+        })
+      })
+      it('2st applyscheduled with continuous recommendation', async () => {
+        const recommendation = { ...mockedCrrm,
+          statusEnum: 'applyscheduled',
+          statusTrail: [
+            { status: 'new' },
+            { status: 'applyscheduled' },
+            { status: 'applyscheduleinprogress' },
+            { status: 'applied' },
+            { status: 'applyscheduled' }
+          ]
+        } as unknown as RecommendationListItem
         const div = document.createElement('div')
         const { container } = render(
           <RecommendationActions {...{ recommendation }} />,
           { wrapper: Provider, container: div }
         )
         const inputs = await within(container).findAllByPlaceholderText('Select date')
-        const input = inputs.find(input => input.getAttribute('disabled') === null)
-        expect(input).toBeUndefined()
+        const input = inputs.filter(input => input.getAttribute('disabled') === null)
+        expect(input).toHaveLength(2)
       })
+      it('applyfailed with continuous recommendation', async () => {
+        const recommendation = {
+          ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
+        const div = document.createElement('div')
+        const { container } = render(
+          <RecommendationActions {...{ recommendation }} />,
+          { wrapper: Provider, container: div }
+        )
+        const inputs = await within(container).findAllByPlaceholderText('Select date')
+        const input = inputs.filter(input => input.getAttribute('disabled') === null)
+        expect(input).toHaveLength(1)
+      })
+    }
+    describe('R1', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+      doTests()
     })
-    it('2st applyscheduled with continuous recommendation', async () => {
-      const recommendation = { ...mockedCrrm,
-        statusEnum: 'applyscheduled',
-        statusTrail: [
-          { status: 'new' },
-          { status: 'applyscheduled' },
-          { status: 'applyscheduleinprogress' },
-          { status: 'applied' },
-          { status: 'applyscheduled' }
-        ]
-      } as unknown as RecommendationListItem
-      const div = document.createElement('div')
-      const { container } = render(
-        <RecommendationActions {...{ recommendation }} />,
-        { wrapper: Provider, container: div }
-      )
-      const inputs = await within(container).findAllByPlaceholderText('Select date')
-      const input = inputs.filter(input => input.getAttribute('disabled') === null)
-      expect(input).toHaveLength(2)
-    })
-    it('applyfailed with continuous recommendation', async () => {
-      const recommendation = {
-        ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
-      const div = document.createElement('div')
-      const { container } = render(
-        <RecommendationActions {...{ recommendation }} />,
-        { wrapper: Provider, container: div }
-      )
-      const inputs = await within(container).findAllByPlaceholderText('Select date')
-      const input = inputs.filter(input => input.getAttribute('disabled') === null)
-      expect(input).toHaveLength(1)
+    describe('SA', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        jest.mocked(get).mockReturnValue('true')
+      })
+      doTests()
     })
   })
 })

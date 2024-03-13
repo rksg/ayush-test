@@ -5,6 +5,7 @@ import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
@@ -71,7 +72,8 @@ function ApplyCalendar ({
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
-  const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT)
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const onApply = (date: Moment) => {
     const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
     if (futureTime <= date){
@@ -300,7 +302,8 @@ const getAvailableActions = (
 
 export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
   const { recommendation } = props
-  const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT)
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const actionButtons = getAvailableActions(recommendation, isRecommendationRevertEnabled)
   return <UI.Actions>
     {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
