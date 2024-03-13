@@ -1,7 +1,7 @@
 
-import { EdgeStatus }     from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeStatus } from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { render, screen }                                     from '@acx-ui/test-utils'
 
 import { currentEdge, edgeDnsServers, passwordDetail, tenantID } from '../__tests__/fixtures'
 
@@ -15,6 +15,9 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
 }))
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const mockCluster = mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus
+
 describe('Edge Detail Drawer', () => {
   it('should render correctly', async () => {
     render(<Provider>
@@ -22,6 +25,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        currentCluster={mockCluster}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />
@@ -29,6 +33,7 @@ describe('Edge Detail Drawer', () => {
 
     expect(screen.queryByText('Login Password')).toBeNull()
     expect(screen.queryByText('Enable Password')).toBeNull()
+    expect(await screen.findByText('Edge Cluster 1')).toBeVisible()
   })
 
   it('should render -- if data is undefined', async () => {
@@ -41,6 +46,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={edgeWithoutModel}
+        currentCluster={mockCluster}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />
@@ -58,6 +64,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={undefinedEdge}
+        currentCluster={mockCluster}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />
@@ -73,6 +80,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        currentCluster={mockCluster}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />
@@ -90,6 +98,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        currentCluster={mockCluster}
         dnsServers={{ primary: '', secondary: '' }}
         passwordDetail={passwordDetail}
       />
@@ -109,6 +118,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        currentCluster={mockCluster}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />

@@ -6,8 +6,8 @@ exports[`MeshNetwork should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="styledComponents__FieldLabel-sc-1ibvcih-6 gTdHoS"
-      width="160px"
+      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      width="180px"
     >
       Mesh Network
       <div
@@ -59,8 +59,8 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="styledComponents__FieldLabel-sc-1ibvcih-6 gTdHoS"
-      width="160px"
+      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      width="180px"
     >
       Mesh Network
       <div

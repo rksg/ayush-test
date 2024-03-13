@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                                                                       from '@acx-ui/rc/services'
-import { CommonOperation, Device, EdgeGeneralFixtures, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
-import { Provider, store }                                                               from '@acx-ui/store'
-import { mockServer, render, screen }                                                    from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                       from '@acx-ui/rc/services'
+import { CommonOperation, Device, EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                           from '@acx-ui/test-utils'
 
 import EditEdgeCluster from '.'
 
@@ -44,6 +45,8 @@ describe('Edit Edge Cluster', () => {
         (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render EditEdgeCluster successfully', async () => {
@@ -56,6 +59,20 @@ describe('Edit Edge Cluster', () => {
       })
     expect((await screen.findAllByRole('tab')).length).toBe(4)
     expect(await screen.findByTestId('cluster-details')).toBeVisible()
+  })
+
+  it('when DHCP_HA OFF, should not render DHCP', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
+
+    render(
+      <Provider>
+        <EditEdgeCluster />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    expect((await screen.findAllByRole('tab')).length).toBe(3)
+    expect(screen.queryByTestId('dhcp')).toBeNull()
   })
 
   it('should change tab correctly', async () => {
@@ -79,5 +96,51 @@ describe('Edit Edge Cluster', () => {
       hash: '',
       search: ''
     })
+  })
+
+  // eslint-disable-next-line max-len
+  it('Tabs except "Cluster Details" should be disabled when all nodes are NEVER_CONTACTED_CLOUD', async () => {
+    const mockApiFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (req, res, ctx) => {
+          mockApiFn()
+          return res(ctx.json({
+            data: [
+              {
+                edgeList: [
+                  {
+                    deviceStatus: EdgeStatusEnum.NEVER_CONTACTED_CLOUD
+                  },
+                  {
+                    deviceStatus: EdgeStatusEnum.NEVER_CONTACTED_CLOUD
+                  }
+                ]
+              }]
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <EditEdgeCluster />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    await waitFor(() => expect(mockApiFn).toBeCalledTimes(1))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Cluster Details' }).getAttribute('aria-disabled'))
+        .toBe('false'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Virtual IP' }).getAttribute('aria-disabled'))
+        .toBe('true'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'Cluster Interface' }).getAttribute('aria-disabled'))
+        .toBe('true'))
+    await waitFor(async () =>
+      expect(screen.getByRole('tab', { name: 'DHCP' }).getAttribute('aria-disabled'))
+        .toBe('true'))
   })
 })

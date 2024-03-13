@@ -139,7 +139,7 @@ export function AlarmsDrawer (props: AlarmsType) {
       case EventTypeEnum.SWITCH: {
         const switchId = alarm.switchMacAddress || alarm.serialNumber
         return <TenantLink
-          to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
+          to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/overview`}>
           {alarm.switchName}
         </TenantLink>
       }

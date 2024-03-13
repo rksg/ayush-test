@@ -38,8 +38,7 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum,
-  NetworkTypeEnum
+  WlanSecurityEnum, NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -91,7 +90,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const { networkVenue, venueName, network, formName, tenantId } = props
-  const { wlan, type: nwSubtype } = network || {}
+  const { wlan, type } = network || {}
 
   const [form] = Form.useForm()
 
@@ -271,9 +270,6 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   }
                   return Promise.resolve()
                 }
-              },
-              {
-                validator: (_, value) => validateRadioBandForDsaeNetwork(value)
               }
             ]}>
             { selected ? <RadioSelect /> : <Input type='hidden' /> }
@@ -296,7 +292,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   function validateRadioBandForDsaeNetwork (radios: string[]) {
     if (wlan?.wlanSecurity
-         && nwSubtype === NetworkTypeEnum.DPSK
+         && type === NetworkTypeEnum.DPSK
          && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
          && radios.length
          && radios.length === 1
