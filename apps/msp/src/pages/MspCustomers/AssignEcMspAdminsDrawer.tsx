@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useMspAdminListQuery,
   useAssignMultiMspEcDelegatedAdminsMutation
@@ -43,6 +44,7 @@ interface AssignedMultiEcMspAdmins {
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
@@ -109,7 +111,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Role' }),
+      title: isAbacToggleEnabled
+        ? $t({ defaultMessage: 'Privilege Group' }) : $t({ defaultMessage: 'Role' }),
       dataIndex: 'role',
       key: 'role',
       sorter: false,
