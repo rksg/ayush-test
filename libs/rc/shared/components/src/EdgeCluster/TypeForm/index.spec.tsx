@@ -87,7 +87,7 @@ describe('Edge Cluster Type Form', () => {
     render(
       <TypeForm
         content={<div data-testid='rc-typeForm-content' />}
-        header={() => <div data-testid='rc-typeForm-header' />}
+        header={<div data-testid='rc-typeForm-header' />}
       />)
 
     expect(await screen.findByTestId('rc-typeForm-header')).toBeVisible()
