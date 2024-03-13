@@ -48,7 +48,7 @@ export function useMenuConfig () {
   const [search] = useSearchParams()
   const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
-  const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
+  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -282,11 +282,11 @@ export function useMenuConfig () {
                 openNewTab: true
               },
               {
-                uri: isUsersPageEnabled
+                uri: isNewUserRolesEnabled
                   ? '/analytics/admin/users'
                   : legacyLink('/analytics/admin/users', search),
                 label: $t({ defaultMessage: 'Users' }),
-                openNewTab: !isUsersPageEnabled
+                openNewTab: !isNewUserRolesEnabled
               }
             ] : []),
             ...(hasManageLabelPermission ? [

@@ -36,6 +36,10 @@ export default function MyServices () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   const services = [
     {
@@ -54,9 +58,9 @@ export default function MyServices () {
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled
+        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
       }),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
@@ -64,9 +68,9 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
     },
     {
       type: ServiceType.EDGE_SD_LAN,
@@ -84,9 +88,9 @@ export default function MyServices () {
       tableQuery: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady
+        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
     },
     {
       type: ServiceType.DPSK,

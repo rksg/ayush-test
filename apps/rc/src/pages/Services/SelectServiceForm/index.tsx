@@ -30,6 +30,9 @@ export default function SelectServiceForm () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -51,7 +54,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
@@ -71,7 +74,7 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
         }
       ]
     },

@@ -265,10 +265,11 @@ export interface CustomRole {
   id?: string,
   name?: RolesEnum,
   description?: string,
-  roleType?: string,
+  type?: string,
   frameworkRO?: boolean,
   createdDate?: string,
-  updatedDate?: string
+  updatedDate?: string,
+  scopes?: string[]
 }
 
 export interface AdminGroupLastLogins {
@@ -279,4 +280,66 @@ export interface AdminGroupLastLogins {
 export interface groupMembers {
   email?: string,
   lastLoginDate?: string
+}
+
+export interface PrivilegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  role?: CustomRole,
+  roleName?: string,
+  scope?: string,
+  members?: number,
+  allCustomers?: boolean,
+  delegation?: boolean,
+  policies?: PrivilegePolicy[],
+  policyEntityDTOS?: PrivilegePolicyEntity[]
+}
+
+export enum PrivilegePolicyObjectType {
+  OBJ_TYPE_VENUE = 'com.ruckus.cloud.venue.model.venue'
+}
+
+export enum CustomGroupType {
+  SYSTEM = 'System',
+  CUSTOM = 'Custom'
+}
+
+export enum WifiAttributeProfile {
+  READ = 'wifi-r',
+  CREATE = 'wifi-c',
+  UPDATE = 'wifi-u',
+  DELETE = 'wifi-d'
+}
+
+export enum SwitchAttributeProfile {
+  READ = 'switch-r',
+  CREATE = 'switch-c',
+  UPDATE = 'switch-u',
+  DELETE = 'switch-d'
+}
+
+export enum EdgeAttributeProfile {
+  READ = 'edge-r',
+  CREATE = 'edge-c',
+  UPDATE = 'edge-u',
+  DELETE = 'edge-d'
+}
+
+export interface PrivilegePolicy
+{
+  entityInstanceId?: string,
+  objectType?: string
+}
+
+export interface PrivilegePolicyEntity
+{
+  tenantId?: string,
+  objectList?: VenueObjectList
+}
+
+export interface VenueObjectList
+{
+  'com.ruckus.cloud.venue.model.venue'?: string[]
 }
