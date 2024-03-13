@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { useBrand360Config }                                      from '@acx-ui/analytics/services'
 import { LayoutProps }                                            from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -30,6 +31,7 @@ import { AccountType  }                                   from '@acx-ui/utils'
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
   isDogfood?: boolean, parentMspId?: string) {
   const { $t } = useIntl()
+  const { names: { brand } } = useBrand360Config()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
@@ -99,10 +101,30 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
     }
   }, [isHspSupportEnabled, isTechPartner, integratorListData])
 
+
+  const mspCustomersMenu = {
+    uri: '/dashboard/mspCustomers',
+    tenantType: 'v' as TenantType,
+    label: $t({ defaultMessage: 'MSP Customers' })
+  }
+
+  const recCustomerMenu = (hideMenuesforHsp || isSupport ? [] : [{
+    uri: '/dashboard/mspRecCustomers',
+    tenantType: 'v' as TenantType,
+    label: isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
+      : $t({ defaultMessage: 'RUCKUS End Customers' })
+  }])
+
+  const hspMspMenues = (isVar || isDogfood)
+    ? []
+    : (isHspSupportEnabled
+      ? [...recCustomerMenu, mspCustomersMenu]
+      : [ mspCustomersMenu, ...recCustomerMenu])
+
   return [
     ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
       uri: '/brand360',
-      label: $t({ defaultMessage: 'Brand 360' }),
+      label: brand,
       tenantType: 'v' as TenantType,
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
@@ -112,17 +134,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
-        ...(isVar || isDogfood ? [] : [{
-          uri: '/dashboard/mspCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'MSP Customers' })
-        },
-        ...(hideMenuesforHsp || isSupport ? [] : [{
-          uri: '/dashboard/mspRecCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'RUCKUS End Customers' })
-        }])
-        ]),
+        ...hspMspMenues,
         ...((isNonVarMSP || isTechPartner) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,

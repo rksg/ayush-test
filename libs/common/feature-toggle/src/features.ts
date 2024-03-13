@@ -2,6 +2,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 /* eslint-disable max-len */
 export enum Features {
+  ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
@@ -45,6 +46,7 @@ export enum Features {
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
+  EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',

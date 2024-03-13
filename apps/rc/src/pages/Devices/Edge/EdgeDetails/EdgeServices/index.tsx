@@ -29,6 +29,7 @@ export const EdgeServices = () => {
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const settingsId = 'edge-services-table'
@@ -56,6 +57,9 @@ export const EdgeServices = () => {
         break
       case EdgeServiceTypeEnum.FIREWALL:
         setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
+        break
+      case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+        setDrawerVisible(isEdgePinReady)
         break
       default:
         setCurrentData(data)

@@ -1,7 +1,9 @@
 import '@testing-library/react'
-import { Provider }                                     from '@acx-ui/store'
-import { findTBody, fireEvent, render, screen, within } from '@acx-ui/test-utils'
-import { noDataDisplay }                                from '@acx-ui/utils'
+import { rest } from 'msw'
+
+import { Provider, rbacApiURL }                                     from '@acx-ui/store'
+import { findTBody, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { noDataDisplay }                                            from '@acx-ui/utils'
 
 import { mockMangedUsers } from './__tests__/fixtures'
 import { UsersTable }      from './Table'
@@ -21,6 +23,15 @@ const handleDeleteUser = jest.fn()
 const setDrawerType = jest.fn()
 const setUsersCount = jest.fn()
 describe('UsersTable', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(
+        ctx.json(
+          [{ key: 'brand-name', value: 'testFranchisor' }]
+        ))
+      )
+    )
+  })
   it('should render table correctly', async () => {
     render(<UsersTable
       toggleDrawer={toggleDrawer}

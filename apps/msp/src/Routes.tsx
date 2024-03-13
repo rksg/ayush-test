@@ -1,5 +1,6 @@
 import { Brand360 }                                         from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
@@ -50,13 +51,20 @@ function Init () {
 }
 
 export default function MspRoutes () {
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const navigateToDashboard = isHspSupportEnabled
+    ? '/dashboard/mspRecCustomers'
+    : '/dashboard/mspCustomers'
+
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
       <Route path='*' element={<PageNotFound />} />
       <Route index element={<Init />} />
       <Route
         path='dashboard'
-        element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
+        element={<TenantNavigate replace to={navigateToDashboard} tenantType='v'/>}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
