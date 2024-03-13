@@ -33,15 +33,14 @@ export const TooltipGlobalStyle = createGlobalStyle`
   }
 `
 
-const withDottedUnderline = css`
-  text-decoration: dotted underline;
-  // below css will hide the default safari tooltip
-  :after {
-    content: '';
-    display: block;
-  }
-`
-
 export const TooltipWrapper = styled.span<{ $dottedUnderline: boolean }>`
-  ${props => props.$dottedUnderline && withDottedUnderline}
+  ${props => props.$dottedUnderline && css`
+    span {
+      text-decoration: dotted underline;
+      :after {
+        content: '';
+        display: block;
+      }
+    }
+  `}
 `
