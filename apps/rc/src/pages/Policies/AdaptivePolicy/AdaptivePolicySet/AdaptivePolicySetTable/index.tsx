@@ -98,8 +98,7 @@ export default function AdaptivePolicySetTable () {
           const policies = row.policyNames ?? []
           return <SimpleListTooltip items={policies}
             displayText={row.mappedPolicyCount}
-            totalCountOfItems={row.mappedPolicyCount}
-          />
+            totalCountOfItems={row.mappedPolicyCount}/>
         }
       },
       {

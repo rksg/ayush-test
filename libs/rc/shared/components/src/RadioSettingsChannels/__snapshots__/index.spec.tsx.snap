@@ -76,8 +76,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -95,7 +95,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               48
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                     <label
@@ -114,8 +114,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -133,7 +133,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               64
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                     <label
@@ -152,8 +152,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -171,7 +171,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               112
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                     <label
@@ -190,8 +190,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -209,7 +209,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               128
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                     <label
@@ -228,8 +228,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -247,7 +247,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               144
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                     <label
@@ -266,8 +266,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                         />
                       </span>
                       <span>
-                        <div
-                          class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                        <span
+                          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                         >
                           <span
                             class="channels"
@@ -285,7 +285,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                               161
                             </span>
                           </span>
-                        </div>
+                        </span>
                       </span>
                     </label>
                   </div>
