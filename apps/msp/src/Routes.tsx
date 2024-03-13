@@ -8,7 +8,7 @@ import {
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
   AccessControlForm,
-  ConfigTemplateVisibilityController
+  useConfigTemplateVisibilityMap
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -104,6 +104,8 @@ function CustomersRoutes () {
 }
 
 function ConfigTemplatesRoutes () {
+  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
+
   return rootRoutes(
     <Route path=':tenantId/v/'>
       <Route path={getConfigTemplatePath()} element={<LayoutWithConfigTemplateContext />}>
@@ -111,7 +113,7 @@ function ConfigTemplatesRoutes () {
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
         <Route path=':activeTab' element={<ConfigTemplate />} />
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.RADIUS}>
+        {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
             element={<AAAForm edit={false} />}
@@ -124,29 +126,29 @@ function ConfigTemplatesRoutes () {
             path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
             element={<AAAPolicyDetail />}
           />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.ACCESS_CONTROL_SET}>
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ACCESS_CONTROL_SET] &&
           <Route
             path={getPolicyRoutePath({
               type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
             })}
             element={<AccessControlForm editMode={false}/>}
           />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.NETWORK}>
+        }
+        {configTemplateVisibilityMap[ConfigTemplateType.NETWORK] && <>
           <Route path='networks/wireless/add' element={<NetworkForm />} />
           <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
           <Route path='networks/wireless/:networkId/network-details/:activeTab'
             element={<NetworkDetails />}
           />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.VENUE}>
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VENUE] && <>
           <Route path='venues/add' element={<VenuesForm />} />
           <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
           <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
           <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.DPSK}>
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.DPSK] && <>
           <Route
             path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
             element={<DpskForm />}
@@ -159,8 +161,8 @@ function ConfigTemplatesRoutes () {
             path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
             element={<DpskDetails />}
           />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.DHCP}>
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.DHCP] && <>
           <Route
             path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
             element={<DHCPForm/>}
@@ -173,8 +175,8 @@ function ConfigTemplatesRoutes () {
             path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
             element={<DHCPDetail/>}
           />
-        </ConfigTemplateVisibilityController>
-        <ConfigTemplateVisibilityController type={ConfigTemplateType.VLAN_POOL}>
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
           <Route
             path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
             element={<div>VLAN POOL Creation</div>}
@@ -187,7 +189,7 @@ function ConfigTemplatesRoutes () {
             path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
             element={<div>VLAN POOL Details</div>}
           />
-        </ConfigTemplateVisibilityController>
+        </>}
       </Route>
     </Route>
   )
