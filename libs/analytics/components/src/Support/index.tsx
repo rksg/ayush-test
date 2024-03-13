@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { Form, Checkbox, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
-import styled                         from 'styled-components/macro'
 
 import { useUpdateAccountMutation }       from '@acx-ui/analytics/services'
 import { getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
 import { StepsForm, Loader }              from '@acx-ui/components'
 
-export const Support = styled(({ className }: { className?: string }) => {
+export const Support = () => {
   const { $t } = useIntl()
   const [user, setUser] = useState(getUserProfile())
-  const [setSupport, result ] = useUpdateAccountMutation()
+  const [setSupport, result] = useUpdateAccountMutation()
 
   useEffect(()=>{
     if(result.data === 'OK') {
@@ -24,7 +23,7 @@ export const Support = styled(({ className }: { className?: string }) => {
   }, [result])
 
   return <Loader states={[result]}>
-    <div className={className}>
+    <StepsForm.DescriptionWrapper>
       <Form.Item>
         <Checkbox
           onChange={()=>setSupport({
@@ -42,6 +41,6 @@ export const Support = styled(({ className }: { className?: string }) => {
           By enabling this, you are granting RUCKUS support with temporary
           administrator-level access.` })}
       </Typography.Paragraph>
-    </div>
+    </StepsForm.DescriptionWrapper>
   </Loader>
-})`${StepsForm.DescriptionWrapper}`
+}

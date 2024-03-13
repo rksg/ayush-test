@@ -299,13 +299,7 @@ z-index: 5;
 }
 `
 
-export const DescriptionTextWrapper = css`
-  .greyText {
-    color: var(--acx-neutrals-50);
-  }
-`
-
-export const DescriptionWrapper = css`
+export const DescriptionWrapper = styled.div`
   & .ant-checkbox-wrapper-in-form-item {
     color: var(--acx-neutrals-60);
   }
@@ -320,6 +314,8 @@ export const DescriptionWrapper = css`
     align-content: flex-start;
   }
 
-  ${DescriptionTextWrapper}
+  .greyText {
+    color: var(--acx-neutrals-50);
+  }
 `
 
