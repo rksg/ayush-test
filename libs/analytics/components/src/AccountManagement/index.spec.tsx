@@ -1,12 +1,27 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { Provider }                from '@acx-ui/store'
+import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { AccountManagement, AccountManagementTabEnum } from '.'
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 jest.mock('../Support', () => ({
   ...jest.requireActual('../Support'),
   Support: () => <div data-testid='Support' />
 }))
+
+
+jest.mock('../ＯnboardedSystems', () => ({
+  ...jest.requireActual('../ＯnboardedSystems'),
+  Support: () => <div data-testid='ＯnboardedSystems' />
+}))
+
 
 describe('AccountManagement', () => {
   it('should render', async () => {
@@ -20,5 +35,13 @@ describe('AccountManagement', () => {
     expect(await screen.findByText('Licenses')).toBeVisible()
     expect(await screen.findByText('Schedules')).toBeVisible()
     expect(await screen.findByText('Webhooks')).toBeVisible()
+  })
+  it('should handle tab click', async () => {
+    render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    userEvent.click(await screen.findByText('Onboarded Systems'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/analytics/admin/onboarded', hash: '', search: ''
+    }))
   })
 })

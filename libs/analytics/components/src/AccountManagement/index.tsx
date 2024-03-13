@@ -3,7 +3,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Support } from '../Support'
+import { Support }          from '../Support'
+import { OnboardedSystems } from '../ＯnboardedSystems'
 
 import { TabNewTabLink, TabTenantLink } from './styledComponents'
 
@@ -30,8 +31,8 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: <TabNewTabLink to={'/analytics/admin/onboarded'}>
-      {$t({ defaultMessage: 'Onboarded Systems' })}</TabNewTabLink>
+    title: 'Onboarded Systems', //$t({ defaultMessage: 'Onboarded Systems' }),
+    component: <OnboardedSystems />
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
@@ -77,8 +78,6 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
-  // TODO: add tab onchange unit test after second tab added
-  /* istanbul ignore next */
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
     tab?.component && navigate({
