@@ -1,14 +1,16 @@
 import { ReactElement, ReactNode } from 'react'
 
+import * as UI from './styledComponent'
+
 interface TypeFormProps {
+  header?: ReactNode
   content: ReactElement
-  header?: () => ReactNode
 }
 
 export const TypeForm = (props: TypeFormProps) => {
   const { content, header } = props
   return <div>
-    {header && header()}
+    <UI.StyledWrapper>{header}</UI.StyledWrapper>
     {content}
   </div>
 }
