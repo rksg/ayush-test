@@ -153,6 +153,7 @@ describe('ApCompatibilityToolTip > ApCompatibilityFeature > ApCompatibilityDrawe
     })
 
     it('should direct display render correctly(Devices of Venue banner)', async () => {
+      mockedCloseDrawer.mockClear()
       render(
         <Provider>
           <Form>
@@ -177,6 +178,7 @@ describe('ApCompatibilityToolTip > ApCompatibilityFeature > ApCompatibilityDrawe
 
     it('should direct display render correctly(Devices of Venue)', async () => {
       const apName = 'AP-Test'
+      mockedCloseDrawer.mockClear()
       render(
         <Provider>
           <Form>
