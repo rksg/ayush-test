@@ -705,7 +705,7 @@ export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVMNetworksList, arg.params),
+      : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
@@ -890,7 +890,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVMNetworksList, arg.params),
+      : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
 

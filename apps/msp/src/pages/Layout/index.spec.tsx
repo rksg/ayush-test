@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, FirmwareUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
+import { Provider, rbacApiURL }                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                   from '@acx-ui/user'
 
@@ -269,7 +269,10 @@ describe('Layout', () => {
       rest.get(
         FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (req, res, ctx) => res(ctx.json({}))
-      )
+      ),
+      rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.json(
+        [{ key: 'brand-name', value: 'testBrand' }]
+      )))
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -313,7 +316,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'testBrand' })).toBeNull()
     await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
     await waitFor(async () => expect(await screen.findByText('MSP Customers')).toBeInTheDocument())
   })
@@ -336,7 +339,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'testBrand' })).toBeVisible()
     await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
     await waitFor(async () => expect(await screen.findByText('MSP Customers')).not.toBeVisible())
   })
@@ -453,7 +456,7 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
-    expect(screen.queryByRole('menuitem', { name: 'Brand 360' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'testBrand' })).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(await screen.findByText('My Customers')).toBeVisible()
   })
