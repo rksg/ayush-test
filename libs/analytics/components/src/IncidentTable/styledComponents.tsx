@@ -26,7 +26,7 @@ export const DescriptionSpan = styled.div`
   color: var(--acx-accents-blue-50);
   cursor: pointer;
   &:hover {
-    text-decoration: dotted underline;
+    text-decoration: underline;
   }
 `
 
