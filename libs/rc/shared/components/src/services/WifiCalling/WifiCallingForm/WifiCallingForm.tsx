@@ -7,17 +7,17 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import { useCreateWifiCallingServiceMutation }       from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG,
-  getServiceRoutePath,
+  generateServicePageHeaderTitle,
   QosPriorityEnum,
   ServiceOperation,
-  ServiceType,
-  useServiceListBreadcrumb
+  ServiceType, useConfigTemplate,
+  useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -29,12 +29,10 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 
 export const WifiCallingForm = () => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING,
-    oper: ServiceOperation.LIST
-  })
-  const linkToServices = useTenantLink(tablePath)
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
 
   const serviceName = ''
@@ -68,7 +66,7 @@ export const WifiCallingForm = () => {
         params,
         payload: WifiCallingFormValidate(state)
       }).unwrap()
-      navigate(linkToServices, { replace: true })
+      navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -77,12 +75,12 @@ export const WifiCallingForm = () => {
   return (
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
+        title={generateServicePageHeaderTitle(false, isTemplate, ServiceType.WIFI_CALLING)}
         breadcrumb={breadcrumb}
       />
       <StepsForm<CreateNetworkFormFields>
         form={form}
-        onCancel={() => navigate(linkToServices, { replace: true })}
+        onCancel={() => navigate(previousPath, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>

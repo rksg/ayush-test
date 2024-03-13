@@ -5,45 +5,39 @@ import moment        from 'moment'
 import { useIntl }   from 'react-intl'
 
 
-import {
-  Table,
-  TableProps,
-  Loader,
-  showActionModal,
-  Button
-} from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
+import { Button, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { DateFormatEnum, userDateTimeFormat }                 from '@acx-ui/formatter'
 import {
   ConfigTemplateLink,
   PolicyConfigTemplateLink,
-  ServiceConfigTemplateLink,
-  renderConfigTemplateDetailsComponent
+  renderConfigTemplateDetailsComponent,
+  ServiceConfigTemplateLink
 } from '@acx-ui/rc/components'
 import {
   useDelAppPolicyMutation,
   useDelDevicePolicyMutation,
-  useDeleteAccessControlProfileMutation,
-  useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
+  useDeleteAccessControlProfileMutation,
+  useDeleteDhcpTemplateMutation,
+  useDeleteDpskTemplateMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation,
+  useDeleteVenueTemplateMutation, useDeleteWifiCallingServiceMutation,
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
-  useGetConfigTemplateListQuery,
-  useDeleteDhcpTemplateMutation
+  useGetConfigTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  PolicyOperation,
-  PolicyType,
-  policyTypeLabelMapping,
-  useTableQuery,
+  AccessControlPolicyForTemplateCheckType,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  ServiceType,
+  PolicyOperation,
+  PolicyType,
+  policyTypeLabelMapping,
   ServiceOperation,
+  ServiceType,
   serviceTypeLabelMapping,
-  AccessControlPolicyForTemplateCheckType
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
@@ -52,7 +46,8 @@ import { getIntl }                                 from '@acx-ui/utils'
 import {
   AccessControlSubPolicyDrawers,
   AccessControlSubPolicyVisibility,
-  createAccessControlPolicyMenuItem, INIT_STATE,
+  createAccessControlPolicyMenuItem,
+  INIT_STATE,
   useAccessControlSubPolicyVisible
 } from './AccessControlPolicy'
 import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
@@ -268,6 +263,7 @@ function useDeleteMutation () {
   const [ deleteApplication ] = useDelAppPolicyMutation()
   const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
   const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
+  const [ deleteWifiCalling ] = useDeleteWifiCallingServiceMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -279,7 +275,8 @@ function useDeleteMutation () {
     [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
     [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
-    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
+    [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling
   }
 }
 
@@ -315,7 +312,8 @@ function getAddTemplateMenuProps (props: {
         label: $t({ defaultMessage: 'Services' }),
         children: [
           createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
-          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
+          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp'),
+          createServiceMenuItem(ServiceType.WIFI_CALLING, 'add-wifiCalling')
         ]
       }
     ]

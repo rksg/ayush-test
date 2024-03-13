@@ -8,7 +8,7 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm, WifiCallingForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -151,6 +151,13 @@ function ConfigTemplatesRoutes () {
         <Route
           path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
           element={<DHCPDetail/>}
+        />
+        <Route
+          path={getServiceRoutePath({
+            type: ServiceType.WIFI_CALLING,
+            oper: ServiceOperation.CREATE
+          })}
+          element={<WifiCallingForm />}
         />
       </Route>
     </Route>
