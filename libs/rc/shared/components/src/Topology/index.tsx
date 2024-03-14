@@ -217,12 +217,44 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       , y: d?.nativeEvent.layerY })
   }, 100)
 
+
+  function rearrangedData (data: Link) {
+    return {
+      source: data.target,
+      target: data.source,
+      from: data.to,
+      to: data.from,
+      fromMac: data.toMac,
+      toMac: data.fromMac,
+      fromName: data.toName,
+      toName: data.fromName,
+      connectedPort: data.correspondingPort,
+      correspondingPort: data.connectedPort,
+      fromSerial: data.toSerial,
+      toSerial: data.fromSerial,
+      connectedPortUntaggedVlan: data.correspondingPortUntaggedVlan,
+      correspondingPortUntaggedVlan: data.connectedPortUntaggedVlan,
+      connectedPortTaggedVlan: data.correspondingPortTaggedVlan,
+      correspondingPortTaggedVlan: data.connectedPortTaggedVlan,
+      poeEnabled: data.poeEnabled,
+      linkSpeed: data.linkSpeed,
+      poeUsed: data.poeUsed,
+      poeTotal: data.poeTotal,
+      connectionType: data.connectionType,
+      connectionStatus: data.connectionStatus
+    }
+  }
+
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
     if(topologyData?.edges){
-      const sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
-      const targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
-      const selectedEdge = topologyData.edges.filter(
+      let sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
+      let targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
+      let selectedEdge = topologyData.edges.filter(
         item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
+      if(!selectedEdge){ // Swap source and target nodes if API return reverse result
+        selectedEdge = rearrangedData(topologyData.edges.filter(
+          item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
+      }
       if (edge.source.data.id === 'Cloud')
         return
       setTooltipSourceNode(sourceNode)

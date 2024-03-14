@@ -799,6 +799,10 @@ export interface Link {
 	connectedPortUntaggedVlan?: string;
 	correspondingPortTaggedVlan?: string;
 	correspondingPortUntaggedVlan?: string;
+	fromMac?: string;
+	toMac?: string;
+	fromSerial?: string;
+	toSerial?: string;
 }
 export interface GraphData {
     type: string;

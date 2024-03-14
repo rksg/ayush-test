@@ -121,7 +121,8 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
-        {(tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
+        {tooltipSourceNode?.type === 'Switch' && tooltipTargetNode?.type === 'Switch' &&
+        (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
         tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan) &&
         <>
           <Descriptions.Item
