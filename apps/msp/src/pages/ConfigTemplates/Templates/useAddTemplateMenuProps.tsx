@@ -11,7 +11,6 @@ import {
   configTemplatePolicyTypeMap, configTemplateServiceTypeMap,
   policyTypeLabelMapping, serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -60,7 +59,7 @@ function usePolicyMenuItems (): ItemType[] {
   ]
 }
 
-function usePolicyMenuItem (configTemplateType: ConfigTemplateType): ItemType {
+export function usePolicyMenuItem (configTemplateType: ConfigTemplateType): ItemType {
   const { $t } = useIntl()
   const visibilityMap = useConfigTemplateVisibilityMap()
   const policyType = configTemplatePolicyTypeMap[configTemplateType]
@@ -84,8 +83,8 @@ function useServiceMenuItems (): ItemType[] {
   ]
 }
 
-function useServiceMenuItem (configTemplateType: ConfigTemplateType): ItemType {
-  const { $t } = getIntl()
+export function useServiceMenuItem (configTemplateType: ConfigTemplateType): ItemType {
+  const { $t } = useIntl()
   const visibilityMap = useConfigTemplateVisibilityMap()
   const serviceType = configTemplateServiceTypeMap[configTemplateType]
 

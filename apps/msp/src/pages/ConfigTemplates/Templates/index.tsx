@@ -45,7 +45,6 @@ export function ConfigTemplateList () {
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
-  // eslint-disable-next-line max-len
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -236,6 +235,6 @@ function useDeleteMutation () {
     [ConfigTemplateType.DPSK]: deleteDpskTemplate,
     [ConfigTemplateType.ACCESS_CONTROL]: deleteAccessControlSet,
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
-    [ConfigTemplateType.VLAN_POOL]: deleteDhcpTemplate // TODO: Just for testing, remove this when VLAN Pool is implemented
+    [ConfigTemplateType.VLAN_POOL]: deleteDhcpTemplate // TODO: Just for verifying the feature flag logic
   }
 }

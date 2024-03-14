@@ -111,7 +111,7 @@ function CustomersRoutes () {
   )
 }
 
-function ConfigTemplatesRoutes () {
+export function ConfigTemplatesRoutes () {
   const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
 
   return rootRoutes(
