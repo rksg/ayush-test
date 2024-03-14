@@ -5,7 +5,6 @@ import {
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
-import { ConnectionCapability } from '../models/ConnectionCapability'
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
@@ -13,6 +12,7 @@ import { NetworkVenue }                   from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
 import { Radius }                         from '../models/Radius'
+import { NetworkHotspot20Settings } from '../models/NetworkHotspot20Settings'
 
 
 export interface CreateNetworkFormFields {
@@ -146,14 +146,7 @@ export interface NetworkSaveData {
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
   useHotspot20?: boolean
-  hotspot20Settings?: {
-    allowInternetAccess?: boolean
-    accessNetworkType?:
-      PRIVATE
-    ipv4AddressType?:
-      SINGLE_NATED_PRIVATE
-    connectionCapability?: ConnectionCapability
-  }
+  hotspot20Settings?: NetworkHotspot20Settings
 }
 
 export enum MaxRateEnum {

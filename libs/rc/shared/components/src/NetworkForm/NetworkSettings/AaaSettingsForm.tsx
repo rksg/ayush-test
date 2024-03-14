@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Input, Space } from 'antd'
 import {
@@ -83,6 +83,7 @@ function SettingsForm () {
   const { editMode, cloneMode, setData, data } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
+  const hotspot20 = useWatch('useHotspot20')
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportHotspot20 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const labelWidth = '516px'
@@ -160,7 +161,7 @@ function SettingsForm () {
               />
             </Space>
             <Form.Item
-              name={['wlan', 'useHotspot20']}
+              name='useHotspot20'
               initialValue={false}
               valuePropName='checked'>
               <Switch
@@ -194,7 +195,7 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-        <AaaService />
+      {supportHotspot20 && hotspot20 ? (<Hotspot20Service />) : (<AaaService />)}
       </div>
     </Space>
   )
@@ -313,6 +314,66 @@ function SettingsForm () {
           }
         </>
         }
+      </Space>
+    )
+  }
+
+  function Hotspot20Service() {
+    const [wifiOperatorId, setWifiOperatorId] = useState('')
+    const [identityProviderId, setIdentityProviderId] = useState('')
+
+    const handleOperatorChange = (operatorId: string) => {
+      setWifiOperatorId(operatorId)
+    }
+
+    const handleProviderChange = (providerId: string) => {
+      setIdentityProviderId(providerId)
+    }
+
+    return (
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <>
+          <Form.Item
+            label={$t({ defaultMessage: 'Wi-Fi Operator' })}
+            name='hotspot20Operator'
+            rules={[
+              { required: true },
+              { validator: (_, value) => {
+                if (value === 'Select...') {
+                  return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
+                }
+                return Promise.resolve()
+              }}
+            ]}
+            >
+            <Select
+              onChange={handleOperatorChange}
+              value={wifiOperatorId}
+              placeholder={$t({ defaultMessage: 'Select...' })}>
+            </Select>
+          </Form.Item>
+        </>
+        <>
+          <Form.Item
+            label='Identity Provider'
+            name='hotspot20Identity'
+            rules={[
+              { required: true },
+              { validator: (_, value) => {
+                if (value === 'Select...') {
+                  return Promise.reject($t({ defaultMessage: 'Please select the identity provider' }))
+                }
+                return Promise.resolve()
+              }}
+            ]}
+            >
+            <Select
+              onChange={handleProviderChange}
+              value={identityProviderId}
+              placeholder={$t({ defaultMessage: 'Select...' })}>
+            </Select>
+          </Form.Item>
+        </>
       </Space>
     )
   }
