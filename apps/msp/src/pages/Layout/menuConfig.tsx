@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
+import { useBrand360Config }                        from '@acx-ui/analytics/services'
 import { LayoutProps }                              from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -30,6 +31,7 @@ import { AccountType  }                                   from '@acx-ui/utils'
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
   isDogfood?: boolean, parentMspId?: string) {
   const { $t } = useIntl()
+  const { names: { brand } } = useBrand360Config()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
@@ -122,7 +124,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   return [
     ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
       uri: '/brand360',
-      label: $t({ defaultMessage: 'Brand 360' }),
+      label: brand,
       tenantType: 'v' as TenantType,
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid

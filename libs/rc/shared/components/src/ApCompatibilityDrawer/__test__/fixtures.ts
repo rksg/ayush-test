@@ -60,3 +60,21 @@ export const mockFeatureCompatibilities: ApFeatureSet = {
   requiredFw: '6.2.3.103.251',
   requiredModel: ['11be']
 }
+
+export const mockVenuelist = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      city: 'New York',
+      country: 'United States',
+      description: 'My-Venue',
+      id: '8caa8f5e01494b5499fa156a6c565138',
+      latitude: '40.769141',
+      longitude: '-73.9429713',
+      name: 'My-Venue',
+      status: '1_InSetupPhase',
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
+    }
+  ]
+}

@@ -374,12 +374,38 @@ const edgeFirewallRoutes = () => {
   </>
 }
 
+const edgePinRoutes = () => {
+  return <>
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+        oper: ServiceOperation.CREATE })}
+      element={<AddPersonalIdentitNetwork />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+        oper: ServiceOperation.LIST })}
+      element={<PersonalIdentityNetworkTable />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+        oper: ServiceOperation.DETAIL })}
+      element={<PersonalIdentityNetworkDetail />}
+    />
+    <Route
+      path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+        oper: ServiceOperation.EDIT })}
+      element={<EditPersonalIdentityNetwork />}
+    />
+  </>
+}
+
 function ServiceRoutes () {
   const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -456,26 +482,9 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
         element={<DpskDetails />}
       />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
-          oper: ServiceOperation.CREATE })}
-        element={<AddPersonalIdentitNetwork />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
-          oper: ServiceOperation.LIST })}
-        element={<PersonalIdentityNetworkTable />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
-          oper: ServiceOperation.DETAIL })}
-        element={<PersonalIdentityNetworkDetail />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
-          oper: ServiceOperation.EDIT })}
-        element={<EditPersonalIdentityNetwork />}
-      />
+
+      {(isEdgePinReady) && edgePinRoutes()}
+
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}

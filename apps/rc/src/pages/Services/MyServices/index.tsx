@@ -39,6 +39,7 @@ export default function MyServices () {
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   const services = [
     {
@@ -67,9 +68,9 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
     },
     {
       type: ServiceType.EDGE_SD_LAN,
