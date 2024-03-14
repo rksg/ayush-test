@@ -213,7 +213,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
-        dpskNetworkList: data?.filter(item =>
+        dpskNetworkList: data?.data?.filter(item =>
           item.type === 'dpsk' && !isDsaeOnboardingNetwork(item)),
         isNetworkLoading: isLoading
       }

@@ -130,7 +130,7 @@ export interface EdgePortStatus {
   sortIdx: number
   vlan: string
   subnet: string
-  interfaceName?: EdgeSerialNumber
+  interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
 }
@@ -393,6 +393,7 @@ Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
 
 export interface EdgePortInfo {
   serialNumber: EdgeSerialNumber
+  id: string
   portName: string
   ip: string
   mac: string

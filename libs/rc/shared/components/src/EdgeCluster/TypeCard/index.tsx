@@ -1,6 +1,7 @@
 import { Card as AntCard, Spin, Tooltip } from 'antd'
 
-import { RadioCard } from '@acx-ui/components'
+import { RadioCard }          from '@acx-ui/components'
+import { WarningCircleSolid } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -41,7 +42,7 @@ export const EdgeClusterTypeCard = ({
           bordered={false}
           actions={warningTooltip
             ? [<Tooltip title={warningTooltip}>
-              <UI.InformationSolidIcon />
+              <UI.WarningCircleSolidIcon />
             </Tooltip>]
             : undefined}
         >

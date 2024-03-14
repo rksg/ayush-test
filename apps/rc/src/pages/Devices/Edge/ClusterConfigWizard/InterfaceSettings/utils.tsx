@@ -78,6 +78,7 @@ export const getLanInterfaces = (
     const lanLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
       ?.lags.filter(item => item.portType === EdgePortTypeEnum.LAN)
       .map(item => ({
+        id: `${item.id}`,
         serialNumber: edgeNode.serialNumber,
         portName: `lag${item.id}`,
         ip: item.ip ?? '',
@@ -93,6 +94,7 @@ export const getLanInterfaces = (
       Object.values(portData[edgeNode.serialNumber])
         .flat().filter(item => item.portType === EdgePortTypeEnum.LAN)
         .map(item => ({
+          id: item.id,
           serialNumber: edgeNode.serialNumber,
           portName: item.interfaceName ?? '',
           ip: item.ip,

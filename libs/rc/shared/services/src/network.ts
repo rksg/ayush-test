@@ -541,7 +541,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
-    venueNetworkActivationsDataList: build.query<NetworkSaveData[], RequestPayload>({
+    venueNetworkActivationsDataList: build.query<TableResult<NetworkSaveData>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkActivations = {
           ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
@@ -550,14 +550,28 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkActivationsQuery = await fetchWithBQ(networkActivations)
         const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
 
-        let networkDeepList = { response: [] } as { response: NetworkSaveData[] }
+        let networkDeepList// = { response: [] } as { response: NetworkSaveData[] }
 
         if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
           const networkIds = networkVenueList.data.map(item => item.networkId!) || []
-          networkDeepList = await getNetworkDeepList(networkIds, fetchWithBQ)
+          const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList)
+          const networkListQuery = await fetchWithBQ({ ...networkListReq, body: {
+            filters: { id: networkIds }
+          } })
+          networkDeepList = networkListQuery.data as TableResult<NetworkSaveData>
+
+          // networkDeepList = await getNetworkDeepList(networkIds, fetchWithBQ)
         }
 
-        return { data: networkDeepList.response }
+        return networkVenueList
+          ? { data: {
+            ...networkVenueList,
+            // data: networkDeepList.response as NetworkSaveData[]
+            data: networkDeepList?.data as NetworkSaveData[]
+          } as TableResult<NetworkSaveData> }
+          : {
+            error: networkActivationsQuery.error as FetchBaseQueryError
+          }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -937,6 +951,8 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
+    console.log(item)
+
     if (item?.dsaeOnboardNetwork) {
       item = { ...item,
         ...{ children: [{ ...item?.dsaeOnboardNetwork,
