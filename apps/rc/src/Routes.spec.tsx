@@ -234,6 +234,10 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDe
   return <div data-testid='AdaptivePolicySetDetail' />
 })
 
+jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
+  return <div data-testid='AddEdgeDhcp' />
+})
+
 jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
   return <div data-testid='AddEdgeFirewall' />
 })
@@ -606,6 +610,28 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+  })
+
+  test('should not navigate to create Edge DHCP page', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.queryByTestId('AddEdgeDhcp')).toBeNull()
+  })
+
+  test('should not navigate to create Edge firewall page', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.queryByTestId('AddEdgeFirewall')).toBeNull()
   })
 
   describe('RcRoutes: Services > Edge SD-LAN service', () => {

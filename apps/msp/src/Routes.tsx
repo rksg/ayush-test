@@ -1,6 +1,6 @@
 import { Brand360 }                                         from '@acx-ui/analytics/components'
 import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import {
@@ -8,7 +8,7 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm, AccessControlDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -49,13 +49,20 @@ function Init () {
 }
 
 export default function MspRoutes () {
+  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const navigateToDashboard = isHspSupportEnabled
+    ? '/dashboard/mspRecCustomers'
+    : '/dashboard/mspCustomers'
+
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
       <Route path='*' element={<PageNotFound />} />
       <Route index element={<Init />} />
       <Route
         path='dashboard'
-        element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
+        element={<TenantNavigate replace to={navigateToDashboard} tenantType='v'/>}
       />
       <Route path='dashboard/mspCustomers/*' element={<CustomersRoutes />} />
       <Route path='dashboard/mspRecCustomers/*' element={<CustomersRoutes />} />
@@ -131,6 +138,18 @@ function ConfigTemplatesRoutes () {
             type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
           })}
           element={<AccessControlForm editMode={false}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT
+          })}
+          element={<AccessControlForm editMode={true}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL
+          })}
+          element={<AccessControlDetail />}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />

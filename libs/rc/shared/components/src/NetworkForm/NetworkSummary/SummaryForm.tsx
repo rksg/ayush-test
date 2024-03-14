@@ -4,11 +4,20 @@ import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }                                                                           from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                                          from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery }                                                             from '@acx-ui/rc/services'
-import { Demo, NetworkSaveData, NetworkTypeEnum, networkTypes, transformDisplayText, Venue, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { useParams }                                                                                           from '@acx-ui/react-router-dom'
+import { StepsFormLegacy, Subtitle }               from '@acx-ui/components'
+import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
+  Demo,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  networkTypes,
+  transformDisplayText,
+  useConfigTemplate,
+  Venue,
+  WlanSecurityEnum
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { captiveTypes } from '../contentsMap'
 
@@ -31,10 +40,16 @@ export function SummaryForm (props: {
   portalData?: Demo
 }) {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { summaryData, portalData } = props
   const params = useParams()
-  const { data } = useVenuesListQuery({ params:
-    { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
+  const { data } = useVenuesListQuery({
+    params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
+    payload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    }
+  })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj
