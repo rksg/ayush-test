@@ -178,7 +178,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         key: (node.id as string).toString(),
         label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
           {node.name as string}</Typography.Title>
-        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
+        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
+        <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
         children: node.label,
         item: node
       })) as OptionType[]
@@ -264,6 +265,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   !!((option as OptionType).item.name as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.mac as string).toLowerCase()
+                    .includes(inputValue.toLowerCase()) ||
+                  !!((option as OptionType).item.ipAddress as string).toLowerCase()
                     .includes(inputValue.toLowerCase())
               }
               }

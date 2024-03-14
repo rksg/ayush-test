@@ -765,6 +765,7 @@ export interface Node {
 	label?: string;
 	cloudPort?: string;
 	isConnectedCloud?: boolean;
+	ipAddress?: string;
 }
 
 export interface UINode {
