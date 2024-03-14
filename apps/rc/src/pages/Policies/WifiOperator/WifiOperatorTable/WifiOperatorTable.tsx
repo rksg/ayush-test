@@ -166,10 +166,10 @@ function useColumns () {
       render: (_, { friendlyNames }) => {
         if (!friendlyNames || friendlyNames.length === 0) return 0
 
-        // const nameEnum = FriendlyNameEnum[fn.language as FriendlyNameEnum];
-
         return <SimpleListTooltip
-          items={friendlyNames.map(fn => `[${$t(friendlyNameEnumOptions[FriendlyNameEnum[fn.language as FriendlyNameEnum]])}]: ${fn.name}` )}
+          items={friendlyNames.map(fn =>
+            `[${$t(friendlyNameEnumOptions[FriendlyNameEnum[fn.language as FriendlyNameEnum]])}]
+            : ${fn.name}` )}
           displayText={friendlyNames.length} />
       }
     },
