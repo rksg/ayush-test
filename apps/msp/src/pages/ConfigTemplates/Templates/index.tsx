@@ -16,33 +16,22 @@ import {
   renderConfigTemplateDetailsComponent
 } from '@acx-ui/rc/components'
 import {
-  useDelAppPolicyMutation,
-  useDelDevicePolicyMutation,
-  useDeleteAccessControlProfileMutation,
   useDeleteDpskTemplateMutation,
   useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
   useDeleteVenueTemplateMutation,
-  useDelL2AclPolicyMutation,
-  useDelL3AclPolicyMutation,
   useGetConfigTemplateListQuery,
-  useDeleteDhcpTemplateMutation
+  useDeleteDhcpTemplateMutation, useDeleteAccessControlProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
-  getConfigTemplateEditPath,
-  AccessControlPolicyForTemplateCheckType
+  getConfigTemplateEditPath
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import {
-  AccessControlSubPolicyDrawers,
-  INIT_STATE,
-  useAccessControlSubPolicyVisible
-} from './AccessControlPolicy'
 import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
 import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
@@ -57,7 +46,6 @@ export function ConfigTemplateList () {
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
   // eslint-disable-next-line max-len
-  const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -72,17 +60,8 @@ export function ConfigTemplateList () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        if (selectedRow.type in AccessControlPolicyForTemplateCheckType) {
-          setAccessControlSubPolicyVisible({
-            ...INIT_STATE,
-            [selectedRow.type]: {
-              visible: true, id: selectedRow.id
-            }
-          })
-        } else {
-          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
-        }
+        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
       }
     },
     {
@@ -149,10 +128,6 @@ export function ConfigTemplateList () {
         setVisible={setAppliedToTenantDrawerVisible}
         selectedTemplates={selectedTemplates}
       />}
-      <AccessControlSubPolicyDrawers
-        accessControlSubPolicyVisible={accessControlSubPolicyVisible}
-        setAccessControlSubPolicyVisible={setAccessControlSubPolicyVisible}
-      />
     </>
   )
 }
@@ -251,11 +226,7 @@ function useDeleteMutation () {
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
   const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
-  const [ deleteLayer2 ] = useDelL2AclPolicyMutation()
-  const [ deleteLayer3 ] = useDelL3AclPolicyMutation()
-  const [ deleteDevice ] = useDelDevicePolicyMutation()
-  const [ deleteApplication ] = useDelAppPolicyMutation()
-  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileTemplateMutation()
   const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
 
   return {
@@ -263,11 +234,7 @@ function useDeleteMutation () {
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
     [ConfigTemplateType.VENUE]: deleteVenueTemplate,
     [ConfigTemplateType.DPSK]: deleteDpskTemplate,
-    [ConfigTemplateType.LAYER_2_POLICY]: deleteLayer2,
-    [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
-    [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
-    [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet,
+    [ConfigTemplateType.ACCESS_CONTROL]: deleteAccessControlSet,
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
     [ConfigTemplateType.VLAN_POOL]: deleteDhcpTemplate // TODO: Just for testing, remove this when VLAN Pool is implemented
   }

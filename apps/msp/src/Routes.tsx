@@ -8,7 +8,7 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm,
+  AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap
 } from '@acx-ui/rc/components'
 import {
@@ -135,14 +135,26 @@ function ConfigTemplatesRoutes () {
             element={<AAAPolicyDetail />}
           />
         </>}
-        {configTemplateVisibilityMap[ConfigTemplateType.ACCESS_CONTROL_SET] &&
+        {configTemplateVisibilityMap[ConfigTemplateType.ACCESS_CONTROL] && <>
           <Route
             path={getPolicyRoutePath({
               type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
             })}
             element={<AccessControlForm editMode={false}/>}
           />
-        }
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT
+            })}
+            element={<AccessControlForm editMode={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL
+            })}
+            element={<AccessControlDetail />}
+          />
+        </>}
         {configTemplateVisibilityMap[ConfigTemplateType.NETWORK] && <>
           <Route path='networks/wireless/add' element={<NetworkForm />} />
           <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />

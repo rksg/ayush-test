@@ -12,11 +12,7 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.DPSK]: isBetaFFOn,
     [ConfigTemplateType.RADIUS]: isBetaFFOn,
     [ConfigTemplateType.DHCP]: isBetaFFOn,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: isBetaFFOn,
-    [ConfigTemplateType.LAYER_2_POLICY]: isBetaFFOn,
-    [ConfigTemplateType.LAYER_3_POLICY]: isBetaFFOn,
-    [ConfigTemplateType.DEVICE_POLICY]: isBetaFFOn,
-    [ConfigTemplateType.APPLICATION_POLICY]: isBetaFFOn,
+    [ConfigTemplateType.ACCESS_CONTROL]: isBetaFFOn,
     [ConfigTemplateType.VLAN_POOL]: isBetaFFOn && isPhase2On
   }
 

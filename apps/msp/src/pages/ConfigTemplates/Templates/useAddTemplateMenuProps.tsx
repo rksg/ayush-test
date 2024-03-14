@@ -55,7 +55,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
 function usePolicyMenuItems (): ItemType[] {
   return [
     usePolicyMenuItem(ConfigTemplateType.RADIUS),
-    usePolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL_SET),
+    usePolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL),
     usePolicyMenuItem(ConfigTemplateType.VLAN_POOL)
   ]
 }
