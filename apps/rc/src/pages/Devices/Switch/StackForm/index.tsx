@@ -60,6 +60,7 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
+  SwitchMessages,
   isSameModelFamily,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
@@ -753,7 +754,25 @@ export function StackForm () {
           cancel: $t({ defaultMessage: 'Cancel' })
         }}
       >
-        <StepsFormLegacy.StepForm>
+        <StepsFormLegacy.StepForm
+          onFinishFailed={({ errorFields })=> {
+            const detailsFields = ['venueId', 'name', 'description']
+            const hasErrorFields = !!errorFields.length
+            const isDetailsFieldsError = errorFields.filter(field =>
+              detailsFields.includes(field.name[0] as string)
+            ).length > 0
+
+            if (hasErrorFields && !isDetailsFieldsError) {
+              setCurrentTab('settings')
+              showToast({
+                type: 'error',
+                content: readOnly
+                  ? $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI)
+                  : $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES)
+              })
+            }
+          }}
+        >
           <Loader
             states={[
               {
@@ -920,6 +939,7 @@ export function StackForm () {
                     <SwitchStackSetting
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
+                      deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
                     />

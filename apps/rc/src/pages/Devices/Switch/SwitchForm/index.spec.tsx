@@ -1,13 +1,16 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
+import { message }    from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { venueApi }     from '@acx-ui/rc/services'
-import { CommonUrlsInfo,
+import { useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { switchApi, venueApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures,
-  SwitchUrlsInfo } from '@acx-ui/rc/utils'
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
@@ -265,6 +268,7 @@ describe('Add switch form', () => {
 
 
 describe('Edit switch form', () => {
+  const mockUpdateSwitch = jest.fn()
   const params = {
     tenantId: 'tenant-id',
     switchId: 'switch-id',
@@ -272,8 +276,8 @@ describe('Edit switch form', () => {
     action: 'edit'
   }
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
@@ -288,8 +292,15 @@ describe('Edit switch form', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
+        (_, res, ctx) => {
+          mockUpdateSwitch()
+          return res(ctx.json({ requestId: 'request-id' }))
+        })
     )
+  })
+  afterEach(() => {
+    message.destroy()
+    mockUpdateSwitch.mockClear()
   })
 
   it('should render edit switch form correctly', async () => {
@@ -343,6 +354,7 @@ describe('Edit switch form', () => {
     const applyButton = await screen.findByRole('button', { name: /apply/i })
 
     await userEvent.click(applyButton)
+    expect(mockUpdateSwitch).toBeCalled()
   })
 
   it('should submit edit switch form with dynamic ip mode correctly', async () => {
@@ -357,6 +369,7 @@ describe('Edit switch form', () => {
     await waitFor(() => expect(screen.getByLabelText('Subnet Mask')).toBeDisabled())
     const applyButton = screen.getByRole('button', { name: /apply/i })
     await userEvent.click(applyButton)
+    expect(mockUpdateSwitch).toBeCalled()
   })
 
   it('should render edit switch form with readonly mode correctly', async () => {
@@ -373,6 +386,116 @@ describe('Edit switch form', () => {
     expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
     expect(await screen.findByLabelText(/Switch Name/)).not.toBeDisabled()
     expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not block form submit when switch is offline and settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          deviceStatus: 'OFFLINE'
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).toBeCalled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not show toast message when the details and settings tab both have invalid field values', async () => {
+    // eslint-disable-next-line max-len
+    const longSwitchName = 'ICX7150-C12 Router vhQKuZoqFy0fI5BR2h34PZFmV4ndAPVrdzg1Bw7jJYHf2opN5Bev1c7PCwobQtILj4GNHHhUsUFAW3h2wfcRvCM5qBs2OLsbNpa2WlUN6JwdbbC26TjPIkJTFBQ3PCFfW22d0DKPpIwur98vB9fk8t8Hh9zx2mGRttHa0SAJaqEtquVYgXrPkpHMFo0Gs5c9iS3jt6gzdSBKbEgnj9Ju8OD4ts9b3BxmnDiVwLMraNpqsfJR0wNx1e2yfVYM6If5'
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          name: longSwitchName,
+          igmpSnooping: ''
+        })))
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(screen.queryByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeNull()
+  })
+
+  it('should show toast message when the settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should show toast message when the settings tab has invalid field values in read-only mode', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          cliApplied: true
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab and modify it via CLI/i
+    )).toBeVisible()
   })
 })
 
