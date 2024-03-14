@@ -305,7 +305,7 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
+          const val = techPartnerAssignEcsEanbled
             ? mspUtils.transformTechPartnerCount(row.integratorCount)
             : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
               : noDataDisplay
@@ -332,7 +332,7 @@ export function MspCustomers () {
           } : {}
         },
         render: function (_: React.ReactNode, row: MspEc) {
-          const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
+          const val = techPartnerAssignEcsEanbled
             ? mspUtils.transformTechPartnerCount(row.installerCount)
             : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
               : noDataDisplay
