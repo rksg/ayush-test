@@ -128,8 +128,8 @@ export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
 export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
   from './EdgeFirewallTables/GroupedStatsTables'
-export { EdgePortsGeneral } from './EdgeFormItem/EdgePortsGeneral'
-export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneral'
+export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
+export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
 export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
 export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
@@ -191,7 +191,7 @@ export {
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
   retrievedCompatibilitiesOptions,
-  ApFeatureCompatibility,
+  ApCompatibilityFeature,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
@@ -199,6 +199,16 @@ export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
+export { EdgeLagTable } from './EdgeLagTable'
+export * from './EdgeCluster/CompatibilityErrorDetails/types'
+export { EdgeClusterVirtualIpSettingForm } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
+export { EdgeClusterInterfaceSettingForm } from './EdgeFormItem/EdgeClusterInterfaceSettingForm'
+export type {
+  EdgeClusterInterfaceSettingFormType
+} from './EdgeFormItem/EdgeClusterInterfaceSettingForm'
+export {
+  useClusterInterfaceActions
+} from './EdgeFormItem/EdgeClusterInterfaceSettingForm/useClusterInterfaceActions'
 
 export * from './services'
 export * from './policies'
@@ -215,3 +225,4 @@ export * from './NetworkForm'
 export * from './NetworkDetails'
 export * from './users'
 export * from './configTemplates'
+export * from './EdgeCluster'

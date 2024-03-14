@@ -3,17 +3,15 @@ import React from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { useGetAccessControlProfileQuery }      from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow, PageHeader }                                     from '@acx-ui/components'
+import { useGetAccessControlProfileQuery, useGetAccessControlProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType, useConfigTemplateQueryFnSwitcher, usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import AccessControlNetworksDetail from './AccessControlNetworksDetail'
 import AccessControlOverview       from './AccessControlOverview'
@@ -22,36 +20,29 @@ import AccessControlOverview       from './AccessControlOverview'
 export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
 
-  const { data } = useGetAccessControlProfileQuery({ params })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetAccessControlProfileQuery,
+    useGetAccessControlProfileTemplateQuery
+  )
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Access Control' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.ACCESS_CONTROL,
-            oper: PolicyOperation.EDIT,
-            policyId: params.policyId as string
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          </TenantLink>
+          <PolicyConfigTemplateLinkSwitcher
+            type={PolicyType.ACCESS_CONTROL}
+            oper={PolicyOperation.EDIT}
+            policyId={params.policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ])}
       />
       <GridRow>

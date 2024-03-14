@@ -22,7 +22,7 @@ import {
   getSelectPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  policyTypeLabelMapping
+  policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -32,10 +32,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
-import {
-  policyTypeDescMapping
-} from '../contentsMap'
 
 interface CardDataProps {
   type: PolicyType

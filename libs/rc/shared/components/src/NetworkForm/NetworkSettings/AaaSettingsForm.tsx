@@ -19,8 +19,11 @@ import { Features, useIsSplitOn }                       from '@acx-ui/feature-to
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   AAAWlanSecurityEnum,
+  MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
-  WlanSecurityEnum
+  WifiNetworkMessages,
+  WlanSecurityEnum,
+  macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
 import AAAInstance                 from '../AAAInstance'
@@ -49,7 +52,8 @@ export function AaaSettingsForm () {
         authRadiusId: data.authRadiusId,
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
-          managementFrameProtection: data.wlan?.managementFrameProtection
+          managementFrameProtection: data.wlan?.managementFrameProtection,
+          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
         }
       })
     }
@@ -165,8 +169,25 @@ function SettingsForm () {
     const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = useWatch('enableAccountingService', form)
+    const enableMacAuthentication = useWatch<boolean>(
+      ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
+    const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
+    }
+    const onMacAuthChange = (checked: boolean) => {
+      setData && setData({
+        ...data,
+        ...{
+          wlan: {
+            ...data?.wlan,
+            macAddressAuthenticationConfiguration: {
+              ...data?.wlan?.macAddressAuthenticationConfiguration,
+              macAddressAuthentication: checked
+            }
+          }
+        }
+      })
     }
 
     const proxyServiceTooltip = <Tooltip
@@ -177,6 +198,12 @@ function SettingsForm () {
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
       })}
     />
+    const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
+      <Option key={key}>
+        { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
+      </Option>
+    ))
+
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
@@ -222,6 +249,40 @@ function SettingsForm () {
             </>
           )}
         </div>
+        {support8021xMacAuth &&
+        <div>
+          <Form.Item>
+            <Form.Item
+              noStyle
+              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+              initialValue={false}
+              valuePropName='checked'>
+              <Switch
+                disabled={editMode}
+                onChange={onMacAuthChange}
+                data-testid='macAuth8021x'
+              />
+            </Form.Item>
+            <span>{ $t({ defaultMessage: 'MAC Authentication' }) }</span>
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px' }}
+            />
+          </Form.Item>
+          {enableMacAuthentication &&
+            <Form.Item
+              label={$t({ defaultMessage: 'MAC Address Format' })}
+              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+              initialValue={MacAuthMacFormatEnum.UpperDash}
+            >
+              <Select>
+                {macAuthOptions}
+              </Select>
+            </Form.Item>
+          }
+        </div>
+        }
       </Space>
     )
   }

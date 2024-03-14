@@ -14,6 +14,7 @@ import {
   dhcpResponse,
   selfsignData
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { SelfSignInForm } from './SelfSignInForm'
@@ -42,12 +43,25 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Self sign in network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: false, cloneMode: true, data: selfsignData
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><SelfSignInForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: true, data: selfsignData
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SelfSignInForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox',
@@ -73,12 +87,24 @@ describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByText('Add'))
   })
   it('should create Self sign in network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: false, cloneMode: false, data: selfsignData
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><SelfSignInForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: false, cloneMode: false, data: selfsignData
+        }}
+      >
+        <MLOContext.Provider value={{
+          isDisableMLO: false,
+          disableMLO: jest.fn()
+        }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <SelfSignInForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </MLOContext.Provider>
+      </NetworkFormContext.Provider>
+    </Provider>, { route: { params } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox',

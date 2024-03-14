@@ -42,6 +42,7 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
     editMode: editMode,
     defaultFormValues: props.initialValues,
     buttonLabel: props.buttonLabel,
+    customSubmit: props.customSubmit,
     onFinish: props.onFinish,
     onCancel: props.onCancel,
     onFinishFailed: props.onFinishFailed
@@ -76,6 +77,8 @@ StepsForm.Title = UI.Title
 StepsForm.SectionTitle = UI.SectionTitle
 StepsForm.FieldLabel = UI.FieldLabel
 StepsForm.MultiSelect = UI.MultiSelect
+StepsForm.DescriptionWrapper = UI.DescriptionWrapper
+StepsForm.DescriptionTextWrapper = UI.DescriptionTextWrapper
 
 export type FieldSummaryProps <T = unknown> = {
   value?: T

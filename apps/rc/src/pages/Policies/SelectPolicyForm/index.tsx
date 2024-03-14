@@ -9,11 +9,10 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  policyTypeLabelMapping
+  policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeDescMapping }                            from '../contentsMap'
 import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
 import { PROFILE_MAX_COUNT as WIFI_OPERATOR_MAX_COUNT }     from '../WifiOperator/constants'
 

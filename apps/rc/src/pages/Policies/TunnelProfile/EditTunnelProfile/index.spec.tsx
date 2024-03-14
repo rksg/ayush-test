@@ -2,9 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                               from '@acx-ui/rc/services'
 import { EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                  from '@acx-ui/test-utils'
+import { Provider, store }                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                       from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
 
@@ -32,14 +33,16 @@ describe('EditTunnelProfile', () => {
       policyId: 'testPolicyId'
     }
 
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+
     mockServer.use(
       rest.put(
         TunnelProfileUrls.updateTunnelProfile.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         TunnelProfileUrls.getTunnelProfile.url,
-        (req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
+        (_req, res, ctx) => res(ctx.json(mockedTunnelProfileData))
       )
     )
   })
@@ -51,7 +54,8 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    const policyNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
     await user.type(policyNameField, 'TestTunnel')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -85,6 +89,7 @@ describe('EditTunnelProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/tunnelProfile/list`,
@@ -108,11 +113,12 @@ describe('EditTunnelProfile', () => {
       , { route: { path: editViewPath, params } }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(async () => {
-      expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+      expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     })
-    expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
-    expect(await screen.findByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(screen.getByRole('switch')).toBeDisabled()
     await (await screen.findAllByRole('radio')).forEach(item => {
       expect(item).toBeDisabled()
     })
@@ -135,8 +141,13 @@ describe('EditTunnelProfile', () => {
     const mockedReqSdLan = jest.fn()
     const mockedReqNSG = jest.fn()
     beforeEach(() => {
+      store.dispatch(edgeSdLanApi.util.resetApiState())
+      store.dispatch(nsgApi.util.resetApiState())
+
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_TOGGLE) return true
+        if (flag === Features.EDGES_SD_LAN_TOGGLE ||
+          flag === Features.EDGES_TOGGLE ||
+          flag === Features.EDGE_PIN_HA_TOGGLE) return true
         return false
       })
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -167,9 +178,8 @@ describe('EditTunnelProfile', () => {
         , { route: { path: editViewPath, params } }
       )
 
-      await waitFor(() => {
-        expect(mockedReqSdLan).toBeCalled()
-      })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqNSG).toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()

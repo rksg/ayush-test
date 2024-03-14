@@ -863,7 +863,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const venueIds:string[] = []
   networkVenuesList.data.forEach(item => venueIds.push(item.id))
 
-  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ)
+  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
     networkDeepList?.response[0] : undefined
   let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
@@ -920,6 +920,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
       : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
+
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
   const networkList = venueNetworkListQuery.data as TableResult<Network>
 
@@ -940,7 +941,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
   }
   return { venueNetworkListQuery,
     networkList,
@@ -1020,10 +1021,12 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
   }
 }
 
-const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any) => {
+const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
   const networkDeepList: NetworkDetail[] = []
   for (let i=0; i<networkIds.length; i++) {
-    const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, { networkId: networkIds[i] }))
+    const networkQuery = await fetchWithBQ(createHttpRequest(
+      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
+      , { networkId: networkIds[i] }))
     networkDeepList.push(networkQuery.data)
   }
 
