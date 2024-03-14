@@ -28,11 +28,7 @@ export const colors = {
   }
 } as const
 
-const hoverAndOpenStyle = (type: Type) => css`
-  outline: 0;
-  background: var(${colors[type].activeBackground});
-`
-export const Wrapper = styled.div<{ $type: string, $disabled?: boolean }>`
+export const Wrapper = styled.div<{ $type: string }>`
   border: 0;
   padding-block: 10px;
   background: var(${props => colors[props.$type as Type].background});
@@ -42,11 +38,6 @@ export const Wrapper = styled.div<{ $type: string, $disabled?: boolean }>`
   display: flex;
   align-items: center;
   flex-direction: column;
-  :hover {
-    ${props => (props.$disabled)
-    ? css`background: var(${colors[props.$type as Type].background});`
-    : hoverAndOpenStyle(props.$type as Type)}
-  }
 `
 export const Title = styled.div<{ $type: string }>`
   color:var(${props => colors[props.$type as Type].text});
@@ -82,7 +73,7 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
   .ant-statistic-content {
     color: var(${props => colors[props.$type as Type].text});
     .ant-statistic-content-value {
-      font-size: 24px;
+      font-size: 30px;
       font-weight: var(--acx-body-font-weight-bold);
     }
     .ant-statistic-content-suffix {

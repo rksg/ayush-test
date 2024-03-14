@@ -3,16 +3,23 @@
 exports[`StatsCard should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
-  />
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+  </div>
 </DocumentFragment>
 `;
 
 exports[`StatsCard should render correctly with link 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
   >
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
     <div
       class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
     >
@@ -25,13 +32,16 @@ exports[`StatsCard should render correctly with link 1`] = `
 exports[`StatsCard should render correctly with title 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 cKkaPt"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
   >
     <div
       class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
     >
       Title
     </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
   </div>
 </DocumentFragment>
 `;
@@ -39,13 +49,16 @@ exports[`StatsCard should render correctly with title 1`] = `
 exports[`StatsCard should render correctly with title and link 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
   >
     <div
       class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
     >
       Title
     </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
     <div
       class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
     >
@@ -58,7 +71,7 @@ exports[`StatsCard should render correctly with title and link 1`] = `
 exports[`StatsCard should render correctly with title and link and 2 values and divider 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
   >
     <div
       class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
@@ -69,7 +82,8 @@ exports[`StatsCard should render correctly with title and link and 2 values and 
       class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
     >
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+        style="width: 50%;"
       >
         <div
           class="ant-statistic-title"
@@ -99,12 +113,9 @@ exports[`StatsCard should render correctly with title and link and 2 values and 
         class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
         role="separator"
       />
-    </div>
-    <div
-      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
-    >
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+        style="width: 50%;"
       >
         <div
           class="ant-statistic-title"
@@ -143,13 +154,16 @@ exports[`StatsCard should render correctly with title and link and 2 values and 
 exports[`StatsCard should render correctly with title and link and isOpen 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
   >
     <div
       class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
     >
       Title
     </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
     <div
       class="styledComponents__Link-sc-1jdne8l-3 lihdha"
     >
@@ -162,7 +176,7 @@ exports[`StatsCard should render correctly with title and link and isOpen 1`] = 
 exports[`StatsCard should render correctly with title and link and values 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
   >
     <div
       class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
@@ -173,7 +187,8 @@ exports[`StatsCard should render correctly with title and link and values 1`] = 
       class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
     >
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+        style="width: 100%;"
       >
         <div
           class="ant-statistic-title"

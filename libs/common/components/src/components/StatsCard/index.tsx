@@ -28,19 +28,23 @@ export const StatsCard = (props: StatsCardProps) => {
     {
       title && <Title $type={type}>{$t(title)}</Title>
     }
-    {
-      values.map((value, index) => (
-        <ContentWrapper key={index}>
-          <Statistic
-            $type={type}
-            title={$t(value.title)}
-            value={value.value}
-            suffix={value.suffix}
-          />
-          { index < values.length - 1 && <Divider type='vertical' $color={type}/>}
-        </ContentWrapper>
-      ))
-    }
+    <ContentWrapper>
+      {
+        values.map((value, index) => (
+          <>
+            <Statistic
+              style={{ width: `${100 / values.length}%` }}
+              $type={type}
+              title={$t(value.title)}
+              value={value.value}
+              suffix={value.suffix}
+            />
+            { index < values.length - 1 && <Divider type='vertical' $color={type}/>}
+          </>
+        ))
+      }
+    </ContentWrapper>
+
     {
       onClick && <Link $type={type} onClick={onClick} $disabled={isOpen}>
         {`(${$t(defineMessage({ defaultMessage: 'More details' }))})`}

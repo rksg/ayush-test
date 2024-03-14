@@ -17,13 +17,14 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -62,13 +63,14 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cKkaPt"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -107,13 +109,14 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 gIZTOv"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -147,13 +150,14 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cCEWWJ"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eAQsEJ"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -201,13 +205,14 @@ exports[`Health Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -246,13 +251,14 @@ exports[`Health Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cKkaPt"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -291,13 +297,14 @@ exports[`Health Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 gIZTOv"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -331,13 +338,14 @@ exports[`Health Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cCEWWJ"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eAQsEJ"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -385,13 +393,14 @@ exports[`Health Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hbWzKh"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -430,13 +439,14 @@ exports[`Health Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cKkaPt"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -475,13 +485,14 @@ exports[`Health Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 gIZTOv"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dWcikt"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -515,13 +526,14 @@ exports[`Health Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 cCEWWJ"
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
           >
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eAQsEJ"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
