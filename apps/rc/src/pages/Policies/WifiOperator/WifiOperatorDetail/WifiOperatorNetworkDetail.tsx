@@ -95,15 +95,15 @@ const WifiOperatorNetworkDetail = () => {
     if (!data)
       return
 
-    const networkIdList = data?.data
-      .filter(item => item.networkIds)
-      .flatMap(policy => policy.networkIds) ?? []
-    if (networkIdList && networkIdList.length > 0) {
-      const newNetworkFilters = { id: networkIdList as string[] }
-      setNetworkFilters(newNetworkFilters)
+    const wifiNetworkIdList = data?.data
+      .filter(item => item.wifiNetworkIds)
+      .flatMap(policy => policy.wifiNetworkIds) ?? []
+    if (wifiNetworkIdList && wifiNetworkIdList.length > 0) {
+      const newWifiNetworkFilters = { id: wifiNetworkIdList as string[] }
+      setNetworkFilters(newWifiNetworkFilters)
       tableQuery.setPayload({
         ...tableQuery.payload,
-        filters: newNetworkFilters
+        filters: newWifiNetworkFilters
       })
     }
   }, [data])

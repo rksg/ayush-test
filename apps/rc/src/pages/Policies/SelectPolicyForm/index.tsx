@@ -89,9 +89,6 @@ export default function SelectPolicyForm () {
       categories: [RadioCardCategory.WIFI],
       disabled: (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
     })
-  }
-
-  if (supportHotspot20R1) {
     sets.push({
       type: PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],

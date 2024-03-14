@@ -4,7 +4,7 @@ export interface WifiOperatorViewModel {
   domainNames: string[]
   friendlyNames: FriendlyName[]
   friendlyNameCount: number
-  networkIds?: string[]
+  wifiNetworkIds?: string[]
   networkCount: number
   tenantId: string
 }

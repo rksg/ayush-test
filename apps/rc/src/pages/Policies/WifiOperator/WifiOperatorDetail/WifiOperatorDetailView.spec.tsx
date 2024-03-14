@@ -13,7 +13,7 @@ import {
 
 import { WifiOperatorDetailView } from './WifiOperatorDetailView'
 
-const networkList = {
+const wifiNetworkList = {
   totalCount: 2,
   totalPages: 1,
   page: 1,
@@ -65,7 +65,7 @@ const detailList = {
         }
       ],
       friendlyNameCount: 2,
-      networkIds: ['ebcccef6b366415dbb85073e5aa7248c', '697e24a3cc2949eaae2f825b90469b52'],
+      wifiNetworkIds: ['ebcccef6b366415dbb85073e5aa7248c', '697e24a3cc2949eaae2f825b90469b52'],
       networkCount: 0
     }
   ]
@@ -85,9 +85,9 @@ describe('Wi-Fi Operator Detail Page', () => {
         CommonUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => {
           const body = req.body as { filters: { id: string[] } }
-          const networkIds = body.filters.id
-          return res(ctx.json({ ...networkList,
-            data: networkList.data.filter(item => networkIds.includes(item.id)) }))
+          const wifiNetworkIds = body.filters.id
+          return res(ctx.json({ ...wifiNetworkList,
+            data: wifiNetworkList.data.filter(item => wifiNetworkIds.includes(item.id)) }))
         }
       ),
       rest.post(
@@ -107,7 +107,7 @@ describe('Wi-Fi Operator Detail Page', () => {
     })
 
     expect(await screen.findByText('wo1')).toBeVisible()
-    expect(await screen.findByText((`Instances (${networkList.data.length})`))).toBeVisible()
+    expect(await screen.findByText((`Instances (${wifiNetworkList.data.length})`))).toBeVisible()
     const body = await screen.findByRole('rowgroup', {
       name: (_, element) => element.classList.contains('ant-table-tbody')
     })

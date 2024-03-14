@@ -139,9 +139,11 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
                 </Space>
               )}
               <Button type='link'
-                key='addFriendlyNameBtn'
+                data-testid='addFriendlyNameBtn'
                 style={{ textAlign: 'left' }}
-                onClick={add}>
+                onClick={() => {
+                  add( undefined, fields.length)
+                }}>
                 {$t({ defaultMessage: 'Add another name' })}
               </Button>
             </>

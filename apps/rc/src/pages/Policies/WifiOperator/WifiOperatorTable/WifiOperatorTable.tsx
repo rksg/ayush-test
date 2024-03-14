@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, TableProps, Loader, Table, Button }                                                                                                              from '@acx-ui/components'
-import { SimpleListTooltip }                                                                                                                                          from '@acx-ui/rc/components'
+import { SimpleListTooltip, friendlyNameEnumOptions, FriendlyNameEnum }                                                                                               from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteWifiOperatorMutation, useGetWifiOperatorListQuery, useWifiNetworkListQuery }                                                       from '@acx-ui/rc/services'
 import { KeyValue, PolicyOperation, PolicyType, WifiNetwork, WifiOperatorViewModel, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, useTableQuery } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink }                                                                                                    from '@acx-ui/react-router-dom'
@@ -12,7 +12,7 @@ import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'domainNames', 'friendlyNames',
-    'friendlyNameCount', 'networkIds', 'networkCount', 'description'],
+    'wifiNetworkIds', 'description'],
   searchString: '',
   filters: {}
 }
@@ -35,7 +35,7 @@ export default function WifiOperatorTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'networkCount', fieldText: $t({ defaultMessage: 'Network' }) }],
+      [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () =>
         Promise.all(selectedRows.map(row => deleteFn({ params: { policyId: row.id } })))
           .then(callback)
@@ -158,35 +158,35 @@ function useColumns () {
       render: (_, { domainNames }) => domainNames.join(', ')
     },
     {
-      key: 'friendlyNameCount',
+      key: 'friendlyNames',
       title: $t({ defaultMessage: 'Operator Friendly Name' }),
-      dataIndex: 'friendlyNameCount',
+      dataIndex: 'friendlyNames',
       align: 'center',
-      // filterKey: 'friendlyNames',
-      // filterable: venueNameMap,
       sorter: true,
-      render: (_, row) => {
-        if (!row.friendlyNameCount || row.friendlyNameCount === 0) return 0
+      render: (_, { friendlyNames }) => {
+        if (!friendlyNames || friendlyNames.length === 0) return 0
+
+        // const nameEnum = FriendlyNameEnum[fn.language as FriendlyNameEnum];
 
         return <SimpleListTooltip
-          items={row.friendlyNames.map(fn => '[' + fn.language + ']: ' + fn.name )}
-          displayText={row.friendlyNameCount} />
+          items={friendlyNames.map(fn => `[${$t(friendlyNameEnumOptions[FriendlyNameEnum[fn.language as FriendlyNameEnum]])}]: ${fn.name}` )}
+          displayText={friendlyNames.length} />
       }
     },
     {
-      key: 'networkCount',
+      key: 'wifiNetworkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkCount',
+      dataIndex: 'wifiNetworkIds',
       align: 'center',
-      filterKey: 'networkIds',
+      filterKey: 'wifiNetworkIds',
       filterable: networkNameMap,
       sorter: true,
-      render: (_, { networkIds }) => {
-        if (!networkIds || networkIds.length === 0) return 0
+      render: (_, { wifiNetworkIds }) => {
+        if (!wifiNetworkIds || wifiNetworkIds.length === 0) return 0
 
         return <SimpleListTooltip
-          items={networkNameMap.filter(kv => networkIds.includes(kv.key)).map(kv => kv.value)}
-          displayText={networkIds.length} />
+          items={networkNameMap.filter(kv => wifiNetworkIds.includes(kv.key)).map(kv => kv.value)}
+          displayText={wifiNetworkIds.length} />
       }
     }
   ]
