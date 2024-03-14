@@ -40,7 +40,7 @@ const Svg: any = (props: any) => {
   }, [width, height, data])
 
   const { nodes, links } = useMemo(() => {
-    if (width && height && treeData && edges) {
+    if (treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
         .nodeSize(NODE_SIZE)(treeData)
@@ -80,7 +80,7 @@ const Svg: any = (props: any) => {
         links: []
       }
     }
-  }, [treeData, edges, width, height])
+  }, [treeData, edges])
 
   // expand/collapse children event
   const expColEvent = (nodeId: string) => {

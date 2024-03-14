@@ -45,6 +45,69 @@ type OptionType = {
   children: string;
   item: Node;
 }
+
+interface NodeData {
+  id: string;
+  name: string;
+  type: string;
+  isConnectedCloud: boolean;
+  children: NodeData[];
+}
+
+export function parseTopologyData (topologyData: any): any {
+  const nodes = topologyData.nodes
+  const edges = topologyData.edges
+
+  // Create a mapping of node IDs to their corresponding node objects
+  const nodeMap: Record<string, NodeData> = {}
+
+  nodes.forEach((node: NodeData) => {
+    nodeMap[node.id] = {
+      ...node,
+      children: []
+    }
+  })
+
+  // Build the tree structure based on the edges
+  edges.forEach((edge: Link) => {
+    const fromNode = nodeMap[edge.from]
+    const toNode = nodeMap[edge.to]
+
+    if((fromNode && toNode)){
+      if(toNode.isConnectedCloud) {
+        toNode.children.push(fromNode)
+      } else {
+        fromNode.children.push(toNode)
+      }
+    }
+  })
+
+  const idsToRemove: string[] = []
+  function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
+
+    for(let i=0; i < nodeMapData.length; i++){
+      const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
+
+      if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
+        idsToRemove.push(node.id)
+      }
+      removeDuplicateItems(node, nodeMapData[i].children)
+    }
+  }
+
+  const nodeMapData = Object.values(nodeMap)
+
+  nodeMapData.forEach(
+    node => removeDuplicateItems(
+      node, nodeMapData.filter(item => item.id !== node.id )))
+
+  const result: NodeData[] = Object.values(nodeMap).filter(item => {
+    return !idsToRemove.includes(item.id)
+  })
+
+  return result
+}
+
 export function TopologyGraphComponent (props:{ venueId?: string,
   showTopologyOn: ShowTopologyFloorplanOn,
   deviceMac?: string,
@@ -130,68 +193,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       }
     }
   }, [topologyData])
-
-  interface NodeData {
-    id: string;
-    name: string;
-    type: string;
-    isConnectedCloud: boolean;
-    children: NodeData[];
-  }
-
-  function parseTopologyData (topologyData: any): any {
-    const nodes = topologyData.nodes
-    const edges = topologyData.edges
-
-    // Create a mapping of node IDs to their corresponding node objects
-    const nodeMap: Record<string, NodeData> = {}
-
-    nodes.forEach((node: NodeData) => {
-      nodeMap[node.id] = {
-        ...node,
-        children: []
-      }
-    })
-
-    // Build the tree structure based on the edges
-    edges.forEach((edge: Link) => {
-      const fromNode = nodeMap[edge.from]
-      const toNode = nodeMap[edge.to]
-
-      if((fromNode && toNode)){
-        if(toNode.isConnectedCloud) {
-          toNode.children.push(fromNode)
-        } else {
-          fromNode.children.push(toNode)
-        }
-      }
-    })
-
-    const idsToRemove: string[] = []
-    function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
-
-      for(let i=0; i < nodeMapData.length; i++){
-        const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
-
-        if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
-          idsToRemove.push(node.id)
-        }
-        removeDuplicateItems(node, nodeMapData[i].children)
-      }
-    }
-
-    const nodeMapData = Object.values(nodeMap)
-
-    nodeMapData.forEach(
-      node => removeDuplicateItems(
-        node, nodeMapData.filter(item => item.id !== node.id )))
-
-    const result: NodeData[] = Object.values(nodeMap).filter(item => {
-      return !idsToRemove.includes(item.id)
-    })
-
-    return result
-  }
 
   function closeLinkTooltipHandler () {
     setShowLinkTooltip(false)
