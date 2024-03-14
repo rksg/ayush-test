@@ -457,11 +457,11 @@ export const validationMessages = {
     description: 'Validation - DHCP option IPs max size checks'
   }),
   VenueMinFloorGreaterThanMaxFloor: defineMessage({
-    defaultMessage: 'Minimum Floor can not be greater than maximum Floor',
+    defaultMessage: 'Min floor can\'t be greater than max floor',
     description: 'Validation - Venue minimum floor checks'
   }),
   VenueMaxFloorLessThanMinFloor: defineMessage({
-    defaultMessage: 'Maximum Floor can not be less than Minimum Floor',
+    defaultMessage: 'Max floor can\'t be less than min floor',
     description: 'Validation - Venue minimum floor checks'
   })
 }
