@@ -53,6 +53,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'EXPIRED',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'FUTURE',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
@@ -166,6 +170,8 @@ export function Subscriptions () {
       render: function (_, row) {
         if( row.status === 'VALID') {
           return $t({ defaultMessage: 'Active' })
+        } else if ( row.status === 'FUTURE') {
+          return $t({ defaultMessage: 'Future' })
         } else {
           return $t({ defaultMessage: 'Expired' })
         }
@@ -327,8 +333,7 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
-        status: (response?.status === 'FUTURE') ? 'VALID' : response?.status
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
       }
     })
 
