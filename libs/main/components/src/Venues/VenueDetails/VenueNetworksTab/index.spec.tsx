@@ -116,7 +116,7 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
-        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenueNetworkTemplateList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(

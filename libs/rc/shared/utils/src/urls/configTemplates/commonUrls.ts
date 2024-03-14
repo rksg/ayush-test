@@ -36,6 +36,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networks/query',
     newApi: true
   },
+  getVenueNetworkTemplateList: {
+    method: 'post',
+    url: '/templates/venues/:venueId/networks/query',
+    newApi: true
+  },
   addAAAPolicyTemplate: {
     method: 'post',
     url: '/templates/radiusServerProfiles',
