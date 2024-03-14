@@ -1,12 +1,13 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions }              from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol } from '@acx-ui/icons'
-import { DeviceTypes, Link, Node }         from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
-import { noDataDisplay }                   from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow }     from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }          from '@acx-ui/icons'
+import { DeviceTypes, Link, Node, vlanPortsParser } from '@acx-ui/rc/utils'
+import { useTenantLink }                            from '@acx-ui/react-router-dom'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 
 export default function LinkTooltip (props: { tooltipPosition: {
     x: number,
@@ -37,6 +38,32 @@ onClose: () => void
     return link
   }
 
+  function VlansTrunked (props: {
+    title: string
+    tagged?: string
+    untagged?: string
+  }) {
+    const { title, tagged, untagged } = props
+
+    const untaggedVlanText = <Space size={4}>
+      <UI.TagsOutlineIcon />{ (untagged && vlanPortsParser(untagged)) || '--' }
+    </Space>
+
+    const taggedVlanText = <Space size={4}>
+      <UI.TagsSolidIcon />{ (tagged && vlanPortsParser(tagged)) || '--' }
+    </Space>
+
+    return <GridRow $divider>
+      <GridCol col={{ span: 8 }}>
+        {title}
+      </GridCol>
+      <GridCol col={{ span: 16 }}>
+        <div>{untaggedVlanText}</div>
+        <div>{taggedVlanText}</div>
+      </GridCol>
+    </GridRow>
+  }
+
   return <div
     data-testid='edgeTooltip'
     style={{
@@ -47,9 +74,7 @@ onClose: () => void
       top: tooltipPosition.y - 100,
       left: tooltipPosition.x + 15
     }}>
-    <Card
-      type='no-border'
-    >
+    <Card>
       <Card.Title>
         <Space style={{
           display: 'flex',
@@ -96,11 +121,44 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
+        {(tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
+        tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan) &&
+        <>
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'VLANs trunked' })}
+            children={null}
+          />
+          <Descriptions.Item
+            children={
+              <Card type='solid-bg'>
+                <VlansTrunked
+                  title={tooltipEdge?.fromName || ''}
+                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
+                  tagged={tooltipEdge?.connectedPortTaggedVlan}
+                />
+                <VlansTrunked
+                  title={tooltipEdge?.toName || ''}
+                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
+                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
+                />
+              </Card>}
+          />
+        </>
+        }
         {
           /* TODO: does we get PoE usage if poe disabled?
           How to calculate and set unit for PoE? */
         }
+        <Descriptions.Item
+          label={tooltipEdge?.correspondingPort ?
+            $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
+          children={tooltipEdge?.connectedPort || noDataDisplay} />
 
+        {tooltipEdge?.correspondingPort &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'To Port' })}
+            children={tooltipEdge?.correspondingPort || noDataDisplay} />
+        }
         { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'PoE' })}
@@ -108,10 +166,6 @@ onClose: () => void
             +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
               : $t({ defaultMessage: 'Off' })} />
         }
-
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Port' })}
-          children={tooltipEdge?.connectedPort || noDataDisplay} />
       </Descriptions>
     </Card>
   </div>
