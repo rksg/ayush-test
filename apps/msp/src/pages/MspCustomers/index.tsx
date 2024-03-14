@@ -644,12 +644,19 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
-          visible={drawerAssignEcMspAdminsVisible}
-          tenantIds={selEcTenantIds}
-          setVisible={setDrawerAssignEcMspAdminsVisible}
-          setSelected={() => {}}
-        />}
+        {drawerAssignEcMspAdminsVisible && selEcTenantIds.length === 1
+          ? <ManageDelegateAdminDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelected={() => {}}
+            tenantId={selEcTenantIds[0]}
+            tenantType={AccountType.MSP_EC}/>
+          : <AssignEcMspAdminsDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            tenantIds={selEcTenantIds}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelected={() => {}}/>
+        }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}
           tenantIds={selEcTenantIds}
