@@ -4,7 +4,7 @@ import moment from 'moment-timezone'
 
 import { useBrand360Config }                                 from '@acx-ui/analytics/services'
 import { Settings }                                          from '@acx-ui/analytics/utils'
-import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
+import { PageHeader, RangePicker, GridRow, GridCol, Loader, Button } from '@acx-ui/components'
 import {
   useMspECListQuery,
   useIntegratorCustomerListDropdownQuery
@@ -39,6 +39,8 @@ import { SlaSliders }   from './SlaSliders'
 import { SlaTile }      from './SlaTile'
 import { BrandTable }   from './Table'
 import { useSliceType } from './useSliceType'
+import { ComplianceSetting }                                          from './ComplianceSetting'
+import { Space } from 'antd'
 
 
 const mspPayload = {
@@ -138,6 +140,7 @@ export function Brand360 () {
             selectionType={range}
             showLast8hours
           />
+          <ComplianceSetting settings={settings as Settings} />
         </>
       ]}
     />

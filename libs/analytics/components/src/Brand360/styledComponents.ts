@@ -4,13 +4,11 @@ import { SettingsSolid } from '@acx-ui/icons'
 
 export const ComplianceSetting = {
   Icon: styled(SettingsSolid)`
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
+    width: 24px;
+    height: 24px;
   `,
   Wrapper: styled.div`
-    margin-bottom: 20px
+    
   `
 }
 

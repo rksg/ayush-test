@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { Form, Input }            from 'antd'
+import { Form, Input, Space, Typography }            from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
+import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
 import { Settings }                        from '@acx-ui/analytics/utils'
 import { Drawer, Button, Tooltip, Loader } from '@acx-ui/components'
 import { truthy }                          from '@acx-ui/utils'
@@ -56,10 +56,17 @@ const tooltipMsg = defineMessage({
 
 export function ComplianceSetting ({ settings }: { settings: Settings }) {
   const { $t } = useIntl()
+  const { names } = useBrand360Config()
   const ssidRegex = settings['brand-ssid-compliance-matcher']
+  const brandName = names.brand
+  const lspName = names.lsp
+  const propertyName = names.property
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const ssidValue = Form.useWatch(ssidField, form)
+  const brandValue = Form.useWatch('brandName', form)
+  const lspValue = Form.useWatch('lspName', form)
+  const propertyValue = Form.useWatch('propertyName', form)
   const failureLines = getFailureLines(ssidValue)
   const isDisabled = ssidValue === ''
     || ssidValue === ssidRegex
@@ -67,39 +74,129 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
     || failureLines.length > 0
   const [updateSlas, result] = useUpdateTenantSettingsMutation()
   const saveSSIDRegex = useCallback(() => {
+    console.log(brandValue, lspValue, propertyValue)
     updateSlas({
       ...settings,
-      'brand-ssid-compliance-matcher': cleanInput(ssidValue)
+      'brand-ssid-compliance-matcher': cleanInput(ssidValue),
+      'brand-name': brandValue,
+      'lsp-name': lspValue,
+      'property-name': propertyValue
     })
-  }, [settings, ssidValue])
+  }, [settings, ssidValue, brandValue, lspValue, propertyValue])
 
   useEffect(() => {
-    form && form.setFieldValue(ssidField, ssidRegex)
-  }, [ssidRegex, form])
+    form &&
+    form.setFieldValue(ssidField, ssidRegex)
+    form.setFieldValue('brandName', brandName)
+    form.setFieldValue('lspName', lspName)
+    form.setFieldValue('propertyName', propertyName)
+  }, [ssidRegex, form, brandName, lspName, propertyName])
 
-  return <UI.Wrapper>
-    <UI.Icon data-testid='ssidSettings' onClick={() => setVisible(!visible)} />
+  return <Button onClick={() => setVisible(true)} >
+    <UI.Icon data-testid='ssidSettings' />
     <Drawer
       width={500}
-      title={$t({ defaultMessage: 'Compliance Rules' })}
+      title={$t({ defaultMessage: 'Settings' })}
       visible={visible}
-      onClose={() => setVisible(false)}
+      onClose={(e) => {
+        e.stopPropagation()
+        setVisible(false)}
+      }
       destroyOnClose
       footer={<>
         <Button
           type='primary'
           disabled={isDisabled}
-          onClick={() => saveSSIDRegex()}>
+          onClick={(e) => {
+            e.stopPropagation()
+            saveSSIDRegex()
+          }}>
           {$t({ defaultMessage: 'Save' })}
         </Button>
-        <Button type='default' onClick={() => setVisible(false)}>
+        <Button type='default' onClick={(e) => {
+          e.stopPropagation()
+          setVisible(false)}
+        }>
           {$t({ defaultMessage: 'Cancel' })}
         </Button></>}
     > <Loader states={[result]}>
         <Form
-          initialValues={{ [ssidField]: ssidValue || ssidRegex }}
+          initialValues={{
+            [ssidField]: ssidValue || ssidRegex,
+            brandName: brandValue || brandName,
+            lspName: lspValue || lspName,
+            propertyName: propertyValue || propertyName
+          }}
           layout='vertical'
           form={form}>
+          <Typography.Text strong>{$t({ defaultMessage: 'Naming Convention' })}</Typography.Text>
+          <br/><br/>
+          <Typography.Text >{
+            $t({
+              defaultMessage: 'Choose standard vocabulary for keywords aligned with the common language of your brand'
+            })}
+          </Typography.Text>
+          <br/><br/>
+          <Form.Item
+            name='brandName'
+            label={$t(
+              { 
+                defaultMessage: 'Brand' 
+              })
+            }
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Brand name is required!' })
+            },
+            {
+              type: 'string',
+              min: 1,
+              max: 100,
+              message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
+            }]}
+            children={<Input data-testid='brandName' />}
+          />
+          <Form.Item
+            name='lspName'
+            label={$t(
+              { 
+                defaultMessage: 'LSP' 
+              })
+            }
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'LSP name is required!' })
+            },
+            {
+              type: 'string',
+              min: 1,
+              max: 100,
+              message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
+            }]}
+            children={<Input data-testid='lspName' />}
+            />
+            <Form.Item
+              name='propertyName'
+              label={$t(
+                { 
+                  defaultMessage: 'Property' 
+                })
+              }
+              rules={[{
+                required: true,
+                message: $t({ defaultMessage: 'Property name is required!' })
+              },
+              {
+                type: 'string',
+                min: 1,
+                max: 100,
+                message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
+              }]}
+              children={<Input data-testid='propertyName' />}
+            />
+          <hr />
+          <Typography.Text strong>{$t({ defaultMessage: 'Compliance Rules' })}</Typography.Text>
+          <br/><br/>
           <Form.Item
             name={ssidField}
             label={<>
@@ -131,5 +228,5 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
         </Form>
       </Loader>
     </Drawer>
-  </UI.Wrapper>
+  </Button>
 }

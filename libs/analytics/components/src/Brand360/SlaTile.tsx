@@ -169,12 +169,7 @@ export function SlaTile ({
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
-  return <Card title={chartKey === 'compliance'
-    ? {
-      title: $t(getTitle(), { name }),
-      icon: <ComplianceSetting settings={settings} />
-    }
-    : $t(getTitle(), { name })}
+  return <Card title={$t(getTitle(), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
