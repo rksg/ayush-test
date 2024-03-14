@@ -5,7 +5,7 @@ import {
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer } from '@acx-ui/components'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer, Badge } from '@acx-ui/components'
 import {
   WarningCircleSolid,
   WarningTriangleSolid,
@@ -171,6 +171,13 @@ export const ActivityItem = styled(List.Item)`
   }
   :hover {
     cursor: pointer;
+  }
+`
+
+export const ActivityBadge = styled(Badge)`
+  .ant-badge-dot {
+    background: var(--acx-accents-blue-50);
+    box-shadow: 0 0 0 1px var(--acx-accents-blue-50);
   }
 `
 

@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
-import { ClockSolid }                                                                       from '@acx-ui/icons'
-import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
-import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
-import { DateRange, DateRangeFilter, getDateRangeFilter }                                   from '@acx-ui/utils'
+import { LayoutUI, Loader, StatusIcon }                                                                                                        from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                           from '@acx-ui/formatter'
+import { ClockSolid }                                                                                                                          from '@acx-ui/icons'
+import { TimelineDrawer }                                                                                                                      from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                                                                                  from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping, initActivitySocket, closeActivitySocket, TxStatus } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate, useParams }                                                                                               from '@acx-ui/react-router-dom'
+import { getProductKey, getUserSettingsByPath, setDeepUserSettings, useGetAllUserSettingsQuery, useSaveUserSettingsMutation }                  from '@acx-ui/user'
+import { DateRange, DateRangeFilter, getDateRangeFilter }                                                                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -39,14 +40,23 @@ const defaultPayload: {
   }
 }
 
+interface activityData {
+  showUnreadMark: boolean
+}
 export default function ActivityButton () {
+  const ACTIVITY_USER_SETTING = 'COMMON$activity'
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const params = useParams()
+  const { data: userSettings } = useGetAllUserSettingsQuery({ params })
+  const [saveUserSettings] = useSaveUserSettingsMutation()
   const [status, setStatus] = useState('all')
+  const [showUnreadMark, setShowUnreadMark] = useState<boolean>(false)
   const [detail, setDetail] = useState<Activity>()
   const [detailModal, setDetailModalOpen] = useState<boolean>(false)
   const [activityModal, setActivityModalOpen] = useState<boolean>(false)
+  const activitySocketRef = useRef<SocketIOClient.Socket>()
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -70,6 +80,61 @@ export default function ActivityButton () {
       }
     })
   }, [status])
+
+  useEffect(() => {
+    if (!activitySocketRef.current) {
+      // console.log('init')
+      activitySocketRef.current = initActivitySocket((msg:string) => {
+        // console.log('msg: ', msg)
+        if(JSON.parse(msg).status === TxStatus.IN_PROGRESS) {
+          updateShowUnreadMaskStatus(true)
+        }
+      })
+    }
+
+    return closeSocket
+  }, [])
+
+  const closeSocket = () => {
+    if (activitySocketRef.current) closeActivitySocket(activitySocketRef.current)
+  }
+
+  useEffect(() => {
+    if (userSettings) {
+      // eslint-disable-next-line max-len
+      const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
+      if(activity){
+        // console.log('get:', activity.showUnreadMark)
+        setShowUnreadMark(activity.showUnreadMark)
+      }
+    }
+  }, [userSettings])
+
+  const updateShowUnreadMaskStatus = (show: boolean) => {
+    if(showUnreadMark === show) {return}
+    // console.log('set: ', show, userSettings)
+    setShowUnreadMark(show)
+    if(userSettings) {
+      const productKey = getProductKey(ACTIVITY_USER_SETTING)
+      // eslint-disable-next-line max-len
+      const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
+      const newSettings = setDeepUserSettings(userSettings, ACTIVITY_USER_SETTING, {
+        ...activity, showUnreadMark: show })
+      debugger
+      saveUserSettings({
+        params: {
+          tenantId: params.tenantId,
+          productKey
+        },
+        payload: newSettings[productKey]
+      }).unwrap()
+    }
+  }
+
+  const onOpenActivityModal = (show:boolean) => {
+    setActivityModalOpen(show)
+    updateShowUnreadMaskStatus(false)
+  }
 
   const activityList = <>
     <UI.FilterRow>
@@ -177,19 +242,20 @@ export default function ActivityButton () {
     }
   ]
   return <>
-    <Badge
+    <UI.ActivityBadge
       overflowCount={999}
       offset={[-3, 0]}
+      dot={showUnreadMark}
       children={<LayoutUI.ButtonSolid
         icon={<ClockSolid />}
-        onClick={()=> setActivityModalOpen(!activityModal)}
+        onClick={() => {onOpenActivityModal(!activityModal)}}
       />}
     />
     <UI.Drawer
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
       visible={activityModal}
-      onClose={() => setActivityModalOpen(false)}
+      onClose={() => onOpenActivityModal(false)}
       children={activityList}
     />
     {detail && <TimelineDrawer
@@ -197,7 +263,7 @@ export default function ActivityButton () {
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
       onClose={() => setDetailModalOpen(false)}
-      onBackClick={() => setActivityModalOpen(true)}
+      onBackClick={() => onOpenActivityModal(true)}
       data={getDrawerData?.(detail!)}
       activity={detail}
     />}
