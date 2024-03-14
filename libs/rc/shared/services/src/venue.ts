@@ -88,9 +88,9 @@ const RKS_NEW_UI = {
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
     venuesList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload }: RequestPayload) => {
         const venueListReq = createHttpRequest(
-          (typeof payload === 'object' && payload?.hasOwnProperty('isTemplate'))
+          (payload as { isTemplate?: boolean })?.isTemplate ?? false
             ? ConfigTemplateUrlsInfo.getVenuesTemplateList
             : CommonUrlsInfo.getVenuesList,
           params
