@@ -5,8 +5,8 @@ import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI, Dropdown } from '@acx-ui/components'
-import { NewTabLink }         from '@acx-ui/react-router-dom'
+import { LayoutUI, Dropdown }     from '@acx-ui/components'
+import { NewTabLink, TenantLink } from '@acx-ui/react-router-dom'
 
 
 export const UserButton = () => {
@@ -32,9 +32,9 @@ export const UserButton = () => {
         ...(hasViewAnalyticsPermissions ? [
           {
             key: 'my-profile',
-            label: <NewTabLink to='/analytics/profile/settings'>
+            label: <TenantLink to='/profile/settings'>
               {$t({ defaultMessage: 'My Profile' })}
-            </NewTabLink>
+            </TenantLink>
           }
         ] : []),
         {
