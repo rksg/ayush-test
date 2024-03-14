@@ -19,7 +19,8 @@ export enum PolicyType {
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  CONNECTION_METERING = 'Data Usage Metering'
+  CONNECTION_METERING = 'Data Usage Metering',
+  WIFI_OPERATOR = 'Wi-Fi Operator'
 }
 
 export enum PolicyTechnology {
@@ -40,7 +41,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
-  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum' }),
+  [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Provides network services and operates the AAA infrastructure required to authenticate subscribers' }),
+  [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Deploys and operates an access network consisting of publicly accessible or guest access Passpoint APs' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
