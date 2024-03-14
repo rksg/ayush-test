@@ -113,6 +113,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <MFAFormItem
               mfaTenantDetailsData={mfaTenantDetailsData.data}
               isPrimeAdminUser={isPrimeAdminUser}
+              isMspEc={isMspEc as boolean}
             />
           </>
         )}
