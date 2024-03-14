@@ -8,8 +8,13 @@ import { mockServer, render, screen, waitFor }                                  
 
 import {
   applicationDetailResponse,
-  avcApp, avcCat,
+  avcApp,
+  avcCat,
   devicePolicyDetailResponse,
+  enhancedApplicationPolicyListResponse,
+  enhancedDevicePolicyListResponse,
+  enhancedLayer2PolicyListResponse,
+  enhancedLayer3PolicyListResponse,
   layer2PolicyDetailResponse,
   layer2PolicyListResponse,
   layer3PolicyDetailResponse,
@@ -44,18 +49,26 @@ describe('AccessControlPolicy component', () => {
         (req, res, ctx) => res(ctx.json({ ...mockedMSPCustomerList }))),
       rest.get(AccessControlUrls.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
       rest.get(AccessControlUrls.getL2AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer2PolicyDetailResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer3PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(AccessControlUrls.getL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3PolicyDetailResponse))),
       rest.get(AccessControlUrls.getDevicePolicyList.url,
         (req, res, ctx) => res(ctx.json([]))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
       rest.get(AccessControlUrls.getDevicePolicy.url,
         (_, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
       rest.get(AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(ctx.json([]))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
       rest.get(AccessControlUrls.getAppPolicy.url,
         (_, res, ctx) => res(ctx.json(applicationDetailResponse))),
       rest.get(AccessControlUrls.getAvcCategory.url,
@@ -148,9 +161,6 @@ describe('AccessControlPolicy component', () => {
       }
     )
 
-    await waitFor(() => expect(mockAvcCategory).toHaveBeenCalled())
-    await waitFor(() => expect(mockAvcApp).toHaveBeenCalled())
-
     expect(await screen.findByText(/Device & OS Access Settings/i)).toBeVisible()
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })
     await userEvent.click(cancelButton)
@@ -171,6 +181,9 @@ describe('AccessControlPolicy component', () => {
         route: { params, path }
       }
     )
+
+    await waitFor(() => expect(mockAvcCategory).toHaveBeenCalled())
+    await waitFor(() => expect(mockAvcApp).toHaveBeenCalled())
 
     expect(await screen.findByText(/Application Access Settings/i)).toBeVisible()
     const cancelButton = await screen.findByRole('button', { name: /cancel/i })

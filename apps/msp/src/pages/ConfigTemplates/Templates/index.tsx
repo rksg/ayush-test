@@ -84,7 +84,7 @@ export function ConfigTemplateList () {
         if (isAccessControlSubPolicy(selectedRow.type)) {
           setAccessControlSubPolicyVisible({
             ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
-            [selectedRow.type]: {
+            [subPolicyMappingType[selectedRow.type] as PolicyType]: {
               visible: true, id: selectedRow.id
             }
           })
