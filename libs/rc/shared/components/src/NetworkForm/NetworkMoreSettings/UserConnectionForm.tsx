@@ -47,7 +47,7 @@ const oneHour = 60
 const oneWeek = 10080
 export function UserConnectionForm () {
 
-  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE) ? true: true
+  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
 
 
   const { $t } = useIntl()
@@ -149,15 +149,15 @@ export function UserConnectionForm () {
           let duration = data.guestPortal?.macCredentialsDuration
           let durationUnit = 'minutes'
           switch(true) {
-            case duration > oneWeek:
+            case (duration > oneWeek && duration % oneWeek === 0):
               duration = duration / oneWeek
               durationUnit = 'weeks'
               break
-            case duration > oneDay:
+            case (duration > oneDay && duration % oneDay === 0):
               duration = duration / oneDay
               durationUnit = 'days'
               break
-            case duration > oneHour:
+            case (duration > oneHour && duration % oneHour === 0):
               duration = duration / oneHour
               durationUnit = 'hours'
               break
