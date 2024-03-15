@@ -1,0 +1,337 @@
+/* eslint-disable max-len */
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor
+} from '@acx-ui/test-utils'
+
+import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
+
+import AddUserDrawer from './AddUserDrawer'
+
+const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+const mockedMSPCustomers = {
+  fields: ['name','id'],
+  totalCount: 2,
+  page: 1,
+  data: [{
+    id: '2242a683a7594d7896385cfef1fe1234',
+    name: 'Customer1',
+    entitlements: [
+      {
+        expirationDateTs: '1680134399000',
+        consumed: '0',
+        quantity: '1',
+        entitlementDeviceType: 'DVCNWTYPE_SWITCH',
+        tenantId: '2242a683a7594d7896385cfef1fe1234',
+        type: 'entitlement',
+        expirationDate: '2023-03-29T23:59:59Z',
+        entitlementDeviceSubType: 'ICX71',
+        toBeRemovedQuantity: 0
+      },
+      { expirationDateTs: '1680134399000',consumed: '2',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_WIFI',
+        tenantId: '2242a683a7594d7896385cfef1fe1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',toBeRemovedQuantity: 2 }
+    ],
+    wifiLicenses: 2,
+    switchLicenses: 1
+  },
+  { id: '350f3089a8e34509a2913c550faf1234',
+    name: 'Customer2',
+    entitlements: [
+      { expirationDateTs: '1680134399000',consumed: '0',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_WIFI',tenantId: '350f3089a8e34509a2913c550faf1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',toBeRemovedQuantity: 0 },
+      { expirationDateTs: '1680134399000',consumed: '0',quantity: '2',entitlementDeviceType: 'DVCNWTYPE_SWITCH',tenantId: '350f3089a8e34509a2913c550faf1234',type: 'entitlement',expirationDate: '2023-03-29T23:59:59Z',entitlementDeviceSubType: 'ICX71',toBeRemovedQuantity: 0 }
+    ],
+    wifiLicenses: 2,
+    switchLicenses: 2
+  }]
+}
+
+const mockedCloseDialog = jest.fn()
+const mockedAddAdminFn = jest.fn()
+const mockReqAdminsData = jest.fn()
+const services = require('@acx-ui/rc/services')
+
+describe('Add user drawer component', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+  beforeEach(() => {
+    mockReqAdminsData.mockReset()
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      mockReqAdminsData()
+      return { data: fakedPrivilegeGroupList }
+    })
+    mockServer.use(
+      rest.post(
+        MspUrlsInfo.getMspCustomersList.url,
+        (req, res, ctx) => res(ctx.json(mockedMSPCustomers))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.addAdmin.url,
+        (req, res, ctx) => {
+          mockedAddAdminFn(req.body)
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+  })
+
+  it('should MSP submit correctly', async () => {
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={true}
+          currentUserDetailLevel='debug'
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText('Read Only'))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(() => {
+      expect(mockedAddAdminFn).toBeCalledWith({
+        email: 'c123@email.com',
+        role: 'READ_ONLY',
+        detailLevel: 'debug',
+        delegateToAllECs: false
+      })
+    })
+  })
+
+  it('should MSP submit with none customer correctly', async () => {
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={true}
+          currentUserDetailLevel='debug'
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'wi-fi privilege group' ))
+    await userEvent.click(await screen.findByRole('radio', { name: 'None' }))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(() => {
+      expect(mockedAddAdminFn).toBeCalledWith({
+        email: 'c123@email.com',
+        role: 'wi-fi privilege group',
+        detailLevel: 'debug',
+        delegateToAllECs: false
+      })
+    })
+  })
+
+  it('should MSP submit with specific customer correctly', async () => {
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={true}
+          currentUserDetailLevel='debug'
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
+    await userEvent.click(await screen.findByRole('radio', { name: 'Specific Customers' }))
+    await userEvent.click((await screen.findAllByRole('combobox')).filter(p => p.id === 'delegatedEcs')[0])
+    await userEvent.click(await screen.findByText( 'Customer1' ))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(() => {
+      expect(mockedAddAdminFn).toBeCalledWith({
+        email: 'c123@email.com',
+        role: 'READ_ONLY',
+        detailLevel: 'debug',
+        delegateToAllECs: false,
+        delegatedECs: ['2242a683a7594d7896385cfef1fe1234']
+      })
+    })
+  })
+
+  it('should correctly display MSP EC admin invited error message', async () => {
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addAdmin.url,
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json({
+            errors: [{
+              code: 'TNT-10300',
+              message: 'Error'
+            }],
+            requestId: '123456'
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={true}
+          isOnboardedMsp={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(async () => {
+      expect(await screen.findByText('The email address belongs to a user of another Cloud Portal account.')).toBeVisible()
+    })
+  })
+
+  it('should correctly display admin invited error message', async () => {
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addAdmin.url,
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json({
+            errors: [{
+              code: 'TNT-10300',
+              message: 'Error'
+            }],
+            requestId: '123456'
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={false}
+          isOnboardedMsp={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'DPSK Manager' ))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(async () => {
+      expect(await screen.findByText(/The email address belongs to a user of another RUCKUS One tenant./i)).toBeVisible()
+    })
+  })
+
+  it('should correctly display admin existing error message', async () => {
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addAdmin.url,
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json({
+            errors: [{
+              code: 'TNT-10000',
+              message: 'Error'
+            }],
+            requestId: '123456'
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={true}
+          isOnboardedMsp={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'Read Only' ))
+    await userEvent.click(await screen.findByText('Add User'))
+    await waitFor(async () => {
+      expect(await screen.findByText('The email address belongs to an administrator that already exists.')).toBeVisible()
+    })
+  })
+
+  it('should correctly display other error message', async () => {
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addAdmin.url,
+        (req, res, ctx) => {
+          return res(ctx.status(500), ctx.json({
+            errors: [{
+              code: '1111',
+              message: 'Error'
+            }],
+            requestId: '123456'
+          }))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <AddUserDrawer
+          visible={true}
+          setVisible={mockedCloseDialog}
+          isMspEc={true}
+          isOnboardedMsp={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const emailInput = await screen.findByPlaceholderText('Enter email address')
+    await userEvent.type(emailInput, 'c123@email.com')
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
+    await userEvent.click(await screen.findByText( 'Guest Manager' ))
+    await userEvent.click(await screen.findByText('Add User'))
+  })
+})

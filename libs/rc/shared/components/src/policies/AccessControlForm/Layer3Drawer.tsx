@@ -24,9 +24,15 @@ import {
 import { Drag }                  from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
+  useGetEnhancedL3AclProfileListQuery,
   useGetL3AclPolicyQuery,
-  useL3AclPolicyListQuery,
   useUpdateL3AclPolicyMutation
+} from '@acx-ui/rc/services'
+import {
+  useAddL3AclPolicyTemplateMutation,
+  useGetL3AclPolicyTemplateListQuery,
+  useGetL3AclPolicyTemplateQuery,
+  useUpdateL3AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
@@ -34,14 +40,17 @@ import {
   Layer3ProtocolType,
   portRegExp,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  layer3ProtocolLabelMapping, TableResult, L3AclPolicy
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }     from './AccessControlForm'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY } from './constants'
-import { layer3ProtocolLabelMapping }      from './contentsMap'
-import { useScrollLock }                   from './ScrollLock'
+
+import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
+import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import { useScrollLock }                                                                from './ScrollLock'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -114,49 +123,6 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const DEFAULT_LAYER3_RULES = [
-  {
-    priority: 1,
-    description: 'Allow DHCP',
-    access: 'ALLOW',
-    protocol: 'ANYPROTOCOL',
-    source: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: ''
-    },
-    destination: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: '67'
-    }
-  },
-  {
-    priority: 2,
-    description: 'Allow DNS',
-    access: 'ALLOW',
-    protocol: 'ANYPROTOCOL',
-    source: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: ''
-    },
-    destination: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: '53'
-    }
-  }
-]
-
 export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -204,30 +170,21 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
 
-  const [ createL3AclPolicy ] = useAddL3AclPolicyMutation()
+  const [ createL3AclPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddL3AclPolicyMutation, useAddL3AclPolicyTemplateMutation)
 
-  const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
+  const [ updateL3AclPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateL3AclPolicyMutation, useUpdateL3AclPolicyTemplateMutation)
 
-  const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer3SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer3List: data ? data.map(item => item.name) : []
-      }
-    }
-  })
+  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
 
 
-  const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
-    {
-      params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
-    },
-    { skip: skipFetch }
+  const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetL3AclPolicyQuery,
+    useGetL3AclPolicyTemplateQuery,
+    skipFetch,
+    {},
+    { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
   )
 
   const isViewMode = () => {
@@ -1149,3 +1106,23 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     </>
   )
 }
+
+const useGetL3AclPolicyListInstance = (isEdit: boolean): {
+  layer3SelectOptions: JSX.Element[], layer3List: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>(
+    useGetEnhancedL3AclProfileListQuery,
+    useGetL3AclPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
+
+  return {
+    layer3SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer3List: data?.data.map(item => item.name) ?? []
+  }
+}
+

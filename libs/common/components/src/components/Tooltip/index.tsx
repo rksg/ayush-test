@@ -13,11 +13,15 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip (props: TooltipProps) {
-  return <>
+type ExtendedTooltipProps = TooltipProps &{
+  dottedUnderline?: boolean
+}
+
+function Tooltip (props: ExtendedTooltipProps) {
+  return <UI.TooltipWrapper $dottedUnderline={props.dottedUnderline ? true : false} >
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
-  </>
+  </UI.TooltipWrapper>
 }
 
 export { Tooltip, TooltipProps }

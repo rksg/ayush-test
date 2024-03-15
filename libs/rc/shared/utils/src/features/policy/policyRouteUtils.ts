@@ -36,6 +36,7 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
+  [PolicyType.WIFI_OPERATOR]: 'wifiOperator',
   [PolicyType.IDENTITY_PROVIDER]: 'identityProvider',
   [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',

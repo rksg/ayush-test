@@ -570,6 +570,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
   })
   it('should open dialog when integrator link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -589,6 +590,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
