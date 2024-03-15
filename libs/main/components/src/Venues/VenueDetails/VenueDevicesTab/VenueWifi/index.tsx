@@ -273,7 +273,7 @@ export function VenueWifi () {
               iconStyle={{
                 height: '16px',
                 width: '16px',
-                marginRight: '3px',
+                marginRight: '6px',
                 marginBottom: '-3px',
                 color: cssStr('--acx-accents-orange-50')
               }} />

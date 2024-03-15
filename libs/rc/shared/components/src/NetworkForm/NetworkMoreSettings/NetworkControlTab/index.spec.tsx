@@ -334,6 +334,6 @@ describe('Network More settings - Network Control Tab', () => {
     const tunnelProfileDropdown = within(tunnelProfileFormItem as HTMLElement).getByRole('combobox')
     expect(tunnelProfileDropdown).toBeDisabled()
     // eslint-disable-next-line max-len
-    await screen.findByText(/All networks under the same Network Segmentation share the same tunnel profile/i)
+    await screen.findByText(/All networks under the same Personal Identity Network share the same tunnel profile/i)
   })
 })

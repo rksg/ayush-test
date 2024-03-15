@@ -1,39 +1,44 @@
 import { useContext, useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { NoData, Tabs, Tooltip }                                     from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { NoData, Tabs, Tooltip }   from '@acx-ui/components'
+import { EdgeLagStatus, EdgePort } from '@acx-ui/rc/utils'
 
 import { EdgePortsDataContext } from '../PortDataProvider'
 
 import { LagSubInterfaceTable }  from './LagSubInterfaceTable'
 import { PortSubInterfaceTable } from './PortSubInterfaceTable'
 
+// ifName: interface name
+const findPortIdByIfName = (portData: EdgePort[], ifName: string) => {
+  return _.find(portData, { interfaceName: ifName })?.id ?? ''
+}
 interface SubInterfaceProps {
   serialNumber: string
   lagData?: EdgeLagStatus[]
 }
 
 const SubInterface = (props: SubInterfaceProps) => {
-  const { serialNumber/*, portData*/, lagData } = props
+  const { serialNumber, lagData } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState('')
-  const portsData = useContext(EdgePortsDataContext)
-  const portData = portsData.portData as EdgePortWithStatus[]
+  const { portData, portStatus } = useContext(EdgePortsDataContext)
 
   const handleTabChange = (activeKey: string) => {
     setCurrentTab(activeKey)
   }
 
   useEffect(() => {
-    const unLagPortIdx = portData.findIndex(item => !item.isLagPort)
-    setCurrentTab(
-      unLagPortIdx > -1 ?
-        `port_${portData[unLagPortIdx].id}` :
-        `lag_${lagData?.[0].lagId}`
-    )
-  }, [portData, lagData])
+    const unLagPortIdx = portStatus.findIndex(item => !item.isLagMember) ?? -1
+    if (unLagPortIdx > -1) {
+      const portId = findPortIdByIfName(portData, portStatus[unLagPortIdx].portName)
+      setCurrentTab(`port_${portId}`)
+    } else {
+      setCurrentTab(`lag_${lagData?.[0].lagId}`)
+    }
+  }, [portData, portStatus, lagData])
 
   return (
     portData.length > 0 ?
@@ -43,28 +48,31 @@ const SubInterface = (props: SubInterfaceProps) => {
         onChange={handleTabChange}
       >
         {
-          portData.map((item) =>
-            <Tabs.TabPane
+          portStatus.map((item) => {
+            const portId = findPortIdByIfName(portData, item.portName)
+
+            return <Tabs.TabPane
               tab={
-                item.isLagPort
+                item.isLagMember
                   ? <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
                     and is not available for adding sub-interfaces.` })}>
-                    {getEdgePortDisplayName(item)}
+                    {_.capitalize(item.portName)}
                   </Tooltip>
-                  : getEdgePortDisplayName(item)
+                  : _.capitalize(item.portName)
               }
-              key={'port_' + item.id}
+              key={`port_${portId}`}
               children={
                 <PortSubInterfaceTable
                   serialNumber={serialNumber}
                   currentTab={currentTab}
-                  ip={item.statusIp}
+                  ip={item.ip!}
                   mac={item.mac}
-                  portId={item.id}
+                  portId={portId}
                 />
               }
-              disabled={item.isLagPort}
+              disabled={item.isLagMember}
             />
+          }
           )
         }
         {
