@@ -11,9 +11,9 @@ import {
   configTemplatePolicyTypeMap, configTemplateServiceTypeMap,
   policyTypeLabelMapping, serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import { getIntl } from '@acx-ui/utils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   const { $t } = useIntl()
