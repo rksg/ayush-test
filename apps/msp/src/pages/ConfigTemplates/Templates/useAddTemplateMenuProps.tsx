@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
+import { getIntl } from '@acx-ui/utils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   const { $t } = useIntl()
@@ -52,16 +53,18 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
 }
 
 function usePolicyMenuItems (): ItemType[] {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+
   return [
-    usePolicyMenuItem(ConfigTemplateType.RADIUS),
-    usePolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL),
-    usePolicyMenuItem(ConfigTemplateType.VLAN_POOL)
+    createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
   ]
 }
 
-export function usePolicyMenuItem (configTemplateType: ConfigTemplateType): ItemType {
-  const { $t } = useIntl()
-  const visibilityMap = useConfigTemplateVisibilityMap()
+// eslint-disable-next-line max-len
+export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, visibilityMap: Record<ConfigTemplateType, boolean>): ItemType {
+  const { $t } = getIntl()
   const policyType = configTemplatePolicyTypeMap[configTemplateType]
 
   if (!visibilityMap[configTemplateType] || !policyType) return null
@@ -77,15 +80,17 @@ export function usePolicyMenuItem (configTemplateType: ConfigTemplateType): Item
 }
 
 function useServiceMenuItems (): ItemType[] {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+
   return [
-    useServiceMenuItem(ConfigTemplateType.DPSK),
-    useServiceMenuItem(ConfigTemplateType.DHCP)
+    createServiceMenuItem(ConfigTemplateType.DPSK, visibilityMap),
+    createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap)
   ]
 }
 
-export function useServiceMenuItem (configTemplateType: ConfigTemplateType): ItemType {
-  const { $t } = useIntl()
-  const visibilityMap = useConfigTemplateVisibilityMap()
+// eslint-disable-next-line max-len
+export function createServiceMenuItem (configTemplateType: ConfigTemplateType, visibilityMap: Record<ConfigTemplateType, boolean>): ItemType {
+  const { $t } = getIntl()
   const serviceType = configTemplateServiceTypeMap[configTemplateType]
 
   if (!visibilityMap[configTemplateType] || !serviceType) return null

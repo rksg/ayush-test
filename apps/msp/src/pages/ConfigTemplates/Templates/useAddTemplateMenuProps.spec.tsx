@@ -1,13 +1,12 @@
 import { ConfigTemplateType } from '@acx-ui/rc/utils'
 import { renderHook }         from '@acx-ui/test-utils'
 
-import { useAddTemplateMenuProps, usePolicyMenuItem, useServiceMenuItem } from './useAddTemplateMenuProps'
+import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap(),
-  ServiceConfigTemplateLink: () => 'ServiceConfigTemplateLink'
+  useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
 }))
 
 const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
@@ -29,22 +28,29 @@ describe('useAddTemplateMenuProps', () => {
     expect(result.current.items).toHaveLength(4)
   })
 
-  it('should return the correct policy menu item', () => {
-    // const { result } = renderHook(() => usePolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL))
-    // expect(result.current).toEqual({
-    //   key: `add-${ConfigTemplateType.ACCESS_CONTROL}`,
-    //   label: 'PolicyConfigTemplateLink'
-    // })
+  it('should create the correct policy menu item', () => {
+    // eslint-disable-next-line max-len
+    const allowedResult = createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, mockedConfigTemplateVisibilityMap)
+    expect(allowedResult).toBeDefined()
+    expect(allowedResult?.key).toBe(`add-${ConfigTemplateType.ACCESS_CONTROL}`)
 
-    const { result } = renderHook(() => usePolicyMenuItem(ConfigTemplateType.VLAN_POOL))
-    expect(result.current).toBeNull()
+    // eslint-disable-next-line max-len
+    const disallowedResult = createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, mockedConfigTemplateVisibilityMap)
+    expect(disallowedResult).toBeNull()
+
+    // eslint-disable-next-line max-len
+    const disallowedResult2 = createPolicyMenuItem(ConfigTemplateType.DPSK, mockedConfigTemplateVisibilityMap)
+    expect(disallowedResult2).toBeNull()
   })
 
-  it('should return the correct service menu item', () => {
-    const { result } = renderHook(() => useServiceMenuItem(ConfigTemplateType.DPSK))
-    expect(result.current).toEqual({
-      key: `add-${ConfigTemplateType.DPSK}`,
-      label: 'ServiceConfigTemplateLink'
-    })
+  it('should create the correct service menu item', () => {
+    // eslint-disable-next-line max-len
+    const allowedResult = createServiceMenuItem(ConfigTemplateType.DPSK, mockedConfigTemplateVisibilityMap)
+    expect(allowedResult).toBeDefined()
+    expect(allowedResult?.key).toBe(`add-${ConfigTemplateType.DPSK}`)
+
+    // eslint-disable-next-line max-len
+    const disallowedResult = createServiceMenuItem(ConfigTemplateType.ACCESS_CONTROL, mockedConfigTemplateVisibilityMap)
+    expect(disallowedResult).toBeNull()
   })
 })
