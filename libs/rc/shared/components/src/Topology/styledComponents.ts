@@ -5,7 +5,7 @@ import styled             from 'styled-components'
 
 import { Button, Modal }          from '@acx-ui/components'
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
-import { DeviceStatus }           from '@acx-ui/rc/utils'
+import { TopologyDeviceStatus }           from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'
 
@@ -30,7 +30,7 @@ export const Graph = styled('svg')`
     cursor: pointer;
   }`
 
-export const Device = styled('div')<{ deviceStatus: DeviceStatus }>`
+export const Device = styled('div')<{ deviceStatus: TopologyDeviceStatus }>`
    svg {
      color: ${props => getDeviceColor(props.deviceStatus)};
    }

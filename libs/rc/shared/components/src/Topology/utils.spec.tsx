@@ -3,7 +3,7 @@ import {
   APMeshRole,
   ApDeviceStatusEnum,
   ConnectionStatus,
-  DeviceStatus,
+  TopologyDeviceStatus,
   DeviceTypes,
   SwitchStatusEnum
 } from '@acx-ui/rc/utils'
@@ -13,7 +13,7 @@ import { getDeviceColor, getPathColor, getDeviceIcon, switchStatus, getMeshRole 
 
 describe('Topology utils', () => {
   it('test getDeviceColor', async () => {
-    expect(getDeviceColor(DeviceStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
+    expect(getDeviceColor(TopologyDeviceStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
     expect(getDeviceColor(ApDeviceStatusEnum.REBOOTING)).toBe('var(--acx-semantics-yellow-40)')
     expect(getDeviceColor(ApDeviceStatusEnum.HEARTBEAT_LOST)).toBe('var(--acx-semantics-yellow-40)')
 
@@ -24,7 +24,7 @@ describe('Topology utils', () => {
     expect(getDeviceColor(ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD))
       .toBe('var(--acx-semantics-red-70)')
 
-    expect(getDeviceColor(DeviceStatus.Unknown)).toBe('var(--acx-neutrals-50)')
+    expect(getDeviceColor(TopologyDeviceStatus.Unknown)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.INITIALIZING)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.OFFLINE)).toBe('var(--acx-neutrals-50)')
@@ -50,29 +50,29 @@ describe('Topology utils', () => {
 
   it('test getDeviceIcon', async () => {
     const testCases = [
-      { deviceType: DeviceTypes.Ap, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.Ap, deviceStatus: DeviceStatus.Degraded },
-      { deviceType: DeviceTypes.Ap, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.Ap, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.ApMesh, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.ApMesh, deviceStatus: DeviceStatus.Degraded },
-      { deviceType: DeviceTypes.ApMesh, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.ApMesh, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: DeviceStatus.Degraded },
-      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.ApWired, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.ApWired, deviceStatus: DeviceStatus.Degraded },
-      { deviceType: DeviceTypes.ApWired, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.ApWired, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.Switch, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.Switch, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.Switch, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.SwitchStack, deviceStatus: DeviceStatus.Operational },
-      { deviceType: DeviceTypes.SwitchStack, deviceStatus: DeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.SwitchStack, deviceStatus: DeviceStatus.Unknown },
-      { deviceType: DeviceTypes.Unknown, deviceStatus: DeviceStatus.Unknown }
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Degraded },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Degraded },
+      { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: TopologyDeviceStatus.Degraded },
+      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.ApMeshRoot, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.ApWired, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.ApWired, deviceStatus: TopologyDeviceStatus.Degraded },
+      { deviceType: DeviceTypes.ApWired, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.ApWired, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.Switch, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.Switch, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.Switch, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.SwitchStack, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.SwitchStack, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.SwitchStack, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.Unknown, deviceStatus: TopologyDeviceStatus.Unknown }
     ]
 
     testCases.forEach(({ deviceType, deviceStatus }) => {

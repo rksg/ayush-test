@@ -10,7 +10,7 @@ export interface Node {
     childCount?: number;
     symbol?: string;
     symbolOffset?: Array<number>;
-	status?: DeviceStatus;
+	status?: TopologyDeviceStatus;
 	label?: string;
 	cloudPort?: string;
 	isConnectedCloud?: boolean;
@@ -72,7 +72,7 @@ export enum ConnectionStatus {
     Unknown='Unknown'
 }
 
-export enum DeviceStatus {
+export enum TopologyDeviceStatus {
     Initializing='Initializing',
 	Operational='Operational',
 	Disconnected='Disconnected',

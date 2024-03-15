@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DeviceStatus, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                    from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within }                             from '@acx-ui/test-utils'
+import { venueApi }                                                                                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo, TopologyDeviceStatus, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                            from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }                                     from '@acx-ui/test-utils'
 
 import { TopologyTreeContext } from './TopologyTree/TopologyTreeContext'
 
@@ -527,14 +527,17 @@ describe('Topology', () => {
       venueId: '7231da344778480d88f37f0cca1c534f'
     }
     const { container } = render(<Provider>
-      <DeviceIcon deviceType={DeviceTypes.Switch} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.SwitchStack} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Ap} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Cloud} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApMesh} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApMeshRoot} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApWired} deviceStatus={DeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Unknown} deviceStatus={DeviceStatus.Unknown} />
+      <DeviceIcon deviceType={DeviceTypes.Switch} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.SwitchStack}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Ap} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Cloud} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApMesh} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApMeshRoot}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApWired}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Unknown} deviceStatus={TopologyDeviceStatus.Unknown} />
     </Provider>,{
       route: { params }
     })

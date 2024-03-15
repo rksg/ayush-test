@@ -53,6 +53,47 @@ const edgeDetail = {
   connectedPortTaggedVlan: ''
 }
 
+
+const sourceNodeNullDetail = {
+  type: 'Switch',
+  serial: 'FEK3224R09T',
+  status: 'Operational',
+  childCount: 0,
+  cloudPort: '1/1/1',
+  isConnectedCloud: true,
+  ipAddress: '10.206.1.112'
+}
+
+const targetNodeNullDetail = {
+  type: 'Switch',
+  serial: '302002029829',
+  id: '302002029829',
+  status: 'Operational',
+  childCount: 0,
+  meshRole: 'RAP',
+  uplink: [],
+  downlink: [],
+  downlinkChannel: '144(5G)',
+  isMeshEnable: true,
+  ipAddress: '10.206.1.38'
+}
+
+const edgeNullDetail = {
+  from: 'c0:c5:20:aa:32:67',
+  to: '302002029829',
+  fromMac: 'C0:C5:20:AA:32:67',
+  toMac: '34:20:E3:1C:EA:C0',
+  poeEnabled: false,
+  poeUsed: 6200,
+  poeTotal: 28850,
+  correspondingPort: '1',
+  connectionType: 'Wired',
+  connectionStatus: 'Good',
+  fromSerial: 'FEK3224R09T',
+  toSerial: '302002029829',
+  correspondingPortUntaggedVlan: '1'
+}
+
 describe('NodeTooltip', () => {
   it('should render correctly', async () => {
     const params = {
@@ -67,6 +108,27 @@ describe('NodeTooltip', () => {
           tooltipSourceNode={sourceNodeDetail as unknown as Node}
           tooltipTargetNode={targetNodeDetail as unknown as Node}
           tooltipEdge={edgeDetail as unknown as Link}
+          onClose={jest.fn()}
+        />
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+  })
+  it('should render null values correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+    const position = { x: 777, y: 180 }
+    render(
+      <Provider>
+        <LinkTooltip
+          tooltipPosition={position}
+          tooltipSourceNode={sourceNodeNullDetail as unknown as Node}
+          tooltipTargetNode={targetNodeNullDetail as unknown as Node}
+          tooltipEdge={edgeNullDetail as unknown as Link}
           onClose={jest.fn()}
         />
       </Provider>,

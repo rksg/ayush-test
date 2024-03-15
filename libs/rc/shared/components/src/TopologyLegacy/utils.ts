@@ -1,18 +1,18 @@
 
-import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, DeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                                          from '@acx-ui/utils'
 
 
-export function getDeviceColor (deviceStatus: DeviceStatus
+export function getDeviceColor (deviceStatus: TopologyDeviceStatus
   | SwitchStatusEnum
   | ApDeviceStatusEnum) {
   switch(deviceStatus) {
-    case DeviceStatus.Operational:
+    case TopologyDeviceStatus.Operational:
     case SwitchStatusEnum.OPERATIONAL:
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
     case ApDeviceStatusEnum.OPERATIONAL:
       return 'var(--acx-semantics-green-50)'
-    case DeviceStatus.Degraded:
+    case TopologyDeviceStatus.Degraded:
     case ApDeviceStatusEnum.REBOOTING:
     case ApDeviceStatusEnum.HEARTBEAT_LOST:
     case ApDeviceStatusEnum.APPLYING_FIRMWARE:
@@ -20,9 +20,9 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
     case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
-    case DeviceStatus.Disconnected:
+    case TopologyDeviceStatus.Disconnected:
       return 'var(--acx-semantics-red-70)'
-    case DeviceStatus.Unknown:
+    case TopologyDeviceStatus.Unknown:
     case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
     case ApDeviceStatusEnum.INITIALIZING:
     case ApDeviceStatusEnum.OFFLINE:

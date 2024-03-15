@@ -1,10 +1,19 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
-import { render }                                      from '@acx-ui/test-utils'
+import { render, screen }                              from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
+
+
+const mockedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  navigate: () => () => mockedNavigate()
+}))
 
 const apDetail = {
   serialNumber: '132106000082',
@@ -101,7 +110,6 @@ const apDetail = {
 const apDetailWithNullTraffic = {
   serialNumber: '132106000082',
   lastSeenTime: '2023-02-07T08:31:52.927Z',
-  name: 'R760-181-66',
   fwVersion: '6.2.1.103.1610',
   venueId: '1b48f908d285498d98c5a49ce65a8358',
   venueName: 'ThirdRadio',
@@ -199,5 +207,17 @@ describe('Topology AP Card', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+  })
+
+  it('should render navigation correctly', async () => {
+    render(<Provider><APDetailsCard
+      apDetail={apDetail as ApViewModel}
+      isLoading={false}
+      onClose={jest.fn()}
+    /></Provider>, {
+      route: {}
+    })
+
+    await userEvent.click(await screen.findByText('R760-181-66'))
   })
 })

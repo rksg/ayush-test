@@ -4,7 +4,7 @@ import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
 import { Button }       from '@acx-ui/components'
-import { DeviceStatus } from '@acx-ui/rc/utils'
+import { TopologyDeviceStatus } from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'
 
@@ -28,7 +28,7 @@ export const Graph = styled('svg')`
     cursor: pointer;
   }`
 
-export const Device = styled('div')<{ deviceStatus: DeviceStatus }>`
+export const Device = styled('div')<{ deviceStatus: TopologyDeviceStatus }>`
    svg {
      width: 32px !important;
      height: 32px !important;

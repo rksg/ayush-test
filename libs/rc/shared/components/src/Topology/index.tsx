@@ -24,7 +24,7 @@ import {
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
 import {
-  DeviceStatus,
+  TopologyDeviceStatus,
   DeviceTypes,
   Link,
   Node,
@@ -455,7 +455,7 @@ export function TopologyGraph (props:{ venueId?: string,
   )
 }
 
-export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: DeviceStatus }) {
+export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: TopologyDeviceStatus }) {
   const { deviceType, deviceStatus } = props
 
   function getDeviceIcon () {
