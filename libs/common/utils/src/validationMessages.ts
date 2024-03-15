@@ -38,6 +38,11 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  domainWildcard: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Type a fully qualified domain name, and then try again. The wildcard (*) character is supported (for example, "* ruckuswireless.com").',
+    description: 'Validation - domain checks'
+  }),
   domainDuplication: defineMessage({
     defaultMessage: 'Domain(s) must not be duplicated.',
     description: 'Validation - Domain duplication checks'

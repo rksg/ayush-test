@@ -128,6 +128,15 @@ describe('timeSeriesTooltipFormatter', () => {
     expect(result).toMatchSnapshot()
     expect(dataFormatters.default).toBeCalledTimes(multiSeries.length)
   })
+  it('handle undefined bin data', async () => {
+    const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
+    const data = [[1605628800000, undefined] as unknown as [TimeStamp, number]]
+    const series = [...singleSeries, { ...multiSeries[1], data }]
+    const params = [singleparameters, { ...multiParameters[1], data }] as TooltipFormatterParams[]
+    const result = timeSeriesTooltipFormatter(series, dataFormatters)(params)
+    expect(result).toMatchSnapshot()
+    expect(dataFormatters.default).toBeCalledTimes(series.length - 1)
+  })
   it('should hide row when legend deselected', async () => {
     const dataFormatters = { default: jest.fn((value) => `formatted-${value}`) }
     const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(singleparameters)

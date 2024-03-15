@@ -203,4 +203,9 @@ describe('AllRoutes', () => {
     , wrapper: Provider })
     await screen.findByTestId('UsersPage')
   })
+  it('should render support correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/admin/support' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('AccountManagement')).toBeVisible()
+  })
 })
