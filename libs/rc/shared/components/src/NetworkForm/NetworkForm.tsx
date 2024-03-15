@@ -87,7 +87,8 @@ const onboardingTitle = defineMessage({
 const minutesMapping: { [key:string]:number }={
   hours: 60,
   days: 1440,
-  minutes: 1
+  minutes: 1,
+  weeks: 10080
 }
 interface GuestMore {
   guestPortal?: GuestPortal,
