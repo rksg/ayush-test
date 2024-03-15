@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { range } from 'lodash'
 
 import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
-import type { Settings }                   from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { screen, render, fireEvent }       from '@acx-ui/test-utils'
+import type { Settings }                                      from '@acx-ui/analytics/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { screen, render, fireEvent }                          from '@acx-ui/test-utils'
 
 import { ConfigSettings } from './Settings'
 

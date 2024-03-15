@@ -1,8 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Typography, Card as AntCard } from 'antd'
 
-import { Card }               from '@acx-ui/components'
 import { SettingsSolid } from '@acx-ui/icons'
 
 export const Setting = {
