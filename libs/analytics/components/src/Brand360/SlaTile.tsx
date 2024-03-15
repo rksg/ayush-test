@@ -13,13 +13,11 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Settings }           from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 import { noDataDisplay }      from '@acx-ui/utils'
 
 import { SlaChart }                                                   from './Chart'
-import { ComplianceSetting }                                          from './ComplianceSetting'
 import { Lsp, Property, transformToLspView, transformToPropertyView } from './helpers'
 import { ChartKey, slaKpiConfig }                                     from './helpers'
 import * as UI                                                        from './styledComponents'
@@ -34,7 +32,6 @@ interface SlaTileProps {
   prevData: FranchisorTimeseries | undefined
   currData: FranchisorTimeseries | undefined
   sliceType: SliceType
-  settings: Settings
   lsp: string
   property: string
 }
@@ -159,7 +156,6 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  settings,
   lsp,
   property
 }: SlaTileProps) {

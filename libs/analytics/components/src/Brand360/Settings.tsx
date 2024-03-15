@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { Form, Input, Space, Typography }            from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form, Input, Typography } from 'antd'
+import { defineMessage, useIntl }  from 'react-intl'
 
 import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
-import { Settings }                        from '@acx-ui/analytics/utils'
-import { Drawer, Button, Tooltip, Loader } from '@acx-ui/components'
-import { truthy }                          from '@acx-ui/utils'
+import { Settings }                                           from '@acx-ui/analytics/utils'
+import { Drawer, Button, Tooltip, Loader }                    from '@acx-ui/components'
+import { truthy }                                             from '@acx-ui/utils'
 
-import { ComplianceSetting as UI } from './styledComponents'
+import { Setting as UI } from './styledComponents'
 
 const isRegex = (input: string) => {
   try {
@@ -41,7 +41,11 @@ const cleanInput = (input: string) => {
 }
 
 const ssidField = 'ssidPattern'
-const maxLength = 1000
+const maxSSIDLength = 1000
+const brandField = 'brandName'
+const lspField = 'lspName'
+const propertyField = 'propertyName'
+const maxNameLength = 100
 
 const tooltipMsg = defineMessage({
   defaultMessage: `
@@ -54,28 +58,38 @@ const tooltipMsg = defineMessage({
   `
 })
 
-export function ComplianceSetting ({ settings }: { settings: Settings }) {
+export function ConfigSettings ({ settings }: { settings: Settings }) {
   const { $t } = useIntl()
-  const { names } = useBrand360Config()
+  const { names: {
+    brand: brandName,
+    lsp: lspName,
+    property: propertyName
+  } } = useBrand360Config()
   const ssidRegex = settings['brand-ssid-compliance-matcher']
-  const brandName = names.brand
-  const lspName = names.lsp
-  const propertyName = names.property
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const ssidValue = Form.useWatch(ssidField, form)
-  const brandValue = Form.useWatch('brandName', form)
-  const lspValue = Form.useWatch('lspName', form)
-  const propertyValue = Form.useWatch('propertyName', form)
+  const brandValue = Form.useWatch(brandField, form)
+  const lspValue = Form.useWatch(lspField, form)
+  const propertyValue = Form.useWatch(propertyField, form)
   const failureLines = getFailureLines(ssidValue)
-  const isDisabled = ssidValue === ''
+  const isDisabled = (ssidValue === ''
     || ssidValue === ssidRegex
-    || ssidValue?.length >= maxLength
+    || ssidValue?.length >= maxSSIDLength
     || failureLines.length > 0
-  const [updateSlas, result] = useUpdateTenantSettingsMutation()
-  const saveSSIDRegex = useCallback(() => {
-    console.log(brandValue, lspValue, propertyValue)
-    updateSlas({
+  ) && (brandValue === ''
+    || brandValue.length >= maxNameLength
+    || brandValue === brandName
+  ) && (lspValue === ''
+    || lspValue.length >= maxNameLength
+    || lspValue === lspName
+  ) && (propertyValue === ''
+    || propertyValue.length >= maxNameLength
+    || propertyValue === propertyName
+  )
+  const [updateSettings, result] = useUpdateTenantSettingsMutation()
+  const saveSettings = useCallback(() => {
+    updateSettings({
       ...settings,
       'brand-ssid-compliance-matcher': cleanInput(ssidValue),
       'brand-name': brandValue,
@@ -87,21 +101,22 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
   useEffect(() => {
     form &&
     form.setFieldValue(ssidField, ssidRegex)
-    form.setFieldValue('brandName', brandName)
-    form.setFieldValue('lspName', lspName)
-    form.setFieldValue('propertyName', propertyName)
+    form.setFieldValue(brandField, brandName)
+    form.setFieldValue(lspField, lspName)
+    form.setFieldValue(propertyField, propertyName)
   }, [ssidRegex, form, brandName, lspName, propertyName])
 
+  const closeDrawer = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation()
+    setVisible(false)
+  }
   return <Button onClick={() => setVisible(true)} >
-    <UI.Icon data-testid='ssidSettings' />
+    <UI.Icon data-testid='settings' />
     <Drawer
       width={500}
       title={$t({ defaultMessage: 'Settings' })}
       visible={visible}
-      onClose={(e) => {
-        e.stopPropagation()
-        setVisible(false)}
-      }
+      onClose={closeDrawer}
       destroyOnClose
       footer={<>
         <Button
@@ -109,14 +124,11 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
           disabled={isDisabled}
           onClick={(e) => {
             e.stopPropagation()
-            saveSSIDRegex()
+            saveSettings()
           }}>
           {$t({ defaultMessage: 'Save' })}
         </Button>
-        <Button type='default' onClick={(e) => {
-          e.stopPropagation()
-          setVisible(false)}
-        }>
+        <Button type='default' onClick={closeDrawer}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button></>}
     > <Loader states={[result]}>
@@ -130,18 +142,22 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
           layout='vertical'
           form={form}>
           <Typography.Text strong>{$t({ defaultMessage: 'Naming Convention' })}</Typography.Text>
-          <br/><br/>
-          <Typography.Text >{
-            $t({
-              defaultMessage: 'Choose standard vocabulary for keywords aligned with the common language of your brand'
-            })}
+          <br/>
+          <Typography.Text
+            type='secondary'
+            style={{ fontSize: 'var(--acx-body-4-font-size)' }}
+          >{
+              $t({
+                /* eslint-disable-next-line max-len */
+                defaultMessage: 'Choose standard vocabulary for keywords aligned with the common language of your brand'
+              })}
           </Typography.Text>
           <br/><br/>
           <Form.Item
-            name='brandName'
+            name={brandField}
             label={$t(
-              { 
-                defaultMessage: 'Brand' 
+              {
+                defaultMessage: 'Brand'
               })
             }
             rules={[{
@@ -154,13 +170,13 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
               max: 100,
               message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
             }]}
-            children={<Input data-testid='brandName' />}
+            children={<Input data-testid={brandField} />}
           />
           <Form.Item
-            name='lspName'
+            name={lspField}
             label={$t(
-              { 
-                defaultMessage: 'LSP' 
+              {
+                defaultMessage: 'LSP'
               })
             }
             rules={[{
@@ -173,28 +189,28 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
               max: 100,
               message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
             }]}
-            children={<Input data-testid='lspName' />}
-            />
-            <Form.Item
-              name='propertyName'
-              label={$t(
-                { 
-                  defaultMessage: 'Property' 
-                })
-              }
-              rules={[{
-                required: true,
-                message: $t({ defaultMessage: 'Property name is required!' })
-              },
+            children={<Input data-testid={lspField} />}
+          />
+          <Form.Item
+            name={propertyField}
+            label={$t(
               {
-                type: 'string',
-                min: 1,
-                max: 100,
-                message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
-              }]}
-              children={<Input data-testid='propertyName' />}
-            />
-          <hr />
+                defaultMessage: 'Property'
+              })
+            }
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Property name is required!' })
+            },
+            {
+              type: 'string',
+              min: 1,
+              max: 100,
+              message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
+            }]}
+            children={<Input data-testid={propertyField} />}
+          />
+          <UI.Line />
           <Typography.Text strong>{$t({ defaultMessage: 'Compliance Rules' })}</Typography.Text>
           <br/><br/>
           <Form.Item
@@ -212,7 +228,7 @@ export function ComplianceSetting ({ settings }: { settings: Settings }) {
             {
               type: 'string',
               min: 1,
-              max: maxLength,
+              max: maxSSIDLength,
               message: $t({ defaultMessage: 'Input exceeds 1000 characters!' })
             },
             {

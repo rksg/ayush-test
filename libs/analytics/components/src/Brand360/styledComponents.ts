@@ -1,14 +1,21 @@
 import styled from 'styled-components/macro'
 
+import { Typography, Card as AntCard } from 'antd'
+
+import { Card }               from '@acx-ui/components'
 import { SettingsSolid } from '@acx-ui/icons'
 
-export const ComplianceSetting = {
+export const Setting = {
   Icon: styled(SettingsSolid)`
     width: 24px;
     height: 24px;
   `,
-  Wrapper: styled.div`
-    
+  Line: styled.div`
+    border-bottom: 1px solid var(--acx-neutrals-25);
+    margin: 16px 0;
+    display: block;
+    width: 100%;
+    height: 2px;
   `
 }
 
