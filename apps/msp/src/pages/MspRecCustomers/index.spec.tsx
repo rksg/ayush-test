@@ -592,6 +592,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
