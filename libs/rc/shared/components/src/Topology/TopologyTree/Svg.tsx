@@ -54,8 +54,10 @@ const Svg: any = (props: any) => {
         linkPositionData[`${_.get(link, 'source.data.id')}_${_.get(link, 'target.data.id')}`] =
         { ...link,
           ...edges.filter((item: { from: string; to: string }) =>
-            item.from === _.get(link, 'source.data.id') &&
-            item.to === _.get(link, 'target.data.id'))[0]
+            (item.from === _.get(link, 'source.data.id') &&
+            item.to === _.get(link, 'target.data.id')) ||
+            (item.from === _.get(link, 'target.data.id') &&
+            item.to === _.get(link, 'source.data.id')))[0]
         }
       })
       if (!Object.keys(linksInfo).length) {

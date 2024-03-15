@@ -85,6 +85,7 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -108,6 +109,7 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPMeshDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -131,6 +133,7 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPMeshRootDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -154,6 +157,7 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPWiredDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -168,6 +172,8 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case DeviceStatus.Disconnected:
           return <TopologySwitchDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Degraded:
+        case DeviceStatus.Initializing:
         case SwitchStatusEnum.INITIALIZING:
         case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
         case SwitchStatusEnum.DISCONNECTED:
@@ -182,6 +188,8 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
         case DeviceStatus.Disconnected:
           return <TopologyStackSwitchDisconnected width={24} height={24} x={-12} y={-12} />
         case DeviceStatus.Unknown:
+        case DeviceStatus.Degraded:
+        case DeviceStatus.Initializing:
         case SwitchStatusEnum.INITIALIZING:
         case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
         case SwitchStatusEnum.DISCONNECTED:
