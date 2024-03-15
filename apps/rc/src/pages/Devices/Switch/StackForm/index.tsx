@@ -759,11 +759,13 @@ export function StackForm () {
             const detailsFields = ['venueId', 'name', 'description']
             const hasErrorFields = !!errorFields.length
             const isSettingsTabActive = currentTab === 'settings'
-            const isDetailsFieldsError = errorFields.filter(field =>
-              detailsFields.includes(field.name[0] as string)
-            ).length > 0
+            const isDetailsFieldsError = errorFields.filter(field => {
+              const errorFieldName = field.name[0] as string
+              return detailsFields.includes(errorFieldName)
+                || errorFieldName.includes('serialNumber')
+            }).length > 0
 
-            if (hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
+            if (deviceOnline && hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
               setCurrentTab('settings')
               showToast({
                 type: 'error',

@@ -390,7 +390,7 @@ export function SwitchForm () {
             detailsFields.includes(field.name[0] as string)
           ).length > 0
 
-          if (hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
+          if (deviceOnline && hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
             setCurrentTab('settings')
             showToast({
               type: 'error',
