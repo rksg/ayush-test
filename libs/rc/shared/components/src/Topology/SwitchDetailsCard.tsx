@@ -6,7 +6,7 @@ import { Card, Descriptions, Loader }                                           
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                              from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel }                                        from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
+import { useLocation }                                                              from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
@@ -24,8 +24,7 @@ export function SwitchDetailsCard (props: {
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
   const { dateFilter } = useDateFilter()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/switch')
+  const location = useLocation()
 
   const filters = {
     ...dateFilter,
@@ -46,22 +45,13 @@ export function SwitchDetailsCard (props: {
   return <Card><Card.Title>
     <Space>
       <UI.NodeTitle
-        style={{
-          padding: 0
-        }}
-        onClick={
-          () =>{
-            navigate({
-              // eslint-disable-next-line max-len
-              pathname: `${basePath.pathname}/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`
-            })
-          }}
-        size='small'
-        type='link'>
+        state={{ from: location.pathname }}
+        // eslint-disable-next-line max-len
+        to={`/devices/switch/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`}>
         {switchDetail?.name
-        || switchDetail?.id
-        || switchDetail?.switchMac
-        || $t({ defaultMessage: 'Unknown' }) // for unknown device
+            || switchDetail?.id
+            || switchDetail?.switchMac
+            || $t({ defaultMessage: 'Unknown' }) // for unknown device
         }
       </UI.NodeTitle>
       <Button

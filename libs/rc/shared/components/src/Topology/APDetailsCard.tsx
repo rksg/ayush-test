@@ -6,7 +6,7 @@ import { Card, Descriptions, Loader, Subtitle }                                 
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                               from '@acx-ui/react-router-dom'
+import { useLocation }                                                                              from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 
@@ -25,8 +25,7 @@ export function APDetailsCard (props: {
   const toggles = useIncidentToggles()
 
   const { dateFilter } = useDateFilter()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/wifi')
+  const location = useLocation()
 
   const filters = {
     ...dateFilter,
@@ -49,18 +48,9 @@ export function APDetailsCard (props: {
   return <Card><Card.Title>
     <Space>
       <UI.NodeTitle
-        style={{
-          padding: 0
-        }}
-        size='small'
-        onClick={
-          () =>{
-            navigate({
-              pathname: `${basePath.pathname}/${apDetail?.apMac}/details/overview`
-            })
-          }}
-        disabled={!(apDetail?.apMac)}
-        type='link'>
+        state={{ from: location.pathname }}
+        // eslint-disable-next-line max-len
+        to={`/devices/wifi/${apDetail?.apMac}/details/overview`}>
         {apDetail?.name
         || apDetail?.apMac
         || $t({ defaultMessage: 'Unknown' }) // for unknown device

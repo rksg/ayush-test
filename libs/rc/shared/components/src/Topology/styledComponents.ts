@@ -3,9 +3,10 @@ import { createElement } from 'react'
 import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
-import { Button, Modal }          from '@acx-ui/components'
+import { Modal }                  from '@acx-ui/components'
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 import { TopologyDeviceStatus }   from '@acx-ui/rc/utils'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import { getDeviceColor } from './utils'
 
@@ -114,15 +115,14 @@ export const TextNumber = styled.div`
   }
 `
 
-export const NodeTitle = styled(Button)`
-span {
+export const NodeTitle = styled(TenantLink)`
     width: 288px;
     display: inline-block;
     flex: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
+    font-size: 12px;
 `
 export const Topology = styled.div`
 font-family: sans-serif;
