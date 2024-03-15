@@ -41,8 +41,8 @@ exports[`Button should render secondary button 1`] = `
 
 exports[`DisabledButton should render disabled button with tooltip 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__TooltipHeader-sc-xryt7m-0"
+  <span
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
   >
     <span
       class="ant-tooltip-open"
@@ -59,7 +59,7 @@ exports[`DisabledButton should render disabled button with tooltip 1`] = `
         </span>
       </button>
     </span>
-  </div>
+  </span>
 </DocumentFragment>
 `;
 

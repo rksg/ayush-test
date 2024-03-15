@@ -35,7 +35,7 @@ export const TooltipGlobalStyle = createGlobalStyle`
 
 export const TooltipWrapper = styled.span<{ $dottedUnderline: boolean }>`
   ${props => props.$dottedUnderline && css`
-    span {
+    > span {
       text-decoration: dotted underline;
       :after {
         content: '';

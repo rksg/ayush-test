@@ -25,8 +25,8 @@ exports[`MeshNetwork should render correctly 1`] = `
               <div
                 class="ant-form-item-control-input-content"
               >
-                <div
-                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                <span
+                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                 >
                   <button
                     aria-checked="true"
@@ -42,7 +42,7 @@ exports[`MeshNetwork should render correctly 1`] = `
                       class="ant-switch-inner"
                     />
                   </button>
-                </div>
+                </span>
               </div>
             </div>
           </div>
@@ -78,8 +78,8 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
               <div
                 class="ant-form-item-control-input-content"
               >
-                <div
-                  class="styledComponents__TooltipHeader-sc-xryt7m-0"
+                <span
+                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                 >
                   <span
                     class="ant-tooltip-disabled-compatible-wrapper"
@@ -102,7 +102,7 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
                       />
                     </button>
                   </span>
-                </div>
+                </span>
               </div>
             </div>
           </div>
