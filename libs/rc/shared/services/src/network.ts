@@ -731,7 +731,7 @@ export const aggregatedNetworksVenueData = (venueList: TableResult<Venue>,
 export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
+      ? ConfigTemplateUrlsInfo.getVenueNetworkTemplateList
       : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
@@ -916,7 +916,7 @@ export const aggregatedNetworksVenueDataV2 = (venueList: TableResult<Venue>,
 export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
+      ? ConfigTemplateUrlsInfo.getVenueNetworkTemplateList
       : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
