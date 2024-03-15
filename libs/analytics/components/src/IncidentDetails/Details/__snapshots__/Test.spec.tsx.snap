@@ -378,9 +378,13 @@ exports[`Test Details should render AirtimeB correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -973,9 +977,13 @@ exports[`Test Details should render AirtimeB correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -1568,9 +1576,13 @@ exports[`Test Details should render AirtimeB correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -2203,9 +2215,13 @@ exports[`Test Details should render AirtimeRx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -2793,9 +2809,13 @@ exports[`Test Details should render AirtimeRx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -3383,9 +3403,13 @@ exports[`Test Details should render AirtimeRx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -4013,9 +4037,13 @@ exports[`Test Details should render AirtimeTx correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -4608,9 +4636,13 @@ exports[`Test Details should render AirtimeTx correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -5203,9 +5235,13 @@ exports[`Test Details should render AirtimeTx correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              19-US-CA-D19-Andre-Home
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                19-US-CA-D19-Andre-Home
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -5798,9 +5834,13 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              Phong_Vegas1 (20:58:69:08:37:10)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Phong_Vegas1 (20:58:69:08:37:10)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -6356,9 +6396,13 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              AlphaNet_5_1
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                AlphaNet_5_1
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -6954,9 +6998,13 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              vishnu_11ac
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                vishnu_11ac
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -7512,9 +7560,13 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              Default Zone
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Default Zone
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -8110,9 +8162,13 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              vishnu_11ac
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                vishnu_11ac
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -8671,9 +8727,13 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              East Side
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                East Side
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -9240,9 +9300,13 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              East Side
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                East Side
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -9797,9 +9861,13 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              Outdoor
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Outdoor
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -10370,9 +10438,13 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              RuckusAP (70:CA:97:01:A0:C0)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -10931,9 +11003,13 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              RuckusAP (70:CA:97:01:A0:C0)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -11492,9 +11568,13 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              RuckusAP (70:CA:97:01:A0:C0)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -12053,9 +12133,13 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              RuckusAP (70:CA:97:01:A0:C0)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -12614,9 +12698,13 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              RuckusAP (70:CA:97:01:A0:C0)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -13135,9 +13223,13 @@ exports[`Test Details should render LoadSzCpuLoad correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              ICX8200-24 Router (38:45:3B:3C:EC:70)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                ICX8200-24 Router (38:45:3B:3C:EC:70)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -13599,9 +13691,13 @@ exports[`Test Details should render NetSzNetLatency correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              AP-MEM-vSZ-61
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                AP-MEM-vSZ-61
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -14063,9 +14159,13 @@ exports[`Test Details should render NetTime correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              AP-MEM-vSZ-61
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                AP-MEM-vSZ-61
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -14527,9 +14627,13 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              ICX8200-24 Router (38:45:3B:3C:EC:70)
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                ICX8200-24 Router (38:45:3B:3C:EC:70)
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -14700,6 +14804,23 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
         <div
           data-testid="switchDetail"
         />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 250px;"
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-SwitchMemoryUtilizationChart"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -15004,9 +15125,13 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              Unknown
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Unknown
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -15481,9 +15606,13 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              Unknown
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                Unknown
+                              </span>
                             </span>
                           </span>
                         </div>
@@ -15652,41 +15781,8 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
         style="min-height: 129px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-        >
-          <div
-            class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
-          >
-            <span
-              aria-label="loader"
-              class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-              role="img"
-            >
-              <div
-                aria-busy="true"
-                aria-live="polite"
-                class="ant-spin ant-spin-lg ant-spin-spinning"
-              >
-                <span
-                  class="ant-spin-dot ant-spin-dot-spin"
-                >
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                  <i
-                    class="ant-spin-dot-item"
-                  />
-                </span>
-              </div>
-            </span>
-          </div>
-        </div>
+          data-testid="impactedSwitchVLANsDetails"
+        />
       </div>
     </div>
     <div
@@ -16044,9 +16140,13 @@ exports[`Test Details should render Ttc correctly 1`] = `
                             class="ant-descriptions-item-content"
                           >
                             <span
-                              class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
                             >
-                              EDU-MeshZone_orig
+                              <span
+                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                              >
+                                EDU-MeshZone_orig
+                              </span>
                             </span>
                           </span>
                         </div>
