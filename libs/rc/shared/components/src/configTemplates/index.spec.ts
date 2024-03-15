@@ -4,7 +4,7 @@ import { renderHook }                     from '@acx-ui/test-utils'
 
 import { useConfigTemplateVisibilityMap } from '.'
 
-describe('useIsConfigTemplateOn', () => {
+describe('useIsConfigTemplateOnByType', () => {
   it('should return the correct map when the Beta use is OFF', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
     jest.mocked(useIsSplitOn).mockReturnValue(false)

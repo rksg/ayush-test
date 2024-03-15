@@ -3,23 +3,33 @@ import { ConfigTemplateType }                                     from '@acx-ui/
 
 export * from './ConfigTemplateLink'
 
+export function useIsConfigTemplateBeta (): boolean {
+  return useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE)
+}
+
+export function useIsConfigTemplateGA (): boolean {
+  const isBeta = useIsConfigTemplateBeta()
+  const isGA = useIsSplitOn(Features.CONFIG_TEMPLATE)
+  return isBeta && isGA
+}
+
 export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolean> {
-  const isBetaFFOn = useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE)
-  const isPhase2On = useIsSplitOn(Features.CONFIG_TEMPLATE)
+  const isBeta = useIsConfigTemplateBeta()
+  const isGA = useIsConfigTemplateGA()
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
-    [ConfigTemplateType.NETWORK]: isBetaFFOn,
-    [ConfigTemplateType.VENUE]: isBetaFFOn,
-    [ConfigTemplateType.DPSK]: isBetaFFOn,
-    [ConfigTemplateType.RADIUS]: isBetaFFOn,
-    [ConfigTemplateType.DHCP]: isBetaFFOn,
-    [ConfigTemplateType.ACCESS_CONTROL]: isBetaFFOn,
-    [ConfigTemplateType.VLAN_POOL]: isBetaFFOn && isPhase2On
+    [ConfigTemplateType.NETWORK]: isBeta,
+    [ConfigTemplateType.VENUE]: isBeta,
+    [ConfigTemplateType.DPSK]: isBeta,
+    [ConfigTemplateType.RADIUS]: isBeta,
+    [ConfigTemplateType.DHCP]: isBeta,
+    [ConfigTemplateType.ACCESS_CONTROL]: isBeta,
+    [ConfigTemplateType.VLAN_POOL]: isGA
   }
 
   return visibilityMap
 }
 
-export function useIsConfigTemplateOn (type: ConfigTemplateType): boolean {
+export function useIsConfigTemplateOnByType (type: ConfigTemplateType): boolean {
   const visibilityMap = useConfigTemplateVisibilityMap()
   return visibilityMap[type]
 }
