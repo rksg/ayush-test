@@ -67,6 +67,7 @@ exports[`Topology AP Card should render correctly 1`] = `
             >
               <button
                 class="ant-btn ant-btn-link ant-btn-sm ant-btn-icon-only"
+                data-testid="closeNodeTooltip"
                 type="button"
               >
                 <svg

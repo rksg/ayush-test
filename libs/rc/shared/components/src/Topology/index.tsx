@@ -455,7 +455,8 @@ export function TopologyGraph (props:{ venueId?: string,
   )
 }
 
-export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: TopologyDeviceStatus }) {
+export function DeviceIcon (props: { deviceType: DeviceTypes,
+  deviceStatus: TopologyDeviceStatus }) {
   const { deviceType, deviceStatus } = props
 
   function getDeviceIcon () {

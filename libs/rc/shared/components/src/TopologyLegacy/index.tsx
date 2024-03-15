@@ -13,7 +13,7 @@ import { useParams }                                                from 'react-
 import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
 import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort, SearchOutlined } from '@acx-ui/icons'
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, TopologyDeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
+import { ConnectionStates, ConnectionStatus, DeviceStates, TopologyDeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
@@ -661,7 +661,8 @@ export function TopologyGraphLegacy (props:{ venueId?: string,
   </Loader>
 }
 
-export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: TopologyDeviceStatus }) {
+export function DeviceIcon (props: { deviceType: DeviceTypes,
+  deviceStatus: TopologyDeviceStatus }) {
   const { deviceType, deviceStatus } = props
 
   function getDeviceIcon () {

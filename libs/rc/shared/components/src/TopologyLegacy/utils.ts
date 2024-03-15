@@ -1,6 +1,6 @@
 
 import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                          from '@acx-ui/utils'
+import { getIntl }                                                                                  from '@acx-ui/utils'
 
 
 export function getDeviceColor (deviceStatus: TopologyDeviceStatus

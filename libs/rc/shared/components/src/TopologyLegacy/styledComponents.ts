@@ -3,7 +3,7 @@ import { createElement } from 'react'
 import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
-import { Button }       from '@acx-ui/components'
+import { Button }               from '@acx-ui/components'
 import { TopologyDeviceStatus } from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'

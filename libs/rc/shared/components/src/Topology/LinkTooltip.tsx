@@ -83,7 +83,12 @@ onClose: () => void
           <div>
             {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
           </div>
-          <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+          <Button
+            size='small'
+            type='link'
+            onClick={onClose}
+            icon={<CloseSymbol />}
+            data-testid='closeLinkTooltip'/>
         </Space>
       </Card.Title>
 

@@ -28,7 +28,7 @@ import {
   TopologyUnknown
 } from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum, DeviceTypes } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                       from '@acx-ui/utils'
+import { getIntl }                                                                                               from '@acx-ui/utils'
 
 
 

@@ -171,58 +171,6 @@ const graphData = {
   ]
 }
 
-// const scaleData = { ...graphData }
-
-// const mock = {
-//   inverse: () => mock,
-//   multiply: () => mock,
-//   translate: () => ({ e: 0, f: 0 })
-// }
-
-// Object.defineProperty(global.SVGElement.prototype, 'getScreenCTM', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue(mock)
-// })
-// const value = jest.fn()
-// Object.defineProperty(global.SVGElement.prototype, 'getBBox', {
-//   writable: true,
-//   value: value
-// })
-// value.mockReturnValue({ x: 0, y: 0, width: 0, height: 0 })
-
-// Object.defineProperty(global.SVGElement.prototype, 'getComputedTextLength', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue(0)
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue({
-//     x: 10,
-//     y: 10,
-//     inverse: () => {},
-//     multiply: () => {}
-//   })
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'width', {
-//   writable: true,
-//   value: {
-//     baseVal: {
-//       value: 10
-//     }
-//   }
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'height', {
-//   writable: true,
-//   value: {
-//     baseVal: {
-//       value: 10
-//     }
-//   }
-// })
-
 const editStackDetail = {
   type: 'device',
   isStack: true,
@@ -447,7 +395,6 @@ describe('Topology', () => {
       expect(await within(dialog).findByTestId('topologyGraph')).toBeInTheDocument()
     )
   })
-
   it('should render hover device and show tooltip panel correctly', async () => {
     const params = {
       tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
@@ -467,9 +414,42 @@ describe('Topology', () => {
     })
 
     const deviceNode = await screen.findByTestId('node_c0:c5:20:aa:32:67')
-    const node = { data: { id: 'c0:c5:20:aa:32:67' } }
     const event = { nativeEvent: { layerX: 10, layerY: 10 } }
-    fireEvent.mouseEnter(deviceNode, { data: node, ...event })
+    fireEvent.click(deviceNode, { event })
+    jest.useFakeTimers()
+    fireEvent.mouseEnter(deviceNode, { event })
+    jest.runAllTimers()
+    expect(await screen.findByTestId('nodeTooltip')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('closeNodeTooltip'))
+    jest.useRealTimers()
+  })
+
+  it('should render hover edge and show tooltip panel correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
+
+    const edge = await screen.findByTestId('link_c0:c5:20:aa:32:67_c0:c5:20:b2:10:d5')
+    const event = { nativeEvent: { layerX: 10, layerY: 10 } }
+    jest.useFakeTimers()
+    fireEvent.mouseEnter(edge, { event })
+    jest.runAllTimers()
+    expect(await screen.findByTestId('edgeTooltip')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('closeLinkTooltip'))
+    jest.useRealTimers()
   })
 
   it('should render search device correctly', async () => {

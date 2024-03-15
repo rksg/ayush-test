@@ -5,7 +5,7 @@ import styled             from 'styled-components'
 
 import { Button, Modal }          from '@acx-ui/components'
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
-import { TopologyDeviceStatus }           from '@acx-ui/rc/utils'
+import { TopologyDeviceStatus }   from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'
 

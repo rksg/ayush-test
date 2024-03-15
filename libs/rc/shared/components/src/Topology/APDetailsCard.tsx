@@ -66,7 +66,12 @@ export function APDetailsCard (props: {
         || $t({ defaultMessage: 'Unknown' }) // for unknown device
         }
       </UI.NodeTitle>
-      <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+      <Button
+        size='small'
+        type='link'
+        onClick={onClose}
+        icon={<CloseSymbol />}
+        data-testid='closeNodeTooltip' />
     </Space>
   </Card.Title>
   <Loader states={[
