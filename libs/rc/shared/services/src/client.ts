@@ -73,8 +73,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
         payload = {
-          action: 'disconnect',
-          clients: payload
+          status: 'DISCONNECTED'
         }
         return {
           ...req,
@@ -86,8 +85,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
         payload = {
-          action: 'revoke',
-          clients: payload
+          status: 'REVOKED'
         }
         return {
           ...req,
