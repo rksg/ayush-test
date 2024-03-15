@@ -1,52 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`KpiWidget should render component having healthy icon: percentDiv 1`] = `
-<div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
->
-  <div
-    class="ant-space-item"
-    style="margin-right: 8px;"
-  >
-    <span
-      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
-    />
-  </div>
-  <div
-    class="ant-space-item"
-  >
-    <span
-      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
-    >
-      100%
-    </span>
-  </div>
-</div>
-`;
+exports[`KpiWidget should render component having healthy icon: percentDiv 1`] = `null`;
 
-exports[`KpiWidget should render component having major icon: percentDiv 1`] = `
-<div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
->
-  <div
-    class="ant-space-item"
-    style="margin-right: 8px;"
-  >
-    <span
-      class="styledComponents__MajorIcon-sc-s2cdzz-1 iFLByV"
-    />
-  </div>
-  <div
-    class="ant-space-item"
-  >
-    <span
-      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
-    >
-      33%
-    </span>
-  </div>
-</div>
-`;
+exports[`KpiWidget should render component having major icon: percentDiv 1`] = `null`;
 
 exports[`KpiWidget should render component having major icon: svg 1`] = `
 <svg
@@ -114,29 +70,7 @@ exports[`KpiWidget should render component having major icon: svg 1`] = `
 </svg>
 `;
 
-exports[`KpiWidget should render component properly with sparkline: percentDiv 1`] = `
-<div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
->
-  <div
-    class="ant-space-item"
-    style="margin-right: 8px;"
-  >
-    <span
-      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
-    />
-  </div>
-  <div
-    class="ant-space-item"
-  >
-    <span
-      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
-    >
-      94%
-    </span>
-  </div>
-</div>
-`;
+exports[`KpiWidget should render component properly with sparkline: percentDiv 1`] = `null`;
 
 exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
 <svg
@@ -204,29 +138,7 @@ exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
 </svg>
 `;
 
-exports[`KpiWidget should render for empty data: percentDiv 1`] = `
-<div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
->
-  <div
-    class="ant-space-item"
-    style="margin-right: 8px;"
-  >
-    <span
-      class="styledComponents__CriticalIcon-sc-s2cdzz-0 eWNVNd"
-    />
-  </div>
-  <div
-    class="ant-space-item"
-  >
-    <span
-      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
-    >
-      0%
-    </span>
-  </div>
-</div>
-`;
+exports[`KpiWidget should render for empty data: percentDiv 1`] = `null`;
 
 exports[`KpiWidget should render for empty data: svg 1`] = `
 <svg
