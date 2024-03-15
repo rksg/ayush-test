@@ -54,6 +54,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const privacy = get('PRIVACY')
   const supportedAPModels = get('SUPPORTED_AP_MODELS')
   const howToVideos = get('HOW_TO_VIDEOS')
+  const mibFiles = get('MIB_FILES')
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
@@ -83,6 +84,9 @@ const HelpButton = (props:HelpButtonProps) => {
             break
           case 'videos':
             window.open(howToVideos, '_blank')
+            break
+          case 'mibFiles':
+            window.open(mibFiles, '_blank')
             break
         }
       }}
@@ -117,6 +121,10 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
       }] : []),
+      {
+        key: 'mibFiles',
+        label: $t({ defaultMessage: 'Device MIB Files' })
+      },
       { type: 'divider' },
       {
         key: 'openCases',

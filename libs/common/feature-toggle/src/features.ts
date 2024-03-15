@@ -2,6 +2,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 /* eslint-disable max-len */
 export enum Features {
+  ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
@@ -42,6 +43,9 @@ export enum Features {
   EDGES_SD_LAN_HA_TOGGLE = 'edge-sdlan-ha-toggle',
   EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
   EDGES_TOGGLE = 'acx-ui-edges-toggle',
+  EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
+  EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
+  EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
@@ -87,6 +91,7 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
+  RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
@@ -155,9 +160,12 @@ export enum Features {
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
+  SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
-  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle'
+  WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
+  RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -24,18 +24,20 @@ export function VenueServicesTab () {
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE) && !isTemplate
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE) && !isTemplate
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
 
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
+  const edgeListFields = ['name', 'serialNumber', 'venueId']
   const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
     { payload: {
-      fields: [
-        'name',
-        'serialNumber',
-        'venueId',
-        'firewallId'
-      ],
+      // Before Edge GA, no need to query firewallId
+      fields: (isEdgeHaReady && isEdgeFirewallHaReady)
+        ? edgeListFields.concat(['firewallId']) : edgeListFields,
       filters: { venueId: [venueId] }
     } },
     {
@@ -49,7 +51,9 @@ export function VenueServicesTab () {
   const { hasEdgeDhcp, isEdgeDhcpLoading } = useGetDhcpByEdgeIdQuery(
     { params: { edgeId: edgeData?.serialNumber } },
     {
-      skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
+      // Before Edge GA, need to hide the service not support HA
+      // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
+      skip: !!!edgeData?.serialNumber || !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: !!data?.id,
         isEdgeDhcpLoading: isLoading
@@ -62,7 +66,7 @@ export function VenueServicesTab () {
       filters: { venueInfoIds: [venueId] }
     }
   }, {
-    skip: !!!venueId || !isEdgeEnabled,
+    skip: !!!venueId || !isEdgeEnabled || !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
         hasNsg: data?.data[0]?.id,
@@ -76,11 +80,14 @@ export function VenueServicesTab () {
       filters: { venueId: [venueId] }
     } }, {
       skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
-      selectFromResult: ({ data }) => ({
-        edgeSdLanData: data?.data?.[0] })
+      selectFromResult: ({ data }) => {
+        return { edgeSdLanData: data?.data?.[0] }
+      }
     })
 
-  const isAppliedFirewall = !_.isEmpty(edgeData?.firewallId)
+  // Before Edge GA, need to hide the service not support HA
+  const isAppliedFirewall = (isEdgeHaReady && isEdgeFirewallHaReady)
+    ? !_.isEmpty(edgeData?.firewallId) : false
 
   return (
     <Loader states={[{ isLoading: isEdgeLoading || isEdgeDhcpLoading || isGetNsgLoading }]}>
@@ -93,7 +100,7 @@ export function VenueServicesTab () {
               <DHCPInstance/>
             </Tabs.TabPane>
             {
-              isEdgeEnabled &&
+              isEdgeEnabled && isEdgeHaReady && isEdgeDhcpHaReady &&
             <Tabs.TabPane
               tab={$t({ defaultMessage: 'SmartEdge' })}
               key={'smartEdge'}
@@ -105,7 +112,7 @@ export function VenueServicesTab () {
           </Tabs>
         </Tabs.TabPane>
         {
-          isEdgeEnabled && isEdgeReady && hasNsg &&
+          isEdgeEnabled && isEdgeReady && hasNsg && isEdgePinReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Personal Identity Network' })}
             key={ServiceType.NETWORK_SEGMENTATION}
@@ -133,7 +140,7 @@ export function VenueServicesTab () {
           </>
         }
         {
-          isEdgeEnabled && isAppliedFirewall && !isEdgeLoading && isEdgeReady &&
+          isEdgeEnabled && isEdgeHaReady && isEdgeFirewallHaReady && isAppliedFirewall &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}

@@ -41,6 +41,9 @@ import {
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
+  WifiOperatorUrls,
+  WifiOperator,
+  WifiOperatorViewModel,
   IdentityProviderUrls,
   IdentityProviderViewModel,
   AAAPolicyNetwork,
@@ -77,6 +80,12 @@ const clientIsolationMutationUseCases = [
   'AddClientIsolationAllowlist',
   'UpdateClientIsolationAllowlist',
   'DeleteClientIsolationAllowlists'
+]
+
+const WifiOperatorMutationUseCases = [
+  'AddHotspot20Operator',
+  'UpdateHotspot20Operator',
+  'DeleteHotspot20Operator'
 ]
 
 const IdentityProviderMutationUseCases = [
@@ -1172,6 +1181,66 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
+    addWifiOperator: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiOperatorUrls.addWifiOperator, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
+    }),
+    updateWifiOperator: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiOperatorUrls.updateWifiOperator, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
+    }),
+    deleteWifiOperator: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiOperatorUrls.deleteWifiOperator, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
+    }),
+    getWifiOperator: build.query<WifiOperator, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiOperatorUrls.getWifiOperator, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    getWifiOperatorList: build.query<TableResult<WifiOperatorViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiOperatorUrls.getWifiOperatorList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'WifiOperator', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, WifiOperatorMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'WifiOperator', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     addIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.addIdentityProvider, params)
@@ -2154,6 +2223,11 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  useAddWifiOperatorMutation,
+  useUpdateWifiOperatorMutation,
+  useDeleteWifiOperatorMutation,
+  useGetWifiOperatorQuery,
+  useGetWifiOperatorListQuery,
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderListMutation,

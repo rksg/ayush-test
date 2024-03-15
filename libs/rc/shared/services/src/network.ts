@@ -21,6 +21,7 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   transformNetwork,
+  WifiNetwork,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
@@ -91,6 +92,32 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return networkListQuery.data
           ? { data: aggregatedList }
           : { error: networkListQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
+              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+            })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    wifiNetworkList: build.query<TableResult<WifiNetwork>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<WifiNetwork>) {
+        result.data = result.data.map(item => ({
+          ...transformNetwork(item)
+        })) as WifiNetwork[]
+        return result
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'LIST' }],
@@ -836,7 +863,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const venueIds:string[] = []
   networkVenuesList.data.forEach(item => venueIds.push(item.id))
 
-  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ)
+  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
     networkDeepList?.response[0] : undefined
   let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
@@ -893,6 +920,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
       : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
+
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
   const networkList = venueNetworkListQuery.data as TableResult<Network>
 
@@ -913,7 +941,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
   }
   return { venueNetworkListQuery,
     networkList,
@@ -993,10 +1021,12 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
   }
 }
 
-const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any) => {
+const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
   const networkDeepList: NetworkDetail[] = []
   for (let i=0; i<networkIds.length; i++) {
-    const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, { networkId: networkIds[i] }))
+    const networkQuery = await fetchWithBQ(createHttpRequest(
+      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
+      , { networkId: networkIds[i] }))
     networkDeepList.push(networkQuery.data)
   }
 
@@ -1009,6 +1039,7 @@ export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
   useNetworkTableQuery,
+  useWifiNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetVenueNetworkApGroupQuery,

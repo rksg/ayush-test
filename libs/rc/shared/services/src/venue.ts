@@ -2,7 +2,7 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { cloneDeep, uniq }     from 'lodash'
 
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -73,7 +73,7 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
-  NetworkApGroup
+  NetworkApGroup, ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -88,8 +88,13 @@ const RKS_NEW_UI = {
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
     venuesList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params)
+      query: ({ params, payload }: RequestPayload) => {
+        const venueListReq = createHttpRequest(
+          (payload as { isTemplate?: boolean })?.isTemplate ?? false
+            ? ConfigTemplateUrlsInfo.getVenuesTemplateList
+            : CommonUrlsInfo.getVenuesList,
+          params
+        )
         return {
           ...venueListReq,
           body: payload

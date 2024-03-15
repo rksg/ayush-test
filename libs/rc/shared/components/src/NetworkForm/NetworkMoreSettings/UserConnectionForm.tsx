@@ -13,6 +13,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Fieldset, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum }      from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
@@ -27,7 +28,9 @@ const sessionMapping: { [key:string]:number }={
 }
 const durationMapping: { [key:string]:number }={
   hours: 24,
-  minutes: 1440
+  minutes: 1440,
+  days: 30,
+  weeks: 7
 }
 const lockoutMapping: { [key:string]:number }={
   days: 45,
@@ -41,7 +44,11 @@ const minutesMapping: { [key:string]:number }={
 }
 const oneDay = 1440
 const oneHour = 60
+const oneWeek = 10080
 export function UserConnectionForm () {
+
+  const isSessionDurationEnable = useIsSplitOn(Features.SESSION_DURATION_TOGGLE)
+
 
   const { $t } = useIntl()
   const { useWatch } = Form
@@ -62,32 +69,31 @@ export function UserConnectionForm () {
   const [useDefaultSetting, setUseDefaultSetting]=useState(true)
   const [maxGracePeriod, setMaxGracePeriod]=useState(1440)
 
+  /* eslint-disable max-len */
   useEffect(() => {
-    if ((editMode || cloneMode)&&data) {
+    if ((editMode || cloneMode) && data) {
       if(_.get(data, 'userSessionTimeoutUnit')){
-        setMaxGracePeriod(
-          (data.guestPortal?.userSessionTimeout || 1) *
-            minutesMapping[_.get(data, 'userSessionTimeoutUnit')]
-          || maxGracePeriod)
-      }else{
+        setMaxGracePeriod((data.guestPortal?.userSessionTimeout || 1) * minutesMapping[_.get(data, 'userSessionTimeoutUnit')] || maxGracePeriod)
+      } else {
         setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
       }
-      form.setFieldValue(['guestPortal','userSessionGracePeriod'],
-        data.guestPortal?.userSessionGracePeriod)
+
+      form.setFieldValue(['guestPortal','userSessionGracePeriod'], data.guestPortal?.userSessionGracePeriod)
+
       if(data.guestPortal?.lockoutPeriodEnabled){
         setUseDefaultSetting(false)
         const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
         if(userSessionTimeoutUnit){
           form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
         }
-        if(data.guestPortal.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneHour
-          && data.guestPortal.userSessionTimeout%oneHour===0&&!userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal.userSessionTimeout/oneHour)
+        if(data.guestPortal.userSessionTimeout
+          && data.guestPortal.userSessionTimeout >= oneHour
+          && data.guestPortal.userSessionTimeout % oneHour === 0
+          && !userSessionTimeoutUnit){
+          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneHour)
           form.setFieldValue('userSessionTimeoutUnit', 'hours')
-        }else if(!userSessionTimeoutUnit) {
-          form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal.userSessionTimeout)
+        } else if (!userSessionTimeoutUnit) {
+          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout)
           form.setFieldValue('userSessionTimeoutUnit', 'minutes')
         }
 
@@ -95,63 +101,74 @@ export function UserConnectionForm () {
         if(lockoutPeriodUnit){
           form.setFieldValue('lockoutPeriodUnit', lockoutPeriodUnit)
         }
-        if(data.guestPortal.lockoutPeriod && data.guestPortal.lockoutPeriod>=oneDay
-          && data.guestPortal.lockoutPeriod%oneDay===0&&!lockoutPeriodUnit){
-          form.setFieldValue(['guestPortal','lockoutPeriod'],
-            data.guestPortal.lockoutPeriod/oneDay)
+        if(data.guestPortal.lockoutPeriod
+          && data.guestPortal.lockoutPeriod >= oneDay
+          && data.guestPortal.lockoutPeriod % oneDay === 0
+          && !lockoutPeriodUnit){
+          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod/oneDay)
           form.setFieldValue('lockoutPeriodUnit', 'days')
-        }else if(data.guestPortal.lockoutPeriod && data.guestPortal.lockoutPeriod>=oneHour
-          && data.guestPortal.lockoutPeriod%oneHour===0&&!lockoutPeriodUnit){
-          form.setFieldValue(['guestPortal','lockoutPeriod'],
-            data.guestPortal.lockoutPeriod/oneHour)
+        } else if (data.guestPortal.lockoutPeriod
+          && data.guestPortal.lockoutPeriod >= oneHour
+          && data.guestPortal.lockoutPeriod % oneHour === 0
+          && !lockoutPeriodUnit){
+          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod/oneHour)
           form.setFieldValue('lockoutPeriodUnit', 'hours')
-        }else if(!lockoutPeriodUnit) {
-          form.setFieldValue(['guestPortal','lockoutPeriod'],
-            data.guestPortal.lockoutPeriod)
+        } else if (!lockoutPeriodUnit) {
+          form.setFieldValue(['guestPortal','lockoutPeriod'], data.guestPortal.lockoutPeriod)
           form.setFieldValue('lockoutPeriodUnit', 'minutes')
         }
-      }else{
+      } else {
         const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
         if(userSessionTimeoutUnit){
           form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
         }
-        if(data.guestPortal?.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneDay
-          && data.guestPortal?.userSessionTimeout%oneDay===0&&!userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal.userSessionTimeout/oneDay)
+        if(data.guestPortal?.userSessionTimeout
+          && data.guestPortal.userSessionTimeout >= oneDay
+          && data.guestPortal?.userSessionTimeout % oneDay === 0
+          && !userSessionTimeoutUnit){
+          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneDay)
           form.setFieldValue('userSessionTimeoutUnit', 'days')
-        }else if(data.guestPortal?.userSessionTimeout &&
-          data.guestPortal.userSessionTimeout>=oneHour
-          && data.guestPortal.userSessionTimeout%oneHour===0
-          &&!userSessionTimeoutUnit){
-          form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal.userSessionTimeout/oneHour)
+        } else if (data.guestPortal?.userSessionTimeout
+          && data.guestPortal.userSessionTimeout >= oneHour
+          && data.guestPortal.userSessionTimeout % oneHour === 0
+          && !userSessionTimeoutUnit){
+          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal.userSessionTimeout/oneHour)
           form.setFieldValue('userSessionTimeoutUnit', 'hours')
-        }else if(!userSessionTimeoutUnit) {
-          form.setFieldValue(['guestPortal','userSessionTimeout'],
-            data.guestPortal?.userSessionTimeout)
+        } else if (!userSessionTimeoutUnit) {
+          form.setFieldValue(['guestPortal','userSessionTimeout'], data.guestPortal?.userSessionTimeout)
           form.setFieldValue('userSessionTimeoutUnit', 'minutes')
         }
 
         const macCredentialsDurationUnit = _.get(data, 'macCredentialsDurationUnit')
-        if(macCredentialsDurationUnit){
+        if (macCredentialsDurationUnit){
           form.setFieldValue('macCredentialsDurationUnit', macCredentialsDurationUnit)
         }
-        if(data.guestPortal?.macCredentialsDuration &&
-          data.guestPortal.macCredentialsDuration>=oneHour
-          && data.guestPortal.macCredentialsDuration%oneHour===0
-          && !macCredentialsDurationUnit){
-          form.setFieldValue(['guestPortal','macCredentialsDuration'],
-            data.guestPortal.macCredentialsDuration/oneHour)
-          form.setFieldValue('macCredentialsDurationUnit', 'hours')
-        }else if(!macCredentialsDurationUnit) {
-          form.setFieldValue(['guestPortal','macCredentialsDuration'],
-            data.guestPortal?.macCredentialsDuration)
-          form.setFieldValue('macCredentialsDurationUnit', 'minutes')
+        // Parsing the minutes to different time unit, backend will only return/receive duration as minutes without unit
+        // Both duration and unit will be parse again in Network form before sending it to backend.
+        if (data.guestPortal?.macCredentialsDuration && !macCredentialsDurationUnit) {
+          let duration = data.guestPortal?.macCredentialsDuration
+          let durationUnit = 'minutes'
+          switch(true) {
+            case (duration > oneWeek && duration % oneWeek === 0):
+              duration = duration / oneWeek
+              durationUnit = 'weeks'
+              break
+            case (duration > oneDay && duration % oneDay === 0):
+              duration = duration / oneDay
+              durationUnit = 'days'
+              break
+            case (duration > oneHour && duration % oneHour === 0):
+              duration = duration / oneHour
+              durationUnit = 'hours'
+              break
+          }
+          form.setFieldValue(['guestPortal','macCredentialsDuration'], duration)
+          form.setFieldValue('macCredentialsDurationUnit', durationUnit)
         }
       }
     }
   }, [data])
+  /* eslint-enable max-len */
   const changeSettings=()=>{
     form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
     setUseDefaultSetting(!useDefaultSetting)
@@ -369,9 +386,9 @@ export function UserConnectionForm () {
               rules={[
                 { required: true },
                 { validator: (_, value) => {
-                  if(value >durationMapping[macCredentialsDurationUnit]){
-                    return Promise.reject($t({ defaultMessage:
-                      'Value must between 1-1440 minutes or 1-24 hours' }))
+                  if(value > durationMapping[macCredentialsDurationUnit]){
+                    /* eslint-disable-next-line */
+                    return Promise.reject($t({ defaultMessage: 'Value must between 1-1440 minutes or 1-24 hours or 1-30 days or 1-7 weeks' }))
                   }
                   return Promise.resolve()
                 } }
@@ -387,6 +404,13 @@ export function UserConnectionForm () {
               <Select data-testid='macCredentialsDurationUnit' disabled={!checkDuration}>
                 <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                {
+                  isSessionDurationEnable &&
+                  <>
+                    <Option value={'days'}>{$t({ defaultMessage: 'Days' })}</Option>
+                    <Option value={'weeks'}>{$t({ defaultMessage: 'Weeks' })}</Option>
+                  </>
+                }
               </Select>
             </Form.Item>
             <Form.Item

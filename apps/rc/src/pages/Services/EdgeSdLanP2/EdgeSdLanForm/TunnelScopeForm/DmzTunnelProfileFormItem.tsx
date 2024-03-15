@@ -1,9 +1,9 @@
 import { Col, Form, Row, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Tooltip }                            from '@acx-ui/components'
-import { TunnelProfileAddModal }              from '@acx-ui/rc/components'
-import { MtuTypeEnum, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { Tooltip }                                            from '@acx-ui/components'
+import { TunnelProfileAddModal }                              from '@acx-ui/rc/components'
+import { MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../messageMappings'
 
@@ -19,7 +19,8 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
 
   const formInitValues = {
     mtuType: MtuTypeEnum.MANUAL,
-    disabledFields: ['mtuType']
+    type: TunnelTypeEnum.VLAN_VXLAN,
+    disabledFields: ['mtuType', 'type']
   }
 
   return <Row align='middle' gutter={9}>
@@ -34,7 +35,9 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
           />
         </>}
         rules={[{
-          required: true
+          required: true,
+          // eslint-disable-next-line max-len
+          message: $t({ defaultMessage: 'Please select tunnel profile (cluster- DMZ cluster tunnel)' })
         }]}
       >
         <Select

@@ -1,11 +1,18 @@
-import { Provider } from '@acx-ui/store'
+import { rest } from 'msw'
+
+import { edgeApi }                           from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                   from '@acx-ui/store'
 import {
+  mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import ClusterConfigWizard from './index'
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -34,6 +41,14 @@ describe('ClusterConfigWizard', () => {
       tenantId: 'mocked_t_id',
       clusterId: 'mocked_cluster_id'
     }
+
+    store.dispatch(edgeApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+      )
+    )
   })
 
   it('should render SelectType when type is not set', async () => {
@@ -58,7 +73,7 @@ describe('ClusterConfigWizard', () => {
       })
 
     expect(screen.queryByTestId('rc-SelectType')).toBeNull()
-    expect(container.innerHTML).toBe('')
+    await waitFor(() => expect(container).toHaveTextContent('Something is going wrong'))
   })
   it('should render ClusterInterfaceSettings by when type is clusterInterface', async () => {
     const clusterInterfaceRouteParams = { ...params, settingType: 'clusterInterface' }

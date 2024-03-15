@@ -273,10 +273,12 @@ describe('TunnelProfileList', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       await screen.findAllByRole('row', { name: /Default/i })
       await screen.findByRole('columnheader', { name: 'SD-LAN' })
-      const dropdowns = await screen.findAllByTestId('options-selector')
+      const tableFilters = await screen.findAllByTestId('options-selector')
       await waitFor(() => {
-        expect(dropdowns.length).toBe(3)
+        expect(tableFilters.length).toBe(2)
       })
+      expect(tableFilters[0]).toHaveTextContent(/SD-LAN/)
+      expect(tableFilters[1]).toHaveTextContent(/Networks/)
       expect(mockedSdLanReq).toBeCalled()
     })
 
