@@ -77,6 +77,8 @@ StepsForm.Title = UI.Title
 StepsForm.SectionTitle = UI.SectionTitle
 StepsForm.FieldLabel = UI.FieldLabel
 StepsForm.MultiSelect = UI.MultiSelect
+StepsForm.DescriptionWrapper = UI.DescriptionWrapper
+StepsForm.DescriptionTextWrapper = UI.DescriptionTextWrapper
 
 export type FieldSummaryProps <T = unknown> = {
   value?: T

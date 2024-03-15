@@ -164,7 +164,8 @@ export enum Features {
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
   SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
-  RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle'
+  RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

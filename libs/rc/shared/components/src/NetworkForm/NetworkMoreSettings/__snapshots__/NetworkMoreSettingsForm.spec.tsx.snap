@@ -1429,9 +1429,13 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   title=""
                 >
                   Client Inactivity Timeout
-                  <svg
-                    data-testid="QuestionMarkCircleOutlined"
-                  />
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                  >
+                    <svg
+                      data-testid="QuestionMarkCircleOutlined"
+                    />
+                  </span>
                 </label>
               </div>
               <div
