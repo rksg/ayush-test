@@ -758,11 +758,12 @@ export function StackForm () {
           onFinishFailed={({ errorFields })=> {
             const detailsFields = ['venueId', 'name', 'description']
             const hasErrorFields = !!errorFields.length
+            const isSettingsTabActive = currentTab === 'settings'
             const isDetailsFieldsError = errorFields.filter(field =>
               detailsFields.includes(field.name[0] as string)
             ).length > 0
 
-            if (hasErrorFields && !isDetailsFieldsError) {
+            if (hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
               setCurrentTab('settings')
               showToast({
                 type: 'error',

@@ -361,6 +361,7 @@ describe('Switch Stack Form - Edit', () => {
     )
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
     expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Stack Details' })).toBeTruthy()
     expect(screen.queryByText(
       /Please check the invalid field values under the settings tab/i
     )).toBeNull()
@@ -390,6 +391,7 @@ describe('Switch Stack Form - Edit', () => {
     )
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
     expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
     expect(await screen.findByText(
       /Please check the invalid field values under the settings tab/i
     )).toBeVisible()
@@ -421,6 +423,7 @@ describe('Switch Stack Form - Edit', () => {
     )
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
     expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
     expect(await screen.findByText(
       /Please check the invalid field values under the settings tab and modify it via CLI/i
     )).toBeVisible()

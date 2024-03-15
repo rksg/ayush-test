@@ -1,7 +1,6 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { message }    from 'antd'
-import { rest }       from 'msw'
+import userEvent   from '@testing-library/user-event'
+import { message } from 'antd'
+import { rest }    from 'msw'
 
 import { useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { switchApi, venueApi } from '@acx-ui/rc/services'
@@ -52,8 +51,8 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('Add switch form', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -438,6 +437,8 @@ describe('Edit switch form', () => {
     )
     expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Switch Details' })).toBeTruthy()
     expect(screen.queryByText(
       /Please check the invalid field values under the settings tab/i
     )).toBeNull()
@@ -462,6 +463,7 @@ describe('Edit switch form', () => {
     expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
     expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
     expect(await screen.findByText(
       /Please check the invalid field values under the settings tab/i
     )).toBeVisible()
@@ -493,6 +495,7 @@ describe('Edit switch form', () => {
     expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
     await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
     expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
     expect(await screen.findByText(
       /Please check the invalid field values under the settings tab and modify it via CLI/i
     )).toBeVisible()
