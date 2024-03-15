@@ -64,6 +64,20 @@ onClose: () => void
     </GridRow>
   }
 
+  function transformTitle (deviceType: DeviceTypes | undefined) {
+    switch(deviceType) {
+      case DeviceTypes.Ap:
+      case DeviceTypes.ApMesh:
+      case DeviceTypes.ApMeshRoot:
+      case DeviceTypes.ApWired:
+        return DeviceTypes.Ap
+      case DeviceTypes.Switch:
+      case DeviceTypes.SwitchStack:
+        return DeviceTypes.Switch
+    }
+    return deviceType
+  }
+
   return <div
     data-testid='edgeTooltip'
     style={{
@@ -81,9 +95,9 @@ onClose: () => void
           justifyContent: 'space-between'
         }}>
           <div>
-            {tooltipSourceNode?.type?.replace('Stack', '')} <span>
+            {transformTitle(tooltipSourceNode?.type)} <span>
               <BiDirectionalArrow />&nbsp;</span>
-            {tooltipTargetNode?.type?.replace('Stack', '')}
+            {transformTitle(tooltipTargetNode?.type)}
           </div>
           <Button
             size='small'
@@ -99,7 +113,7 @@ onClose: () => void
           alignItems: 'center'
         }}>
         <Descriptions.Item
-          label={tooltipSourceNode?.type?.replace('Stack', '')}
+          label={transformTitle(tooltipSourceNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -112,7 +126,7 @@ onClose: () => void
           } />
 
         <Descriptions.Item
-          label={tooltipTargetNode?.type?.replace('Stack', '')}
+          label={transformTitle(tooltipTargetNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -128,8 +142,10 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
-        {(tooltipSourceNode?.type === 'Switch' || tooltipSourceNode?.type === 'SwitchStack')
-        && (tooltipTargetNode?.type === 'Switch' || tooltipSourceNode?.type === 'SwitchStack')
+        {(tooltipSourceNode?.type === DeviceTypes.Switch ||
+        tooltipSourceNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipTargetNode?.type === DeviceTypes.Switch
+          || tooltipSourceNode?.type === DeviceTypes.SwitchStack)
         && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
         || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
         &&
