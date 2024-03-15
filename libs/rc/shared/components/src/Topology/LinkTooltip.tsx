@@ -145,7 +145,7 @@ onClose: () => void
         {(tooltipSourceNode?.type === DeviceTypes.Switch ||
         tooltipSourceNode?.type === DeviceTypes.SwitchStack)
         && (tooltipTargetNode?.type === DeviceTypes.Switch
-          || tooltipSourceNode?.type === DeviceTypes.SwitchStack)
+          || tooltipTargetNode?.type === DeviceTypes.SwitchStack)
         && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
         || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
         &&
