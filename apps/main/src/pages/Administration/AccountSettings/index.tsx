@@ -1,7 +1,7 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }                                                          from '@acx-ui/components'
+import { Loader, StepsForm }                                               from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
@@ -71,71 +71,72 @@ const AccountSettings = (props : AccountSettingsProps) => {
         layout='horizontal'
         labelAlign='left'
       >
-        <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
+        <StepsForm.DescriptionWrapper>
+          <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        { (isPrimeAdminUser && isI18n) && (
-          <>
-            <Divider />
-            <DefaultSystemLanguageFormItem />
-          </>
-        )}
+          { (isPrimeAdminUser && isI18n) && (
+            <>
+              <Divider />
+              <DefaultSystemLanguageFormItem />
+            </>
+          )}
 
-        { isPrimeAdminUser && (
-          <>
-            <Divider />
-            <MapRegionFormItem />
-          </>
-        )}
+          { isPrimeAdminUser && (
+            <>
+              <Divider />
+              <MapRegionFormItem />
+            </>
+          )}
 
-        { showRksSupport && (
-          <>
-            <Divider />
-            <AccessSupportFormItem
-              hasMSPEcLabel={hasMSPEcLabel}
-              canMSPDelegation={canMSPDelegation}
-            />
-          </>
-        )}
+          { showRksSupport && (
+            <>
+              <Divider />
+              <AccessSupportFormItem
+                hasMSPEcLabel={hasMSPEcLabel}
+                canMSPDelegation={canMSPDelegation}
+              />
+            </>
+          )}
 
-        { showBetaButton && (
-          <>
-            <Divider />
-            <EnableR1Beta
-              betaStatus={betaEnabled}
-              isPrimeAdminUser={isPrimeAdminUser}
-            />
-          </>
-        )}
+          { showBetaButton && (
+            <>
+              <Divider />
+              <EnableR1Beta
+                betaStatus={betaEnabled}
+                isPrimeAdminUser={isPrimeAdminUser}
+              />
+            </>
+          )}
 
-        {canMSPDelegation && (
-          <>
-            <Divider />
-            <MFAFormItem
-              mfaTenantDetailsData={mfaTenantDetailsData.data}
-              isPrimeAdminUser={isPrimeAdminUser}
-              isMspEc={isMspEc as boolean}
-            />
-          </>
-        )}
+          {canMSPDelegation && (
+            <>
+              <Divider />
+              <MFAFormItem
+                mfaTenantDetailsData={mfaTenantDetailsData.data}
+                isPrimeAdminUser={isPrimeAdminUser}
+                isMspEc={isMspEc as boolean}
+              />
+            </>
+          )}
 
-        { showSsoSupport && (
-          <>
-            <Divider />
-            <AuthServerFormItem
-              tenantAuthenticationData={authenticationData.data}
-            />
-          </>
-        )}
+          { showSsoSupport && (
+            <>
+              <Divider />
+              <AuthServerFormItem
+                tenantAuthenticationData={authenticationData.data}
+              />
+            </>
+          )}
 
-        { showApiKeySupport && (
-          <>
-            <Divider />
-            <AppTokenFormItem
-              tenantAuthenticationData={authenticationData.data}
-            />
-          </>
-        )}
-
+          { showApiKeySupport && (
+            <>
+              <Divider />
+              <AppTokenFormItem
+                tenantAuthenticationData={authenticationData.data}
+              />
+            </>
+          )}
+        </StepsForm.DescriptionWrapper>
       </Form>
     </Loader>
   )
