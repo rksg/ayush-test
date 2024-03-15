@@ -19,7 +19,9 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData, ClientStatusEnum
+  RequestFormData,
+  ClientStatusEnum,
+  UEDetail
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -323,6 +325,14 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getClientUEDetail: build.query<UEDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClientUEDetail, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -374,5 +384,6 @@ export const {
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useImportGuestPassMutation,
-  useGetClientOrHistoryDetailQuery
+  useGetClientOrHistoryDetailQuery,
+  useGetClientUEDetailQuery
 } = clientApi

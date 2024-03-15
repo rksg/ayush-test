@@ -118,6 +118,35 @@ export interface GuestClient {
     connectSince?: string
 }
 
+export interface UEDetail {
+  txBytes?: number
+  mac?: string,
+  apMac?: string,
+  apName?: string,
+  osType?: string,
+  venueId?: string,
+  venueName?: string,
+  connectedSince?: string,
+  apSerialNumber?: string,
+  networkId?: string,
+  ip?: string,
+  username?: string,
+  hostname?: string,
+  ssid?: string,
+  vlan?: number
+  bssid?: string,
+  rxBytes?: number
+  rxPackets?: number
+  txPackets?: number
+  snr_dB?: number
+  receiveSignalStrength_dBm: number,
+  noiseFloor_dBm: number,
+  radioChannel?: number
+  txDropDataPacket?: number
+  healthCheckStatus?: string,
+  networkType?: string
+}
+
 export interface GuestExpiration {
     activationType: string;
     duration: number;
