@@ -81,7 +81,9 @@ onClose: () => void
           justifyContent: 'space-between'
         }}>
           <div>
-            {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
+            {tooltipSourceNode?.type?.replace('Stack', '')} <span>
+              <BiDirectionalArrow />&nbsp;</span>
+            {tooltipTargetNode?.type?.replace('Stack', '')}
           </div>
           <Button
             size='small'
@@ -97,7 +99,7 @@ onClose: () => void
           alignItems: 'center'
         }}>
         <Descriptions.Item
-          label={tooltipSourceNode?.type}
+          label={tooltipSourceNode?.type?.replace('Stack', '')}
           children={
             <Typography.Link
               style={{
@@ -110,7 +112,7 @@ onClose: () => void
           } />
 
         <Descriptions.Item
-          label={tooltipTargetNode?.type}
+          label={tooltipTargetNode?.type?.replace('Stack', '')}
           children={
             <Typography.Link
               style={{
@@ -126,9 +128,11 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
-        {tooltipSourceNode?.type === 'Switch' && tooltipTargetNode?.type === 'Switch' &&
-        (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
-        tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan) &&
+        {(tooltipSourceNode?.type === 'Switch' || tooltipSourceNode?.type === 'SwitchStack')
+        && (tooltipTargetNode?.type === 'Switch' || tooltipSourceNode?.type === 'SwitchStack')
+        && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
+        || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
+        &&
         <>
           <Descriptions.Item
             label={$t({ defaultMessage: 'VLANs trunked' })}
