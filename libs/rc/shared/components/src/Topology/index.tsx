@@ -247,6 +247,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
     if(topologyData?.edges){
+      if (edge.source.data.id === 'Cloud')
+        return
       let sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
       let targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
       let selectedEdge = topologyData.edges.filter(
@@ -255,8 +257,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         selectedEdge = rearrangedData(topologyData.edges.filter(
           item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
       }
-      if (edge.source.data.id === 'Cloud')
-        return
       setTooltipSourceNode(sourceNode)
       setTooltipTargetNode(targetNode)
       setShowLinkTooltip(true)
