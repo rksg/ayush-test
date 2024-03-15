@@ -83,9 +83,7 @@ export default function ActivityButton () {
 
   useEffect(() => {
     if (!activitySocketRef.current) {
-      // console.log('init')
       activitySocketRef.current = initActivitySocket((msg:string) => {
-        // console.log('msg: ', msg)
         if(JSON.parse(msg).status === TxStatus.IN_PROGRESS) {
           updateShowUnreadMaskStatus(true)
         }
@@ -104,7 +102,6 @@ export default function ActivityButton () {
       // eslint-disable-next-line max-len
       const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
       if(activity){
-        // console.log('get:', activity.showUnreadMark)
         setShowUnreadMark(activity.showUnreadMark)
       }
     }
@@ -112,7 +109,6 @@ export default function ActivityButton () {
 
   const updateShowUnreadMaskStatus = (show: boolean) => {
     if(showUnreadMark === show) {return}
-    // console.log('set: ', show, userSettings)
     setShowUnreadMark(show)
     if(userSettings) {
       const productKey = getProductKey(ACTIVITY_USER_SETTING)

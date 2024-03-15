@@ -16,8 +16,6 @@ import { activities } from './__tests__/activitiesFixtures'
 import ActivityButton from './ActivityButton'
 
 const mockUseNavigate = jest.fn()
-const mockedGetFn = jest.fn()
-const mockedSaveFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate
@@ -40,28 +38,22 @@ const mockedSocket = {
   }
 }
 const allUserSettings = {
-  COMMON: '{"activity":{"showUnreadMark":true,"isFirstTime":true}}'
+  COMMON: '{"activity":{"showUnreadMark":false,"isFirstTime":true}}'
 }
 describe('ActivityButton', () => {
   beforeEach(() => {
-    mockedGetFn.mockClear()
-    mockedSaveFn.mockClear()
     mockedInitActivitySocketFn.mockImplementation(() => mockedSocket)
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => {
-          mockedGetFn()
-          return res(ctx.json(allUserSettings))}
+          return res(ctx.json(allUserSettings))
+        }
       ),
       rest.put(
         UserUrlsInfo.saveUserSettings.url,
         (req, res, ctx) => {
-          mockedSaveFn({
-            params: req.url.pathname,
-            body: req.body
-          })
           return res(ctx.status(200))
         }
       )
@@ -100,7 +92,6 @@ describe('ActivityButton', () => {
     render(<Provider>
       <ActivityButton />
     </Provider>, { route: { params } })
-
     await waitFor(() => expect(mockedInitActivitySocketFn).toHaveBeenCalled())
     const button = screen.getByRole('button')
     await userEvent.click(button)
@@ -110,20 +101,12 @@ describe('ActivityButton', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
   })
 
-  it.skip('should navigate to all activities', async () => {
+  it('should navigate to all activities', async () => {
     render(<Provider>
       <ActivityButton />
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('123roam')).toBeVisible()
-    //  await waitFor(() => {
-    //   expect(mockedSaveFn).toBeCalledWith({
-    //     params: '/admins/admins-settings/ui/COMMON',
-    //     body: {
-    //       activity: {showUnreadMark: false, isFirstTime: false}
-    //     }
-    //   })
-    // })
     await userEvent.click(screen.getByRole('button', { name: 'View all activities' }))
 
     expect(mockUseNavigate).toHaveBeenCalledWith({
