@@ -104,9 +104,9 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     }
   })
 
-  const dsaeOnboardNetworkIds = tableQuery.data?.data
+  const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
-    .filter(i => !_.isNil(i)) ?? []
+    .filter(i => !_.isNil(i)) ?? []) as string[]
 
   const showMoreDetails = () => {
     setDetailDrawerOpenVisible(true)
