@@ -1,7 +1,6 @@
 import { Card as AntCard, Spin, Tooltip } from 'antd'
 
-import { RadioCard }          from '@acx-ui/components'
-import { WarningCircleSolid } from '@acx-ui/icons'
+import { RadioCard } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 

@@ -7,11 +7,9 @@ import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { useVenueNetworkActivationsDataListQuery }                from '@acx-ui/rc/services'
+import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
-  NetworkSaveData,
-  networkTypes,
   sortProp,
   isOweTransitionNetwork,
   isDsaeOnboardingNetwork,
@@ -21,7 +19,7 @@ import {
   NetworkType
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-
+import { getIntl }                   from '@acx-ui/utils'
 
 import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
 
@@ -34,10 +32,39 @@ const dmzTunnelColumnHeaderTooltip = defineMessage({
     // eslint-disable-next-line max-len
     'When \'Forward guest traffic to DMZ\' is activated, the \'Enable tunnel\' toggle turns on automatically. {detailLink}'
 })
+
+const getRowDisabledInfo = (
+  row: Network,
+  isForGuestTraffic: boolean,
+  dsaeOnboardNetworkIds?: string[]
+) => {
+  const { $t } = getIntl()
+  const isGuestnetwork = row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
+  let disabled = false
+  let tooltip = undefined
+
+  const isVlanPooling = !isNil(row.vlanPool)
+  if (isOweTransitionNetwork(row)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This is OWE transition network, cannot be SD-LAN traffic network.' })
+    //TODO: need to refactor after wifi team data migration done.
+  } else if (dsaeOnboardNetworkIds?.includes(row.id) || isDsaeOnboardingNetwork(row)) {
+    disabled = true
+    // eslint-disable-next-line max-len
+    tooltip = $t({ defaultMessage: 'This is an onboarding network for WPA3-DPSK3 for DPSK, cannot be SD-LAN traffic network.' })
+  } else if (isGuestnetwork && isForGuestTraffic && isVlanPooling) {
+    disabled = true
+    tooltip = $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
+  } else {}
+
+  return { disabled, tooltip }
+}
+
 export interface ActivatedNetworksTableP2Props {
   venueId: string,
   isGuestTunnelEnabled: boolean
-  columnsSetting?: Partial<Omit<TableColumn<NetworkSaveData, 'text'>, 'render'>>[],
+  columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
@@ -58,10 +85,10 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   const { $t } = useIntl()
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [detailDrawerVisible, setDetailDrawerOpenVisible] = useState(false)
-  const [moreDetailToolipVisible, setMoreDetailToolipVisible] = useState(false)
 
-  const tableQuery = useTableQuery<NetworkSaveData>({
-    useQuery: useVenueNetworkActivationsDataListQuery,
+  const tableQuery = useTableQuery<Network>({
+    useQuery: useVenueNetworkActivationsViewModelListQuery,
+    apiParams: { venueId },
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',
@@ -77,12 +104,12 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     }
   })
 
+  const dsaeOnboardNetworkIds = tableQuery.data?.data
+    .map(item => item.dsaeOnboardNetwork?.id)
+    .filter(i => !_.isNil(i)) ?? []
+
   const showMoreDetails = () => {
     setDetailDrawerOpenVisible(true)
-    handleMoreDetailsTooltipVisibleChange(false)
-  }
-  const handleMoreDetailsTooltipVisibleChange = (visible: boolean) => {
-    setMoreDetailToolipVisible(visible)
   }
 
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
@@ -112,50 +139,47 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabled = isOweTransitionNetwork(row) || isDsaeOnboardingNetwork(row)
+      const disabledInfo = getRowDisabledInfo(row, false, dsaeOnboardNetworkIds)
 
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={disabled || hasAccess() === false}
+        disabled={disabledInfo.disabled || hasAccess() === false}
+        tooltip={disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
   }, ...(isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
-    tooltip: $t(dmzTunnelColumnHeaderTooltip, {
+    tooltip: !detailDrawerVisible ? $t(dmzTunnelColumnHeaderTooltip, {
       detailLink: <Button type='link' onClick={showMoreDetails}>
         {$t({ defaultMessage: 'More details about the feature.' })}
       </Button>
-    }),
+    }) : undefined,
     key: 'action2',
     dataIndex: 'action2',
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      const isVlanPooling = !isNil(row.wlan?.advancedCustomization?.vlanPool)
-      const disabled = isVlanPooling
-                          || (isOweTransitionNetwork(row) || isDsaeOnboardingNetwork(row))
+      const disabledInfo = getRowDisabledInfo(row, true, dsaeOnboardNetworkIds)
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={disabled || hasAccess() === false}
-          tooltip={isVlanPooling
-            ? $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
-            : undefined}
+          disabled={disabledInfo.disabled || hasAccess() === false}
+          tooltip={disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
     }
   }] : [])
   // eslint-disable-next-line max-len
-  ]), [$t, activated, activatedGuest, isGuestTunnelEnabled, onActivateChange, moreDetailToolipVisible])
+  ]), [activated, activatedGuest, isGuestTunnelEnabled, onActivateChange, detailDrawerVisible])
 
-  const actions: TableProps<NetworkSaveData>['actions'] = [{
+  const actions: TableProps<Network>['actions'] = [{
     label: $t({ defaultMessage: 'Add Wi-Fi Network' }),
     onClick: () => {
       setNetworkModalVisible(true)
@@ -202,7 +226,7 @@ const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean
     visible={props.visible}
     onClose={() => props.setVisible(false)}
   >
-    <Space direction='vertical' size={45}>
+    <Space direction='vertical' size={40}>
       <UI.DiagramContainer>
         <img
           src={ForwardGuestTrafficDiagramVertical}

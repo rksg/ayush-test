@@ -54,7 +54,7 @@ export const EdgeSdLanActivatedNetworksTable = forwardRef(
       skip: !Boolean(venueId),
       selectFromResult: ({ data, isLoading, isFetching }) => {
         return {
-          networkList: data?.data?.filter(item =>
+          networkList: data?.filter(item =>
             !isOweTransitionNetwork(item) && !isDsaeOnboardingNetwork(item)
           ),
           isLoading,

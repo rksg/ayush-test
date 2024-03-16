@@ -1,16 +1,16 @@
 import { Switch, Tooltip } from 'antd'
 import _                   from 'lodash'
 
-import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { Network } from '@acx-ui/rc/utils'
 
-import { ActivateNetworkSwitchButtonProps } from '../ActivateNetworkSwitchButton'
-
-export interface ActivateNetworkSwitchButtonP2Props
-  extends Omit<ActivateNetworkSwitchButtonProps, 'rows' | 'onChange'> {
+export interface ActivateNetworkSwitchButtonP2Props {
+    row: Network,
+    activated: string[],
+    disabled?: boolean,
     fieldName: string,
     onChange?: (
       fieldName: string,
-      data: NetworkSaveData,
+      data: Network,
       checked: boolean,
       activated: string[],
       ) => void,

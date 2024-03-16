@@ -400,6 +400,7 @@ export interface EdgePortInfo {
   subnet: string
   portType: EdgePortTypeEnum
   isCorePort: boolean
+  isLag: boolean
   isLagMember: boolean
   portEnabled: boolean
 }

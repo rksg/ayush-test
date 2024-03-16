@@ -1,7 +1,9 @@
 import _ from 'lodash'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
-import { EdgePortStatus }                   from '../../../../types/edge'
+import { EdgeIpModeEnum, EdgePortTypeEnum }                 from '../../../../models/EdgeEnum'
+import { EdgeNodesPortsInfo, EdgePortInfo, EdgePortStatus } from '../../../../types/edge'
+
+import { mockEdgeClusterList } from './general'
 
 export const mockEdgePortConfig = {
   ports: [
@@ -89,6 +91,21 @@ export const mockPortInfo = mockEdgePortConfig.ports.map(p => ({
   isLagMember: [''].indexOf(p.interfaceName) !== -1,
   portEnabled: p.enabled
 }))
+
+export const mockedPortsStatus = {} as EdgeNodesPortsInfo
+mockEdgeClusterList.data[0].edgeList.forEach((item, idx) => {
+  const portInfo = mockPortInfo.map(port => {
+    const ipData = port.ip.split('/')[0].split('.')
+
+    // ex: 1.1.1.(1+idx) => 1.1.1.10
+    return {
+      ...port,
+      ip: `${[...ipData.slice(0, 3), ipData[3]+idx].join('.')}/24`
+    }
+  }) as EdgePortInfo[]
+
+  mockedPortsStatus[item.serialNumber] = portInfo
+})
 
 export const mockEdgePortConfigWithStatusIp = {
   ports: [

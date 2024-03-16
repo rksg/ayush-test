@@ -541,7 +541,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
-    venueNetworkActivationsDataList: build.query<TableResult<NetworkSaveData>, RequestPayload>({
+    venueNetworkActivationsDataList: build.query<NetworkSaveData[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const networkActivations = {
           ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
@@ -550,25 +550,52 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkActivationsQuery = await fetchWithBQ(networkActivations)
         const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
 
-        let networkDeepList// = { response: [] } as { response: NetworkSaveData[] }
+        let networkDeepList = { response: [] } as { response: NetworkSaveData[] }
 
         if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
           const networkIds = networkVenueList.data.map(item => item.networkId!) || []
-          const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList)
+          networkDeepList = await getNetworkDeepList(networkIds, fetchWithBQ)
+        }
+
+        return { data: networkDeepList.response }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
+    venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const networkActivations = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
+          body: arg.payload
+        }
+        const networkActivationsQuery = await fetchWithBQ(networkActivations)
+        const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
+
+        let networksList = { data: [] } as { data: Network[] }
+
+        if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
+          const networkIds = networkVenueList.data.map(item => item.networkId!) || []
+          const networkListReq = createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params)
           const networkListQuery = await fetchWithBQ({ ...networkListReq, body: {
             filters: { id: networkIds }
           } })
-          networkDeepList = networkListQuery.data as TableResult<NetworkSaveData>
-
-          // networkDeepList = await getNetworkDeepList(networkIds, fetchWithBQ)
+          networksList = networkListQuery.data as TableResult<Network>
         }
 
         return networkVenueList
           ? { data: {
             ...networkVenueList,
-            // data: networkDeepList.response as NetworkSaveData[]
-            data: networkDeepList?.data as NetworkSaveData[]
-          } as TableResult<NetworkSaveData> }
+            data: networksList?.data
+          } as TableResult<Network> }
           : {
             error: networkActivationsQuery.error as FetchBaseQueryError
           }
@@ -951,7 +978,6 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
-    console.log(item)
 
     if (item?.dsaeOnboardNetwork) {
       item = { ...item,
@@ -1038,6 +1064,7 @@ export const {
   useNetworkVenueListV2Query,
   useNetworkVenueTableV2Query,
   useVenueNetworkActivationsDataListQuery,
+  useVenueNetworkActivationsViewModelListQuery,
   useAddNetworkMutation,
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,

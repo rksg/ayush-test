@@ -14,7 +14,12 @@ export const CheckMarkIcon = styled(CheckMarkCircleSolid)`
   }
 `
 export const WarningCircleSolidIcon = styled(WarningCircleSolid)`
-  color: var(--acx-semantics-yellow-50);
+  width: 20px;
+  height: 20px;
+  fill: var(--acx-semantics-yellow-50);
+  path:nth-child(2) {
+    stroke: var(--acx-semantics-yellow-50);
+  }
 `
 
 export const IconWrapper = styled.div`
@@ -97,8 +102,8 @@ export const Wrapper = styled.div<WrapperProps>`
     justify-content: flex-end;
     background-color: transparent;
     position: absolute;
-    bottom: 16px;
-    right: 12px;
+    bottom: 14px;
+    right: 10px;
     z-index: 1;
     &::before {
       display: none;

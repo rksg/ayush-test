@@ -10,6 +10,7 @@ import {
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
+  Network,
   NetworkSaveData,
   NetworkTypeEnum,
   TunnelTypeEnum
@@ -48,7 +49,7 @@ const tunnelProfileDefaultPayload = {
 
 const toggleItemFromSelected = (
   checked: boolean,
-  data: NetworkSaveData,
+  data: Network,
   selectedNetworks: EdgeSdLanActivatedNetwork[] | undefined
 ) => {
   let newSelected
@@ -99,14 +100,15 @@ export const TunnelScopeForm = () => {
 
   const handleActivateChange = (
     fieldName: string,
-    data: NetworkSaveData,
+    data: Network,
     checked: boolean
   ) => {
     // const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
     const changedData = _.pick(data, ['id', 'name'])
-    const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
     // eslint-disable-next-line max-len
-    const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
+    const activatedNetworks = (form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
+    // eslint-disable-next-line max-len
+    const activatedGuestNetworks = (form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
 
     // eslint-disable-next-line max-len
     const affectedNetworks = fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks
@@ -116,7 +118,7 @@ export const TunnelScopeForm = () => {
 
     if (isGuestTunnelEnabled
       && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
-      && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
 
       if (fieldName === 'activatedNetworks') {
         const updateContent = {
@@ -124,7 +126,7 @@ export const TunnelScopeForm = () => {
         } as Record<string, EdgeSdLanActivatedNetwork[]>
 
         // vlan pooling enabled cannot be a guest network
-        const isVlanPooling = !_.isNil(data.wlan?.advancedCustomization?.vlanPool)
+        const isVlanPooling = !_.isNil(data.vlanPool)
         if (!isVlanPooling || (isVlanPooling && !checked)) {
           // eslint-disable-next-line max-len
           updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)

@@ -1,7 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { InformationOutlined } from '@acx-ui/icons'
-
 export const DiagramContainer = styled.div`
   position: relative;
   width: 100%;
