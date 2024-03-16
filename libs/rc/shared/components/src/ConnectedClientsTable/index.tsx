@@ -11,7 +11,7 @@ import {
   useVenuesListQuery,
   useApListQuery,
   useNetworkListQuery,
-  useDisconnectClientMutation,
+  useGetUEDetailBeforeDisconnectMutation,
   useRevokeClientMutation
 } from '@acx-ui/rc/services'
 import {
@@ -124,7 +124,7 @@ export const ConnectedClientsTable = (props: {
       }
     }
   })
-  const [ sendDisconnect ] = useDisconnectClientMutation()
+  const [ sendCombineRequest ] = useGetUEDetailBeforeDisconnectMutation()
   const [ sendRevoke ] = useRevokeClientMutation()
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
@@ -540,14 +540,15 @@ export const ConnectedClientsTable = (props: {
     {
       label: $t({ defaultMessage: 'Disconnect' }),
       onClick: (selectedRows, clearRowSelections) => {
-        const disconnectList = selectedRows.map((row) => {
-          return {
-            clientMac: row.clientMac,
-            serialNumber: row.serialNumber
-          }
-        })
-        sendDisconnect({
-          payload: disconnectList
+        selectedRows.forEach((row) => {
+          sendCombineRequest({
+            params: {
+              venueId: row.venueId,
+              clientMacAddress: row.clientMac,
+              serialNumber: row.serialNumber
+            }, payload: {
+              status: 'DISCONNECTED'
+            } })
         })
         clearRowSelections()
       }
@@ -560,13 +561,6 @@ export const ConnectedClientsTable = (props: {
       ),
       disabled: tableSelected.actionButton.revoke.disable,
       onClick: (selectedRows, clearRowSelections) => {
-        const revokeList = selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).map((row) => {
-          return {
-            clientMac: row.clientMac,
-            serialNumber: row.serialNumber
-          }
-        })
-
         if (tableSelected.actionButton.revoke.showModal){
           showActionModal({
             type: 'info',
@@ -575,11 +569,23 @@ export const ConnectedClientsTable = (props: {
             content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
             okText: $t({ defaultMessage: 'OK' }),
             onOk: async () => {
-              sendRevoke({ payload: revokeList })
+              selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).forEach((row) => {
+                sendRevoke({ params: {
+                  venueId: row.venueId,
+                  clientMacAddress: row.clientMac,
+                  serialNumber: row.serialNumber
+                } })
+              })
             }
           })
         } else {
-          sendRevoke({ payload: revokeList })
+          selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).forEach((row) => {
+            sendRevoke({ params: {
+              venueId: row.venueId,
+              clientMacAddress: row.clientMac,
+              serialNumber: row.serialNumber
+            } })
+          })
         }
 
         clearRowSelections()

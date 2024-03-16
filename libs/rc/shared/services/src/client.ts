@@ -333,6 +333,31 @@ export const clientApi = baseClientApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getUEDetailBeforeDisconnect: build.mutation<unknown, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ){
+        let serialNumber = arg.params?.serialNumber
+        if(!serialNumber) {
+          const ueDetailRequest = createHttpRequest(ClientUrlsInfo.getClientUEDetail, {
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const ueDetailQuery = await fetchWithBQ(ueDetailRequest)
+          const result = ueDetailQuery?.data as UEDetail
+          serialNumber = result.apSerialNumber
+          console.log(serialNumber)
+        }
+        const disconnectRequest = createHttpRequest(ClientUrlsInfo.disconnectClient, {
+          venueId: arg.params?.venueId,
+          serialNumber: serialNumber,
+          clientMacAddress: arg.params?.clientMacAddress
+        })
+        const disconnectQuery = await fetchWithBQ({
+          ...disconnectRequest,
+          body: arg.payload
+        })
+        console.log(disconnectQuery.data)
+        return disconnectQuery
+      }
     })
   })
 })
@@ -385,5 +410,6 @@ export const {
   useGenerateGuestPasswordMutation,
   useImportGuestPassMutation,
   useGetClientOrHistoryDetailQuery,
-  useGetClientUEDetailQuery
+  useGetClientUEDetailQuery,
+  useGetUEDetailBeforeDisconnectMutation
 } = clientApi
