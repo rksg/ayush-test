@@ -5,44 +5,41 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { PasswordInput, StepsForm, Subtitle } from '@acx-ui/components'
-import { useLazyAaaPolicyQuery }              from '@acx-ui/rc/services'
+import { useAaaPolicyQuery }                  from '@acx-ui/rc/services'
 import { AAAPolicyType }                      from '@acx-ui/rc/utils'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
-
 
 
 const SummaryForm = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  //const form = Form.useFormInstance()
   const { state } = useContext(IdentityProviderFormContext)
   const [authRadius, setAuthRadius] = useState<AAAPolicyType>()
   const [accountingRadius, setAccountingRadius] = useState<AAAPolicyType>()
 
-  const [getAaaPolicy] = useLazyAaaPolicyQuery()
+  const { data: authRadiusData } = useAaaPolicyQuery({
+    params: { ...params, policyId: state.authRadiusId }
+  }, {
+    skip: !state.authRadiusId
+  })
+
+  const { data: accountingRadiusData } = useAaaPolicyQuery({
+    params: { ...params, policyId: state.accountingRadiusId }
+  }, {
+    skip: !state.accountingRadiusEnabled || !state.accountingRadiusId
+  })
 
   useEffect(() => {
-    const { authRadiusId, accountingRadiusEnabled, accountingRadiusId } = state
-    if(authRadiusId) {
-      getAaaPolicy({ params: { ...params, policyId: authRadiusId } })
-        .unwrap()
-        .then(aaaPolicy => setAuthRadius(aaaPolicy))
-      // eslint-disable-next-line no-console
-        .catch(console.log)
+    if (authRadiusData) {
+      setAuthRadius(authRadiusData)
     }
 
-    if (accountingRadiusEnabled && accountingRadiusId) {
-      getAaaPolicy({ params: { ...params, policyId: accountingRadiusId } })
-        .unwrap()
-        .then(aaaPolicy => setAccountingRadius(aaaPolicy))
-      // eslint-disable-next-line no-console
-        .catch(console.log)
+    if(accountingRadiusData) {
+      setAccountingRadius(accountingRadiusData)
     }
-
-  }, [state.authRadiusId, state.accountingRadiusId, state.accountingRadiusEnabled])
-
+  }, [authRadiusData, accountingRadiusData])
 
   return (<Row gutter={20}>
     <Col span={15}>
@@ -71,7 +68,7 @@ const SummaryForm = () => {
         {$t({ defaultMessage: 'Authentication Service' })}
         <AAAPolicyFields aaaPolicy={authRadius} />
 
-        {$t({ defaultMessage: 'Authentication Service' })}
+        {$t({ defaultMessage: 'Accounting Service' })}
         {!state.accountingRadiusEnabled ? $t({ defaultMessage: 'Disabled' }) :
           <AAAPolicyFields aaaPolicy={accountingRadius} />
         }
@@ -85,7 +82,6 @@ type RadiusServerFieldsProps = {
   aaaPolicy: AAAPolicyType | undefined
   isSecondary?: boolean
 }
-
 
 const RadiusServerFields = (props: RadiusServerFieldsProps) => {
   const { $t } = useIntl()
@@ -118,8 +114,8 @@ const AAAPolicyFields = (props: { aaaPolicy: AAAPolicyType | undefined }) => {
   const { aaaPolicy } = props
   const { name='', type, primary, secondary } = aaaPolicy || {}
   const title = (type === 'ACCOUNTING')
-    ? $t({ defaultMessage: 'Authentication Server' })
-    : $t({ defaultMessage: 'Accounting Server' })
+    ? $t({ defaultMessage: 'Accounting Server' })
+    : $t({ defaultMessage: 'Authentication Server' })
   return (<>
     <Form.Item label={title} children={name} />
     {primary && <>
@@ -127,8 +123,7 @@ const AAAPolicyFields = (props: { aaaPolicy: AAAPolicyType | undefined }) => {
       {secondary &&
        <RadiusServerFields aaaPolicy={aaaPolicy} isSecondary />
       }
-    </>
-    }
+    </>}
   </>
   )
 }

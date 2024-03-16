@@ -6,7 +6,7 @@ import { Table, TableProps }                    from '@acx-ui/components'
 import { EapType, NaiRealmEapMethodDisplayMap } from '@acx-ui/rc/utils'
 
 import { EAP_MAX_COUNT } from '../../constants'
-import { updateRowId }   from '../../utils'
+import { updateRowIds }  from '../../utils'
 
 import EapDrawer from './EapDrawer'
 
@@ -32,7 +32,7 @@ const EapTable = (props: EapTableProps) => {
 
   useEffect(() => {
     if (data) {
-      const newData = updateRowId<EapType>(data)
+      const newData = updateRowIds<EapType>(data)
       setTableData(newData)
     }
   }, [data])

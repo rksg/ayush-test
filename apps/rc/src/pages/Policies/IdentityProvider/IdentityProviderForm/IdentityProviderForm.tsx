@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { removeRowId } from '../utils'
+import { removeRowIds } from '../utils'
 
 import AaaSettingsForm                              from './AaaSettingsForm'
 import IdentityProviderFormContext, { mainReducer } from './IdentityProviderFormContext'
@@ -92,7 +92,7 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
     // remove rowId
     const newRealms = naiRealms.map(realm => {
       const { eap } = realm
-      const newEap = eap? removeRowId(eap) : undefined
+      const newEap = eap? removeRowIds(eap) : undefined
 
       return {
         ...realm,
@@ -106,12 +106,11 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
 
     return {
       ...newData,
-      naiRealms: removeRowId(newRealms),
-      ...(plmns && { plmns: removeRowId(plmns) }),
-      ...(roamConsortiumOIs && { roamConsortiumOIs: removeRowId(roamConsortiumOIs) })
+      naiRealms: removeRowIds(newRealms),
+      ...(plmns && { plmns: removeRowIds(plmns) }),
+      ...(roamConsortiumOIs && { roamConsortiumOIs: removeRowIds(roamConsortiumOIs) })
     }
   }
-
 
   const handleAddIdentityProvider = async () => {
     try {
@@ -134,7 +133,6 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
 
   return (<>
     {!modalMode &&

@@ -4,7 +4,7 @@ import {
   IdentityProviderActionType
 } from '@acx-ui/rc/utils'
 
-import { updateRowId } from '../utils'
+import { updateRowIds } from '../utils'
 
 
 export const IdentityProviderFormReducer = (
@@ -32,11 +32,6 @@ export const IdentityProviderFormReducer = (
           action.payload
         ]
       }
-    case IdentityProviderActionType.UPDATE_ENTIRE_REALM:
-      return {
-        ...state,
-        naiRealms: [...action.payload]
-      }
     case IdentityProviderActionType.UPDATE_REALM:
       return {
         ...state,
@@ -58,7 +53,7 @@ export const IdentityProviderFormReducer = (
 
         return {
           ...state,
-          naiRealms: [...updateRowId(filteredRealms)]
+          naiRealms: [...updateRowIds(filteredRealms)]
         }
       }
       return {
@@ -80,11 +75,6 @@ export const IdentityProviderFormReducer = (
           action.payload
         ]
       }
-    case IdentityProviderActionType.UPDATE_ENTIRE_PLMN:
-      return {
-        ...state,
-        plmns: [...action.payload]
-      }
     case IdentityProviderActionType.UPDATE_PLMN:
       return {
         ...state,
@@ -105,7 +95,7 @@ export const IdentityProviderFormReducer = (
 
         return {
           ...state,
-          plmns: [...updateRowId(filteredPlmns)]
+          plmns: [...updateRowIds(filteredPlmns)]
         }
       }
       return {
@@ -127,11 +117,6 @@ export const IdentityProviderFormReducer = (
           action.payload
         ]
       }
-    case IdentityProviderActionType.UPDATE_ENTIRE_ROI:
-      return {
-        ...state,
-        roamConsortiumOIs: [...action.payload]
-      }
     case IdentityProviderActionType.UPDATE_ROI:
       return {
         ...state,
@@ -152,7 +137,7 @@ export const IdentityProviderFormReducer = (
 
         return {
           ...state,
-          roamConsortiumOIs: [...updateRowId(filteredOIs)]
+          roamConsortiumOIs: [...updateRowIds(filteredOIs)]
         }
       }
       return {

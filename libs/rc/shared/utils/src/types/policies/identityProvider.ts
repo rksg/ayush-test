@@ -116,7 +116,6 @@ export type IdentityProvider = {
 
 export type IdentityProviderViewModel = IdentityProvider & {
   networkIds?: string[]
-  venueIds?: string[]
 }
 
 // action, dispatch, store
@@ -124,15 +123,12 @@ export enum IdentityProviderActionType {
   NAME = 'NAME',
   ADD_REALM = 'ADD_REALM',
   UPDATE_REALM = 'UPDATE_REALM',
-  UPDATE_ENTIRE_REALM = 'UPDATE_ENTIRE_REALM',
   DELETE_REALM = 'DELETE_REALM',
   ADD_PLMN = 'ADD_PLMN',
   UPDATE_PLMN = 'UPDATE_PLMN',
-  UPDATE_ENTIRE_PLMN = 'UPDATE_ENTIRE_PLMN',
   DELETE_PLMN = 'DELETE_PLMN',
   ADD_ROI = 'ADD_ROI',
   UPDATE_ROI = 'UPDATE_ROI',
-  UPDATE_ENTIRE_ROI = 'UPDATE_ENTIRE_ROI',
   DELETE_ROI = 'DELETE_ROI',
   AUTH_RADIUS_ID = 'AUTH_RADIUS_ID',
   ACCOUNT_RADIUS_ENABLED = 'ACCOUNT_RADIUS_ENABLED',
@@ -153,9 +149,6 @@ export type IdentityProviderActionPayload = {
   type: IdentityProviderActionType.UPDATE_REALM,
   payload: NaiRealmType
 } | {
-  type: IdentityProviderActionType.UPDATE_ENTIRE_REALM,
-  payload: NaiRealmType[]
-} | {
   type: IdentityProviderActionType.DELETE_REALM,
   payload: {
     rowIds: number[]
@@ -167,9 +160,6 @@ export type IdentityProviderActionPayload = {
   type: IdentityProviderActionType.UPDATE_PLMN,
   payload: PlmnType
 } | {
-  type: IdentityProviderActionType.UPDATE_ENTIRE_PLMN,
-  payload: PlmnType[]
-} | {
   type: IdentityProviderActionType.DELETE_PLMN,
   payload: {
     rowIds: number[]
@@ -180,9 +170,6 @@ export type IdentityProviderActionPayload = {
 } | {
   type: IdentityProviderActionType.UPDATE_ROI,
   payload: RoamConsortiumType
-} | {
-  type: IdentityProviderActionType.UPDATE_ENTIRE_ROI,
-  payload: RoamConsortiumType[]
 } | {
   type: IdentityProviderActionType.DELETE_ROI,
   payload: {

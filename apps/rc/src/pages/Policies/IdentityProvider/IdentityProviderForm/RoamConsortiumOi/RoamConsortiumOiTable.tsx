@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                              from '@acx-ui/components'
 import { IdentityProviderActionType, RoamConsortiumType } from '@acx-ui/rc/utils'
 
-import { updateRowId }             from '../../utils'
+import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 import RoamConsortiumOiDrawer from './RoamConsortiumOiDrawer'
@@ -24,7 +24,7 @@ const RoamConsortiumOiTable = () => {
   useEffect(() => {
     const rois = state?.roamConsortiumOIs
     if (rois) {
-      const newData = updateRowId<RoamConsortiumType>(rois)
+      const newData = updateRowIds<RoamConsortiumType>(rois)
       setTableData(newData)
     }
   }, [state])

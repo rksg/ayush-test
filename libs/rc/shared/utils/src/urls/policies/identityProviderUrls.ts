@@ -7,7 +7,7 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getIdentityProvider: {
-    method: 'post',
+    method: 'get',
     url: '/hotspot20IdentityProviders/:policyId',
     newApi: true
   },

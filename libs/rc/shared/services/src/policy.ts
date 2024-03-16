@@ -1196,12 +1196,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getIdentityProvider: build.query<IdentityProvider, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(IdentityProviderUrls.updateIdentityProvider, params)
+        const req = createHttpRequest(IdentityProviderUrls.getIdentityProvider, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
     addIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1224,11 +1224,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
     deleteIdentityProvider: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProvider, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]

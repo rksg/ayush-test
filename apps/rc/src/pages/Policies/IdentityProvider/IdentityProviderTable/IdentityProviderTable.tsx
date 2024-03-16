@@ -52,8 +52,18 @@ export default function IdentityProviderTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => {
+        const ids = selectedRows.map(row => row.id)
+        for (let i=0; i<ids.length; i++) {
+          const curParams = {
+            ...params,
+            profileId: ids[i]
+          }
+          await deleteFn({ params: curParams })
+        }
+        callback()
+      }
     )
   }
 

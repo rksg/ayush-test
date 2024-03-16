@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 
 
-import { Form, Input, Space } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Form, Input, Space }        from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Select }                                                          from '@acx-ui/components'
+import { Drawer, Select, cssStr }                                                  from '@acx-ui/components'
 import { IdentityProviderActionType, RoamConsortiumType, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
@@ -26,6 +26,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
   const [form] = Form.useForm()
   const { state, dispatch } = useContext(IdentityProviderFormContext)
   const [ oidType, setOidType ] = useState(3)
+  const [ errorOidIndexes, setErrorOidIndexes] = useState<number[]>([])
   const { visible, setVisible, editIndex } = props
   const isEditMode = (editIndex !== -1)
 
@@ -36,8 +37,8 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
 
   const convertToFormData = (data: RoamConsortiumType) => {
     const { name='', organizationId='' } = data || {}
-    const oidArray = organizationId
-      ? organizationId.match(/[0-9A-F]{1,2}/g)
+    const oidArray = organizationId.toLocaleLowerCase()
+      ? organizationId.match(/[0-9a-fA-F]{1,2}/g)
       : ['', '', '']
 
     return {
@@ -73,6 +74,20 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
       : Promise.resolve()
   }
 
+  const roiValidator = async (organizationIds: string[]) => {
+    const re = new RegExp(/^([0-9a-fA-F]{1,2})$/)
+    const errorOIds: number[] = []
+    organizationIds.forEach((oid, index) => {
+      if (!re.test(oid)) {
+        errorOIds.push(index)
+      }
+    })
+    setErrorOidIndexes(errorOIds)
+    return (errorOIds.length > 0)
+      ? Promise.reject($t({ defaultMessage: 'Invalid Organization ID' }))
+      : Promise.resolve()
+  }
+
   const oids = Array.from({ length: oidType })
 
   const handleOidTypeChanged = (value: number) => {
@@ -96,7 +111,10 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
         ]}
         children={<Input />}
       />
-      <Form.Item label={$t({ defaultMessage: 'Organization Id' })} required >
+      <Form.Item required
+        label={$t({ defaultMessage: 'Organization Id' })}
+        style={{ marginBottom: '0' }}
+      >
         <Space>
           <Form.Item
             children={<Select
@@ -110,7 +128,8 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
             <Form.Item
               key={`oid-${index}`}
               name={['organizationId', index]}
-              children={<Input maxLength={2}
+              children={<Input data-testid={'oid'}
+                maxLength={2}
                 style={{ width: '42px' }}
                 placeholder={'00'}
               />}
@@ -118,6 +137,18 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
           ))}
         </Space>
       </Form.Item>
+      {(errorOidIndexes.length > 0) &&
+      <div style={{
+        paddingLeft: '90px',
+        marginTop: '-14px',
+        color: cssStr('--acx-semantics-red-50') }}>
+        <FormattedMessage
+          defaultMessage={'Please enter {number} valid hex'}
+          values={{
+            number: oidType
+          }} />
+      </div>
+      }
     </Form>
   )
 
@@ -127,15 +158,18 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
 
   const onSave = async (addAnotherChecked: boolean) => {
     try {
-      await form.validateFields()
       const { name, organizationId } = form.getFieldsValue()
+      await roiValidator(organizationId)
+      await form.validateFields()
+
+      const organizationIdString = organizationId.join('').toLocaleLowerCase()
 
       if (isEditMode) {
         dispatch({
           type: IdentityProviderActionType.UPDATE_ROI,
           payload: {
             name: name,
-            organizationId: organizationId.join(''),
+            organizationId: organizationIdString,
             rowId: editIndex
           }
         })
@@ -145,7 +179,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
           type: IdentityProviderActionType.ADD_ROI,
           payload: {
             name: name,
-            organizationId: organizationId.join(''),
+            organizationId: organizationIdString,
             rowId: index
           }
         })

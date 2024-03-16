@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                    from '@acx-ui/components'
 import { IdentityProviderActionType, PlmnType } from '@acx-ui/rc/utils'
 
-import { updateRowId }             from '../../utils'
+import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 
@@ -24,7 +24,7 @@ const PlmnTable = () => {
   useEffect(() => {
     const plmns = state?.plmns
     if (plmns) {
-      const newData = updateRowId<PlmnType>(plmns)
+      const newData = updateRowIds<PlmnType>(plmns)
       setTableData(newData)
     }
   }, [state])

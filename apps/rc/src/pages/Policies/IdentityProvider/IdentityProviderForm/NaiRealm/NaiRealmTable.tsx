@@ -10,7 +10,7 @@ import {
   NaiRealmType
 } from '@acx-ui/rc/utils'
 
-import { updateRowId }             from '../../utils'
+import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 import NaiRealmDrawer from './NaiRealmDrawer'
@@ -29,7 +29,7 @@ const NaiRealmTable = () => {
   useEffect(() => {
     const naiRealms = state?.naiRealms
     if (naiRealms) {
-      const newData = updateRowId<NaiRealmType>(naiRealms)
+      const newData = updateRowIds<NaiRealmType>(naiRealms)
       setTableData(newData)
     }
   }, [state])
@@ -60,7 +60,7 @@ const NaiRealmTable = () => {
 
   const actions = [
     {
-      label: $t({ defaultMessage: 'Add Service' }),
+      label: $t({ defaultMessage: 'Add Realm' }),
       disabled: drawerVisible,
       onClick: () => {
         setDrawerVisible(true)
