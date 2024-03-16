@@ -10,7 +10,7 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
-import type { InternalStepFormProps }                           from './types'
+import type { InternalStepFormProps, StepsFormGotoStepFn }      from './types'
 import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
 import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
@@ -26,7 +26,7 @@ type UseStepsFormParam <T> = Omit<
   form?: FormInstance<T>
   defaultFormValues?: Partial<T>
   current?: number
-  onFinish?: (values: T) => Promise<boolean | void>
+  onFinish?: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
   onFinishFailed?: (errorInfo: ValidateErrorEntity) => void
   onCancel?: (values: T) => void
 
@@ -42,7 +42,7 @@ type UseStepsFormParam <T> = Omit<
 
   customSubmit?: {
     label: string,
-    onCustomFinish: (values: T) => Promise<boolean | void>
+    onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
   }
 
   alert?: {
@@ -70,7 +70,7 @@ export function useStepsForm <T> ({
   const [customSubmitting, setCustomSubmitting] = useState(false)
   const formConfig = useStepsFormAnt({
     ...config,
-    submit: onFinish,
+    submit: (formValues: unknown) => onFinish?.(formValues as T, gotoStep),
     total: steps.length,
     isBackValidate: Boolean(editMode)
   } as UseStepsFormConfig)
@@ -120,11 +120,15 @@ export function useStepsForm <T> ({
 
   function gotoStep (n: number) {
     const values = form.getFieldsValue(true)
+
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
         const result = formConfig.gotoStep(n)
-        if (isPromise(result)) result.catch(() => { /* mute validation error */ }).finally(done)
-        else done()
+        if (isPromise(result)) {
+          result.catch(() => { /* mute validation error */ }).finally(done)
+        } else {
+          done()
+        }
       })
     })
   }
@@ -147,7 +151,7 @@ export function useStepsForm <T> ({
     onCurrentStepFinish(values, () => {
       const timeout = setTimeout(setCustomSubmitLoading, 50, true)
       form.validateFields()
-        .then(() => customSubmit?.onCustomFinish?.(values))
+        .then(() => customSubmit?.onCustomFinish?.(values, gotoStep))
         .catch(validationFailedHandler)
         .finally(() => {
           clearTimeout(timeout)
@@ -161,6 +165,7 @@ export function useStepsForm <T> ({
     layout: 'vertical',
     // omit defaultFormValues for preventing warning: React does not recognize the `defaultFormValues` prop on a DOM element.
     ..._.omit(config, 'defaultFormValues'),
+    // ..._.omit(props, 'onFinish'),
     ...props,
     // omit name for preventing prefix of id
     ..._.omit(currentStep.props, ['children', 'name', 'title']),
