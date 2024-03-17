@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -31,7 +33,15 @@ jest.mock('react-router-dom', () => ({
 jest.mock('./DnsServer', () => (() => <div data-testid='DnsServer' />))
 jest.mock('./GeneralSettings', () => (() => <div data-testid='GeneralSettings' />))
 jest.mock('./Ports', () => (() => <div data-testid='Ports' />))
+jest.mock('./Lags', () => (() => <div data-testid='Lags' />))
+jest.mock('./SubInterfaces', () => (() => <div data-testid='SubInterfaces' />))
 jest.mock('./StaticRoutes', () => (() => <div data-testid='StaticRoutes' />))
+jest.mock('./EditEdgeDataProvider', () => ({
+  ...jest.requireActual('./EditEdgeDataProvider'),
+  EditEdgeDataProvider: (
+    { children }: { children: ReactNode }
+  ) => <div data-testid='data-provider' children={children} />
+}))
 
 describe('EditEdge', () => {
 
