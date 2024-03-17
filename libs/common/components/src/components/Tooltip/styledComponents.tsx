@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components/macro'
+import styled, { createGlobalStyle, css } from 'styled-components/macro'
 
 export const TooltipGlobalStyle = createGlobalStyle`
   .ant-tooltip {
@@ -31,4 +31,16 @@ export const TooltipGlobalStyle = createGlobalStyle`
       }
     }
   }
+`
+
+export const TooltipWrapper = styled.span<{ $dottedUnderline: boolean }>`
+  ${props => props.$dottedUnderline && css`
+    > span {
+      text-decoration: dotted underline;
+      :after {
+        content: '';
+        display: block;
+      }
+    }
+  `}
 `

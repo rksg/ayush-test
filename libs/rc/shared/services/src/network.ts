@@ -21,6 +21,7 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   transformNetwork,
+  WifiNetwork,
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
@@ -91,6 +92,32 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return networkListQuery.data
           ? { data: aggregatedList }
           : { error: networkListQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg,
+            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
+              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+            })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    wifiNetworkList: build.query<TableResult<WifiNetwork>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<WifiNetwork>) {
+        result.data = result.data.map(item => ({
+          ...transformNetwork(item)
+        })) as WifiNetwork[]
+        return result
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'LIST' }],
@@ -704,8 +731,8 @@ export const aggregatedNetworksVenueData = (venueList: TableResult<Venue>,
 export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVMNetworksList, arg.params),
+      ? ConfigTemplateUrlsInfo.getVenueNetworkTemplateList
+      : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
   const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
@@ -889,8 +916,8 @@ export const aggregatedNetworksVenueDataV2 = (venueList: TableResult<Venue>,
 export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getNetworkTemplateList
-      : CommonUrlsInfo.getVMNetworksList, arg.params),
+      ? ConfigTemplateUrlsInfo.getVenueNetworkTemplateList
+      : CommonUrlsInfo.getVenueNetworkList, arg.params),
     body: arg.payload
   }
 
@@ -1012,6 +1039,7 @@ export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
   useNetworkTableQuery,
+  useWifiNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetVenueNetworkApGroupQuery,
