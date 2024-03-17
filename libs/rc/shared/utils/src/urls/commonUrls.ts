@@ -9,6 +9,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
+  getWifiNetworksList: {
+    method: 'post',
+    url: '/wifiNetworks/query',
+    newApi: true
+  },
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',

@@ -37,10 +37,14 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
-                    data-testid="HistoricalOutlined"
-                  />
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                  >
+                    <svg
+                      class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                      data-testid="HistoricalOutlined"
+                    />
+                  </span>
                 </div>
               </div>
               <div
@@ -156,10 +160,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
-                    data-testid="HistoricalOutlined"
-                  />
+                  <span
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                  >
+                    <svg
+                      class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                      data-testid="HistoricalOutlined"
+                    />
+                  </span>
                 </div>
               </div>
               <div
@@ -383,63 +391,54 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <div
-                                              class="ant-progress-wrapper"
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress-wrapper"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-outer"
+                                                  class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                                 >
                                                   <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item"
-                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item"
-                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                  />
+                                                    class="ant-progress-steps-outer"
+                                                  >
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item"
+                                                      style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item"
+                                                      style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="11.3K of 26.5K attempts"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              43%
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
                                               <span
-                                                data-tooltip="20 of 1.44K connections under 2 seconds"
+                                                data-tooltip="11.3K of 26.5K attempts"
                                               >
-                                                1%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &lt; 2 s
+                                                43%
                                               </span>
                                             </span>
                                           </td>
@@ -447,44 +446,77 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <span>
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="20 of 1.44K connections under 2 seconds"
+                                                >
+                                                  1%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &lt; 2 s
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="675 of 675 sessions above 10 Mbps"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 10 Mbps
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="10 of 30 APs above 100 Mbps"
+                                                >
+                                                  33%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 100 Mbps
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
                                               <span
-                                                data-tooltip="675 of 675 sessions above 10 Mbps"
+                                                data-tooltip="1 of 1 APs online"
                                               >
                                                 100%
                                               </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 10 Mbps
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              <span
-                                                data-tooltip="10 of 30 APs above 100 Mbps"
-                                              >
-                                                33%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 100 Mbps
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span
-                                              data-tooltip="1 of 1 APs online"
-                                            >
-                                              100%
                                             </span>
                                           </td>
                                         </tr>
@@ -510,97 +542,54 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <div
-                                              class="ant-progress-wrapper"
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress-wrapper"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-outer"
+                                                  class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                                 >
                                                   <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item"
-                                                    style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-                                                  />
+                                                    class="ant-progress-steps-outer"
+                                                  >
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item"
+                                                      style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="68 of 72 attempts"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              94%
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
                                               <span
-                                                data-tooltip="27 of 27 connections under 2 seconds"
+                                                data-tooltip="68 of 72 attempts"
                                               >
-                                                100%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &lt; 2 s
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              <span
-                                                data-tooltip="2 of 11 sessions above 10 Mbps"
-                                              >
-                                                18%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 10 Mbps
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              <span
-                                                data-tooltip="10 of 10 APs above 5 Mbps"
-                                              >
-                                                100%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 5 Mbps
+                                                94%
                                               </span>
                                             </span>
                                           </td>
@@ -609,9 +598,76 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="2 of 4 APs online"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              50%
+                                              <span>
+                                                <span
+                                                  data-tooltip="27 of 27 connections under 2 seconds"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &lt; 2 s
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="2 of 11 sessions above 10 Mbps"
+                                                >
+                                                  18%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 10 Mbps
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="10 of 10 APs above 5 Mbps"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 5 Mbps
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span
+                                                data-tooltip="2 of 4 APs online"
+                                              >
+                                                50%
+                                              </span>
                                             </span>
                                           </td>
                                         </tr>
@@ -637,63 +693,54 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <div
-                                              class="ant-progress-wrapper"
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress-wrapper"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-outer"
+                                                  class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                                 >
                                                   <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
+                                                    class="ant-progress-steps-outer"
+                                                  >
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="251 of 354 attempts"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              71%
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
                                               <span
-                                                data-tooltip="27 of 29 connections under 2 seconds"
+                                                data-tooltip="251 of 354 attempts"
                                               >
-                                                93%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &lt; 2 s
+                                                71%
                                               </span>
                                             </span>
                                           </td>
@@ -701,16 +748,41 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <span>
-                                              <span
-                                                data-tooltip="15 of 15 sessions above 10 Mbps"
-                                              >
-                                                100%
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="27 of 29 connections under 2 seconds"
+                                                >
+                                                  93%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &lt; 2 s
+                                                </span>
                                               </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 10 Mbps
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="15 of 15 sessions above 10 Mbps"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 10 Mbps
+                                                </span>
                                               </span>
                                             </span>
                                           </td>
@@ -727,9 +799,13 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="12 of 12 APs online"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              100%
+                                              <span
+                                                data-tooltip="12 of 12 APs online"
+                                              >
+                                                100%
+                                              </span>
                                             </span>
                                           </td>
                                         </tr>
@@ -755,63 +831,75 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <div
-                                              class="ant-progress-wrapper"
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress-wrapper"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-outer"
+                                                  class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                                 >
                                                   <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
+                                                    class="ant-progress-steps-outer"
+                                                  >
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span
-                                              data-tooltip="4 of 5 attempts"
-                                            >
-                                              80%
                                             </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <span>
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
                                               <span
-                                                data-tooltip="2 of 2 connections under 2 seconds"
+                                                data-tooltip="4 of 5 attempts"
                                               >
-                                                100%
+                                                80%
                                               </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &lt; 2 s
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="2 of 2 connections under 2 seconds"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &lt; 2 s
+                                                </span>
                                               </span>
                                             </span>
                                           </td>
@@ -836,9 +924,13 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="1 of 1 APs online"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              100%
+                                              <span
+                                                data-tooltip="1 of 1 APs online"
+                                              >
+                                                100%
+                                              </span>
                                             </span>
                                           </td>
                                         </tr>
@@ -864,47 +956,55 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <div
-                                              class="ant-progress-wrapper"
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress-wrapper"
                                               >
                                                 <div
-                                                  class="ant-progress-steps-outer"
+                                                  class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                                                 >
                                                   <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
-                                                  <div
-                                                    class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                    style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-                                                  />
+                                                    class="ant-progress-steps-outer"
+                                                  >
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                    <div
+                                                      class="ant-progress-steps-item ant-progress-steps-item-active"
+                                                      style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
+                                            </span>
                                           </td>
                                           <td
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="22 of 27 attempts"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              81%
+                                              <span
+                                                data-tooltip="22 of 27 attempts"
+                                              >
+                                                81%
+                                              </span>
                                             </span>
                                           </td>
                                           <td
@@ -919,33 +1019,20 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                             style="text-align: center;"
                                           >
-                                            <span>
-                                              <span
-                                                data-tooltip="4 of 4 sessions above 10 Mbps"
-                                              >
-                                                100%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 10 Mbps
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            <span>
-                                              <span
-                                                data-tooltip="3 of 4 APs above 100 Mbps"
-                                              >
-                                                75%
-                                              </span>
-                                              <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
-                                              >
-                                                &gt; 100 Mbps
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span>
+                                                <span
+                                                  data-tooltip="4 of 4 sessions above 10 Mbps"
+                                                >
+                                                  100%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 10 Mbps
+                                                </span>
                                               </span>
                                             </span>
                                           </td>
@@ -954,9 +1041,34 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             style="text-align: center;"
                                           >
                                             <span
-                                              data-tooltip="5 of 5 APs online"
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
                                             >
-                                              100%
+                                              <span>
+                                                <span
+                                                  data-tooltip="3 of 4 APs above 100 Mbps"
+                                                >
+                                                  75%
+                                                </span>
+                                                <span
+                                                  class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                >
+                                                  &gt; 100 Mbps
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                            style="text-align: center;"
+                                          >
+                                            <span
+                                              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                            >
+                                              <span
+                                                data-tooltip="5 of 5 APs online"
+                                              >
+                                                100%
+                                              </span>
                                             </span>
                                           </td>
                                         </tr>
