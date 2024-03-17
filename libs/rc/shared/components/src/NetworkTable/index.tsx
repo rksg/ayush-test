@@ -154,7 +154,7 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
-                    'certain features in this venue.'
+                    'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{

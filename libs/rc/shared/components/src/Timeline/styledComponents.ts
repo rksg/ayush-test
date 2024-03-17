@@ -123,6 +123,7 @@ export const DescriptionWrapper = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   margin-left: 30px;
+  color: var(--acx-primary-black);
 `
 
 export const WithExpanderWrapper = styled.div`
