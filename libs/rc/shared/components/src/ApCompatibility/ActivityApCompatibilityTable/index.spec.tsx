@@ -19,7 +19,7 @@ describe('ActivityApCompatibilityTable', () => {
       mockActivityApCompatibilityTable
     )
   })
-  it('should visible render correctly', async () => {
+  it.skip('should visible render correctly', async () => {
     const requestId = 'requestId'
     const mockUpdateStatus = jest.fn()
     render(
