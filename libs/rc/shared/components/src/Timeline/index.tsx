@@ -7,6 +7,9 @@ import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { PlusSquareSolid, MinusSquareSolid } from '@acx-ui/icons'
 import { TimelineStatus }                    from '@acx-ui/types'
 
+
+import { ActivityApCompatibilityTable } from '../ApCompatibility'
+
 import {
   ItemWrapper,
   ContentWrapper,
@@ -22,7 +25,7 @@ import {
   InProgressIcon
 } from './styledComponents'
 
-interface StatusIconProps { status: TimelineStatus}
+interface StatusIconProps { status: TimelineStatus, description?: string }
 
 export const StatusIcon = (props: StatusIconProps) => {
   switch(props.status) {
@@ -47,21 +50,28 @@ const statusMap = {
 const StatusComp = (props: StatusIconProps) => {
   const { $t } = useIntl()
   return <StatusWrapper status={props.status}>
-    <StatusIcon status={props.status}/>{$t(statusMap[props.status])}
+    <StatusIcon status={props.status}/>
+    {$t(statusMap[props.status])}
+    <DescriptionWrapper>
+      {props.description ?? ''}
+    </DescriptionWrapper>
   </StatusWrapper>
 }
 
 export interface TimelineItem {
+  id: string,
   status: TimelineStatus,
   startDatetime: string,
   endDatetime: string,
   description: string,
   children?: React.ReactElement
   error?: string
-  type?: TimelineType
+  type?: TimelineType,
+  contentChildren?: React.ReactElement
 }
 
 interface TimelineProps {
+  requestId: string
   items: TimelineItem[]
   status: TimelineStatus
 }
@@ -72,9 +82,10 @@ enum TimelineType {
   FUTURE = 'future'
 }
 
-const Timeline = (props: TimelineProps) => {
+export const Timeline = (props: TimelineProps) => {
   const { $t } = useIntl()
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
+  const [ statusDescription, setStatusDescription ] = useState<string>()
 
   const currentStep = props.items.findIndex(item => !item.endDatetime)
   const modifiedProps = props.items.map((item, index) => {
@@ -111,7 +122,7 @@ const Timeline = (props: TimelineProps) => {
         <ContentWrapper>
           <WithExpanderWrapper>
             <div>
-              <StatusComp status={item.status}/>
+              <StatusComp status={item.status} description={statusDescription}/>
               <DescriptionWrapper
               >{item.description}</DescriptionWrapper>
             </div>
@@ -126,6 +137,11 @@ const Timeline = (props: TimelineProps) => {
             </ExpanderWrapper>
           </WithExpanderWrapper>
           { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+          {item.id === 'CheckApCompatibilities' ? (
+            <ActivityApCompatibilityTable
+              requestId={props.requestId}
+              updateActivityDesc={setStatusDescription} />)
+            : null}
         </ContentWrapper>
       </ItemWrapper>
     </AntTimeline.Item>
@@ -145,5 +161,3 @@ const Timeline = (props: TimelineProps) => {
     </AntTimeline>
   </Wrapper>
 }
-
-export { Timeline }

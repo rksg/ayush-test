@@ -78,3 +78,20 @@ export const mockVenuelist = {
     }
   ]
 }
+
+export const mockActivityApCompatibilityTable = {
+  data: [
+    {
+      id: '302002013537',
+      name: 'AP-1',
+      incompatibleFeatures: [
+        'feature x',
+        'feature y',
+        'feature z'
+      ]
+    }
+  ],
+  page: 1,
+  // incompatibleCount: 3,
+  totalCount: 10
+}
