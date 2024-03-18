@@ -37,6 +37,7 @@ import {
   getFilters,
   TableQuery,
   SwitchStatusEnum,
+  SwitchAttributeProfile,
   isStrictOperationalSwitch,
   isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
@@ -442,7 +443,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    scopeKey: 'switch-d',
+    scopeKey: SwitchAttributeProfile.DELETE,
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }

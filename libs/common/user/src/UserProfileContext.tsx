@@ -7,7 +7,8 @@ import {
   useAllowedOperationsQuery,
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
-  useGetUserProfileQuery
+  useGetUserProfileQuery,
+  useFeatureFlagStatesQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -21,7 +22,7 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
-  rbacEnabled?: boolean
+  abacEnabled?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -44,10 +45,24 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
+
+  const abacFF = 'abac-policies-toggle'
+  const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
+    = useFeatureFlagStatesQuery(
+      { params: { tenantId }, payload: [abacFF] }, { skip: !Boolean(profile) }
+    )
+
   const accountTier = accTierResponse?.acx_account_tier
-  // TODO: get scope and rbac ff from API
-  if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
-    allowedOperations, accountTier, betaEnabled })
+  // TODO: get scope from API
+  if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
+    setUserProfile({
+      profile: profile!,
+      allowedOperations,
+      accountTier,
+      betaEnabled,
+      abacEnabled: featureFlagStates?.[abacFF] ?? false
+    })
+  }
 
   return <UserProfileContext.Provider
     value={{
@@ -58,7 +73,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaEnabled
+      betaEnabled,
+      abacEnabled: featureFlagStates?.[abacFF] ?? false
     }}
     children={props.children}
   />
