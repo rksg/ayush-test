@@ -1,7 +1,8 @@
 import { EdgePortsForm }                         from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const Ports = () => {
+const Ports = (props: { clusterId: string }) => {
+  const { clusterId } = props
   const { serialNumber, activeSubTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit/ports`)
@@ -19,6 +20,7 @@ const Ports = () => {
   }
 
   return <EdgePortsForm
+    clusterId={clusterId}
     serialNumber={serialNumber!}
     onTabChange={onTabChange}
     onCancel={onCancel}
