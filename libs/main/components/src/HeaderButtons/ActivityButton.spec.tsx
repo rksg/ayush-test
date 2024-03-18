@@ -16,6 +16,7 @@ import { activities } from './__tests__/activitiesFixtures'
 import ActivityButton from './ActivityButton'
 
 const mockUseNavigate = jest.fn()
+const mockedSaveFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate
@@ -54,6 +55,10 @@ describe('ActivityButton', () => {
       rest.put(
         UserUrlsInfo.saveUserSettings.url,
         (req, res, ctx) => {
+          mockedSaveFn({
+            params: req.url.pathname,
+            body: req.body
+          })
           return res(ctx.status(200))
         }
       )
@@ -96,6 +101,9 @@ describe('ActivityButton', () => {
     const button = screen.getByRole('button')
     await userEvent.click(button)
     expect(await screen.findByText('123roam')).toBeVisible()
+    await waitFor(() => {
+      expect(mockedSaveFn).toBeCalledTimes(2)
+    })
     await userEvent.click(screen.getByRole('combobox'))
     await userEvent.click(screen.getByTitle('Pending'))
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))

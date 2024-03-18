@@ -12,7 +12,7 @@ import { TimelineDrawer }                                                       
 import { useActivitiesQuery }                                                                                                                  from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping, initActivitySocket, closeActivitySocket, TxStatus } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate, useParams }                                                                                               from '@acx-ui/react-router-dom'
-import { getProductKey, getUserSettingsByPath, setDeepUserSettings, useGetAllUserSettingsQuery, useSaveUserSettingsMutation }                  from '@acx-ui/user'
+import { getProductKey, getUserSettingsByPath, setDeepUserSettings, useLazyGetAllUserSettingsQuery, useSaveUserSettingsMutation }              from '@acx-ui/user'
 import { DateRange, DateRangeFilter, getDateRangeFilter }                                                                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -49,7 +49,7 @@ export default function ActivityButton () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
   const params = useParams()
-  const { data: userSettings } = useGetAllUserSettingsQuery({ params })
+  const [getUserSettings] = useLazyGetAllUserSettingsQuery()
   const [saveUserSettings] = useSaveUserSettingsMutation()
   const [status, setStatus] = useState('all')
   const [showUnreadMark, setShowUnreadMark] = useState<boolean>(false)
@@ -98,33 +98,33 @@ export default function ActivityButton () {
   }
 
   useEffect(() => {
-    if (userSettings) {
+    const fetchUserSettings = async () => {
+      const userSettings = await getUserSettings({ params }).unwrap()
       // eslint-disable-next-line max-len
       const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
       if(activity){
         setShowUnreadMark(activity.showUnreadMark)
       }
     }
-  }, [userSettings])
+    fetchUserSettings()
+  }, [])
 
-  const updateShowUnreadMaskStatus = (show: boolean) => {
+  const updateShowUnreadMaskStatus = async (show: boolean) => {
     if(showUnreadMark === show) {return}
     setShowUnreadMark(show)
-    if(userSettings) {
-      const productKey = getProductKey(ACTIVITY_USER_SETTING)
-      // eslint-disable-next-line max-len
-      const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
-      const newSettings = setDeepUserSettings(userSettings, ACTIVITY_USER_SETTING, {
-        ...activity, showUnreadMark: show })
-      debugger
-      saveUserSettings({
-        params: {
-          tenantId: params.tenantId,
-          productKey
-        },
-        payload: newSettings[productKey]
-      }).unwrap()
-    }
+    const userSettings = await getUserSettings({ params }).unwrap()
+    const productKey = getProductKey(ACTIVITY_USER_SETTING)
+    // eslint-disable-next-line max-len
+    const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
+    const newSettings = setDeepUserSettings(userSettings, ACTIVITY_USER_SETTING, {
+      ...activity, showUnreadMark: show })
+    saveUserSettings({
+      params: {
+        tenantId: params.tenantId,
+        productKey
+      },
+      payload: newSettings[productKey]
+    }).unwrap()
   }
 
   const onOpenActivityModal = (show:boolean) => {
