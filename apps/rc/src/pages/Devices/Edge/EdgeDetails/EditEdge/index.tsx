@@ -39,7 +39,7 @@ const useTabs = () => {
       {
         'ports': {
           title: $t({ defaultMessage: 'Ports' }),
-          content: <Ports clusterId={currentEdge?.clusterId ?? ''} />
+          content: <Ports />
         },
         'lags': {
           title: $t({ defaultMessage: 'LAGs' }),
