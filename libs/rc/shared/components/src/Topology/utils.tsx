@@ -27,21 +27,21 @@ import {
   TopologySwitchOperational,
   TopologyUnknown
 } from '@acx-ui/icons'
-import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, DeviceStatus, SwitchStatusEnum, DeviceTypes } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                       from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum, DeviceTypes } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                               from '@acx-ui/utils'
 
 
 
-export function getDeviceColor (deviceStatus: DeviceStatus
+export function getDeviceColor (deviceStatus: TopologyDeviceStatus
   | SwitchStatusEnum
   | ApDeviceStatusEnum) {
   switch(deviceStatus) {
-    case DeviceStatus.Operational:
+    case TopologyDeviceStatus.Operational:
     case SwitchStatusEnum.OPERATIONAL:
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
     case ApDeviceStatusEnum.OPERATIONAL:
       return 'var(--acx-semantics-green-50)'
-    case DeviceStatus.Degraded:
+    case TopologyDeviceStatus.Degraded:
     case ApDeviceStatusEnum.REBOOTING:
     case ApDeviceStatusEnum.HEARTBEAT_LOST:
     case ApDeviceStatusEnum.APPLYING_FIRMWARE:
@@ -50,9 +50,9 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
     case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
     case SwitchStatusEnum.DISCONNECTED:
-    case DeviceStatus.Disconnected:
+    case TopologyDeviceStatus.Disconnected:
       return 'var(--acx-semantics-red-70)'
-    case DeviceStatus.Unknown:
+    case TopologyDeviceStatus.Unknown:
     case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
     case ApDeviceStatusEnum.INITIALIZING:
     case ApDeviceStatusEnum.OFFLINE:
@@ -64,27 +64,28 @@ export function getDeviceColor (deviceStatus: DeviceStatus
 }
 
 
-export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStatus
+export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: TopologyDeviceStatus
   | SwitchStatusEnum
   | ApDeviceStatusEnum) {
   switch(deviceType) {
     case DeviceTypes.Ap:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
         case ApDeviceStatusEnum.OPERATIONAL:
           return <TopologyAPOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Degraded:
+        case TopologyDeviceStatus.Degraded:
         case ApDeviceStatusEnum.REBOOTING:
         case ApDeviceStatusEnum.HEARTBEAT_LOST:
         case ApDeviceStatusEnum.APPLYING_FIRMWARE:
           return <TopologyAPDegraded width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
         case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
         case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -93,21 +94,22 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
       break
     case DeviceTypes.ApMesh:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
         case ApDeviceStatusEnum.OPERATIONAL:
           return <TopologyAPMeshOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Degraded:
+        case TopologyDeviceStatus.Degraded:
         case ApDeviceStatusEnum.REBOOTING:
         case ApDeviceStatusEnum.HEARTBEAT_LOST:
         case ApDeviceStatusEnum.APPLYING_FIRMWARE:
           return <TopologyAPMeshDegraded width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
         case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
         case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPMeshDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -116,21 +118,22 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
       break
     case DeviceTypes.ApMeshRoot:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
         case ApDeviceStatusEnum.OPERATIONAL:
           return <TopologyAPMeshRootOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Degraded:
+        case TopologyDeviceStatus.Degraded:
         case ApDeviceStatusEnum.REBOOTING:
         case ApDeviceStatusEnum.HEARTBEAT_LOST:
         case ApDeviceStatusEnum.APPLYING_FIRMWARE:
           return <TopologyAPMeshRootDegraded width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
         case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
         case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPMeshRootDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -139,21 +142,22 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
       break
     case DeviceTypes.ApWired:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
         case ApDeviceStatusEnum.OPERATIONAL:
           return <TopologyAPWiredOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Degraded:
+        case TopologyDeviceStatus.Degraded:
         case ApDeviceStatusEnum.REBOOTING:
         case ApDeviceStatusEnum.HEARTBEAT_LOST:
         case ApDeviceStatusEnum.APPLYING_FIRMWARE:
           return <TopologyAPWiredDegraded width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
         case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
         case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
         case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
           return <TopologyAPWiredDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Initializing:
         case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
         case ApDeviceStatusEnum.INITIALIZING:
         case ApDeviceStatusEnum.OFFLINE:
@@ -162,12 +166,14 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
       break
     case DeviceTypes.Switch:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case SwitchStatusEnum.OPERATIONAL:
           return <TopologySwitchOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
           return <TopologySwitchDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Degraded:
+        case TopologyDeviceStatus.Initializing:
         case SwitchStatusEnum.INITIALIZING:
         case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
         case SwitchStatusEnum.DISCONNECTED:
@@ -176,12 +182,14 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: DeviceStat
       break
     case DeviceTypes.SwitchStack:
       switch(deviceStatus) {
-        case DeviceStatus.Operational:
+        case TopologyDeviceStatus.Operational:
         case SwitchStatusEnum.OPERATIONAL:
           return <TopologyStackSwitchOperational width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Disconnected:
+        case TopologyDeviceStatus.Disconnected:
           return <TopologyStackSwitchDisconnected width={24} height={24} x={-12} y={-12} />
-        case DeviceStatus.Unknown:
+        case TopologyDeviceStatus.Unknown:
+        case TopologyDeviceStatus.Degraded:
+        case TopologyDeviceStatus.Initializing:
         case SwitchStatusEnum.INITIALIZING:
         case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
         case SwitchStatusEnum.DISCONNECTED:
