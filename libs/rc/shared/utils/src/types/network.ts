@@ -60,6 +60,10 @@ export interface Network extends BaseNetwork{
   incompatible?: number
 }
 
+export interface WifiNetwork extends Network{
+  venueApGroups: VenueApGroup[]
+}
+
 export interface NetworkExtended extends Network {
   deepVenue?: NetworkVenue,
   latitude?: string,
@@ -199,6 +203,12 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   network?: NetworkSaveData | null,
   networkVenue?: NetworkVenue,
   venueName?: string
+}
+
+export interface VenueApGroup {
+  venueId: string,
+  isAllApGroups: boolean,
+  apGroupIds: string[]
 }
 
 export type SchedulingModalState = {
