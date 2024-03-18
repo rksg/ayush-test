@@ -12,6 +12,7 @@ import {
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
+  Network,
   NetworkSaveData,
   NetworkTypeEnum,
   TunnelTypeEnum
@@ -50,7 +51,7 @@ const tunnelProfileDefaultPayload = {
 
 const toggleItemFromSelected = (
   checked: boolean,
-  data: NetworkSaveData,
+  data: Network,
   selectedNetworks: EdgeSdLanActivatedNetwork[] | undefined
 ) => {
   let newSelected
@@ -101,33 +102,40 @@ export const TunnelScopeForm = () => {
 
   const handleActivateChange = (
     fieldName: string,
-    data: NetworkSaveData,
-    checked: boolean,
-    activated: NetworkSaveData[]
+    data: Network,
+    checked: boolean
   ) => {
-    const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
+    // const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
+    const changedData = _.pick(data, ['id', 'name'])
+    // eslint-disable-next-line max-len
+    const activatedNetworks = (form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
+    // eslint-disable-next-line max-len
+    const activatedGuestNetworks = (form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
+
+    // eslint-disable-next-line max-len
+    const affectedNetworks = fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks
+    let newSelected = _.cloneDeep(affectedNetworks)
+    if (checked) newSelected = affectedNetworks.concat([changedData])
+    else _.remove(newSelected, i => i.id === changedData.id)
 
     if (isGuestTunnelEnabled
       && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
-      && data.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
+
       if (fieldName === 'activatedNetworks') {
         const updateContent = {
           [fieldName]: newSelected
-        } as Record<string, unknown>
+        } as Record<string, EdgeSdLanActivatedNetwork[]>
 
         // vlan pooling enabled cannot be a guest network
-        const isVlanPooling = !_.isNil(data.wlan?.advancedCustomization?.vlanPool)
+        const isVlanPooling = !_.isNil(data.vlanPool)
         if (!isVlanPooling || (isVlanPooling && !checked)) {
-          // eslint-disable-next-line max-len
-          const activatedGuestNetworks = form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]
           // eslint-disable-next-line max-len
           updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)
         }
 
         form.setFieldsValue(updateContent)
       } else {
-        // eslint-disable-next-line max-len
-        const activatedNetworks = form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]
         const newSelectedNetworks = toggleItemFromSelected(checked, data, activatedNetworks)
         form.setFieldsValue({
           [fieldName]: newSelected,
