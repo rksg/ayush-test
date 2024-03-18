@@ -176,8 +176,10 @@ export const ActivityItem = styled(List.Item)`
 
 export const ActivityBadge = styled(Badge)`
   .ant-badge-dot {
-    background: var(--acx-accents-blue-50);
-    box-shadow: 0 0 0 1px var(--acx-accents-blue-50);
+    height: 11px;
+    width: 11px;
+    background: var(--acx-semantics-red-60);
+    box-shadow: 0 0 0 1px var(--acx-semantics-red-60);
   }
 `
 
