@@ -1,8 +1,8 @@
 
-import { timelineApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }           from '@acx-ui/rc/utils'
-import { Provider, store }          from '@acx-ui/store'
-import { mockRestApiQuery, render } from '@acx-ui/test-utils'
+import { timelineApi }                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                            from '@acx-ui/rc/utils'
+import { Provider, store }                           from '@acx-ui/store'
+import { mockRestApiQuery, render, waitFor, screen } from '@acx-ui/test-utils'
 
 import { mockActivityApCompatibilityTable } from '../__test__/fixtures'
 
@@ -19,7 +19,7 @@ describe('ActivityApCompatibilityTable', () => {
       mockActivityApCompatibilityTable
     )
   })
-  it.skip('should visible render correctly', async () => {
+  it('should visible render correctly', async () => {
     const requestId = 'requestId'
     const mockUpdateStatus = jest.fn()
     render(
@@ -29,7 +29,10 @@ describe('ActivityApCompatibilityTable', () => {
           updateActivityDesc={mockUpdateStatus} />
       </Provider>,
       { route: { params } })
-    expect(mockUpdateStatus).toBeCalledTimes(1)
-  })
 
+    await waitFor(() => {
+      expect(mockUpdateStatus).toBeCalledTimes(1)
+    })
+    expect(await screen.findByText('AP-1')).toBeInTheDocument()
+  })
 })

@@ -31,39 +31,6 @@ export const ActivityApCompatibilityTable = ({
     apiParams: { activityId: requestId }
   })
 
-  // useEffect(() => {
-  //   if (!tableQuery.data?.data) {
-  //     tableQuery.data = {
-  //       data: [
-  //         {
-  //           id: '302002013537',
-  //           name: 'AP-1',
-  //           incompatibleFeatures: [
-  //             'feature x',
-  //             'feature y',
-  //             'feature z'
-  //           ]
-  //         }
-  //       ],
-  //       page: 1,
-  //       extra: { incompatibleCount: 5 },
-  //       totalCount: 10
-  //     }
-  //     if (totalCount === -1) {
-  //       const count = tableQuery.data?.totalCount ?? 0
-  //       let incompatibleCount = tableQuery.data?.extra?.incompatibleCount ?? count
-  //       if (incompatibleCount === 0) {
-  //         incompatibleCount = count
-  //       }
-  //       setTotalCount(count)
-  //       if (count !== 0) {
-  //         const percent = Math.round(incompatibleCount / count * 100) / 100
-  //         updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
-  //       }
-  //     }
-  //   }
-  // },[])
-
   useEffect(() => {
     if (tableQuery.data?.data) {
       if (totalCount === -1) {
@@ -74,7 +41,7 @@ export const ActivityApCompatibilityTable = ({
         }
         setTotalCount(count)
         if (count !== 0) {
-          const percent = Math.round(incompatibleCount / count * 100) / 100
+          const percent = Math.round(incompatibleCount / count )
           updateActivityDesc(`(${incompatibleCount}/(${count} devices, ${percent}%)`)
         }
       }

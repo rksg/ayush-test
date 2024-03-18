@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
 
+import { StatusIcon }                        from '@acx-ui/components'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { PlusSquareSolid, MinusSquareSolid } from '@acx-ui/icons'
-import { TimelineStatus }                    from '@acx-ui/types'
+import { TimelineStatus, StatusIconProps }   from '@acx-ui/types'
 
 
 import { ActivityApCompatibilityTable } from '../ApCompatibility'
@@ -18,27 +19,8 @@ import {
   ExpanderWrapper,
   WithExpanderWrapper,
   Wrapper,
-  Step,
-  SuccessIcon,
-  FailIcon,
-  PendingsIcon,
-  InProgressIcon
+  Step
 } from './styledComponents'
-
-interface StatusIconProps { status: TimelineStatus, description?: string }
-
-export const StatusIcon = (props: StatusIconProps) => {
-  switch(props.status) {
-    case 'SUCCESS':
-      return <SuccessIcon />
-    case 'PENDING':
-      return <PendingsIcon />
-    case 'INPROGRESS':
-      return <InProgressIcon />
-    case 'FAIL':
-      return <FailIcon />
-  }
-}
 
 const statusMap = {
   SUCCESS: defineMessage({ defaultMessage: 'Success' }),
