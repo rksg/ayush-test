@@ -24,7 +24,7 @@ import {
 } from '@acx-ui/icons'
 import { useGetTopologyQuery } from '@acx-ui/rc/services'
 import {
-  DeviceStatus,
+  TopologyDeviceStatus,
   DeviceTypes,
   Link,
   Node,
@@ -45,6 +45,69 @@ type OptionType = {
   children: string;
   item: Node;
 }
+
+interface NodeData {
+  id: string;
+  name: string;
+  type: string;
+  isConnectedCloud: boolean;
+  children: NodeData[];
+}
+
+export function parseTopologyData (topologyData: any): any {
+  const nodes = topologyData.nodes
+  const edges = topologyData.edges
+
+  // Create a mapping of node IDs to their corresponding node objects
+  const nodeMap: Record<string, NodeData> = {}
+
+  nodes.forEach((node: NodeData) => {
+    nodeMap[node.id] = {
+      ...node,
+      children: []
+    }
+  })
+
+  // Build the tree structure based on the edges
+  edges.forEach((edge: Link) => {
+    const fromNode = nodeMap[edge.from]
+    const toNode = nodeMap[edge.to]
+
+    if((fromNode && toNode)){
+      if(toNode.isConnectedCloud) {
+        toNode.children.push(fromNode)
+      } else {
+        fromNode.children.push(toNode)
+      }
+    }
+  })
+
+  const idsToRemove: string[] = []
+  function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
+
+    for(let i=0; i < nodeMapData.length; i++){
+      const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
+
+      if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
+        idsToRemove.push(node.id)
+      }
+      removeDuplicateItems(node, nodeMapData[i].children)
+    }
+  }
+
+  const nodeMapData = Object.values(nodeMap)
+
+  nodeMapData.forEach(
+    node => removeDuplicateItems(
+      node, nodeMapData.filter(item => item.id !== node.id )))
+
+  const result: NodeData[] = Object.values(nodeMap).filter(item => {
+    return !idsToRemove.includes(item.id)
+  })
+
+  return result
+}
+
 export function TopologyGraphComponent (props:{ venueId?: string,
   showTopologyOn: ShowTopologyFloorplanOn,
   deviceMac?: string,
@@ -115,7 +178,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         key: (node.id as string).toString(),
         label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
           {node.name as string}</Typography.Title>
-        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
+        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
+        <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
         children: node.label,
         item: node
       })) as OptionType[]
@@ -130,68 +194,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       }
     }
   }, [topologyData])
-
-  interface NodeData {
-    id: string;
-    name: string;
-    type: string;
-    isConnectedCloud: boolean;
-    children: NodeData[];
-  }
-
-  function parseTopologyData (topologyData: any): any {
-    const nodes = topologyData.nodes
-    const edges = topologyData.edges
-
-    // Create a mapping of node IDs to their corresponding node objects
-    const nodeMap: Record<string, NodeData> = {}
-
-    nodes.forEach((node: NodeData) => {
-      nodeMap[node.id] = {
-        ...node,
-        children: []
-      }
-    })
-
-    // Build the tree structure based on the edges
-    edges.forEach((edge: Link) => {
-      const fromNode = nodeMap[edge.from]
-      const toNode = nodeMap[edge.to]
-
-      if((fromNode && toNode)){
-        if(toNode.isConnectedCloud) {
-          toNode.children.push(fromNode)
-        } else {
-          fromNode.children.push(toNode)
-        }
-      }
-    })
-
-    const idsToRemove: string[] = []
-    function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
-
-      for(let i=0; i < nodeMapData.length; i++){
-        const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
-
-        if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
-          idsToRemove.push(node.id)
-        }
-        removeDuplicateItems(node, nodeMapData[i].children)
-      }
-    }
-
-    const nodeMapData = Object.values(nodeMap)
-
-    nodeMapData.forEach(
-      node => removeDuplicateItems(
-        node, nodeMapData.filter(item => item.id !== node.id )))
-
-    const result: NodeData[] = Object.values(nodeMap).filter(item => {
-      return !idsToRemove.includes(item.id)
-    })
-
-    return result
-  }
 
   function closeLinkTooltipHandler () {
     setShowLinkTooltip(false)
@@ -215,14 +217,46 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       , y: d?.nativeEvent.layerY })
   }, 100)
 
+
+  function rearrangedData (data: Link) {
+    return {
+      source: data.target,
+      target: data.source,
+      from: data.to,
+      to: data.from,
+      fromMac: data.toMac,
+      toMac: data.fromMac,
+      fromName: data.toName,
+      toName: data.fromName,
+      connectedPort: data.correspondingPort,
+      correspondingPort: data.connectedPort,
+      fromSerial: data.toSerial,
+      toSerial: data.fromSerial,
+      connectedPortUntaggedVlan: data.correspondingPortUntaggedVlan,
+      correspondingPortUntaggedVlan: data.connectedPortUntaggedVlan,
+      connectedPortTaggedVlan: data.correspondingPortTaggedVlan,
+      correspondingPortTaggedVlan: data.connectedPortTaggedVlan,
+      poeEnabled: data.poeEnabled,
+      linkSpeed: data.linkSpeed,
+      poeUsed: data.poeUsed,
+      poeTotal: data.poeTotal,
+      connectionType: data.connectionType,
+      connectionStatus: data.connectionStatus
+    }
+  }
+
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
     if(topologyData?.edges){
-      const sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
-      const targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
-      const selectedEdge = topologyData.edges.filter(
-        item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
       if (edge.source.data.id === 'Cloud')
         return
+      let sourceNode = topologyData.nodes.filter(item => item.id === edge.source.data.id)[0]
+      let targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
+      let selectedEdge = topologyData.edges.filter(
+        item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
+      if(!selectedEdge){ // Swap source and target nodes if API return reverse result
+        selectedEdge = rearrangedData(topologyData.edges.filter(
+          item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
+      }
       setTooltipSourceNode(sourceNode)
       setTooltipTargetNode(targetNode)
       setShowLinkTooltip(true)
@@ -263,6 +297,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   !!((option as OptionType).item.name as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.mac as string).toLowerCase()
+                    .includes(inputValue.toLowerCase()) ||
+                  !!((option as OptionType).item.ipAddress as string).toLowerCase()
                     .includes(inputValue.toLowerCase())
               }
               }
@@ -419,7 +455,8 @@ export function TopologyGraph (props:{ venueId?: string,
   )
 }
 
-export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: DeviceStatus }) {
+export function DeviceIcon (props: { deviceType: DeviceTypes,
+  deviceStatus: TopologyDeviceStatus }) {
   const { deviceType, deviceStatus } = props
 
   function getDeviceIcon () {
