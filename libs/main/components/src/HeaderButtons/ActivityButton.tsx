@@ -127,7 +127,7 @@ export default function ActivityButton () {
     }).unwrap()
   }
 
-  const onOpenActivityModal = (show:boolean) => {
+  const onChangeActivityModal = (show:boolean) => {
     setActivityModalOpen(show)
     updateShowUnreadMaskStatus(false)
   }
@@ -244,14 +244,14 @@ export default function ActivityButton () {
       dot={showUnreadMark}
       children={<LayoutUI.ButtonSolid
         icon={<ClockSolid />}
-        onClick={() => {onOpenActivityModal(!activityModal)}}
+        onClick={() => {onChangeActivityModal(!activityModal)}}
       />}
     />
     <UI.Drawer
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
       visible={activityModal}
-      onClose={() => onOpenActivityModal(false)}
+      onClose={() => onChangeActivityModal(false)}
       children={activityList}
     />
     {detail && <TimelineDrawer
@@ -259,7 +259,7 @@ export default function ActivityButton () {
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
       onClose={() => setDetailModalOpen(false)}
-      onBackClick={() => onOpenActivityModal(true)}
+      onBackClick={() => onChangeActivityModal(true)}
       data={getDrawerData?.(detail!)}
       activity={detail}
     />}
