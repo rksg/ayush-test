@@ -4,9 +4,9 @@ import { Col, Row } from 'antd'
 import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
-import { Table, TableProps, Tooltip, showActionModal }                                                              from '@acx-ui/components'
-import { EdgeLag, EdgeLagStatus, EdgePort, defaultSort, getEdgePortDisplayName, getEdgePortIpModeString, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                from '@acx-ui/user'
+import { Table, TableProps, Tooltip, showActionModal }                                                                                from '@acx-ui/components'
+import { EdgeLag, EdgeLagStatus, EdgePort, EdgeSerialNumber, defaultSort, getEdgePortDisplayName, getEdgePortIpModeString, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                                  from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -15,7 +15,8 @@ interface EdgeLagTableType extends EdgeLag {
 }
 
 interface EdgeLagTableProps {
-  serialNumber?: string
+  clusterId?: string
+  serialNumber?: EdgeSerialNumber
   lagList?: EdgeLag[]
   lagStatusList?: EdgeLagStatus[]
   portList?: EdgePort[]
@@ -26,7 +27,9 @@ interface EdgeLagTableProps {
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    serialNumber = '', lagList, lagStatusList, portList,
+    clusterId='',
+    serialNumber = '',
+    lagList, lagStatusList, portList,
     onAdd, onEdit, onDelete
   } = props
   const { $t } = useIntl()
@@ -195,6 +198,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         rowKey='id'
       />
       <LagDrawer
+        clusterId={clusterId}
         serialNumber={serialNumber}
         visible={lagDrawerVisible}
         setVisible={setLagDrawerVisible}
