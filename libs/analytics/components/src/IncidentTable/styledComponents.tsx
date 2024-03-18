@@ -21,19 +21,13 @@ export const withEllipsis = css`
   text-overflow: ellipsis;
 `
 
-export const withDottedUnderline = css`
-  cursor: pointer;
-  text-decoration: dotted underline;
-  // below css will hide the default safari tooltip
-  :after {
-    content: '';
-    display: block;
-  }
-`
-
 export const DescriptionSpan = styled.div`
   ${withEllipsis}
-  ${withDottedUnderline}
+  color: var(--acx-accents-blue-50);
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
 export const IncidentDrawerContent = styled.div`
