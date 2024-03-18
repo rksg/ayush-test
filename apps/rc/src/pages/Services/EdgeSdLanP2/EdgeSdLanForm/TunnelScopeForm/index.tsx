@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Col, Form, Row, Typography } from 'antd'
 import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
@@ -65,7 +67,7 @@ const toggleItemFromSelected = (
 
 export const TunnelScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeSdLanFormModelP2>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = form.getFieldValue('venueId')
   const isGuestTunnelEnabled = form.getFieldValue('isGuestTunnelEnabled')
 
@@ -154,6 +156,12 @@ export const TunnelScopeForm = () => {
     form.setFieldValue('guestTunnelProfileName',
       tunnelProfileOptions?.filter(i => i.value === val)[0]?.label)
   }
+
+  useEffect(() => {
+    if (editMode) {
+      form.validateFields()
+    }
+  }, [])
 
   return (
     <>
