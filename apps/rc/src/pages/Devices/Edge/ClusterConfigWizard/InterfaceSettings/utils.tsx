@@ -78,6 +78,7 @@ export const getLanInterfaces = (
     const lanLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
       ?.lags.filter(item => item.portType === EdgePortTypeEnum.LAN)
       .map(item => ({
+        id: `${item.id}`,
         serialNumber: edgeNode.serialNumber,
         portName: `lag${item.id}`,
         ip: item.ip ?? '',
@@ -86,6 +87,7 @@ export const getLanInterfaces = (
         portType: item.portType,
         isCorePort: item.corePortEnabled,
         isLagMember: false,
+        isLag: true,
         portEnabled: item.lagEnabled
       })) ?? []
 
@@ -93,6 +95,7 @@ export const getLanInterfaces = (
       Object.values(portData[edgeNode.serialNumber])
         .flat().filter(item => item.portType === EdgePortTypeEnum.LAN)
         .map(item => ({
+          id: item.id,
           serialNumber: edgeNode.serialNumber,
           portName: item.interfaceName ?? '',
           ip: item.ip,
@@ -101,6 +104,7 @@ export const getLanInterfaces = (
           portType: item.portType,
           isCorePort: item.corePortEnabled,
           isLagMember: false,
+          isLag: false,
           portEnabled: item.enabled
         })) : []
 
@@ -212,7 +216,8 @@ const getCompatibleCheckResult = (
 }
 
 export const interfaceCompatibilityCheck = (
-  portSettings:InterfaceSettingsFormType['portSettings'],
+  portSettings: InterfaceSettingsFormType['portSettings'],
+  lagSettings: InterfaceSettingsFormType['lagSettings'],
   nodeList: EdgeClusterStatus['edgeList']
 ): CompatibilityCheckResult => {
   // eslint-disable-next-line max-len
@@ -221,6 +226,7 @@ export const interfaceCompatibilityCheck = (
   nodeList?.forEach((node) => {
     const { name: nodeName, serialNumber } = node
     const portsData = _.get(portSettings, serialNumber)
+    const lagData = _.find(lagSettings, { serialNumber })
     const result = _.cloneDeep(initialNodeCompatibleResult)
     // append node info
     result.nodeId = serialNumber
@@ -232,8 +238,15 @@ export const interfaceCompatibilityCheck = (
       return
     }
 
+    const nodeLagMembers = lagData?.lags.flatMap(lag => {
+      return lag.lagMembers.flatMap(member => member.portId)
+    })
+
     // do counting
     Object.values(portsData).flat().forEach(port => {
+      // only count on non-lagMember port
+      if (nodeLagMembers?.includes(port.id)) return
+
       result.errors.ports.value++
       if (port.corePortEnabled) result.errors.corePorts.value++
       if (!result.errors.portTypes[port.portType]) {

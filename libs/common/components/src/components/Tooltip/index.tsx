@@ -13,11 +13,19 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip (props: TooltipProps) {
-  return <>
+type ExtendedTooltipProps = TooltipProps &{
+  dottedUnderline?: boolean
+  wrapperClassName?: string
+}
+
+function Tooltip (props: ExtendedTooltipProps) {
+  return <UI.TooltipWrapper
+    $dottedUnderline={props.dottedUnderline ? true : false}
+    className={props.wrapperClassName}
+  >
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
-  </>
+  </UI.TooltipWrapper>
 }
 
 export { Tooltip, TooltipProps }
@@ -29,14 +37,14 @@ type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
 
 Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
   const { iconStyle, ...tooltipProps } = props
-  return <Tooltip {...tooltipProps}>
+  return <Tooltip {...tooltipProps} wrapperClassName='tooltip-icon'>
     <QuestionMarkCircleOutlined {...(iconStyle && { style: iconStyle })}/>
   </Tooltip>
 }
 
 Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
   const { iconStyle, isFilled=false, ...tooltipProps } = props
-  return <Tooltip {...tooltipProps} >
+  return <Tooltip {...tooltipProps} wrapperClassName='tooltip-icon'>
     {!isFilled
       ? <InformationOutlined {...(iconStyle && { style: iconStyle })} />
       : <InformationSolid {...(iconStyle && { style: iconStyle })} />

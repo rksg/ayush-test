@@ -128,6 +128,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
             ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
+            ]))
           })
         })
       },
@@ -145,6 +148,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
             ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
+            ]))
           })
         })
       },
@@ -161,6 +167,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             api.dispatch(networkApi.util.invalidateTags([
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
+            ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
             ]))
           })
         })

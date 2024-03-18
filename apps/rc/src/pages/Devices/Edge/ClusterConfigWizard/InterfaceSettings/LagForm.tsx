@@ -115,6 +115,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
       content={
         (serialNumber) => (
           <EdgeLagTable
+            clusterId={clusterInfo?.clusterId}
             serialNumber={serialNumber}
             lagList={value?.find(item => item.serialNumber === serialNumber)?.lags}
             portList={
