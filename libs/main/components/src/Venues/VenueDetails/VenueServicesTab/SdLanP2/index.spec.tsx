@@ -89,21 +89,6 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     mockedActivateNetworkReq.mockReset()
     mockedDeactivateNetworkReq.mockReset()
     mockedGetData.mockReset()
-
-    // mockServer.use(
-    //   rest.put(
-    //     EdgeSdLanUrls.activateEdgeSdLanNetwork.url,
-    //     (req, res, ctx) => {
-    //       return res(ctx.status(202))
-    //     }
-    //   ),
-    //   rest.delete(
-    //     EdgeSdLanUrls.deactivateEdgeSdLanNetwork.url,
-    //     (req, res, ctx) => {
-    //       return res(ctx.status(202))
-    //     }
-    //   )
-    // )
   })
 
   it('should render correctly', async () => {
