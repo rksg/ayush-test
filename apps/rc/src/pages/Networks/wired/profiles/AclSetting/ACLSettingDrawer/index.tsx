@@ -12,9 +12,17 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                     from '@acx-ui/user'
+import { Drawer, Table, TableProps } from '@acx-ui/components'
+import {
+  Acl,
+  AclExtendedRule,
+  AclStandardRule,
+  checkAclName,
+  defaultSort,
+  sortProp,
+  validateDuplicateAclName
+} from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
@@ -118,6 +126,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       title: $t({ defaultMessage: 'Sequence #' }),
       dataIndex: 'sequence',
       key: 'sequence',
+      sorter: { compare: sortProp('sequence', defaultSort) },
+      defaultSortOrder: 'ascend',
       width: 100
     },
     {
