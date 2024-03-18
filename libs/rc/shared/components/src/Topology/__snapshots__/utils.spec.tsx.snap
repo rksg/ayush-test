@@ -1,0 +1,323 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Topology utils test getDeviceIcon 1`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 2`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPDegraded"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 3`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 4`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 5`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 6`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshDegraded"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 7`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 8`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 9`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshRootOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 10`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshRootDegraded"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 11`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshRootDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 12`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPMeshRootInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 13`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPWiredOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 14`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPWiredDegraded"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 15`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPWiredDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 16`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyAPWiredInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 17`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologySwitchOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 18`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologySwitchDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 19`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologySwitchInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 20`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyStackSwitchOperational"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 21`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyStackSwitchDisconnected"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 22`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyStackSwitchInitiate"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;
+
+exports[`Topology utils test getDeviceIcon 23`] = `
+<div>
+  <div>
+    <svg
+      data-testid="TopologyUnknown"
+      height="24"
+      width="24"
+      x="-12"
+      y="-12"
+    />
+  </div>
+</div>
+`;

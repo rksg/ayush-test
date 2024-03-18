@@ -3,15 +3,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                         from '@acx-ui/store'
-import { mockServer, render, screen }                              from '@acx-ui/test-utils'
+import { venueApi }                                                                                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo, TopologyDeviceStatus, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                            from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }                                     from '@acx-ui/test-utils'
 
 import { TopologyTreeContext } from './TopologyTree/TopologyTreeContext'
 
-import { TopologyGraph } from '.'
+import { DeviceIcon, TopologyGraph } from '.'
 
 
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -172,74 +171,22 @@ const graphData = {
   ]
 }
 
-// const scaleData = { ...graphData }
-
-// const mock = {
-//   inverse: () => mock,
-//   multiply: () => mock,
-//   translate: () => ({ e: 0, f: 0 })
-// }
-
-// Object.defineProperty(global.SVGElement.prototype, 'getScreenCTM', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue(mock)
-// })
-// const value = jest.fn()
-// Object.defineProperty(global.SVGElement.prototype, 'getBBox', {
-//   writable: true,
-//   value: value
-// })
-// value.mockReturnValue({ x: 0, y: 0, width: 0, height: 0 })
-
-// Object.defineProperty(global.SVGElement.prototype, 'getComputedTextLength', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue(0)
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'createSVGMatrix', {
-//   writable: true,
-//   value: jest.fn().mockReturnValue({
-//     x: 10,
-//     y: 10,
-//     inverse: () => {},
-//     multiply: () => {}
-//   })
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'width', {
-//   writable: true,
-//   value: {
-//     baseVal: {
-//       value: 10
-//     }
-//   }
-// })
-
-// Object.defineProperty(global.SVGElement.prototype, 'height', {
-//   writable: true,
-//   value: {
-//     baseVal: {
-//       value: 10
-//     }
-//   }
-// })
-
 const editStackDetail = {
   type: 'device',
   isStack: true,
   rearModule: 'none',
   switchMac: 'c0:c5:20:aa:32:67',
-  switchName: 'STACK-1',
+  switchName: 'STACK-0313',
   model: 'ICX7150-C12P',
   id: 'c0:c5:20:aa:32:67',
-  syncDataEndTime: 1710217906721,
+  syncDataEndTime: 1710384783381,
   firmwareVersion: 'SPR09010h_cd2',
-  freeMemory: 381509632,
+  freeMemory: 379555840,
   clientCount: 3,
-  floorplanId: '',
+  floorplanId: 'e2a04b0989424b9f8386e3a61b5e40c5',
   deviceType: 'DVCNWTYPE_SWITCH',
   serialNumber: 'FEK3224R09T',
-  yPercent: 0,
+  yPercent: 63.3405647277832,
   portsStatus: {
     Down: 27,
     Up: 5
@@ -254,7 +201,7 @@ const editStackDetail = {
   unitSerialNumbers: 'FEK3224R09T,FEK3224R07X',
   modules: 'stack',
   venueName: 'Topology-Venue',
-  name: 'STACK-1',
+  name: 'STACK-0313',
   activeSerial: 'FEK3224R09T',
   syncedAdminPassword: true,
   suspendingDeployTime: '',
@@ -270,16 +217,16 @@ const editStackDetail = {
   deviceStatus: 'ONLINE',
   vlanMapping: '{"1":"DEFAULT-VLAN","200":"VLAN-200"}',
   // eslint-disable-next-line max-len
-  temperatureGroups: '[{"serialNumber":"FEK3224R09T","stackId":"C0:C5:20:AA:32:67","temperatureSlotList":[{"slotNumber":3,"temperatureValue":54},{"slotNumber":4,"temperatureValue":53.5},{"slotNumber":1,"temperatureValue":69.5},{"slotNumber":2,"temperatureValue":10}]},{"serialNumber":"FEK3224R07X","stackId":"C0:C5:20:AA:2C:A3","temperatureSlotList":[{"slotNumber":1,"temperatureValue":63},{"slotNumber":4,"temperatureValue":49},{"slotNumber":2,"temperatureValue":10},{"slotNumber":3,"temperatureValue":49}]}]',
+  temperatureGroups: '[{"serialNumber":"FEK3224R09T","stackId":"C0:C5:20:AA:32:67","temperatureSlotList":[{"slotNumber":3,"temperatureValue":53.5},{"slotNumber":4,"temperatureValue":53.5},{"slotNumber":1,"temperatureValue":69},{"slotNumber":2,"temperatureValue":10}]},{"serialNumber":"FEK3224R07X","stackId":"C0:C5:20:AA:2C:A3","temperatureSlotList":[{"slotNumber":1,"temperatureValue":62.5},{"slotNumber":4,"temperatureValue":48.5},{"slotNumber":2,"temperatureValue":10},{"slotNumber":3,"temperatureValue":48.5}]}]',
   sendedHostname: true,
   venueId: '91e6862c732b412889e70ad511c239ce',
   unitId: 1,
   hasPoECapability: true,
   firmware: 'SPR09010h_cd2',
-  timestamp: 1710217863481,
+  timestamp: 1710384742050,
   adminPassword: '7f^MX+Uf0j',
   syncedSwitchConfig: true,
-  xPercent: 0,
+  xPercent: 72.7272720336914,
   defaultGateway: '10.206.1.254',
   stackMembers: [
     {
@@ -291,7 +238,7 @@ const editStackDetail = {
       id: 'FEK3224R07X'
     }
   ],
-  uptime: '96 days, 19:42:14.00',
+  uptime: '98 days, 18:3:33.00',
   extIp: '210.58.90.254',
   poeUsage: {
     poeFree: 219150,
@@ -304,15 +251,81 @@ const editStackDetail = {
   numOfPorts: 32
 }
 
-describe('Topology', () => {
-  beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
+const editApDetail = {
+  isMeshEnable: true,
+  downLinkCount: 0,
+  serialNumber: '302002015736',
+  lastUpdTime: '1.710314749626E12',
+  lastSeenTime: '2024-03-14T02:53:41.758Z',
+  name: '302002015736-DEV',
+  model: 'R550',
+  fwVersion: '6.2.1.103.2579',
+  venueId: '91e6862c732b412889e70ad511c239ce',
+  venueName: 'Topology-Venue',
+  deviceStatus: '2_00_Operational',
+  deviceStatusSeverity: '2_Operational',
+  IP: '10.206.1.21',
+  extIp: '210.58.90.254',
+  apMac: '34:20:E3:19:79:F0',
+  apStatusData: {
+    APRadio: [
+      {
+        txPower: 'max',
+        channel: 6,
+        band: '2.4G',
+        Rssi: null,
+        operativeChannelBandwidth: '20',
+        radioId: 0
+      },
+      {
+        txPower: 'max',
+        channel: 140,
+        band: '5G',
+        Rssi: null,
+        operativeChannelBandwidth: '80',
+        radioId: 1
+      }
+    ],
+    APSystem: {
+      uptime: 1970506,
+      ipType: 'dynamic',
+      netmask: '255.255.255.0',
+      gateway: '10.206.1.254',
+      primaryDnsServer: '10.10.10.106',
+      secondaryDnsServer: '10.10.10.10',
+      secureBootEnabled: false,
+      managementVlan: 1,
+      poeModeSetting: 0,
+      poeMode: 2
+    },
+    lanPortStatus: [
+      {
+        port: '0',
+        phyLink: 'Down  '
+      },
+      {
+        port: '1',
+        phyLink: 'Up 1000Mbps full'
+      }
+    ]
+  },
+  downlink: [],
+  uplink: [],
+  meshRole: 'DOWN',
+  hops: 0,
+  deviceGroupId: '1d137a2cf4dd46818ab9f987efa83cdf',
+  clients: 1,
+  downlinkCount: 0,
+  deviceGroupName: '',
+  deviceModelType: 'Indoor',
+  healthStatus: 'Excellent'
+}
 
-  it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const params = {
-      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
-      venueId: '7231da344778480d88f37f0cca1c534f'
-    }
+describe('Topology', () => {
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTopology.url,
@@ -321,8 +334,15 @@ describe('Topology', () => {
         (_, res, ctx) => res(ctx.json(editStackDetail))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 })))
+        (_, res, ctx) => res(ctx.json({ data: [editApDetail], totalCount: 0 })))
     )
+  })
+
+  it('should render correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
 
     const scale = 1
     const translate = [0,0]
@@ -344,86 +364,164 @@ describe('Topology', () => {
     await userEvent.click(zoomOutButton)
     const zoomFitButton = await screen.findByTestId('graph-zoom-fit')
     await userEvent.click(zoomFitButton)
-    await userEvent.click(zoomOutButton)
+
+    const nodeCloudElement = screen.queryByTestId('node_Cloud')
+    expect(nodeCloudElement).toBeInTheDocument()
+  })
+
+  it('should render modal fullscreen correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
+
     const fullScreenButton = await screen.findByTestId('enter-fullscreen')
     await userEvent.click(fullScreenButton)
 
-    const topologyModal = await screen.findByRole('dialog')
-    expect(topologyModal).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(async () =>
+      expect(await within(dialog).findByTestId('topologyGraph')).toBeInTheDocument()
+    )
+  })
+  it('should render hover device and show tooltip panel correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
 
-    // const nodeCloud = await within(topologyModal).findByTestId('node_Cloud')
-    // expect(nodeCloud).toBeVisible()
-    // const node1 = await screen.findByTestId('node_c0:c5:20:aa:32:67')
-    // fireEvent.mouseEnter(node1)
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
 
-    // const nodeTooltip = await screen.findByTestId('nodeTooltip')
-    // expect(nodeTooltip).toBeVisible()
-    // const switchDevices = await screen.findAllByTestId('Switch')
+    const deviceNode = await screen.findByTestId('node_c0:c5:20:aa:32:67')
+    const event = { nativeEvent: { layerX: 10, layerY: 10 } }
+    fireEvent.click(deviceNode, { event })
+    jest.useFakeTimers()
+    fireEvent.mouseEnter(deviceNode, { event })
+    jest.runAllTimers()
+    expect(await screen.findByTestId('nodeTooltip')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('closeNodeTooltip'))
+    jest.useRealTimers()
+  })
 
-    // expect(switchDevices.length).toBe(2)
+  it('should render hover edge and show tooltip panel correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
 
-    // const ApDevices = await screen.findAllByTestId('AccessPointWifi')
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
 
-    // expect(ApDevices.length).toBe(5)
+    const edge = await screen.findByTestId('link_c0:c5:20:aa:32:67_c0:c5:20:b2:10:d5')
+    const event = { nativeEvent: { layerX: 10, layerY: 10 } }
+    jest.useFakeTimers()
+    fireEvent.mouseEnter(edge, { event })
+    jest.runAllTimers()
+    expect(await screen.findByTestId('edgeTooltip')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('closeLinkTooltip'))
+    jest.useRealTimers()
+  })
 
-    // // show tooltip on node click
-    // fireEvent.click(ApDevices[0])
+  it('should render search device correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
 
-    // const apCard = await screen.findByTestId('nodeTooltip')
-    // expect(apCard).not.toBeNull()
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
 
-    // // hide tooltip on close
-    // fireEvent.click(screen.getByTestId(/CloseSymbol/i))
-    // expect(apCard).not.toBeInTheDocument()
+    const searchBar = await screen.findByTestId('searchNodes')
+    const searchInput = await within(searchBar).findByRole('combobox')
+    fireEvent.change(searchInput, { target: { value: 'c0:c5:20:aa:32:67' } })
+  })
 
-    // fireEvent.click(switchDevices[0])
-    // expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
-    // fireEvent.click(screen.getByTestId(/CloseSymbol/i))
+  it('should render expand/collapse device correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
 
-    // // show tooltip on edge click
-    // const allPaths = await screen.findAllByTestId('topologyEdge')
-    // fireEvent.click(allPaths[0])
-    // const edgeCard = await screen.findByTestId('edgeTooltip')
-    // expect(edgeCard).not.toBeNull()
-
-    // // hide tooltip on close
-    // fireEvent.click(screen.getByTestId(/CloseSymbol/i))
-    // expect(edgeCard).not.toBeInTheDocument()
-
-    // // to cover name || mac comdition
-    // fireEvent.click(allPaths[1])
-
-    // // to cover poeEnabled false
-    // fireEvent.click(allPaths[3])
-
-    // const switchStackDevice = await screen.findByTestId('StackDevice')
-
-    // fireEvent.click(switchStackDevice)
-    // expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
-
-    // // no tooltip on cloud connection edge click
-
-    // fireEvent.click(allPaths[8])
-    // expect(edgeCard).not.toBeInTheDocument()
-
-
-    // // no tooltip on cloud node click
-
-    // const cloud = await screen.findByTestId('CloudSolid')
-    // fireEvent.click(cloud)
-    // expect(apCard).not.toBeInTheDocument()
+    const scale = 1
+    const translate = [0,0]
+    const setTranslate = jest.fn()
+    render(<Provider>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+        <TopologyGraph
+          showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
+          venueId='7231da344778480d88f37f0cca1c534f' />
+      </TopologyTreeContext.Provider></Provider>,{
+      route: { params }
+    })
 
 
-    // const zoomIn = await screen.findByTestId('graph-zoom-in')
+    const collapseButton = await screen.findAllByTestId('collapseButton')
+    await userEvent.click(collapseButton[0])
+    const expandButton = await screen.findAllByTestId('expandButton')
+    await userEvent.click(expandButton[0])
+  })
 
-    // fireEvent.click(zoomIn)
 
-    // const zoomOut = await screen.findByTestId('graph-zoom-out')
+  it('should render device icons correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+    const { container } = render(<Provider>
+      <DeviceIcon deviceType={DeviceTypes.Switch} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.SwitchStack}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Ap} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Cloud} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApMesh} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApMeshRoot}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.ApWired}
+        deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.Unknown} deviceStatus={TopologyDeviceStatus.Unknown} />
+    </Provider>,{
+      route: { params }
+    })
 
-    // fireEvent.click(zoomOut)
-
-    // const zoomFit = await screen.findByTestId('graph-zoom-fit')
-
-    // fireEvent.click(zoomFit)
+    expect(container).toMatchSnapshot()
   })
 })

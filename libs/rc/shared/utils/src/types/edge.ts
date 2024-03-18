@@ -12,7 +12,7 @@ export interface EdgeGeneralSetting {
   name: string
   serialNumber?: string
   venueId?: string
-  tags: string // TODO when tags component is ready need to change type to array
+  tags: string[] // TODO when tags component is ready need to change type to array
 }
 
 export interface EdgeResourceUtilization {
@@ -130,7 +130,7 @@ export interface EdgePortStatus {
   sortIdx: number
   vlan: string
   subnet: string
-  interfaceName?: EdgeSerialNumber
+  interfaceName?: string
   serialNumber?: EdgeSerialNumber
   isCorePort?: string
 }
@@ -393,12 +393,14 @@ Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
 
 export interface EdgePortInfo {
   serialNumber: EdgeSerialNumber
+  id: string
   portName: string
   ip: string
   mac: string
   subnet: string
   portType: EdgePortTypeEnum
   isCorePort: boolean
+  isLag: boolean
   isLagMember: boolean
   portEnabled: boolean
 }

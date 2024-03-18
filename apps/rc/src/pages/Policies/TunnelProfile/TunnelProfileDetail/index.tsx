@@ -27,6 +27,7 @@ import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath({
@@ -77,7 +78,7 @@ const TunnelProfileDetail = () => {
         })
       }
     },
-    ...(isEdgeSdLanReady ? [{
+    ...((isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
         return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
