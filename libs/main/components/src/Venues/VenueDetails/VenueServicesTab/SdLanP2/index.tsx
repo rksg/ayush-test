@@ -17,8 +17,8 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  NetworkSaveData,
-  NetworkTypeEnum } from '@acx-ui/rc/utils'
+  NetworkTypeEnum,
+  Network } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeSdLanServiceProps {
@@ -117,7 +117,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
   const handleActivateChange = async (
     fieldName: string,
-    rowData: NetworkSaveData,
+    rowData: Network,
     checked: boolean
   ) => {
     const networkId = rowData.id!
@@ -125,7 +125,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
     try {
       if (data.isGuestTunnelEnabled
-      && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
         const isGuestNetwork = fieldName === 'activatedGuestNetworks'
         await toggleNetwork(isGuestNetwork, networkId, checked)
       } else {

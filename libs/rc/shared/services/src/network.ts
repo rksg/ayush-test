@@ -598,6 +598,47 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const networkActivations = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
+          body: arg.payload
+        }
+        const networkActivationsQuery = await fetchWithBQ(networkActivations)
+        const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
+
+        let networksList = { data: [] } as { data: Network[] }
+
+        if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
+          const networkIds = networkVenueList.data.map(item => item.networkId!) || []
+          const networkListReq = createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params)
+          const networkListQuery = await fetchWithBQ({ ...networkListReq, body: {
+            filters: { id: networkIds }
+          } })
+          networksList = networkListQuery.data as TableResult<Network>
+        }
+
+        return networkVenueList
+          ? { data: {
+            ...networkVenueList,
+            data: networksList?.data
+          } as TableResult<Network> }
+          : {
+            error: networkActivationsQuery.error as FetchBaseQueryError
+          }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
     dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
@@ -964,6 +1005,7 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
     )
+
     if (item?.dsaeOnboardNetwork) {
       item = { ...item,
         ...{ children: [{ ...item?.dsaeOnboardNetwork,
@@ -1050,6 +1092,7 @@ export const {
   useNetworkVenueListV2Query,
   useNetworkVenueTableV2Query,
   useVenueNetworkActivationsDataListQuery,
+  useVenueNetworkActivationsViewModelListQuery,
   useAddNetworkMutation,
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
