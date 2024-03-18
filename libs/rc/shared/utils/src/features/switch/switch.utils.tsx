@@ -705,6 +705,28 @@ export const getAdminPassword = (
     )
 }
 
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+  let ranges = []
+
+  for (let i = 0; i < numbers.length; i++) {
+    let start = numbers[i]
+    while (numbers[i + 1] - numbers[i] === 1) {
+      i++
+    }
+    let end = numbers[i]
+    ranges.push(start === end ? `${start}` : `${start}-${end}`)
+  }
+
+  if (ranges.length > maxRangesToShow) {
+    const remainingCount = ranges.length - maxRangesToShow
+    ranges = ranges.slice(0, maxRangesToShow)
+    return `${ranges.join(', ')}, and ${remainingCount} more...`
+  }
+
+  return ranges.join(', ')
+}
+
 export const isFirmwareVersionAbove10 = (
   firmwareVersion: string
 ) => {

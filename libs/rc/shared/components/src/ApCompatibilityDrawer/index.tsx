@@ -13,61 +13,19 @@ import {
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, ApIncompatibleDevice } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                 from '@acx-ui/react-router-dom'
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
 
+import { ApCompatibilityType, InCompatibilityFeatures, ApCompatibilityQueryTypes }        from './constants'
 import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
 
-export enum ApCompatibilityType {
-  NETWORK='Network',
-  VENUE='Venue',
-  ALONE='ALONE'
-}
-
-export enum InCompatibilityFeatures {
-  AP_70 = 'WIFI7 302MHz',
-  BETA_DPSK3 = 'DSAE',
-  AP_NEIGHBORS = 'AP Neighbors',
-  BSS_COLORING = 'BSS Coloring',
-  QOS_MIRRORING = 'QoS Mirroring'
-}
-
-export enum ApCompatibilityQueryTypes {
-  CHECK_VENUE='CHECK_VENUE',
-  CHECK_VENUE_WITH_FEATURE='CHECK_VENUE_WITH_FEATURE',
-  CHECK_VENUE_WITH_APS='CHECK_VENUE_WITH_APS',
-  CHECK_NETWORKS_OF_VENUE='CHECK_NETWORKS_OF_VENUE',
-
-  CHECK_NETWORK='CHECK_NETWORK',
-  CHECK_NETWORK_WITH_APS='CHECK_NETWORK_WITH_APS',
-  CHECK_VENUES_OF_NETWORK='CHECK_VENUES_OF_NETWORK'
-}
+export * from './constants'
 
 export type ApCompatibilityToolTipProps = {
   visible: boolean,
   title: string,
   onClick: () => void,
   placement?: TooltipPlacement
-}
-
-export function retrievedCompatibilitiesOptions (response?: ApCompatibilityResponse) {
-  const data = response?.apCompatibilities as ApCompatibility[]
-  const compatibilitiesFilterOptions: { key: string; value: string; label: string; }[] = []
-  if (data?.[0]) {
-    const { incompatibleFeatures, incompatible } = data[0]
-    if (incompatible > 0) {
-      incompatibleFeatures?.forEach((feature:ApIncompatibleFeature) => {
-        const { featureName, incompatibleDevices } = feature
-        const fwVersions: string[] = []
-        incompatibleDevices?.forEach((device:ApIncompatibleDevice) => {
-          fwVersions.push(device.firmware)
-        })
-        compatibilitiesFilterOptions.push({ key: fwVersions.join(','), value: featureName, label: featureName })
-      })
-    }
-    return { compatibilitiesFilterOptions, apCompatibilities: data, incompatible }
-  }
-  return { compatibilitiesFilterOptions, apCompatibilities: data, incompatible: 0 }
 }
 
 /*
@@ -111,12 +69,12 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
   </Tooltip>)
 }
 
-export type ApFeatureCompatibilityProps = {
+export type ApCompatibilityFeatureProps = {
   count?: number,
   onClick: () => void
 }
 
-export function ApFeatureCompatibility (props: ApFeatureCompatibilityProps) {
+export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
   const { $t } = useIntl()
   const { count, onClick } = props
 
@@ -212,7 +170,7 @@ Sample 2: Display data on drawer
     onClose={() => setDrawerVisible(false)}
   />
 */
-export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
+export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { tenantId } = useParams()
@@ -237,7 +195,7 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     'not all features are available on all access points. You may upgrade your firmware from'
   })
 
-  const multipleFromFeature = $t({
+  const multipleFromVenue = $t({
     defaultMessage:
     'Some features are not enabled on specific access points in this venue due to ' +
     'firmware or device incompatibility. Please see the minimum firmware versions required below. ' +
@@ -260,51 +218,47 @@ export function ApCompatibilityDrawer (props: ApCompatibilityDrawerProps) {
     },
     { featureName: featureName?.valueOf() ?? '', venueName: venueData?.name ?? venueName })
 
-  const multipleTitle = (apName) ? multipleFromAp : multipleFromFeature
+  const multipleTitle = apName ? multipleFromAp : multipleFromVenue
   const singleTitle = (ApCompatibilityType.VENUE === type)
     ? singleFromVenue : singleFromNetwork
 
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 
+  const getApCompatibilities = async () => {
+    if (ApCompatibilityType.NETWORK === type) {
+      return getApCompatibilitiesNetwork({
+        params: { networkId },
+        payload: { filters: { apIds, venueIds }, feature: featureName }
+      }).unwrap()
+    } else if (ApCompatibilityType.VENUE === type) {
+      return getApCompatibilitiesVenue({
+        params: { venueId },
+        payload: { filters: { apIds, networkIds }, feature: featureName }
+      }).unwrap()
+    }
+    const apFeatureSets = await getApFeatureSets({
+      params: { featureName: encodeURI(featureName) }
+    }).unwrap()
+    const apIncompatibleFeature = { ...apFeatureSets, incompatibleDevices: [] } as ApIncompatibleFeature
+    const apCompatibility = {
+      id: 'ApFeatureSet',
+      incompatibleFeatures: [apIncompatibleFeature],
+      incompatible: 0,
+      total: 0
+    } as ApCompatibility
+    return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
+  }
+
   useEffect(() => {
     if (visible && data?.length === 0 && apCompatibilities?.length === 0) {
       const fetchApCompatibilities = async () => {
         try {
-          const getApCompatibilities = async () => {
-            if (ApCompatibilityType.NETWORK === type) {
-              return getApCompatibilitiesNetwork({
-                params: { networkId },
-                payload: { filters: { apIds, venueIds }, feature: featureName }
-              }).unwrap()
-            } else if (ApCompatibilityType.VENUE === type) {
-              return getApCompatibilitiesVenue({
-                params: { venueId },
-                payload: { filters: { apIds, networkIds }, feature: featureName }
-              }).unwrap()
-            }
-            const apFeatureSets = await getApFeatureSets({
-              params: { featureName: encodeURI(featureName) }
-            }).unwrap()
-            const apIncompatibleFeature = { ...apFeatureSets, incompatibleDevices: [] } as ApIncompatibleFeature
-            const apCompatibility = {
-              id: 'ApFeatureSet',
-              incompatibleFeatures: [apIncompatibleFeature],
-              incompatible: 0,
-              total: 0
-            } as ApCompatibility
-            return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
-          }
-
-          try {
-            const apCompatibilitiesResponse = await getApCompatibilities()
-            setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities)
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error('ApCompatibilityDrawer api error:', e)
-          }
+          const apCompatibilitiesResponse = await getApCompatibilities()
+          setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities)
           setIsInitializing(false)
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('ApCompatibilityDrawer api error:', e)
         }
       }
       fetchApCompatibilities()
