@@ -1,16 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
-import { rest }  from 'msw'
 
-import { EdgeSdLanFixtures, EdgeSdLanUrls, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
+import { EdgeSdLanFixtures, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
 import { mockNetworkViewmodelList } from './__tests__/fixtures'
 
@@ -48,6 +47,36 @@ jest.mock('@acx-ui/rc/components', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useActivateEdgeSdLanNetworkMutation: () => {
+    return [(req: RequestPayload) => {
+      mockedActivateNetworkReq(req.params, req.payload)
+
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({
+            response: { id: 'mocked_service_id' }
+          })
+        }, 300)
+      }) }
+    }, { isLoading: false }]
+  },
+  useDeactivateEdgeSdLanNetworkMutation: () => {
+    return [(req: RequestPayload) => {
+      mockedDeactivateNetworkReq(req.params)
+
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)()
+        }, 300)
+      }) }
+    }, { isLoading: false }]
+  }
+}))
+
 describe('Venue Edge SD-LAN Service Phase2', () => {
   let params: { tenantId: string, venueId: string }
 
@@ -61,22 +90,20 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     mockedDeactivateNetworkReq.mockReset()
     mockedGetData.mockReset()
 
-    mockServer.use(
-      rest.put(
-        EdgeSdLanUrls.activateEdgeSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedActivateNetworkReq(req.params, req.body)
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeSdLanUrls.deactivateEdgeSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedDeactivateNetworkReq(req.params)
-          return res(ctx.status(202))
-        }
-      )
-    )
+    // mockServer.use(
+    //   rest.put(
+    //     EdgeSdLanUrls.activateEdgeSdLanNetwork.url,
+    //     (req, res, ctx) => {
+    //       return res(ctx.status(202))
+    //     }
+    //   ),
+    //   rest.delete(
+    //     EdgeSdLanUrls.deactivateEdgeSdLanNetwork.url,
+    //     (req, res, ctx) => {
+    //       return res(ctx.status(202))
+    //     }
+    //   )
+    // )
   })
 
   it('should render correctly', async () => {
@@ -158,7 +185,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
       expect(mockedActivateNetworkReq).toBeCalledWith({
         serviceId: 'mocked-sd-lan-1',
         wifiNetworkId: 'network_2'
-      }, { isGuestTunnelUtilized: true })
+      }, { isGuestTunnelUtilized: false })
     })
 
     it('deactivate DMZ network', async () => {

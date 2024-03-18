@@ -190,7 +190,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             onActivityMessageReceived(msg, [
               'Add SD-LAN',
               'Update SD-LAN',
-              'Delete SD-LAN'
+              'Delete SD-LAN',
+              'Activate network',
+              'Deactivate network'
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
