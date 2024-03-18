@@ -52,10 +52,14 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                         <div
                           class="ant-space-item"
                         >
-                          <svg
-                            class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
-                            data-testid="HistoricalOutlined"
-                          />
+                          <span
+                            class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                          >
+                            <svg
+                              class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                              data-testid="HistoricalOutlined"
+                            />
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -403,10 +407,14 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                         <div
                           class="ant-space-item"
                         >
-                          <svg
-                            class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
-                            data-testid="HistoricalOutlined"
-                          />
+                          <span
+                            class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                          >
+                            <svg
+                              class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                              data-testid="HistoricalOutlined"
+                            />
+                          </span>
                         </div>
                       </div>
                     </div>

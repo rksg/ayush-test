@@ -31,7 +31,6 @@ export const styles = css`
     width: 200px;
   }
 
-  ${StepsForm.DescriptionWrapper}
   ${checkboxStyles}
   ${darkGreyTextStyles}
 `
