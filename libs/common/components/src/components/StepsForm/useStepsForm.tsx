@@ -120,15 +120,11 @@ export function useStepsForm <T> ({
 
   function gotoStep (n: number) {
     const values = form.getFieldsValue(true)
-
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
         const result = formConfig.gotoStep(n)
-        if (isPromise(result)) {
-          result.catch(() => { /* mute validation error */ }).finally(done)
-        } else {
-          done()
-        }
+        if (isPromise(result)) result.catch(() => { /* mute validation error */ }).finally(done)
+        else done()
       })
     })
   }
