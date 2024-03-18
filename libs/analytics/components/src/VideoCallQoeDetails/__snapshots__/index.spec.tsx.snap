@@ -567,14 +567,10 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedDisabledIcon"
-                                          style="height: 16px; width: 16px; cursor: not-allowed;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -680,12 +676,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:28"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    10:28
-                                  </span>
+                                <span>
+                                  10:28
                                 </span>
                               </td>
                               <td
@@ -718,27 +710,19 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
-                                        <a
-                                          href="/tenant-id/t/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                        >
-                                          F0:81:73:20:84:39
-                                        </a>
-                                      </span>
+                                        F0:81:73:20:84:39
+                                      </a>
                                     </div>
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -839,15 +823,11 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                <a
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  <a
-                                    href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                  >
-                                    F0:3E:90:36:D3:00
-                                  </a>
-                                </span>
+                                  F0:3E:90:36:D3:00
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -871,12 +851,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:29"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    10:29
-                                  </span>
+                                <span>
+                                  10:29
                                 </span>
                               </td>
                               <td
@@ -884,14 +860,10 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                  class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
+                                  type="positive"
                                 >
-                                  <span
-                                    class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
-                                    type="positive"
-                                  >
-                                    Good
-                                  </span>
+                                  Good
                                 </span>
                               </td>
                               <td
@@ -5790,27 +5762,19 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/A8:64:F1:1A:D0:33/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
-                                        <a
-                                          href="/tenant-id/t/users/wifi/clients/A8:64:F1:1A:D0:33/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                        >
-                                          A8:64:F1:1A:D0:33
-                                        </a>
-                                      </span>
+                                        A8:64:F1:1A:D0:33
+                                      </a>
                                     </div>
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -5911,15 +5875,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                <a
+                                  href="/tenant-id/t/devices/wifi/9876543210/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  <a
-                                    href="/tenant-id/t/devices/wifi/9876543210/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A40%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A44%3A06%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                  >
-                                    C8:08:73:08:10:50
-                                  </a>
-                                </span>
+                                  C8:08:73:08:10:50
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -5943,12 +5903,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="04:44"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    04:44
-                                  </span>
+                                <span>
+                                  04:44
                                 </span>
                               </td>
                               <td
@@ -5956,14 +5912,10 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                  class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+                                  type="negative"
                                 >
-                                  <span
-                                    class="styledComponents__Pill-sc-j61ge1-0 igIonA"
-                                    type="negative"
-                                  >
-                                    Bad
-                                  </span>
+                                  Bad
                                 </span>
                               </td>
                               <td
@@ -5989,27 +5941,19 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                      <a
+                                        href="/tenant-id/t/users/wifi/clients/F0:B3:EC:2A:A8:05/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
-                                        <a
-                                          href="/tenant-id/t/users/wifi/clients/F0:B3:EC:2A:A8:05/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                        >
-                                          F0:B3:EC:2A:A8:05
-                                        </a>
-                                      </span>
+                                        F0:B3:EC:2A:A8:05
+                                      </a>
                                     </div>
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -6110,15 +6054,11 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                <a
+                                  href="/tenant-id/t/devices/wifi/6789012345/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  <a
-                                    href="/tenant-id/t/devices/wifi/6789012345/details/overview?period=%7B%22startDate%22%3A%222023-04-11T04%3A41%3A28%2B00%3A00%22%2C%22endDate%22%3A%222023-04-11T04%3A43%3A39%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                  >
-                                    B4:79:C8:12:8C:50
-                                  </a>
-                                </span>
+                                  B4:79:C8:12:8C:50
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -6142,12 +6082,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="04:43"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    04:43
-                                  </span>
+                                <span>
+                                  04:43
                                 </span>
                               </td>
                               <td
@@ -6155,14 +6091,10 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                  class="styledComponents__Pill-sc-j61ge1-0 khRlTl"
+                                  type="none"
                                 >
-                                  <span
-                                    class="styledComponents__Pill-sc-j61ge1-0 khRlTl"
-                                    type="none"
-                                  >
-                                    Average
-                                  </span>
+                                  Average
                                 </span>
                               </td>
                               <td
@@ -10698,14 +10630,10 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedDisabledIcon"
-                                          style="height: 16px; width: 16px; cursor: not-allowed;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -10777,12 +10705,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:28"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    10:28
-                                  </span>
+                                <span>
+                                  10:28
                                 </span>
                               </td>
                               <td
@@ -10815,27 +10739,19 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                       class="ant-space-item"
                                       style="margin-right: 8px;"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                      <a
+                                        href="/ai/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                       >
-                                        <a
-                                          href="/ai/users/wifi/clients/F0:81:73:20:84:39/details/troubleshooting?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                        >
-                                          F0:81:73:20:84:39
-                                        </a>
-                                      </span>
+                                        F0:81:73:20:84:39
+                                      </a>
                                     </div>
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -10885,15 +10801,11 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                <a
+                                  href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
                                 >
-                                  <a
-                                    href="/ai/devices/wifi/F0:3E:90:36:D3:00/details/ai?period=%7B%22startDate%22%3A%222023-04-18T10%3A22%3A17%2B00%3A00%22%2C%22endDate%22%3A%222023-04-18T10%3A29%3A01%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D"
-                                  >
-                                    F0:3E:90:36:D3:00
-                                  </a>
-                                </span>
+                                  F0:3E:90:36:D3:00
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-ellipsis"
@@ -10917,12 +10829,8 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:29"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    10:29
-                                  </span>
+                                <span>
+                                  10:29
                                 </span>
                               </td>
                               <td
@@ -10930,14 +10838,10 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                                  class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
+                                  type="positive"
                                 >
-                                  <span
-                                    class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
-                                    type="positive"
-                                  >
-                                    Good
-                                  </span>
+                                  Good
                                 </span>
                               </td>
                               <td
@@ -15883,14 +15787,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -15996,12 +15896,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    05:08
-                                  </span>
+                                <span>
+                                  05:08
                                 </span>
                               </td>
                               <td
@@ -16043,14 +15939,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedDisabledIcon"
-                                          style="height: 16px; width: 16px; cursor: not-allowed;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -16156,12 +16048,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    05:08
-                                  </span>
+                                <span>
+                                  05:08
                                 </span>
                               </td>
                               <td
@@ -17548,14 +17436,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedIcon"
-                                          style="height: 16px; width: 16px; cursor: pointer;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedIcon"
+                                        style="height: 16px; width: 16px; cursor: pointer;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -17661,12 +17545,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    05:08
-                                  </span>
+                                <span>
+                                  05:08
                                 </span>
                               </td>
                               <td
@@ -17708,14 +17588,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                     <div
                                       class="ant-space-item"
                                     >
-                                      <span
-                                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                      >
-                                        <svg
-                                          data-testid="EditOutlinedDisabledIcon"
-                                          style="height: 16px; width: 16px; cursor: not-allowed;"
-                                        />
-                                      </span>
+                                      <svg
+                                        data-testid="EditOutlinedDisabledIcon"
+                                        style="height: 16px; width: 16px; cursor: not-allowed;"
+                                      />
                                     </div>
                                   </div>
                                 </span>
@@ -17821,12 +17697,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span
-                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                                >
-                                  <span>
-                                    05:08
-                                  </span>
+                                <span>
+                                  05:08
                                 </span>
                               </td>
                               <td
