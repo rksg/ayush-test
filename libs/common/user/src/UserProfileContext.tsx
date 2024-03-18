@@ -21,6 +21,7 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
+  rbacEnabled?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -44,6 +45,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
+  // TODO: get scope and rbac ff from API
   if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
     allowedOperations, accountTier, betaEnabled })
 

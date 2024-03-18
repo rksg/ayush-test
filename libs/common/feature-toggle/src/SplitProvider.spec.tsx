@@ -10,10 +10,7 @@ import { useIsTierAllowed } from './useIsTierAllowed'
 
 let split = require('@splitsoftware/splitio-react')
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
+const services = require('@acx-ui/user')
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')

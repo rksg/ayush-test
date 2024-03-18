@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccess }             from '@acx-ui/user'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
@@ -90,9 +91,9 @@ export default function useSwitchesTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
+    hasAccess('switch-c') ? <Dropdown overlay={addMenu}>{() =>
       <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    }</Dropdown> : <></>
   ]
 
   const component =
