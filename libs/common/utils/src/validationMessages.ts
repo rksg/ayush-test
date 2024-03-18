@@ -460,6 +460,14 @@ export const validationMessages = {
   switchDhcpOptionIpMaxSize: defineMessage({
     defaultMessage: 'Max number of DHCP Option IPs is 3',
     description: 'Validation - DHCP option IPs max size checks'
+  }),
+  VenueMinFloorGreaterThanMaxFloor: defineMessage({
+    defaultMessage: 'Min floor can\'t be greater than max floor',
+    description: 'Validation - Venue minimum floor checks'
+  }),
+  VenueMaxFloorLessThanMinFloor: defineMessage({
+    defaultMessage: 'Max floor can\'t be less than min floor',
+    description: 'Validation - Venue minimum floor checks'
   })
 }
 

@@ -1,7 +1,7 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { CheckMarkCircleSolid, InformationSolid } from '@acx-ui/icons'
+import { CheckMarkCircleSolid, WarningCircleSolid } from '@acx-ui/icons'
 
 export const CheckMarkIcon = styled(CheckMarkCircleSolid)`
   width: 16px;
@@ -13,8 +13,13 @@ export const CheckMarkIcon = styled(CheckMarkCircleSolid)`
     stroke: var(--acx-accents-orange-50);
   }
 `
-export const InformationSolidIcon = styled(InformationSolid)`
-  color: var(--acx-semantics-yellow-50);
+export const WarningCircleSolidIcon = styled(WarningCircleSolid)`
+  width: 20px;
+  height: 20px;
+  fill: var(--acx-semantics-yellow-50);
+  path:nth-child(2) {
+    stroke: var(--acx-semantics-yellow-50);
+  }
 `
 
 export const IconWrapper = styled.div`
@@ -97,8 +102,8 @@ export const Wrapper = styled.div<WrapperProps>`
     justify-content: flex-end;
     background-color: transparent;
     position: absolute;
-    bottom: 16px;
-    right: 12px;
+    bottom: 14px;
+    right: 10px;
     z-index: 1;
     &::before {
       display: none;
