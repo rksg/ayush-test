@@ -191,7 +191,7 @@ export {
   ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
   retrievedCompatibilitiesOptions,
-  ApFeatureCompatibility,
+  ApCompatibilityFeature,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibilityDrawer'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'

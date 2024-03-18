@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
@@ -19,10 +20,10 @@ import {
   InCompatibilityFeatures,
   ApCompatibilityQueryTypes,
   ApCompatibilityToolTip,
-  ApFeatureCompatibility,
+  ApCompatibilityFeature,
   ApCompatibilityDrawer } from '.'
 
-describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawer', () => {
+describe('ApCompatibilityToolTip > ApCompatibilityFeature > ApCompatibilityDrawer', () => {
   describe('ApCompatibilityToolTip', () => {
     it('should visible render correctly', async () => {
       render(<ApCompatibilityToolTip title={'Simple tooltip'} visible={true} onClick={() => {}} />)
@@ -37,21 +38,21 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
 
   })
 
-  describe('ApFeatureCompatibility', () => {
+  describe('ApCompatibilityFeature', () => {
     it('should Fully compatible render correctly', async () => {
-      render(<ApFeatureCompatibility count={0} onClick={() => {}} />)
+      render(<ApCompatibilityFeature count={0} onClick={() => {}} />)
       const icon = await screen.findByTestId('CheckMarkCircleSolid')
       expect(icon).toBeVisible()
     })
 
     it('should Partially incompatible render correctly', async () => {
-      render(<ApFeatureCompatibility count={2} onClick={() => {}} />)
+      render(<ApCompatibilityFeature count={2} onClick={() => {}} />)
       const icon = await screen.findByTestId('WarningTriangleSolid')
       expect(icon).toBeVisible()
     })
 
     it('should Unknow render correctly', async () => {
-      render(<ApFeatureCompatibility onClick={() => {}} />)
+      render(<ApCompatibilityFeature onClick={() => {}} />)
       const icon = await screen.findByTestId('Unknown')
       expect(icon).toBeVisible()
     })
@@ -86,6 +87,9 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
           (_, res, ctx) => res(ctx.json(mockFeatureCompatibilities))),
         rest.get(
           CommonUrlsInfo.getVenue.url.split('?')[0],
+          (_, res, ctx) => res(ctx.json({ name: venueName }))),
+        rest.get(
+          CommonUrlsInfo.getVenuesList.url.split('?')[0],
           (_, res, ctx) => res(ctx.json({ name: venueName })))
       )
     })
@@ -148,7 +152,8 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
       expect(icon).toBeVisible()
     })
 
-    it('should direct display render correctly', async () => {
+    it('should direct display render correctly(Devices of Venue banner)', async () => {
+      mockedCloseDrawer.mockClear()
       render(
         <Provider>
           <Form>
@@ -161,6 +166,37 @@ describe('ApCompatibilityToolTip > ApFeatureCompatibility > ApCompatibilityDrawe
         </Provider>, {
           route: { params, path: '/:tenantId' }
         })
+
+      expect(await screen.findByText('Incompatibility Details')).toBeInTheDocument()
+      expect(await screen.findByText(/Some features are not enabled/)).toBeInTheDocument()
+      expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
+      const icon = await screen.findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      expect(mockedCloseDrawer).toBeCalledTimes(1)
+    })
+
+    it('should direct display render correctly(Devices of Venue)', async () => {
+      const apName = 'AP-Test'
+      mockedCloseDrawer.mockClear()
+      render(
+        <Provider>
+          <Form>
+            <ApCompatibilityDrawer
+              isMultiple
+              visible={true}
+              venueId={params.venueId}
+              queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS}
+              apIds={['001001001']}
+              apName={apName}
+              onClose={mockedCloseDrawer}
+            /></Form>
+        </Provider>, {
+          route: { params, path: '/:tenantId' }
+        })
+
+      expect(await screen.findByText(`Incompatibility Details: ${apName}`)).toBeInTheDocument()
+      expect(await screen.findByText(/The following features are not enabled/)).toBeInTheDocument()
       expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
       const icon = await screen.findByTestId('CloseSymbol')
       expect(icon).toBeVisible()

@@ -21,22 +21,28 @@ const Ports = () => {
   const { serialNumber } = useParams()
   const { $t } = useIntl()
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string>()
   const editEdgeContext = useContext(EditContext)
-  const { portData, portStatus, lagData, isFetching, isCluster } = useContext(EditEdgeDataContext)
+  const {
+    clusterInfo, portData, portStatus,
+    lagData, isFetching, isCluster
+  } = useContext(EditEdgeDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
   const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
     = useGetEdgeSdLanViewDataListQuery(
       { payload: {
-        filters: { edgeId: [serialNumber] },
-        fields: ['id', 'edgeId', 'corePortMac']
+        filters: isEdgeSdLanHaReady
+          ? { edgeClusterId: [clusterInfo?.clusterId] }
+          : { edgeId: [serialNumber] },
+        fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
       } },
       {
-        skip: !isEdgeSdLanReady,
+        skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
         selectFromResult: ({ data, isLoading, isFetching }) => ({
           edgeSdLanData: data?.data?.[0],
           isEdgeSdLanLoading: isLoading,

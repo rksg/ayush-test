@@ -914,23 +914,30 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
     const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
 
     let portName = ''
+    let id = ''
     let portType: EdgePortTypeEnum
     let isLagMember = false
     if (isPhysicalPort) {
-      portName = (item as EdgePortStatus).interfaceName ?? ''
-      portType = (item as EdgePortStatus).type ?? ''
+      const ifData = (item as EdgePortStatus)
+      id = ifData.portId
+      portName = ifData.interfaceName ?? ''
+      portType = ifData.type ?? ''
       isLagMember = lagList.some(lag =>
         (lag as EdgeLagStatus).lagMembers.some(member =>
-          member.name === (item as EdgePortStatus).interfaceName))
+          member.name === ifData.interfaceName))
     } else {
-      portName = (item as EdgeLagStatus).name
-      portType = (item as EdgeLagStatus).portType
+      const ifData = (item as EdgeLagStatus)
+      id = `${ifData.lagId}`
+      portName = ifData.name
+      portType = ifData.portType
     }
 
     return (physicalOnly && !isPhysicalPort) ? '' : {
       serialNumber: item.serialNumber ?? '',
+      id,
       portName,
       portType,
+      isLag: !isPhysicalPort,
       isLagMember,
       ip: item.ip ?? '',
       mac: item.mac ?? '',
@@ -946,6 +953,7 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
 export const {
   useAddEdgeMutation,
   useGetEdgeQuery,
+  useLazyGetEdgeQuery,
   usePingEdgeMutation,
   useTraceRouteEdgeMutation,
   useUpdateEdgeMutation,
@@ -1003,5 +1011,6 @@ export const {
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
-  useGetEdgesPortStatusQuery
+  useGetEdgesPortStatusQuery,
+  useLazyGetEdgesPortStatusQuery
 } = edgeApi

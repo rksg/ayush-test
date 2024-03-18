@@ -42,19 +42,23 @@ exports[`Button should render secondary button 1`] = `
 exports[`DisabledButton should render disabled button with tooltip 1`] = `
 <DocumentFragment>
   <span
-    class="ant-tooltip-open"
-    style="cursor: not-allowed;"
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
   >
-    <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
-      disabled=""
-      style="pointer-events: none;"
-      type="button"
+    <span
+      class="ant-tooltip-open"
+      style="cursor: not-allowed;"
     >
-      <span>
-        Button
-      </span>
-    </button>
+      <button
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
+        disabled=""
+        style="pointer-events: none;"
+        type="button"
+      >
+        <span>
+          Button
+        </span>
+      </button>
+    </span>
   </span>
 </DocumentFragment>
 `;

@@ -72,6 +72,7 @@ const Lag = (props: LagProps) => {
   return (
     <Loader states={[{ isLoading: false, isFetching: isLoading }]}>
       <EdgeLagTable
+        clusterId={edgeClusterId}
         serialNumber={serialNumber}
         lagList={lagList}
         lagStatusList={lagStatusList}

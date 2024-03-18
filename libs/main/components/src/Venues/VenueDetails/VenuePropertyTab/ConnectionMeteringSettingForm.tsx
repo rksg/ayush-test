@@ -211,10 +211,9 @@ export function ConnectionMeteringSettingForm (
         children={<ConnectionMeteringForm
           mode={ConnectionMeteringFormMode.CREATE}
           useModalMode={true}
-          modalCallback={(result?: ConnectionMetering) => {
-            if (result) {
-              setProfileMap(map => map.set(result.id, result))
-              form.setFieldValue('meteringProfileId', result.id)
+          modalCallback={(id?: string) => {
+            if (id) {
+              form.setFieldValue('meteringProfileId', id)
             }
             onModalClose()
           }}
