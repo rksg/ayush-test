@@ -52,21 +52,19 @@ exports[`Topology Switch Card should render orrectly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-breuTD deNzmY"
-                style="padding: 0px;"
-                type="button"
+              <a
+                class="sc-breuTD iOAXfV"
+                href="/undefined/t/devices/switch/c0:c5:20:aa:24:7b/FEK3224R08J/details/overview"
               >
-                <span>
-                  test
-                </span>
-              </button>
+                test
+              </a>
             </div>
             <div
               class="ant-space-item"
             >
               <button
                 class="ant-btn ant-btn-link ant-btn-sm ant-btn-icon-only"
+                data-testid="closeNodeTooltip"
                 type="button"
               >
                 <svg
