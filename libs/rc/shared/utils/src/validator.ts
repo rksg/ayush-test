@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { DefaultOptionType }                from 'antd/lib/select'
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import {
   isEqual,
@@ -957,6 +958,16 @@ export function validateAclRuleSequence (sequence: number, currrentRecords: AclE
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.value === aclName)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
   } else {
