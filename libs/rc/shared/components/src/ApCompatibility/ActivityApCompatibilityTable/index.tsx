@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }  from '@acx-ui/components'
+import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import {
   useActivityApCompatibilitiesQuery
 } from '@acx-ui/rc/services'
@@ -13,6 +13,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
+
+import { TableStyleWrapper } from '../styledComponents'
 
 interface ActivityApCompatibilityTableProps {
   requestId: string,
@@ -25,6 +27,7 @@ export const ActivityApCompatibilityTable = ({
 }: ActivityApCompatibilityTableProps) => {
   const { $t } = useIntl()
   const [totalCount, setTotalCount] = useState(-1)
+  const [visible, setVisible] = useState(true)
   const tableQuery = useTableQuery<ActivityIncompatibleFeatures, RequestPayload<unknown>, ActivityApCompatibilityExtraParams>({
     useQuery: useActivityApCompatibilitiesQuery,
     defaultPayload: { pageSize: 10 },
@@ -68,15 +71,27 @@ export const ActivityApCompatibilityTable = ({
     }
   ]
 
-  return <Loader states={[tableQuery]}>
-    <Table<ActivityIncompatibleFeatures>
-      settingsId='ActivityApCompatibilityTable'
-      rowKey='id'
-      columns={columns}
-      dataSource={tableQuery?.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      enableApiFilter={false}
-    />
-  </Loader>
+  return (<TableStyleWrapper>
+    <Button
+      type='link'
+      data-testid='showBtn'
+      style={{ marginTop: '12px', fontSize: '13px' }}
+      onClick={() => {
+        setVisible(!visible)
+      }}>
+      {visible ? $t({ defaultMessage: 'Hide incompatible report' }) : $t({ defaultMessage: 'See incompatible report' })}
+    </Button>
+    {visible && <Loader states={[tableQuery]}>
+      <Table<ActivityIncompatibleFeatures>
+        type='form'
+        className='ActivityApCompatibilityTable'
+        rowKey='id'
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        enableApiFilter={false}
+      />
+    </Loader>}
+  </TableStyleWrapper>)
 }

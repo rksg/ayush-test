@@ -34,3 +34,17 @@ export const UnknownIcon = styled(Unknown)`
   height: 16px;
   margin-bottom: -3px;
 `
+
+export const TableStyleWrapper = styled.div`
+  margin-left: 30px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  .ActivityApCompatibilityTable .ant-table-wrapper {
+    margin-top: 12px;
+    border: 1px solid #e3e4e5;
+    border-radius: 4px;
+    padding: 2px;
+  }
+`

@@ -107,6 +107,12 @@ export const Timeline = (props: TimelineProps) => {
               <StatusComp status={item.status} description={statusDescription}/>
               <DescriptionWrapper
               >{item.description}</DescriptionWrapper>
+              { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+              {item.id === 'CheckApCompatibilities' ? (
+                <ActivityApCompatibilityTable
+                  requestId={props.requestId}
+                  updateActivityDesc={setStatusDescription} />)
+                : null}
             </div>
             <ExpanderWrapper onClick={()=> {
               const key = `${item.startDatetime}-${item.endDatetime}`
@@ -118,12 +124,6 @@ export const Timeline = (props: TimelineProps) => {
                 : null}
             </ExpanderWrapper>
           </WithExpanderWrapper>
-          { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
-          {item.id === 'CheckApCompatibilities' ? (
-            <ActivityApCompatibilityTable
-              requestId={props.requestId}
-              updateActivityDesc={setStatusDescription} />)
-            : null}
         </ContentWrapper>
       </ItemWrapper>
     </AntTimeline.Item>

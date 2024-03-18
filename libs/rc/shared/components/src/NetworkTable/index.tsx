@@ -158,9 +158,9 @@ function getCols (intl: ReturnType<typeof useIntl>,
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '14px',
-                    width: '14px',
-                    marginBottom: '-2px',
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
                     marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
                 /> : []

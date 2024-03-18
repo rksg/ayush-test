@@ -1,11 +1,12 @@
 
 import { render, screen } from '@acx-ui/test-utils'
+import { TimelineStatus } from '@acx-ui/types'
 
 import { StatusIcon } from '.'
 
 describe('StatusIcon', () => {
 
-  const status = ['SUCCESS', 'PENDING', 'INPROGRESS', 'FAIL']
+  const status = ['SUCCESS', 'PENDING', 'INPROGRESS', 'FAIL'] as TimelineStatus[]
   it('render SUCCESS StatusIcon', async () => {
     const { asFragment } = render(<StatusIcon status={status[0]}/>)
     const icon = await screen.findByTestId('CheckMarkCircleSolid')

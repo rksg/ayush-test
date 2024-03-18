@@ -1,4 +1,6 @@
 
+import userEvent from '@testing-library/user-event'
+
 import { timelineApi }                               from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider, store }                           from '@acx-ui/store'
@@ -33,6 +35,14 @@ describe('ActivityApCompatibilityTable', () => {
     await waitFor(() => {
       expect(mockUpdateStatus).toBeCalledTimes(1)
     })
+    const element = await screen.findByText('AP-1')
+    expect(element).toBeInTheDocument()
+    expect(await screen.findByText('AP-10')).toBeInTheDocument()
+    const showBtn = await screen.findByTestId('showBtn')
+    expect(showBtn).toBeVisible()
+    await userEvent.click(showBtn)
+    expect(element).not.toBeInTheDocument()
+    await userEvent.click(showBtn)
     expect(await screen.findByText('AP-1')).toBeInTheDocument()
   })
 })
