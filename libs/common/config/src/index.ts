@@ -29,6 +29,7 @@ type R1Environment = {
   HOW_TO_VIDEOS: string
   NEW_API_DOMAIN_NAME: string
   API_DOCUMENTATION_URL: string
+  MIB_FILES: string
 }
 
 type RAEnvironment = {

@@ -23,7 +23,7 @@ const useTabs = () => {
   const { data: currentEdge } = useEdgeBySerialNumberQuery({
     params: { serialNumber },
     payload: {
-      fields: ['deviceStatus'],
+      fields: ['deviceStatus', 'clusterId'],
       filters: { serialNumber: [serialNumber] } }
   })
 
@@ -36,7 +36,7 @@ const useTabs = () => {
       {
         ports: {
           title: $t({ defaultMessage: 'Ports' }),
-          content: <Ports />
+          content: <Ports clusterId={currentEdge?.clusterId ?? ''} />
         },
         dns: {
           title: $t({ defaultMessage: 'DNS Server' }),

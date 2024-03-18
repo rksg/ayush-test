@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { Tabs, TabsType }                from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
+import { EdgeSerialNumber }              from '@acx-ui/rc/utils'
 
 import { EditContext } from '../EdgeEditContext'
 
@@ -21,7 +22,8 @@ SUB_INTERFACE = 'sub-interface'
 }
 
 export interface EdgePortsFormProps {
-  serialNumber: string
+  clusterId: string
+  serialNumber: EdgeSerialNumber
   onTabChange: (tabID: string) => void
   onCancel: () => void
   activeSubTab?: string
@@ -31,6 +33,7 @@ export interface EdgePortsFormProps {
 
 const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   const {
+    clusterId,
     serialNumber,
     onTabChange,
     onCancel,
@@ -75,6 +78,7 @@ const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
     [EdgePortTabEnum.PORTS_GENERAL]: {
       title: $t({ defaultMessage: 'Ports General' }),
       content: <PortsGeneral
+        clusterId={clusterId}
         serialNumber={serialNumber}
         onCancel={onCancel}
       />

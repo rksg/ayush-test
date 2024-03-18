@@ -215,14 +215,16 @@ export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
 
 export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const { scopedNetworkIds } = useGetEdgeSdLanViewDataListQuery({
     payload: {
       filters: { networkIds },
+      fields: ['networkIds'],
       pageSize: 10000
     }
   }, {
-    skip: !networkIds || !isEdgeSdLanReady,
+    skip: !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady),
     selectFromResult: ({ data }) => ({
       scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
     })
@@ -233,14 +235,16 @@ export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
 
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const { networkVenueIds } = useGetEdgeSdLanViewDataListQuery({
     payload: {
       filters: { networkIds: [networkId] },
+      fields: ['venueId'],
       pageSize: 10000
     }
   }, {
-    skip: !networkId || !isEdgeSdLanReady,
+    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady),
     selectFromResult: ({ data }) => ({
       networkVenueIds: data?.data.map(item => item.venueId)
     })

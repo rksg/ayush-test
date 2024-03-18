@@ -660,10 +660,14 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                   </span>
                 </label>
               </div>
-              <svg
-                class="styledComponents__InfoIcon-sc-1a2oz4t-8 fudJRN"
-                data-testid="InformationOutlined"
-              />
+              <span
+                class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+              >
+                <svg
+                  class="styledComponents__InfoIcon-sc-1a2oz4t-8 fudJRN"
+                  data-testid="InformationOutlined"
+                />
+              </span>
             </div>
             <div
               class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
