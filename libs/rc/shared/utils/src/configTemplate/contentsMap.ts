@@ -4,10 +4,13 @@ import { PolicyType, ConfigTemplateType } from '../types'
 export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, PolicyType>> = {
   [ConfigTemplateType.RADIUS]: PolicyType.AAA,
   [ConfigTemplateType.ACCESS_CONTROL]: PolicyType.ACCESS_CONTROL,
-  [ConfigTemplateType.VLAN_POOL]: PolicyType.VLAN_POOL
+  [ConfigTemplateType.VLAN_POOL]: PolicyType.VLAN_POOL,
+  [ConfigTemplateType.CLIENT_ISOLATION]: PolicyType.CLIENT_ISOLATION
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {
   [ConfigTemplateType.DPSK]: ServiceType.DPSK,
-  [ConfigTemplateType.DHCP]: ServiceType.DHCP
+  [ConfigTemplateType.DHCP]: ServiceType.DHCP,
+  [ConfigTemplateType.PORTAL]: ServiceType.PORTAL,
+  [ConfigTemplateType.WIFI_CALLING]: ServiceType.WIFI_CALLING
 }

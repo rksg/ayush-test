@@ -11,9 +11,9 @@ import {
   configTemplatePolicyTypeMap, configTemplateServiceTypeMap,
   policyTypeLabelMapping, serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import { getIntl } from '@acx-ui/utils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   const { $t } = useIntl()
@@ -57,8 +57,7 @@ function usePolicyMenuItems (): ItemType[] {
 
   return [
     createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
+    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap)
   ]
 }
 
@@ -84,7 +83,8 @@ function useServiceMenuItems (): ItemType[] {
 
   return [
     createServiceMenuItem(ConfigTemplateType.DPSK, visibilityMap),
-    createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap)
+    createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap),
+    createServiceMenuItem(ConfigTemplateType.PORTAL, visibilityMap)
   ]
 }
 

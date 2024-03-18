@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
-import moment      from 'moment'
-import { useIntl } from 'react-intl'
+import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
+import { MutationDefinition } from '@reduxjs/toolkit/query'
+import moment                 from 'moment'
+import { useIntl }            from 'react-intl'
 
 
 import {
@@ -85,6 +87,9 @@ export function ConfigTemplateList () {
           },
           onOk: async () => {
             const deleteFn = deleteMutationMap[selectedRow.type]
+
+            if (!deleteFn) return
+
             deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
           }
         })
@@ -220,7 +225,10 @@ function useColumns (props: templateColumnProps) {
   return columns
 }
 
-function useDeleteMutation () {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
+// eslint-disable-next-line max-len
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
@@ -234,7 +242,6 @@ function useDeleteMutation () {
     [ConfigTemplateType.VENUE]: deleteVenueTemplate,
     [ConfigTemplateType.DPSK]: deleteDpskTemplate,
     [ConfigTemplateType.ACCESS_CONTROL]: deleteAccessControlSet,
-    [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
-    [ConfigTemplateType.VLAN_POOL]: deleteDhcpTemplate // TODO: Just for verifying the feature flag logic
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate
   }
 }

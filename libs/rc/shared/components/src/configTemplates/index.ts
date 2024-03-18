@@ -23,13 +23,16 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.RADIUS]: isBeta,
     [ConfigTemplateType.DHCP]: isBeta,
     [ConfigTemplateType.ACCESS_CONTROL]: isBeta,
-    [ConfigTemplateType.VLAN_POOL]: isGA
+    [ConfigTemplateType.PORTAL]: isGA,
+    [ConfigTemplateType.VLAN_POOL]: isGA,
+    [ConfigTemplateType.WIFI_CALLING]: isGA,
+    [ConfigTemplateType.CLIENT_ISOLATION]: false // Not supported in the current scope
   }
 
   return visibilityMap
 }
 
-export function useIsConfigTemplateOnByType (type: ConfigTemplateType): boolean {
+export function useIsConfigTemplateEnabledByType (type: ConfigTemplateType): boolean {
   const visibilityMap = useConfigTemplateVisibilityMap()
   return visibilityMap[type]
 }

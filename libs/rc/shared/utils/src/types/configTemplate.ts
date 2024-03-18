@@ -5,7 +5,10 @@ export enum ConfigTemplateType {
   DPSK = 'DPSK',
   DHCP = 'DHCP',
   ACCESS_CONTROL = 'ACCESS_CONTROL',
-  VLAN_POOL = 'VLAN_POOL'
+  PORTAL = 'PORTAL',
+  VLAN_POOL = 'VLAN_POOL',
+  WIFI_CALLING = 'WIFI_CALLING',
+  CLIENT_ISOLATION = 'CLIENT_ISOLATION'
 }
 
 export interface ConfigTemplate {

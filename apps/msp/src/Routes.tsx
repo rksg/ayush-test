@@ -196,18 +196,18 @@ export function ConfigTemplatesRoutes () {
             element={<DHCPDetail/>}
           />
         </>}
-        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
+        {configTemplateVisibilityMap[ConfigTemplateType.PORTAL] && <>
           <Route
-            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
-            element={<div>VLAN POOL Creation</div>}
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+            element={<div>Portal Creation</div>}
           />
           <Route
-            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
-            element={<div>VLAN POOL Edition</div>}
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+            element={<div>Portal Edition</div>}
           />
           <Route
-            path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
-            element={<div>VLAN POOL Details</div>}
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+            element={<div>Portal Details</div>}
           />
         </>}
       </Route>
