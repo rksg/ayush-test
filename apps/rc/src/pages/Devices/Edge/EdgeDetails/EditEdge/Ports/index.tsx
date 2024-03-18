@@ -168,6 +168,7 @@ const Ports = () => {
               isEdgeSdLanRun={!!edgeSdLanData}
               activeTab={activeTab}
               onTabChange={handleTabChange}
+              isCluster={isCluster}
             />
           </StepsForm.StepForm>
         </StepsForm>
