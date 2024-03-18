@@ -1,8 +1,8 @@
 
-import { timelineApi }                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider, store }               from '@acx-ui/store'
-import { mockRestApiQuery, act, render } from '@acx-ui/test-utils'
+import { timelineApi }              from '@acx-ui/rc/services'
+import { CommonUrlsInfo }           from '@acx-ui/rc/utils'
+import { Provider, store }          from '@acx-ui/store'
+import { mockRestApiQuery, render } from '@acx-ui/test-utils'
 
 import { mockActivityApCompatibilityTable } from '../__test__/fixtures'
 
