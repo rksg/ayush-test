@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import type { AlertProps, FormProps } from 'antd'
 
+export type StepsFormGotoStepFn = (n: number) => void
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <T = any> = Omit<
   FormProps<T>,
@@ -12,7 +14,7 @@ export type StepsFormProps <T = any> = Omit<
   editMode?: boolean
 
   onCancel?: (values: T) => void
-  onFinish?: (values: T) => Promise<boolean | void>
+  onFinish?: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
 
   initialValues?: Partial<T>
 
@@ -26,7 +28,7 @@ export type StepsFormProps <T = any> = Omit<
 
   customSubmit?: {
     label: string,
-    onCustomFinish: (values: T) => Promise<boolean | void>
+    onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
   }
 
   alert?: {
