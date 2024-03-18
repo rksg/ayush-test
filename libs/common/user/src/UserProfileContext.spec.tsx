@@ -76,7 +76,9 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
-        (_req, res, ctx) => res(ctx.json({})))
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false })))
     )
   })
 

@@ -369,7 +369,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    scopeKey: 'switch-u',
+    scopeKey: SwitchAttributeProfile.UPDATE,
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
       const serialNumber = selectedRows[0].serialNumber
