@@ -64,6 +64,20 @@ onClose: () => void
     </GridRow>
   }
 
+  function transformTitle (deviceType: DeviceTypes | undefined) {
+    switch(deviceType) {
+      case DeviceTypes.Ap:
+      case DeviceTypes.ApMesh:
+      case DeviceTypes.ApMeshRoot:
+      case DeviceTypes.ApWired:
+        return DeviceTypes.Ap
+      case DeviceTypes.Switch:
+      case DeviceTypes.SwitchStack:
+        return DeviceTypes.Switch
+    }
+    return deviceType
+  }
+
   return <div
     data-testid='edgeTooltip'
     style={{
@@ -81,9 +95,16 @@ onClose: () => void
           justifyContent: 'space-between'
         }}>
           <div>
-            {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
+            {transformTitle(tooltipSourceNode?.type)} <span>
+              <BiDirectionalArrow />&nbsp;</span>
+            {transformTitle(tooltipTargetNode?.type)}
           </div>
-          <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+          <Button
+            size='small'
+            type='link'
+            onClick={onClose}
+            icon={<CloseSymbol />}
+            data-testid='closeLinkTooltip'/>
         </Space>
       </Card.Title>
 
@@ -92,7 +113,7 @@ onClose: () => void
           alignItems: 'center'
         }}>
         <Descriptions.Item
-          label={tooltipSourceNode?.type}
+          label={transformTitle(tooltipSourceNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -105,7 +126,7 @@ onClose: () => void
           } />
 
         <Descriptions.Item
-          label={tooltipTargetNode?.type}
+          label={transformTitle(tooltipTargetNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -121,8 +142,13 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
-        {(tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan ||
-        tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan) &&
+        {(tooltipSourceNode?.type === DeviceTypes.Switch ||
+        tooltipSourceNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipTargetNode?.type === DeviceTypes.Switch
+          || tooltipTargetNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
+        || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
+        &&
         <>
           <Descriptions.Item
             label={$t({ defaultMessage: 'VLANs trunked' })}

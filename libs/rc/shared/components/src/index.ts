@@ -209,6 +209,12 @@ export type {
 export {
   useClusterInterfaceActions
 } from './EdgeFormItem/EdgeClusterInterfaceSettingForm/useClusterInterfaceActions'
+export { EditContext } from './EdgeFormItem/EdgeEditContext'
+export {
+  getFieldFullPath,
+  transformApiDataToFormListData
+} from './EdgeFormItem/EdgePortsGeneralBase/utils'
+export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
 
 export * from './services'
 export * from './policies'
