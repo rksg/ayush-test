@@ -223,14 +223,14 @@ export const InterfaceSettings = () => {
   }
 
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
-    invokeUpdateApi(
+    await invokeUpdateApi(
       value,
       () => navigate(clusterListPage)
     )
   }
 
   const applyAndContinue = async (value: InterfaceSettingsFormType) => {
-    invokeUpdateApi(
+    await invokeUpdateApi(
       value,
       () => navigate(selectTypePage)
     )

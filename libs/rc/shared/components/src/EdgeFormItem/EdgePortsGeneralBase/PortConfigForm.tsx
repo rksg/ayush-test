@@ -21,6 +21,7 @@ interface ConfigFormProps {
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
+  isCluster?: boolean
 }
 
 const { useWatch, useFormInstance } = Form
@@ -32,7 +33,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     formListItemKey,
     isEdgeSdLanRun,
     lagData,
-    fieldHeadPath = []
+    fieldHeadPath = [],
+    isCluster
   } = props
 
   const { $t } = useIntl()
@@ -76,7 +78,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             rules={[
               { max: 63 }
             ]}
-            children={<TextArea />}
+            children={<TextArea disabled={isCluster} />}
           />
           <Form.Item
             noStyle
