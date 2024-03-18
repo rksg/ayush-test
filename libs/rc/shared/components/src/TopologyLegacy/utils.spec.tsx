@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
-import { ApDeviceStatusEnum, ConnectionStatus, DeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { getDeviceColor, getPathColor, switchStatus } from './utils'
 
 describe('Topology utils', () => {
   it('test getDeviceColor', async () => {
-    expect(getDeviceColor(DeviceStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
+    expect(getDeviceColor(TopologyDeviceStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
     expect(getDeviceColor(ApDeviceStatusEnum.REBOOTING)).toBe('var(--acx-semantics-yellow-40)')
     expect(getDeviceColor(ApDeviceStatusEnum.HEARTBEAT_LOST)).toBe('var(--acx-semantics-yellow-40)')
 
@@ -16,7 +16,7 @@ describe('Topology utils', () => {
     expect(getDeviceColor(ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD))
       .toBe('var(--acx-semantics-red-70)')
 
-    expect(getDeviceColor(DeviceStatus.Unknown)).toBe('var(--acx-neutrals-50)')
+    expect(getDeviceColor(TopologyDeviceStatus.Unknown)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.INITIALIZING)).toBe('var(--acx-neutrals-50)')
     expect(getDeviceColor(ApDeviceStatusEnum.OFFLINE)).toBe('var(--acx-neutrals-50)')

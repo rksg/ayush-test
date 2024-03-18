@@ -87,14 +87,13 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 fill: color[ancestorName],
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
-              id={node.data.id}
               className={'node tree-node'}
-              data-testid={`node_${node.data.id}`}
             >
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}
                 onMouseLeave={handleMouseLeave}
                 onClick={(e) => handleClick(node, e)}
+                data-testid={`node_${node.data.id}`}
               >
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
                 <g className={`${node.data.status}-icon`}>
@@ -127,6 +126,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   e.preventDefault()
                   expColEvent(node.data.id)
                 }}
+                data-testid='collapseButton'
                 >
                   <MinusCircleOutlined
                     width={10}
@@ -141,7 +141,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 <g onClick={(e) => {
                   e.preventDefault()
                   expColEvent(node.data.id)
-                }}>
+                }}
+                data-testid='expandButton'>
                   <PlusCircleOutlined
                     width={10}
                     height={10}
