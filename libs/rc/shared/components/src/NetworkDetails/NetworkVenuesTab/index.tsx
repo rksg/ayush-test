@@ -210,11 +210,19 @@ export function NetworkVenuesTab () {
         }
       })
     }
+
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, [row.id], () => {
+          if (!deactivateNetworkVenueId) {
+            tableData.forEach((venue: Venue) => {
+              if (venue && venue.id === row.id) {
+                deactivateNetworkVenueId = venue.deepVenue!.id ?? ''
+              }
+            })
+          }
           deleteNetworkVenue({
             params: {
               tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
