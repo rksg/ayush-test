@@ -29,6 +29,7 @@ type UseStepsFormParam <T> = Omit<
   onFinish?: (values: T) => Promise<boolean | void>
   onFinishFailed?: (errorInfo: ValidateErrorEntity) => void
   onCancel?: (values: T) => void
+  disabled?: boolean
 
   steps: React.ReactElement<InternalStepFormProps<T>>[]
 
@@ -169,7 +170,7 @@ export function useStepsForm <T> ({
     initialValues: config.defaultFormValues,
     requiredMark: true,
     preserve: true,
-    disabled: isSubmitting,
+    disabled: isSubmitting || config.disabled,
     onFinishFailed: onFinishFailed
   }
 
