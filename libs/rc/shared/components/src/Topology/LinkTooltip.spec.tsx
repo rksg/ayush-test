@@ -1,6 +1,6 @@
-import { Node, Link } from '@acx-ui/rc/utils'
-import { Provider }   from '@acx-ui/store'
-import { render }     from '@acx-ui/test-utils'
+import { Node, Link }     from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import LinkTooltip from './LinkTooltip'
 
@@ -115,6 +115,11 @@ describe('NodeTooltip', () => {
         route: { params }
       }
     )
+    expect(await screen.findByText('STACK-0313')).toBeVisible()
+    expect(await screen.findByText('302002029829-C12P')).toBeVisible()
+    expect(await screen.findByText('1 Gb/sec')).toBeVisible()
+    expect(await screen.findByText('2/1/2')).toBeVisible()
+    expect(await screen.findByText('On(6200 / 28850)')).toBeVisible()
   })
   it('should render null values correctly', async () => {
     const params = {
@@ -136,5 +141,7 @@ describe('NodeTooltip', () => {
         route: { params }
       }
     )
+    expect(await screen.findByText('302002029829')).toBeVisible()
+    expect(await screen.findByText('Off')).toBeVisible()
   })
 })
