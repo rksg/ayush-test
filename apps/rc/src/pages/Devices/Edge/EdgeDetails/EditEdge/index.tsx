@@ -10,10 +10,13 @@ import { isEdgeConfigurable }                                                   
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
 
-import DnsServer       from './DnsServer'
-import GeneralSettings from './GeneralSettings'
-import Ports           from './Ports'
-import StaticRoutes    from './StaticRoutes'
+import DnsServer                from './DnsServer'
+import { EditEdgeDataProvider } from './EditEdgeDataProvider'
+import GeneralSettings          from './GeneralSettings'
+import Lags                     from './Lags'
+import Ports                    from './Ports'
+import StaticRoutes             from './StaticRoutes'
+import SubInterfaces            from './SubInterfaces'
 
 import type { History, Transition } from 'history'
 
@@ -34,15 +37,23 @@ const useTabs = () => {
     },
     ...(isEdgeConfigurable(currentEdge) &&
       {
-        ports: {
+        'ports': {
           title: $t({ defaultMessage: 'Ports' }),
-          content: <Ports clusterId={currentEdge?.clusterId ?? ''} />
+          content: <Ports />
         },
-        dns: {
+        'lags': {
+          title: $t({ defaultMessage: 'LAGs' }),
+          content: <Lags />
+        },
+        'sub-interfaces': {
+          title: $t({ defaultMessage: 'Sub-Interfaces' }),
+          content: <SubInterfaces />
+        },
+        'dns': {
           title: $t({ defaultMessage: 'DNS Server' }),
           content: <DnsServer />
         },
-        routes: {
+        'routes': {
           title: $t({ defaultMessage: 'Static Routes' }),
           content: <StaticRoutes />
         }
@@ -120,7 +131,7 @@ export const EditEdgeTabs = () => {
 const EditEdge = () => {
 
   const { $t } = useIntl()
-  const { serialNumber, activeTab } = useParams()
+  const { serialNumber = '', activeTab } = useParams()
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
@@ -149,7 +160,11 @@ const EditEdge = () => {
         footer={<EditEdgeTabs />}
       />
 
-      {tabs[activeTab as keyof typeof tabs]?.content}
+      <EditEdgeDataProvider
+        serialNumber={serialNumber}
+      >
+        {tabs[activeTab as keyof typeof tabs]?.content}
+      </EditEdgeDataProvider>
     </EdgeEditContext.EditContext.Provider>
   )
 }
