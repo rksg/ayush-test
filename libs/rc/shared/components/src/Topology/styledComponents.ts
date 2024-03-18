@@ -156,7 +156,7 @@ height: 100%;
       .Disconnected-circle {
         fill: none;
       }
-      .Unknown-circle {
+      .Unknown-circle, .Initializing-circle  {
         fill: none;
       }
     }
@@ -178,7 +178,7 @@ height: 100%;
         fill: var(--acx-semantics-red-70);
         opacity: 0.2;
       }
-      .Unknown-circle {
+      .Unknown-circle, .Initializing-circle {
         fill: var(--acx-neutrals-50);
         opacity: 0.2;
       }

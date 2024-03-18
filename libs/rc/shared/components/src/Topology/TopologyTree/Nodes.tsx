@@ -87,7 +87,6 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 fill: color[ancestorName],
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
-              id={node.data.id}
               className={'node tree-node'}
             >
               <g
