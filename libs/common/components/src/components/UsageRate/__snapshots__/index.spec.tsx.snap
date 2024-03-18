@@ -8,38 +8,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       0
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
   <div
     style="width: 100px;"
@@ -47,38 +43,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       5
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
   <div
     style="width: 100px;"
@@ -86,38 +78,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       33.33
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
   <div
     style="width: 100px;"
@@ -125,38 +113,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       50
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
   <div
     style="width: 100px;"
@@ -164,38 +148,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       66.66
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item"
-            style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item"
+          style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
   <div
     style="width: 100px;"
@@ -203,38 +183,34 @@ exports[`UsageRate should match snapshot 1`] = `
     <div>
       100
     </div>
-    <span
-      class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+    <div
+      class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+        class="ant-progress-steps-outer"
       >
         <div
-          class="ant-progress-steps-outer"
-        >
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
-          />
-          <div
-            class="ant-progress-steps-item ant-progress-steps-item-active"
-            style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
-          />
-        </div>
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        />
+        <div
+          class="ant-progress-steps-item ant-progress-steps-item-active"
+          style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        />
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;

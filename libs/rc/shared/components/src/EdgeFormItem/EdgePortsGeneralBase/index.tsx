@@ -28,6 +28,7 @@ interface PortsGeneralProps {
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
+  isCluster?: boolean
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -37,7 +38,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     isEdgeSdLanRun,
     activeTab,
     onTabChange,
-    fieldHeadPath = []
+    fieldHeadPath = [],
+    isCluster
   } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string>('')
@@ -69,6 +71,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             isEdgeSdLanRun={isEdgeSdLanRun}
             statusData={portStatus}
             lagData={lagData}
+            isCluster={isCluster}
           />
         )}
       </Form.List>,

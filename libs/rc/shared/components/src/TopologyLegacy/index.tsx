@@ -13,7 +13,7 @@ import { useParams }                                                from 'react-
 import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
 import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort, SearchOutlined } from '@acx-ui/icons'
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
+import { ConnectionStates, ConnectionStatus, DeviceStates, TopologyDeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
@@ -119,7 +119,7 @@ export function TopologyGraphLegacy (props:{ venueId?: string,
           category: 'Cloud',
           name: 'Cloud',
           id: 'cloud_id',
-          status: DeviceStatus.Operational,
+          status: TopologyDeviceStatus.Operational,
           states: DeviceStates.Regular,
           childCount: 0
         }
@@ -226,7 +226,7 @@ export function TopologyGraphLegacy (props:{ venueId?: string,
         .attr('y', -24)
         .html((node: UINode) => renderToString(<DeviceIcon
           deviceType={node.config.type as DeviceTypes}
-          deviceStatus={node.config.status as DeviceStatus}/>))
+          deviceStatus={node.config.status as TopologyDeviceStatus}/>))
 
       select(graphRef.current).selectAll('g.node g.label')
         .attr('transform', 'translate(0,16)')
@@ -661,7 +661,8 @@ export function TopologyGraphLegacy (props:{ venueId?: string,
   </Loader>
 }
 
-export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: DeviceStatus }) {
+export function DeviceIcon (props: { deviceType: DeviceTypes,
+  deviceStatus: TopologyDeviceStatus }) {
   const { deviceType, deviceStatus } = props
 
   function getDeviceIcon () {
