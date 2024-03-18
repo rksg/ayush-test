@@ -103,7 +103,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: activate
+          isGuestTunnelUtilized: !isGuest ? false : activate
         },
         callback: cb
       }).unwrap()
@@ -127,12 +127,15 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       if (data.isGuestTunnelEnabled
       && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
         const isGuestNetwork = fieldName === 'activatedGuestNetworks'
-        await toggleNetwork(isGuestNetwork, networkId, checked)
+                              || (fieldName === 'activatedNetworks' && checked)
+        await toggleNetwork(isGuestNetwork, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       } else {
-        await toggleNetwork(false, networkId, checked)
+        await toggleNetwork(false, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       }
-
-      setIsActivateUpdating(false)
     } catch(err) {
       setIsActivateUpdating(false)
       // eslint-disable-next-line no-console
