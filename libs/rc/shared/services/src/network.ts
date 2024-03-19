@@ -253,6 +253,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const extraUseCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : []
           onActivityMessageReceived(msg,
             [
               'AddNetworkVenue',
@@ -261,7 +262,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               'DeleteNetworkVenues',
               'UpdateNetworkDeep',
               'UpdateNetworkVenue',
-              ...CONFIG_TEMPLATE_USE_CASES
+              ...extraUseCases
             ], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
