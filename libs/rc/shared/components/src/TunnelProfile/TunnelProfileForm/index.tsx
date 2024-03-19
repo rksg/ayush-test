@@ -53,6 +53,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
@@ -198,7 +199,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Space>
         </Form.Item>
       </Col>
-      { isEdgeSdLanReady &&
+      { (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
         <Col span={14}>
           <Form.Item
             name='type'

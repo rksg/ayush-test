@@ -3,11 +3,15 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { TableProps } from '@acx-ui/components'
+import { TableProps }  from '@acx-ui/components'
+import { Table }       from '@acx-ui/components'
 import {
-  Table
-} from '@acx-ui/components'
-import { Acl, AclRule, transformTitleCase } from '@acx-ui/rc/utils'
+  Acl,
+  AclRule,
+  defaultSort,
+  sortProp,
+  transformTitleCase
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 export const AclDetail = (props: { row : Acl }) => {
@@ -21,6 +25,7 @@ export const AclDetail = (props: { row : Acl }) => {
       key: 'sequence',
       title: $t({ defaultMessage: 'Sequence#' }),
       dataIndex: 'sequence',
+      sorter: { compare: sortProp('sequence', defaultSort) },
       defaultSortOrder: 'ascend'
     },
 

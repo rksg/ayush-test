@@ -11,7 +11,7 @@ import { NetworkSaveData }        from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 
 
-import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibilityDrawer'
+import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibility'
 import * as UI                                                                                         from '../../../NetworkMoreSettings/styledComponents'
 
 export enum QoSMirroringScope {

@@ -9,13 +9,14 @@ import {
 
 import ReactECharts   from 'echarts-for-react'
 import { GridOption } from 'echarts/types/dist/shared'
-import { isEmpty }    from 'lodash'
+import _, { isEmpty } from 'lodash'
 import { useIntl }    from 'react-intl'
 
 import type { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
 import { formatter }                      from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
+import { cssNumber, cssStr } from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
@@ -38,8 +39,8 @@ import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import * as UI from './styledComponents'
 
-import type { ECharts, EChartsOption, MarkAreaComponentOption, MarkLineComponentOption  } from 'echarts'
-import type { EChartsReactProps }                                                         from 'echarts-for-react'
+import type { ECharts, EChartsOption, LineSeriesOption, MarkAreaComponentOption, MarkLineComponentOption } from 'echarts'
+import type { EChartsReactProps }                                                                          from 'echarts-for-react'
 
 
 type OnBrushendEvent = { areas: { coordRange: TimeStampRange }[] }
@@ -73,6 +74,11 @@ type MarkerLine = {
   lineStyle?: MarkLineOption['lineStyle']
 }
 
+type TimeMarker = {
+  timestamp: TimeStamp
+  label: string
+}
+
 export interface MultiLineTimeSeriesChartProps <
   TChartData extends TimeSeriesChartData,
   MarkerData
@@ -82,6 +88,7 @@ export interface MultiLineTimeSeriesChartProps <
     legendProp?: keyof TChartData /** @default 'name' */
     legendFormatter?: string | ((name: string) => string)
     lineColors?: string[]
+    lineStyles?: (undefined | LineSeriesOption['lineStyle'])[]
     dataFormatter?: ChartFormatterFn
     seriesFormatters?: Record<string, ChartFormatterFn>
     yAxisProps?: {
@@ -95,6 +102,7 @@ export interface MultiLineTimeSeriesChartProps <
     brush?: TimeStampRange
     onBrushChange?: (range: TimeStampRange) => void
     markers?: Marker<MarkerData>[]
+    timeMarkers?: TimeMarker[]
     markerAreas?: MarkerArea[]
     markerLines?: MarkerLine[]
     onMarkAreaClick?: (data: MarkerData) => void
@@ -159,6 +167,88 @@ export function useOnMarkAreaClick <MarkerData> (
   }, [eChartsRef, markers, onMarkAreaClick])
 }
 
+export function useTimeMarkers (
+  eChartsRef: RefObject<ReactECharts>,
+  timeMarkers?: TimeMarker[]
+) {
+  useEffect(() => {
+    if (!eChartsRef?.current || !timeMarkers?.length) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    const [charSize, gap, joinGap] = [5.05, 10, 10]
+
+    let data = { lines: [], labels: [] } as {
+      lines: number[][]
+      labels: Array<{ coords: number[][], strings: string[] }>
+    }
+    data = timeMarkers
+      .map(({ timestamp, label }) => ({ timestamp: new Date(timestamp), label }))
+      .sort((a, b) => +a.timestamp - +b.timestamp)
+      .reduce((data, { timestamp, label }) => {
+        const coord = echartInstance.convertToPixel('grid', [+timestamp, 0])
+        const prev = data.labels.at(-1)
+        const isLabelOverlap = prev && (
+          prev.coords[0][0] +
+          prev.strings.reduce((sum, s) => sum + s.length, 0) * charSize +
+          (prev.strings.length - 1) * joinGap > coord[0])
+
+        if (isLabelOverlap) {
+          prev.coords.push(coord)
+          prev.strings.push(label)
+        } else data.labels.push({ coords: [coord], strings: [label] })
+
+        data.lines.push(coord)
+
+        return data
+      }, data)
+    const lines = data.lines.map((coord) => ({
+      type: 'line',
+      silent: true,
+      z: 100,
+      shape: {
+        x1: coord[0], y1: coord[1],
+        x2: coord[0], y2: 0
+      }
+    }))
+    const labels = data.labels.flatMap(({ coords, strings }) => {
+      const labelWidth = strings.reduce((sum, s) => sum + s.length, 0) * charSize
+        + (strings.length - 1) * joinGap
+      const label = strings.join('\u00A0\u00A0\u00A0')
+      const coord = coords.length > 1
+        // get midpoint of first and last coords
+        ? [(coords.at(0)![0] + coords.at(-1)![0]) / 2, coords.at(0)![1]]
+        : coords.at(0)!
+      return [{
+        type: 'rect',
+        silent: true,
+        z: 100,
+        shape: {
+          x: coord[0] - labelWidth / 2 - gap / 2,
+          y: coord[1] - cssNumber('--acx-body-5-font-size') - gap,
+          width: labelWidth + gap,
+          height: cssNumber('--acx-body-5-line-height')
+        },
+        style: {
+          fill: cssStr('--acx-primary-white'),
+          opacity: .9
+        }
+      }, {
+        type: 'text',
+        silent: true,
+        z: 100,
+        x: coord[0] - labelWidth / 2,
+        y: coord[1] - gap * 2
+          + (cssNumber('--acx-body-5-line-height') - cssNumber('--acx-body-5-font-size')) / 2,
+        style: {
+          text: label,
+          font: `${cssStr('--acx-body-5-font-size')} ${cssStr('--acx-neutral-brand-font')}`
+        }
+      }]
+    })
+
+    echartInstance.setOption({ graphic: [...lines, ...labels] })
+  }, [eChartsRef, timeMarkers])
+}
+
 export function MultiLineTimeSeriesChart <
   TChartData extends TimeSeriesChartData,
   MarkerData
@@ -174,6 +264,7 @@ export function MultiLineTimeSeriesChart <
   onMarkAreaClick,
   grid: gridProps,
   echartOptions,
+  lineStyles = [],
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -188,6 +279,7 @@ export function MultiLineTimeSeriesChart <
   useBrush(eChartsRef, props.brush, props.onBrushChange)
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
   useLegendSelectChanged(eChartsRef)
+  useTimeMarkers(eChartsRef, props.timeMarkers)
 
   const defaultOption: EChartsOption = {
     animation: false,
@@ -240,7 +332,7 @@ export function MultiLineTimeSeriesChart <
         symbol: 'none',
         z: 1,
         zlevel: 1,
-        lineStyle: { width: 1.2 },
+        lineStyle: _.merge({ width: 1.2 }, lineStyles[i] ?? {}),
         ...(i === 0 ? {
           markArea: props.markers ? {
             data: props.markers?.map(marker => [
