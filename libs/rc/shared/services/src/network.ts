@@ -33,6 +33,14 @@ const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
+const CONFIG_TEMPLATE_USE_CASES = [
+  'DeleteNetworkVenueTemplate',
+  'DeleteNetworkVenueTemplates',
+  'AddNetworkVenueTemplate',
+  'AddNetworkVenueTemplateMappings',
+  'UpdateNetworkVenueTemplate'
+]
+
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
@@ -252,7 +260,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               'DeleteNetworkVenue',
               'DeleteNetworkVenues',
               'UpdateNetworkDeep',
-              'UpdateNetworkVenue'
+              'UpdateNetworkVenue',
+              ...CONFIG_TEMPLATE_USE_CASES
             ], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })

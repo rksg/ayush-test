@@ -126,10 +126,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
               { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' }
+              { type: 'Network', id: 'DETAIL' } // venueNetwork
             ]))
             api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' }
+              { type: 'NetworkTemplate', id: 'LIST' } // networkVenue
             ]))
           })
         })
@@ -146,10 +146,11 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
               { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' }
+              { type: 'Network', id: 'DETAIL' } // venueNetwork
             ]))
             api.dispatch(configTemplateApi.util.invalidateTags([
-              { type: 'NetworkTemplate', id: 'LIST' }
+              { type: 'NetworkTemplate', id: 'LIST' },
+              { type: 'NetworkTemplate', id: 'DETAIL' }
             ]))
           })
         })
@@ -165,8 +166,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' }
+              { type: 'Venue', id: 'LIST' }
             ]))
             api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'NetworkTemplate', id: 'LIST' },
@@ -187,7 +187,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
               { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' }
+              { type: 'Network', id: 'DETAIL' } // venueNetwork
             ]))
             api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'NetworkTemplate', id: 'LIST' }
@@ -206,8 +206,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
-              { type: 'Venue', id: 'LIST' },
-              { type: 'Network', id: 'DETAIL' }
+              { type: 'Venue', id: 'LIST' }
             ]))
             api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'NetworkTemplate', id: 'LIST' }
