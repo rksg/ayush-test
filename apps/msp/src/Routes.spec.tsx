@@ -38,7 +38,10 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.RADIUS]: false,
   [ConfigTemplateType.DHCP]: false,
   [ConfigTemplateType.ACCESS_CONTROL]: false,
-  [ConfigTemplateType.VLAN_POOL]: false
+  [ConfigTemplateType.PORTAL]: false,
+  [ConfigTemplateType.VLAN_POOL]: false,
+  [ConfigTemplateType.WIFI_CALLING]: false,
+  [ConfigTemplateType.CLIENT_ISOLATION]: false
 }
 
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
@@ -164,18 +167,18 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
   it('should navigate to the VLAN Pool config template', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
-      [ConfigTemplateType.VLAN_POOL]: true
+      [ConfigTemplateType.PORTAL]: true
     })
 
     render(<Provider><ConfigTemplatesRoutes /></Provider>, {
       route: {
         path: '/tenantId/v/' + getConfigTemplatePath(
-          getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })
+          getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })
         ),
         wrapRoutes: false
       }
     })
 
-    expect(await screen.findByText('VLAN POOL Creation')).toBeVisible()
+    expect(await screen.findByText('Portal Creation')).toBeVisible()
   })
 })
