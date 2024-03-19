@@ -10,7 +10,7 @@ import useCertificateAuthorityForm  from './useCertificateAuthorityForm'
 
 
 
-export default function CertificateAuthorityForm () {
+export function CertificateAuthorityForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { createCaForm, handleFinish } = useCertificateAuthorityForm()

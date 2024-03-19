@@ -8,7 +8,7 @@ import { useGetCertificateAuthoritiesQuery, useLazyGetCertificateTemplatesQuery 
 import { checkObjectNotExists, trailingNorLeadingSpaces }                         from '@acx-ui/rc/utils'
 import { useParams }                                                              from '@acx-ui/react-router-dom'
 
-import { MAX_CERTIFICATE_PER_TENANT }                                           from '../certificateTemplateUtils'
+import { MAX_CERTIFICATE_PER_TENANT }                                           from '../constants'
 import { onboardSettingsDescription }                                           from '../contentsMap'
 import { Description, Section, SettingsSectionTitle, TabItem, TabLable, Title } from '../styledComponents'
 

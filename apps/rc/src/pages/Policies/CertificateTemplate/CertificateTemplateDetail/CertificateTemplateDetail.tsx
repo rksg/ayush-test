@@ -8,11 +8,11 @@ import { useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery
 import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath }                                                  from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                     from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                                                 from '@acx-ui/user'
+import { noDataDisplay }                                                                                                                                  from '@acx-ui/utils'
 
-import CertificateTable        from '../CertificateTemplateTable/CertificateTable'
-import { DEFAULT_PLACEHOLDER } from '../certificateTemplateUtils'
-import { caTypeShortLabel }    from '../contentsMap'
-import { Section }             from '../styledComponents'
+import CertificateTable     from '../CertificateTemplateTable/CertificateTable'
+import { caTypeShortLabel } from '../contentsMap'
+import { Section }          from '../styledComponents'
 
 import ChromebookTab from './ChromebookTab'
 
@@ -55,7 +55,7 @@ export default function CertificateTemplateDetail () {
       title: $t({ defaultMessage: 'CA Type' }),
       content: certificateTemplateData
         ? $t(caTypeShortLabel[certificateTemplateData.caType as keyof typeof caTypeShortLabel])
-        : DEFAULT_PLACEHOLDER,
+        : noDataDisplay,
       colSpan: 3
     },
     {
@@ -65,7 +65,7 @@ export default function CertificateTemplateDetail () {
     },
     {
       title: $t({ defaultMessage: 'Adaptive Policy Set' }),
-      content: policySetName || certificateTemplateData?.policySetId || DEFAULT_PLACEHOLDER,
+      content: policySetName || certificateTemplateData?.policySetId || noDataDisplay,
       colSpan: 4
     }
   ]

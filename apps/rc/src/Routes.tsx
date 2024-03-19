@@ -6,6 +6,8 @@ import {
   AccessControlForm,
   AccessControlTable,
   AdaptivePolicySetForm,
+  CertificateAuthorityForm,
+  CertificateTemplateForm,
   ClientIsolationForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
@@ -76,10 +78,8 @@ import RadiusAttributeGroupDetail
 import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
-import CertificateAuthorityForm             from './pages/Policies/CertificateTemplate/CertificateAuthorityForm/CertificateAuthorityForm'
 import CertificateForm                      from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
 import CertificateTemplateDetail            from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
-import CertificateTemplateForm              from './pages/Policies/CertificateTemplate/CertificateTemplateForm/CertificateTemplateForm'
 import CertificateTemplateList              from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
 import ClientIsolationDetail                from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationTable                 from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'

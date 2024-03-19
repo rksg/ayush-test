@@ -8,7 +8,7 @@ import { trailingNorLeadingSpaces, CertificateCategoryType, checkObjectNotExists
 
 import CertificateStrengthSettings                           from '../../CertificateTemplateForm/CertificateTemplateSettings/CertificateStrengthSettings'
 import OrganizationInfoSettings                              from '../../CertificateTemplateForm/CertificateTemplateSettings/OrganizationInfoSettings'
-import { MAX_CERTIFICATE_PER_TENANT }                        from '../../certificateTemplateUtils'
+import { MAX_CERTIFICATE_PER_TENANT }                        from '../../constants'
 import { caFormDescription }                                 from '../../contentsMap'
 import { SettingsSectionTitle, Description, Section, Title } from '../../styledComponents'
 

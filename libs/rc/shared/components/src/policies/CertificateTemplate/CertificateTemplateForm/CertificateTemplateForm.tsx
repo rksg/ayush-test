@@ -20,10 +20,12 @@ import Summary          from './Summary'
 
 interface CerficateTemplateStepFromProps {
   editMode?: boolean
+  modalMode?: boolean,
+  modalCallBack?: (result?: string) => void
 }
 
-export default function CertificateTemplateForm ({ editMode = false }:
-  CerficateTemplateStepFromProps) {
+export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) {
+  const { editMode = false, modalMode = false, modalCallBack } = props
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -123,17 +125,23 @@ export default function CertificateTemplateForm ({ editMode = false }:
           }
         } : {})
       }
-      await addCertificateTemplate({
+      const res = await addCertificateTemplate({
         params: { caId: formData.onboard?.certificateAuthorityId },
         payload
-      })
+      }).unwrap()
+
+      if (modalMode && res) {
+        modalCallBack?.(res.id)
+      }
     }
-    navigate(linkToList, { replace: true })
+    if (!modalMode) {
+      navigate(linkToList, { replace: true })
+    }
   }
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Certificate Template' }) :
           $t({ defaultMessage: 'Add Certificate Template' })}
         breadcrumb={[{
@@ -148,9 +156,9 @@ export default function CertificateTemplateForm ({ editMode = false }:
             oper: PolicyOperation.LIST
           })
         }]}
-      />
+      />}
       <StepsForm
-        onCancel={() => navigate(linkToList)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={handleFinish}
         form={form}
         editMode={editMode}

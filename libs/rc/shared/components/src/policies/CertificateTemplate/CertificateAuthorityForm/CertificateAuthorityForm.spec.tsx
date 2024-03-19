@@ -8,7 +8,9 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { certificateAuthorityList } from '../__test__/fixtures'
 
-import CertificateAuthorityForm from './CertificateAuthorityForm'
+import { CertificateAuthorityForm } from './CertificateAuthorityForm'
+
+
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({

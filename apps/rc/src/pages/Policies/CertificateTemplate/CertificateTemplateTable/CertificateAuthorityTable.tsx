@@ -11,10 +11,10 @@ import { useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuer
 import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                            from '@acx-ui/user'
 
-import EditCertificateAuthorityForm from '../CertificateAuthorityForm/EditCertificateAuthorityForm'
-import { deleteDescription }        from '../contentsMap'
+import { deleteDescription } from '../contentsMap'
 
-import DetailDrawer from './DetailDrawer'
+import DetailDrawer                 from './DetailDrawer'
+import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 
 
 

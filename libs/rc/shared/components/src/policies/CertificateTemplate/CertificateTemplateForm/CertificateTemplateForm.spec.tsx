@@ -7,10 +7,10 @@ import { mockServer, render, screen, waitFor }      from '@acx-ui/test-utils'
 
 import { certificateAuthorityList, certificateTemplate, certificateTemplateList, policySetList } from '../__test__/fixtures'
 
-import CertificateTemplateForm from './CertificateTemplateForm'
+import { CertificateTemplateForm } from './CertificateTemplateForm'
+
 
 const mockedUsedNavigate = jest.fn()
-const mockedUsedAdd = jest.fn()
 const mockedUsedEdit = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -18,7 +18,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useAddCertificateTemplateMutation: () => [mockedUsedAdd],
   useEditCertificateTemplateMutation: () => [mockedUsedEdit]
 }))
 
@@ -40,8 +39,11 @@ describe('CertificateTemplateForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
-      )
-    )
+      ),
+      rest.post(
+        CertificateUrls.addCertificateTemplate.url,
+        (req, res, ctx) => res(ctx.json({ id: '12345' }))
+      ))
     jest.clearAllMocks()
   })
 
@@ -92,7 +94,6 @@ describe('CertificateTemplateForm', () => {
     expect(await screen.findByText('testApiKey')).toBeVisible()
 
     await userEvent.click(screen.getByText('Add'))
-    await waitFor(() => expect(mockedUsedAdd).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 

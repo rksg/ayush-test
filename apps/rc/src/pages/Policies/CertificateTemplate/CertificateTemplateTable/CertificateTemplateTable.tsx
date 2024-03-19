@@ -4,14 +4,14 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Loader, Table, TableProps, showActionModal }                                                                                         from '@acx-ui/components'
-import { SimpleListTooltip }                                                                                                                          from '@acx-ui/rc/components'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                              from '@acx-ui/rc/components'
 import { useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                      from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                               from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
+import { noDataDisplay }                                                                                                                              from '@acx-ui/utils'
 
-import { DEFAULT_PLACEHOLDER, MAX_CERTIFICATE_PER_TENANT } from '../certificateTemplateUtils'
-import { caTypeShortLabel, deleteDescription }             from '../contentsMap'
+import { caTypeShortLabel, deleteDescription } from '../contentsMap'
 
 
 export default function CertificateTemplateTable () {
@@ -119,7 +119,7 @@ export default function CertificateTemplateTable () {
       key: 'caId',
       filterable: caFilterOptions,
       render: function (_, row) {
-        return row.onboard?.certificateAuthorityName || DEFAULT_PLACEHOLDER
+        return row.onboard?.certificateAuthorityName || noDataDisplay
       }
     },
     {
@@ -136,7 +136,7 @@ export default function CertificateTemplateTable () {
             })}>
             {policySetData.get(row.policySetId) || row.policySetId}
           </TenantLink>
-          : DEFAULT_PLACEHOLDER
+          : noDataDisplay
       }
     }
   ]

@@ -2114,7 +2114,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'CertificateTemplate', id: 'DETAIL' }]
     }),
-    addCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+    addCertificateTemplate: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(CertificateUrls.addCertificateTemplate, params, defaultCertTempVersioningHeaders)

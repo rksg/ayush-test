@@ -1,7 +1,3 @@
-
-
-
-
 import { Row, Col, Divider, Typography, Checkbox, Modal } from 'antd'
 import { MessageDescriptor, defineMessage, useIntl }      from 'react-intl'
 

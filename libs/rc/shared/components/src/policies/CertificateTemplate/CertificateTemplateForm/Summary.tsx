@@ -6,8 +6,9 @@ import { useIntl }               from 'react-intl'
 
 import { Tabs }                                                                                      from '@acx-ui/components'
 import { CertificateTemplateFormData, EXPIRATION_DATE_FORMAT, ExpirationDateEntity, ExpirationMode } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                             from '@acx-ui/utils'
 
-import { DEFAULT_PLACEHOLDER, getDisplayedAlgorithm }                                           from '../certificateTemplateUtils'
+import { getDisplayedAlgorithm }                                                                from '../certificateTemplateUtils'
 import { caTypeShortLabel, certificateExpirationLabel, enrollmentTypeLabel, existingCertLabel } from '../contentsMap'
 import { TabItem, TabLable, Title }                                                             from '../styledComponents'
 
@@ -44,7 +45,7 @@ export default function Summary () {
           { offset: period.offset, type: certificateExpirationLabel[period.type] })
       return issuance
     } else {
-      return DEFAULT_PLACEHOLDER
+      return noDataDisplay
     }
   }
 
@@ -54,7 +55,7 @@ export default function Summary () {
       <Form.Item
         label={$t({ defaultMessage: 'CA Type' })}
         // eslint-disable-next-line max-len
-        children={form.getFieldValue('caType') ? $t(caTypeShortLabel[form.getFieldValue('caType') as keyof typeof caTypeShortLabel]) : DEFAULT_PLACEHOLDER}
+        children={form.getFieldValue('caType') ? $t(caTypeShortLabel[form.getFieldValue('caType') as keyof typeof caTypeShortLabel]) : noDataDisplay}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Onboard Certificate Authority' })}
@@ -100,30 +101,30 @@ export default function Summary () {
             <Form.Item
               label={$t({ defaultMessage: 'Organization Pattern' })}
               children={form.getFieldValue(['onboard', 'organizationPattern'])
-                || DEFAULT_PLACEHOLDER} />
+                || noDataDisplay} />
             <Form.Item
               label={$t({ defaultMessage: 'Organization Unit Pattern' })}
               children={form.getFieldValue(['onboard', 'organizationUnitPattern'])
-                || DEFAULT_PLACEHOLDER} />
+                || noDataDisplay} />
             <Form.Item
               label={$t({ defaultMessage: 'Locality Pattern' })}
               children={form.getFieldValue(['onboard', 'localityPattern'])
-                || DEFAULT_PLACEHOLDER} />
+                || noDataDisplay} />
             <Form.Item
               label={$t({ defaultMessage: 'State Pattern' })}
               children={form.getFieldValue(['onboard', 'statePattern'])
-                || DEFAULT_PLACEHOLDER} />
+                || noDataDisplay} />
             <Form.Item
               label={$t({ defaultMessage: 'Country Pattern' })}
               children={form.getFieldValue(['onboard', 'countryPattern'])
-                || DEFAULT_PLACEHOLDER} />
+                || noDataDisplay} />
           </>}
         </TabItem>
       </>}
       <Divider />
       <Form.Item
         label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-        children={form.getFieldValue('policySetName') || DEFAULT_PLACEHOLDER} />
+        children={form.getFieldValue('policySetName') || noDataDisplay} />
       {form.getFieldValue('policySetName') &&
         <Form.Item
           label={$t({ defaultMessage: 'Default Access' })}
@@ -140,17 +141,17 @@ export default function Summary () {
             label={$t({ defaultMessage: 'Enrollment Type' })}
             children={
               $t(enrollmentTypeLabel[form.getFieldValue(['chromebook', 'enrollmentType']) as
-                keyof typeof enrollmentTypeLabel]) || DEFAULT_PLACEHOLDER} />
+                keyof typeof enrollmentTypeLabel]) || noDataDisplay} />
           <Form.Item
             label={$t({ defaultMessage: 'Existing Certificates' })}
             children={$t(existingCertLabel[form.getFieldValue(['chromebook', 'certRemovalType']) as
-              keyof typeof existingCertLabel]) || DEFAULT_PLACEHOLDER} />
+              keyof typeof existingCertLabel]) || noDataDisplay} />
           <Form.Item
             label={$t({ defaultMessage: 'App ID To Notify' })}
-            children={form.getFieldValue(['chromebook', 'notifyAppId']) || DEFAULT_PLACEHOLDER} />
+            children={form.getFieldValue(['chromebook', 'notifyAppId']) || noDataDisplay} />
           <Form.Item
             label={$t({ defaultMessage: 'Google API Key' })}
-            children={form.getFieldValue(['chromebook', 'apiKey']) || DEFAULT_PLACEHOLDER} />
+            children={form.getFieldValue(['chromebook', 'apiKey']) || noDataDisplay} />
         </>}
     </>
   )

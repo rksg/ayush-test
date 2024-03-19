@@ -3,7 +3,9 @@ import { Form }  from 'antd'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import UploadCaSettings from './UploadCaSettings'
+import { UploadCaSettings } from './UploadCaSettings'
+
+
 
 describe('UploadCaSettings', () => {
 

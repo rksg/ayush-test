@@ -8,13 +8,13 @@ import { Button, Drawer, Loader, Table, TableProps }                            
 import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery } from '@acx-ui/rc/services'
 import { Certificate, CertificateCategoryType, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, FILTER, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                                                    from '@acx-ui/user'
-import { getIntl }                                                                                                                      from '@acx-ui/utils'
+import { getIntl, noDataDisplay }                                                                                                       from '@acx-ui/utils'
 
-import CertificateSettings                                    from '../CertificateForm/CertificateSettings'
-import { DEFAULT_PLACEHOLDER, getDisplayedCertificateStatus } from '../certificateTemplateUtils'
+import CertificateSettings from '../CertificateForm/CertificateSettings'
 
-import DetailDrawer from './DetailDrawer'
-import RevokeForm   from './RevokeForm'
+import DetailDrawer                      from './DetailDrawer'
+import { getDisplayedCertificateStatus } from './DetailDrawerHelper'
+import RevokeForm                        from './RevokeForm'
 
 
 export default function CertificateTable ({ templateId, showGenerateCert = false }:
@@ -78,7 +78,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
       render: (_, row) => {
         return row.notAfterDate ?
           moment(row.notAfterDate).format(EXPIRATION_DATE_FORMAT)
-          : DEFAULT_PLACEHOLDER
+          : noDataDisplay
       }
     },
     ...(!templateId ? [
@@ -100,7 +100,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
       render: (_, row) => {
         return row.revocationDate
           ? moment(row.revocationDate).format(EXPIRATION_TIME_FORMAT)
-          : DEFAULT_PLACEHOLDER
+          : noDataDisplay
       }
     },
     {

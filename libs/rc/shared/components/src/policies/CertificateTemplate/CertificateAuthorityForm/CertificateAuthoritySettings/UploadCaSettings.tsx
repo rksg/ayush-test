@@ -17,7 +17,7 @@ interface UploadCaSettingsProps {
   showPublicKeyUpload?: boolean
 }
 
-export default function UploadCaSettings (props: UploadCaSettingsProps) {
+export function UploadCaSettings (props: UploadCaSettingsProps) {
   const { showPublicKeyUpload = true } = props
   const { $t } = useIntl()
   const { Text } = Typography

@@ -3,11 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 
 import { ModalRef }                                                                   from '@acx-ui/components'
+import { MAX_CERTIFICATE_PER_TENANT }                                                 from '@acx-ui/rc/components'
 import { useEditCertificateAuthorityMutation, useLazyGetCertificateAuthoritiesQuery } from '@acx-ui/rc/services'
 import { CertificateAuthority, checkObjectNotExists, trailingNorLeadingSpaces }       from '@acx-ui/rc/utils'
 import { getIntl }                                                                    from '@acx-ui/utils'
 
-import { MAX_CERTIFICATE_PER_TENANT } from '../certificateTemplateUtils'
+
+
+
 
 export default function EditCertificateAuthorityForm (props: {
   data: CertificateAuthority,

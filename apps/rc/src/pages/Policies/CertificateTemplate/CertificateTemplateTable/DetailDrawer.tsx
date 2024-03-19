@@ -5,14 +5,15 @@ import { useIntl }                         from 'react-intl'
 
 import { Collapse, Drawer, Loader }                                                                                                                                                           from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }                                                                                                                                                   from '@acx-ui/icons'
+import { MAX_CERTIFICATE_PER_TENANT, UploadCaSettings }                                                                                                                                       from '@acx-ui/rc/components'
 import { useLazyGetAdaptivePolicySetQuery, useLazyGetCertificateAuthorityQuery, useLazyGetCertificateTemplateQuery, useLazyGetSubCertificateAuthoritiesQuery, useUploadCaPrivateKeyMutation } from '@acx-ui/rc/services'
 import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                                         from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                                                                                                      from '@acx-ui/utils'
 
-import UploadCaSettings                                                                                                       from '../CertificateAuthorityForm/CertificateAuthoritySettings/UploadCaSettings'
-import { DEFAULT_PLACEHOLDER, MAX_CERTIFICATE_PER_TENANT, getCertificateAuthorityDetails, getCertificateDetails }             from '../certificateTemplateUtils'
 import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
 
-import DownloadSection from './DownloadSection'
+import { getCertificateAuthorityDetails, getCertificateDetails } from './DetailDrawerHelper'
+import DownloadSection                                           from './DownloadSection'
 
 interface DetailDrawerProps {
   open?: boolean;
@@ -74,7 +75,7 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
           const policySetRes = await queryPolicySet({
             params: { policySetId: templateRes?.data?.policySetId }
           }).unwrap()
-          setPolicySetData(policySetRes?.name || DEFAULT_PLACEHOLDER)
+          setPolicySetData(policySetRes?.name || noDataDisplay)
         }
         setIsFetching(false)
       } catch {
@@ -158,7 +159,7 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
           return (
             <DescriptionRow key={subIndex}>
               <Description>{subItem.title}</Description>
-              <DescriptionText>{subItem.content || DEFAULT_PLACEHOLDER}</DescriptionText>
+              <DescriptionText>{subItem.content || noDataDisplay}</DescriptionText>
             </DescriptionRow>
           )
         case RenderType.DIVIDER:
@@ -169,7 +170,7 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
               <Row key={subIndex}>
                 <Col span={12}>
                   <Description>{subItem.title}</Description>
-                  <DescriptionText>{subItem.content || DEFAULT_PLACEHOLDER}</DescriptionText>
+                  <DescriptionText>{subItem.content || noDataDisplay}</DescriptionText>
                 </Col>
                 <Col span={12}>
                   <Row justify='end'>
@@ -287,7 +288,10 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
         footer={
           <Drawer.FormFooter
             onCancel={() => setUploadDrawerOpen(false)}
-            onSave={() => onSaveUploadPrivateKey()}
+            onSave={async () => {
+              await onSaveUploadPrivateKey()
+              setUploadDrawerOpen(false)
+            }}
           />}
         children={<> <Form layout='vertical' form={uploadPrivateKeyForm}>
           <UploadCaSettings showPublicKeyUpload={false} />

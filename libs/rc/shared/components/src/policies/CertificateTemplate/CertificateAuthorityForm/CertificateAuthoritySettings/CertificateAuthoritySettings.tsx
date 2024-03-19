@@ -6,8 +6,8 @@ import { CertificateAuthorityFormData, GenerationCaType } from '@acx-ui/rc/utils
 import { addCADescription, addCATitle } from '../../contentsMap'
 import { RadioItemDescription }         from '../../styledComponents'
 
-import CreateCaSettings from './CreateCaSettings'
-import UploadCaSettings from './UploadCaSettings'
+import CreateCaSettings     from './CreateCaSettings'
+import { UploadCaSettings } from './UploadCaSettings'
 
 
 export default function CertificateAuthoritySettings () {

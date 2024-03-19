@@ -2,8 +2,8 @@ import { Divider, Typography } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { CertificateTemplate } from '@acx-ui/rc/utils'
+import { noDataDisplay }       from '@acx-ui/utils'
 
-import { DEFAULT_PLACEHOLDER }                    from '../certificateTemplateUtils'
 import { enrollmentTypeLabel, existingCertLabel } from '../contentsMap'
 import { Description, DescriptionRow, Section }   from '../styledComponents'
 
@@ -17,14 +17,14 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
       content: data?.chromebook?.enrollmentType ?
         // eslint-disable-next-line max-len
         $t(enrollmentTypeLabel[data.chromebook.enrollmentType as keyof typeof enrollmentTypeLabel])
-        : DEFAULT_PLACEHOLDER
+        : noDataDisplay
     },
     {
       title: 'Existing Certificates',
       content: data?.chromebook?.certRemovalType ?
         // eslint-disable-next-line max-len
         $t(existingCertLabel[data.chromebook.certRemovalType as keyof typeof existingCertLabel])
-        : DEFAULT_PLACEHOLDER
+        : noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'App ID' }),
@@ -66,7 +66,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         {data?.chromebook?.enabled && chromebookInfo.map((item, index) => (
           <DescriptionRow key={index}>
             <Description>{item.title}</Description>
-            {item.content || DEFAULT_PLACEHOLDER}
+            {item.content || noDataDisplay}
           </DescriptionRow>
         ))}
       </Section>
@@ -77,7 +77,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
           {chromebookServiceAccountInfo.map((item, index) => (
             <DescriptionRow key={index}>
               <Description>{item.title}</Description>
-              {item.content || DEFAULT_PLACEHOLDER}
+              {item.content || noDataDisplay}
             </DescriptionRow>
           ))}
         </Section>
