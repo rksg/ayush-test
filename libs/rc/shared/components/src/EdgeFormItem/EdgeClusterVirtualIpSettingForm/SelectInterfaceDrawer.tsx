@@ -91,7 +91,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber].portName).filter(item => item !== undefined)
+      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
     const editPortName = editData?.[targetSerialNumber]?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)
@@ -143,7 +143,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                         item.portName === currentPort)
                       return currentPort && $t({ defaultMessage: 'IP subnet: {ip}' },
                         {
-                          ip: getIpWithBitMask(currentInterface?.ip, currentInterface?.subnet)
+                          ip: getIpWithBitMask(currentInterface?.ip, currentInterface?.subnet) ||
+                            'N/A'
                         })
                     }}
                   </Form.Item>
