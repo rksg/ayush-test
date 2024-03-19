@@ -40,7 +40,7 @@ const Svg: any = (props: any) => {
   }, [width, height, data])
 
   const { nodes, links } = useMemo(() => {
-    if (width && height && treeData && edges) {
+    if (treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
         .nodeSize(NODE_SIZE)(treeData)
@@ -54,8 +54,10 @@ const Svg: any = (props: any) => {
         linkPositionData[`${_.get(link, 'source.data.id')}_${_.get(link, 'target.data.id')}`] =
         { ...link,
           ...edges.filter((item: { from: string; to: string }) =>
-            item.from === _.get(link, 'source.data.id') &&
-            item.to === _.get(link, 'target.data.id'))[0]
+            (item.from === _.get(link, 'source.data.id') &&
+            item.to === _.get(link, 'target.data.id')) ||
+            (item.from === _.get(link, 'target.data.id') &&
+            item.to === _.get(link, 'source.data.id')))[0]
         }
       })
       if (!Object.keys(linksInfo).length) {
@@ -80,7 +82,7 @@ const Svg: any = (props: any) => {
         links: []
       }
     }
-  }, [treeData, edges, width, height])
+  }, [treeData, edges])
 
   // expand/collapse children event
   const expColEvent = (nodeId: string) => {

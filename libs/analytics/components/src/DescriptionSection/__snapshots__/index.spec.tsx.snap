@@ -3,7 +3,7 @@
 exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
   >
     <span
       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -21,7 +21,7 @@ exports[`DescriptionRow should match snapshot 1`] = `
 exports[`DescriptionRow should match snapshot 2`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
   >
     <span
       class="styledComponents__TextContent-sc-1l4qm8r-0"
@@ -100,7 +100,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -146,7 +146,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -192,7 +192,7 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -283,7 +283,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -307,7 +307,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
@@ -331,7 +331,7 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 edWBLc"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
                     <span
                       class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"

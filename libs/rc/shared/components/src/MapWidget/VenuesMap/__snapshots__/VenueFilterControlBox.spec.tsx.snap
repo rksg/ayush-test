@@ -29,22 +29,18 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
       <span>
         <span
-          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+          class="anticon"
+          role="img"
         >
-          <span
-            class="anticon"
-            role="img"
-          >
-            <svg
-              aria-hidden="true"
-              class="styledComponents__VenueMarkerRedIcon-sc-1pind18-6 jnwUdv"
-              data-testid="VenueMarkerRed"
-              fill="currentColor"
-              focusable="false"
-              height="1em"
-              width="1em"
-            />
-          </span>
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerRedIcon-sc-1pind18-6 jnwUdv"
+            data-testid="VenueMarkerRed"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          />
         </span>
       </span>
     </label>
@@ -67,22 +63,18 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
       <span>
         <span
-          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+          class="anticon"
+          role="img"
         >
-          <span
-            class="anticon"
-            role="img"
-          >
-            <svg
-              aria-hidden="true"
-              class="styledComponents__VenueMarkerOrangeIcon-sc-1pind18-5 dxBNFv"
-              data-testid="VenueMarkerOrange"
-              fill="currentColor"
-              focusable="false"
-              height="1em"
-              width="1em"
-            />
-          </span>
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerOrangeIcon-sc-1pind18-5 dxBNFv"
+            data-testid="VenueMarkerOrange"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          />
         </span>
       </span>
     </label>
@@ -104,22 +96,18 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
       <span>
         <span
-          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+          class="anticon"
+          role="img"
         >
-          <span
-            class="anticon"
-            role="img"
-          >
-            <svg
-              aria-hidden="true"
-              class="styledComponents__VenueMarkerGreyIcon-sc-1pind18-4 djSXpT"
-              data-testid="VenueMarkerGrey"
-              fill="currentColor"
-              focusable="false"
-              height="1em"
-              width="1em"
-            />
-          </span>
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerGreyIcon-sc-1pind18-4 djSXpT"
+            data-testid="VenueMarkerGrey"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          />
         </span>
       </span>
     </label>
@@ -142,22 +130,18 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
       <span>
         <span
-          class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+          class="anticon"
+          role="img"
         >
-          <span
-            class="anticon"
-            role="img"
-          >
-            <svg
-              aria-hidden="true"
-              class="styledComponents__VenueMarkerGreenIcon-sc-1pind18-3 fnlrCC"
-              data-testid="VenueMarkerGreen"
-              fill="currentColor"
-              focusable="false"
-              height="1em"
-              width="1em"
-            />
-          </span>
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerGreenIcon-sc-1pind18-3 fnlrCC"
+            data-testid="VenueMarkerGreen"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          />
         </span>
       </span>
     </label>
