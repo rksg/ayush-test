@@ -2,5 +2,6 @@ export * from './StepsForm'
 
 export type {
   StepsFormProps,
-  StepFormProps
+  StepFormProps,
+  StepsFormGotoStepFn
 } from './types'

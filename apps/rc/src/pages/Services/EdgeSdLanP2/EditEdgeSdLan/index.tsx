@@ -1,8 +1,8 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }  from '@acx-ui/components'
-import { useEdgeSdLanActions } from '@acx-ui/rc/components'
+import { Loader, PageHeader, StepsFormGotoStepFn } from '@acx-ui/components'
+import { useEdgeSdLanActions }                     from '@acx-ui/rc/components'
 import {
   useGetEdgeSdLanP2Query } from '@acx-ui/rc/services'
 import {
@@ -42,8 +42,13 @@ const EditEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
+  const handleFinish = async (formData: EdgeSdLanFormModelP2, gotoStep: StepsFormGotoStepFn) => {
     try {
+      if (formData.isGuestTunnelEnabled && !formData.guestTunnelProfileId) {
+        gotoStep(1)
+        return
+      }
+
       const payload = {
         id: params.serviceId,
         venueId: formData.venueId,

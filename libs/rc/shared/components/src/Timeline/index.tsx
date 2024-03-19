@@ -3,9 +3,13 @@ import React, { useState } from 'react'
 import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
 
+import { StatusIcon }                        from '@acx-ui/components'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { PlusSquareSolid, MinusSquareSolid } from '@acx-ui/icons'
-import { TimelineStatus }                    from '@acx-ui/types'
+import { TimelineStatus, StatusIconProps }   from '@acx-ui/types'
+
+
+import { ActivityApCompatibilityTable } from '../ApCompatibility'
 
 import {
   ItemWrapper,
@@ -15,27 +19,8 @@ import {
   ExpanderWrapper,
   WithExpanderWrapper,
   Wrapper,
-  Step,
-  SuccessIcon,
-  FailIcon,
-  PendingsIcon,
-  InProgressIcon
+  Step
 } from './styledComponents'
-
-interface StatusIconProps { status: TimelineStatus}
-
-export const StatusIcon = (props: StatusIconProps) => {
-  switch(props.status) {
-    case 'SUCCESS':
-      return <SuccessIcon />
-    case 'PENDING':
-      return <PendingsIcon />
-    case 'INPROGRESS':
-      return <InProgressIcon />
-    case 'FAIL':
-      return <FailIcon />
-  }
-}
 
 const statusMap = {
   SUCCESS: defineMessage({ defaultMessage: 'Success' }),
@@ -47,21 +32,28 @@ const statusMap = {
 const StatusComp = (props: StatusIconProps) => {
   const { $t } = useIntl()
   return <StatusWrapper status={props.status}>
-    <StatusIcon status={props.status}/>{$t(statusMap[props.status])}
+    <StatusIcon status={props.status}/>
+    {$t(statusMap[props.status])}
+    <DescriptionWrapper>
+      {props.description ?? ''}
+    </DescriptionWrapper>
   </StatusWrapper>
 }
 
 export interface TimelineItem {
+  id: string,
   status: TimelineStatus,
   startDatetime: string,
   endDatetime: string,
   description: string,
   children?: React.ReactElement
   error?: string
-  type?: TimelineType
+  type?: TimelineType,
+  contentChildren?: React.ReactElement
 }
 
 interface TimelineProps {
+  requestId: string
   items: TimelineItem[]
   status: TimelineStatus
 }
@@ -72,9 +64,10 @@ enum TimelineType {
   FUTURE = 'future'
 }
 
-const Timeline = (props: TimelineProps) => {
+export const Timeline = (props: TimelineProps) => {
   const { $t } = useIntl()
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
+  const [ statusDescription, setStatusDescription ] = useState<string>()
 
   const currentStep = props.items.findIndex(item => !item.endDatetime)
   const modifiedProps = props.items.map((item, index) => {
@@ -111,9 +104,15 @@ const Timeline = (props: TimelineProps) => {
         <ContentWrapper>
           <WithExpanderWrapper>
             <div>
-              <StatusComp status={item.status}/>
+              <StatusComp status={item.status} description={statusDescription}/>
               <DescriptionWrapper
               >{item.description}</DescriptionWrapper>
+              { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+              {item.id === 'CheckApCompatibilities' ? (
+                <ActivityApCompatibilityTable
+                  requestId={props.requestId}
+                  updateActivityDesc={setStatusDescription} />)
+                : null}
             </div>
             <ExpanderWrapper onClick={()=> {
               const key = `${item.startDatetime}-${item.endDatetime}`
@@ -125,7 +124,6 @@ const Timeline = (props: TimelineProps) => {
                 : null}
             </ExpanderWrapper>
           </WithExpanderWrapper>
-          { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
         </ContentWrapper>
       </ItemWrapper>
     </AntTimeline.Item>
@@ -145,5 +143,3 @@ const Timeline = (props: TimelineProps) => {
     </AntTimeline>
   </Wrapper>
 }
-
-export { Timeline }

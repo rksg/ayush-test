@@ -1,17 +1,16 @@
-import React from 'react'
-
-import { storiesOf } from '@storybook/react'
-
-import { Timeline, TimelineItem } from '.'
+/* eslint-disable no-useless-escape */
+import { TimelineItem } from '../index'
 
 export const sample = [
   {
+    id: 'AddVenue',
     status: 'SUCCESS',
     startDatetime: '2022-12-20T07:55:03Z',
     endDatetime: '2022-12-20T07:55:04Z',
     description: 'AddVenue'
   },
   {
+    id: 'AddVenue',
     status: 'FAIL',
     startDatetime: '2022-12-20T08:00:00Z',
     endDatetime: '2022-12-20T08:05:00Z',
@@ -22,6 +21,7 @@ export const sample = [
     </div>
   },
   {
+    id: 'UpdateSwitchPosition',
     status: 'INPROGRESS',
     startDatetime: '2022-12-20T08:02:00Z',
     description: 'UpdateSwitchPosition',
@@ -30,6 +30,7 @@ export const sample = [
     </div>
   },
   {
+    id: 'UpdateSwitchPosition',
     status: 'INPROGRESS',
     startDatetime: '2022-12-20T08:03:00Z',
     description: 'UpdateSwitchPosition',
@@ -38,12 +39,8 @@ export const sample = [
     </div>
   },
   {
+    id: 'AddVenue',
     status: 'PENDING',
     description: 'AddVenue'
   }
 ] as TimelineItem[]
-
-storiesOf('Timeline', module)
-  .add('Basic', () => <Timeline items={sample} status='PENDING' />)
-
-export {}
