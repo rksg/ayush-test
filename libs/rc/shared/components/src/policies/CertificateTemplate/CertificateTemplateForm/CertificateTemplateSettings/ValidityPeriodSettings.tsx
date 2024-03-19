@@ -2,9 +2,9 @@ import { Form }    from 'antd'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { ExpirationDateSelector }               from '@acx-ui/rc/components'
 import { ExpirationDateEntity, ExpirationMode } from '@acx-ui/rc/utils'
 
+import { ExpirationDateSelector }     from '../../../../ExpirationDateSelector'
 import { onboardSettingsDescription } from '../../contentsMap'
 import { Description }                from '../../styledComponents'
 
