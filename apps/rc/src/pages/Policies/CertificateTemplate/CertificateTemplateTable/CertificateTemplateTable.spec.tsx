@@ -67,7 +67,7 @@ describe('CertificateTemplateTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /certificateTemplate1/ })
-    await userEvent.hover(within(row).getByTestId('template-count-tooltip'))
+    await userEvent.hover(within(row).getByText('2'))
     expect(await screen.findByRole('tooltip')).toHaveTextContent(/testCertificate/)
   })
 
@@ -81,8 +81,8 @@ describe('CertificateTemplateTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /certificateTemplate2/ })
-    await userEvent.hover(within(row).getByTestId('template-count-tooltip'))
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(/and 1 more.../)
+    await userEvent.hover(within(row).getByText('27'))
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(/And 1 More.../)
   })
 
   it('should delete selected row', async () => {

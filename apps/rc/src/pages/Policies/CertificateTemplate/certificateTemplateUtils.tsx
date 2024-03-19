@@ -1,7 +1,4 @@
-import { Fragment } from 'react'
-
-import { isEmpty } from 'lodash'
-import moment      from 'moment-timezone'
+import moment from 'moment-timezone'
 
 import { AlgorithmType, Certificate, CertificateExpirationType, CertificateStatusType, CertificateTemplateFormData, EXPIRATION_TIME_FORMAT, ExpirationDateEntity, ExpirationMode, ExpirationType, OnboardCA, CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                                                                                                                                                                                                                            from '@acx-ui/utils'
@@ -9,7 +6,7 @@ import { getIntl }                                                              
 
 import { Content, RenderType }                                                     from './CertificateTemplateTable/DetailDrawer'
 import { algorithmLabel, certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from './contentsMap'
-import { DescriptionText, TooltipTitle }                                           from './styledComponents'
+import { DescriptionText }                                                         from './styledComponents'
 
 export const MAX_CERTIFICATE_PER_TENANT = 10000
 export const DEFAULT_PLACEHOLDER = '--'
@@ -88,26 +85,6 @@ export const transferExpirationFormDataToPayload = (formData: CertificateTemplat
     ...setPayloadExpiration(formData.notBefore, { typeKey: 'notBeforeType', valueKey: 'notBeforeValue', dateKey: 'notBeforeDate' })
   }
 }
-
-export const getTooltipContent = (names: string[], title: string) => {
-  const { $t } = getIntl()
-  if (isEmpty(names)) return null
-  const showCount = 26
-  let formattedNameList = names?.slice(0, showCount).map((name, idx) => {
-    return <Fragment key={idx}>{name} <br /></Fragment>
-  })
-
-  if (names.length > showCount) {
-    formattedNameList.push(<Fragment key='more'>{$t({ defaultMessage: 'and {count} more...' },
-      { count: names.length - showCount })}</Fragment>)
-  };
-
-  return <>
-    <TooltipTitle>{title}</TooltipTitle>
-    {formattedNameList}
-  </>
-}
-
 
 export const getDisplayedCertificateStatus = (certificate: Certificate): string => {
   const { $t } = getIntl()

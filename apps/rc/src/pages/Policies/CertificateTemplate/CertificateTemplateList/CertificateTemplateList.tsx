@@ -20,10 +20,10 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
     useGetCertificateAuthoritiesQuery({ payload: { pageSize: 1, page: 1 } })
   const getCertificates = useGetCertificatesQuery({ payload: { pageSize: 1, page: 1 } })
 
-  const tabs: Record<CertificateCategoryType, () => JSX.Element> = {
-    [CertificateCategoryType.CERTIFICATE_TEMPLATE]: () => <CertificateTemplateTable/>,
-    [CertificateCategoryType.CERTIFICATE_AUTHORITY]: () => <CertificateAuthorityTable/>,
-    [CertificateCategoryType.CERTIFICATE]: () => <CertificateTable />
+  const tabs: Record<CertificateCategoryType, JSX.Element> = {
+    [CertificateCategoryType.CERTIFICATE_TEMPLATE]: <CertificateTemplateTable/>,
+    [CertificateCategoryType.CERTIFICATE_AUTHORITY]: <CertificateAuthorityTable/>,
+    [CertificateCategoryType.CERTIFICATE]: <CertificateTable />
   }
 
   const tabsPathMapping: Record<CertificateCategoryType, Path> = {
@@ -58,7 +58,6 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
       getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })
   }
 
-  const Tab = tabs[props.tabKey]
   const onTabChange = (tab: string) => {
     navigate(tabsPathMapping[tab as CertificateCategoryType])
   }
@@ -100,7 +99,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
           </Tabs>
         }
       />
-      {Tab && <Tab />}
+      {tabs[props.tabKey]}
     </>
   )
 }

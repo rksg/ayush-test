@@ -1,16 +1,17 @@
-import { Fragment, ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Loader, Table, TableProps, Tooltip, showActionModal }                                                                                from '@acx-ui/components'
+import { Button, Loader, Table, TableProps, showActionModal }                                                                                         from '@acx-ui/components'
+import { SimpleListTooltip }                                                                                                                          from '@acx-ui/rc/components'
 import { useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                      from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                               from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
 
-import { DEFAULT_PLACEHOLDER, MAX_CERTIFICATE_PER_TENANT, getTooltipContent } from '../certificateTemplateUtils'
-import { caTypeShortLabel, deleteDescription }                                from '../contentsMap'
+import { DEFAULT_PLACEHOLDER, MAX_CERTIFICATE_PER_TENANT } from '../certificateTemplateUtils'
+import { caTypeShortLabel, deleteDescription }             from '../contentsMap'
 
 
 export default function CertificateTemplateTable () {
@@ -94,17 +95,16 @@ export default function CertificateTemplateTable () {
       dataIndex: 'numberOfCertificates',
       key: 'numberOfCertificates',
       render: function (_, row) {
+        const displayText = row.certificateCount || 0
+        const items = row.certificateNames || []
         return (
-          <Tooltip
-            placement='bottom'
-            title={getTooltipContent(row.certificateNames || [],
-              $t({ defaultMessage: 'Certificate' }))}>
-            <Text
-              data-testid='template-count-tooltip'
-              underline={(row.certificateCount || 0) > 0}>
-              {row.certificateCount || DEFAULT_PLACEHOLDER}
-            </Text>
-          </Tooltip>)
+          row.certificateCount === 0 ? 0 :
+            <SimpleListTooltip
+              title={$t({ defaultMessage: 'Certificates' })}
+              displayText={displayText}
+              items={items}
+              maximum={26}
+            />)
       }
     },
     {

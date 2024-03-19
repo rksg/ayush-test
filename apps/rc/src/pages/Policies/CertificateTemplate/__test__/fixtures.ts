@@ -236,7 +236,7 @@ export const certificateTemplateList = {
       enabled: true,
       keyLength: 4096,
       algorithm: 'SHA_512',
-      certificateCount: 2,
+      certificateCount: 27,
       certificateNames: [
         'testCertificate1',
         'testCertificate2',

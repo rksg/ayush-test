@@ -56,7 +56,7 @@ describe('CertificateAuthorityTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /onboard2/ })
-    await userEvent.hover(within(row).getByTestId('template-count-tooltip'))
+    await userEvent.hover(within(row).getByText('3'))
     expect(await screen.findByRole('tooltip')).toHaveTextContent(/testCertificateTemplate/)
   })
 

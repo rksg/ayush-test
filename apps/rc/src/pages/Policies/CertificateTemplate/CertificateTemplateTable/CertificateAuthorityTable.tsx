@@ -5,14 +5,14 @@ import { Modal as AntModal }    from 'antd'
 import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
-import { Loader, TableProps, Table, Button, Tooltip, showActionModal }                          from '@acx-ui/components'
+import { Loader, TableProps, Table, Button, showActionModal }                                   from '@acx-ui/components'
+import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
 import { useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery }             from '@acx-ui/rc/services'
 import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                            from '@acx-ui/user'
 
-import EditCertificateAuthorityForm               from '../CertificateAuthorityForm/EditCertificateAuthorityForm'
-import { DEFAULT_PLACEHOLDER, getTooltipContent } from '../certificateTemplateUtils'
-import { deleteDescription }                      from '../contentsMap'
+import EditCertificateAuthorityForm from '../CertificateAuthorityForm/EditCertificateAuthorityForm'
+import { deleteDescription }        from '../contentsMap'
 
 import DetailDrawer from './DetailDrawer'
 
@@ -64,17 +64,17 @@ export default function CertificateAuthorityTable () {
       dataIndex: 'templateCount',
       key: 'templateCount',
       render: (_, row) => {
+        const displayText = row.templateCount || 0
+        const items = row.templateNames || []
         return (
-          <Tooltip
-            placement='bottom'
-            title={getTooltipContent(row.templateNames || [],
-              $t({ defaultMessage: 'Certificate Templates' }))}>
-            <Text
-              data-testid='template-count-tooltip'
-              underline={(row.templateCount || 0) > 0}>
-              {row.templateCount || DEFAULT_PLACEHOLDER}
-            </Text>
-          </Tooltip>)
+          row.templateCount === 0 ? 0 :
+            <SimpleListTooltip
+              title={$t({ defaultMessage: 'Certificate Templates' })}
+              displayText={displayText}
+              items={items}
+              maximum={26}
+            />
+        )
       }
     },
     {
