@@ -47,6 +47,12 @@ const mockSummary = {
       port: 1813,
       sharedSecret: 'xxxxxxxx'
     }
+  },
+  wlan: {
+    macAddressAuthenticationConfiguration: {
+      macAddressAuthentication: true,
+      macAuthMacFormat: 'aa:bb:cc:dd:ee:ff'
+    }
   }
 }
 
@@ -80,5 +86,22 @@ describe('AaaSummaryForm', () => {
       }
     )
     expect((await screen.findAllByText('Primary Server'))[1]).toBeVisible()
+  })
+  it('should render AAA summary with MAC Authentication enabled', async () => {
+    mockSummary.enableAccountingService = true
+    mockSummary.enableAuthProxy = false
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <AaaSummaryForm summaryData={mockSummary} />
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+    expect(await screen.findByText('MAC Authentication')).toBeVisible()
+    expect(await screen.findByText('MAC Address Format')).toBeVisible()
   })
 })
