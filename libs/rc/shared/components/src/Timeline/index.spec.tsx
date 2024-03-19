@@ -2,19 +2,22 @@ import { IntlProvider } from 'react-intl'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { sample } from './stories'
+import { sample } from './__tests__/stories'
 
 import { Timeline } from '.'
 
 describe('Timeline', () => {
+  const requestId = 'requestId'
   it('should render', async () => {
     const { asFragment } = render(<IntlProvider locale='en'>
-      <Timeline items={sample} status={'INPROGRESS'}/>
+      <Timeline requestId={requestId} items={sample} status={'INPROGRESS'}/>
     </IntlProvider>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle when expand', async () => {
-    render(<IntlProvider locale='en'><Timeline items={sample} status={'FAIL'}/></IntlProvider>)
+    render(<IntlProvider locale='en'>
+      <Timeline requestId={requestId} items={sample} status={'FAIL'}/>
+    </IntlProvider>)
     fireEvent.click((await screen.findAllByTestId('PlusSquareSolid'))[0])
     await screen.findByTestId('MinusSquareSolid')
     await screen.findAllByText('More fail content')
