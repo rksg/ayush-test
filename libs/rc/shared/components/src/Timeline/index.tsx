@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
@@ -67,7 +67,7 @@ enum TimelineType {
 export const Timeline = (props: TimelineProps) => {
   const { $t } = useIntl()
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
-  const [ statusDescription, setStatusDescription ] = useState<string>()
+  const [ statusDescription, setStatusDescription ] = useState<string>('')
 
   const currentStep = props.items.findIndex(item => !item.endDatetime)
   const modifiedProps = props.items.map((item, index) => {
@@ -91,43 +91,47 @@ export const Timeline = (props: TimelineProps) => {
     </AntTimeline.Item>
   )
 
-  const EndDot = (item: TimelineItem, index: number) => (
-    <AntTimeline.Item
-      key={`timeline-end-${index}`}
-      dot={<Step $state={item.type === TimelineType.PREVIOUS
-        ? TimelineType.PREVIOUS : TimelineType.FUTURE} />}>
-      <ItemWrapper>
-        { item.type === TimelineType.PREVIOUS
-          ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
-          : '--'
-        }
-        <ContentWrapper>
-          <WithExpanderWrapper>
-            <div>
-              <StatusComp status={item.status} description={statusDescription}/>
-              <DescriptionWrapper
-              >{item.description}</DescriptionWrapper>
-              { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
-              {item.id === 'CheckApCompatibilities' ? (
-                <ActivityApCompatibilityTable
-                  requestId={props.requestId}
-                  updateActivityDesc={setStatusDescription} />)
-                : null}
-            </div>
-            <ExpanderWrapper onClick={()=> {
-              const key = `${item.startDatetime}-${item.endDatetime}`
-              setExpand({ ...expand, [key]: !expand[key] })
-            }}>
-              {item.children
-                ? expand[`${item.startDatetime}-${item.endDatetime}`]
-                  ? <MinusSquareSolid/> : <PlusSquareSolid/>
-                : null}
-            </ExpanderWrapper>
-          </WithExpanderWrapper>
-        </ContentWrapper>
-      </ItemWrapper>
-    </AntTimeline.Item>
-  )
+  const EndDot = (item: TimelineItem, index: number) => {
+    const isShowCheckApCompatibilities = item.id === 'CheckApCompatibilities'
+    return (
+      <AntTimeline.Item
+        key={`timeline-end-${index}`}
+        dot={<Step $state={item.type === TimelineType.PREVIOUS
+          ? TimelineType.PREVIOUS : TimelineType.FUTURE} />}>
+        <ItemWrapper>
+          { item.type === TimelineType.PREVIOUS
+            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
+            : '--'
+          }
+          <ContentWrapper>
+            <WithExpanderWrapper>
+              <div>
+                <StatusComp
+                  status={item.status}
+                  description={isShowCheckApCompatibilities? statusDescription:''}/>
+                <DescriptionWrapper
+                >{item.description}</DescriptionWrapper>
+                { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+                {isShowCheckApCompatibilities ? (
+                  <ActivityApCompatibilityTable
+                    requestId={props.requestId}
+                    updateActivityDesc={setStatusDescription} />)
+                  : null}
+              </div>
+              <ExpanderWrapper onClick={()=> {
+                const key = `${item.startDatetime}-${item.endDatetime}`
+                setExpand({ ...expand, [key]: !expand[key] })
+              }}>
+                {item.children
+                  ? expand[`${item.startDatetime}-${item.endDatetime}`]
+                    ? <MinusSquareSolid/> : <PlusSquareSolid/>
+                  : null}
+              </ExpanderWrapper>
+            </WithExpanderWrapper>
+          </ContentWrapper>
+        </ItemWrapper>
+      </AntTimeline.Item>
+    )}
 
   return <Wrapper>
     <Descriptions>

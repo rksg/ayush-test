@@ -48,8 +48,12 @@ export const ActivityApCompatibilityTable = ({
           updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
         }
       }
+    } else {
+      setVisible(true)
+      setTotalCount(-1)
+      updateActivityDesc('')
     }
-  },[tableQuery.data?.data])
+  },[tableQuery.data?.data, requestId])
 
   const columns: TableProps<ActivityIncompatibleFeatures>['columns'] = [
     {
