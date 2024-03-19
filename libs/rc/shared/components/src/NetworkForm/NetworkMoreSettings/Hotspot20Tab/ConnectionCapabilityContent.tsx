@@ -1,6 +1,7 @@
-import { Hotspot20ConnectionCapabilityStatusEnum, portRegExp } from "@acx-ui/rc/utils"
-import { Form, FormInstance, Input, Select } from "antd"
-import { useIntl } from "react-intl"
+import { Form, FormInstance, Input, Select } from 'antd'
+import { useIntl }                           from 'react-intl'
+
+import { Hotspot20ConnectionCapabilityStatusEnum, portRegExp } from '@acx-ui/rc/utils'
 
 interface ConnectionCapabilityContentProps {
     drawerForm: FormInstance
@@ -12,10 +13,12 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
 
   const statusOptions = Object.keys(Hotspot20ConnectionCapabilityStatusEnum).map((key => {
     return (
-      { value: key, label: Hotspot20ConnectionCapabilityStatusEnum[key as keyof typeof Hotspot20ConnectionCapabilityStatusEnum] }
+      { value: key,
+        label: Hotspot20ConnectionCapabilityStatusEnum[
+          key as keyof typeof Hotspot20ConnectionCapabilityStatusEnum] }
     )
   }))
-  
+
   return <Form layout='vertical' form={drawerForm}>
     <Form.Item
       name='protocol'
@@ -27,7 +30,7 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
         { min: 1 },
         { max: 32 }
       ]}
-      children={<Input />} 
+      children={<Input />}
     />
     <Form.Item
       name='protocolNumber'
@@ -37,9 +40,9 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
         { required: true },
         { min: 0 },
         { max: 254 }
-      ]}>
-      <Input type='number'/>
-    </Form.Item>
+      ]}
+      children={<Input type='number' />}
+    />
     <Form.Item
       name='port'
       label={$t({ defaultMessage: 'Port' })}
@@ -48,22 +51,23 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
         { required: true },
         { min: 0 },
         { max: 65535 },
-        { validator: (_, value) => portRegExp(value)}
-      ]}>
-      <Input type='number'/>
-    </Form.Item>
+        { validator: (_, value) => portRegExp(value) }
+      ]}
+      children={<Input type='number'/>}
+    />
     <Form.Item
       name='status'
       label={$t({ defaultMessage: 'Status' })}
-      initialValue={Hotspot20ConnectionCapabilityStatusEnum.CLOSED}
       rules={[
         { required: true }
-      ]}>
-      <Select
-        onChange={(value) => drawerForm.setFieldValue('status', value)}
-        options={statusOptions}
-      />
-    </Form.Item>
+      ]}
+      children={
+        <Select
+          onChange={(value) => drawerForm.setFieldValue('status', value)}
+          options={statusOptions}
+        />
+      }
+    />
   </Form>
 }
 

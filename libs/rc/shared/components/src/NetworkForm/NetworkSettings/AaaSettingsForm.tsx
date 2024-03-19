@@ -11,6 +11,7 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
+  Button,
   StepsFormLegacy,
   Subtitle,
   Tooltip
@@ -195,7 +196,7 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-      {supportHotspot20 && hotspot20 ? (<Hotspot20Service />) : (<AaaService />)}
+        {supportHotspot20 && hotspot20 ? (<Hotspot20Service />) : (<AaaService />)}
       </div>
     </Space>
   )
@@ -318,7 +319,7 @@ function SettingsForm () {
     )
   }
 
-  function Hotspot20Service() {
+  function Hotspot20Service () {
     const [wifiOperatorId, setWifiOperatorId] = useState('')
     const [identityProviderId, setIdentityProviderId] = useState('')
 
@@ -329,6 +330,9 @@ function SettingsForm () {
     const handleProviderChange = (providerId: string) => {
       setIdentityProviderId(providerId)
     }
+
+    // const { operatorSelectOptions, operatorList }
+    //   = 
 
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -343,17 +347,19 @@ function SettingsForm () {
                   return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
                 }
                 return Promise.resolve()
-              }}
+              } }
             ]}
-            >
-            <Select
+          >
+            <Select placeholder={$t({ defaultMessage: 'Select...' })}
               onChange={handleOperatorChange}
-              value={wifiOperatorId}
-              placeholder={$t({ defaultMessage: 'Select...' })}>
-            </Select>
+              value={wifiOperatorId} />
           </Form.Item>
-        </>
-        <>
+
+          <Button type='link'
+            onClick={}
+            children={$t({ defaultMessage: 'Add' })}
+            style={{ paddingTop: '10px' }} />
+
           <Form.Item
             label='Identity Provider'
             name='hotspot20Identity'
@@ -361,18 +367,22 @@ function SettingsForm () {
               { required: true },
               { validator: (_, value) => {
                 if (value === 'Select...') {
-                  return Promise.reject($t({ defaultMessage: 'Please select the identity provider' }))
+                  return Promise.reject(
+                    $t({ defaultMessage: 'Please select the identity provider' }))
                 }
                 return Promise.resolve()
-              }}
+              } }
             ]}
-            >
-            <Select
+          >
+            <Select placeholder={$t({ defaultMessage: 'Select...' })}
               onChange={handleProviderChange}
-              value={identityProviderId}
-              placeholder={$t({ defaultMessage: 'Select...' })}>
-            </Select>
+              value={identityProviderId} />
           </Form.Item>
+
+          <Button type='link'
+            onClick={}
+            children={$t({ defaultMessage: 'Add' })}
+            style={{ paddingTop: '10px' }} />
         </>
       </Space>
     )
