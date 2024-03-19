@@ -7,7 +7,7 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
-  useGetEdgeSdLanViewDataListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
   useRebootEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
@@ -215,38 +215,57 @@ export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
 
 export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  const { scopedNetworkIds } = useGetEdgeSdLanViewDataListQuery({
+  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: { networkIds },
+      fields: [
+        'id',
+        'venueId',
+        'isGuestTunnelEnabled',
+        'tunnelProfileId',
+        'guestTunnelProfileId',
+        'networkIds',
+        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+      ],
       pageSize: 10000
     }
   }, {
-    skip: !networkIds || !isEdgeSdLanReady,
-    selectFromResult: ({ data }) => ({
-      scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
-    })
+    skip: !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
   })
 
-  return scopedNetworkIds
+  return {
+    sdLans: data?.data,
+    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
+  }
 }
 
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  const { networkVenueIds } = useGetEdgeSdLanViewDataListQuery({
+  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: { networkIds: [networkId] },
+      fields: [
+        'id',
+        'venueId',
+        'isGuestTunnelEnabled',
+        'tunnelProfileId',
+        'guestTunnelProfileId',
+        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+      ],
       pageSize: 10000
     }
   }, {
-    skip: !networkId || !isEdgeSdLanReady,
-    selectFromResult: ({ data }) => ({
-      networkVenueIds: data?.data.map(item => item.venueId)
-    })
+    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
   })
 
-  return networkVenueIds
+  return {
+    sdLansVenueMap: _.groupBy(data?.data, 'venueId'),
+    networkVenueIds: data?.data?.map(item => item.venueId)
+  }
 }
 
 export const checkSdLanScopedNetworkDeactivateAction =

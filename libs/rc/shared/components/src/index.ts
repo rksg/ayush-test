@@ -186,6 +186,7 @@ export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export { useEdgeSdLanActions } from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
+export { useGetNetworkTunnelInfo } from './EdgeSdLan/edgeSdLanUtils'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

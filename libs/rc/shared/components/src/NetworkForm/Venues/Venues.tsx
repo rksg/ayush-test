@@ -190,7 +190,7 @@ export function Venues (props: VenuesProps) {
         return !enabled
       },
       onClick: (rows) => {
-        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
           () => {
             handleActivateVenue(false, rows)
@@ -321,7 +321,7 @@ export function Venues (props: VenuesProps) {
             onClick={(checked, event) => {
               event.stopPropagation()
               if (!checked) {
-                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
                   [row.id],
                   () => {
                     handleActivateVenue(false, [row])

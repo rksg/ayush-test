@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
@@ -11,7 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   transformVLAN,
   transformAps,
@@ -21,7 +21,8 @@ import {
   NetworkVenueScheduleDialog,
   useSdLanScopedNetworks,
   checkSdLanScopedNetworkDeactivateAction,
-  renderConfigTemplateDetailsComponent
+  renderConfigTemplateDetailsComponent,
+  useGetNetworkTunnelInfo
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -128,7 +129,9 @@ export function VenueNetworksTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
+  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -283,7 +286,7 @@ export function VenueNetworksTab () {
             disabled={disabled}
             onClick={(checked, event) => {
               if (!checked) {
-                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks, [row.id], () => {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks.scopedNetworkIds, [row.id], () => {
                   activateNetwork(checked, row)
                 })
               } else {
@@ -303,6 +306,20 @@ export function VenueNetworksTab () {
         return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Network) {
+        if (Boolean(row.activated?.isActivated)) {
+          const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
+            sdlan.networkIds.includes(row.id))
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
     {
       key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
