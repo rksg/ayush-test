@@ -50,7 +50,6 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
-  const isClientIsolationSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.CLIENT_ISOLATION)
 
   const showSingleSessionIdAccounting = !isRadiusOptionsSupport
     && hasAccountingRadius(data, wlanData)
@@ -195,11 +194,9 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         </UI.FieldLabel>
       </UI.FieldLabel>
 
-      {isClientIsolationSupported &&
       <div style={{ maxWidth: '600px' }}>
         <ClientIsolationForm labelWidth={labelWidth} />
       </div>
-      }
 
       <>
         <UI.FieldLabel width={labelWidth}>
