@@ -4,6 +4,7 @@ import _         from 'lodash'
 
 import {
   EdgePortConfigFixtures,
+  EdgePortInfo,
   EdgePortTypeEnum,
   getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
@@ -57,7 +58,7 @@ const formPortConfigWithStatusIpWithoutCorePort = transformApiDataToFormListData
 const mockedOnTabChange = jest.fn()
 
 const mockedProps = {
-  statusData: mockPortInfo,
+  statusData: mockPortInfo as EdgePortInfo[],
   isEdgeSdLanRun: false,
   activeTab: '',
   onTabChange: mockedOnTabChange,

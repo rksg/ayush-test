@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                                           from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgePortInfo, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                         from '@acx-ui/test-utils'
 
 import { EdgePortsDataContext } from '../PortDataProvider'
 
@@ -11,13 +11,13 @@ import Lag from '.'
 
 const { mockEdgeList } = EdgeGeneralFixtures
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
-const { mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockPortInfo } = EdgePortConfigFixtures
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 const defaultPortsContextdata = {
   portData: [],
   lagData: mockedEdgeLagList.content as EdgeLag[],
-  portStatus: mockEdgePortStatus,
+  portStatus: mockPortInfo as EdgePortInfo[],
   isLoading: false,
   isFetching: false
 }
