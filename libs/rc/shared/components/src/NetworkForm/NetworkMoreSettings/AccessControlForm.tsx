@@ -84,6 +84,7 @@ const QUERY_DEFAULT_PAYLOAD = {
 
 export function AccessControlForm () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const [enabledProfile, setEnabledProfile] = useState(true)
 
   const { data } = useContext(NetworkFormContext)
@@ -147,14 +148,14 @@ export function AccessControlForm () {
           {$t({ defaultMessage: 'Access Control' })}
         </UI.Subtitle>
 
-        {!enabledProfile && <SaveAsAcProfileButton
+        {!isTemplate && !enabledProfile && <SaveAsAcProfileButton
           modalStatus={modalStatus}
           setModalStatus={setModalStatus} />}
-        <Button type='link' onClick={() => setEnabledProfile(!enabledProfile)}>
+        {!isTemplate && <Button type='link' onClick={() => setEnabledProfile(!enabledProfile)}>
           {enabledProfile ? $t({ defaultMessage: 'Select separate profiles' })
             : $t({ defaultMessage: 'Select Access Control profile' })
           }
-        </Button>
+        </Button>}
       </span>
       {enabledProfile ?
         // eslint-disable-next-line max-len

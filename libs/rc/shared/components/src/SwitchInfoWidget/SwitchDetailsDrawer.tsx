@@ -83,7 +83,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         />
         <Form.Item
           label={$t({ defaultMessage: 'Description' })}
-          children={switchDetail.venueDescription || $t({ defaultMessage: 'None' })}
+          children={switchDetail.description || $t({ defaultMessage: 'None' })}
         />
         <Divider/>
         { enableSwitchAdminPassword && isSupportAdminPassword && <Form.Item
