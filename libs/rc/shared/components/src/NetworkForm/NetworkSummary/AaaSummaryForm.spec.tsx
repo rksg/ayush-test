@@ -2,12 +2,12 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { render, screen }                                                   from '@acx-ui/test-utils'
 
 import { AaaSummaryForm } from './AaaSummaryForm'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockSummary = {
   name: 'test',

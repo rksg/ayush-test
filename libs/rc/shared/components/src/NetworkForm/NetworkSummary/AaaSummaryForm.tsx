@@ -4,7 +4,8 @@ import { Form }    from 'antd'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput } from '@acx-ui/components'
+import { PasswordInput }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
@@ -13,7 +14,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 export function AaaSummaryForm (props: {
   summaryData: NetworkSaveData
 }) {
@@ -40,7 +40,7 @@ export function AaaSummaryForm (props: {
         label={$t({ defaultMessage: 'MAC Authentication' })}
         children={
           summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
-          $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
     }
     {support8021xMacAuth &&
      summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
