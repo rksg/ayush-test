@@ -189,7 +189,7 @@ export const SettingsForm = () => {
                   <UI.ClusterSelectorHelper>
                     <InformationSolid />
                     {$t(messageMappings.setting_cluster_helper, {
-                      infoLink: <a href=''>
+                      infoLink: <a href='/'>
                         {$t({ defaultMessage: 'See more information' })}
                       </a>
                     })}
@@ -250,7 +250,7 @@ export const SettingsForm = () => {
                       <UI.ClusterSelectorHelper>
                         <InformationSolid />
                         {$t(messageMappings.setting_cluster_helper, {
-                          infoLink: <a href=''>
+                          infoLink: <a href='/'>
                             {$t({ defaultMessage: 'See more information' })}
                           </a>
                         })}

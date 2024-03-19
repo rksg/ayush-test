@@ -4,10 +4,8 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { Loader, useStepFormContext }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { EdgePortsGeneralBase, NodesTabs, TypeForm }                      from '@acx-ui/rc/components'
-import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgesPortStatusQuery } from '@acx-ui/rc/services'
+import { Loader, useStepFormContext }                from '@acx-ui/components'
+import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -47,34 +45,15 @@ interface PortSettingViewProps {
 
 const PortSettingView = (props: PortSettingViewProps) => {
   const { value: portSettings } = props
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { form } = useStepFormContext<InterfaceSettingsFormType>()
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const {
+    clusterInfo,
+    portsStatus,
+    edgeSdLanData,
+    isFetching
+  } = useContext(ClusterConfigWizardContext)
   const [activeTab, setActiveTab] = useState<string>('')
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
-
-  const { data: portsStatus, isFetching } = useGetEdgesPortStatusQuery({
-    payload: {
-      edgeIds: clusterInfo?.edgeList?.map(node => node.serialNumber)
-    }
-  }, {
-    skip: !Boolean(clusterInfo?.edgeList?.length)
-  })
-
-  const { edgeSdLanData, isEdgeSdLanFetching }
-    = useGetEdgeSdLanP2ViewDataListQuery(
-      { payload: {
-        filters: { edgeClusterId: [clusterInfo?.clusterId] },
-        fields: ['id', 'edgeClusterId']
-      } },
-      {
-        skip: !isEdgeSdLanHaReady,
-        selectFromResult: ({ data, isFetching }) => ({
-          edgeSdLanData: data?.data?.[0],
-          isEdgeSdLanFetching: isFetching
-        })
-      }
-    )
 
   const handleTabChange = (value: string) => {
     setActiveTab(value)
@@ -82,7 +61,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
 
   return (
     <Loader states={[{
-      isLoading: isEdgeSdLanFetching || !clusterInfo || isFetching
+      isLoading: isFetching || !clusterInfo
     }]}>
       <NodesTabs
         nodeList={clusterInfo?.edgeList}

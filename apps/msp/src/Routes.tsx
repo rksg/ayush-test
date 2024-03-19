@@ -8,7 +8,7 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm, AccessControlDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -37,10 +37,12 @@ import { AssignMspLicense }                        from './pages/Subscriptions/A
 import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
   const { tenantType } = getJwtTokenPayload()
   const isShowBrand360 =
-    tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR
+    isBrand360Enabled &&
+    (tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR)
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
@@ -138,6 +140,18 @@ function ConfigTemplatesRoutes () {
             type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
           })}
           element={<AccessControlForm editMode={false}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT
+          })}
+          element={<AccessControlForm editMode={true}/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL
+          })}
+          element={<AccessControlDetail />}
         />
         <Route path='networks/wireless/add' element={<NetworkForm />} />
         <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
