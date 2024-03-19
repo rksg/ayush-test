@@ -13,7 +13,9 @@ export interface DescriptionRowProps {
 
 export const DescriptionRow: React.FC<DescriptionRowProps> = (props) => {
   let textContent = <TextContent onClick={props.onClick}>{props.children}</TextContent>
-  if (props.tooltip) { textContent = <Tooltip title={props.tooltip}>{textContent}</Tooltip> }
+  if (props.tooltip) { textContent = <Tooltip title={props.tooltip} dottedUnderline={true}>
+    {textContent}
+  </Tooltip> }
   return textContent
 }
 

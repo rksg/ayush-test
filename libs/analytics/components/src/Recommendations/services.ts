@@ -115,6 +115,7 @@ export interface MutationResponse {
 
 interface SchedulePayload {
   id: string
+  type: string
   scheduledAt: string
 }
 interface ScheduleResponse {
@@ -459,14 +460,20 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
-      query: (payload) => ({
+    scheduleRecommendation: build.mutation<
+      ScheduleResponse, SchedulePayload & { isRecommendationRevertEnabled?: boolean }
+    >({
+      query: ({ isRecommendationRevertEnabled, ...payload }) => ({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
+            ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
           ) {
-            schedule(id: $id, scheduledAt: $scheduledAt) {
+            schedule(
+              id: $id,
+              ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
+              scheduledAt: $scheduledAt) {
               success
               errorMsg
               errorCode
@@ -475,6 +482,7 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           id: payload.id,
+          actionType: payload.type,
           scheduledAt: payload.scheduledAt
         }
       }),

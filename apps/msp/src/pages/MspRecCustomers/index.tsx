@@ -253,7 +253,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
+        const val = techPartnerAssignEcsEanbled
           ? mspUtils.transformTechPartnerCount(row.integratorCount)
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
@@ -280,7 +280,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
+        const val = techPartnerAssignEcsEanbled
           ? mspUtils.transformTechPartnerCount(row.installerCount)
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay
@@ -540,7 +540,8 @@ export function MspRecCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS End Customers' })}
+        title={isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
+          : $t({ defaultMessage: 'RUCKUS End Customers' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [
@@ -550,7 +551,8 @@ export function MspRecCustomers () {
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+                type='primary'>{ isHspSupportEnabled ? $t({ defaultMessage: 'Add Property' })
+                  : $t({ defaultMessage: 'Add Customer' })}</Button>
             </MspTenantLink>
           ]
           : [

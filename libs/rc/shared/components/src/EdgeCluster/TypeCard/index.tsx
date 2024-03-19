@@ -41,7 +41,7 @@ export const EdgeClusterTypeCard = ({
           bordered={false}
           actions={warningTooltip
             ? [<Tooltip title={warningTooltip}>
-              <UI.InformationSolidIcon />
+              <UI.WarningCircleSolidIcon />
             </Tooltip>]
             : undefined}
         >
