@@ -42,6 +42,7 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
@@ -57,8 +58,9 @@ function Layout () {
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
 
   const isShowBrand360 =
-    tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR
+    isBrand360Enabled &&
+    (tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR)
 
   const indexPath = isGuestManager
     ? '/users/guestsManager'
