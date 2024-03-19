@@ -1,11 +1,17 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                                                                           from '@acx-ui/feature-toggle'
-import { DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                                           from '@acx-ui/feature-toggle'
+import { ConfigTemplateType, DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                                                                                          from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useNetworkVxLanTunnelProfileInfo } from './utils'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from './utils'
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
 
 describe('Network utils test', () => {
   it('Test network types for show the RADIUS Options settings', () => {
@@ -269,6 +275,68 @@ describe('Network utils test', () => {
       expect(result.current.enableVxLan).toBe(false)
       expect(result.current.enableTunnel).toBe(false)
       expect(result.current.vxLanTunnels).toBe(undefined)
+    })
+  })
+
+  describe('useServicePolicyEnabledWithConfigTemplate', () => {
+    beforeEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    it('should return false if neither policy nor service config template', () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
+      )
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.VENUE))
+
+      expect(result.current).toBe(false)
+    })
+
+    it('should return true if policy config template and policy enabled', () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
+      )
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.ACCESS_CONTROL))
+
+      expect(result.current).toBe(true)
+    })
+
+    it('should return true if service config template and service enabled', () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
+      )
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
+
+      expect(result.current).toBe(true)
+    })
+
+    it('should return true if it is not a config template', () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
+      )
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
+      // eslint-disable-next-line max-len
+      const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
+
+      expect(result.current).toBe(true)
     })
   })
 })

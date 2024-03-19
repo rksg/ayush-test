@@ -18,7 +18,10 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.RADIUS]: false,
       [ConfigTemplateType.DHCP]: false,
       [ConfigTemplateType.ACCESS_CONTROL]: false,
-      [ConfigTemplateType.VLAN_POOL]: false
+      [ConfigTemplateType.PORTAL]: false,
+      [ConfigTemplateType.VLAN_POOL]: false,
+      [ConfigTemplateType.WIFI_CALLING]: false,
+      [ConfigTemplateType.CLIENT_ISOLATION]: false
     })
   })
 
@@ -36,7 +39,10 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.RADIUS]: true,
       [ConfigTemplateType.DHCP]: true,
       [ConfigTemplateType.ACCESS_CONTROL]: true,
-      [ConfigTemplateType.VLAN_POOL]: true
+      [ConfigTemplateType.PORTAL]: true,
+      [ConfigTemplateType.VLAN_POOL]: true,
+      [ConfigTemplateType.WIFI_CALLING]: true,
+      [ConfigTemplateType.CLIENT_ISOLATION]: false
     })
   })
 
@@ -54,7 +60,10 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.RADIUS]: true,
       [ConfigTemplateType.DHCP]: true,
       [ConfigTemplateType.ACCESS_CONTROL]: true,
-      [ConfigTemplateType.VLAN_POOL]: false
+      [ConfigTemplateType.PORTAL]: false,
+      [ConfigTemplateType.VLAN_POOL]: false,
+      [ConfigTemplateType.WIFI_CALLING]: false,
+      [ConfigTemplateType.CLIENT_ISOLATION]: false
     })
   })
 })

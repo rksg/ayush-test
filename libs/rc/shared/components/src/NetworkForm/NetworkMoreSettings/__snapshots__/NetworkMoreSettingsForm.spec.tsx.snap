@@ -484,7 +484,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     >
                       <button
                         aria-checked="false"
-                        class="ant-switch"
+                        class="ant-switch ant-switch-disabled"
+                        disabled=""
                         id="wlan_advancedCustomization_wifiCallingEnabled"
                         role="switch"
                         type="button"
@@ -516,51 +517,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input-content"
                     />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          style="max-width: 600px;"
-        >
-          <div
-            class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
-            width="250px"
-          >
-            Client Isolation
-            <div
-              class="ant-form-item"
-              style="margin-bottom: 10px;"
-            >
-              <div
-                class="ant-row ant-form-item-row"
-              >
-                <div
-                  class="ant-col ant-form-item-control"
-                >
-                  <div
-                    class="ant-form-item-control-input"
-                  >
-                    <div
-                      class="ant-form-item-control-input-content"
-                    >
-                      <button
-                        aria-checked="false"
-                        class="ant-switch"
-                        id="wlan_advancedCustomization_clientIsolation"
-                        role="switch"
-                        type="button"
-                      >
-                        <div
-                          class="ant-switch-handle"
-                        />
-                        <span
-                          class="ant-switch-inner"
-                        />
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
