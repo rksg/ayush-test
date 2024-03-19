@@ -65,6 +65,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/activity/query',
     newApi: true
   },
+  getActivityApCompatibilitiesList: {
+    method: 'post',
+    url: '/apCompatibilities/activities/:activityId/query',
+    newApi: true
+  },
   getEventList: {
     method: 'post',
     url: '/events/query',
