@@ -1,74 +1,107 @@
+
 import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-//import { useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { useNetworkListQuery, useNetworkTableQuery } from '@acx-ui/rc/services'
+import {
+  IdentityProviderViewModel,
+  Network,
+  NetworkType,
+  NetworkTypeEnum,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 
-export function IdentityProviderInstancesTable () {
+
+const defaultNetworkPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'nwSubType',
+    'venues',
+    'id',
+    'securityProtocol'
+  ],
+  page: 1,
+  pageSize: 1024
+}
+
+
+export function IdentityProviderInstancesTable (props: { data: IdentityProviderViewModel }) {
   const { $t } = useIntl()
-  /*
-  const tableQuery = useTableQuery({
-    useQuery: useGetApUsageByApSnmpQuery,
+  const { data } = props
+
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const networkIds = data?.networkIds || []
+
+  const tableQuery = useTableQuery<Network>({
+    useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
     defaultPayload: {
-      fields: ['apId', 'apName', 'venueId', 'venueName'],
-      page: 1,
-      pageSize: 25,
-      searchString: ''
+      ...defaultNetworkPayload,
+      filters: { id: networkIds }
     },
-    sorter: {
-      sortField: 'venueName',
-      sortOrder: 'DESC'
+    option: {
+      skip: !networkIds?.length
     }
   })
 
-  const columns: TableProps<ApSnmpApUsage>['columns'] = [
+  const columns: TableProps<Network>['columns'] = [
     {
-      key: 'networkName',
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'networkName',
+      dataIndex: 'name',
+      key: 'name',
       searchable: true,
       sorter: true,
-      render: function (_, row, __, highlightFn) {
-        const { apName, apId } = row
-        return (
-          <TenantLink to={`/devices/wifi/${apId}/details/overview`}>
-            {highlightFn(apName || '--')}
-          </TenantLink>
-        )
+      fixed: 'left',
+      render: (_, row) => {
+        return <TenantLink to={`networks/wireless/${row.id}/network-details/overview`}>
+          {row.name}
+        </TenantLink>
       }
     },
     {
-      key: 'venueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
-      dataIndex: 'venueName',
-      searchable: true,
+      title: $t({ defaultMessage: 'Type' }),
+      dataIndex: 'nwSubType',
       sorter: true,
-      defaultSortOrder: 'descend',
-      render: (_, row, __, highlightFn) => {
-        const { venueName, venueId } = row
+      key: 'nwSubType',
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
+        row={row}
+      />
+    },
+    {
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venues',
+      key: 'venues',
+      sorter: true,
+      render: (_, row) => {
+        const venueCount = row.venues?.count
         return (
-          <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
-            {highlightFn(venueName || '--')}
-          </TenantLink>
+          <TenantLink
+            to={`/networks/wireless/${row.id}/network-details/venues`}
+            children={venueCount || 0}
+          />
         )
       }
     }
   ]
-  */
+
 
   return (
     <Card title={$t({ defaultMessage: 'Instances ({count})' },
-      { count: 0 } //tableQuery.data?.totalCount }
+      { count: tableQuery.data?.totalCount }
     )}>
-      {/*
+      <Loader states={[tableQuery]} >
         <Table
           columns={columns}
-          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
-          rowKey='apId'
+          rowKey='id'
         />
-        */}
+      </Loader>
     </Card>
   )
 }

@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 
-import { Form, Input, Space }        from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Form, Input, InputRef, Space } from 'antd'
+import { FormattedMessage, useIntl }    from 'react-intl'
 
 import { Drawer, Select, cssStr }                                                  from '@acx-ui/components'
 import { IdentityProviderActionType, RoamConsortiumType, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
@@ -89,9 +89,20 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
   }
 
   const oids = Array.from({ length: oidType })
+  const oidsRef = React.useMemo(
+    () => oids.map(()=> React.createRef<InputRef>()),
+    [oids.join(',')])
 
   const handleOidTypeChanged = (value: number) => {
     setOidType(value)
+  }
+
+  const handleOidChanged = (value: string, index: number) => {
+    if (value.length >=2) {
+      // change foucs
+      const nextIndex = index + 1
+      oidsRef[nextIndex]?.current?.focus()
+    }
   }
 
 
@@ -132,6 +143,9 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
                 maxLength={2}
                 style={{ width: '42px' }}
                 placeholder={'00'}
+                status={(errorOidIndexes.includes(index)) ? 'error' : undefined}
+                ref={oidsRef[index]}
+                onChange={(e) => handleOidChanged(e.target.value, index)}
               />}
             />
           ))}

@@ -5,6 +5,7 @@ import { SimpleListTooltip }                             from '@acx-ui/rc/compon
 import {
   doProfileDelete,
   useDeleteIdentityProviderMutation,
+  useGetAAAPolicyViewModelListQuery,
   useGetIdentityProviderListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -17,7 +18,8 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   IdentityProviderViewModel,
-  Network
+  Network,
+  AAAViewModalType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
@@ -25,10 +27,14 @@ import { filterByAccess, hasAccess }                               from '@acx-ui
 import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'naiRealms', 'plmns', 'roamingConsortiumOIs',
-    'authRadiusId', 'accountingRadiusId', 'networkIds', 'venueIds' ],
+  fields: ['id', 'name',
+    'naiRealms', 'plmns', 'roamingConsortiumOIs',
+    'authRadiusId', 'accountingRadiusId', 'networkIds' ],
   searchString: '',
-  filters: {}
+  searchTargetFields: ['name'],
+  filters: {},
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
 
 
@@ -152,6 +158,24 @@ function useColumns () {
     })
   })
 
+  // eslint-disable-next-line max-len
+  const { radiusNameMap }: { radiusNameMap: KeyValue<string, string>[] } = useGetAAAPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
+      radiusNameMap: data?.data
+        ? data.data.map(radius => ({ key: radius.id!, value: radius.name }))
+        : emptyResult
+    })
+  })
+
   const columns: TableProps<IdentityProviderViewModel>['columns'] = [
     {
       key: 'name',
@@ -211,23 +235,39 @@ function useColumns () {
       )
     },
     {
-      key: 'authRadiusCount',
+      key: 'authRadiusId',
       title: $t({ defaultMessage: 'Auth Service' }),
-      dataIndex: 'authRadiusCount',
+      dataIndex: 'authRadiusId',
       align: 'center',
       sorter: false,
       render: (_, { authRadiusId }) => {
-        return authRadiusId ? 1 : 0
+        return (!authRadiusId)
+          ? ''
+          : (
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.AAA,
+              oper: PolicyOperation.DETAIL,
+              policyId: authRadiusId })}>
+              {radiusNameMap.find(radius => radius.key === authRadiusId)?.value || ''}
+            </TenantLink>)
       }
     },
     {
-      key: 'accountingRadiusCount',
+      key: 'accountingRadiusId',
       title: $t({ defaultMessage: 'Accounting Service' }),
-      dataIndex: 'accountingRadiusCount',
+      dataIndex: 'accountingRadiusId',
       align: 'center',
       sorter: false,
       render: (_, { accountingRadiusId }) => {
-        return accountingRadiusId ? 1 : 0
+        return (!accountingRadiusId)
+          ? 'Disabled'
+          : (
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.AAA,
+              oper: PolicyOperation.DETAIL,
+              policyId: accountingRadiusId })}>
+              {radiusNameMap.find(radius => radius.key === accountingRadiusId)?.value || ''}
+            </TenantLink>)
       }
     },
     {
