@@ -67,6 +67,7 @@ export interface ApplicationDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -166,6 +167,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -288,6 +290,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(appPolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -300,6 +306,13 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)
     )
   }, [isOnlyViewMode, applicationPolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -621,7 +634,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   </>
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 

@@ -4,8 +4,7 @@ import { Form }  from 'antd'
 import { EdgePortConfigFixtures }     from '@acx-ui/rc/utils'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-
-import { EdgeClusterInterfaceSettingForm } from '.'
+import { EdgeClusterInterfaceSettingForm } from './EdgeClusterInterfaceSettingForm'
 
 const { mockClusterInterfaceOptionData } = EdgePortConfigFixtures
 
@@ -34,6 +33,23 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+const mockedAllNodeData = {
+  'serialNumber-1': {
+    nodeName: 'Smart Edge 1',
+    serialNumber: 'serialNumber-1',
+    interfaceName: 'lag0',
+    ip: '192.168.11.136',
+    subnet: '255.255.255.0'
+  },
+  'serialNumber-2': {
+    nodeName: 'Smart Edge 2',
+    serialNumber: 'serialNumber-2',
+    interfaceName: 'lag0',
+    ip: '192.168.11.135',
+    subnet: '255.255.255.0'
+  }
+}
 
 describe('EdgeClusterInterfaceSettingForm', () => {
 
@@ -87,30 +103,14 @@ describe('EdgeClusterInterfaceSettingForm', () => {
       return form
     })
 
-    const mockedAllNodeData = [
-      {
-        nodeName: 'Smart Edge 1',
-        serialNumber: 'serialNumber-1',
-        interfaceName: 'lag0',
-        ip: '192.168.11.136',
-        subnet: '255.255.255.0'
-      },
-      {
-        nodeName: 'Smart Edge 2',
-        serialNumber: 'serialNumber-2',
-        interfaceName: 'lag0',
-        ip: '192.168.12.136',
-        subnet: '255.255.255.0'
-      }
-    ]
+    formRef.current.setFieldsValue(mockedAllNodeData)
 
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
-          currentNodetData={mockedAllNodeData[0]}
-          allNodeData={mockedAllNodeData}
+          rootNamePath={['serialNumber-1']}
         />
       </Form>
     )
@@ -132,30 +132,14 @@ describe('EdgeClusterInterfaceSettingForm', () => {
       return form
     })
 
-    const mockedAllNodeData = [
-      {
-        nodeName: 'Smart Edge 1',
-        serialNumber: 'serialNumber-1',
-        interfaceName: 'lag0',
-        ip: '192.168.11.136',
-        subnet: '255.255.255.0'
-      },
-      {
-        nodeName: 'Smart Edge 2',
-        serialNumber: 'serialNumber-2',
-        interfaceName: 'lag0',
-        ip: '192.168.12.136',
-        subnet: '255.255.255.0'
-      }
-    ]
+    formRef.current.setFieldsValue(mockedAllNodeData)
 
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
-          currentNodetData={mockedAllNodeData[0]}
-          allNodeData={mockedAllNodeData}
+          rootNamePath={['serialNumber-1']}
         />
       </Form>
     )
@@ -166,8 +150,37 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     )
     const ipField = screen.getByRole('textbox', { name: 'IP Address' })
     await userEvent.clear(ipField)
-    await userEvent.type(ipField, '192.168.12.136')
+    await userEvent.type(ipField, '192.168.11.135')
     // eslint-disable-next-line max-len
     expect(await screen.findByText('IP address cannot be the same as other nodes.')).toBeVisible()
+  })
+
+  it('Should block by different port type', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    formRef.current.setFieldsValue({
+      'serialNumber-1': mockedAllNodeData['serialNumber-1'],
+      'serialNumber-2': {
+        ...mockedAllNodeData['serialNumber-2'],
+        interfaceName: 'port1'
+      }
+    })
+
+    render(
+      <Form form={formRef.current}>
+        <EdgeClusterInterfaceSettingForm
+          form={formRef.current}
+          interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+          rootNamePath={['serialNumber-1']}
+        />
+      </Form>
+    )
+
+    formRef.current.submit()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')).toBeVisible()
   })
 })
