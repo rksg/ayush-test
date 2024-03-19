@@ -147,11 +147,28 @@ mockEdgeOnlyLanPortConfigWithoutCorePort.ports[0].corePortEnabled = false
 export const mockEdgePortStatus = [
   {
     portId: mockEdgePortConfig.ports[0].id,
-    ip: '10.206.78.152'
+    ip: '10.206.78.152',
+    portName: 'port1'
   },
   {
     portId: mockEdgePortConfig.ports[1].id,
-    ip: ''
+    ip: '',
+    portName: 'port2'
+  },
+  {
+    portId: mockEdgePortConfig.ports[2].id,
+    ip: '10.206.78.153',
+    portName: 'port3'
+  },
+  {
+    portId: mockEdgePortConfig.ports[3].id,
+    ip: '10.206.78.154',
+    portName: 'port4'
+  },
+  {
+    portId: mockEdgePortConfig.ports[4].id,
+    ip: '10.206.78.155',
+    portName: 'port5'
   }
 ]
 

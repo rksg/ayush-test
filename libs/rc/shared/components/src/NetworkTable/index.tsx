@@ -154,13 +154,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
-                    'certain features in this venue.'
+                    'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '14px',
-                    width: '14px',
-                    marginBottom: '-2px',
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
                     marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
                 /> : []

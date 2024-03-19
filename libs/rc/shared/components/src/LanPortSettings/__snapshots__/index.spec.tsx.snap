@@ -91,13 +91,9 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             Port type
-            <span
-              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-            >
-              <svg
-                data-testid="QuestionMarkCircleOutlined"
-              />
-            </span>
+            <svg
+              data-testid="QuestionMarkCircleOutlined"
+            />
           </label>
         </div>
         <div
@@ -189,13 +185,9 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             VLAN untag ID
-            <span
-              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-            >
-              <svg
-                data-testid="QuestionMarkCircleOutlined"
-              />
-            </span>
+            <svg
+              data-testid="QuestionMarkCircleOutlined"
+            />
           </label>
         </div>
         <div
@@ -306,13 +298,9 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             VLAN member
-            <span
-              class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-            >
-              <svg
-                data-testid="QuestionMarkCircleOutlined"
-              />
-            </span>
+            <svg
+              data-testid="QuestionMarkCircleOutlined"
+            />
           </label>
         </div>
         <div

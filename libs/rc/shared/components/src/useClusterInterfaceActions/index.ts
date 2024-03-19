@@ -89,7 +89,10 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
     const payload = {} as ClusterNetworkSettings
     for(let interfaceData of data) {
       const oldInterfaceData = getOldInterfaceConfig(interfaceData.serialNumber)
-      if(oldInterfaceData?.portName.charAt(0) !== interfaceData.interfaceName?.charAt(0)) {
+      if(
+        oldInterfaceData &&
+        oldInterfaceData?.portName.charAt(0) !== interfaceData.interfaceName?.charAt(0)
+      ) {
         if(oldInterfaceData?.portName.toLocaleLowerCase()?.includes('lag')) {
           payload.lagSettings = await organizeToLagSetting(interfaceData, payload, oldInterfaceData)
         } else {

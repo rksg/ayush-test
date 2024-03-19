@@ -16,7 +16,7 @@ interface StaticRoutesDrawerProps {
   allRoutes: EdgeStaticRoute[] // For validation
 }
 
-const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
+export const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
   const { visible, setVisible, addRoute, editRoute, data, allRoutes } = props
@@ -154,5 +154,3 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     />
   )
 }
-
-export default StaticRoutesDrawer
