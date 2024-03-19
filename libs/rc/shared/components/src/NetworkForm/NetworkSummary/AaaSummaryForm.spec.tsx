@@ -7,6 +7,7 @@ import { Provider }                                                         from
 import { render, screen }                                                   from '@acx-ui/test-utils'
 
 import { AaaSummaryForm } from './AaaSummaryForm'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const mockSummary = {
   name: 'test',
@@ -88,7 +89,8 @@ describe('AaaSummaryForm', () => {
     expect((await screen.findAllByText('Primary Server'))[1]).toBeVisible()
   })
   it('should render AAA summary with MAC Authentication enabled', async () => {
-    mockSummary.enableAccountingService = true
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockSummary.enableAccountingService = false
     mockSummary.enableAuthProxy = false
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(

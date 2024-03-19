@@ -13,11 +13,13 @@ import {
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 export function AaaSummaryForm (props: {
   summaryData: NetworkSaveData
 }) {
   const { summaryData } = props
   const { $t } = useIntl()
+  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   return (<>
     {get(summaryData, 'authRadius.primary.ip') !== undefined && <>
       {$t({ defaultMessage: 'Authentication Service' })}
@@ -33,11 +35,15 @@ export function AaaSummaryForm (props: {
         data={summaryData}
       />
     </>}
-    <Form.Item
-      label={$t({ defaultMessage: 'MAC Authentication' })}
-      children={summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
-        $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
-    {summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
+    {support8021xMacAuth &&
+      <Form.Item
+        label={$t({ defaultMessage: 'MAC Authentication' })}
+        children={
+          summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
+          $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+    }
+    {support8021xMacAuth &&
+     summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
       <Form.Item
         label={$t({ defaultMessage: 'MAC Address Format' })}
         children={
