@@ -3,8 +3,8 @@
 exports[`Topology AP Card should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 eXKnGb"
-    type="no-border"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    type="default"
   >
     <div
       class="ant-card"
@@ -52,21 +52,19 @@ exports[`Topology AP Card should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-evZas fBelZT"
-                style="padding: 0px;"
-                type="button"
+              <a
+                class="sc-breuTD iOAXfV"
+                href="/undefined/t/devices/wifi/B4:79:C8:3E:C8:70/details/overview"
               >
-                <span>
-                  R760-181-66
-                </span>
-              </button>
+                R760-181-66
+              </a>
             </div>
             <div
               class="ant-space-item"
             >
               <button
                 class="ant-btn ant-btn-link ant-btn-sm ant-btn-icon-only"
+                data-testid="closeNodeTooltip"
                 type="button"
               >
                 <svg
@@ -272,10 +270,10 @@ exports[`Topology AP Card should render correctly 1`] = `
                             class="styledComponents__NoLabel-sc-xapams-1 hllmcF"
                           >
                             <div
-                              class="sc-kDDrLX hTIfua"
+                              class="sc-iqcoie gPlTRP"
                             >
                               <div
-                                class="sc-iqcoie eRfzvZ"
+                                class="sc-crXcEl jizGvy"
                               >
                                 <label />
                                 <label>
@@ -301,7 +299,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </label>
                               </div>
                               <div
-                                class="sc-crXcEl jwHztE"
+                                class="sc-evZas kHxYQQ"
                               >
                                 <label>
                                   <h5
@@ -321,7 +319,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-crXcEl jwHztE"
+                                class="sc-evZas kHxYQQ"
                               >
                                 <label>
                                   <h5
@@ -341,7 +339,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-crXcEl jwHztE"
+                                class="sc-evZas kHxYQQ"
                               >
                                 <label>
                                   <h5
@@ -361,7 +359,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-crXcEl jwHztE"
+                                class="sc-evZas kHxYQQ"
                               >
                                 <label>
                                   <h5
@@ -381,7 +379,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-crXcEl jwHztE"
+                                class="sc-evZas kHxYQQ"
                               >
                                 <label>
                                   <h5

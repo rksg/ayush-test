@@ -440,7 +440,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ id: 'test', scheduledAt: '7-15-2023' })
+      result.current[0]({ id: 'test', type: 'Apply', scheduledAt: '7-15-2023' })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

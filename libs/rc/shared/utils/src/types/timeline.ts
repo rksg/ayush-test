@@ -78,6 +78,22 @@ export interface Activity {
   linkTemplate?: string
 }
 
+export interface ActivityApCompatibility {
+  data: ActivityIncompatibleFeatures[]
+  page: number
+  totalCount: number
+}
+
+export interface ActivityApCompatibilityExtraParams {
+  incompatibleCount: number
+}
+
+export interface ActivityIncompatibleFeatures {
+  id: string
+  name: string
+  incompatibleFeatures: string[]
+}
+
 export interface EventBase {
   apMac: string
   adminName?: string

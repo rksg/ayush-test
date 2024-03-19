@@ -30,7 +30,7 @@ export enum SecurityOptionsDescription {
 }
 
 export enum WisprSecurityEnum {
-  NONE = 'Select...',
+  NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
 }

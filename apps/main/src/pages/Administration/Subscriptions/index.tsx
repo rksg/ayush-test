@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
+
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
 import { Alert, Button, Space } from 'antd'
+import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
@@ -69,6 +71,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'future',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
@@ -197,9 +203,13 @@ const SubscriptionTable = () => {
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'active'
-          ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+        if (row.status === 'active') {
+          return $t({ defaultMessage: 'Active' })
+        } else if (row.status === 'future') {
+          return $t({ defaultMessage: 'Future' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
       }
     }
   ]
@@ -237,15 +247,16 @@ const SubscriptionTable = () => {
     }
   ]
 
-  const GetStatus = (expirationDate: string) => {
+  const GetStatus = (effectiveDate: string, expirationDate: string) => {
     const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
-    return remainingDays < 0 ? 'expired' : 'active'
+    const isFuture = moment(new Date()).isBefore(effectiveDate)
+    return remainingDays < 0 ? 'expired' : isFuture ? 'future' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      status: GetStatus(response?.expirationDate)
+      status: GetStatus(response?.effectiveDate, response?.expirationDate)
     }
   }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
 

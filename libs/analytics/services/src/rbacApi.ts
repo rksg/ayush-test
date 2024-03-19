@@ -226,6 +226,17 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           responseHandler: 'text'
         }
       }
+    }),
+    updateAccount: build.mutation<string, { account: string, support: boolean }>({
+      query: ({ account, support }) => {
+        return {
+          url: `/accounts/${account}`,
+          method: 'put',
+          credentials: 'include',
+          body: { support },
+          responseHandler: 'text'
+        }
+      }
     })
   })
 })
@@ -244,7 +255,8 @@ export const {
   useInviteUserMutation,
   useRefreshUserDetailsMutation,
   useDeleteUserResourceGroupMutation,
-  useDeleteInvitationMutation
+  useDeleteInvitationMutation,
+  useUpdateAccountMutation
 } = rbacApi
 
 export function useSystems () {

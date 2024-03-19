@@ -28,7 +28,9 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
-  useTableQuery
+  useTableQuery,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -73,6 +75,16 @@ const EdgeSdLanTable = () => {
     },
     pagination: { settingsId }
   })
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.guestEdgeClusterId?.length) {
+      customFilters['isGuestTunnelEnabled'] = [true]
+    } else {
+      delete customFilters['guestEdgeClusterId']
+      delete customFilters['isGuestTunnelEnabled']
+    }
+    tableQuery.handleFilterChange(customFilters,customSearch)
+  }
 
   const [deleteSdLan, { isLoading: isDeleting }] = useDeleteEdgeSdLanMutation()
 
@@ -148,7 +160,7 @@ const EdgeSdLanTable = () => {
       filterable: clusterOptions,
       render: (__, row) => {
         return <TenantLink
-          to={`/devices/edge/${row.edgeClusterId}/details/overview`}
+          to={`devices/edge/cluster/${row.edgeClusterId}/edit/cluster-details`}
         >
           {row.edgeClusterName}
         </TenantLink>
@@ -163,7 +175,7 @@ const EdgeSdLanTable = () => {
       render: (__, row) => {
         return (row.isGuestTunnelEnabled && row.guestEdgeClusterId)
           ? <TenantLink
-            to={`/devices/edge/${row.guestEdgeClusterId}/details/overview`}
+            to={`devices/edge/cluster/${row.guestEdgeClusterId}/edit/cluster-details`}
           >
             {row.guestEdgeClusterName}
           </TenantLink>
@@ -337,7 +349,7 @@ const EdgeSdLanTable = () => {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           enableApiFilter
         />
       </Loader>

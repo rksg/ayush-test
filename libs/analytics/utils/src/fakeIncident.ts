@@ -175,11 +175,8 @@ export const fakeIncidentSwitchMemory = fakeIncident({
     }
   ],
   metadata: {
-    dominant: {},
-    rootCauseChecks: {
-      checks: [],
-      params: {}
-    }
+    upper_bound: 0.95,
+    projected_time: 0
   },
   clientCount: -1,
   impactedClientCount: -1,
