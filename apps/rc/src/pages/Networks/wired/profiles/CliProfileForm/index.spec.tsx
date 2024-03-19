@@ -132,7 +132,8 @@ describe('Cli Profile Form', () => {
       )
       await userEvent.click(await screen.findByLabelText('ICX7150-24'))
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         models: ['ICX7150-24'],
         name: 'testCliProfile',
         selectedFamily: ['ICX7150', 'ICX7550', 'ICX7650', 'ICX7850', 'ICX8200']
@@ -211,7 +212,8 @@ describe('Cli Profile Form', () => {
       const row1 = await screen.findByRole('row', { name: /My-Venue/i })
       await userEvent.click(await within(row1).findByRole('checkbox'))
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         venues: ['a98653366d2240b9ae370e48fab3a9a1']
       })
     })
@@ -274,7 +276,8 @@ describe('Cli Profile Form', () => {
       expect(await screen.findByText('My-Venue')).toBeVisible()
       expect(await screen.findByText('manager registrartest')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith(values)
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual(values)
     })
   })
 

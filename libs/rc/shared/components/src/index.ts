@@ -86,6 +86,7 @@ export type { SwitchTableRefType } from './SwitchTable'
 export { SwitchPortTable, isLAGMemberPort, getInactiveTooltip } from './SwitchPortTable'
 export { EditPortDrawer } from './SwitchPortTable/editPortDrawer'
 export { SwitchLagModal } from './SwitchLagDrawer/SwitchLagModal'
+export { Timeline } from './Timeline'
 export { TimelineDrawer } from './TimelineDrawer'
 export { SwitchVeTable } from './SwitchVeTable'
 export { ToggleButton } from './ToggleButton'
@@ -193,7 +194,7 @@ export {
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
-  ApCompatibilityDrawer } from './ApCompatibilityDrawer'
+  ApCompatibilityDrawer } from './ApCompatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'
@@ -209,6 +210,12 @@ export type {
 export {
   useClusterInterfaceActions
 } from './EdgeFormItem/EdgeClusterInterfaceSettingForm/useClusterInterfaceActions'
+export { EditContext } from './EdgeFormItem/EdgeEditContext'
+export {
+  getFieldFullPath,
+  transformApiDataToFormListData
+} from './EdgeFormItem/EdgePortsGeneralBase/utils'
+export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
 
 export * from './services'
 export * from './policies'
