@@ -7,8 +7,6 @@ import { useNavigate, useParams }            from 'react-router-dom'
 
 import { Loader, StepsForm }   from '@acx-ui/components'
 import {
-  EdgeClusterInterfaceSettingForm,
-  EdgeClusterInterfaceSettingFormType,
   NodesTabs,
   TypeForm,
   useClusterInterfaceActions
@@ -16,7 +14,9 @@ import {
 import { EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
 import { useTenantLink }                      from '@acx-ui/react-router-dom'
 
-import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
+import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+
+import { EdgeClusterInterfaceSettingForm, EdgeClusterInterfaceSettingFormType } from './EdgeClusterInterfaceSettingForm'
 
 type ClusterInterfaceSettingsFormType = Record<
 EdgeSerialNumber,
@@ -49,7 +49,7 @@ export const ClusterInterfaceSettings = () => {
       const currentcClusterInterface = getTargetInterfaceConfig(edgeNode.serialNumber)
       result[edgeNode.serialNumber] = {
         interfaceName: currentcClusterInterface?.portName ?? '',
-        ip: currentcClusterInterface?.ip ?? '',
+        ip: currentcClusterInterface?.ip?.split('/')[0] ?? '',
         subnet: currentcClusterInterface?.subnet ?? ''
       }
       return result

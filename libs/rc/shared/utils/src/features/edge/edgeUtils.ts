@@ -283,3 +283,33 @@ export const validateSubnetIsConsistent = (
   }
   return Promise.resolve()
 }
+
+const isUnique = (value: string, index: number, array: string[]) => {
+  return array.indexOf(value) === array.lastIndexOf(value)
+}
+
+export const validateUniqueIp = (ips: string[], value?: string) => {
+  if(!Boolean(value)) return Promise.resolve()
+  const { $t } = getIntl()
+
+  if(ips.every(isUnique)) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
+}
+
+export const validateClusterInterface = (interfaceNames: string[]) => {
+  if((interfaceNames?.length ?? 0) <= 1) return Promise.resolve()
+  const { $t } = getIntl()
+  for(let i=0; i<interfaceNames.length; i++){
+    for(let j=i+1; j<interfaceNames.length; j++) {
+      if (interfaceNames[i].charAt(0) !== interfaceNames[j].charAt(0)) {
+        return Promise.reject(
+          $t({ defaultMessage: `Make sure you select the same interface type
+          (physical port or LAG) as that of another node in this cluster.` })
+        )
+      }
+    }
+  }
+  return Promise.resolve()
+}
