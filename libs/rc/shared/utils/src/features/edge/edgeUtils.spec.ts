@@ -1,6 +1,6 @@
 import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }   from './__tests__/fixtures'
+import { EdgeAlarmFixtures } from './__tests__/fixtures'
 import {
   allowRebootForStatus,
   allowResetForStatus,
@@ -10,7 +10,9 @@ import {
   getSuggestedIpRange,
   lanPortsubnetValidator,
   optionSorter,
-  validateSubnetIsConsistent
+  validateClusterInterface,
+  validateSubnetIsConsistent,
+  validateUniqueIp
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
@@ -190,5 +192,50 @@ describe('Edge utils', () => {
     }
     // eslint-disable-next-line max-len
     expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+  })
+
+  it('Test validateUniqueIp success', async () => {
+    const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp failed', async () => {
+    const allIps = ['1.1.1.1', '1.1.1.1']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).toBeCalledWith('IP address cannot be the same as other nodes.')
+  })
+
+  it('Test validateClusterInterface success', async () => {
+    const allIps = ['port2', 'port1']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateClusterInterface(allIps)
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateClusterInterface failed', async () => {
+    const allIps = ['port1', 'lag0']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateClusterInterface(allIps)
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    // eslint-disable-next-line max-len
+    expect(mockErrorFn).toBeCalledWith('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')
   })
 })

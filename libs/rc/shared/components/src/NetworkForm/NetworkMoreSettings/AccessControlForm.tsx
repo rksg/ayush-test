@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import {
   Checkbox,
@@ -20,12 +20,18 @@ import {
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
   useAddAccessControlProfileMutation,
-  useGetAccessControlProfileListQuery
+  useGetAccessControlProfileListQuery,
+  useAddAccessControlProfileTemplateMutation,
+  useGetL2AclPolicyTemplateListQuery,
+  useGetL3AclPolicyTemplateListQuery,
+  useGetDevicePolicyTemplateListQuery,
+  useGetAppPolicyTemplateListQuery,
+  useGetAccessControlProfileTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
   AccessControlProfile,
-  AclEmbeddedObject
+  AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
@@ -62,6 +68,18 @@ const emptyEmbeddedObject: AclEmbeddedObject = {
   applicationPolicyId: undefined,
   uplinkLimit: undefined,
   downlinkLimit: undefined
+}
+
+const QUERY_DEFAULT_PAYLOAD = {
+  searchString: '',
+  fields: [
+    'id',
+    'name'
+  ],
+  page: 1,
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'DESC'
 }
 
 export function AccessControlForm () {
@@ -159,7 +177,8 @@ function AddAcProfileModal (props: AcProfileModalProps) {
   const { modalStatus, setModalStatus, updateSelectedACProfile } = props
   const { visible=false, embeddedObject } = modalStatus
 
-  const [ createAclProfile ] = useAddAccessControlProfileMutation()
+  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher(
+    useAddAccessControlProfileMutation, useAddAccessControlProfileTemplateMutation)
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
@@ -314,6 +333,10 @@ function GetLinkLimitByAccessControlPorfile (props: {
   return <div>{limit}</div>
 }
 
+export type SelectedAccessControlProfileType = {
+  selectedAccessControlProfile: AccessControlProfile | undefined
+}
+
 export function SelectAccessProfileProfile (props: {
   accessControlProfileId: string,
   setModalStatus: (data: ModalStatus) => void
@@ -329,75 +352,17 @@ export function SelectAccessProfileProfile (props: {
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
 
-  const { selectedLayer2 } = useL2AclPolicyListQuery({
-    params: useParams()
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedLayer2: getAccessControlProfile(
-          data,
-          state.selectedAccessControlProfile,
-          'l2AclPolicy'
-        )
-      }
-    }
-  })
+  const { selectedLayer2 } = GetL2AclPolicyListFromNwInstance(state)
 
-  const { selectedLayer3 } = useL3AclPolicyListQuery({
-    params: useParams()
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedLayer3: getAccessControlProfile(
-          data,
-          state.selectedAccessControlProfile,
-          'l3AclPolicy'
-        )
-      }
-    }
-  })
+  const { selectedLayer3 } = GetL3AclPolicyListFromNwInstance(state)
 
-  const { selectedDevicePolicy } = useDevicePolicyListQuery({
-    params: useParams()
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedDevicePolicy: getAccessControlProfile(
-          data,
-          state.selectedAccessControlProfile,
-          'devicePolicy'
-        )
-      }
-    }
-  })
+  const { selectedDevicePolicy } = GetDeviceAclPolicyListFromNwInstance(state)
 
-  const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
-    params: useParams()
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedApplicationPolicy: getAccessControlProfile(
-          data,
-          state.selectedAccessControlProfile,
-          'applicationPolicy'
-        )
-      }
-    }
-  })
+  const { selectedApplicationPolicy } = GetAppAclPolicyListFromNwInstance(state)
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
-    = useGetAccessControlProfileListQuery({
-      params: useParams()
-    }, {
-      selectFromResult ({ data }) {
-        return {
-          accessControlProfileSelectOptions: data?.map(
-            item => <Option key={item.id}>{item.name}</Option>) ?? [],
-          accessControlList: data
-        }
-      }
-    })
+    = GetAclPolicyListFromNwInstance()
 
   useEffect(() => {
     if (data && accessControlList) {
@@ -538,6 +503,200 @@ export function SelectAccessProfileProfile (props: {
       }
     </UI.FieldLabel>
   </>)
+}
+
+const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+  selectedLayer2: string
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
+    params: params,
+    payload: QUERY_DEFAULT_PAYLOAD
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedLayer2: getAccessControlProfile(
+          data?.data ?? [],
+          state.selectedAccessControlProfile,
+          'l2AclPolicy'
+        )
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useL2PolicyList = useL2AclPolicyListQuery({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedLayer2: getAccessControlProfile(
+          data,
+          state.selectedAccessControlProfile,
+          'l2AclPolicy'
+        )
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useL2PolicyTemplateList : useL2PolicyList
+}
+
+const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+  selectedLayer3: string
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
+    params: params,
+    payload: QUERY_DEFAULT_PAYLOAD
+  },
+  {
+    selectFromResult ({ data }) {
+      return {
+        selectedLayer3: getAccessControlProfile(
+          data?.data ?? [],
+          state.selectedAccessControlProfile,
+          'l3AclPolicy'
+        )
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useL3PolicyList = useL3AclPolicyListQuery({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedLayer3: getAccessControlProfile(
+          data,
+          state.selectedAccessControlProfile,
+          'l3AclPolicy'
+        )
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useL3PolicyTemplateList : useL3PolicyList
+}
+
+const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+  selectedDevicePolicy: string
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
+    params: params,
+    payload: QUERY_DEFAULT_PAYLOAD
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedDevicePolicy: getAccessControlProfile(
+          data?.data ?? [],
+          state.selectedAccessControlProfile,
+          'devicePolicy'
+        )
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useDevicePolicyList = useDevicePolicyListQuery({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedDevicePolicy: getAccessControlProfile(
+          data,
+          state.selectedAccessControlProfile,
+          'devicePolicy'
+        )
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useDevicePolicyTemplateList : useDevicePolicyList
+}
+
+const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+  selectedApplicationPolicy: string
+} => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
+    params: params,
+    payload: QUERY_DEFAULT_PAYLOAD
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedApplicationPolicy: getAccessControlProfile(
+          data?.data ?? [],
+          state.selectedAccessControlProfile,
+          'applicationPolicy'
+        )
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useAppPolicyList = useApplicationPolicyListQuery({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        selectedApplicationPolicy: getAccessControlProfile(
+          data,
+          state.selectedAccessControlProfile,
+          'applicationPolicy'
+        )
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useAppPolicyTemplateList : useAppPolicyList
+}
+
+const GetAclPolicyListFromNwInstance = () => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const useAclPolicyTemplateList = useGetAccessControlProfileTemplateListQuery({
+    params, payload: QUERY_DEFAULT_PAYLOAD
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        accessControlProfileSelectOptions: data?.data.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? [],
+        accessControlList: data?.data
+      }
+    },
+    skip: !isTemplate
+  })
+
+  const useAclPolicyList = useGetAccessControlProfileListQuery({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        accessControlProfileSelectOptions: data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? [],
+        accessControlList: data
+      }
+    },
+    skip: isTemplate
+  })
+
+  return isTemplate ? useAclPolicyTemplateList : useAclPolicyList
 }
 
 function AccessControlConfigForm () {

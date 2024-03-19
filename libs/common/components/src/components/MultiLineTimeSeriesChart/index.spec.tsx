@@ -12,6 +12,7 @@ import { getData, getSeriesData } from './stories'
 import {
   useBrush,
   useOnMarkAreaClick,
+  useTimeMarkers,
   MultiLineTimeSeriesChart
 } from '.'
 
@@ -198,6 +199,70 @@ describe('MultiLineTimeSeriesChart', () => {
       const markAreaPaths = asFragment().querySelectorAll('path[stroke="#FF00FF"]')
       expect(markAreaPaths.length).toEqual(2)
     })
+  })
+})
+
+describe('useTimeMarkers', () => {
+  let convertToPixel: jest.Mock<ECharts['convertToPixel']>
+  let setOption: jest.Mock<ECharts['setOption']>
+
+  beforeEach(() => {
+    setOption = jest.fn() as jest.Mock<ECharts['setOption']>
+    convertToPixel = jest.fn()
+      .mockImplementation((type, value) => value) as jest.Mock<ECharts['convertToPixel']>
+    eChartsRef = {
+      current: {
+        getEchartsInstance: () => ({
+          convertToPixel,
+          setOption
+        })
+      }
+    } as unknown as RefObject<ReactECharts>
+  })
+  it('handles null chart ref', async () => {
+    eChartsRef = { current: null } as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef))
+    // intentionally no assertion to cover the line where echart ref is null
+  })
+  it('handles markers not defined', async () => {
+    const getEchartsInstance = jest.fn() as jest.Mock<ReactECharts['getEchartsInstance']>
+    eChartsRef = { current: { getEchartsInstance } } as unknown as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef, undefined))
+    expect(getEchartsInstance).not.toHaveBeenCalled()
+  })
+  it('handles empty markers', async () => {
+    const getEchartsInstance = jest.fn() as jest.Mock<ReactECharts['getEchartsInstance']>
+    eChartsRef = { current: { getEchartsInstance } } as unknown as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef, []))
+    expect(getEchartsInstance).not.toHaveBeenCalled()
+  })
+  it('combine labels when marker time very close', async () => {
+    renderHook(() => useTimeMarkers(eChartsRef, [
+      { timestamp: 0, label: 'a' },
+      { timestamp: 1, label: 'b' },
+      { timestamp: 2, label: 'c' }
+    ]))
+    expect(setOption).toBeCalledWith({ graphic: expect.arrayContaining([
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'text' })
+    ]) })
+  })
+  it('renders time markers', async () => {
+    renderHook(() => useTimeMarkers(eChartsRef, [
+      { timestamp: 0, label: 'a' },
+      { timestamp: 100, label: 'b' },
+      { timestamp: 200, label: 'c' }
+    ]))
+    expect(setOption).toBeCalledWith({ graphic: expect.arrayContaining([
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'text' }),
+      expect.objectContaining({ type: 'text' }),
+      expect.objectContaining({ type: 'text' })
+    ]) })
   })
 })
 

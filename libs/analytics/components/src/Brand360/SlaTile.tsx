@@ -13,7 +13,7 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import type { Settings }      from '@acx-ui/analytics/utils'
+import { Settings }           from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 import { noDataDisplay }      from '@acx-ui/utils'
@@ -35,6 +35,8 @@ interface SlaTileProps {
   currData: FranchisorTimeseries | undefined
   sliceType: SliceType
   settings: Settings
+  lsp: string
+  property: string
 }
 
 const { Text } = Typography
@@ -157,19 +159,22 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  settings
+  settings,
+  lsp,
+  property
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
+  const name = sliceType === 'lsp' ? lsp : property
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
   return <Card title={chartKey === 'compliance'
     ? {
-      title: $t(getTitle(sliceType)),
+      title: $t(getTitle(), { name }),
       icon: <ComplianceSetting settings={settings} />
     }
-    : $t(getTitle(sliceType))}
+    : $t(getTitle(), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}
