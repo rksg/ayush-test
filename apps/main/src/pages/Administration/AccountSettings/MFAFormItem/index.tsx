@@ -18,11 +18,12 @@ interface MFAFormItemProps {
   className?: string;
   mfaTenantDetailsData?: MfaDetailStatus;
   isPrimeAdminUser: boolean;
+  isMspEc: boolean;
 }
 
 const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
-  const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
+  const { className, mfaTenantDetailsData, isPrimeAdminUser, isMspEc } = props
   const params = useParams()
   const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
 
@@ -99,7 +100,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               </List.Item>
             )}
           />
-          <Card
+          {!isMspEc && <Card
             title={$t({ defaultMessage: 'Recovery Codes' })}
             type='no-border'
           >
@@ -119,7 +120,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
                 {$t({ defaultMessage: 'Copy Codes' })}
               </Typography.Link>
             </SpaceWrapper>
-          </Card>
+          </Card>}
         </SpaceWrapper>
       </Col>
     </Row>

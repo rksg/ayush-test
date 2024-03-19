@@ -14,14 +14,15 @@ import {
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
-  useAdaptivePolicyListQuery
+  useAdaptivePolicyListQuery,
+  useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  policyTypeLabelMapping
+  policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -31,10 +32,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
-import {
-  policyTypeDescMapping
-} from '../contentsMap'
 
 interface CardDataProps {
   type: PolicyType
@@ -127,6 +124,16 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.WIFI_OPERATOR,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetWifiOperatorListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.IDENTITY_PROVIDER,

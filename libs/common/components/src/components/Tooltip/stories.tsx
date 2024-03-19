@@ -15,6 +15,17 @@ storiesOf('Tooltip', module)
         </Tooltip>
       </div>
       <div style={{ paddingTop: '100px' }}>
+        <Tooltip title={'This is a tooltip'} dottedUnderline>
+          content underlined
+        </Tooltip>
+        <Tooltip title={'This is a tooltip'} dottedUnderline>
+          <span style={{ color: '#f00' }}>content underlined</span>
+        </Tooltip>
+        <Tooltip title={'This is a tooltip'}>
+          content not underlined
+        </Tooltip>
+      </div>
+      <div style={{ paddingTop: '100px' }}>
         Tooltip with question mark <Tooltip.Question title={'This is a tooltip'} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
@@ -31,18 +31,16 @@ const NetworkIdentifierForm = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  //const form = Form.useFormInstance()
+  const form = Form.useFormInstance()
   const { state, dispatch } = useContext(IdentityProviderFormContext)
 
   const [getInstanceList] = useLazyGetIdentityProviderListQuery()
 
-  /*
   useEffect(() => {
-    if (form && state.naiRealms) {
+    if (form && state.name !== '') {
       form.validateFields()
     }
-  }, [form, state.naiRealms])
-  */
+  }, [form, state.name, state.naiRealms])
 
   const nameValidator = async (value: string) => {
     const payload = { ...IdentityProviderListPayload, searchString: value }

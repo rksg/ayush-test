@@ -128,6 +128,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
             ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
+            ]))
           })
         })
       },
@@ -145,6 +148,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
             ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
+            ]))
           })
         })
       },
@@ -161,6 +167,9 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
             api.dispatch(networkApi.util.invalidateTags([
               { type: 'Venue', id: 'LIST' },
               { type: 'Network', id: 'DETAIL' }
+            ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
             ]))
           })
         })
@@ -206,6 +215,8 @@ export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
 export const useCasesToRefreshDhcpTemplateList = ['AddDhcpConfigServiceProfileTemplate', 'UpdateDhcpConfigServiceProfileTemplate', 'DeleteDhcpConfigServiceProfileTemplate']
 // eslint-disable-next-line max-len
 export const useCasesToRefreshDpskTemplateList = ['CREATE_POOL_TEMPLATE_RECORD', 'UPDATE_POOL_TEMPLATE_RECORD', 'DELETE_POOL_TEMPLATE_RECORD']
+// eslint-disable-next-line max-len
+export const useCasesToRefreshAccessControlTemplateList = ['AddAccessControlProfileTemplateRecord', 'UpdateAccessControlProfileTemplateRecord', 'DeleteAccessControlProfileTemplateRecord']
 
 const useCasesToRefreshTemplateList = [
   'AddRadiusServerProfileTemplateRecord',
@@ -219,5 +230,6 @@ const useCasesToRefreshTemplateList = [
   'UpdateVenueTemplateRecord',
   'DeleteVenueTemplateRecord',
   ...useCasesToRefreshDpskTemplateList,
-  ...useCasesToRefreshDhcpTemplateList
+  ...useCasesToRefreshDhcpTemplateList,
+  ...useCasesToRefreshAccessControlTemplateList
 ]
