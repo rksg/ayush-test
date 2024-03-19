@@ -182,12 +182,12 @@ export function StackForm () {
 
   useEffect(() => {
     if (!isVenuesListLoading) {
-      setVenueOption(
-        venuesList?.data?.map((item) => ({
-          label: item.name,
-          value: item.id
-        })) ?? []
-      )
+      const venues = venuesList?.data?.map((item) => ({
+        label: item.name,
+        value: item.id
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
     }
     if (switchData && switchDetail && venuesList) {
       if (dataFetchedRef.current) return
