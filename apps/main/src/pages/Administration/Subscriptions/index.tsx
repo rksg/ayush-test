@@ -203,10 +203,13 @@ const SubscriptionTable = () => {
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'active'
-          ? $t({ defaultMessage: 'Active' })
-          : row.status === 'future'
-            ? $t({ defaultMessage: 'Future' }) : $t({ defaultMessage: 'Expired' })
+        if (row.status === 'active') {
+          return $t({ defaultMessage: 'Active' })
+        } else if (row.status === 'future') {
+          return $t({ defaultMessage: 'Future' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
       }
     }
   ]
