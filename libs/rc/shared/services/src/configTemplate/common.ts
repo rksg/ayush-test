@@ -156,12 +156,53 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
+    deleteNetworkVenuesTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate, true),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'DeleteNetworkVenueTemplates'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' },
+              { type: 'NetworkTemplate', id: 'DETAIL' }
+            ]))
+          })
+        })
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateNetworkVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([
+              { type: 'Venue', id: 'LIST' },
+              { type: 'Network', id: 'DETAIL' }
+            ]))
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'NetworkTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
+    }),
+    addNetworkVenueTemplates: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenuesTemplate),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddNetworkVenueTemplateMappings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -195,7 +236,9 @@ export const {
   useGetAAAPolicyTemplateListQuery,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useUpdateNetworkVenueTemplateMutation
+  useDeleteNetworkVenuesTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useAddNetworkVenueTemplatesMutation
 } = configTemplateApi
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']
