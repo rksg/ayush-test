@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
