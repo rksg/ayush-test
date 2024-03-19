@@ -93,7 +93,10 @@ export default function ActivityButton () {
       </Select>
       <UI.LinkButton type='link'
         size='small'
-        onClick={() => navigate(basePath)}>
+        onClick={() => {
+          setActivityModalOpen(false)
+          navigate(basePath)
+        }}>
         {$t({ defaultMessage: 'View all activities' })}
       </UI.LinkButton>
     </UI.FilterRow>
