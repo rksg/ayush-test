@@ -274,6 +274,16 @@ describe('EditEdge ports - ports general', () => {
       await userEvent.click(await screen.findByRole('radio', { name: 'DHCP' }))
     })
 
+    it('should be able to configure gateway for CLUSTER port type', async () => {
+      render(<MockedComponent />)
+
+      await screen.findByText(/00:0c:29:b6:ad:04/i)
+      const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
+      await userEvent.selectOptions(portTypeSelect,
+        await screen.findByRole('option', { name: 'Cluster' }))
+      expect(await screen.findByRole('radio', { name: 'DHCP' })).toBeVisible()
+    })
+
     // eslint-disable-next-line max-len
     it('should clear gateway when it had been WAN port before but it is LAN port now.', async () => {
       render(<MockedComponent />)
