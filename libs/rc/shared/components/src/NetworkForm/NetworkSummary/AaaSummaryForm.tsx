@@ -8,7 +8,8 @@ import { PasswordInput } from '@acx-ui/components'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkSaveData
+  NetworkSaveData,
+  macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -32,6 +33,20 @@ export function AaaSummaryForm (props: {
         data={summaryData}
       />
     </>}
+    <Form.Item
+      label={$t({ defaultMessage: 'MAC Authentication' })}
+      children={summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
+        $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+    {summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
+      <Form.Item
+        label={$t({ defaultMessage: 'MAC Address Format' })}
+        children={
+          macAuthMacFormatOptions[
+            // eslint-disable-next-line max-len
+            summaryData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
+          ]
+        }/>
+    }
   </>)
 }
 function AaaServerFields ({ serverType, data }: {
