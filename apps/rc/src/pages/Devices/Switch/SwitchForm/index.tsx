@@ -177,9 +177,11 @@ export function SwitchForm () {
 
   useEffect(() => {
     if (!venuesList.isLoading) {
-      setVenueOption(venuesList?.data?.data?.map(item => ({
+      const venues = venuesList?.data?.data?.map(item => ({
         label: item.name, value: item.id
-      })) ?? [])
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
     }
   }, [venuesList])
 

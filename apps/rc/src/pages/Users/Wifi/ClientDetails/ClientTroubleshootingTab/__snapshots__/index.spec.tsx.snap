@@ -323,15 +323,11 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       class="ant-col ant-col-3"
                       style="padding: 8px 8px 8px 8px;"
                     >
-                      <span
-                        class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                      >
-                        <svg
-                          class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
-                          data-testid="PlusSquareOutlined"
-                          style="cursor: not-allowed;"
-                        />
-                      </span>
+                      <svg
+                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: not-allowed;"
+                      />
                     </div>
                     <div
                       class="ant-col ant-col-17"
