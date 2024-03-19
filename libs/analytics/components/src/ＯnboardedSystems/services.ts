@@ -28,13 +28,13 @@ export type OnboardedSystem = {
   msg_proxy_updated_at: string
   ctrl_msg_updated_at: string
   error_details: Record<string, {
-    http_status_code: string,
+    http_status_code: number | null,
     http_body: {
-      errorCode: number
-      errorType: string
+      errorCode?: number
+      errorType?: string
       message?: string
       error?: string
-    } | string
+    } | string | null
   }>
   sz_updated_at: string
   can_delete: boolean

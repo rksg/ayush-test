@@ -22,7 +22,6 @@ jest.mock('../ＯnboardedSystems', () => ({
   Support: () => <div data-testid='ＯnboardedSystems' />
 }))
 
-
 describe('AccountManagement', () => {
   it('should render', async () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,

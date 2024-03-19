@@ -2,7 +2,7 @@ import { Badge as AntBadge } from 'antd'
 import styled                from 'styled-components/macro'
 
 export const Badge = styled(AntBadge)`
-  justify-content: center;
+  width: 12px;
   .ant-badge-status-dot {
     width: 12px;
     height: 12px;

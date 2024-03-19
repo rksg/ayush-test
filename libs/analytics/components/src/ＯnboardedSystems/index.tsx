@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 
-import { Tooltip }                 from 'antd'
-import { Map }                     from 'immutable'
-import { get, isEmpty, partition } from 'lodash'
-import { defineMessage, useIntl }  from 'react-intl'
+import { Tooltip }                       from 'antd'
+import { Map }                           from 'immutable'
+import { get, isEmpty, partition, omit } from 'lodash'
+import { defineMessage, useIntl }        from 'react-intl'
 
 import { Tenant, defaultSort, getUserProfile, sortProp } from '@acx-ui/analytics/utils'
 import { Loader, Modal, Table, TableProps, showToast }   from '@acx-ui/components'
@@ -13,7 +13,7 @@ import { getIntl }                                       from '@acx-ui/utils'
 import { useFetchSmartZoneListQuery, useDeleteSmartZone, OnboardedSystem } from './services'
 import { Errors, Badge }                                                   from './styledComponents'
 
-type FormattedOnboardedSystem = {
+export type FormattedOnboardedSystem = {
   status: string
   statusType: string
   errors: string[]
@@ -26,7 +26,7 @@ type FormattedOnboardedSystem = {
   accountName: string
 }
 
-export const SzStateMap = {
+export const smartZoneStateMap = {
   onboarded:
     defineMessage({ defaultMessage: 'Onboarded' }),
   offboarded:
@@ -61,18 +61,30 @@ const ApiServiceMap = {
   sz_api_error: defineMessage({ defaultMessage: 'SmartZone API' })
 }
 
-export const sortOnboardedSystems = (
-  szList: OnboardedSystem[],
+const statusTypeColorMap = {
+  onboarded: '--acx-semantics-green-50',
+  ongoing: '--acx-semantics-yellow-40',
+  error: '--acx-semantics-red-50',
+  offboarded: '--acx-neutrals-30'
+}
+
+const errorMsgMap = {
+  CANNOT_DELETE: defineMessage({ defaultMessage: 'Offboard this system to enable deletion' }),
+  SZ_NOT_FOUND: defineMessage({ defaultMessage: 'System does not exist' })
+}
+
+const sortOnboardedSystems = (
+  smartzones: OnboardedSystem[],
   tenantId: string,
   tenantsMap: Map<string, Tenant>
 ) => {
-  const [ currentTenantSzs, otherSzs ] = partition(szList, (sz) => sz.account_id === tenantId)
+  const [ currentTenantSzs, otherSzs ] = partition(smartzones, (sz) => sz.account_id === tenantId)
   otherSzs.sort((a, b) => (tenantsMap.getIn([a.account_id, 'name']) as string)
     .localeCompare((tenantsMap.getIn([b.account_id, 'name']) as string)))
   return currentTenantSzs.concat(otherSzs)
 }
 
-const getStatusType = (state: keyof typeof SzStateMap, errors: string[]) => {
+const getStatusType = (state: keyof typeof smartZoneStateMap, errors: string[]) => {
   const ongoingWordings = ['onboarding', 'updating']
   if (!isEmpty(errors)) return 'error'
   if (ongoingWordings.some(word => state.startsWith(word))) return 'ongoing'
@@ -104,7 +116,7 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
             { http_status_code: null, http_body: null }
           return $t(
             // eslint-disable-next-line max-len
-            { defaultMessage: '{error}: {httpBody} {isHttpStatusCode, select, true {(status code: {httpStatusCode})} other {} } ' },
+            { defaultMessage: '{error}: {httpBody} {isHttpStatusCode, select, true {(status code: {httpStatusCode})} other {} }' },
             {
               error: (error in ApiServiceMap)
                 ? $t(ApiServiceMap[error as keyof typeof ApiServiceMap]) : error,
@@ -119,31 +131,57 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
     })
 }
 
-export const statusTypeColorMap = {
-  onboarded: '--acx-semantics-green-50',
-  ongoing: '--acx-semantics-yellow-40',
-  error: '--acx-semantics-red-50',
-  offboarded: '--acx-neutrals-30'
-}
-
-const formatSZName = (name: string) => {
+const formatSmartZoneName = (name: string) => {
   return isEmpty(name) ? getIntl().$t({ defaultMessage: '[retrieving from SmartZone]' }) : name
 }
 
-export const errorMsgMapping = {
-  CANNOT_DELETE: defineMessage({ defaultMessage: 'Offboard this system to enable deletion' }),
-  SZ_NOT_FOUND: defineMessage({ defaultMessage: 'System does not exist' })
+export const formatSmartZone = (
+  data: OnboardedSystem[], tenantId: string, tenantsMap: Map<string, Tenant>
+) => {
+  const { $t } = getIntl()
+  return sortOnboardedSystems(data, tenantId, tenantsMap)
+    .map((data: OnboardedSystem) => {
+      const stateErrors = data.state_errors
+      return {
+        status: $t(smartZoneStateMap[data.state as keyof typeof smartZoneStateMap]),
+        statusType: getStatusType(data.state as keyof typeof smartZoneStateMap, stateErrors),
+        errors: getStatusErrors(data, stateErrors),
+        name: formatSmartZoneName(data.device_name),
+        id: data.device_id,
+        addedTime: data.created_at,
+        formattedAddedTime: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
+        canDelete: data.can_delete,
+        accountName: tenantsMap.getIn([data.account_id, 'name'])
+      }
+    })
 }
 
 const formatDeleteError = ({ name }: FormattedOnboardedSystem, response: Object) => {
-  const err = get(response, 'data.error', null)
-  const message = (err in errorMsgMapping)
-    ? errorMsgMapping[ err as keyof typeof errorMsgMapping]
-    : get(response, 'message')
-  return getIntl().$t({
-    defaultMessage: 'Failed to delete {name}{hasMessage, select, true {: {message}} other {} }'
+  const { $t } = getIntl()
+  const error = errorMsgMap[get(response, 'data.error', null) as keyof typeof errorMsgMap]
+  const message = error ? $t(error) : get(response, 'message')
+  return $t({
+    defaultMessage: 'Failed to delete {name}{hasMessage, select, true {: {message}} other {}}'
   }, { name, hasMessage: Boolean(message), message })
 }
+
+const SmartZoneBadge = forwardRef<
+  HTMLDivElement,{ status: keyof typeof statusTypeColorMap }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+>((props, _) =>
+  <Badge
+    {...omit(props, 'status')}
+    color={`var(${statusTypeColorMap[props.status]})`}
+  />)
+
+export const TooltipContent = (value: FormattedOnboardedSystem) =>
+  (): JSX.Element => (isEmpty(value.errors))
+    ? <div>{value.status}</div>
+    : <>
+      <div>{value.status}</div><br />
+      {getIntl().$t({ defaultMessage: 'Errors:' })}
+      <Errors>{value.errors.map(error => <li key={error}>{error}</li>)}</Errors>
+    </>
 
 export const OnboardedSystems = () => {
   const { $t } = useIntl()
@@ -156,23 +194,7 @@ export const OnboardedSystems = () => {
 
   const queryResults = useFetchSmartZoneListQuery(tenant.tenants.map(t => t.id), {
     selectFromResult: ({ data, ...rest }) => ({
-      ...rest,
-      data: sortOnboardedSystems(data || [], tenantId, tenantsMap)
-        .map((data: OnboardedSystem) => {
-          const stateErrors = data.state_errors
-          return {
-            status: $t(SzStateMap[data.state as keyof typeof SzStateMap]),
-            statusType: getStatusType(data.state as keyof typeof SzStateMap, stateErrors),
-            errors: getStatusErrors(data, stateErrors),
-            name: formatSZName(data.device_name),
-            id: data.device_id,
-            addedTime: data.created_at,
-            formattedAddedTime: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
-            canDelete: data.can_delete,
-            accountName: tenantsMap.getIn([data.account_id, 'name'])
-          }
-        })
-
+      ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
     })
   })
 
@@ -182,24 +204,15 @@ export const OnboardedSystems = () => {
       title: $t({ defaultMessage: 'Status' }),
       sorter: { compare: sortProp('status', defaultSort) },
       dataIndex: 'statusType',
-      render: (_, value) =>
-        <Tooltip
-          key={`tooltip-${value.id}`}
-          title={() => (isEmpty(value.errors))
-            ? value.status
-            : <>
-              <div>{value.status}</div>
-              <br />
-              {$t({ defaultMessage: 'Errors:' })}
-              <Errors>{value.errors.map(error => <li key={error}>{error}</li>)}</Errors>
-            </>
-          }>
-          <Badge
-            key={`badge-${value.id}`}
-            color={
-              `var(${statusTypeColorMap[value.statusType as keyof typeof statusTypeColorMap]})`}/>
-        </Tooltip>,
-      width: 25,
+      render: (_, value, index) =>
+        <span>
+          <Tooltip
+            key={`tooltip-${index}`}
+            title={TooltipContent(value)}
+            children={<SmartZoneBadge
+              status={value.statusType as keyof typeof statusTypeColorMap} />} />
+        </span>,
+      width: 35,
       fixed: 'left',
       filterable: [
         { key: 'onboarded', value: $t({ defaultMessage: 'Onboarded' }) },
@@ -247,7 +260,7 @@ export const OnboardedSystems = () => {
         onClick: () => setVisible(true),
         disabled: !(selected?.canDelete),
         tooltip: !(selected?.canDelete)
-          ? $t(errorMsgMapping.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
+          ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
     />
     <Modal
