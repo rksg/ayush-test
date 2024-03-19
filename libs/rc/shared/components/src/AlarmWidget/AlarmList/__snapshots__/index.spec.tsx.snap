@@ -36,16 +36,12 @@ exports[`Alarm List should render list 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                  <div
+                    class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
+                    style="width: 290px;"
                   >
-                    <div
-                      class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
-                      style="width: 290px;"
-                    >
-                      FEK3224R08K disconnected from the cloud controller for more than 15 minutes.
-                    </div>
-                  </span>
+                    FEK3224R08K disconnected from the cloud controller for more than 15 minutes.
+                  </div>
                 </div>
               </div>
               <div
@@ -81,16 +77,12 @@ exports[`Alarm List should render list 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
+                  <div
+                    class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
+                    style="width: 290px;"
                   >
-                    <div
-                      class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
-                      style="width: 290px;"
-                    >
-                      FEK3224R08J disconnected from the cloud controller for more than 15 minutes.
-                    </div>
-                  </span>
+                    FEK3224R08J disconnected from the cloud controller for more than 15 minutes.
+                  </div>
                 </div>
               </div>
               <div
