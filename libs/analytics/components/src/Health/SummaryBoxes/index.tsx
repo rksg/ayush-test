@@ -1,14 +1,46 @@
-import { isNull }                 from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { isNull }                                    from 'lodash'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
-import { formatter, intlFormats }                              from '@acx-ui/formatter'
-import type { AnalyticsFilter }                                from '@acx-ui/utils'
-import { noDataDisplay }                                       from '@acx-ui/utils'
+import { GridRow, GridCol, Loader } from '@acx-ui/components'
+import { formatter, intlFormats }   from '@acx-ui/formatter'
+import type { AnalyticsFilter }     from '@acx-ui/utils'
+import { noDataDisplay }            from '@acx-ui/utils'
 
 import { DrilldownSelection } from '../HealthDrillDown/config'
 
-import { useSummaryQuery } from './services'
+import { useSummaryQuery }                        from './services'
+import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
+
+
+interface BoxProps {
+  type: string,
+  title: MessageDescriptor
+  value: string
+  suffix?: string
+  isOpen: boolean
+  onClick: () => void
+}
+
+export const Box = (props: BoxProps) => {
+  const { $t } = useIntl()
+  const box = <Wrapper
+    $type={props.type}
+    $isOpen={props.isOpen}
+    onClick={props.onClick}
+  >
+    <Statistic
+      $type={props.type}
+      title={$t(props.title)}
+      value={props.value}
+      suffix={props.suffix}
+    />
+    {props.isOpen
+      ? <UpArrow $type={props.type}/>
+      : <DownArrow $type={props.type}/>
+    }
+  </Wrapper>
+  return box
+}
 
 export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelection }: {
   filters: AnalyticsFilter,
@@ -61,53 +93,46 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     }
   })
 
-  const mapping: StatsCardProps[] = [
+  const mapping: BoxProps[] = [
     {
-      type: 'green',
-      values: [{
-        title: defineMessage({ defaultMessage: 'Successful Connections' }),
-        value: queryResults.data.successCount,
-        suffix: `/${queryResults.data.totalCount}`
-      }],
+      type: 'successCount',
+      title: defineMessage({ defaultMessage: 'Successful Connections' }),
+      suffix: `/${queryResults.data.totalCount}`,
       isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure
+      onClick: toggleConnectionFailure,
+      value: queryResults.data.successCount
     },
     {
-      type: 'red',
-      values: [{
-        title: defineMessage({ defaultMessage: 'Failed Connections' }),
-        value: queryResults.data.failureCount,
-        suffix: `/${queryResults.data.totalCount}`
-      }],
+      type: 'failureCount',
+      title: defineMessage({ defaultMessage: 'Failed Connections' }),
+      suffix: `/${queryResults.data.totalCount}`,
       isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure
+      onClick: toggleConnectionFailure,
+      value: queryResults.data.failureCount
     },
     {
-      type: 'yellow',
-      values: [{
-        title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-        value: queryResults.data.successPercentage
-      }],
+      type: 'successPercentage',
+      title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
       isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure
+      onClick: toggleConnectionFailure,
+      value: queryResults.data.successPercentage
     },
     {
-      type: 'grey',
-      values: [{
-        title: defineMessage({ defaultMessage: 'Average Time To Connect' }),
-        value: queryResults.data.averageTtc
-      }],
+      type: 'averageTtc',
+      title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
       isOpen: drilldownSelection === 'ttc',
-      onClick: toggleTtc
+      onClick: toggleTtc,
+      value: queryResults.data.averageTtc
     }
   ]
 
   return (
     <Loader states={[queryResults]}>
       <GridRow>
-        {mapping.map((stat)=>
-          <GridCol key={stat.type} col={{ span: 24/mapping.length }}>
-            <StatsCard {...stat} />
+        {mapping.map((box)=>
+          <GridCol key={box.type} col={{ span: 6 }}>
+            {/* TODO: Replace this StatsCard component fom common-components */}
+            <Box {...box} />
           </GridCol>
         )}
       </GridRow>
