@@ -4,7 +4,7 @@ import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Spac
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }              from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -15,7 +15,6 @@ import {
   lanPortsubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
-  // validateGatewayExist
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'

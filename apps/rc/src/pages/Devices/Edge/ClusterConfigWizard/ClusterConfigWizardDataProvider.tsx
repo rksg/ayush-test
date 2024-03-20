@@ -62,20 +62,6 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
-  // const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-  // = useGetEdgeSdLanP2ViewDataListQuery(
-  //   { payload: {
-  //     filters: { edgeClusterId: [clusterInfo?.clusterId] },
-  //     fields: ['id', 'edgeClusterId']
-  //   } },
-  //   {
-  //     selectFromResult: ({ data, isLoading, isFetching }) => ({
-  //       edgeSdLanData: data?.data?.[0],
-  //       isEdgeSdLanLoading: isLoading,
-  //       isEdgeSdLanFetching: isFetching
-  //     })
-  //   }
-  // )
 
   return <ClusterConfigWizardContext.Provider value={{
     clusterInfo,

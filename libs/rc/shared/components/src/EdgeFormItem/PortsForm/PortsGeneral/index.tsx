@@ -7,10 +7,17 @@ import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm }                                                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { useUpdatePortConfigMutation }                                                                                              from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgePortWithStatus, convertEdgePortsConfigToApiPayload, validateGatewayExist } from '@acx-ui/rc/utils'
+import { Loader, NoData, StepsForm }   from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import {
+  EdgeIpModeEnum,
+  EdgePort,
+  EdgePortTypeEnum,
+  EdgePortWithStatus,
+  convertEdgePortsConfigToApiPayload,
+  validateEdgeGateway
+} from '@acx-ui/rc/utils'
 
 import { EdgePortTabEnum }                                  from '..'
 import { useGetEdgeSdLanByEdgeOrClusterId }                 from '../../../EdgeSdLan/useEdgeSdLanActions'
@@ -168,7 +175,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
                 validator: () => {
                   const allPortsValues = form.getFieldsValue(true)
                   const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-                  return validateGatewayExist(portsData, lagData ?? [])
+                  return validateEdgeGateway(portsData, lagData ?? [])
                 }
               }
             }}

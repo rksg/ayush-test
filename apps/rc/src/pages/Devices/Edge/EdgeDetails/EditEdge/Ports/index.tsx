@@ -25,7 +25,7 @@ import {
   EdgePortTypeEnum,
   EdgePortWithStatus,
   convertEdgePortsConfigToApiPayload,
-  validateGatewayExist
+  validateEdgeGateway
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -181,7 +181,7 @@ const Ports = () => {
                   validator: () => {
                     const allPortsValues = form.getFieldsValue(true)
                     const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-                    return validateGatewayExist(portsData, lagData)
+                    return validateEdgeGateway(portsData, lagData)
                   }
                 }
               }}

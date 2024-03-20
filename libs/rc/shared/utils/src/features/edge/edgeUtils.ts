@@ -314,7 +314,7 @@ export const validateClusterInterface = (interfaceNames: string[]) => {
   return Promise.resolve()
 }
 
-export const validateGatewayExist = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) => {
   const { $t } = getIntl()
 
   const portWithGateway = portsData.filter(port =>
