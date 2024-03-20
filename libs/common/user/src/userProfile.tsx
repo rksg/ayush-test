@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 
-import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { TenantNavigate }    from '@acx-ui/react-router-dom'
@@ -44,6 +43,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
+  userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
 }
 
@@ -69,31 +69,31 @@ export function hasAccess (id?: string) {
 function hasAllowedOperations (id:string) {
   const { allowedOperations } = getUserProfile()
 
-  if(id.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
+  if(id.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
   return allowedOperations?.includes(id)
 }
 
 export function filterByAccess <Item> (items: Item[]) {
   return items.filter(item => {
     const filterItem = item as FilterItemType
-    const allowoperation = filterItem?.key
+    const allowedOperations = filterItem?.key
     const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
-    return hasPermission({ scopes, allowoperation })
+    return hasPermission({ scopes, allowedOperations })
   })
 }
 
-export function hasPermission (props:{ scopes?:string[], allowoperation?:string }) {
+export function hasPermission (props:{ scopes?:string[], allowedOperations?:string }) {
   const { abacEnabled, isCustomRole } = getUserProfile()
-  const { scopes, allowoperation } = props
+  const { scopes = [], allowedOperations } = props
   if(!abacEnabled) {
-    return hasAccess(allowoperation)
+    return hasAccess(allowedOperations)
   }else {
     if(isCustomRole){
-      const flag1 = scopes? hasScope(scopes): true
-      const flag2 = allowoperation? hasAllowedOperations(allowoperation): true
-      return flag1 && flag2
+      const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
+      const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
+      return isScopesValid && isOperationsValid
     } else {
-      return hasAccess(allowoperation)
+      return hasAccess(allowedOperations)
     }
   }
 }
@@ -101,7 +101,7 @@ export function hasPermission (props:{ scopes?:string[], allowoperation?:string 
 export function hasScope (userScope: string[]) {
   const { abacEnabled, scopes, isCustomRole } = getUserProfile()
   if(abacEnabled && isCustomRole) {
-    return !!_.intersection(scopes, userScope).length
+    return scopes?.some(scope => userScope.includes(scope))
   }
   return true
 }
