@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -27,7 +27,9 @@ import {
   useDeleteNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useGetVenueTemplateCityListQuery,
-  useGetVenueCityListQuery
+  useGetVenueCityListQuery,
+  useAddNetworkVenueTemplatesMutation,
+  useDeleteNetworkVenuesTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -147,8 +149,8 @@ export function NetworkVenuesTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
 
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   const getCurrentVenue = (row: Venue) => {
@@ -550,7 +552,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && !isTemplate && {
+        rowSelection={hasAccess() && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}

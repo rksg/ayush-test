@@ -18,7 +18,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   delL2AclPolicy: {
     method: 'delete',
-    url: '/templates/l2AclPolicies/:l2AclPolicyId',
+    url: '/templates/l2AclPolicies/:templateId',
     newApi: true
   },
   updateL2AclPolicy: {
@@ -43,7 +43,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   delL3AclPolicy: {
     method: 'delete',
-    url: '/templates/l3AclPolicies/:l3AclPolicyId',
+    url: '/templates/l3AclPolicies/:templateId',
     newApi: true
   },
   updateL3AclPolicy: {
@@ -68,7 +68,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   delAppAclPolicy: {
     method: 'delete',
-    url: '/templates/applicationPolicies/:applicationPolicyId',
+    url: '/templates/applicationPolicies/:templateId',
     newApi: true
   },
   updateAppAclPolicy: {
@@ -147,7 +147,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   delDevicePolicy: {
     method: 'delete',
-    url: '/templates/devicePolicies/:devicePolicyId',
+    url: '/templates/devicePolicies/:templateId',
     newApi: true
   },
   updateDevicePolicy: {
