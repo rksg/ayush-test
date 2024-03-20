@@ -70,6 +70,7 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -123,6 +124,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -191,6 +193,10 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(devicePolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -201,6 +207,13 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && !devicePolicyId)
   }, [isOnlyViewMode, devicePolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -596,7 +609,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   </>
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
