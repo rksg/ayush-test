@@ -107,7 +107,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     //   })
     // }
 
-    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
+    if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue(getFieldFullPath(interfaceName, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
       const initialPortType = portData.find(port => port.interfaceName === interfaceName)?.portType
