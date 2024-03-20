@@ -33,14 +33,6 @@ const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
-const CONFIG_TEMPLATE_USE_CASES = [
-  'DeleteNetworkVenueTemplate',
-  'DeleteNetworkVenueTemplates',
-  'AddNetworkVenueTemplate',
-  'AddNetworkVenueTemplateMappings',
-  'UpdateNetworkVenueTemplate'
-]
-
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
@@ -253,19 +245,25 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const extraUseCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : []
-          onActivityMessageReceived(msg,
-            [
-              'AddNetworkVenue',
-              'AddNetworkVenueMappings',
-              'DeleteNetworkVenue',
-              'DeleteNetworkVenues',
-              'UpdateNetworkDeep',
-              'UpdateNetworkVenue',
-              ...extraUseCases
-            ], () => {
-              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
-            })
+          const USE_CASES = [
+            'AddNetworkVenue',
+            'AddNetworkVenueMappings',
+            'DeleteNetworkVenue',
+            'DeleteNetworkVenues',
+            'UpdateNetworkDeep',
+            'UpdateNetworkVenue'
+          ]
+          const CONFIG_TEMPLATE_USE_CASES = [
+            'DeleteNetworkVenueTemplate',
+            'DeleteNetworkVenueTemplates',
+            'AddNetworkVenueTemplate',
+            'AddNetworkVenueTemplateMappings',
+            'UpdateNetworkVenueTemplate'
+          ]
+          const useCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : USE_CASES
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
         })
       }
     }),

@@ -85,12 +85,6 @@ const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
-const CONFIG_TEMPLATE_USE_CASES = [
-  'DeleteNetworkVenueTemplate',
-  'AddNetworkVenueTemplate',
-  'UpdateNetworkVenueTemplate'
-]
-
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
     venuesList: build.query<TableResult<Venue>, RequestPayload>({
@@ -232,12 +226,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const extraUseCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : []
-          onActivityMessageReceived(msg, [
+          const USE_CASES = [
             'AddNetworkVenue',
-            'DeleteNetworkVenue',
-            ...extraUseCases
-          ], () => {
+            'DeleteNetworkVenue'
+          ]
+          const CONFIG_TEMPLATE_USE_CASES = [
+            'DeleteNetworkVenueTemplate',
+            'AddNetworkVenueTemplate',
+            'UpdateNetworkVenueTemplate'
+          ]
+          const useCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : USE_CASES
+          onActivityMessageReceived(msg, useCases, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
           })
         })
