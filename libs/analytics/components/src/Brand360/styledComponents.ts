@@ -5,8 +5,8 @@ import { SettingsSolid } from '@acx-ui/icons'
 
 export const Setting = {
   Icon: styled(SettingsSolid)`
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
   `,
   Line: styled.div`
     border-bottom: 1px solid var(--acx-neutrals-25);

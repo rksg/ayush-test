@@ -110,8 +110,11 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
     e.stopPropagation()
     setVisible(false)
   }
-  return <Button onClick={() => setVisible(true)} >
-    <UI.Icon data-testid='settings' />
+  return <Button
+    onClick={() => setVisible(true)}
+    icon={<UI.Icon data-testid='settings' />}
+    style={{ padding: '4px 0', width: '32px' }}
+  >
     <Drawer
       width={500}
       title={$t({ defaultMessage: 'Settings' })}
