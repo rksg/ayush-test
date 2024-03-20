@@ -12,8 +12,8 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { useNetworkVenueListQuery }      from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useNetworkVenueListQuery, useNetworkVenueListV2Query } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -92,13 +92,14 @@ export function Venues (props: VenuesProps) {
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const prevIsWPA3securityRef = useRef(false)
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
+    useQuery: isUseWifiApiV2? useNetworkVenueListV2Query : useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload: {
       ...defaultPayload,
