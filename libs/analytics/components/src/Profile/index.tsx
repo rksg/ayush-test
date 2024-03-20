@@ -9,11 +9,6 @@ import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import { useUpdateUserMutation }     from './services'
 import * as UI                       from './styledComponents'
 
-export enum ProfileTabEnum {
-  SETTINGS = 'settings',
-  NOTIFICATIONS = 'notifications'
-}
-
 interface Tab {
   key: ProfileTabEnum,
   title: string | JSX.Element,
@@ -28,6 +23,11 @@ enum RolesEnum {
   ADMINISTRATOR = 'admin',
   REPORT_ONLY = 'report-only',
   NETWORK_ADMIN = 'network-admin'
+}
+
+export enum ProfileTabEnum {
+  SETTINGS = 'settings',
+  NOTIFICATIONS = 'notifications'
 }
 
 const roleStringMap: Record<RolesEnum, MessageDescriptor> = {

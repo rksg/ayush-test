@@ -10,7 +10,7 @@ export type UserProfile = {
   selectedTenant: Tenant
   accountTier?: string
   betaEnabled?: boolean
-  preferences: {
+  preferences?: {
     preferredLanguage: string
   }
 }
