@@ -12,14 +12,27 @@ type Profile = {
   allowedOperations: string []
   accountTier?: string
   betaEnabled?: boolean
+  abacEnabled?: boolean
+  scopes?: string[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
   allowedOperations: [],
   accountTier: '',
-  betaEnabled: false
+  betaEnabled: false,
+  abacEnabled: false,
+  scopes: []
 }
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
+
+interface FilterItemType {
+  scopeKey?: string,
+  key?: string,
+  props?: {
+    scopeKey?: string,
+    key?: string
+  }
+}
 
 export const getUserProfile = () => userProfile
 export const setUserProfile = (profile: Profile) => {
@@ -28,6 +41,8 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.allowedOperations = profile.allowedOperations
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
+  userProfile.abacEnabled = profile.abacEnabled
+  userProfile.scopes = profile?.scopes
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -35,17 +50,23 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
 }
 
 export function hasAccess (id?: string) {
-  const { allowedOperations } = getUserProfile()
-
+  const { allowedOperations, scopes, abacEnabled } = getUserProfile()
   // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   if(id?.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
+  if (id && abacEnabled && scopes) return scopes?.includes(id)
 
-  return allowedOperations.includes(id)
+  return allowedOperations?.includes(id)
 }
 
 export function filterByAccess <Item> (items: Item[]) {
-  return items.filter(item => hasAccess((item as { key?: string }).key))
+  const { abacEnabled } = getUserProfile()
+  const key = abacEnabled ? 'scopeKey' : 'key'
+  return items.filter(item => {
+    const filterItem = item as FilterItemType
+    const id = filterItem?.[key] || filterItem?.props?.[key]
+    return hasAccess(id)
+  })
 }
 
 export function WrapIfAccessible ({ id, wrapper, children }: {
@@ -62,7 +83,7 @@ export function hasRoles (roles: string | string[]) {
 
   if (!Array.isArray(roles)) roles = [roles]
 
-  return profile.roles.some(role => roles.includes(role))
+  return profile?.roles?.some(role => roles.includes(role))
 }
 
 export const roleStringMap: Record<Role, MessageDescriptor> = {

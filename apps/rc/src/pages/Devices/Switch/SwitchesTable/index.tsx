@@ -13,8 +13,12 @@ import {
   useSwitchListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { usePollingTableQuery }  from '@acx-ui/rc/utils'
+import {
+  SwitchAttributeProfile,
+  usePollingTableQuery
+}      from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
@@ -89,11 +93,11 @@ export default function useSwitchesTable () {
     description: 'Translation strings - Switch List'
   })
 
-  const extra = [
-    <Dropdown overlay={addMenu}>{() =>
+  const extra = filterByAccess([
+    <Dropdown overlay={addMenu} scopeKey={SwitchAttributeProfile.CREATE}>{() =>
       <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
     }</Dropdown>
-  ]
+  ])
 
   const component =
     <SwitchTabContext.Provider value={{ setSwitchCount }}>

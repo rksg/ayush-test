@@ -17,6 +17,7 @@ import {
 }                         from '@acx-ui/rc/services'
 import {
   getStackUnitsMinLimitation,
+  SwitchAttributeProfile,
   SwitchRow,
   SwitchStatusEnum,
   SwitchViewModel
@@ -281,6 +282,7 @@ function SwitchPageHeader () {
             }</Dropdown>,
             <Button
               type='primary'
+              scopeKey={SwitchAttributeProfile.UPDATE}
               onClick={() =>
                 navigate({
                   ...basePath,

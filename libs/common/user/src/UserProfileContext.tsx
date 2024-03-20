@@ -7,7 +7,8 @@ import {
   useAllowedOperationsQuery,
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
-  useGetUserProfileQuery
+  useGetUserProfileQuery,
+  useFeatureFlagStatesQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -43,9 +44,24 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
+
+  const abacFF = 'abac-policies-toggle'
+  const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
+    = useFeatureFlagStatesQuery(
+      { params: { tenantId }, payload: [abacFF] }, { skip: !Boolean(profile) }
+    )
+
   const accountTier = accTierResponse?.acx_account_tier
-  if (allowedOperations && accountTier) setUserProfile({ profile: profile!,
-    allowedOperations, accountTier, betaEnabled })
+  if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
+    setUserProfile({
+      profile: profile!,
+      allowedOperations,
+      accountTier,
+      betaEnabled,
+      abacEnabled: featureFlagStates?.[abacFF] ?? false,
+      scopes: profile?.scopes
+    })
+  }
 
   return <UserProfileContext.Provider
     value={{

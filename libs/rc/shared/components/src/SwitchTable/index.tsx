@@ -37,6 +37,7 @@ import {
   getFilters,
   TableQuery,
   SwitchStatusEnum,
+  SwitchAttributeProfile,
   isStrictOperationalSwitch,
   isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
@@ -368,6 +369,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    scopeKey: SwitchAttributeProfile.UPDATE,
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
       const serialNumber = selectedRows[0].serialNumber
@@ -441,6 +443,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: SwitchAttributeProfile.DELETE,
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
