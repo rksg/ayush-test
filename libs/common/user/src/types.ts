@@ -155,3 +155,24 @@ export interface BetaStatus {
 export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
+
+export enum WifiAttributeProfile {
+  READ = 'wifi-r',
+  CREATE = 'wifi-c',
+  UPDATE = 'wifi-u',
+  DELETE = 'wifi-d'
+}
+
+export enum SwitchAttributeProfile {
+  READ = 'switch-r',
+  CREATE = 'switch-c',
+  UPDATE = 'switch-u',
+  DELETE = 'switch-d'
+}
+
+export enum EdgeAttributeProfile {
+  READ = 'edge-r',
+  CREATE = 'edge-c',
+  UPDATE = 'edge-u',
+  DELETE = 'edge-d'
+}

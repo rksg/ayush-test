@@ -73,12 +73,22 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
 }
 
-function hasRbac (props:{ role: string, children: ReactElement }) { // TODO:
+export function hasRbac (userScope: string[], accessId?:string) { 
   const { profile } = getUserProfile()
-  // console.log(profile, props)
-  return profile && props.role === 'admin'
+  // return profile && props.role === 'admin'
+  const scope = [
+    'wifi-d', 'wifi-r', 'wifi-c', 'wifi-u',
+    'switch-r'
+  ]
+  // off 
+  return hasAccess(accessId)
+  // on 
+  
+  return true
+
 }
 
-export function AuthRoute (props: { role: string, children: ReactElement }) {
-  return !hasRbac(props) ? <TenantNavigate replace to='/no-permissions' /> : props.children
+export function AuthRoute (props: { scope: string[], children: ReactElement }) {
+  const { scope, children } = props
+  return !hasRbac(scope) ? <TenantNavigate replace to='/no-permissions' /> : children
 }

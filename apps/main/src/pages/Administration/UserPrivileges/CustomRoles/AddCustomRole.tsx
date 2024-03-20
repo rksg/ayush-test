@@ -20,9 +20,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CustomRole,
-  EdgeAttributeProfile,
-  SwitchAttributeProfile,
-  WifiAttributeProfile
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -32,6 +29,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import * as UI from '../styledComponents'
+import { EdgeAttributeProfile, SwitchAttributeProfile, WifiAttributeProfile } from '@acx-ui/user'
 
 interface CustomRoleData {
   name?: string,
