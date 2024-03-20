@@ -8,10 +8,11 @@ import { useIntl }             from 'react-intl'
 
 import { Loader, NoData, StepsForm }                                                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                            from '@acx-ui/rc/services'
+import { useUpdatePortConfigMutation }                                                              from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
 
 import { EdgePortTabEnum }                                  from '..'
+import { useGetEdgeSdLanByEdgeOrClusterId }                 from '../../../EdgeSdLan/useEdgeSdLanActions'
 import { EditContext }                                      from '../../EdgeEditContext'
 import { EdgePortConfigFormType, EdgePortsGeneralBase }     from '../../EdgePortsGeneralBase'
 import { getFieldFullPath, transformApiDataToFormListData } from '../../EdgePortsGeneralBase/utils'
@@ -32,7 +33,7 @@ interface PortsGeneralProps {
 const PortsGeneral = (props: PortsGeneralProps) => {
   const { clusterId, serialNumber, onCancel, buttonLabel } = props
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  // const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const [form] = Form.useForm<EdgePortConfigFormType>()
@@ -41,23 +42,33 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const { portData, portStatus, lagData, isFetching } = useContext(EdgePortsDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
-  const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-    = useGetEdgeSdLanViewDataListQuery(
-      { payload: {
-        filters: isEdgeSdLanHaReady
-          ? { edgeClusterId: [clusterId] }
-          : { edgeId: [serialNumber] },
-        fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
-      } },
-      {
-        skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-        selectFromResult: ({ data, isLoading, isFetching }) => ({
-          edgeSdLanData: data?.data?.[0],
-          isEdgeSdLanLoading: isLoading,
-          isEdgeSdLanFetching: isFetching
-        })
-      }
-    )
+  const {
+    edgeSdLanData,
+    isLoading: isEdgeSdLanLoading,
+    isFetching: isEdgeSdLanFetching
+  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
+  console.log(clusterId, edgeSdLanData)
+  // const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
+  //   = useGetEdgeSdLanP2ViewDataListQuery(
+  //     { payload: {
+  //       filters: isEdgeSdLanHaReady
+  //         ? undefined
+  //         : { edgeId: [serialNumber] },
+  //       fields: ['id', (isEdgeSdLanHaReady?['edgeClusterId', 'guestEdgeClusterId']:'edgeId')]
+  //     } },
+  //     {
+  //       skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+  //       selectFromResult: ({ data, isLoading, isFetching }) => ({
+  //         edgeSdLanData: data?.data?.filter((item, idx) => {
+  //           return isEdgeSdLanHaReady
+  //             ? (item.edgeClusterId === clusterId || item.guestEdgeClusterId === clusterId)
+  //             : idx === 0
+  //         }),
+  //         isEdgeSdLanLoading: isLoading,
+  //         isEdgeSdLanFetching: isFetching
+  //       })
+  //     }
+  //   )
 
   const handleFormChange = async (changedValues: Object) => {
     // due to form.List, must use the trailling 0

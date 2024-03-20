@@ -4,7 +4,7 @@ import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, Select, Spac
 import _                                                                                    from 'lodash'
 import { useIntl }                                                                          from 'react-intl'
 
-import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip }              from '@acx-ui/components'
 import {
   EdgeIpModeEnum,
   EdgeLag,
@@ -15,6 +15,7 @@ import {
   lanPortsubnetValidator,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
+  // validateGatewayExist
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
@@ -27,10 +28,11 @@ interface formFieldsPropsType {
     options?: {
       label: string,
       value: EdgePortTypeEnum
-    }[]
+    }[],
+    validator?: (value: unknown) => Promise<string|void>
   }
 }
-interface EdgePortCommonFormProps {
+export interface EdgePortCommonFormProps {
   formRef: FormInstance,
   fieldHeadPath: string[],
   portsDataRootPath: string[],
@@ -258,6 +260,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
       {..._.get(formFieldsProps, 'portType')}
+      validateFirst
       rules={[
         { required: true },
         { validator: (_, value) => {
@@ -270,6 +273,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           } else {
             return Promise.resolve()
           }
+        } },
+        { validator: (_, value) => {
+          return formFieldsProps?.portType?.validator?.(value) ?? Promise.resolve()
         } }
       ]}
     >

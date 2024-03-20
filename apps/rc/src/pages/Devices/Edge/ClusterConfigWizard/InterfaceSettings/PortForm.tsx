@@ -6,6 +6,7 @@ import { useIntl }                 from 'react-intl'
 
 import { Loader, useStepFormContext }                from '@acx-ui/components'
 import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components'
+import { EdgePort, validateGatewayExist }            from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -79,6 +80,19 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
                 fieldHeadPath={['portSettings', serialNumber]}
+                formFieldsProps={{
+                  portType: {
+                    validator: () => {
+                      console.log('validator')
+                      const allPortsValues = _.get(form.getFieldsValue(true),
+                        ['portSettings', serialNumber])
+
+                      const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
+                      console.log(portsData)
+                      return validateGatewayExist(portsData, lagData)
+                    }
+                  }
+                }}
               />
               : <div />
           }

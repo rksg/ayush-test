@@ -8,6 +8,8 @@ import { Tabs, Tooltip }                                                        
 import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
 
+import { EdgePortCommonFormProps } from '../PortCommonForm'
+
 import { PortConfigForm } from './PortConfigForm'
 
 export interface EdgePortConfigFormType {
@@ -21,7 +23,7 @@ interface TabData {
   isLagPort?: boolean
 }
 
-interface PortsGeneralProps {
+interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
   statusData: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
