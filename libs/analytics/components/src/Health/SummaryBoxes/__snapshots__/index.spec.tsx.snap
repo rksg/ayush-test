@@ -16,43 +16,38 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jaCLvj"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Successful Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Successful Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  --
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /--
-                  </span>
-                </div>
+                  /--
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -62,43 +57,38 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kna-Drr"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Failed Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Failed Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  --
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /--
-                  </span>
-                </div>
+                  /--
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -108,38 +98,33 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 paFir"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Connection Success Ratio
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Connection Success Ratio
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                </div>
+                  --
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -149,38 +134,33 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 cvxmAo"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 fbqrqQ"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Avg Time To Connect
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Average Time To Connect
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                </div>
+                  --
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -204,43 +184,38 @@ exports[`Health Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jaCLvj"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Successful Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Successful Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  50.8K
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    50.8K
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /107K
-                  </span>
-                </div>
+                  /107K
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -250,43 +225,38 @@ exports[`Health Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kna-Drr"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Failed Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Failed Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  56.5K
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    56.5K
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /107K
-                  </span>
-                </div>
+                  /107K
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -296,38 +266,33 @@ exports[`Health Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 paFir"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Connection Success Ratio
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Connection Success Ratio
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    47.34%
-                  </span>
-                </div>
+                  47.34%
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -337,38 +302,33 @@ exports[`Health Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 cvxmAo"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 fbqrqQ"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Avg Time To Connect
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Average Time To Connect
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    39.5 s
-                  </span>
-                </div>
+                  39.5 s
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -392,43 +352,38 @@ exports[`Health Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jaCLvj"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Successful Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Successful Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  --
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /--
-                  </span>
-                </div>
+                  /--
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -438,43 +393,38 @@ exports[`Health Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kna-Drr"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Failed Connections
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Failed Connections
-                </div>
-                <div
-                  class="ant-statistic-content"
+                  --
+                </span>
+                <span
+                  class="ant-statistic-content-suffix"
                 >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                  <span
-                    class="ant-statistic-content-suffix"
-                  >
-                    /--
-                  </span>
-                </div>
+                  /--
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -484,38 +434,33 @@ exports[`Health Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 paFir"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Connection Success Ratio
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Connection Success Ratio
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                </div>
+                  --
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
       <div
@@ -525,41 +470,118 @@ exports[`Health Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          <button
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 cvxmAo"
+            type="button"
           >
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 fbqrqQ"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
-                style="width: 100%;"
+                class="ant-statistic-title"
               >
-                <div
-                  class="ant-statistic-title"
+                Avg Time To Connect
+              </div>
+              <div
+                class="ant-statistic-content"
+              >
+                <span
+                  class="ant-statistic-content-value"
                 >
-                  Average Time To Connect
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    --
-                  </span>
-                </div>
+                  --
+                </span>
               </div>
             </div>
-            <div
-              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
-            >
-              (More details)
-            </div>
-          </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
+          </button>
         </div>
       </div>
     </div>
   </div>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly with toggle disabled 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 kfCiuv"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <svg
+      class="styledComponents__UpArrow-sc-1tt9ql2-2 dKUscz"
+      data-testid="CaretDoubleUpOutlined"
+    />
+  </button>
+</DocumentFragment>
+`;
+
+exports[`box should render correctly with toggle enabled 1`] = `
+<DocumentFragment>
+  <button
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 kfCiuv"
+    type="button"
+  >
+    <div
+      class="ant-statistic styledComponents__Statistic-sc-1tt9ql2-1 GsEIY"
+    >
+      <div
+        class="ant-statistic-title"
+      >
+        test box
+      </div>
+      <div
+        class="ant-statistic-content"
+      >
+        <span
+          class="ant-statistic-content-value"
+        >
+          <span
+            class="ant-statistic-content-value-int"
+          >
+            100
+          </span>
+        </span>
+        <span
+          class="ant-statistic-content-suffix"
+        >
+          /suffix
+        </span>
+      </div>
+    </div>
+    <svg
+      class="styledComponents__UpArrow-sc-1tt9ql2-2 dKUscz"
+      data-testid="CaretDoubleUpOutlined"
+    />
+  </button>
 </DocumentFragment>
 `;
