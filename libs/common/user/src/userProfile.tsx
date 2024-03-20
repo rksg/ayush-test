@@ -4,13 +4,13 @@ import { RolesEnum as Role } from '@acx-ui/types'
 
 import { UserProfile } from './types'
 
-export type Profile = {
+type Profile = {
   profile: UserProfile
   allowedOperations: string []
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
-  scope?: string[]
+  scopes?: string[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -18,7 +18,7 @@ const userProfile: Profile = {
   accountTier: '',
   betaEnabled: false,
   abacEnabled: false,
-  scope: []
+  scopes: []
 }
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
@@ -39,11 +39,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
-  //TODO: wait for API
-  // userProfile.scope = [
-  //   'wifi-d', 'wifi-r', 'wifi-c', 'wifi-u',
-  //   'switch-r'
-  // ]
+  userProfile.scopes = profile?.scopes
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -51,11 +47,11 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
 }
 
 export function hasAccess (id?: string) {
-  const { allowedOperations, scope, abacEnabled } = getUserProfile()
+  const { allowedOperations, scopes, abacEnabled } = getUserProfile()
   // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   if(id?.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
-  if (id && abacEnabled && scope) return scope.includes(id)
+  if (id && abacEnabled && scopes) return scopes?.includes(id)
 
   return allowedOperations?.includes(id)
 }

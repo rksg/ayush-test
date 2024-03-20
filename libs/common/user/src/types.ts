@@ -68,6 +68,7 @@ export interface UserProfile {
   initials?: string
   fullName: string
   preferredLanguage?: string
+  scopes?: []
 }
 
 export type GuestErrorRes = {

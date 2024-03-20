@@ -22,7 +22,6 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
-  abacEnabled?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
@@ -53,14 +52,14 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     )
 
   const accountTier = accTierResponse?.acx_account_tier
-  // TODO: get scope from API
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     setUserProfile({
       profile: profile!,
       allowedOperations,
       accountTier,
       betaEnabled,
-      abacEnabled: featureFlagStates?.[abacFF] ?? false
+      abacEnabled: featureFlagStates?.[abacFF] ?? false,
+      scopes: profile?.scopes
     })
   }
 
@@ -73,8 +72,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaEnabled,
-      abacEnabled: featureFlagStates?.[abacFF] ?? false
+      betaEnabled
     }}
     children={props.children}
   />
