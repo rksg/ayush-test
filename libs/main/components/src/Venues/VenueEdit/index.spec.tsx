@@ -74,8 +74,8 @@ describe('VenueEdit', () => {
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     await screen.findByRole('tab', { name: 'Venue Details' })
     await screen.findByRole('tab', { name: 'Wi-Fi Configuration' })
+    await screen.findByRole('tab', { name: 'Switch Configuration' })
 
-    expect(screen.queryByRole('tab', { name: 'Switch Configuration' })).toBeNull()
     expect(screen.queryByRole('tab', { name: 'Property Management' })).toBeNull()
 
     await userEvent.click(await screen.findByText('Back to venue details'))
