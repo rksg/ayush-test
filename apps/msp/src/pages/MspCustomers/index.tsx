@@ -33,7 +33,8 @@ import {
 import {
   MspEcAlarmList,
   MspEc,
-  MSPUtils
+  MSPUtils,
+  MspEcTierEnum
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -152,7 +153,8 @@ export function MspCustomers () {
       'expirationDate',
       'wifiLicense',
       'switchLicense',
-      'streetAddress'
+      'streetAddress',
+      'accountTier'
     ],
     searchTargetFields: ['name']
   }
@@ -208,7 +210,7 @@ export function MspCustomers () {
     }
   }
 
-  function useColumns (mspEcAlarmList?: MspEcAlarmList) {
+  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -419,6 +421,17 @@ export function MspCustomers () {
             return row?.edgeLicenses ? row?.edgeLicenses : 0
           }
         }]),
+      ...(!isSupportTier ? [] : [{
+        title: $t({ defaultMessage: 'Service Tier' }),
+        dataIndex: 'accountTier',
+        key: 'accountTier',
+        sorter: true,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.accountTier === MspEcTierEnum.Essentials
+            ? $t({ defaultMessage: 'Essentials' })
+            : $t({ defaultMessage: 'Professional' })
+        }
+      }]),
       {
         title: $t({ defaultMessage: 'Active From' }),
         dataIndex: 'creationDate',
@@ -492,7 +505,8 @@ export function MspCustomers () {
       }
     }, [tableQuery?.data?.data, alarmList?.data])
 
-    const columns = useColumns(mspEcAlarmList)
+    const supportTier = true
+    const columns = useColumns(mspEcAlarmList, supportTier)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
