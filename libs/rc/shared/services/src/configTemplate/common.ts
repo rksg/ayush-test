@@ -18,6 +18,13 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi } from '../network'
 
+import {
+  ApplicationTemplateUseCases,
+  DeviceTemplateUseCases,
+  L2AclTemplateUseCases,
+  L3AclTemplateUseCases
+} from './policies'
+
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
@@ -258,7 +265,15 @@ export const useCasesToRefreshDhcpTemplateList = ['AddDhcpConfigServiceProfileTe
 // eslint-disable-next-line max-len
 export const useCasesToRefreshDpskTemplateList = ['CREATE_POOL_TEMPLATE_RECORD', 'UPDATE_POOL_TEMPLATE_RECORD', 'DELETE_POOL_TEMPLATE_RECORD']
 // eslint-disable-next-line max-len
-export const useCasesToRefreshAccessControlTemplateList = ['AddAccessControlProfileTemplateRecord', 'UpdateAccessControlProfileTemplateRecord', 'DeleteAccessControlProfileTemplateRecord']
+export const useCasesToRefreshAccessControlTemplateList = [
+  'AddAccessControlProfileTemplateRecord',
+  'UpdateAccessControlProfileTemplateRecord',
+  'DeleteAccessControlProfileTemplateRecord',
+  ...L2AclTemplateUseCases,
+  ...L3AclTemplateUseCases,
+  ...DeviceTemplateUseCases,
+  ...ApplicationTemplateUseCases
+]
 
 const useCasesToRefreshTemplateList = [
   'AddRadiusServerProfileTemplateRecord',
