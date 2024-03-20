@@ -12,9 +12,8 @@ export interface GuestToken {
 }
 
 export interface UserInfo {
-  tenant_id: string,
-  is_franchisor: string,
-  tenant_ids: string[]
+  own_tenant_id: string,
+  cache_key: string
 }
 
 export interface DataStudioResponse {
