@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientUrlsInfo,
   CommonUrlsInfo,
@@ -9,10 +9,10 @@ import {
   VenueConfigTemplateUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                                             from '@acx-ui/store'
-import { mockServer, render, screen }                                           from '@acx-ui/test-utils'
-import { RolesEnum }                                                            from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                                       from '@acx-ui/user'
+import { Provider }                       from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { venuesResponse } from '../NetworkForm/__tests__/fixtures'
 
