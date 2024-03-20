@@ -1,14 +1,12 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
+import { getUserProfile }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs }                        from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import {
-  UserProfile as UserProfileInterface,
-  useUpdateUserProfileMutation
-} from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
+import { useUpdateUserMutation }     from './services'
 import { TabNewTabLink }             from './styledComponents'
 
 export enum ProfileTabEnum {
@@ -28,13 +26,13 @@ interface fromLoc {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const navigate = useNavigate()
-  const [ updateUserProfile ] = useUpdateUserProfileMutation()
+  const [ updateUser ] = useUpdateUserMutation()
   const location = useLocation().state as fromLoc
+  const { userId } = getUserProfile()
 
-  const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
-    await updateUserProfile({ payload: data, params: { tenantId } }) // api to write user preference to db
+  const handleUpdateSettings = async (data: { preferredLanguage: string }) => {
+    await updateUser({ userId: userId ,preferences: data })
     navigate({
       pathname: location.from
     }, { replace: true })

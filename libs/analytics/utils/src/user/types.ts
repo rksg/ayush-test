@@ -10,6 +10,9 @@ export type UserProfile = {
   selectedTenant: Tenant
   accountTier?: string
   betaEnabled?: boolean
+  preferences: {
+    preferredLanguage: string
+  }
 }
 export type Invitation = {
   accountName: string

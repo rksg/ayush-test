@@ -5,14 +5,15 @@ import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI, Dropdown }     from '@acx-ui/components'
-import { NewTabLink, TenantLink } from '@acx-ui/react-router-dom'
+import { LayoutUI, Dropdown }                  from '@acx-ui/components'
+import { NewTabLink, TenantLink, useLocation } from '@acx-ui/react-router-dom'
 
 
 export const UserButton = () => {
   const { $t } = useIntl()
   const { selectedTenant, firstName, lastName } = getUserProfile()
   const hasViewAnalyticsPermissions = selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
+  const location = useLocation()
 
   const menuHeaderDropdown = (
     <Menu
@@ -32,7 +33,10 @@ export const UserButton = () => {
         ...(hasViewAnalyticsPermissions ? [
           {
             key: 'my-profile',
-            label: <TenantLink to='/profile/settings'>
+            label: <TenantLink
+              to='/profile/settings'
+              state={{ from: location.pathname }}
+            >
               {$t({ defaultMessage: 'My Profile' })}
             </TenantLink>
           }
