@@ -79,11 +79,12 @@ export function DataStudio () {
         } else {
           // store user info
           sessionStorage.setItem('user_info', JSON.stringify(user_info))
-          const { own_tenant_id, cache_key } = user_info
+          const { tenant_id, is_franchisor, tenant_ids } = user_info
           // Lets also set the params for the iframe
           const searchParams = new URLSearchParams()
-          searchParams.append('mlisa_own_tenant_id', own_tenant_id)
-          searchParams.append('mlisa_user_info_cache_key', cache_key)
+          searchParams.append('mlisa_own_tenant_id', tenant_id)
+          searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
+          searchParams.append('is_franchisor', is_franchisor)
 
           setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
         }

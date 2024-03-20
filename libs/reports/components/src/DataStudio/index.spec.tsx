@@ -14,8 +14,11 @@ import { DataStudio, getHostName } from '.'
 const response = {
   redirect_url: '/api/a4rc/explorer/',
   user_info: {
-    own_tenant_id: '1234',
-    cache_key: 'cache-key'
+    tenant_id: '1234',
+    is_franchisor: 'false',
+    tenant_ids: [
+      '1235'
+    ]
   }
 } as DataStudioResponse
 
@@ -73,7 +76,7 @@ describe('DataStudio', () => {
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     // eslint-disable-next-line max-len
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_user_info_cache_key=cache-key')
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
   })
 
   it('should render the data studio for MLISA SA with url params', async () => {
@@ -95,7 +98,7 @@ describe('DataStudio', () => {
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     // eslint-disable-next-line max-len
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_user_info_cache_key=cache-key')
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_tenant_ids=1235&is_franchisor=false')
   })
 
   it('should render the data studio for MLISA SA without url params', async () => {
