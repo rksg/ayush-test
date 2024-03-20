@@ -1,5 +1,5 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Col, Row, Typography }                      from 'antd'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { getUserProfile }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs }                        from '@acx-ui/components'
@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/reac
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import { useUpdateUserMutation }     from './services'
-import { TabNewTabLink }             from './styledComponents'
+import * as UI                       from './styledComponents'
 
 export enum ProfileTabEnum {
   SETTINGS = 'settings',
@@ -22,6 +22,51 @@ interface Tab {
 
 interface fromLoc {
   from: string
+}
+
+enum RolesEnum {
+  ADMINISTRATOR = 'admin',
+  REPORT_ONLY = 'report-only',
+  NETWORK_ADMIN = 'network-admin'
+}
+
+const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
+  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [RolesEnum.REPORT_ONLY]: defineMessage({ defaultMessage: 'Report Only' }),
+  [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Manager' })
+}
+
+const UserData = () => {
+  const { $t } = useIntl()
+  const { email, accountId, selectedTenant, firstName, lastName } = getUserProfile()
+  const { Paragraph } = Typography
+  const initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
+  const fullName = `${firstName} ${lastName}`
+  const role = selectedTenant?.role as RolesEnum
+
+  return (
+    <UI.UserDataWrapper>
+      <UI.UserData>
+        <UI.UserCircle>{initials}</UI.UserCircle>
+        {<div>
+          <UI.UserName>{fullName}</UI.UserName>
+          <UI.UserRole>
+            {$t(roleStringMap[role])}
+          </UI.UserRole>
+          <UI.UserAttributes>
+            <div>
+              <b><UI.EnvelopClosedSolidIcon /></b>
+              <Paragraph>{email}</Paragraph>
+            </div>
+            <div>
+              <b>Tenant ID</b>
+              <Paragraph copyable>{accountId}</Paragraph>
+            </div>
+          </UI.UserAttributes>
+        </div>}
+      </UI.UserData>
+    </UI.UserDataWrapper>
+  )
 }
 
 const useTabs = () : Tab[] => {
@@ -70,8 +115,8 @@ const useTabs = () : Tab[] => {
   }
   const notificationsTab = {
     key: ProfileTabEnum.NOTIFICATIONS,
-    title: <TabNewTabLink to={'/analytics/profile/settings'}>
-      {$t({ defaultMessage: 'Notifications' })}</TabNewTabLink>
+    title: <UI.TabNewTabLink to={'/analytics/profile/settings'}>
+      {$t({ defaultMessage: 'Notifications' })}</UI.TabNewTabLink>
   }
 
   return [
@@ -100,11 +145,12 @@ export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'User Profile' })}
-      footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+      footer={<>
+        <UserData />
+        {tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
-        </Tabs>
-      }
+        </Tabs>}
+      </>}
     />
     {TabComp}
   </>
