@@ -62,6 +62,7 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -131,6 +132,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -192,6 +194,10 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(layer3PolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -210,7 +216,14 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && !l3AclPolicyId)
-  }, [isOnlyViewMode, l3AclPolicyId])
+  }, [isOnlyViewMode, l3AclPolicyId, drawerViewModeId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -1008,7 +1021,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
