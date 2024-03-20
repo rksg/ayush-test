@@ -1,32 +1,34 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Col, Form, Row } from 'antd'
 
-import { StepsForm }                              from '@acx-ui/components'
-import { EdgeSettingForm }                        from '@acx-ui/rc/components'
-import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting }                     from '@acx-ui/rc/utils'
+import { StepsForm }             from '@acx-ui/components'
+import { EdgeSettingForm }       from '@acx-ui/rc/components'
+import { useUpdateEdgeMutation } from '@acx-ui/rc/services'
+import { EdgeGeneralSetting }    from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
+
 const GeneralSettings = () => {
   const navigate = useNavigate()
   const params = useParams()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
-  const { data: edgeGeneralSettings } = useGetEdgeQuery({
-    params: { serialNumber: params.serialNumber }
-  })
+  const {
+    generalSettings
+  } = useContext(EditEdgeDataContext)
   const [upadteEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
 
   useEffect(() => {
-    if(edgeGeneralSettings) {
-      form.setFieldsValue(edgeGeneralSettings)
+    if(generalSettings) {
+      form.setFieldsValue(generalSettings)
     }
-  }, [edgeGeneralSettings])
+  }, [generalSettings])
 
   const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {

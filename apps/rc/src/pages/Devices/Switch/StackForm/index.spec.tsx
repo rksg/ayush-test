@@ -16,6 +16,7 @@ import {
   render,
   screen,
   fireEvent,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -215,6 +216,7 @@ describe('Switch Stack Form - Add', () => {
 })
 
 describe('Switch Stack Form - Edit', () => {
+  const mockUpdateSwitch = jest.fn()
   const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -234,11 +236,15 @@ describe('Switch Stack Form - Edit', () => {
       rest.post(SwitchUrlsInfo.getMemberList.url,
         (_, res, ctx) => res(ctx.json(editStackMembers))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
+        (_, res, ctx) => {
+          mockUpdateSwitch()
+          return res(ctx.json({ requestId: 'request-id' }))
+        })
     )
   })
   afterEach(() => {
     Modal.destroyAll()
+    mockUpdateSwitch.mockClear()
   })
   it('should submit edit stack form correctly', async () => {
     // TODO:
@@ -297,5 +303,129 @@ describe('Switch Stack Form - Edit', () => {
     expect(screen.queryByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeNull()
     expect(await screen.findByLabelText(/Stack Name/)).not.toBeDisabled()
     expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not block form submit when switch is offline and settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackData,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackDetail,
+          name: 'stack-name',
+          deviceStatus: 'OFFLINE'
+        }))
+      )
+    )
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).toBeCalled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not show toast message when the details and settings tab both have invalid field values', async () => {
+    // eslint-disable-next-line max-len
+    const longSwitchName = 'stack-name vhQKuZoqFy0fI5BR2h34PZFmV4ndAPVrdzg1Bw7jJYHf2opN5Bev1c7PCwobQtILj4GNHHhUsUFAW3h2wfcRvCM5qBs2OLsbNpa2WlUN6JwdbbC26TjPIkJTFBQ3PCFfW22d0DKPpIwur98vB9fk8t8Hh9zx2mGRttHa0SAJaqEtquVYgXrPkpHMFo0Gs5c9iS3jt6gzdSBKbEgnj9Ju8OD4ts9b3BxmnDiVwLMraNpqsfJR0wNx1e2yfVYM6If5'
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackData,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackDetail,
+          name: longSwitchName
+        }))
+      )
+    )
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Stack Name/)).toHaveValue(longSwitchName)
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Stack Details' })).toBeTruthy()
+    expect(screen.queryByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeNull()
+  })
+
+  it('should show toast message when the settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackData,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackDetail,
+          name: 'stack-name'
+        }))
+      )
+    )
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should show toast message when the settings tab has invalid field values in read-only mode', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackData,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...editStackDetail,
+          name: 'stack-name',
+          cliApplied: true
+        }))
+      )
+    )
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab and modify it via CLI/i
+    )).toBeVisible()
   })
 })

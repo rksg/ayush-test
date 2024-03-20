@@ -1,7 +1,8 @@
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { SummaryCard }  from '@acx-ui/components'
+import { SummaryCard }            from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceOperation,
   ServiceType,
@@ -12,7 +13,7 @@ import {
   PolicyOperation,
   EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
-import { TenantLink, useSearchParams } from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import EdgeSdLanP2 from '../SdLanP2'
 
@@ -81,12 +82,11 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
 }
 
 const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
-  const [searchParams] = useSearchParams()
-  const isP2Page = searchParams.get('sdlanp2')
+  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  return isP2Page !== null
+  return isEdgeSdLanHaEnabled
     ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
-    : <EdgeSdLan {...props}/>
+    : <EdgeSdLan data={props.data as EdgeSdLanViewData}/>
 }
 
 export default EdgeSdLanContainer

@@ -1,16 +1,26 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal }                                                            from '@acx-ui/components'
-import { useDeleteEdgeClusterMutation, useDeleteEdgeMutation, useRebootEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatus }                                       from '@acx-ui/rc/utils'
+import { showActionModal }      from '@acx-ui/components'
+import {
+  useDeleteEdgeClusterMutation,
+  useDeleteEdgeMutation,
+  useRebootEdgeMutation,
+  useSendOtpMutation,
+  useFactoryResetEdgeMutation
+} from '@acx-ui/rc/services'
+import { EdgeClusterTableDataType, EdgeStatus } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../useEdgeActions'
+
+import * as UI from './styledComponents'
 
 export const useEdgeClusterActions = () => {
   const { $t } = useIntl()
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
   const [ invokeDeleteEdgeCluster ] = useDeleteEdgeClusterMutation()
+  const [ invokeSendOtp ] = useSendOtpMutation()
+  const [ invokeFactoryReset ] = useFactoryResetEdgeMutation()
 
   const reboot = (data: EdgeStatus[], callback?: () => void) => {
     showActionModal({
@@ -75,8 +85,78 @@ export const useEdgeClusterActions = () => {
     showDeleteModal(data, handleOk)
   }
 
+  const sendEdgeOnboardOtp = (data: EdgeClusterTableDataType[], callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Send OTP' }),
+      content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
+      onOk: () => {
+        const requests = []
+        for(let item of data) {
+          if(!item.isFirstLevel) {
+            requests.push(invokeSendOtp({ params: { serialNumber: item.serialNumber } }))
+          }
+        }
+        Promise.all(requests).then(() => callback?.())
+      }
+    })
+  }
+
+  const sendFactoryReset = (data: EdgeClusterTableDataType[], callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t(
+        // eslint-disable-next-line max-len
+        { defaultMessage: 'Reset & Recover the {count, plural, one {Edge} other {Edges}}' },
+        { count: data.length }
+      ),
+      content: (
+        <UI.Content>
+          <div className='mb-16'>
+            {
+              $t({
+                defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
+              })
+            }
+          </div>
+          <span className='warning-text'>
+            {$t({
+              defaultMessage: `Note: Reset & Recover can address anomalies,
+              but may not resolve all issues, especially for complex,
+              misconfigured, or hardware-related problems.`
+            })}
+          </span>
+        </UI.Content>
+      ),
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Reset' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            const requests = []
+            for(let item of data) {
+              if(!item.isFirstLevel) {
+                requests.push(invokeFactoryReset({ params: { serialNumber: item.serialNumber } }))
+              }
+            }
+            Promise.all(requests).then(() => callback?.())
+          }
+        }]
+      }
+    })
+  }
+
   return {
     reboot,
-    deleteNodeAndCluster
+    deleteNodeAndCluster,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
   }
 }

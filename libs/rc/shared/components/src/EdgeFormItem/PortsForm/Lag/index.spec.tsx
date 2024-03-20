@@ -1,19 +1,23 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeLag, EdgeLagFixtures, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, EdgePortConfigFixtures, EdgePortInfo, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                         from '@acx-ui/test-utils'
 
 import { EdgePortsDataContext } from '../PortDataProvider'
 
 import Lag from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockedEdgeLagList, mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockPortInfo } = EdgePortConfigFixtures
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 const defaultPortsContextdata = {
   portData: [],
   lagData: mockedEdgeLagList.content as EdgeLag[],
+  portStatus: mockPortInfo as EdgePortInfo[],
   isLoading: false,
   isFetching: false
 }
@@ -23,13 +27,21 @@ describe('EditEdge ports - LAG', () => {
 
   beforeEach(() => {
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeUrlsInfo.getEdgeLagList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeLagList))
+        (_, res, ctx) => res(ctx.json(mockedEdgeLagList))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdgeLag.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
       )
     )
   })

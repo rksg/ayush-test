@@ -19,11 +19,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: () => mockedLocation
 }))
 
-jest.mock('./AccessControlPolicy', () => ({
-  ...jest.requireActual('./AccessControlPolicy'),
-  AccessControlSubPolicyDrawers: () => <div data-testid='AccessControlSubPolicyDrawers'></div>
-}))
-
 describe('ConfigTemplateList component', () => {
   const path = `/:tenantId/v/${CONFIG_TEMPLATE_PATH_PREFIX}/:activeTab`
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
