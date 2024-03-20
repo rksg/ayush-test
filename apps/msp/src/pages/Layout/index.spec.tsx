@@ -196,6 +196,15 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
 }))
+jest.mock('@acx-ui/main/components', () => ({
+  ...jest.requireActual('@acx-ui/main/components'),
+  LicenseBanner: () => <div data-testid='license-banner' />,
+  ActivityButton: () => <div data-testid='activity-button' />,
+  AlarmsButton: () => <div data-testid='alarms-button' />,
+  HelpButton: () => <div data-testid='help-button' />,
+  UserButton: () => <div data-testid='user-button' />,
+  FetchBot: () => <div data-testid='fetch-bot' />
+}))
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Layout', () => {
