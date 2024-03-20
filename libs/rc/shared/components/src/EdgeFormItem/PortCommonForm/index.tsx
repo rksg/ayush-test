@@ -127,9 +127,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
     if(
-      (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) ||
-      portType === EdgePortTypeEnum.CLUSTER
-    ) {
+      portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) {
       return (
         <>
           <Form.Item
@@ -163,6 +161,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         </>
       )
     } else if (portType === EdgePortTypeEnum.WAN
+      || portType === EdgePortTypeEnum.CLUSTER
       // only core port enabled LAN port can configure `ipMode`
       || (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled)) {
       return (
