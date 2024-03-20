@@ -8,9 +8,6 @@ import { useIntl }                       from 'react-intl'
 import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
-  useGetEdgeSdLanViewDataListQuery
-} from '@acx-ui/rc/services'
-import {
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
@@ -24,8 +21,9 @@ import {
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo } from '../EdgeFormItem/EdgePortsGeneralBase/utils'
-import { EdgePortCommonForm }     from '../EdgeFormItem/PortCommonForm'
+import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
+import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
+import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
 
 interface LagDrawerProps {
   clusterId: string
@@ -64,31 +62,15 @@ export const LagDrawer = (props: LagDrawerProps) => {
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
-  const getEdgeSdLanPayload = {
-    filters: isEdgeSdLanHaReady
-      ? { edgeClusterId: [clusterId] }
-      : { edgeId: [serialNumber] },
-    fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
-  }
-  const { edgeSdLanData }
-    = useGetEdgeSdLanViewDataListQuery(
-      { payload: getEdgeSdLanPayload },
-      {
-        skip: (isEdgeSdLanReady && !Boolean(serialNumber))
-        || (isEdgeSdLanHaReady && !Boolean(clusterId)),
-        selectFromResult: ({ data, isLoading }) => ({
-          edgeSdLanData: data?.data?.[0],
-          isLoading
-        })
-      }
-    )
+  const {
+    edgeSdLanData
+  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
