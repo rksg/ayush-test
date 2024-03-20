@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import _              from 'lodash'
+import { Space, Typography } from 'antd'
+import _                     from 'lodash'
 
 import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
 import {
@@ -138,13 +138,16 @@ export const getPortFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return Object.keys(errors.portTypes)
-        .map((portType) => errors.portTypes[portType].value
-          ? <Typography.Text
-            type={errors.portTypes[portType].isError ? 'danger' : undefined}
-            children={portType}
-          />
-          : '')
+      return <Space size={5}>
+        {Object.keys(errors.portTypes)
+          .map((portType) => errors.portTypes[portType].value
+            ? <Typography.Text
+              key={portType}
+              type={errors.portTypes[portType].isError ? 'danger' : undefined}
+              children={portType}
+            />
+            : '').filter(i => !!i)}
+      </Space>
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
@@ -170,11 +173,16 @@ export const getLagFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return Object.keys(errors.portTypes)
-        .map((portType) => <Typography.Text
-          type={errors.portTypes[portType].isError ? 'danger' : undefined}
-          children={portType}
-        />)
+      return <Space size={5}>
+        {Object.keys(errors.portTypes)
+          .map((portType) => errors.portTypes[portType].value
+            ?<Typography.Text
+              key={portType}
+              type={errors.portTypes[portType].isError ? 'danger' : undefined}
+              children={portType}
+            />
+            : '').filter(i => !!i)}
+      </Space>
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
@@ -244,8 +252,8 @@ export const interfaceCompatibilityCheck = (
 
     // do counting
     Object.values(portsData).flat().forEach(port => {
-      // only count on non-lagMember port
-      if (nodeLagMembers?.includes(port.id)) return
+      // only count on non-lagMember port and enabled port
+      if (nodeLagMembers?.includes(port.id) || !port.enabled) return
 
       result.errors.ports.value++
       if (port.corePortEnabled) result.errors.corePorts.value++
@@ -283,6 +291,9 @@ export const lagSettingsCompatibleCheck = (
 
     // do counting
     lagsData?.forEach(lag => {
+      // only consider the enabled
+      if (!lag.lagEnabled) return
+
       result.errors.ports.value++
       if (lag.corePortEnabled) result.errors.corePorts.value++
       if (!result.errors.portTypes[lag.portType]) {

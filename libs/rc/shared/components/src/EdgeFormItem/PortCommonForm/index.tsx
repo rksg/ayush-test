@@ -258,7 +258,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     <Form.Item
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
-      {..._.get(formFieldsProps, 'portType')}
+      {..._.omit(_.get(formFieldsProps, 'portType'), 'validator')}
       validateFirst
       rules={[
         { required: true },
