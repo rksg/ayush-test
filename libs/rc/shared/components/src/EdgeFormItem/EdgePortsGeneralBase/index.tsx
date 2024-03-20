@@ -41,7 +41,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     activeTab,
     onTabChange,
     fieldHeadPath = [],
-    isCluster
+    isCluster,
+    formFieldsProps
   } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string>('')
@@ -74,6 +75,7 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             statusData={portStatus}
             lagData={lagData}
             isCluster={isCluster}
+            formFieldsProps={formFieldsProps}
           />
         )}
       </Form.List>,

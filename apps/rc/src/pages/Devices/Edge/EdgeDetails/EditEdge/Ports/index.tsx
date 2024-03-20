@@ -7,12 +7,24 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm }                                                                                                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                         from '@acx-ui/feature-toggle'
-import { EdgePortConfigFormType, EdgePortTabEnum, EdgePortsGeneralBase, EditContext, getFieldFullPath, transformApiDataToFormListData, useGetEdgeSdLanByEdgeOrClusterId } from '@acx-ui/rc/components'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                                                                                                  from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, convertEdgePortsConfigToApiPayload }                                                                       from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                                                                          from '@acx-ui/react-router-dom'
+import { Loader, NoData, StepsForm } from '@acx-ui/components'
+import {
+  EdgePortConfigFormType,
+  EdgePortTabEnum,
+  EdgePortsGeneralBase,
+  EditContext,
+  getFieldFullPath,
+  transformApiDataToFormListData,
+  useGetEdgeSdLanByEdgeOrClusterId
+} from '@acx-ui/rc/components'
+import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  EdgePortWithStatus,
+  convertEdgePortsConfigToApiPayload
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ClusterNavigateWarning } from '../ClusterNavigateWarning'
 import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
@@ -20,8 +32,6 @@ import { EditEdgeDataContext }    from '../EditEdgeDataProvider'
 const Ports = () => {
   const { serialNumber } = useParams()
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm<EdgePortConfigFormType>()
@@ -38,23 +48,6 @@ const Ports = () => {
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
   } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
-  // const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-  //   = useGetEdgeSdLanViewDataListQuery(
-  //     { payload: {
-  //       filters: isEdgeSdLanHaReady
-  //         ? { edgeClusterId: [clusterInfo?.clusterId] }
-  //         : { edgeId: [serialNumber] },
-  //       fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
-  //     } },
-  //     {
-  //       skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-  //       selectFromResult: ({ data, isLoading, isFetching }) => ({
-  //         edgeSdLanData: data?.data?.[0],
-  //         isEdgeSdLanLoading: isLoading,
-  //         isEdgeSdLanFetching: isFetching
-  //       })
-  //     }
-  //   )
 
   const handleFormChange = async (changedValues: Object) => {
     // due to form.List, must use the trailling 0

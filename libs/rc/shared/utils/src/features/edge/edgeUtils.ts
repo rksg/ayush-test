@@ -320,14 +320,12 @@ export const validateGatewayExist = (portsData: EdgePort[], lagData: EdgeLag[]) 
   const portWithGateway = portsData.filter(port =>
     port.enabled
     && (port.portType === EdgePortTypeEnum.WAN
-      || port.portType === EdgePortTypeEnum.CLUSTER
       || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
   ).length
 
   const lagWithGateway = lagData.filter(lag =>
     (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
     && (lag.portType === EdgePortTypeEnum.WAN
-      || lag.portType === EdgePortTypeEnum.CLUSTER
       || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
   ).length
 

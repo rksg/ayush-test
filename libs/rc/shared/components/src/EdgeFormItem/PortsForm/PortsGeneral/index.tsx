@@ -47,28 +47,6 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     isLoading: isEdgeSdLanLoading,
     isFetching: isEdgeSdLanFetching
   } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
-  console.log(clusterId, edgeSdLanData)
-  // const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-  //   = useGetEdgeSdLanP2ViewDataListQuery(
-  //     { payload: {
-  //       filters: isEdgeSdLanHaReady
-  //         ? undefined
-  //         : { edgeId: [serialNumber] },
-  //       fields: ['id', (isEdgeSdLanHaReady?['edgeClusterId', 'guestEdgeClusterId']:'edgeId')]
-  //     } },
-  //     {
-  //       skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-  //       selectFromResult: ({ data, isLoading, isFetching }) => ({
-  //         edgeSdLanData: data?.data?.filter((item, idx) => {
-  //           return isEdgeSdLanHaReady
-  //             ? (item.edgeClusterId === clusterId || item.guestEdgeClusterId === clusterId)
-  //             : idx === 0
-  //         }),
-  //         isEdgeSdLanLoading: isLoading,
-  //         isEdgeSdLanFetching: isFetching
-  //       })
-  //     }
-  //   )
 
   const handleFormChange = async (changedValues: Object) => {
     // due to form.List, must use the trailling 0

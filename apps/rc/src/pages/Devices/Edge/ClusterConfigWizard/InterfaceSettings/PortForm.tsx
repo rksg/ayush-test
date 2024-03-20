@@ -83,12 +83,10 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 formFieldsProps={{
                   portType: {
                     validator: () => {
-                      console.log('validator')
                       const allPortsValues = _.get(form.getFieldsValue(true),
                         ['portSettings', serialNumber])
 
                       const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-                      console.log(portsData)
                       return validateGatewayExist(portsData, lagData)
                     }
                   }
