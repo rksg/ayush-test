@@ -17,7 +17,13 @@ import {
   EdgePortWithStatus
 } from '@acx-ui/rc/utils'
 
-import { ClusterInterfaceInfo } from '.'
+export interface ClusterInterfaceInfo {
+  nodeName: string
+  serialNumber: string
+  interfaceName?: string
+  ip?: string
+  subnet?: string
+}
 
 export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterStatus) => {
   const edgeNodeList = currentClusterStatus?.edgeList

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useBrand360Config }                        from '@acx-ui/analytics/services'
-import { LayoutProps }                              from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useBrand360Config }                                      from '@acx-ui/analytics/services'
+import { LayoutProps }                                            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
@@ -45,7 +45,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
-  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsSplitOn(Features.CONFIG_TEMPLATE), tenantType)
+  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
 
   const integratorPayload = {
     searchString: '',

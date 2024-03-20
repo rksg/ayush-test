@@ -6,8 +6,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
-import { ClusterInterfaceSettings }   from './ClusterInterfaceSettings'
+import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+
+import { ClusterInterfaceSettings } from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockClusterInterfaceOptionData } = EdgePortConfigFixtures
@@ -15,14 +16,16 @@ const { mockClusterInterfaceOptionData } = EdgePortConfigFixtures
 const mockedUpdateApi = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeClusterInterfaceSettingForm: () => <div data-testid='cluster-interface-setting-form' />,
   useClusterInterfaceActions: () => ({
     allInterfaceData: mockClusterInterfaceOptionData,
     isInterfaceDataLoading: false,
     updateClusterInterface: mockedUpdateApi
   })
 }))
-
+jest.mock('./EdgeClusterInterfaceSettingForm', () => ({
+  ...jest.requireActual('./EdgeClusterInterfaceSettingForm'),
+  EdgeClusterInterfaceSettingForm: () => <div data-testid='cluster-interface-setting-form' />
+}))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
