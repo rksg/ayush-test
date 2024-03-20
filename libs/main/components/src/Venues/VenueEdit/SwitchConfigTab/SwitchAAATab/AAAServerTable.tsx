@@ -9,11 +9,17 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
-import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                                             from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                                                              from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                              from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import {
+  useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation,
+  useDeleteVenueTemplateSwitchAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation
+} from '@acx-ui/rc/services'
+import {
+  AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting,
+  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -173,14 +179,13 @@ export const AAAServerTable = (props: {
   const [disabledDelete, setDisabledDelete] = useState(false)
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const { tenantId } = useParams()
-  const [
-    deleteAAAServer,
-    { isLoading: isDeleting }
-  ] = useDeleteAAAServerMutation()
-  const [
-    bulkDeleteAAAServer,
-    { isLoading: isBulkDeleting }
-  ] = useBulkDeleteAAAServerMutation()
+  const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher(
+    useDeleteAAAServerMutation, useDeleteVenueTemplateSwitchAAAServerMutation
+  )
+  // eslint-disable-next-line max-len
+  const [ bulkDeleteAAAServer, { isLoading: isBulkDeleting } ] = useConfigTemplateMutationFnSwitcher(
+    useBulkDeleteAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation
+  )
   const { type, tableQuery, aaaSetting, cliApplied } = props
 
   const handleAddAction = () => {
