@@ -922,8 +922,8 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
       id = ifData.portId
       portName = ifData.interfaceName ?? ''
       portType = ifData.type ?? ''
-      isLagMember = lagList.some(lag =>
-        (lag as EdgeLagStatus).lagMembers.some(member =>
+      isLagMember = !!lagList?.some(lag =>
+        (lag as EdgeLagStatus).lagMembers?.some(member =>
           member.name === ifData.interfaceName))
     } else {
       const ifData = (item as EdgeLagStatus)

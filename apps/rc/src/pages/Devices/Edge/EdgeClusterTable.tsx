@@ -256,10 +256,6 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Switchover' }),
-      onClick: () => {},
-      disabled: true
-    },{
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),

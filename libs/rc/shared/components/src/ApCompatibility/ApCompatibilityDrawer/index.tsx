@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
-import { Form, Typography }          from 'antd'
-import { TooltipPlacement }          from 'antd/lib/tooltip'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Form, Typography } from 'antd'
+import { useIntl }          from 'react-intl'
 
-import { Tooltip, Drawer, Button, Loader, cssStr } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }              from '@acx-ui/icons'
+import { Drawer, Button, Loader, cssStr } from '@acx-ui/components'
 import {
   useGetVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,
@@ -16,110 +14,8 @@ import {
 import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
 
-import { ApCompatibilityType, InCompatibilityFeatures, ApCompatibilityQueryTypes }        from './constants'
-import { StyledWrapper, CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon } from './styledComponents'
-
-export * from './constants'
-
-export type ApCompatibilityToolTipProps = {
-  visible: boolean,
-  title: string,
-  onClick: () => void,
-  placement?: TooltipPlacement
-}
-
-/*
-Sample:
-<ApCompatibilityToolTip
-  title={clientAdmissionControlTitleInfo}
-  visible={supportApCompatibleCheck}
-  onClick={() => setDrawerVisible(true)}/>
-*/
-export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
-  const { $t } = useIntl()
-  const { visible, title, onClick, placement } = props
-
-  const compatibilityToolTipInfo = $t({
-    defaultMessage:
-      'See the compatibility requirements.'
-  })
-
-  return (<Tooltip
-    title={
-      <FormattedMessage
-        defaultMessage={
-          '{title}  <compatibilityToolTip></compatibilityToolTip>'
-        }
-        values={{
-          title,
-          compatibilityToolTip: ()=> (visible?<Button
-            type='link'
-            data-testid='tooltip-button'
-            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-            onClick={onClick}>
-            {compatibilityToolTipInfo}
-          </Button>:[])
-        }}
-      />
-    }
-    placement={placement ?? 'right'}>
-    <QuestionMarkCircleOutlined
-      style={{ height: '16px', width: '16px', marginBottom: -3 }}
-    />
-  </Tooltip>)
-}
-
-export type ApCompatibilityFeatureProps = {
-  count?: number,
-  onClick: () => void
-}
-
-export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
-  const { $t } = useIntl()
-  const { count, onClick } = props
-
-  const fullyCompatibleTxt = $t({
-    defaultMessage:
-      'Fully compatible'
-  })
-
-  const partiallyIncompatibleTxt = $t({
-    defaultMessage:
-      'Partially incompatible'
-  })
-
-  const unknownTxt = $t({
-    defaultMessage:
-      'Unknown'
-  })
-
-  if (count === undefined) {
-    return (
-      <>
-        <UnknownIcon/> {unknownTxt}
-      </>
-    )
-
-  } else if (count === 0) {
-    return (
-      <>
-        <CheckMarkCircleSolidIcon/> {fullyCompatibleTxt}
-      </>
-    )
-  }
-
-  return (
-    <>
-      <WarningTriangleSolidIcon/>
-      <Button
-        type='link'
-        style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-        onClick={onClick}>
-        {partiallyIncompatibleTxt}
-      </Button>
-    </>
-  )
-}
+import { ApCompatibilityType, InCompatibilityFeatures, ApCompatibilityQueryTypes } from '../constants'
+import { StyledWrapper }                                                           from '../styledComponents'
 
 export type ApCompatibilityDrawerProps = {
   visible: boolean,

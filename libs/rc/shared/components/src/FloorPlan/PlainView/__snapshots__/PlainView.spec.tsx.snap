@@ -721,14 +721,10 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
     <div
       class="sc-kgflAQ gYitxs rogue-help-info"
     >
-      <span
-        class="styledComponents__TooltipWrapper-sc-xryt7m-0 tooltip-icon"
-      >
-        <svg
-          class="ant-tooltip-open"
-          data-testid="QuestionMarkCircleOutlined"
-        />
-      </span>
+      <svg
+        class="ant-tooltip-open"
+        data-testid="QuestionMarkCircleOutlined"
+      />
     </div>
     <div
       class="sc-dIouRR cDjWRG"
