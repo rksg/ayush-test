@@ -138,7 +138,7 @@ export const getPortFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return <Space size={5}>
+      return <Space size={10}>
         {Object.keys(errors.portTypes)
           .map((portType) => errors.portTypes[portType].value
             ? <Typography.Text
@@ -173,7 +173,7 @@ export const getLagFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return <Space size={5}>
+      return <Space size={10}>
         {Object.keys(errors.portTypes)
           .map((portType) => errors.portTypes[portType].value
             ?<Typography.Text
@@ -253,7 +253,8 @@ export const interfaceCompatibilityCheck = (
     // do counting
     Object.values(portsData).flat().forEach(port => {
       // only count on non-lagMember port and enabled port
-      if (nodeLagMembers?.includes(port.id) || !port.enabled) return
+      // TODO: need more discussion on considering `enabled`
+      if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
       if (port.corePortEnabled) result.errors.corePorts.value++
@@ -291,8 +292,9 @@ export const lagSettingsCompatibleCheck = (
 
     // do counting
     lagsData?.forEach(lag => {
+      // TODO: need more discussion on considering `lagEnabled`
       // only consider the enabled
-      if (!lag.lagEnabled) return
+      // if (!lag.lagEnabled) return
 
       result.errors.ports.value++
       if (lag.corePortEnabled) result.errors.corePorts.value++
