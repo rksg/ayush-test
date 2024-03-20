@@ -8,7 +8,7 @@ import * as UI from './styledComponents'
 
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
-  scopeKey?: string
+  scopeKey?: string[]
 }
 
 export function Button ({ type = 'default', ...props }: ButtonProps) {

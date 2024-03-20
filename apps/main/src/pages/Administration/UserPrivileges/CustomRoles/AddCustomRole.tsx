@@ -19,7 +19,7 @@ import {
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
 import {
-  CustomRole,
+  CustomRole
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -27,9 +27,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
-import { EdgeAttributeProfile, SwitchAttributeProfile, WifiAttributeProfile } from '@acx-ui/user'
 
 interface CustomRoleData {
   name?: string,
@@ -52,16 +52,16 @@ export function AddCustomRole () {
   const isEditMode = action === 'edit'
 
   const wifiScopes = [
-    WifiAttributeProfile.READ, WifiAttributeProfile.CREATE,
-    WifiAttributeProfile.UPDATE, WifiAttributeProfile.DELETE
+    WifiScopes.READ, WifiScopes.CREATE,
+    WifiScopes.UPDATE, WifiScopes.DELETE
   ]
   const switchScopes = [
-    SwitchAttributeProfile.READ, SwitchAttributeProfile.CREATE,
-    SwitchAttributeProfile.UPDATE, SwitchAttributeProfile.DELETE
+    SwitchScopes.READ, SwitchScopes.CREATE,
+    SwitchScopes.UPDATE, SwitchScopes.DELETE
   ]
   const edgeScopes = [
-    EdgeAttributeProfile.READ, EdgeAttributeProfile.CREATE,
-    EdgeAttributeProfile.UPDATE, EdgeAttributeProfile.DELETE
+    EdgeScopes.READ, EdgeScopes.CREATE,
+    EdgeScopes.UPDATE, EdgeScopes.DELETE
   ]
 
   let scopes: Array<string> = []
@@ -166,11 +166,11 @@ export function AddCustomRole () {
 
   const PermissionsTechForm = () => {
     const [wifiAttribute, setWifiAttribute] =
-      useState(form.getFieldValue(WifiAttributeProfile.READ) ?? false)
+      useState(form.getFieldValue(WifiScopes.READ) ?? false)
     const [wiredAttribute, setWiredAttribute] =
-      useState(form.getFieldValue(SwitchAttributeProfile.READ) ?? false)
+      useState(form.getFieldValue(SwitchScopes.READ) ?? false)
     const [smartedgeAttribute, setSmartedgeAttribute] =
-      useState(form.getFieldValue(EdgeAttributeProfile.READ) ?? false)
+      useState(form.getFieldValue(EdgeScopes.READ) ?? false)
 
     useEffect(() => {
       if (location && location?.scopes && (isEditMode || action === 'clone')) {
@@ -188,21 +188,21 @@ export function AddCustomRole () {
       form.setFieldsValue(_.reduce(wifiScopes , (obj, item) => {
         obj[item] = checked
         return obj
-      }, {} as Record<WifiAttributeProfile, boolean>))
+      }, {} as Record<WifiScopes, boolean>))
     }
 
     const OnWifiReadChange = (checked: boolean) => {
-      form.setFieldValue(WifiAttributeProfile.READ, checked)
+      form.setFieldValue(WifiScopes.READ, checked)
       if (!checked) {
         wifiScopes.map(item =>
-          item !== WifiAttributeProfile.READ ? form.setFieldValue(item, false) : null
+          item !== WifiScopes.READ ? form.setFieldValue(item, false) : null
         )
       }
     }
 
     const OnWifiNonReadChange = (checked: boolean) => {
       if (checked) {
-        form.setFieldValue(WifiAttributeProfile.READ, true)
+        form.setFieldValue(WifiScopes.READ, true)
       }
     }
 
@@ -212,21 +212,21 @@ export function AddCustomRole () {
       form.setFieldsValue(_.reduce(switchScopes , (obj, item) => {
         obj[item] = checked
         return obj
-      }, {} as Record<SwitchAttributeProfile, boolean>))
+      }, {} as Record<SwitchScopes, boolean>))
     }
 
     const OnWiredReadChange = (checked: boolean) => {
-      form.setFieldValue(SwitchAttributeProfile.READ, checked)
+      form.setFieldValue(SwitchScopes.READ, checked)
       if (!checked) {
         switchScopes.map(item =>
-          item !== SwitchAttributeProfile.READ ? form.setFieldValue(item, false) : null
+          item !== SwitchScopes.READ ? form.setFieldValue(item, false) : null
         )
       }
     }
 
     const OnWiredNonReadChange = (checked: boolean) => {
       if (checked) {
-        form.setFieldValue(SwitchAttributeProfile.READ, true)
+        form.setFieldValue(SwitchScopes.READ, true)
       }
     }
 
@@ -236,21 +236,21 @@ export function AddCustomRole () {
       form.setFieldsValue(_.reduce(edgeScopes , (obj, item) => {
         obj[item] = checked
         return obj
-      }, {} as Record<EdgeAttributeProfile, boolean>))
+      }, {} as Record<EdgeScopes, boolean>))
     }
 
     const OnSmartEdgeReadChange = (checked: boolean) => {
-      form.setFieldValue(EdgeAttributeProfile.READ, checked)
+      form.setFieldValue(EdgeScopes.READ, checked)
       if (!checked) {
         edgeScopes.map(item =>
-          item !== EdgeAttributeProfile.READ ? form.setFieldValue(item, false) : null
+          item !== EdgeScopes.READ ? form.setFieldValue(item, false) : null
         )
       }
     }
 
     const OnSmartEdgeNonReadChange = (checked: boolean) => {
       if (checked) {
-        form.setFieldValue(EdgeAttributeProfile.READ, true)
+        form.setFieldValue(EdgeScopes.READ, true)
       }
     }
 
@@ -287,7 +287,7 @@ export function AddCustomRole () {
         </div>
 
         <Form.Item
-          name={WifiAttributeProfile.READ}
+          name={WifiScopes.READ}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -298,7 +298,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={WifiAttributeProfile.CREATE}
+          name={WifiScopes.CREATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -309,7 +309,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={WifiAttributeProfile.UPDATE}
+          name={WifiScopes.UPDATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -320,7 +320,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={WifiAttributeProfile.DELETE}
+          name={WifiScopes.DELETE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -353,7 +353,7 @@ export function AddCustomRole () {
         </div>
 
         <Form.Item
-          name={SwitchAttributeProfile.READ}
+          name={SwitchScopes.READ}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -364,7 +364,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={SwitchAttributeProfile.CREATE}
+          name={SwitchScopes.CREATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -375,7 +375,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={SwitchAttributeProfile.UPDATE}
+          name={SwitchScopes.UPDATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -386,7 +386,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={SwitchAttributeProfile.DELETE}
+          name={SwitchScopes.DELETE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -419,7 +419,7 @@ export function AddCustomRole () {
         </div>
 
         <Form.Item
-          name={EdgeAttributeProfile.READ}
+          name={EdgeScopes.READ}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -430,7 +430,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={EdgeAttributeProfile.CREATE}
+          name={EdgeScopes.CREATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -441,7 +441,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={EdgeAttributeProfile.UPDATE}
+          name={EdgeScopes.UPDATE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -452,7 +452,7 @@ export function AddCustomRole () {
         </Form.Item>
 
         <Form.Item
-          name={EdgeAttributeProfile.DELETE}
+          name={EdgeScopes.DELETE}
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
@@ -469,9 +469,9 @@ export function AddCustomRole () {
         style={{ padding: '0px 20px', margin: '-20px 0px' }}
         rules={[
           { validator: () => {
-            if (!form.getFieldValue(WifiAttributeProfile.READ) &&
-            !form.getFieldValue(SwitchAttributeProfile.READ) &&
-            !form.getFieldValue(EdgeAttributeProfile.READ)) {
+            if (!form.getFieldValue(WifiScopes.READ) &&
+            !form.getFieldValue(SwitchScopes.READ) &&
+            !form.getFieldValue(EdgeScopes.READ)) {
               return Promise.reject(intl.$t({ defaultMessage: 'Please select permission(s)' }))
             }
             return Promise.resolve()

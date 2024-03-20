@@ -169,7 +169,7 @@ export type TableAction = {
 
 export type TableRowAction<RecordType> = {
   key?: string
-  scopeKey?: string
+  scopeKey?: string[]
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
   tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)

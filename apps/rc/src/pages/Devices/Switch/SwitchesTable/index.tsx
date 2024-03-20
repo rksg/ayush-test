@@ -14,11 +14,10 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  SwitchAttributeProfile,
   usePollingTableQuery
 }      from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { filterByAccess, SwitchScopes } from '@acx-ui/user'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
@@ -94,7 +93,7 @@ export default function useSwitchesTable () {
   })
 
   const extra = filterByAccess([
-    <Dropdown overlay={addMenu} scopeKey={SwitchAttributeProfile.CREATE}>{() =>
+    <Dropdown overlay={addMenu} scopeKey={[SwitchScopes.CREATE]}>{() =>
       <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
     }</Dropdown>
   ])

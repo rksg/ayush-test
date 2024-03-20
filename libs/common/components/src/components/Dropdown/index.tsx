@@ -9,7 +9,7 @@ import type {
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
-  scopeKey?: string,
+  scopeKey?: string[],
   children: (selectedKeys: string | null) => React.ReactElement
 }
 

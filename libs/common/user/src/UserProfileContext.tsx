@@ -59,6 +59,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       accountTier,
       betaEnabled,
       abacEnabled: featureFlagStates?.[abacFF] ?? false,
+      isCustomRole: !!profile?.customRoleName,
       scopes: profile?.scopes
     })
   }

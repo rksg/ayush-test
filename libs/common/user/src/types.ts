@@ -68,6 +68,7 @@ export interface UserProfile {
   initials?: string
   fullName: string
   preferredLanguage?: string
+  customRoleName?: string
   scopes?: []
 }
 
@@ -157,21 +158,21 @@ export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
 
-export enum WifiAttributeProfile {
+export enum WifiScopes {
   READ = 'wifi-r',
   CREATE = 'wifi-c',
   UPDATE = 'wifi-u',
   DELETE = 'wifi-d'
 }
 
-export enum SwitchAttributeProfile {
+export enum SwitchScopes {
   READ = 'switch-r',
   CREATE = 'switch-c',
   UPDATE = 'switch-u',
   DELETE = 'switch-d'
 }
 
-export enum EdgeAttributeProfile {
+export enum EdgeScopes {
   READ = 'edge-r',
   CREATE = 'edge-c',
   UPDATE = 'edge-u',

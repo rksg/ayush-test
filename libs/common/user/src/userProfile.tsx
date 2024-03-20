@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { TenantNavigate }    from '@acx-ui/react-router-dom'
@@ -14,6 +15,7 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   scopes?: string[]
+  isCustomRole?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -26,10 +28,10 @@ const userProfile: Profile = {
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
-  scopeKey?: string,
+  scopeKey?: string[],
   key?: string,
   props?: {
-    scopeKey?: string,
+    scopeKey?: string[],
     key?: string
   }
 }
@@ -49,25 +51,80 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
   return SHOW_WITHOUT_RBAC_CHECK + '_' + id
 }
 
+/**
+ * Please use RBAC functions as follows,
+ * 1. filterByAccess
+ * 2. hasPermission
+ * 3. hasScope
+ * 4. hasRoles
+ *
+ * DO NOT use hasAccess. It will be private after RBAC feature release.
+ */
+
 export function hasAccess (id?: string) {
-  const { allowedOperations, scopes, abacEnabled } = getUserProfile()
   // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
-  if(id?.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
-  if (id && abacEnabled && scopes) return scopes?.includes(id)
+  return hasAllowedOperations(id)
+}
+function hasAllowedOperations (id:string) {
+  const { allowedOperations } = getUserProfile()
 
+  if(id.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
   return allowedOperations?.includes(id)
 }
 
 export function filterByAccess <Item> (items: Item[]) {
-  const { abacEnabled } = getUserProfile()
-  const key = abacEnabled ? 'scopeKey' : 'key'
   return items.filter(item => {
     const filterItem = item as FilterItemType
-    const id = filterItem?.[key] || filterItem?.props?.[key]
-    return hasAccess(id)
+    const allowoperation = filterItem?.key
+    const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
+    return hasPermission({ scopes, allowoperation })
   })
 }
+
+export function hasPermission (props:{ scopes?:string[], allowoperation?:string }) {
+  const { abacEnabled, isCustomRole } = getUserProfile()
+  const { scopes, allowoperation } = props
+  if(!abacEnabled) {
+    return hasAccess(allowoperation)
+  }else {
+    if(isCustomRole){
+      const flag1 = scopes? hasScope(scopes): true
+      const flag2 = allowoperation? hasAllowedOperations(allowoperation): true
+      return flag1 && flag2
+    } else {
+      return hasAccess(allowoperation)
+    }
+  }
+}
+
+export function hasScope (userScope: string[]) {
+  const { abacEnabled, scopes, isCustomRole } = getUserProfile()
+  if(abacEnabled && isCustomRole) {
+    return !!_.intersection(scopes, userScope).length
+  }
+  return true
+}
+
+
+export function hasRoles (roles: string | string[]) {
+  const { profile, abacEnabled, isCustomRole } = getUserProfile()
+
+  if(!abacEnabled && isCustomRole) {
+    // TODO: Will remove this after RBAC feature release
+    return true
+  }
+
+  if (!Array.isArray(roles)) roles = [roles]
+
+  return profile?.roles?.some(role => roles.includes(role))
+}
+
+export function AuthRoute (props: { scope: string[], children: ReactElement }) {
+  const { scope, children } = props
+  return !hasScope(scope) ? <TenantNavigate replace to='/no-permissions' /> : children
+}
+
 
 export function WrapIfAccessible ({ id, wrapper, children }: {
   id: string,
@@ -78,13 +135,6 @@ export function WrapIfAccessible ({ id, wrapper, children }: {
 }
 WrapIfAccessible.defaultProps = { id: undefined }
 
-export function hasRoles (roles: string | string[]) {
-  const { profile } = getUserProfile()
-
-  if (!Array.isArray(roles)) roles = [roles]
-
-  return profile?.roles?.some(role => roles.includes(role))
-}
 
 export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
@@ -94,22 +144,7 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
 }
 
-export function hasRbac (userScope: string[], accessId?:string) { 
-  const { profile } = getUserProfile()
-  // return profile && props.role === 'admin'
-  const scope = [
-    'wifi-d', 'wifi-r', 'wifi-c', 'wifi-u',
-    'switch-r'
-  ]
-  // off 
-  return hasAccess(accessId)
-  // on 
-  
-  return true
 
-}
 
-export function AuthRoute (props: { scope: string[], children: ReactElement }) {
-  const { scope, children } = props
-  return !hasRbac(scope) ? <TenantNavigate replace to='/no-permissions' /> : children
-}
+
+
