@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 
-import { MenuProps } from 'antd'
-import moment        from 'moment'
-import { useIntl }   from 'react-intl'
+import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
+import { MutationDefinition } from '@reduxjs/toolkit/query'
+import moment                 from 'moment'
+import { useIntl }            from 'react-intl'
 
 
 import {
@@ -14,9 +15,6 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
 import {
-  ConfigTemplateLink,
-  PolicyConfigTemplateLink,
-  ServiceConfigTemplateLink,
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
@@ -38,24 +36,18 @@ import {
   useDelDevicePolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  PolicyOperation,
-  PolicyType,
-  policyTypeLabelMapping,
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  ServiceType,
-  ServiceOperation,
-  serviceTypeLabelMapping
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
-import { getIntl }                                 from '@acx-ui/utils'
 
-import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
-import * as UI                   from './styledComponents'
+import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
+import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -76,6 +68,7 @@ export function ConfigTemplateList () {
       searchTargetFields: ['name']
     }
   })
+  const addTemplateMenuProps = useAddTemplateMenuProps()
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
@@ -117,6 +110,9 @@ export function ConfigTemplateList () {
           },
           onOk: async () => {
             const deleteFn = deleteMutationMap[selectedRow.type]
+
+            if (!deleteFn) return
+
             deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
           }
         })
@@ -127,7 +123,7 @@ export function ConfigTemplateList () {
   const actions: TableProps<ConfigTemplate>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Template' }),
-      dropdownMenu: getAddTemplateMenuProps()
+      dropdownMenu: addTemplateMenuProps
     }
   ]
 
@@ -279,7 +275,10 @@ function useColumns (props: templateColumnProps) {
   return columns
 }
 
-function useDeleteMutation () {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
+// eslint-disable-next-line max-len
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
@@ -302,63 +301,5 @@ function useDeleteMutation () {
     [ConfigTemplateType.DEVICE_POLICY]: deleteDeviceTemplate,
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplicationTemplate,
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate
-  }
-}
-
-function getAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
-  const { $t } = getIntl()
-
-  return {
-    expandIcon: <UI.MenuExpandArrow />,
-    subMenuCloseDelay: 0.2,
-    items: [
-      {
-        key: 'add-wifi-network',
-        label: <ConfigTemplateLink to='networks/wireless/add'>
-          {$t({ defaultMessage: 'Wi-Fi Network' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-venue',
-        label: <ConfigTemplateLink to='venues/add'>
-          {$t({ defaultMessage: 'Venue' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-policy',
-        label: $t({ defaultMessage: 'Policies' }),
-        children: [
-          createPolicyMenuItem(PolicyType.AAA, 'add-aaa'),
-          createPolicyMenuItem(PolicyType.ACCESS_CONTROL, 'add-accessControl')
-        ]
-      }, {
-        key: 'add-service',
-        label: $t({ defaultMessage: 'Services' }),
-        children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk'),
-          createServiceMenuItem(ServiceType.DHCP, 'add-dhcp')
-        ]
-      }
-    ]
-  }
-}
-
-export function createPolicyMenuItem (policyType: PolicyType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
-      {$t(policyTypeLabelMapping[policyType])}
-    </PolicyConfigTemplateLink>
-  }
-}
-
-function createServiceMenuItem (serviceType: ServiceType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
-      {$t(serviceTypeLabelMapping[serviceType])}
-    </ServiceConfigTemplateLink>
   }
 }
