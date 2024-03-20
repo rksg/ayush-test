@@ -57,6 +57,7 @@ export interface Layer2DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -95,6 +96,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -150,6 +152,10 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(layer2PolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -170,6 +176,13 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
   }, [isOnlyViewMode, l2AclPolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -573,7 +586,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   </RuleContentWrapper>
 
   const modeContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -643,8 +656,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={() => handleLayer2DrawerClose()
-        }
+        onClose={() => handleLayer2DrawerClose()}
         destroyOnClose={true}
         children={content}
         footer={

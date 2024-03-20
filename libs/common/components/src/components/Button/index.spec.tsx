@@ -29,7 +29,10 @@ describe('DisabledButton', () => {
       <DisabledButton title='Not available'>Button</DisabledButton>
     )
     await userEvent.hover(screen.getAllByText((_, element) => {
-      return element!.tagName.toLowerCase() === 'span'
+      const isSpan = element!.tagName.toLowerCase() === 'span'
+      if (!isSpan) return false
+      const el = element as HTMLSpanElement
+      return el.style.cursor === 'not-allowed'
     })[0])
     await screen.findByRole('tooltip', { hidden: true })
     expect(asFragment()).toMatchSnapshot()
@@ -37,7 +40,10 @@ describe('DisabledButton', () => {
   it('should render disabled button without', async () => {
     const { asFragment } = render(<DisabledButton>Button</DisabledButton>)
     await userEvent.hover(screen.getAllByText((_, element) => {
-      return element!.tagName.toLowerCase() === 'span'
+      const isSpan = element!.tagName.toLowerCase() === 'span'
+      if (!isSpan) return false
+      const el = element as HTMLSpanElement
+      return el.style.cursor === 'not-allowed'
     })[0])
     expect(asFragment()).toMatchSnapshot()
   })

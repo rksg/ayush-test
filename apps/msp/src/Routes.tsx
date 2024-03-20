@@ -39,10 +39,12 @@ import { AssignMspLicense }                        from './pages/Subscriptions/A
 import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
   const { tenantType } = getJwtTokenPayload()
   const isShowBrand360 =
-    tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR
+    isBrand360Enabled &&
+    (tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR)
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace

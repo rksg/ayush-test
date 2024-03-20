@@ -10,11 +10,12 @@ import { useClusterInterfaceActions }           from '@acx-ui/rc/components'
 import {
   EdgeClusterStatus,
   EdgePortInfo,
-  EdgePortTypeEnum
+  EdgePortTypeEnum,
+  validateClusterInterface,
+  validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
 import { useTenantLink }             from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
 
 import * as CommUI from '../styledComponents'
 
@@ -72,6 +73,13 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     )
   }
 
+  const getAllNodesSubnetInfo = (value?: ClusterInterfaceTableType[]) => {
+    return value?.map(item => ({
+      ip: item.ip,
+      subnet: item.subnet
+    })) ?? []
+  }
+
   const handleFinish = async (data: ClusterInterfaceFormType) => {
     await updateClusterInterface(data.clusterData)
   }
@@ -100,7 +108,16 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
             rules={
               [
                 { required: true },
-                { validator: (_, value) => validateClusterInterface(value) }
+                {
+                  validator: (_, value: ClusterInterfaceTableType[]) =>
+                    validateClusterInterface((value?.map(item => item.interfaceName ?? '') ?? []))
+                },
+                {
+                  validator: (_, value) =>
+                    validateSubnetIsConsistent(getAllNodesSubnetInfo(value), 'true'),
+                  message: $t({ defaultMessage: `Make sure that 
+                  each node is within the same subnet range.` })
+                }
               ]
             }
             children={
@@ -108,27 +125,12 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
                 allInterfaceData={allInterfaceData}
               />
             }
+            validateFirst
           />
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
   )
-}
-
-const validateClusterInterface = (value: ClusterInterfaceTableType[]) => {
-  if((value?.length ?? 0) <= 1) return Promise.resolve()
-  const { $t } = getIntl()
-  for(let i=0; i<value.length; i++){
-    for(let j=i+1; j<value.length; j++) {
-      if (value[i].interfaceName?.charAt(0) !== value[j].interfaceName?.charAt(0)) {
-        return Promise.reject(
-          $t({ defaultMessage: `Make sure you select the same interface type
-          (physical port or LAG) as that of another node in this cluster.` })
-        )
-      }
-    }
-  }
-  return Promise.resolve()
 }
 
 type ClusterInterfaceTableProps = {

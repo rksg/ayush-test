@@ -80,7 +80,8 @@ describe('Edge Cluster Type Form', () => {
     expect(addBtn).toBeVisible()
     await userEvent.click(addBtn)
     expect(mockedOnFinish).toBeCalledTimes(1)
-    expect(mockedOnFinish).toBeCalledWith({ field1: 'item-a' })
+    const call = mockedOnFinish.mock.calls[0]
+    expect(call[0]).toStrictEqual({ field1: 'item-a' })
   })
 
   it('should display custom header', async () => {
