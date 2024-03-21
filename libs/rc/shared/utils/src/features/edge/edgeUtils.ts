@@ -130,16 +130,15 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
   const payload = _.cloneDeep(formData)
 
+  if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
+    payload.gateway = ''
+  }
+
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
     // LAN port is not allowed to configure NAT enable
     if (payload.natEnabled) {
       payload.natEnabled = false
-    }
-
-    // should clear gateway when core port using DHCP.
-    if (payload.corePortEnabled === true && payload.ipMode === EdgeIpModeEnum.DHCP) {
-      payload.gateway = ''
     }
 
     // normal(non-corePort) LAN port
