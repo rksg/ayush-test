@@ -87,7 +87,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     crrmInterferingLinksText,
     updatedAt
   } = details
-  const { kpis } = codes[code]
+  const { kpis } = codes(status)[code]
   const isRrm = code.includes('crrm')
 
   const fields = [

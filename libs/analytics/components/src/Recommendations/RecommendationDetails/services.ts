@@ -6,8 +6,8 @@ import { MessageDescriptor } from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText }           from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue }       from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText, Recommendation } from '../services'
 
 
 export type BasicRecommendation = {
@@ -23,7 +23,7 @@ export type RecommendationKpi = Record<string, {
 
 export type RecommendationDetails = {
   id: string;
-  code: keyof typeof codes;
+  code: keyof ReturnType<typeof codes>;
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
@@ -78,7 +78,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
-  } = codes[code]
+  } = codes(status)[code]
   const appliedPlus24h = moment(appliedTime).add(24, 'hours')
   const monitoring = (
     status === 'applied' &&
@@ -109,9 +109,9 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } as EnhancedRecommendation
 }
 
-export const kpiHelper = (code: string) => {
+export const kpiHelper = (code: string, status: Recommendation['status']) => {
   if (!code) return ''
-  const data = codes[code]
+  const data = codes(status)[code]
   return get(data, ['kpis'])
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
@@ -124,9 +124,13 @@ export const kpiHelper = (code: string) => {
     .trim()
 }
 
+type BasicRecommendationWithStatus = BasicRecommendation & {
+  status: string
+}
+
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationCode: build.query<BasicRecommendation, BasicRecommendation>({
+    recommendationCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
       query: ({ id }) => ({
         document: gql`
           query ConfigRecommendationCode($id: String) {
@@ -135,15 +139,15 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: { id }
       }),
-      transformResponse: (response: { recommendation: BasicRecommendation }) =>
+      transformResponse: (response: { recommendation: BasicRecommendationWithStatus }) =>
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
     recommendationDetails: build.query<
       EnhancedRecommendation,
-      BasicRecommendation & { isCrrmPartialEnabled: boolean }
+      BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
     >({
-      query: ({ id, code, isCrrmPartialEnabled }) => ({
+      query: ({ id, code, status, isCrrmPartialEnabled }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
@@ -153,7 +157,7 @@ export const api = recommendationApi.injectEndpoints({
               ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(code!)}
+              ${kpiHelper(code!, status)}
             }
           }
         `,

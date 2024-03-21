@@ -5,6 +5,7 @@ import { useIntl }          from 'react-intl'
 
 import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
 import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { codes }              from '../config'
@@ -31,13 +32,13 @@ export const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     preferences
   } = details
-  const { valueFormatter, recommendedValueTooltipContent } = codes[code]
+  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes(status)[code]
   return {
     status,
     code,
     appliedOnce,
     preferences,
-    heading: codes[code].valueText,
+    heading: valueText,
     original: valueFormatter(originalValue),
     current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
@@ -48,7 +49,7 @@ export const getValues = (details: EnhancedRecommendation) => {
 }
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
-  return codes[recommendation.code]
+  return codes(recommendation.status)[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
@@ -82,7 +83,8 @@ export const getRecommendationsText = (
     currentValue,
     recommendedValue,
     appliedOnce,
-    code
+    code,
+    status
   } = details
 
   const metadata = chain(details.metadata)
@@ -91,7 +93,7 @@ export const getRecommendationsText = (
     .fromPairs()
     .value()
 
-  const recommendationInfo = codes[code]
+  const recommendationInfo = codes(status)[code]
   const {
     appliedReasonText,
     valueFormatter,
@@ -108,7 +110,10 @@ export const getRecommendationsText = (
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
     currentValue: appliedOnce ? valueFormatter(originalValue) : valueFormatter(currentValue),
     recommendedValue: valueFormatter(recommendedValue),
-    br: <br />
+    br: <br />,
+    product: get('IS_MLISA_SA')
+      ? $t({ defaultMessage: 'SmartZone' })
+      : $t({ defaultMessage: 'RUCKUS ONE' })
   }
   if (code.startsWith('c-crrm')) {
     const link = kpiBeforeAfter(details, 'number-of-interfering-links')

@@ -300,7 +300,7 @@ export const api = recommendationApi.injectEndpoints({
               ...recommendation,
               id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              summary: $t(codes[getCode].summary)
+              summary: $t(codes(status)[getCode].summary)
             } as unknown as CrrmListItem
           })
         }
@@ -337,9 +337,9 @@ export const api = recommendationApi.injectEndpoints({
               : code as keyof typeof codes
             return {
               ...recommendation,
-              priority: codes[getCode].priority,
-              category: $t(codes[getCode].category),
-              summary: $t(codes[getCode].summary)
+              priority: codes(status)[getCode].priority,
+              category: $t(codes(status)[getCode].category),
+              summary: $t(codes(status)[getCode].summary)
             } as unknown as AiOpsListItem
           })
         }
@@ -401,13 +401,13 @@ export const api = recommendationApi.injectEndpoints({
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             priority: {
-              ...codes[getCode].priority,
-              text: $t(codes[getCode].priority.label)
+              ...codes(status)[getCode].priority,
+              text: $t(codes(status)[getCode].priority.label)
             },
-            category: $t(codes[getCode].category),
+            category: $t(codes(status)[getCode].category),
             summary: isFullOptimization || code === 'unknown'
-              ? $t(codes[getCode].summary)
-              : $t(codes[getCode].partialOptimizedSummary!),
+              ? $t(codes(status)[getCode].summary)
+              : $t(codes(status)[getCode].partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
@@ -515,12 +515,12 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
-      query: ({ id, code }) => ({
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code' | 'status'>>({
+      query: ({ id, code, status }) => ({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status ${kpiHelper(code!)}
+              id status ${kpiHelper(code!, status)}
             }
           }
         `,
