@@ -45,11 +45,15 @@ export const ActivityApCompatibilityTable = ({
         setTotalCount(count)
         if (count !== 0) {
           const percent = Math.round(incompatibleCount / count )
-          updateActivityDesc(`(${incompatibleCount}/(${count} devices, ${percent}%)`)
+          updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
         }
       }
+    } else {
+      setVisible(true)
+      setTotalCount(-1)
+      updateActivityDesc('')
     }
-  },[tableQuery.data?.data])
+  },[tableQuery.data?.data, requestId])
 
   const columns: TableProps<ActivityIncompatibleFeatures>['columns'] = [
     {
@@ -88,9 +92,10 @@ export const ActivityApCompatibilityTable = ({
         rowKey='id'
         columns={columns}
         dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
+        pagination={{ ...tableQuery.pagination, showSizeChanger: false }}
         onChange={tableQuery.handleTableChange}
         enableApiFilter={false}
+        enablePagination
       />
     </Loader>}
   </TableStyleWrapper>)

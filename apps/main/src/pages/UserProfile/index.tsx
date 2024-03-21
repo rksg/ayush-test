@@ -11,7 +11,8 @@ import { MultiFactor }            from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
-  useParams
+  useParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 import {
   DetailLevel,
@@ -41,18 +42,20 @@ export function UserProfile () {
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const location = useLocation().state as fromLoc
+  const dashboardPath = useTenantLink('/dashboard')
+  const backPathname = location?.from ?? dashboardPath.pathname
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
     navigate({
-      pathname: location.from
+      pathname: backPathname
     }, { replace: true })
     window.location.reload()
   }
 
   const handleCancel = () => {
     navigate({
-      pathname: location.from
+      pathname: backPathname
     }, { replace: true })
   }
 

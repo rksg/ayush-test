@@ -9,23 +9,14 @@ import {
   edgePortIpValidator,
   optionSorter,
   subnetMaskIpRegExp,
-  validateSubnetIsConsistent
+  validateClusterInterface,
+  validateSubnetIsConsistent,
+  validateUniqueIp
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
-
-export interface ClusterInterfaceInfo {
-  nodeName: string
-  serialNumber: string
-  interfaceName?: string
-  ip?: string
-  subnet?: string
-}
 
 interface EdgeClusterInterfaceSettingFormProps {
   form: FormInstance
   interfaceList?: EdgePortInfo[]
-  currentNodetData?: ClusterInterfaceInfo
-  allNodeData?: ClusterInterfaceInfo[]
   rootNamePath?: string[]
 }
 
@@ -36,7 +27,7 @@ export interface EdgeClusterInterfaceSettingFormType {
 }
 
 export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSettingFormProps) => {
-  const { form, interfaceList, currentNodetData, allNodeData, rootNamePath = [] } = props
+  const { form, interfaceList, rootNamePath = [] } = props
   const { $t } = useIntl()
 
   const interfaceOprionts = interfaceList?.filter(item =>
@@ -52,7 +43,7 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
 
   const handleInterfaceChange = (value: string) => {
     const currentInterface = interfaceList?.find(item => item.portName === value)
-    form.setFieldValue(rootNamePath.concat('ip'), currentInterface?.ip)
+    form.setFieldValue(rootNamePath.concat('ip'), currentInterface?.ip?.split('/')[0])
     form.setFieldValue(rootNamePath.concat('subnet'), currentInterface?.subnet)
   }
 
@@ -64,29 +55,23 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
   }
 
   const getAllNodesSubnetInfo = () => {
-    let allSubnetInfo
-    if(rootNamePath.length > 0) {
-      allSubnetInfo = Object.values(form.getFieldsValue(true))
-        .map(item => {
-          return {
-            ip: (item as EdgeClusterInterfaceSettingFormType).ip,
-            subnet: (item as EdgeClusterInterfaceSettingFormType).subnet
-          }
-        })
-    } else {
-      allSubnetInfo = allNodeData?.filter(item =>
-        item.serialNumber !== currentNodetData?.serialNumber)
-        .map(item => ({ ip: item.ip, subnet: item.subnet })) ?? []
-      allSubnetInfo?.push({
-        ip: form.getFieldValue(rootNamePath.concat('ip')),
-        subnet: form.getFieldValue(rootNamePath.concat('subnet'))
+    const allSubnetInfo = Object.values(form.getFieldsValue(true))
+      .map(item => {
+        return {
+          ip: (item as EdgeClusterInterfaceSettingFormType).ip,
+          subnet: (item as EdgeClusterInterfaceSettingFormType).subnet
+        }
       })
-    }
     return allSubnetInfo
   }
 
   const getAllNodesIp = () => {
     return getAllNodesSubnetInfo().map(item => item.ip ?? '')
+  }
+
+  const getAllNodesClusterInterfaceName = () => {
+    return Object.values(form.getFieldsValue(true))
+      ?.map(item => (item as EdgeClusterInterfaceSettingFormType).interfaceName) ?? []
   }
 
   return(
@@ -155,20 +140,18 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
           />
         </Col>
       </Row>
+      <Row>
+        <Col span={24}>
+          <Form.Item
+            name={rootNamePath.concat('validate')}
+            rules={[
+              { validator: () =>
+                validateClusterInterface(getAllNodesClusterInterfaceName()) }
+            ]}
+            children={<Input hidden />}
+          />
+        </Col>
+      </Row>
     </>
   )
-}
-
-const isUnique = (value: string, index: number, array: string[]) => {
-  return array.indexOf(value) === array.lastIndexOf(value)
-}
-
-const validateUniqueIp = (ips: string[], value?: string) => {
-  if(!Boolean(value)) return Promise.resolve()
-  const { $t } = getIntl()
-
-  if(ips.every(isUnique)) {
-    return Promise.resolve()
-  }
-  return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
 }
