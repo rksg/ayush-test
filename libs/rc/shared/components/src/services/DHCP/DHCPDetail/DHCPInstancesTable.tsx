@@ -6,8 +6,9 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader }                                                                    from '@acx-ui/components'
 import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery } from '@acx-ui/rc/services'
-import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
+import { renderConfigTemplateDetailsComponent } from '@acx-ui/rc/components'
 
 
 export default function DHCPInstancesTable (){
@@ -50,10 +51,9 @@ export default function DHCPInstancesTable (){
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
-        )
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id, row.name)
+          : <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },
     {
