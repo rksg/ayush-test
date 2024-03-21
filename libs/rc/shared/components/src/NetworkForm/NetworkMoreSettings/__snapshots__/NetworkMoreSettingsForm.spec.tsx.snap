@@ -484,7 +484,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     >
                       <button
                         aria-checked="false"
-                        class="ant-switch"
+                        class="ant-switch ant-switch-disabled"
+                        disabled=""
                         id="wlan_advancedCustomization_wifiCallingEnabled"
                         role="switch"
                         type="button"
@@ -1429,13 +1430,9 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   title=""
                 >
                   Client Inactivity Timeout
-                  <span
-                    class="styledComponents__TooltipWrapper-sc-xryt7m-0"
-                  >
-                    <svg
-                      data-testid="QuestionMarkCircleOutlined"
-                    />
-                  </span>
+                  <svg
+                    data-testid="QuestionMarkCircleOutlined"
+                  />
                 </label>
               </div>
               <div

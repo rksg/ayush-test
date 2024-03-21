@@ -256,10 +256,6 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Switchover' }),
-      onClick: () => {},
-      disabled: true
-    },{
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
@@ -319,7 +315,7 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
           title={$t({ defaultMessage: `The cluster function requires
         at least two nodes to operate` })}
           placement='bottom'
-          iconStyle={{ width: 16, marginTop: 5 }}
+          iconStyle={{ width: 13, height: 13, marginTop: 3 }}
         />
       </Col>
     </Row>
