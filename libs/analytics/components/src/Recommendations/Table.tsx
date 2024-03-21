@@ -168,17 +168,13 @@ export function RecommendationTable (
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...(selectedRecommendation ? getAvailableActions(selectedRecommendation as any)
+    ...(selectedRecommendation ? getAvailableActions(selectedRecommendation as any, true)
       .filter(action => !action.icon.props.disabled)
       .map((action) => {
         return {
-          label: $t(actionTooltip
-            ?.[action.icon?.props?.type as keyof typeof actionTooltip]?.text),
-          onClick: async () => {
-            const { id, isMuted } = selectedRecommendation
-            await muteRecommendation({ id, mute: !isMuted }).unwrap()
-            setSelectedRowData([])
-          }
+          label: action.icon as unknown as string,
+          onClick: () => {},
+          disabled: false
         }
       }): [])
   ]

@@ -57,7 +57,8 @@ type RecommendationActionType = Pick<
 type ActionButtonProps = RecommendationActionType & {
   disabled: boolean
   type: keyof typeof actionTooltip
-  initialDate: 'scheduledAt' | 'futureDate'
+  initialDate: 'scheduledAt' | 'futureDate',
+  showText? : boolean
 }
 
 function ApplyCalendar ({
@@ -66,7 +67,8 @@ function ApplyCalendar ({
   id,
   code,
   metadata,
-  initialDate
+  initialDate,
+  showText
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
@@ -130,7 +132,9 @@ function ApplyCalendar ({
   return <DateTimePicker
     key={`apply-${id}`}
     title={$t(actionTooltip[type].text)}
-    icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
+    icon={showText
+      ? <UI.ActionsText>{$t(actionTooltip[type].text)}</UI.ActionsText>
+      : <UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
     initialDate={initialDateOptions[initialDate]}
     onApply={onApply}
@@ -139,20 +143,26 @@ function ApplyCalendar ({
   />
 }
 
-function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
+function CancelCalendar ({
+  disabled,id,showText
+}: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
   return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
-      : <Tooltip
-        placement='top'
-        arrowPointAtCenter
-        title={$t({ defaultMessage: 'Cancel' })}
-      >
-        <CancelCircleOutlined
-          onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
-      </Tooltip>}
+      : showText
+        ? <UI.ActionsText onClick={async () => { await cancelRecommendation({ id }).unwrap() }} >
+          {$t({ defaultMessage: 'Cancel' })}
+        </UI.ActionsText>
+        :<Tooltip
+          placement='top'
+          arrowPointAtCenter
+          title={$t({ defaultMessage: 'Cancel' })}
+        >
+          <CancelCircleOutlined
+            onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
+        </Tooltip>}
   </UI.IconWrapper>
 }
 
@@ -169,9 +179,11 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
-export const getAvailableActions = (recommendation: RecommendationActionType) => {
+export const getAvailableActions = (
+  recommendation: RecommendationActionType,
+  showText?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
-  const props = { ...recommendation }
+  const props = { ...recommendation, showText }
   if (isMuted) {
     return [
       {
