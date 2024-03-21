@@ -69,7 +69,6 @@ jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
 }))
 
 const mockedApplyFn = jest.fn()
-// const mockedGetSdLanFn = jest.fn()
 const mockedGetApCompatibilitiesNetwork = jest.fn()
 
 describe('NetworkVenuesTab', () => {
@@ -77,7 +76,6 @@ describe('NetworkVenuesTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
-      // mockedGetSdLanFn.mockClear()
       mockedGetApCompatibilitiesNetwork.mockClear()
     })
 

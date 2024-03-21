@@ -17,7 +17,7 @@ export const useGetNetworkTunnelInfo = () => {
         ? `devices/edge/cluster/${sdlan.edgeClusterId}/edit/cluster-details`
         : `/devices/edge/${sdlan.edgeId}/details/overview`
 
-      return <TenantLink to={linkToDetail}>
+      return <TenantLink to={linkToDetail} key={sdlan.id}>
         {isEdgeSdLanHaReady ? sdlan.edgeClusterName : sdlan.edgeName}
       </TenantLink>
     })
