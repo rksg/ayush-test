@@ -33,7 +33,8 @@ import {
 import {
   MspEcAlarmList,
   MspEc,
-  MSPUtils
+  MSPUtils,
+  MspEcTierEnum
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -72,6 +73,7 @@ export function MspCustomers () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
   const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
+  const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -152,7 +154,8 @@ export function MspCustomers () {
       'expirationDate',
       'wifiLicense',
       'switchLicense',
-      'streetAddress'
+      'streetAddress',
+      'accountTier'
     ],
     searchTargetFields: ['name']
   }
@@ -208,7 +211,7 @@ export function MspCustomers () {
     }
   }
 
-  function useColumns (mspEcAlarmList?: MspEcAlarmList) {
+  function useColumns (mspEcAlarmList?: MspEcAlarmList, isSupportTier?: boolean) {
 
     const columns: TableProps<MspEc>['columns'] = [
       {
@@ -419,6 +422,17 @@ export function MspCustomers () {
             return row?.edgeLicenses ? row?.edgeLicenses : 0
           }
         }]),
+      ...(!isSupportTier ? [] : [{
+        title: $t({ defaultMessage: 'Service Tier' }),
+        dataIndex: 'accountTier',
+        key: 'accountTier',
+        sorter: true,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.accountTier === MspEcTierEnum.Essentials
+            ? $t({ defaultMessage: 'Essentials' })
+            : $t({ defaultMessage: 'Professional' })
+        }
+      }]),
       {
         title: $t({ defaultMessage: 'Active From' }),
         dataIndex: 'creationDate',
@@ -492,7 +506,7 @@ export function MspCustomers () {
       }
     }, [tableQuery?.data?.data, alarmList?.data])
 
-    const columns = useColumns(mspEcAlarmList)
+    const columns = useColumns(mspEcAlarmList, createEcWithTierEnabled)
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
