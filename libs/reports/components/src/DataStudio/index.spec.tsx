@@ -73,10 +73,16 @@ describe('DataStudio', () => {
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     // eslint-disable-next-line max-len
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_user_info_cache_key=cache-key')
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?cache_key=cache-key')
   })
 
   it('should render the data studio for MLISA SA with url params', async () => {
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.authenticate.url.substring(0, ReportUrlsInfo.authenticate.url.indexOf('?')),
+        (req, res, ctx) => res(ctx.json(response))
+      )
+    )
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     localeContext.mockReturnValue({
       messages: { locale: 'en' },
@@ -95,7 +101,7 @@ describe('DataStudio', () => {
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
     // eslint-disable-next-line max-len
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?mlisa_own_tenant_id=1234&mlisa_user_info_cache_key=cache-key')
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?cache_key=cache-key')
   })
 
   it('should render the data studio for MLISA SA without url params', async () => {

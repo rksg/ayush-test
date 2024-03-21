@@ -12,6 +12,9 @@ export interface GuestToken {
 }
 
 export interface UserInfo {
+  tenant_id: string, // TODO: remove
+  is_franchisor: string, // TODO: remove
+  tenant_ids: string[], // TODO: remove
   own_tenant_id: string,
   cache_key: string
 }
