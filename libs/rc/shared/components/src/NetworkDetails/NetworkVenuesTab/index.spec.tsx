@@ -8,9 +8,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
-  EdgeSdLanUrls,
-  WifiUrlsInfo,
-  EdgeSdLanFixtures
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -38,13 +36,6 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-const mockedSdLanDataList = {
-  data: [{
-    ...EdgeSdLanFixtures.mockedSdLanDataList[0],
-    venueId: list.data[0].id,
-    networkIds: [params.networkId]
-  }]
-}
 // isMapEnabled = false && SD-LAN not enabled
 jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
@@ -69,13 +60,16 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
 }))
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({
+    sdLansVenueMap: {},
+    networkVenueIds: []
+  })
 }))
 
 const mockedApplyFn = jest.fn()
-const mockedGetSdLanFn = jest.fn()
+// const mockedGetSdLanFn = jest.fn()
 const mockedGetApCompatibilitiesNetwork = jest.fn()
 
 describe('NetworkVenuesTab', () => {
@@ -83,7 +77,7 @@ describe('NetworkVenuesTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
-      mockedGetSdLanFn.mockClear()
+      // mockedGetSdLanFn.mockClear()
       mockedGetApCompatibilitiesNetwork.mockClear()
     })
 
@@ -136,13 +130,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
-        }
-      ),
-      rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => {
-          mockedGetSdLanFn()
-          return res(ctx.json(mockedSdLanDataList))
         }
       ),
       rest.post(
@@ -420,6 +407,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
+      mockedGetApCompatibilitiesNetwork.mockClear()
     })
 
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
@@ -457,7 +445,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
       )
     )
   })
@@ -539,7 +530,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
       )
     )
 
@@ -549,6 +543,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 

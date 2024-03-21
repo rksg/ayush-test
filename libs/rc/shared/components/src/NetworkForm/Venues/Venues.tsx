@@ -31,10 +31,10 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
 import NetworkFormContext                                                       from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'

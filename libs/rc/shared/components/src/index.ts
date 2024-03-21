@@ -160,10 +160,7 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady,
-  useSdLanScopedNetworks,
-  useSdLanScopedNetworkVenues,
-  checkSdLanScopedNetworkDeactivateAction
+  useIsEdgeFeatureReady
 } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
@@ -184,7 +181,12 @@ export {
 } from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
-export { useEdgeSdLanActions } from './EdgeSdLan/useEdgeSdLanActions'
+export {
+  useEdgeSdLanActions,
+  useSdLanScopedNetworks,
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
+} from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export { useGetNetworkTunnelInfo } from './EdgeSdLan/edgeSdLanUtils'
 export {

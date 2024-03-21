@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps }                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useGetNetworkTunnelInfo, useSdLanScopedNetworks } from '@acx-ui/rc/components'
-import { useApNetworkListQuery }                           from '@acx-ui/rc/services'
+import { useApNetworkListQuery, useApViewModelQuery }      from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -35,7 +35,16 @@ export function ApNetworksTab () {
     pagination: { settingsId }
   })
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['name', 'serialNumber', 'venueId'],
+    filters: { serialNumber: [apiParams.serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ apiParams, payload: apViewModelPayload },
+    { skip: !isEdgeSdLanHaReady })
+
+  const sdLanScopedNetworks = useSdLanScopedNetworks(apViewModelQuery.data?.venueId
+    , tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {

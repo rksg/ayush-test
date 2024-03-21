@@ -1,5 +1,4 @@
 import { Form, Input, Modal }       from 'antd'
-import _                            from 'lodash'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
 import { showActionModal }                                        from '@acx-ui/components'
@@ -7,7 +6,6 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
-  useGetEdgeSdLanP2ViewDataListQuery,
   useRebootEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
@@ -212,91 +210,3 @@ export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
     content: <RawIntlProvider value={intl} children={config.content} />
   })
 }
-
-export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-
-  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
-    payload: {
-      filters: { networkIds },
-      fields: [
-        'id',
-        'venueId',
-        'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
-        'networkIds',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
-      ],
-      pageSize: 10000
-    }
-  }, {
-    skip: !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
-  })
-
-  return {
-    sdLans: data?.data,
-    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
-  }
-}
-
-export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
-  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-
-  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
-    payload: {
-      filters: { networkIds: [networkId] },
-      fields: [
-        'id',
-        'venueId',
-        'isGuestTunnelEnabled',
-        'tunnelProfileId',
-        'guestTunnelProfileId',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
-      ],
-      pageSize: 10000
-    }
-  }, {
-    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
-  })
-
-  return {
-    sdLansVenueMap: _.groupBy(data?.data, 'venueId'),
-    networkVenueIds: data?.data?.map(item => item.venueId)
-  }
-}
-
-export const checkSdLanScopedNetworkDeactivateAction =
-  (
-    scopedIds: string[] | undefined,
-    selectedIds: string[] | undefined,
-    cb: () => void
-  ) => {
-    if (!scopedIds || !selectedIds) {
-      cb()
-      return
-    }
-
-    const { $t } = getIntl()
-
-    if (_.intersection(scopedIds, selectedIds).length > 0) {
-
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Deactivate network' }),
-        content: selectedIds!.length === 1
-          // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' })
-          // eslint-disable-next-line max-len
-          : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected venues. Are you sure you want to deactivate?' }),
-        okText: $t({ defaultMessage: 'Deactivate' }),
-        onOk: () => {
-          cb()
-        }
-      })
-    } else {
-      cb()
-    }
-  }

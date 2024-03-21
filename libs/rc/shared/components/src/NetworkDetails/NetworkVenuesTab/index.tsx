@@ -47,7 +47,8 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }  from '@acx-ui/user'
 import { transformToCityListOptions } from '@acx-ui/utils'
 
-import { useGetNetworkTunnelInfo } from '../../EdgeSdLan/edgeSdLanUtils'
+import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
+import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import {
@@ -58,8 +59,7 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
-import { useGetNetwork }                                                        from '../services'
+import { useGetNetwork } from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -373,6 +373,19 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Venue) {
+        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
+        if (Boolean(row.activated?.isActivated)) {
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -412,19 +425,6 @@ export function NetworkVenuesTab () {
         return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
       }
     },
-    ...(isEdgeSdLanHaReady ? [{
-      key: 'tunneled',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneled',
-      render: function (_: ReactNode, row: Venue) {
-        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
-        if (Boolean(row.activated?.isActivated)) {
-          return getNetworkTunnelInfo(destinationsInfo)
-        } else {
-          return ''
-        }
-      }
-    }]: []),
     {
       key: 'aps',
       title: $t({ defaultMessage: 'APs' }),

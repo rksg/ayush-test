@@ -130,7 +130,7 @@ export function VenueNetworksTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
+  const sdLanScopedNetworks = useSdLanScopedNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   useEffect(()=>{
@@ -258,6 +258,20 @@ export function VenueNetworksTab () {
     //   title: $t({ defaultMessage: 'Health' }),
     //   dataIndex: 'health'
     // },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Network) {
+        if (Boolean(row.activated?.isActivated)) {
+          const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
+            sdlan.networkIds.includes(row.id))
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -306,20 +320,6 @@ export function VenueNetworksTab () {
         return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
-    ...(isEdgeSdLanHaReady ? [{
-      key: 'tunneled',
-      title: $t({ defaultMessage: 'Tunnel' }),
-      dataIndex: 'tunneled',
-      render: function (_: ReactNode, row: Network) {
-        if (Boolean(row.activated?.isActivated)) {
-          const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
-            sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(destinationsInfo)
-        } else {
-          return ''
-        }
-      }
-    }]: []),
     {
       key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
