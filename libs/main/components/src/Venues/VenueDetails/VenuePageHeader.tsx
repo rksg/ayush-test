@@ -5,6 +5,7 @@ import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
+  useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
@@ -33,10 +34,14 @@ function DatePicker () {
 
 function VenuePageHeader () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { tenantId, venueId, activeTab } = useParams()
   const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
 
-  const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
+  const { data } = useVenueDetailsHeaderQuery({
+    params: { tenantId, venueId },
+    payload: { isTemplate }
+  })
 
   const navigate = useNavigate()
   const location = useLocation()

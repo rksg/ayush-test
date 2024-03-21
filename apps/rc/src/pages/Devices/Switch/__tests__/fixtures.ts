@@ -262,7 +262,7 @@ export const editStackDetail = {
   stackMemberOrder: 'FEK4124R28X',
   isStack: true,
   rearModule: 'none',
-  deviceStatus: 'OPERATIONAL',
+  deviceStatus: 'ONLINE',
   syncedSwitchConfig: true,
   sendedHostname: true,
   switchMac: '',
