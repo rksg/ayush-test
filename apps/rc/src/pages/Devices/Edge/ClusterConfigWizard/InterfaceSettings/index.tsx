@@ -210,7 +210,7 @@ export const InterfaceSettings = () => {
     callback: () => void
   ) => {
     try {
-      if(isVipConfigChanged(value.vipConfig)) {
+      if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),

@@ -89,6 +89,8 @@ export const VirtualIp = (props: VirtualIpProps) => {
     }
   }, [currentVipConfig, lanInterfaces])
 
+  const isSingleNode = (currentClusterStatus?.edgeList?.length ?? 0) < 2
+
   const handleFinish = async (values: VirtualIpFormType) => {
     try {
       const params = {
@@ -114,7 +116,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
           virtualIps: vipSettings
         }
       }
-      if(isVipConfigChanged(vipSettings.length === 0 ? undefined : vipSettings)) {
+      if(!isSingleNode && isVipConfigChanged(vipSettings.length === 0 ? undefined : vipSettings)) {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
