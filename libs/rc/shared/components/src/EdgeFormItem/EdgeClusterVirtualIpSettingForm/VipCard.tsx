@@ -72,7 +72,7 @@ export const VipCard = (props: VipCardProps) => {
             name={[index, 'interfaces']}
             rules={[
               ...(
-                isCluster? [{
+                isCluster || Boolean(vipConfig?.[index]?.vip) ? [{
                   required: true,
                   message: $t({ defaultMessage: 'Please select interfaces' })
                 }] : []
@@ -96,7 +96,7 @@ export const VipCard = (props: VipCardProps) => {
             label={$t({ defaultMessage: 'Virtual IP Address' })}
             rules={[
               ...(
-                isCluster ?
+                isCluster || Boolean(vipConfig?.[index]?.interfaces) ?
                   [{ required: true }] :
                   []
               ),
@@ -127,8 +127,9 @@ const validateInterfaces = async (
 ) => {
   const { $t } = getIntl()
   const interfacesArr = interfaces ? Object.values(interfaces).filter(item => item.portName) : []
+  const nodeLength = nodeList?.length ?? 0
 
-  if(interfacesArr.length !== (nodeList?.length ?? 0)) {
+  if(nodeLength > 1 && interfacesArr.length !== nodeLength) {
     return Promise.reject(
       // eslint-disable-next-line max-len
       $t({ defaultMessage: 'Please make sure you select an interface and configure the IP subnet for the SmartEdge(s).' })

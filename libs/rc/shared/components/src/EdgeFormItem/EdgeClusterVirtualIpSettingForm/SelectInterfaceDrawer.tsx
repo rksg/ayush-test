@@ -57,13 +57,15 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   }, [lanInterfaces])
 
   useEffect(() => {
-    if(visible && editData) {
+    if(visible) {
       form.resetFields()
-      const tmp = {} as SelectInterfaceDrawerFormType
-      for(let [k, v] of Object.entries(editData)) {
-        tmp[k] = { port: v?.portName ?? '' }
+      if(editData) {
+        const tmp = {} as SelectInterfaceDrawerFormType
+        for(let [k, v] of Object.entries(editData)) {
+          tmp[k] = { port: v?.portName ?? '' }
+        }
+        form.setFieldsValue(tmp)
       }
-      form.setFieldsValue(tmp)
     }
   }, [visible, editData])
 

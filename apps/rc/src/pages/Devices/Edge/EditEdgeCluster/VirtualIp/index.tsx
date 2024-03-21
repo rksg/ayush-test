@@ -96,6 +96,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
         clusterId: currentClusterStatus?.clusterId
       }
       const vipSettings = values.vipConfig.map(item => {
+        if(!Boolean(item.interfaces)) return undefined
         const ports = Object.entries(item.interfaces).map(([, v2]) => {
           return {
             serialNumber: v2.serialNumber,
@@ -107,13 +108,13 @@ export const VirtualIp = (props: VirtualIpProps) => {
           timeoutSeconds: values.timeout,
           ports
         }
-      })
+      }).filter(item => Boolean(item)) as VirtualIpSetting[]
       const payload = {
         virtualIpSettings: {
           virtualIps: vipSettings
         }
       }
-      if(isVipConfigChanged(vipSettings)) {
+      if(isVipConfigChanged(vipSettings.length === 0 ? undefined : vipSettings)) {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Warning' }),
@@ -134,7 +135,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
     }
   }
 
-  const isVipConfigChanged = (vipSettings: VirtualIpSetting[]) => {
+  const isVipConfigChanged = (vipSettings?: VirtualIpSetting[]) => {
     return !_.isEqual(vipSettings, currentVipConfig?.virtualIps)
   }
 
