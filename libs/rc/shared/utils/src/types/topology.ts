@@ -93,7 +93,7 @@ export enum ConnectionStates {
 export enum DeviceTypes {
 	Switch='Switch',
 	SwitchStack='SwitchStack',
-	Ap='Ap',
+	AP='AP',
 	ApWired='ApWired',
 	ApMeshRoot='ApMeshRoot',
 	ApMesh='ApMesh',

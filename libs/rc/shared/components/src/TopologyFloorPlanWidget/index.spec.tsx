@@ -14,7 +14,7 @@ jest.mock('../Topology', () => ({
 }))
 
 const currentApDevice = {
-  type: DeviceTypes.Ap,
+  type: DeviceTypes.AP,
   category: 'Ap',
   name: 'Ap001',
   mac: '5C:DF:89:2A:AF:01',

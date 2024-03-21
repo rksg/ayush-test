@@ -510,7 +510,7 @@ describe('Topology', () => {
       <DeviceIcon deviceType={DeviceTypes.Switch} deviceStatus={TopologyDeviceStatus.Operational} />
       <DeviceIcon deviceType={DeviceTypes.SwitchStack}
         deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Ap} deviceStatus={TopologyDeviceStatus.Operational} />
+      <DeviceIcon deviceType={DeviceTypes.AP} deviceStatus={TopologyDeviceStatus.Operational} />
       <DeviceIcon deviceType={DeviceTypes.Cloud} deviceStatus={TopologyDeviceStatus.Operational} />
       <DeviceIcon deviceType={DeviceTypes.ApMesh} deviceStatus={TopologyDeviceStatus.Operational} />
       <DeviceIcon deviceType={DeviceTypes.ApMeshRoot}

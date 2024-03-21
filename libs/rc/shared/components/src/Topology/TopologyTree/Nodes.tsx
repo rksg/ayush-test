@@ -117,7 +117,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   >
                     {children !== '' && node.data.id !== 'Cloud' ?
                       node.data.name.substring(0,8)+children+'...'
-                      :truncateLabel(node.data.name, 13)}
+                      :truncateLabel(node.data.name || '', 13)}
                   </text>
                 </g>
               </g>

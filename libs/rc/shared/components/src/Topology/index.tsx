@@ -174,7 +174,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         setModalVisible(true)
       })
       const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string).toString(),
+        value: (node.name as string || '').toString(),
         key: (node.id as string).toString(),
         label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
           {node.name as string}</Typography.Title>
@@ -465,7 +465,7 @@ export function DeviceIcon (props: { deviceType: DeviceTypes,
         return <Switch width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.SwitchStack:
         return <StackDevice />
-      case DeviceTypes.Ap:
+      case DeviceTypes.AP:
         return <AccessPointWifi width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.Cloud:
         return <CloudSolid />

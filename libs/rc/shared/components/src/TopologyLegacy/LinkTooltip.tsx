@@ -26,7 +26,7 @@ onClose: () => void
   const handleLink = (node: Node) => {
     let link
     if(node && node.type &&
-      [DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
+      [DeviceTypes.AP, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
         .includes(node.type)) {
       link = `${wifiBasePath.pathname}/${node?.mac}/details/overview`
     } else if (node && node.type &&

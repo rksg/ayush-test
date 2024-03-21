@@ -27,7 +27,7 @@ onClose: () => void
   const handleLink = (node: Node) => {
     let link
     if(node && node.type &&
-      [DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
+      [DeviceTypes.AP, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
         .includes(node.type)) {
       link = `${wifiBasePath.pathname}/${node?.mac}/details/overview`
     } else if (node && node.type &&
@@ -66,11 +66,11 @@ onClose: () => void
 
   function transformTitle (deviceType: DeviceTypes | undefined) {
     switch(deviceType) {
-      case DeviceTypes.Ap:
+      case DeviceTypes.AP:
       case DeviceTypes.ApMesh:
       case DeviceTypes.ApMeshRoot:
       case DeviceTypes.ApWired:
-        return DeviceTypes.Ap
+        return DeviceTypes.AP
       case DeviceTypes.Switch:
       case DeviceTypes.SwitchStack:
         return DeviceTypes.Switch
