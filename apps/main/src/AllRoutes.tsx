@@ -7,6 +7,9 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import { AddCustomRole }                                    from './pages/Administration/UserPrivileges/CustomRoles/AddCustomRole'
+import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
+import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
 import AnalyticsBase                                        from './pages/Analytics'
 import Dashboard                                            from './pages/Dashboard'
 import DevicesBase                                          from './pages/Devices'
@@ -121,6 +124,12 @@ function AdministrationRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
+      <Route path='userPrivileges/privilegeGroups/create' element={<AddPrivilegeGroup />} />
+      <Route
+        path='userPrivileges/privilegeGroups/:action/:groupId'
+        element={<EditPrivilegeGroup />} />
+      <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>

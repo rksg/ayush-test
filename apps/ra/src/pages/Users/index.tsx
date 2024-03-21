@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/analytics/services'
 import type { Settings, ManagedUser }                                        from '@acx-ui/analytics/utils'
 import { PageHeader, Loader, showToast, showActionModal, Dropdown, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 
 import { ImportSSOFileDrawer }    from './ImportSSOFileDrawer'
 import { UsersTable }             from './Table'
@@ -75,6 +76,7 @@ const getSSOsettings = (settings: Partial<Settings> | undefined): SSOValue | nul
 
 const Users = () => {
   const { $t } = useIntl()
+  const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<DrawerType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
@@ -179,6 +181,7 @@ const Users = () => {
           <Loader states={[settingsQuery]}><Tooltip
             title={$t(messages.ssoDisclaimer)}
             placement='left'>
+            { isUsersPageEnabled &&
             <Button
               type={isEditMode ? 'primary' : 'default'}
               onClick={() => setVisible(true)}>
@@ -186,6 +189,7 @@ const Users = () => {
                 ? $t({ defaultMessage: 'Configure SSO' })
                 : $t({ defaultMessage: 'Setup SSO' })}
             </Button>
+            }
           </Tooltip></Loader>,
           <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>

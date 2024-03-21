@@ -32,7 +32,6 @@ const mockedDeactivateDmzTunnelReq = jest.fn()
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
 const mockedToggleDmzReq = jest.fn()
-
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useAddEdgeSdLanP2Mutation: () => {
@@ -147,20 +146,23 @@ describe('useEdgeSdLanActions', () => {
         payload: mockedData,
         callback: mockedCallback
       })
-
+      await waitFor(() =>
+        expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+          edgeClusterId: '0000000005',
+          serviceId: 'mocked_service_id',
+          venueId: 'mocked_venue_id'
+        }))
+      expect(mockedToggleDmzReq).not.toBeCalled()
+      await waitFor(() =>
+        expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+          tunnelProfileId: 't-tunnelProfile-id-2',
+          serviceId: 'mocked_service_id'
+        }))
       await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
       expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true })
-      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
-        edgeClusterId: '0000000005',
-        serviceId: 'mocked_service_id',
-        venueId: 'mocked_venue_id'
-      })
-      expect(mockedActivateDmzTunnelReq).toBeCalledWith({
-        tunnelProfileId: 't-tunnelProfile-id-2',
-        serviceId: 'mocked_service_id'
-      })
+
       expect(mockedActivateNetworkReq).toBeCalledTimes(2)
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: 'network_3',
@@ -195,13 +197,13 @@ describe('useEdgeSdLanActions', () => {
       }, { isGuestTunnelUtilized: false })
     })
 
-    it('should handle relation requests failed', async () => {
-      const mockedReq = jest.fn()
+    it('should not send guest tunnel enabled request when mandatory request failed', async () => {
+      const mockedDMZClusterReq = jest.fn()
       mockServer.use(
         rest.put(
           EdgeSdLanUrls.activateEdgeSdLanDmzCluster.url,
           (req, res, ctx) => {
-            mockedReq(req.params)
+            mockedDMZClusterReq(req.params)
             return res(ctx.status(403), ctx.json({
               requestId: 'failed_req_id',
               errors: [{
@@ -228,11 +230,15 @@ describe('useEdgeSdLanActions', () => {
 
       await waitFor(() => expect(mockedCBFn).toBeCalledTimes(1))
       expect(mockedCallbackInnerFn).toBeCalledWith('EDGE-00000')
-      expect(mockedReq).toBeCalledWith({
+      expect(mockedDMZClusterReq).toBeCalledWith({
         edgeClusterId: '0000000005',
         serviceId: 'mocked_service_id',
         venueId: 'mocked_venue_id'
       })
+      // other mandatory field is trigger at same time.
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(1)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
     })
   })
 
@@ -269,10 +275,6 @@ describe('useEdgeSdLanActions', () => {
 
       await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
       // handle dmz tunnel changes
-      expect(mockedDeactivateDmzTunnelReq).toBeCalledWith({
-        tunnelProfileId: 't-tunnelProfile-id-2',
-        serviceId: 'mocked_service_id'
-      })
       expect(mockedActivateDmzTunnelReq).toBeCalledWith({
         tunnelProfileId: 't-tunnelProfile-id-3',
         serviceId: 'mocked_service_id'

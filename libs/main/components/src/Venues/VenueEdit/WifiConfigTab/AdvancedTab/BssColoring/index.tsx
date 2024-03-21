@@ -105,9 +105,9 @@ export function BssColoring () {
           {supportApCompatibleCheck &&
             <ApCompatibilityDrawer
               visible={drawerVisible}
-              type={venueId?ApCompatibilityType.VENUE:ApCompatibilityType.ALONE}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
               venueId={venueId}
-              featureName={InCompatibilityFeatures.QOS_MIRRORING}
+              featureName={InCompatibilityFeatures.BSS_COLORING}
               onClose={() => setDrawerVisible(false)}
             />
           }

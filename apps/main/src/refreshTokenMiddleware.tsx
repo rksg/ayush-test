@@ -27,6 +27,7 @@ export const refreshTokenMiddleware: Middleware = () => (next) => (action: Middl
         action?.meta?.baseQueryMeta?.response?.headers.get('login-token'))
       sessionStorage.setItem('oldJwt', jwt) // temporary parameter, will clean up once testing is done
       sessionStorage.setItem('jwt', loginToken)
+      sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
       updateJwtCache(loginToken)
     }
   }

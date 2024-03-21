@@ -11,6 +11,17 @@ import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }             
 
 const Netmask = require('netmask').Netmask
 
+export const edgePhysicalPortInitialConfigs = {
+  portType: EdgePortTypeEnum.UNCONFIGURED,
+  ipMode: EdgeIpModeEnum.DHCP,
+  ip: '',
+  subnet: '',
+  gateway: '',
+  enabled: true,
+  natEnabled: true,
+  corePortEnabled: false
+}
+
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
 
@@ -36,6 +47,16 @@ export const allowResetForStatus = (edgeStatus: string) => {
   return stringStatus.includes(edgeStatus)
 }
 
+export const allowSendOtpForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = unconfigedEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
+export const allowSendFactoryResetStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = rebootableEdgeStatuses
+  return stringStatus.includes(edgeStatus)
+}
+
 export const rebootableEdgeStatuses = [
   EdgeStatusEnum.OPERATIONAL,
   EdgeStatusEnum.APPLYING_CONFIGURATION,
@@ -43,6 +64,8 @@ export const rebootableEdgeStatuses = [
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
 export const resettabaleEdgeStatuses = rebootableEdgeStatuses
+
+export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
 export async function edgePortIpValidator (ip: string, subnetMask: string) {
   const { $t } = getIntl()
@@ -107,16 +130,15 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
   const payload = _.cloneDeep(formData)
 
+  if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
+    payload.gateway = ''
+  }
+
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
     // LAN port is not allowed to configure NAT enable
     if (payload.natEnabled) {
       payload.natEnabled = false
-    }
-
-    // should clear gateway when core port using DHCP.
-    if (payload.corePortEnabled === true && payload.ipMode === EdgeIpModeEnum.DHCP) {
-      payload.gateway = ''
     }
 
     // normal(non-corePort) LAN port
@@ -201,6 +223,14 @@ const validateVirtualEdgeSerialNumber = (value: string) => {
   return Promise.resolve()
 }
 
+const isVirtualEdgeSerial = (value: string) => {
+  return new RegExp(/^96[0-9A-Z]{32}$/i).test(value)
+}
+
+export const deriveEdgeModel = (serial: string) => {
+  return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+}
+
 export const optionSorter = (
   a: DefaultOptionType,
   b: DefaultOptionType
@@ -247,6 +277,36 @@ export const validateSubnetIsConsistent = (
       if(first.first !== second.first || first.last !== second.last) {
         // eslint-disable-next-line max-len
         return Promise.reject($t({ defaultMessage: 'The selected port is not in the same subnet as other nodes.' }))
+      }
+    }
+  }
+  return Promise.resolve()
+}
+
+const isUnique = (value: string, index: number, array: string[]) => {
+  return array.indexOf(value) === array.lastIndexOf(value)
+}
+
+export const validateUniqueIp = (ips: string[], value?: string) => {
+  if(!Boolean(value)) return Promise.resolve()
+  const { $t } = getIntl()
+
+  if(ips.every(isUnique)) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
+}
+
+export const validateClusterInterface = (interfaceNames: string[]) => {
+  if((interfaceNames?.length ?? 0) <= 1) return Promise.resolve()
+  const { $t } = getIntl()
+  for(let i=0; i<interfaceNames.length; i++){
+    for(let j=i+1; j<interfaceNames.length; j++) {
+      if (interfaceNames[i].charAt(0) !== interfaceNames[j].charAt(0)) {
+        return Promise.reject(
+          $t({ defaultMessage: `Make sure you select the same interface type
+          (physical port or LAG) as that of another node in this cluster.` })
+        )
       }
     }
   }

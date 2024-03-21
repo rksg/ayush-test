@@ -6,6 +6,8 @@ export type TimeStampRange = [TimeStamp, TimeStamp]
 
 export type TimelineStatus = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL'
 
+export interface StatusIconProps { status: TimelineStatus, description?: string }
+
 export enum RolesEnum {
   PRIME_ADMIN = 'PRIME_ADMIN',
   ADMINISTRATOR = 'ADMIN',
