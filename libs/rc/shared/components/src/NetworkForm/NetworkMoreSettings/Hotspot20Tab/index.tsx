@@ -18,7 +18,7 @@ import { filterByAccess, hasAccess } from '@acx-ui/user'
 import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
-import ConnectionCapabilityContent from './ConnectionCapabilityContent'
+import ConnectionCapabilityDrawer from './ConnectionCapabilityDrawer'
 
 const { useWatch } = Form
 
@@ -152,12 +152,6 @@ export function Hotspot20Tab (props: {
     drawerForm.resetFields()
   }
 
-  const handleDrawerClose = () => {
-    setConnectionCapabilityDrawerVisible(false)
-    setEditMode(false)
-    setConnectionCapability({} as Hotspot20ConnectionCapability)
-  }
-
   const actions = !editMode ? [{
     label: $t({ defaultMessage: 'Add Protocol' }),
     disabled: connectionCapabilities.length >= maxConnectionCapibility,
@@ -220,6 +214,12 @@ export function Hotspot20Tab (props: {
     }
   }
 
+  const handleCapabilityClose = () => {
+    setConnectionCapabilityDrawerVisible(false)
+    setEditMode(false)
+    setConnectionCapability({} as Hotspot20ConnectionCapability)
+  }
+
   const tableColumns: TableProps<Hotspot20ConnectionCapability>['columns'] = [
     {
       title: $t({ defaultMessage: 'Protocol' }),
@@ -258,7 +258,8 @@ export function Hotspot20Tab (props: {
   }
 
   const getProtocolNumberDisplay = (protocolNumber: number): string => {
-    return `${protocolNumber} (${getProtocolName(protocolNumber)})`
+    return getProtocolName(protocolNumber) ??
+      `${protocolNumber} (${getProtocolName(protocolNumber)})`
   }
 
   const getProtocolName = (protocolNumber: number): string => {
@@ -272,7 +273,7 @@ export function Hotspot20Tab (props: {
       case 50:
         return 'ESP'
       default:
-        return 'UNKNOWN'
+        return ''
     }
   }
 
@@ -381,34 +382,12 @@ export function Hotspot20Tab (props: {
         />}
       </div>
 
-      <Drawer
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Protocol' })
-          : $t({ defaultMessage: 'Add Protocol' })
-        }
+      <ConnectionCapabilityDrawer
         visible={connectionCapabilityDrawerVisible}
-        destroyOnClose={true}
-        onClose={handleDrawerClose}
-        children={<ConnectionCapabilityContent
-          drawerForm={drawerForm}
-        />}
-        footer={
-          <Drawer.FormFooter
-            showAddAnother={false}
-            onCancel={handleDrawerClose}
-            onSave={async () => {
-              try {
-                await drawerForm.validateFields()
-                handleConnectionCapabilities()
-                drawerForm.resetFields()
-                handleDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
-        }
-        width={400}
+        editMode={editMode}
+        drawerForm={drawerForm}
+        handleDrawerSave={handleConnectionCapabilities}
+        handleDrawerClose={handleCapabilityClose}
       />
     </>
   )

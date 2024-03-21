@@ -2,14 +2,19 @@ import { Form, FormInstance, Input, Select } from 'antd'
 import { useIntl }                           from 'react-intl'
 
 import { Hotspot20ConnectionCapabilityStatusEnum, portRegExp } from '@acx-ui/rc/utils'
+import { Drawer } from '@acx-ui/components'
 
-interface ConnectionCapabilityContentProps {
-    drawerForm: FormInstance
+interface ConnectionCapabilityDrawerProps {
+  visible: boolean,
+  editMode: boolean,
+  drawerForm: FormInstance,
+  handleDrawerSave: () => void,
+  handleDrawerClose: () => void
 }
 
-const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) => {
+const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
   const { $t } = useIntl()
-  const { drawerForm } = props
+  const { visible, editMode, drawerForm, handleDrawerSave, handleDrawerClose } = props
 
   const statusOptions = Object.keys(Hotspot20ConnectionCapabilityStatusEnum).map((key => {
     return (
@@ -19,7 +24,7 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
     )
   }))
 
-  return <Form layout='vertical' form={drawerForm}>
+  const content = <Form layout='vertical' form={drawerForm}>
     <Form.Item
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
@@ -69,6 +74,37 @@ const ConnectionCapabilityContent = (props: ConnectionCapabilityContentProps) =>
       }
     />
   </Form>
+
+  return (
+    <Drawer
+        title={editMode
+          ? $t({ defaultMessage: 'Edit Protocol' })
+          : $t({ defaultMessage: 'Add Protocol' })
+        }
+        visible={visible}
+        destroyOnClose={true}
+        width={400}
+        onClose={handleDrawerClose}
+        children={content}
+        footer={
+          <Drawer.FormFooter
+            showAddAnother={false}
+            onCancel={handleDrawerClose}
+            onSave={async () => {
+              try {
+                await drawerForm.validateFields()
+                handleDrawerSave()
+                drawerForm.resetFields()
+                handleDrawerClose()
+              } catch (error) {
+                if (error instanceof Error) throw error
+              }
+            }}
+          />
+        }
+        
+      />
+  )
 }
 
-export default ConnectionCapabilityContent
+export default ConnectionCapabilityDrawer

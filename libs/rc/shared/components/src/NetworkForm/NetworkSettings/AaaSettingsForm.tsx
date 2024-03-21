@@ -33,6 +33,8 @@ import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../NetworkMoreSettings/styledComponents'
+import { useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 const { Option } = Select
 
@@ -324,6 +326,10 @@ function SettingsForm () {
   }
 
   function Hotspot20Service () {
+    const params = useParams()
+    const { setData, data } = useContext(NetworkFormContext)
+    const [showOperatorModal, setShowOperatorModal] = useState(false)
+    const [showProviderModal, setShowProviderModal] = useState(false)
     const [wifiOperatorId, setWifiOperatorId] = useState('')
     const [identityProviderId, setIdentityProviderId] = useState('')
 
@@ -335,59 +341,89 @@ function SettingsForm () {
       setIdentityProviderId(providerId)
     }
 
-    // const { operatorSelectOptions, operatorList }
-    //   = 
+    const queryByNetworkId = (networkId: string) => {
+      return {
+        searchString: '',
+        fields: [
+          'id',
+          'name'
+        ],
+        page: 1,
+        pageSize: 5,
+        sortField: 'name',
+        sortOrder: 'DESC',
+        filters: {
+          networkIds: [networkId]
+        }
+      }
+    }
+
+    const operatorSelectOptions
+      = data?.id ? useGetWifiOperatorListQuery({ 
+        params, payload: queryByNetworkId( data?.id )}, {
+          selectFromResult ({ data }) {
+            return data?.data.map(
+                operator => <Option key={operator.id}>{operator.name}</Option>) ?? []
+          }
+        }) : []
+
+    const handleAddOperator = () => {
+      setShowOperatorModal(true)
+    }
+
+    const handleAddProvider = () => {
+      setShowProviderModal(true)
+    }
 
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <>
-          <Form.Item
-            label={$t({ defaultMessage: 'Wi-Fi Operator' })}
-            name='hotspot20Operator'
-            rules={[
-              { required: true },
-              { validator: (_, value) => {
-                if (value === 'Select...') {
-                  return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
-                }
-                return Promise.resolve()
-              } }
-            ]}
-          >
-            <Select placeholder={$t({ defaultMessage: 'Select...' })}
-              onChange={handleOperatorChange}
-              value={wifiOperatorId} />
-          </Form.Item>
+        <Form.Item
+          label={$t({ defaultMessage: 'Wi-Fi Operator' })}
+          name='hotspot20Operator'
+          rules={[
+            { required: true },
+            { validator: (_, value) => {
+              if (value === 'Select...') {
+                return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
+              }
+              return Promise.resolve()
+            } }
+          ]}
+        >
+          <Select placeholder={$t({ defaultMessage: 'Select...' })}
+            onChange={handleOperatorChange}
+            children={operatorSelectOptions} />
+        </Form.Item>
 
-          <Button type='link'
-            onClick={}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
+        <Button type='link'
+          onClick={handleAddOperator}
+          children={$t({ defaultMessage: 'Add' })}
+          style={{ paddingTop: '10px' }} />
 
-          <Form.Item
-            label='Identity Provider'
-            name='hotspot20Identity'
-            rules={[
-              { required: true },
-              { validator: (_, value) => {
-                if (value === 'Select...') {
-                  return Promise.reject(
-                    $t({ defaultMessage: 'Please select the identity provider' }))
-                }
-                return Promise.resolve()
-              } }
-            ]}
-          >
-            <Select placeholder={$t({ defaultMessage: 'Select...' })}
-              onChange={handleProviderChange}
-              value={identityProviderId} />
-          </Form.Item>
+        <Form.Item
+          label='Identity Provider'
+          name='hotspot20Identity'
+          rules={[
+            { required: true },
+            { validator: (_, value) => {
+              if (value === 'Select...') {
+                return Promise.reject(
+                  $t({ defaultMessage: 'Please select the identity provider' }))
+              }
+              return Promise.resolve()
+            } }
+          ]}
+        >
+          <Select placeholder={$t({ defaultMessage: 'Select...' })}
+            onChange={handleProviderChange}
+            value={identityProviderId} />
+        </Form.Item>
 
-          <Button type='link'
-            onClick={}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
-        </>
+        <Button type='link'
+          onClick={handleAddProvider}
+          children={$t({ defaultMessage: 'Add' })}
+          style={{ paddingTop: '10px' }} />
+
       </Space>
     )
   }

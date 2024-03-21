@@ -117,7 +117,7 @@ export function MoreSettingsTabs (props: {
     },
     ...(supportHotspot20 ? [{
       key: 'hotspot20',
-      display: defineMessage({defaultMessage: 'Hotspot2.0'}),
+      display: defineMessage({defaultMessage: 'Hotspot 2.0'}),
       style: { width: '19px'}
     }] : []),
     ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL)? [{
