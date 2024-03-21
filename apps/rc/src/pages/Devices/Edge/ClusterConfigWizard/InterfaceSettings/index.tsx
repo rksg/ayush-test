@@ -133,7 +133,7 @@ export const InterfaceSettings = () => {
       if (changedField === 'corePortEnabled' && changedValue === false) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType'
-        && (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER)) {
+        && (changedValue === EdgePortTypeEnum.LAN)) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType' && changedValue === EdgePortTypeEnum.WAN) {
         const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfNaem][0]
