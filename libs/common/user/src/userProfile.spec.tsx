@@ -1,9 +1,11 @@
-import { render, screen } from '@acx-ui/test-utils'
-import { RolesEnum }      from '@acx-ui/types'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { render, screen }          from '@acx-ui/test-utils'
+import { RolesEnum }               from '@acx-ui/types'
 
-import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile, WrapIfAccessible, getShowWithoutRbacCheckKey } from './userProfile'
+import { SwitchScopes }                                                                                                                 from './types'
+import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile, WrapIfAccessible, getShowWithoutRbacCheckKey, AuthRoute } from './userProfile'
 
-function setRole (role: RolesEnum, abacEnabled?: boolean) {
+function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean, scopes?:string[]) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
@@ -14,9 +16,16 @@ function setRole (role: RolesEnum, abacEnabled?: boolean) {
     allowedOperations: ['GET:/networks'],
     accountTier: '',
     betaEnabled: false,
-    abacEnabled: abacEnabled ?? false
+    abacEnabled: abacEnabled ?? false,
+    isCustomRole,
+    scopes
   })
 }
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  TenantNavigate: () => <div data-testid='no-permissions' />
+}))
 
 describe('hasAccess', () => {
   describe('without id', () => {
@@ -132,5 +141,32 @@ describe('WrapIfAccessible', () => {
       </WrapIfAccessible>
     )
     expect(screen.queryByTestId('wrapper')).toBeNull()
+  })
+})
+
+describe('AuthRoute', () => {
+  it('should go to no permissions page', async () => {
+    setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.READ])
+    render(
+      <Router>
+        <AuthRoute scope={[SwitchScopes.UPDATE]}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByTestId('no-permissions')).toBeVisible()
+  })
+
+  it('should go to correct page', async () => {
+    setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])
+    render(
+      <Router>
+        <AuthRoute scope={[SwitchScopes.UPDATE]}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
   })
 })

@@ -53,10 +53,10 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
 
 /**
  * Please use RBAC functions as follows,
- * 1. filterByAccess
- * 2. hasPermission
- * 3. hasScope
- * 4. hasRoles
+ * 1. filterByAccess -> Backward compatible
+ * 2. hasPermission -> For the new RBAC feature: replace the original "hasAccess" function
+ * 3. hasScope -> For the new RBAC feature: custom role
+ * 4. hasRoles -> No change
  *
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
@@ -66,6 +66,7 @@ export function hasAccess (id?: string) {
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   return hasAllowedOperations(id)
 }
+
 function hasAllowedOperations (id:string) {
   const { allowedOperations } = getUserProfile()
 
