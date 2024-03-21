@@ -4,9 +4,12 @@ import { IntlProvider }                             from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeLagFixtures,
+import {
+  EdgeGeneralFixtures,
+  EdgeLagFixtures,
+  EdgePort,
   EdgePortConfigFixtures,
-  EdgePortWithStatus,
+  EdgePortInfo,
   EdgeSubInterface,
   EdgeSubInterfaceFixtures,
   EdgeUrlsInfo
@@ -29,7 +32,8 @@ import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
-const { mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgePortConfig, mockPortInfo } = EdgePortConfigFixtures
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 
@@ -67,6 +71,7 @@ const defaultContextData = {
 }
 const defaultEmptyPortsContextdata = {
   portData: [],
+  portStatus: [],
   lagData: [],
   isLoading: false,
   isFetching: false
@@ -74,14 +79,14 @@ const defaultEmptyPortsContextdata = {
 
 const defaultPortsContextdata = {
   ...defaultEmptyPortsContextdata,
-  portData: mockEdgePortConfig.ports as EdgePortWithStatus[]
+  portData: mockEdgePortConfig.ports as EdgePort[],
+  portStatus: mockPortInfo as EdgePortInfo[]
 }
 
 describe('EditEdge ports - sub-interface', () => {
   const mockedEdgeID = 'mocked_edge_id'
   const defaultProps = {
     serialNumber: mockedEdgeID,
-    // portData: mockEdgePortConfig.ports as EdgePortWithStatus[],
     lagData: mockEdgeLagStatusList.data
   }
 
@@ -89,21 +94,25 @@ describe('EditEdge ports - sub-interface', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
         EdgeUrlsInfo.getSubInterfaces.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
+        (_req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteSubInterfaces.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         EdgeUrlsInfo.getLagSubInterfaces.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
+        (_req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteLagSubInterfaces.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.status(202))
       )
     )
   })

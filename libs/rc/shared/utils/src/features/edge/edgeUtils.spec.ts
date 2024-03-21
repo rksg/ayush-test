@@ -1,7 +1,19 @@
 import { EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }                                                                                                                 from './__tests__/fixtures'
-import { allowRebootForStatus, allowResetForStatus, edgeSerialNumberValidator, getEdgeServiceHealth, getIpWithBitMask, getSuggestedIpRange } from './edgeUtils'
+import { EdgeAlarmFixtures } from './__tests__/fixtures'
+import {
+  allowRebootForStatus,
+  allowResetForStatus,
+  edgeSerialNumberValidator,
+  getEdgeServiceHealth,
+  getIpWithBitMask,
+  getSuggestedIpRange,
+  lanPortsubnetValidator,
+  optionSorter,
+  validateClusterInterface,
+  validateSubnetIsConsistent,
+  validateUniqueIp
+} from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
 describe('Edge utils', () => {
@@ -75,5 +87,155 @@ describe('Edge utils', () => {
       error = ex
     }
     expect(error).toBe('This field is invalid')
+  })
+
+  it('Test optionSorter correctly', () => {
+    const mockOptions = [
+      {
+        label: 'Port3',
+        value: 'port3'
+      },
+      {
+        label: 'Lag1',
+        value: 'lag1'
+      }
+    ]
+    expect(optionSorter(mockOptions[0], mockOptions[1])).toBe(1)
+    expect(optionSorter(mockOptions[1], mockOptions[0])).toBe(-1)
+    expect(optionSorter(mockOptions[0], mockOptions[0])).toBe(0)
+  })
+
+  it('Test lanPortsubnetValidator success', async () => {
+    const currentSubnetInfo = {
+      ip: '1.1.1.1',
+      subnetMask: '255.255.255.0'
+    }
+    const allSubnetWithoutCurrent = [
+      {
+        ip: '2.2.2.2',
+        subnetMask: '255.255.255.0'
+      },
+      {
+        ip: '3.3.3.3',
+        subnetMask: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test lanPortsubnetValidator failed', async () => {
+    const currentSubnetInfo = {
+      ip: '1.1.1.1',
+      subnetMask: '255.255.255.0'
+    }
+    const allSubnetWithoutCurrent = [
+      {
+        ip: '1.1.1.1',
+        subnetMask: '255.255.255.0'
+      },
+      {
+        ip: '3.3.3.3',
+        subnetMask: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await lanPortsubnetValidator(currentSubnetInfo, allSubnetWithoutCurrent)
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).toBeCalledWith('The ports have overlapping subnets')
+  })
+
+  it('Test validateSubnetIsConsistent success', async () => {
+    const allIps = [
+      {
+        ip: '1.1.1.1',
+        subnet: '255.255.255.0'
+      },
+      {
+        ip: '1.1.1.5',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateSubnetIsConsistent failed', async () => {
+    const allIps = [
+      {
+        ip: '1.1.1.1',
+        subnet: '255.255.255.0'
+      },
+      {
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0'
+      }
+    ]
+    const mockErrorFn = jest.fn()
+    try {
+      await validateSubnetIsConsistent(allIps, '1')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    // eslint-disable-next-line max-len
+    expect(mockErrorFn).toBeCalledWith('The selected port is not in the same subnet as other nodes.')
+  })
+
+  it('Test validateUniqueIp success', async () => {
+    const allIps = ['1.1.1.1', '2.2.2.2']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateUniqueIp failed', async () => {
+    const allIps = ['1.1.1.1', '1.1.1.1']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateUniqueIp(allIps, 'true')
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    expect(mockErrorFn).toBeCalledWith('IP address cannot be the same as other nodes.')
+  })
+
+  it('Test validateClusterInterface success', async () => {
+    const allIps = ['port2', 'port1']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateClusterInterface(allIps)
+    } catch (ex) {
+      mockErrorFn()
+    }
+    expect(mockErrorFn).not.toBeCalled()
+  })
+
+  it('Test validateClusterInterface failed', async () => {
+    const allIps = ['port1', 'lag0']
+    const mockErrorFn = jest.fn()
+    try {
+      await validateClusterInterface(allIps)
+    } catch (ex) {
+      mockErrorFn(ex)
+    }
+    // eslint-disable-next-line max-len
+    expect(mockErrorFn).toBeCalledWith('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')
   })
 })

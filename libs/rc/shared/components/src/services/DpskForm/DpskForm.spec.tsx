@@ -192,7 +192,7 @@ describe('DpskForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
+    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current.pathname)
   })
 
   it('should render the form for Modal mode', async () => {

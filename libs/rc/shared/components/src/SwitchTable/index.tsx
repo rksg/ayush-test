@@ -99,7 +99,7 @@ const PasswordTooltip = {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -344,7 +344,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       key: 'extIp',
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
-      sorter: false,
+      sorter: true,
+      searchable: searchable,
       show: false,
       render: (_: React.ReactNode, row: SwitchRow) => {
         return row.isFirstLevel ? row.extIp || noDataDisplay : ''

@@ -21,7 +21,7 @@ import type { FranchisorTimeseries, Response } from './services'
 
 const tableNoData = [{
   property: 'p',
-  lsp: 'l',
+  lsps: ['l'],
   p1Incidents: 0,
   ssidCompliance: '--' as unknown as [number, number],
   deviceCount: 0,
@@ -60,7 +60,9 @@ describe('SlaTile', () => {
       'sla-p1-incidents-count': '0',
       'sla-guest-experience': '100',
       'sla-brand-ssid-compliance': '100'
-    } as Settings
+    } as Settings,
+    lsp: 'LSP',
+    property: 'Property'
   }
 
   it('should render correctly by lsp', async () => {
@@ -145,7 +147,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })
@@ -177,7 +181,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })
@@ -210,7 +216,9 @@ describe('SlaTile', () => {
           'sla-p1-incidents-count': '0',
           'sla-guest-experience': '100',
           'sla-brand-ssid-compliance': '100'
-        } as Settings
+        } as Settings,
+        lsp: 'LSP',
+        property: 'Property'
       }
       return () => <SlaTile {...props} />
     })

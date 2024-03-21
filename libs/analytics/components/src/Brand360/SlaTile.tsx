@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Typography } from 'antd'
 import {
   meanBy,
   mean,
@@ -12,7 +13,7 @@ import {
 } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import type { Settings }      from '@acx-ui/analytics/utils'
+import { Settings }           from '@acx-ui/analytics/utils'
 import { Card }               from '@acx-ui/components'
 import { UpArrow, DownArrow } from '@acx-ui/icons'
 import { noDataDisplay }      from '@acx-ui/utils'
@@ -34,7 +35,11 @@ interface SlaTileProps {
   currData: FranchisorTimeseries | undefined
   sliceType: SliceType
   settings: Settings
+  lsp: string
+  property: string
 }
+
+const { Text } = Typography
 
 export const getChartDataKey = (chartKey: ChartKey): string[] => {
   switch (chartKey) {
@@ -136,10 +141,13 @@ const TopElementsSwitcher = ({ data, chartKey }:
         }
       }
     }>
-    <div>
-      {topSortedItems.map(([key, val, ind]) =>
-        <li key={key}>{ind}. {key} ({!isNaN(val as number) ? formatter(val) : noDataDisplay})</li>)}
-    </div>
+    <UI.ListContainer>
+      {topSortedItems.map(([key, val, ind]) => <li key={key}>
+        <Text ellipsis={{ suffix: ` (${!isNaN(val as number) ? formatter(val) : noDataDisplay})` }}>
+          {ind}. {key}
+        </Text>
+      </li>)}
+    </UI.ListContainer>
     {enableSort && <SwitcherIcon order={isAsc} /> }
   </UI.ListWrapper>
 }
@@ -151,19 +159,22 @@ export function SlaTile ({
   prevData,
   currData,
   sliceType,
-  settings
+  settings,
+  lsp,
+  property
 }: SlaTileProps) {
   const { $t } = useIntl()
   const { getTitle, formatter } = slaKpiConfig[chartKey]
+  const name = sliceType === 'lsp' ? lsp : property
   const groupedData = groupBySliceType(sliceType, tableData)
   const listData = getListData(groupedData, chartKey)
   const overallData = useOverallData(chartKey, currData)
   return <Card title={chartKey === 'compliance'
     ? {
-      title: $t(getTitle(sliceType)),
+      title: $t(getTitle(), { name }),
       icon: <ComplianceSetting settings={settings} />
     }
-    : $t(getTitle(sliceType))}
+    : $t(getTitle(), { name })}
   >
     <UI.Spacer />
     {chartKey === 'incident' && <Subtitle sliceType={sliceType} />}

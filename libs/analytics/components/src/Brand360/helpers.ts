@@ -8,7 +8,6 @@ import { TableResult }   from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
 import type { Response, BrandVenuesSLA } from './services'
-import type { SliceType }                from './useSliceType'
 export type ChartKey = 'incident' | 'experience' | 'compliance'
 
 type SLARecord = [ number, number ]
@@ -18,11 +17,11 @@ export interface Common {
   lsp: string
   p1Incidents: number
   guestExp: number | null
-  ssidCompliance: number
+  ssidCompliance: number | null
   deviceCount: number
-  avgConnSuccess: number,
-  avgTTC: number,
-  avgClientThroughput: number
+  avgConnSuccess: number | null,
+  avgTTC: number | null,
+  avgClientThroughput: number | null
 }
 export interface Property extends Common {
   property: string
@@ -35,14 +34,14 @@ interface TransformedItem {
   name: string
   type: string
   content: object[]
-  integrator?:string
+  integrators?: string[]
 }
 
 export interface TransformedMap {
   [key: string]: TransformedItem;
 }
 
-export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : 0)
+export const calcSLA = (sla: SLARecord) => (sla[1] !== 0 ? sla[0] / sla[1] : null)
 export const noDataCheck = (val:number | null) => val === 0 || val === null ? true : false
 export const checkNaN = (val: number) => (!isNaN(val) ? val : 0)
 function checkPropertiesForNaN (
@@ -66,7 +65,18 @@ const calGuestExp = (cS: number | null, ttc: number | null, cT: number | null) =
   }
 }
 export const transformToLspView = (properties: Response[]): Lsp[] => {
-  const lsps = groupBy(properties, (p) => p.lsp)
+  const lsps = properties.reduce((lspMap, p) => {
+    p.lsps.forEach(lsp => {
+      if (lspMap[lsp]) {
+        lspMap[lsp as keyof typeof lspMap] = [...lspMap[lsp as keyof typeof lspMap], p]
+      } else {
+        lspMap[lsp as keyof typeof lspMap] = [p]
+      }
+    })
+
+    return lspMap
+  }, {} as { [key: string]: Response[] })
+
   return Object.entries(lsps).map(([lsp, properties], ind) => {
     const {
       connSuccess,
@@ -149,7 +159,8 @@ export const transformToPropertyView = (data: Response[]): Property[] =>
       avgConnSuccess,
       avgClientThroughput,
       avgTTC,
-      guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC)
+      guestExp: calGuestExp(avgConnSuccess, avgClientThroughput, avgTTC),
+      lsp: property.lsps.join(', ')
     } as Property
   })
 
@@ -164,9 +175,7 @@ export function computePastRange (
 
 export const slaKpiConfig = {
   incident: {
-    getTitle: (sliceType: SliceType) => sliceType === 'lsp'
-      ? defineMessage({ defaultMessage: 'LSP Health' })
-      : defineMessage({ defaultMessage: 'Property Health' }),
+    getTitle: () => defineMessage({ defaultMessage: '{name} Health' }),
     dataKey: 'p1Incidents',
     avg: false,
     formatter: formatter('countFormat'),
@@ -191,13 +200,17 @@ export const slaKpiConfig = {
   }
 }
 
-export const transformLookupAndMappingData = (mappingData : TableResult<MspEc>) => {
+export type ECList = TableResult<MspEc & { integrators?: string[] }>
+
+export const transformLookupAndMappingData = (mappingData : ECList) => {
   const groupedById= groupBy(mappingData?.data, 'id')
   return Object.keys(groupedById).reduce((newObj, key) => {
     newObj[key] = {
       name: groupedById[key][0].name,
       type: groupedById[key][0].tenantType,
-      ...(groupedById[key][0].integrator ? { integrator: groupedById[key][0]?.integrator } : {}),
+      integrators: groupedById[key][0].integrator
+        ? [groupedById[key][0]?.integrator as string]
+        : (groupedById[key][0].integrators ? groupedById[key][0]?.integrators : []),
       content: groupedById[key]
     }
     return newObj
@@ -209,7 +222,6 @@ export const transformVenuesData = (
   lookupAndMappingData: TransformedMap
 ): Response[] => {
   const groupByTenantID = groupBy(venuesData?.data, 'tenantId')
-
   const sumData = (data: ([number | null, number | null] | null)[], initial: number[]) =>
     data
       ? data?.reduce((total, current) => {
@@ -219,28 +231,27 @@ export const transformVenuesData = (
       : noDataDisplay
   return Object.keys(lookupAndMappingData).reduce((newObj, tenantId, ind) => {
     const mappingData = lookupAndMappingData[tenantId]
-    if (mappingData?.integrator) {
-      const tenantData = groupByTenantID[tenantId]
-      newObj.push({
-        id: `${mappingData?.name}-${lookupAndMappingData[mappingData.integrator]?.name}-${ind}`,
-        property: mappingData?.name,
-        lsp: lookupAndMappingData[mappingData.integrator]?.name,
-        p1Incidents: tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
-        ssidCompliance: sumData(
-          tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
-        ) as [number, number],
-        deviceCount: tenantData
-          ? tenantData?.reduce((total, venue) => total + (venue.onlineApsSLA?.[1] || 0), 0) : 0,
-        avgConnSuccess: sumData(
-          tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
-        ) as [number, number],
-        avgTTC: sumData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
-        avgClientThroughput: sumData(
-          tenantData?.map(v => v.clientThroughputSLA), [0, 0]
-        ) as [number, number]
-      })
-    }
+    const tenantData = groupByTenantID[tenantId]
+    mappingData?.integrators?.length && newObj.push({
+      id: `${mappingData?.name}-${ind}`,
+      property: mappingData?.name,
+      lsps: mappingData?.integrators?.map(integrator => lookupAndMappingData[integrator]?.name),
+      p1Incidents: tenantData
+        ? tenantData?.reduce((total, venue) => total + (venue.incidentCount || 0), 0) : 0,
+      ssidCompliance: sumData(
+        tenantData?.map(v => v.ssidComplianceSLA), [0, 0]
+      ) as [number, number],
+      deviceCount: tenantData
+        ? tenantData?.reduce((total, venue) => total +
+        (venue.onlineApsSLA?.[1] || 0) + (venue.onlineSwitchesSLA?.[1] || 0), 0) : 0,
+      avgConnSuccess: sumData(
+        tenantData?.map(v => v.connectionSuccessSLA), [0, 0]
+      ) as [number, number],
+      avgTTC: sumData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
+      avgClientThroughput: sumData(
+        tenantData?.map(v => v.clientThroughputSLA), [0, 0]
+      ) as [number, number]
+    })
     return newObj
   }, [] as Response[])
 }

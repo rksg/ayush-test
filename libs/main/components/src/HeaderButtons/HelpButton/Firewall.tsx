@@ -28,8 +28,6 @@ export default function Firewall (props: {
       <Typography.Paragraph>
         <CopyableText>https://ap-registrar.ruckuswireless.com</CopyableText>
         <CopyableText>https://sw-registrar.ruckuswireless.com</CopyableText>
-        <CopyableText>https://ocsp.comodoca.com</CopyableText>
-        <CopyableText>https://ocsp.entrust.net</CopyableText>
         <CopyableText>https://ruckus.cloud</CopyableText>
         <CopyableText>https://eu.ruckus.cloud</CopyableText>
         <CopyableText>https://asia.ruckus.cloud</CopyableText>
@@ -37,6 +35,14 @@ export default function Firewall (props: {
         <CopyableText>https://device.eu.ruckus.cloud</CopyableText>
         <CopyableText>https://device.asia.ruckus.cloud</CopyableText>
         <CopyableText>https://storage.googleapis.com</CopyableText>
+      </Typography.Paragraph>
+      <HelpSubtitle>
+        {$t({ defaultMessage: 'Outbound HTTP (TCP 80) from APs and Switches to:' })}
+      </HelpSubtitle>
+      <Typography.Paragraph>
+        <CopyableText>http://ocsp.comodoca.com</CopyableText>
+        <CopyableText>http://ocsp.entrust.net</CopyableText>
+        <CopyableText>http://ocsp.godaddy.com</CopyableText>
       </Typography.Paragraph>
       <HelpSubtitle>
         {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}

@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -21,11 +21,15 @@ import {
   useDeleteNetworkVenuesMutation,
   useNetworkVenueListQuery,
   useNetworkVenueTableQuery,
-  useGetVenueCityListQuery,
   useNetworkVenueTableV2Query,
   useNetworkVenueListV2Query,
   useAddNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation, useUpdateNetworkVenueTemplateMutation
+  useDeleteNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueCityListQuery,
+  useAddNetworkVenueTemplatesMutation,
+  useDeleteNetworkVenuesTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -41,8 +45,9 @@ import {
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
+import { transformToCityListOptions } from '@acx-ui/utils'
 
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
@@ -116,14 +121,7 @@ export function NetworkVenuesTab () {
     pagination: { settingsId }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({
-        key: v.name,
-        value: v.name.split(', ').map(_.startCase).join(', ')
-      })) || true
-    })
-  })
+  const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -151,8 +149,8 @@ export function NetworkVenuesTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
 
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   const getCurrentVenue = (row: Venue) => {
@@ -214,11 +212,19 @@ export function NetworkVenuesTab () {
         }
       })
     }
+
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, [row.id], () => {
+          if (!deactivateNetworkVenueId) {
+            tableData.forEach((venue: Venue) => {
+              if (venue && venue.id === row.id) {
+                deactivateNetworkVenueId = venue.deepVenue!.id ?? ''
+              }
+            })
+          }
           deleteNetworkVenue({
             params: {
               tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
@@ -546,7 +552,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && !isTemplate && {
+        rowSelection={hasAccess() && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}
@@ -579,4 +585,25 @@ export function NetworkVenuesTab () {
       </Form.Provider>
     </Loader>
   )
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
 }
