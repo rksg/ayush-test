@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { RolesEnum }   from '@acx-ui/types'
-import { useTenantId } from '@acx-ui/utils'
+import { RolesEnum as Role } from '@acx-ui/types'
+import { useTenantId }       from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -24,7 +24,7 @@ export interface UserProfileContextProps {
   betaEnabled?: boolean
 }
 
-const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
+const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
 const hasRole = hasRoles
 
 // eslint-disable-next-line max-len
@@ -53,13 +53,22 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   const accountTier = accTierResponse?.acx_account_tier
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
+    let isCustomRole = !!profile?.customRoleName
+    const abacEnabled = featureFlagStates?.[abacFF] ?? false
+    const userProfile = { ...profile } as UserProfile
+    if(!abacEnabled && isCustomRole) {
+      // TODO: Will remove this after RBAC feature release
+      userProfile.role = Role.PRIME_ADMIN
+      userProfile.roles = [Role.PRIME_ADMIN]
+      isCustomRole = false
+    }
     setUserProfile({
-      profile: profile!,
+      profile: userProfile,
       allowedOperations,
       accountTier,
       betaEnabled,
-      abacEnabled: featureFlagStates?.[abacFF] ?? false,
-      isCustomRole: !!profile?.customRoleName,
+      abacEnabled,
+      isCustomRole,
       scopes: profile?.scopes
     })
   }

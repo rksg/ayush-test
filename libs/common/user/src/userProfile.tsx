@@ -108,12 +108,7 @@ export function hasScope (userScope: string[]) {
 
 
 export function hasRoles (roles: string | string[]) {
-  const { profile, abacEnabled, isCustomRole } = getUserProfile()
-
-  if(!abacEnabled && isCustomRole) {
-    // TODO: Will remove this after RBAC feature release
-    return true
-  }
+  const { profile } = getUserProfile()
 
   if (!Array.isArray(roles)) roles = [roles]
 
