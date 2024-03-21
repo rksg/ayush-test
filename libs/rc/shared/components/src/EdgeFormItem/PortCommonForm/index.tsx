@@ -217,6 +217,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'subnet')}
                 children={<Input />}
               />
+              {portType !== EdgePortTypeEnum.CLUSTER &&
               <Form.Item
                 name={getFieldPathBaseFormList('gateway')}
                 label={$t({ defaultMessage: 'Gateway' })}
@@ -228,6 +229,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'gateway')}
                 children={<Input />}
               />
+              }
             </>
           }
           { // only WAN port can configure NAT enable
