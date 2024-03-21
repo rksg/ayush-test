@@ -1,12 +1,12 @@
 import { Col, Row, Typography }                      from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
+import { useUpdatePreferencesMutation }                       from '@acx-ui/analytics/services'
 import { getUserProfile }                                     from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs }                        from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
-import { useUpdateUserMutation }     from './services'
 import * as UI                       from './styledComponents'
 
 interface Tab {
@@ -72,12 +72,12 @@ const UserData = () => {
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const [ updateUser ] = useUpdateUserMutation()
+  const [ updatePreferences ] = useUpdatePreferencesMutation()
   const location = useLocation().state as fromLoc
   const { userId } = getUserProfile()
 
   const handleUpdateSettings = async (data: { preferredLanguage: string }) => {
-    await updateUser({ userId: userId, preferences: data })
+    await updatePreferences({ userId: userId, preferences: data })
     navigate({
       pathname: location.from
     }, { replace: true })

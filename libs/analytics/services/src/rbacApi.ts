@@ -37,6 +37,10 @@ export type UpdateUserPayload = {
   role: string
   userId: string
 }
+export type UpdatePreferencesPayload = {
+  userId: string
+  preferences: {}
+}
 export type AddUserPayload = {
   resourceGroupId: string
   role: string
@@ -226,6 +230,17 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           responseHandler: 'text'
         }
       }
+    }),
+    updatePreferences: build.mutation<string, UpdatePreferencesPayload>({
+      query: ({ userId, preferences }) => {
+        return {
+          url: `/users/${userId}/preferences`,
+          method: 'PATCH',
+          credentials: 'include',
+          body: { preferences }
+        }
+      },
+      invalidatesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
     })
   })
 })
@@ -244,7 +259,8 @@ export const {
   useInviteUserMutation,
   useRefreshUserDetailsMutation,
   useDeleteUserResourceGroupMutation,
-  useDeleteInvitationMutation
+  useDeleteInvitationMutation,
+  useUpdatePreferencesMutation
 } = rbacApi
 
 export function useSystems () {
