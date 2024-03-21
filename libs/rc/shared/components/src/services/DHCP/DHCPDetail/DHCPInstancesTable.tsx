@@ -4,11 +4,12 @@ import { useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                    from '@acx-ui/components'
-import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Card, Loader }                                                                                        from '@acx-ui/components'
+import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
 import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
-import { renderConfigTemplateDetailsComponent } from '@acx-ui/rc/components'
+import { TenantLink }                                                                                                             from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
 
 
 export default function DHCPInstancesTable (){
