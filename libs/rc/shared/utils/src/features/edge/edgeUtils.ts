@@ -339,7 +339,7 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
 
   if (allPortsLagMember && lagWithGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'All ports are LAG member, and the LAGs gateway setting are invalid.' }))
+    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to form a cluster.' }))
   } else {
     return Promise.resolve()
   }
@@ -359,7 +359,8 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
   const totoalGateway = portWithGateway + lagWithGateway
 
   if (totoalGateway === 0) {
-    return Promise.reject($t({ defaultMessage: 'Please configure a gateway.' }))
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to form a cluster.' }))
   } else if (totoalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   } else {

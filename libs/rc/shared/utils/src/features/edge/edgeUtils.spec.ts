@@ -289,7 +289,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when LAN port with LAN lag', async () => {
@@ -309,7 +309,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when all ports are LAN lag member', async () => {
@@ -330,7 +330,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when all ports are WAN lag member but all disabled', async () => {
@@ -351,7 +351,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when Cluster port with empty lag', async () => {
@@ -364,7 +364,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when LAN port with Cluster LAG', async () => {
@@ -389,7 +389,7 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('Please configure a gateway.')
+      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
     })
 
     it('when WAN port with LAN core port LAG', async () => {

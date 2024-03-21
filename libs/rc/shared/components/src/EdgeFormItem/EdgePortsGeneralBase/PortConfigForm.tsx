@@ -34,8 +34,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     isEdgeSdLanRun,
     lagData,
     fieldHeadPath = [],
-    isCluster,
-    formFieldsProps
+    isCluster
   } = props
 
   const { $t } = useIntl()
@@ -108,7 +107,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 fieldHeadPath={fieldHeadPath}
                 portsDataRootPath={portsDataRootPath}
                 formListID={id}
-                formFieldsProps={formFieldsProps}
               />
             }}
           </Form.Item>
