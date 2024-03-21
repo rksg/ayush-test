@@ -155,6 +155,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
       destroyOnClose={true}
       children={content}
       width={'450px'}
+      push={false}
       footer={
         <Drawer.FormFooter
           showAddAnother={!isEditMode}

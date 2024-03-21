@@ -40,15 +40,6 @@ const EapTable = (props: EapTableProps) => {
 
   const columns: TableProps<EapType>['columns'] = [
     {
-      title: '#',
-      dataIndex: 'rowId',
-      key: 'rowId',
-      align: 'center',
-      width: 20,
-      render: (_, row) => {
-        return (row?.rowId !== undefined) ? row?.rowId+1 : ''
-      }
-    }, {
       title: $t({ defaultMessage: 'EAP Method' }),
       dataIndex: 'method',
       key: 'method',
