@@ -568,24 +568,27 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             children={lagForm}
           />
       }
-      <SelectVlanModal
-        form={form}
-        selectModalvisible={selectModalVisible}
-        setSelectModalvisible={setSelectModalVisible}
-        setUseVenueSettings={setUseVenueSettings}
-        onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
-        defaultVlan={String(defaultVlanId)}
-        switchVlans={getAllSwitchVlans(switchVlans)}
-        venueVlans={venueVlans}
-        taggedVlans={taggedVlans}
-        untaggedVlan={untaggedVlan}
-        vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
-        hasSwitchProfile={hasSwitchProfile}
-        profileId={switchConfigurationProfileId}
-        updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
-        }
-      />
+      {
+        selectModalVisible &&
+          <SelectVlanModal
+            form={form}
+            selectModalvisible={selectModalVisible}
+            setSelectModalvisible={setSelectModalVisible}
+            setUseVenueSettings={setUseVenueSettings}
+            onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
+            defaultVlan={String(defaultVlanId)}
+            switchVlans={getAllSwitchVlans(switchVlans)}
+            venueVlans={venueVlans}
+            taggedVlans={taggedVlans}
+            untaggedVlan={untaggedVlan}
+            vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+            hasSwitchProfile={hasSwitchProfile}
+            profileId={switchConfigurationProfileId}
+            updateSwitchVlans={async (values: Vlan) =>
+              updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+            }
+          />
+      }
     </>
   )
 

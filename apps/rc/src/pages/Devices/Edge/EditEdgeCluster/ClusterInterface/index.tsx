@@ -1,35 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Form }        from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
-import { Loader, StepsForm, Table, TableProps, showActionModal } from '@acx-ui/components'
+import { Loader, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { useClusterInterfaceActions }           from '@acx-ui/rc/components'
 import {
-  useGetAllInterfacesByTypeQuery,
-  useLazyGetEdgeLagListQuery,
-  useLazyGetPortConfigQuery,
-  usePatchEdgeClusterNetworkSettingsMutation
-} from '@acx-ui/rc/services'
-import {
-  ClusterNetworkSettings,
-  EdgeClusterTableDataType, EdgeIpModeEnum,
-  EdgeLag,
-  EdgePort,
+  EdgeClusterStatus,
   EdgePortInfo,
-  EdgePortTypeEnum
+  EdgePortTypeEnum,
+  validateClusterInterface,
+  validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
 import { useTenantLink }             from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
 
 import * as CommUI from '../styledComponents'
 
 import { EditClusterInterfaceDrawer } from './EditClusterInterfaceDrawer'
 
 interface ClusterInterfaceProps {
-  currentClusterStatus?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
 }
 
 export interface ClusterInterfaceTableType {
@@ -47,33 +40,22 @@ interface ClusterInterfaceFormType {
 export const ClusterInterface = (props: ClusterInterfaceProps) => {
   const { currentClusterStatus } = props
   const edgeNodeList = currentClusterStatus?.edgeList
-  const { clusterId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const clusterData = Form.useWatch('clusterData', form) as ClusterInterfaceTableType[]
-  const [getPortConfig] = useLazyGetPortConfigQuery()
-  const [getEdgeLagList] = useLazyGetEdgeLagListQuery()
-  const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
-
   const {
-    data: allInterfaceData,
-    isLoading: isInterfaceDataLoading
-  } = useGetAllInterfacesByTypeQuery({
-    payload: {
-      edgeIds: edgeNodeList?.map(item => item.serialNumber),
-      portType: [EdgePortTypeEnum.CLUSTER, EdgePortTypeEnum.LAN, EdgePortTypeEnum.UNCONFIGURED]
-    }
-  },{
-    skip: !Boolean(edgeNodeList) || edgeNodeList?.length === 0
-  })
+    allInterfaceData,
+    isInterfaceDataLoading,
+    updateClusterInterface
+  } = useClusterInterfaceActions(currentClusterStatus)
 
   useEffect(() => {
     if(!edgeNodeList || (isInterfaceDataLoading && !allInterfaceData)) return
     if(clusterData) return
     form.setFieldValue('clusterData', edgeNodeList.map(item => {
-      const currentcClusterInterface = getOldInterfaceConfig(item.serialNumber)
+      const currentcClusterInterface = getTargetInterfaceConfig(item.serialNumber)
       return {
         nodeName: item.name,
         serialNumber: item.serialNumber,
@@ -84,165 +66,22 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
     }))
   }, [edgeNodeList, allInterfaceData, isInterfaceDataLoading])
 
-  const organizeToLagSetting = async (
-    newInterfaceData: ClusterInterfaceTableType,
-    payload: ClusterNetworkSettings,
-    oldInterfaceData?: EdgePortInfo
-  ) => {
-    const lagData = await getEdgeLagList({
-      params: { serialNumber: newInterfaceData.serialNumber },
-      payload: { page: 1, pageSize: 20 }
-    })
-    let lags = lagData.data?.data
-    lags = lags?.map(item => {
-      const lagName = `lag${item.id}`
-      let portType = item.portType
-      let ipMode = item.ipMode
-      let ip = item.ip
-      let subnet = item.subnet
-      let lagEnabled = item.lagEnabled
-      if(lagName === newInterfaceData.interfaceName?.toLocaleLowerCase()) {
-        portType = EdgePortTypeEnum.CLUSTER
-        ip = newInterfaceData.ip ?? ''
-        subnet = newInterfaceData.subnet ?? ''
-        ipMode = EdgeIpModeEnum.STATIC
-        lagEnabled = true
-      } else if(lagName === oldInterfaceData?.portName.toLocaleLowerCase()) {
-        lagEnabled = false
-      }
-      return {
-        ...item,
-        portType,
-        ipMode,
-        ip,
-        subnet,
-        lagEnabled
-      }
-    }) as EdgeLag[]
-    return [
-      ...(payload.lagSettings ?? []),
-      {
-        serialNumber: newInterfaceData.serialNumber,
-        lags
-      }
-    ]
-  }
-
-  const organizeToPortSetting = async (
-    newInterfaceData: ClusterInterfaceTableType,
-    payload: ClusterNetworkSettings,
-    oldInterfaceData?: EdgePortInfo
-  ) => {
-    const portData = await getPortConfig({
-      params: { serialNumber: newInterfaceData.serialNumber }
-    })
-    let ports = portData.data?.ports
-    ports = ports?.map(item =>{
-      let portType = item.portType
-      let ipMode = item.ipMode
-      let ip = item.ip
-      let subnet = item.subnet
-      let enabled = item.enabled
-      if(item.interfaceName === newInterfaceData.interfaceName) {
-        portType = EdgePortTypeEnum.CLUSTER
-        ip = newInterfaceData.ip ?? ''
-        subnet = newInterfaceData.subnet ?? ''
-        ipMode = EdgeIpModeEnum.STATIC
-        enabled = true
-      } else if(item.interfaceName === oldInterfaceData?.portName) {
-        enabled = false
-      }
-      return {
-        ...item,
-        portType,
-        ipMode,
-        ip,
-        subnet,
-        enabled
-      }
-    }) as EdgePort[]
-    return [
-      ...(payload.portSettings ?? []),
-      {
-        serialNumber: newInterfaceData.serialNumber,
-        ports
-      }
-    ]
-  }
-
-  const getOldInterfaceConfig = (serialNumber: string) => {
+  const getTargetInterfaceConfig = (serialNumber: string) => {
     return allInterfaceData?.[serialNumber]?.find(
       interfaceData => interfaceData.portType === EdgePortTypeEnum.CLUSTER &&
       interfaceData.portEnabled
     )
   }
 
-  const isDataChanged = (data: ClusterInterfaceFormType) => {
-    for(let interfaceData of data.clusterData) {
-      const oldInterfaceData = getOldInterfaceConfig(interfaceData.serialNumber)
-      if(oldInterfaceData?.portName !== interfaceData.interfaceName) {
-        return true
-      }
-    }
-    return false
-  }
-
-  const excuteUpdate = async (data: ClusterInterfaceFormType) => {
-    const payload = {} as ClusterNetworkSettings
-    for(let interfaceData of data.clusterData) {
-      const oldInterfaceData = getOldInterfaceConfig(interfaceData.serialNumber)
-      if(oldInterfaceData?.portName.charAt(0) !== interfaceData.interfaceName?.charAt(0)) {
-        if(oldInterfaceData?.portName.toLocaleLowerCase()?.includes('lag')) {
-          payload.lagSettings = await organizeToLagSetting(interfaceData, payload, oldInterfaceData)
-        } else {
-          payload.portSettings = await organizeToPortSetting(
-            interfaceData,
-            payload,
-            oldInterfaceData
-          )
-        }
-      }
-      if(interfaceData.interfaceName?.toLocaleLowerCase()?.includes('lag')) {
-        payload.lagSettings = await organizeToLagSetting(interfaceData, payload, oldInterfaceData)
-      } else {
-        payload.portSettings = await organizeToPortSetting(
-          interfaceData,
-          payload,
-          oldInterfaceData
-        )
-      }
-    }
-    try {
-      await updateNetworkConfig({
-        params: {
-          venueId: currentClusterStatus?.venueId,
-          clusterId
-        },
-        payload
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+  const getAllNodesSubnetInfo = (value?: ClusterInterfaceTableType[]) => {
+    return value?.map(item => ({
+      ip: item.ip,
+      subnet: item.subnet
+    })) ?? []
   }
 
   const handleFinish = async (data: ClusterInterfaceFormType) => {
-    if(isDataChanged(data)) {
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Change Cluster Interface' }),
-        content: $t({
-          defaultMessage: `Are you sure you want to change the cluster interface to 
-          different port/LAG? The currently used port/LAG as the cluster interface 
-          will be disabled.`
-        }),
-        okText: $t({ defaultMessage: 'Change' }),
-        onOk: async () => {
-          await excuteUpdate(data)
-        }
-      })
-    } else {
-      await excuteUpdate(data)
-    }
+    await updateClusterInterface(data.clusterData)
   }
 
   const handleCancel = () => {
@@ -269,7 +108,16 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
             rules={
               [
                 { required: true },
-                { validator: (_, value) => validateClusterInterface(value) }
+                {
+                  validator: (_, value: ClusterInterfaceTableType[]) =>
+                    validateClusterInterface((value?.map(item => item.interfaceName ?? '') ?? []))
+                },
+                {
+                  validator: (_, value) =>
+                    validateSubnetIsConsistent(getAllNodesSubnetInfo(value), 'true'),
+                  message: $t({ defaultMessage: `Make sure that 
+                  each node is within the same subnet range.` })
+                }
               ]
             }
             children={
@@ -277,27 +125,12 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
                 allInterfaceData={allInterfaceData}
               />
             }
+            validateFirst
           />
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
   )
-}
-
-const validateClusterInterface = (value: ClusterInterfaceTableType[]) => {
-  if((value?.length ?? 0) <= 1) return Promise.resolve()
-  const { $t } = getIntl()
-  for(let i=0; i<value.length; i++){
-    for(let j=i+1; j<value.length; j++) {
-      if (value[i].interfaceName?.charAt(0) !== value[j].interfaceName?.charAt(0)) {
-        return Promise.reject(
-          $t({ defaultMessage: `Make sure you select the same interface type
-          (physical port or LAG) as that of another node in this cluster.` })
-        )
-      }
-    }
-  }
-  return Promise.resolve()
 }
 
 type ClusterInterfaceTableProps = {

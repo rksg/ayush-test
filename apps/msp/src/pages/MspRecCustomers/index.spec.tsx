@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
@@ -570,6 +570,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
   })
   it('should open dialog when integrator link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -589,6 +590,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -648,5 +650,18 @@ describe('MspRecCustomers', () => {
       hash: '',
       search: ''
     }, { replace: true })
+  })
+
+  it('should show brand property instead Ruckus End Customer for HSP', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('Brand Properties')).toBeVisible()
   })
 })

@@ -209,9 +209,17 @@ export function VenueFirmwareList () {
             okText: $t({ defaultMessage: 'Skip' }),
             cancelText: $t({ defaultMessage: 'Cancel' }),
             onOk () {
-              skipSchedule({
-                payload: selectedRows.map((row) => row.id)
-              }).then(clearSelection)
+              const requests = []
+              try {
+                for(let row of selectedRows) {
+                  requests.push(skipSchedule({
+                    params: { venueId: row.id }
+                  }))
+                }
+                Promise.all(requests).then(() => clearSelection())
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
             },
             onCancel () {}
           })
@@ -225,13 +233,18 @@ export function VenueFirmwareList () {
   }
 
   const handleUpdateModalSubmit = async (data: string) => {
+    const requests = []
     const payload = {
-      venueIds: venueIds,
       version: data
     }
     try {
-      await updateNow({ payload }).unwrap()
-      setSelectedRowKeys([])
+      for(let venueId of venueIds) {
+        requests.push(updateNow({
+          params: { venueId },
+          payload
+        }))
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -254,10 +267,16 @@ export function VenueFirmwareList () {
   }
 
   const handleChangeScheduleModalSubmit = async (data: EdgeUpdateScheduleRequest) => {
-    const payload = { ...data, venueIds }
+    const requests = []
+    const payload = { ...data }
     try {
-      await updateSchedule({ payload }).unwrap()
-      setSelectedRowKeys([])
+      for(let venueId of venueIds) {
+        requests.push(updateSchedule({
+          params: { venueId },
+          payload
+        }))
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

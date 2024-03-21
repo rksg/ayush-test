@@ -119,6 +119,7 @@ function EnableR1Beta (props: EnableR1BetaProps) {
         visible={showShowBetaFeaturesDrawer}
         setVisible={() => setShowBetaFeaturesDrawer(false)}
         onClose={() => setShowBetaFeaturesDrawer(false)}
+        width={500}
       />
     }
   </Loader>

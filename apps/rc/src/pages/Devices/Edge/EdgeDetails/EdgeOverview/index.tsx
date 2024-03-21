@@ -9,6 +9,7 @@ import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery,
+  useGetEdgeClusterQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
@@ -35,6 +36,8 @@ export const EdgeOverview = () => {
   const edgeStatusPayload = {
     fields: [
       'name',
+      'venueId',
+      'clusterId',
       'venueName',
       'type',
       'serialNumber',
@@ -63,6 +66,10 @@ export const EdgeOverview = () => {
     params: { serialNumber },
     payload: edgeStatusPayload
   })
+
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
+  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
 
   const isConfigurable = isEdgeConfigurable(currentEdge)
 
@@ -188,6 +195,7 @@ export const EdgeOverview = () => {
       <Col span={24}>
         <EdgeInfoWidget
           currentEdge={currentEdge}
+          currentCluster={currentCluster}
           edgePortsSetting={portStatusList}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
