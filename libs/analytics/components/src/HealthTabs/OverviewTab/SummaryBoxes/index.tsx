@@ -17,13 +17,11 @@ export const SummaryBoxes = ({ filters }: {
   }
   const { data: trafficSummary, ...trafficQueryState } = useTrafficQuery(payload,
     { selectFromResult: ({ data, ...rest }) => {
-      const apTotalTraffic = data?.network?.hierarchyNode.apTotalTraffic
-      const switchTotalTraffic = data?.network?.hierarchyNode.switchTotalTraffic
       return {
         ...rest,
         data: {
-          apTotalTraffic,
-          switchTotalTraffic
+          apTotalTraffic: data?.network?.hierarchyNode.apTotalTraffic,
+          switchTotalTraffic: data?.network?.hierarchyNode.switchTotalTraffic
         }
       }
     } })
