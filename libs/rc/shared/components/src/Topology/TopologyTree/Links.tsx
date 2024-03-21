@@ -5,6 +5,8 @@ import * as d3 from 'd3'
 
 import { ConnectionStatus } from '@acx-ui/rc/utils'
 
+import { getDeviceColor } from '../utils'
+
 export interface Link {
   source: {
     data: {
@@ -22,6 +24,8 @@ export interface Link {
 interface LinksProps {
   links: any[];
   linksInfo: any;
+  sourceNode?: any;
+  targetNode?: any;
   onClick: (node: Link, event: MouseEvent) => void;
 }
 
@@ -43,6 +47,20 @@ export const Links: React.FC<LinksProps> = (props) => {
     [ConnectionStatus.Disconnected]: 'disconnectedMarker',
     [ConnectionStatus.Degraded]: 'degradedMarker',
     [ConnectionStatus.Unknown]: 'unknownMarker'
+  }
+
+  const targetNodeColor: { [key in string]: string } = {
+    'var(--acx-semantics-green-50)': 'd3-tree-good-links',
+    'var(--acx-semantics-red-70)': 'd3-tree-disconnected-links',
+    'var(--acx-semantics-yellow-40)': 'd3-tree-degraded-links',
+    'var(--acx-neutrals-50)': 'd3-tree-degraded-links'
+  }
+
+  const targetNodeMarkerColor: { [key in string]: string } = {
+    'var(--acx-semantics-green-50)': 'goodMarker',
+    'var(--acx-semantics-red-70)': 'disconnectedMarker',
+    'var(--acx-semantics-yellow-40)': 'degradedMarker',
+    'var(--acx-neutrals-50)': 'degradedMarker'
   }
 
   const linkCustom = ({ source, target }: any,
@@ -128,17 +146,19 @@ export const Links: React.FC<LinksProps> = (props) => {
       </marker>
       {links.map((link, i) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
+        const targetNodeStatusColor = targetNodeColor[getDeviceColor(link.target.data.status)]
+        const targetNodeMarker = targetNodeMarkerColor[getDeviceColor(link.target.data.status)]
         const linkClass = linkInfo?.connectionStatus ?
           linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
           (Object.values(ConnectionStatus).includes(link.target.data.status) ?
             linkColor[link.target.data.status as ConnectionStatus] :
-            linkColor[ConnectionStatus.Good])
+            targetNodeStatusColor)
 
         const markerClass = linkInfo?.connectionStatus ?
           markerColor[linkInfo?.connectionStatus as ConnectionStatus] :
           (Object.values(ConnectionStatus).includes(link.target.data.status) ?
             markerColor[link.target.data.status as ConnectionStatus] :
-            markerColor[ConnectionStatus.Good])
+            targetNodeMarker)
 
         return (
           <g key={i}

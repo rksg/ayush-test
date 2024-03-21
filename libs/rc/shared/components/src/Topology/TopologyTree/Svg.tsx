@@ -19,7 +19,7 @@ const Svg: any = (props: any) => {
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
-  const { scale, translate, setTranslate } =
+  const { scale, translate, setTranslate, setOnDrag } =
     useContext(TopologyTreeContext)
 
   useEffect(() => {
@@ -28,9 +28,20 @@ const Svg: any = (props: any) => {
     if (width && height) {
       svg.call(
         drag()
-          .on('drag', (event: { x: any; y: any }) => {
-            const { offsetX, offsetY } = _.get(event, 'sourceEvent')
-            setTranslate([offsetX, offsetY])
+          .on('start', (event) => {
+            setOnDrag(true)
+            event.subject.startX = event.x
+            event.subject.startY = event.y
+          })
+          .on('drag', (event) => {
+            setOnDrag(true)
+            const { startX, startY } = event.subject
+            const dx = event.x - startX
+            const dy = event.y - startY
+            setTranslate([translate[0] + dx, translate[1] + dy])
+          })
+          .on('end', () => {
+            setOnDrag(false)
           })
       )
     }

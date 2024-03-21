@@ -88,6 +88,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
               className={'node tree-node'}
+              id={node.data.id}
             >
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}

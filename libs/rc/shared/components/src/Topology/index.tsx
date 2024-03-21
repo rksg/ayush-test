@@ -138,6 +138,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const [translate, setTranslate] = useState<number[]>([0,0])
   let newScale = useRef(1)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
+  const [onDrag, setOnDrag] = useState<boolean>(false)
 
   useEffect(() => {
     if(topologyData) {
@@ -211,6 +212,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   })
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
+    if(onDrag){
+      return
+    }
     setShowDeviceTooltip(true)
     setTooltipNode(node.data as typeof node)
     setTooltipPosition({ x: d?.nativeEvent.layerX + 30
@@ -246,6 +250,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   }
 
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
+    if(onDrag){
+      return
+    }
     if(topologyData?.edges){
       if (edge.source.data.id === 'Cloud')
         return
@@ -330,7 +337,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
             </AutoComplete>
           }
           <UI.Topology>
-            <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+            <TopologyTreeContext.Provider
+              value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
               <TopologyTree
                 ref={graphRef}
                 data={treeData}
