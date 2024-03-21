@@ -52,16 +52,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
 
-  const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
-    onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
-      {
-        serialNumber,
-        lags: [...(targetLagSettings?.lags ?? []), lagData]
-      }
-    ])
-
+  const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
     lagData.lagMembers.forEach(member => {
       let portInterfaceName: (string | undefined)
@@ -84,7 +75,20 @@ const LagSettingView = (props: LagSettingViewProps) => {
         form.setFieldValue(['portSettings', serialNumber, portInterfaceName], [data])
       }
     })
+  }
 
+  const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
+    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    onChange?.([
+      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      {
+        serialNumber,
+        lags: [...(targetLagSettings?.lags ?? []), lagData]
+      }
+    ])
+
+    // reset physical port config when it is selected as LAG member
+    cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
   const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {
@@ -96,6 +100,9 @@ const LagSettingView = (props: LagSettingViewProps) => {
         lags: [...(targetLagSettings?.lags.filter(item => item.id !== lagData.id) ?? []), lagData]
       }
     ])
+
+    // reset physical port config when it is selected as LAG member
+    cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
   const handleDelete = async (serialNumber: string, id: string) => {

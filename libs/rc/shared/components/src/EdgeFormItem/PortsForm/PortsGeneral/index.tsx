@@ -3,7 +3,6 @@ import { useContext, useState } from 'react'
 import { Form, FormInstance }  from 'antd'
 import { StoreValue }          from 'antd/lib/form/interface'
 import { flatMap, isEqual }    from 'lodash'
-import _                       from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
@@ -12,12 +11,9 @@ import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
-  EdgePort,
   EdgePortTypeEnum,
   EdgePortWithStatus,
-  convertEdgePortsConfigToApiPayload,
-  validateEdgeGateway
-} from '@acx-ui/rc/utils'
+  convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
 
 import { EdgePortTabEnum }                                  from '..'
 import { useGetEdgeSdLanByEdgeOrClusterId }                 from '../../../EdgeSdLan/useEdgeSdLanActions'
@@ -170,15 +166,6 @@ const PortsGeneral = (props: PortsGeneralProps) => {
             isEdgeSdLanRun={!!edgeSdLanData}
             activeTab={activeTab}
             onTabChange={handleTabChange}
-            formFieldsProps={{
-              portType: {
-                validator: () => {
-                  const allPortsValues = form.getFieldsValue(true)
-                  const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-                  return validateEdgeGateway(portsData, lagData ?? [])
-                }
-              }
-            }}
           />
         </StepsForm.StepForm>
       </StepsForm>
