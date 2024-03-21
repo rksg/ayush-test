@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Tabs }                                                                                                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                     from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                     from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                                                 from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                       from '@acx-ui/feature-toggle'
+import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                       from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -75,7 +75,7 @@ export function VenueServicesTab () {
     }
   })
 
-  const { edgeSdLanData } = useGetEdgeSdLanViewDataListQuery(
+  const { edgeSdLanData } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
       filters: { venueId: [venueId] }
     } }, {

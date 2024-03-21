@@ -57,4 +57,6 @@ data:
       - configmap: configmap-acx-ui
         key: api.documentation.url
         name: API_DOCUMENTATION_URL
-
+      - configmap: configmap-acx-ui
+        key: mib.files
+        name: MIB_FILES

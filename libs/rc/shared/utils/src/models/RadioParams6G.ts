@@ -5,6 +5,7 @@ import { ChannelBandwidth6GEnum } from './ChannelBandwidth6GEnum'
 import { MgmtTxRate6GEnum }       from './MgmtTxRate6GEnum'
 import { ScanMethodEnum }         from './ScanMethodEnum'
 import { TxPowerEnum }            from './TxPowerEnum'
+import { VenueHeight }            from './VenueHeight'
 
 export class RadioParams6G {
   method: ScanMethodEnum
@@ -27,6 +28,8 @@ export class RadioParams6G {
 
   enableAfc: boolean
 
+  venueHeight?: VenueHeight
+
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
 
@@ -45,5 +48,7 @@ export class RadioParams6G {
     this.txPower = TxPowerEnum.MAX
 
     this.enableAfc = false
+
+    this.venueHeight = {}
   }
 }

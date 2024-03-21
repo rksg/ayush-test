@@ -59,7 +59,7 @@ import { RequestPayload }                                                 from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
@@ -545,7 +545,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (_: React.ReactNode, row: APExtended) => {
-        return (<ApFeatureCompatibility
+        return (<ApCompatibilityFeature
           count={row?.incompatible}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
@@ -782,6 +782,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
+        isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />
     </Loader>

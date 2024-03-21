@@ -16,13 +16,12 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-import { PROFILE_MAX_COUNT }                           from '../constants'
+import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: [

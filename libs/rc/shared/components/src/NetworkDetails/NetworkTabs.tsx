@@ -19,7 +19,10 @@ function NetworkTabs () {
       pathname: `${basePath.pathname}/${tab}`
     })
   const { tenantId, networkId } = params
-  const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
+  const { data } = useNetworkDetailHeaderQuery({
+    params: { tenantId, networkId },
+    payload: { isTemplate }
+  })
 
   const [apsCount, venuesCount] = [
     data?.aps?.totalApCount ?? 0,

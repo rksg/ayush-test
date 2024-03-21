@@ -122,7 +122,7 @@ function useColumns (
               <Tooltip.Info isFilled
                 title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this venue.' })}
                 placement='right'
-                iconStyle={{ height: '14px', width: '14px', marginBottom: '-2px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
               />:[]
             }
           </>

@@ -14,7 +14,8 @@ import {
   useUpdateNetworkVenuesMutation,
   useAddNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
-  useUpdateNetworkTemplateMutation
+  useUpdateNetworkTemplateMutation,
+  useAddNetworkVenueTemplatesMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -30,7 +31,7 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum
+  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -87,7 +88,8 @@ const onboardingTitle = defineMessage({
 const minutesMapping: { [key:string]:number }={
   hours: 60,
   days: 1440,
-  minutes: 1
+  minutes: 1,
+  weeks: 10080
 }
 interface GuestMore {
   guestPortal?: GuestPortal,
@@ -113,7 +115,9 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
+  )
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
