@@ -12,6 +12,7 @@ import {
   getEdgeServiceHealth,
   getIpWithBitMask,
   getSuggestedIpRange,
+  isAllPortsLagMember,
   lanPortsubnetValidator,
   optionSorter,
   validateClusterInterface,
@@ -495,6 +496,85 @@ describe('validateEdgeGateway', () => {
       }
 
       expect(result).toBe(undefined)
+    })
+  })
+})
+
+describe('isAllPortsLagMember', () => {
+  // 3 ports
+  const mockUnconfgiuredPorts = _.cloneDeep(mockEdgePortConfig.ports.slice(0,3))
+  mockUnconfgiuredPorts.forEach(item => {
+    item.enabled = true
+    item.portType = EdgePortTypeEnum.UNCONFIGURED
+    item.ipMode = EdgeIpModeEnum.DHCP
+    item.corePortEnabled = false
+  })
+
+  const mockSinglePort = _.cloneDeep(mockUnconfgiuredPorts[0])
+  mockSinglePort.portType = EdgePortTypeEnum.LAN
+  mockSinglePort.ipMode = EdgeIpModeEnum.STATIC
+
+  const mockLanLags = [{
+    id: 0,
+    description: 'string',
+    lagType: 'LACP',
+    lacpMode: 'ACTIVE',
+    lacpTimeout: 'SHORT',
+    lagMembers: [{
+      portId: mockUnconfgiuredPorts[0].id,
+      portEnabled: true
+    }],
+    portType: 'LAN',
+    ipMode: 'STATIC',
+    ip: '1.1.1.1',
+    subnet: '255.255.255.0',
+    gateway: '',
+    corePortEnabled: false,
+    natEnabled: false,
+    lagEnabled: true
+  }] as EdgeLag[]
+
+  const noLags = [] as EdgeLag[]
+
+  describe('true case', () => {
+    it('when all port are lag member', async () => {
+      const mockLags = _.cloneDeep(mockLanLags[0])
+      mockLags.lagMembers = [{
+        portId: mockSinglePort.id,
+        portEnabled: true
+      }]
+
+      expect(isAllPortsLagMember([mockSinglePort], [mockLags])).toBe(true)
+    })
+  })
+
+  describe('false case', () => {
+    it('when lag member is undefined', async () => {
+      const mockLags = _.cloneDeep(mockLanLags[0])
+      mockLags.lagMembers = undefined
+
+      expect(isAllPortsLagMember([mockSinglePort], [mockLags])).toBe(false)
+    })
+
+    it('when lag member is empty', async () => {
+      const mockLags = _.cloneDeep(mockLanLags[0])
+      mockLags.lagMembers = []
+
+      expect(isAllPortsLagMember([mockSinglePort], [mockLags])).toBe(false)
+    })
+
+    it('when lag is empty', async () => {
+      expect(isAllPortsLagMember([mockSinglePort], noLags)).toBe(false)
+    })
+
+    it('when only partial port is lag member', async () => {
+      const mockLags = _.cloneDeep(mockLanLags[0])
+      mockLags.lagMembers = [{
+        portId: mockUnconfgiuredPorts[0].id,
+        portEnabled: true
+      }]
+
+      expect(isAllPortsLagMember(mockUnconfgiuredPorts, [mockLags])).toBe(false)
     })
   })
 })

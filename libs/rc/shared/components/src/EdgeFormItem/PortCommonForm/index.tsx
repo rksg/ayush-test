@@ -28,7 +28,7 @@ interface formFieldsPropsType {
       label: string,
       value: EdgePortTypeEnum
     }[],
-    // validator?: (value: unknown) => Promise<string|void>
+    validator?: (value: unknown) => Promise<string|void>
   }
 }
 export interface EdgePortCommonFormProps {
@@ -272,6 +272,9 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           } else {
             return Promise.resolve()
           }
+        } },
+        { validator: (_, value) => {
+          return formFieldsProps?.portType?.validator?.(value) ?? Promise.resolve()
         } }
       ]}
     >

@@ -4,12 +4,13 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                        from '@acx-ui/components'
-import { EdgeLagTable, NodesTabs, TypeForm }                         from '@acx-ui/rc/components'
-import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs } from '@acx-ui/rc/utils'
+import { useStepFormContext }                                                                      from '@acx-ui/components'
+import { EdgeLagTable, NodesTabs, TypeForm }                                                       from '@acx-ui/rc/components'
+import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import * as UI                       from './styledComponents'
 import { InterfaceSettingsFormType } from './types'
 
 export const LagForm = () => {
@@ -120,21 +121,33 @@ const LagSettingView = (props: LagSettingViewProps) => {
     <NodesTabs
       nodeList={clusterInfo?.edgeList}
       content={
-        (serialNumber) => (
-          <EdgeLagTable
-            clusterId={clusterInfo?.clusterId}
-            serialNumber={serialNumber}
-            lagList={value?.find(item => item.serialNumber === serialNumber)?.lags}
-            portList={
-              portSettings?.[serialNumber] ?
-                Object.values(portSettings?.[serialNumber]).flat() :
-                []
-            }
-            onAdd={handleAdd}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        )
+        (serialNumber) => {
+          const lagList = value?.find(item => item.serialNumber === serialNumber)?.lags
+          const portList = portSettings?.[serialNumber]
+            ? Object.values(portSettings?.[serialNumber]).flat()
+            : []
+
+          return <>
+            <UI.StyledHiddenFormItem
+              name='validate'
+              rules={[
+                { validator: () => {
+                  return validateEdgeAllPortsEmptyLag(portList, lagList ?? [])
+                } }
+              ]}
+              children={<input hidden/>}
+            />
+            <EdgeLagTable
+              clusterId={clusterInfo?.clusterId}
+              serialNumber={serialNumber}
+              lagList={lagList}
+              portList={portList}
+              onAdd={handleAdd}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </>
+        }
       }
     />
   )

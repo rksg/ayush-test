@@ -4,14 +4,13 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                                                                    from '@acx-ui/components'
-import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName, validateEdgeGateway } from '@acx-ui/rc/utils'
+import { Tabs, Tooltip }                                                               from '@acx-ui/components'
+import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 
 
 import { EdgePortCommonFormProps } from '../PortCommonForm'
 
 import { PortConfigForm } from './PortConfigForm'
-import * as UI            from './styledComponents'
 
 export interface EdgePortConfigFormType {
   [portId: string]: EdgePortWithStatus[]
@@ -96,40 +95,25 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     (activeTab ? onTabChange : setCurrentTab)?.(value)
   }
 
-  return <>
-    <UI.StyledHiddenFormItem
-      name='validate'
-      rules={[
-        { validator: () => {
-          const allPortsValues = (fieldHeadPath.length
-            ? _.get(form.getFieldsValue(true), fieldHeadPath)
-            : form.getFieldsValue(true)) as { [portId:string ]: EdgePort[] }
-          const portsData =_.flatten(Object.values(allPortsValues)) as EdgePort[]
-          return validateEdgeGateway(portsData, lagData ?? [])
-        } }
-      ]}
-      children={<input hidden/>}
-    />
-    <Tabs
-      activeKey={activeTab || currentTab}
-      onChange={handleTabChange}
-      type='third'
-    >
-      { tabs.map(item =>
-        <Tabs.TabPane
-          tab={
-            item.isLagPort ?
-              <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
+  return <Tabs
+    activeKey={activeTab || currentTab}
+    onChange={handleTabChange}
+    type='third'
+  >
+    { tabs.map(item =>
+      <Tabs.TabPane
+        tab={
+          item.isLagPort ?
+            <Tooltip title={$t({ defaultMessage: `This port is a LAG member 
                           and cannot be configured independently.` })}>
-                {item.label}
-              </Tooltip> :
-              item.label
-          }
-          key={item.value}
-          disabled={item.isLagPort} >
-          {item.content}
-        </Tabs.TabPane>
-      )}
-    </Tabs>
-  </>
+              {item.label}
+            </Tooltip> :
+            item.label
+        }
+        key={item.value}
+        disabled={item.isLagPort} >
+        {item.content}
+      </Tabs.TabPane>
+    )}
+  </Tabs>
 }

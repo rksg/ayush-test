@@ -1,6 +1,6 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { IntlShape }         from 'react-intl'
+import { DefaultOptionType }      from 'antd/lib/select'
+import _, { difference, flatMap } from 'lodash'
+import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -314,6 +314,37 @@ export const validateClusterInterface = (interfaceNames: string[]) => {
   return Promise.resolve()
 }
 
+export const isAllPortsLagMember = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+  const portIds = portsData.map(port => port.id)
+  const lagMemberPortIds = flatMap(lagData, (lag => lag.lagMembers?.map(m => m.portId)))
+
+  const isAllPortsLagMember = portIds.length && difference(portIds, lagMemberPortIds).length === 0
+  return isAllPortsLagMember
+}
+
+export const getLagGatewayCount = (lagData: EdgeLag[]) => {
+  const lagWithGateway = lagData.filter(lag =>
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    && (lag.portType === EdgePortTypeEnum.WAN
+      || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  ).length
+  return lagWithGateway
+}
+
+export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+  const { $t } = getIntl()
+
+  const allPortsLagMember = isAllPortsLagMember(portsData, lagData)
+  const lagWithGateway = getLagGatewayCount(lagData)
+
+  if (allPortsLagMember && lagWithGateway === 0) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'All ports are LAG member, and the LAGs gateway setting are invalid.' }))
+  } else {
+    return Promise.resolve()
+  }
+}
+
 export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) => {
   const { $t } = getIntl()
 
@@ -323,11 +354,7 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
       || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
   ).length
 
-  const lagWithGateway = lagData.filter(lag =>
-    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
-    && (lag.portType === EdgePortTypeEnum.WAN
-      || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
-  ).length
+  const lagWithGateway = getLagGatewayCount(lagData)
 
   const totoalGateway = portWithGateway + lagWithGateway
 

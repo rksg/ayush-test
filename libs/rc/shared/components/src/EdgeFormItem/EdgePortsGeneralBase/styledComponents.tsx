@@ -1,5 +1,4 @@
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { Form }                   from 'antd'
 import styled                     from 'styled-components/macro'
 
 
@@ -13,13 +12,4 @@ export const IpAndMac = styled.div`
 
 export const StyledQuestionIcon = styled(QuestionCircleOutlined)`
 margin-left: 5px;
-`
-
-export const StyledHiddenFormItem = styled(Form.Item)`
-  &.ant-form-item {
-    margin-bottom: 0px;
-  }
- .ant-form-item-control-input {
-  display: none;
- }
 `
