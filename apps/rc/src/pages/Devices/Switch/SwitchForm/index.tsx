@@ -177,9 +177,11 @@ export function SwitchForm () {
 
   useEffect(() => {
     if (!venuesList.isLoading) {
-      setVenueOption(venuesList?.data?.data?.map(item => ({
+      const venues = venuesList?.data?.data?.map(item => ({
         label: item.name, value: item.id
-      })) ?? [])
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
     }
   }, [venuesList])
 
@@ -381,7 +383,26 @@ export function SwitchForm () {
         cancel: $t({ defaultMessage: 'Cancel' })
       }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm
+        onFinishFailed={({ errorFields })=> {
+          const detailsFields = ['venueId', 'serialNumber', 'name', 'description']
+          const hasErrorFields = !!errorFields.length
+          const isSettingsTabActive = currentTab === 'settings'
+          const isDetailsFieldsError = errorFields.filter(field =>
+            detailsFields.includes(field.name[0] as string)
+          ).length > 0
+
+          if (deviceOnline && hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
+            setCurrentTab('settings')
+            showToast({
+              type: 'error',
+              content: readOnly
+                ? $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI)
+                : $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES)
+            })
+          }
+        }}
+      >
         <Loader states={[{
           isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
         }]}>
@@ -589,6 +610,7 @@ export function SwitchForm () {
                   <SwitchStackSetting
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}
+                    deviceOnline={deviceOnline}
                     disableIpSetting={disableIpSetting}
                   />
                 </div>

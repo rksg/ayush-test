@@ -3,14 +3,14 @@ import { useContext, useEffect } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                     from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { ConfigTemplateType, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                         from '@acx-ui/utils'
 
-import NetworkFormContext                   from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
-import VLANPoolInstance                     from '../../VLANPoolInstance'
-import * as UI                              from '../styledComponents'
+import NetworkFormContext                                                              from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import VLANPoolInstance                                                                from '../../VLANPoolInstance'
+import * as UI                                                                         from '../styledComponents'
 
 
 const { useWatch } = Form
@@ -54,6 +54,8 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
       (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
 
   const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
+  // eslint-disable-next-line max-len
+  const isVlanPoolingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.VLAN_POOL)
 
   return (
     <>
@@ -65,7 +67,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           valuePropName='checked'
           initialValue={false}
           children={<Switch
-            disabled={!useIsSplitOn(Features.POLICIES) || pureVxLanEnabled}
+            disabled={!isVlanPoolingSupported || pureVxLanEnabled}
           />}
         />
       </UI.FieldLabel>

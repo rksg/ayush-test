@@ -18,6 +18,7 @@ import {
   EdgeLagTypeEnum,
   EdgePort,
   EdgePortTypeEnum,
+  EdgeSerialNumber,
   convertEdgePortsConfigToApiPayload,
   getEdgePortDisplayName,
   getEdgePortTypeOptions
@@ -27,7 +28,8 @@ import { getEnabledCorePortInfo } from '../EdgeFormItem/EdgePortsGeneralBase/uti
 import { EdgePortCommonForm }     from '../EdgeFormItem/PortCommonForm'
 
 interface LagDrawerProps {
-  serialNumber?: string
+  clusterId: string
+  serialNumber?: EdgeSerialNumber
   visible: boolean
   setVisible: (visible: boolean) => void
   data?: EdgeLag
@@ -52,26 +54,35 @@ const defaultFormValues = {
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
-    serialNumber = '', visible, setVisible, data, portList,
+    clusterId = '',
+    serialNumber = '',
+    visible,
+    setVisible,
+    data,
+    portList,
     existedLagList, onAdd, onEdit
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
   const getEdgeSdLanPayload = {
-    filters: { edgeId: [serialNumber] },
-    fields: ['id', 'edgeId', 'corePortMac']
+    filters: isEdgeSdLanHaReady
+      ? { edgeClusterId: [clusterId] }
+      : { edgeId: [serialNumber] },
+    fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
   }
   const { edgeSdLanData }
     = useGetEdgeSdLanViewDataListQuery(
       { payload: getEdgeSdLanPayload },
       {
-        skip: !isEdgeSdLanReady || !Boolean(serialNumber),
+        skip: (isEdgeSdLanReady && !Boolean(serialNumber))
+        || (isEdgeSdLanHaReady && !Boolean(clusterId)),
         selectFromResult: ({ data, isLoading }) => ({
           edgeSdLanData: data?.data?.[0],
           isLoading
@@ -227,7 +238,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
-    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
+    if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }

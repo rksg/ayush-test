@@ -243,6 +243,7 @@ export const timeSeriesTooltipFormatter = (
 
             const formatter = dataFormatters[data.key] || dataFormatters.default
             const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
+            if (value === undefined) return null
             let text = <FormattedMessage
               defaultMessage='{name}: <b>{value}</b>'
               description='Label before colon, value after colon'

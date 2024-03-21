@@ -18,6 +18,7 @@ import { getFieldFullPath, transformApiDataToFormListData } from '../../EdgePort
 import { EdgePortsDataContext }                             from '../PortDataProvider'
 
 interface PortsGeneralProps {
+  clusterId: string
   serialNumber: string
   onFinish?: (formValues?: EdgePortWithStatus[]) => Promise<void>
   onCancel: () => void
@@ -29,9 +30,11 @@ interface PortsGeneralProps {
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
-  const { serialNumber, onCancel, buttonLabel } = props
+  const { clusterId, serialNumber, onCancel, buttonLabel } = props
   const { $t } = useIntl()
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string|undefined>()
   const editEdgeContext = useContext(EditContext)
@@ -41,11 +44,13 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
     = useGetEdgeSdLanViewDataListQuery(
       { payload: {
-        filters: { edgeId: [serialNumber] },
-        fields: ['id', 'edgeId', 'corePortMac']
+        filters: isEdgeSdLanHaReady
+          ? { edgeClusterId: [clusterId] }
+          : { edgeId: [serialNumber] },
+        fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
       } },
       {
-        skip: !isEdgeSdLanReady,
+        skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
         selectFromResult: ({ data, isLoading, isFetching }) => ({
           edgeSdLanData: data?.data?.[0],
           isEdgeSdLanLoading: isLoading,
@@ -102,7 +107,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     //   })
     // }
 
-    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
+    if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue(getFieldFullPath(interfaceName, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
       const initialPortType = portData.find(port => port.interfaceName === interfaceName)?.portType
