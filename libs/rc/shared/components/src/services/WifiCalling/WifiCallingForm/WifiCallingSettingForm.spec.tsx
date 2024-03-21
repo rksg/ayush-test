@@ -1,32 +1,19 @@
-import { Form } from 'antd'
-import { rest } from 'msw'
+import React from 'react'
 
-import { serviceApi }                                 from '@acx-ui/rc/services'
-import { EPDG, QosPriorityEnum, WifiCallingUrls }     from '@acx-ui/rc/utils'
-import { Provider, store }                            from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { Form }    from 'antd'
+import { rest }    from 'msw'
 
-import { mockWifiCallingTableResult } from '../__tests__/fixtures'
-import WifiCallingFormContext         from '../WifiCallingFormContext'
+import { serviceApi }                             from '@acx-ui/rc/services'
+import { EPDG, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                        from '@acx-ui/store'
+import { act, mockServer, render, screen }        from '@acx-ui/test-utils'
+
+import { mockWifiCallingTableResult, wifiCallingSettingTable } from '../__tests__/fixtures'
+import WifiCallingFormContext                                  from '../WifiCallingFormContext'
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
-
-
-const wifiCallingResponse = {
-  networkIds: [
-    '62b18f6cd1ae455cbbf1e2c547d8d422'
-  ],
-  description: '--',
-  qosPriority: 'WIFICALLING_PRI_VOICE',
-  serviceName: 'service-name-test2',
-  id: 'bb21e5fad7ca4b639ee9a9cd157bc5fc',
-  epdgs: [
-    {
-      ip: '1.1.1.1',
-      domain: 'a.b.c.com'
-    }
-  ]
-}
 
 const serviceName = ''
 const description = ''
@@ -58,51 +45,48 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
   </Provider>
 }
 const setWifiCallingSetting = jest.fn()
-const wifiCallingSettingTable = [
-  {
-    profileName: 'AT&T',
-    description: 'AT&T des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'Sprint',
-    description: 'Sprint des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'Verizon',
-    description: 'Verizon des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'T-Mobile',
-    description: 'T-Mobile des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  }
-]
+const mockedEnhancedWifiCallingList = jest.fn()
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
 
 describe('WifiCallingSettingForm', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
+
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiCallingUrls.getWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingSettingTable))),
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => {
+          mockedEnhancedWifiCallingList()
+          return res(ctx.json(mockWifiCallingTableResult))
+        })
+    )
   })
 
   it('should render WifiCallingSettingForm successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingResponse)
-      )
-    ), rest.get(
-      WifiCallingUrls.getWifiCallingList.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingSettingTable)
-      )
-    ), rest.post(
-      WifiCallingUrls.getEnhancedWifiCallingList.url,
-      (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
-    ))
     render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
@@ -117,26 +101,25 @@ describe('WifiCallingSettingForm', () => {
         }
       }
     )
+    await waitFor(() => expect(mockedEnhancedWifiCallingList).toHaveBeenCalled())
+
     let serviceName = screen.getByRole('textbox', { name: /service name/i })
     expect(serviceName).toBeEmptyDOMElement()
     let desc = screen.getByRole('textbox', { name: /description/i })
     expect(desc).toBeEmptyDOMElement()
 
-    fireEvent.change(serviceName,
-      { target: { value: 'serviceName1' } })
-    expect(serviceName).toHaveValue('serviceName1')
+    await userEvent.type(serviceName, 'serviceTest')
+    expect(serviceName).toHaveValue('serviceTest')
 
-    fireEvent.change(desc,
-      { target: { value: 'desc1' } })
-    expect(desc).toHaveValue('desc1')
+    await userEvent.type(desc, 'desc')
+    expect(desc).toHaveValue('desc')
 
     expect(screen.getByTestId('selectQosPriorityId')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('selectQosPriorityId'))
+    const combobox = await screen.findByRole('combobox', { name: /qos priority/i })
+    await userEvent.click(combobox)
 
-    const WIFICALLING_PRI_BE = 'WIFICALLING_PRI_BE'
+    await userEvent.selectOptions(combobox, 'Voice')
 
-    fireEvent.select(screen.getByTestId('selectQosPriorityId'), {
-      target: { WIFICALLING_PRI_BE }
-    })
+    expect(screen.getByText('Voice')).toBeVisible()
   })
 })

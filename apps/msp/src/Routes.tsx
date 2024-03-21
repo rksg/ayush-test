@@ -1,15 +1,16 @@
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { Brand360 }                                                  from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
-  useConfigTemplateVisibilityMap
+  useConfigTemplateVisibilityMap,
+  WifiCallingForm, WifiCallingDetailView, WifiCallingConfigureForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -210,6 +211,29 @@ export function ConfigTemplatesRoutes () {
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
             element={<div>Portal Details</div>}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.CREATE
+            })}
+            element={<WifiCallingForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.EDIT
+            })}
+            element={<WifiCallingConfigureForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.DETAIL
+            })}
+            element={<WifiCallingDetailView />}
           />
         </>}
       </Route>

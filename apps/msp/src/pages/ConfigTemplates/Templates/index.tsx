@@ -33,7 +33,8 @@ import {
   useDelL2AclPolicyTemplateMutation,
   useDelAppPolicyTemplateMutation,
   useDelL3AclPolicyTemplateMutation,
-  useDelDevicePolicyTemplateMutation
+  useDelDevicePolicyTemplateMutation,
+  useDeleteWifiCallingServiceMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
