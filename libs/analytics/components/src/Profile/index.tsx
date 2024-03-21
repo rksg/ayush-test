@@ -77,7 +77,7 @@ const useTabs = () : Tab[] => {
   const { userId } = getUserProfile()
 
   const handleUpdateSettings = async (data: { preferredLanguage: string }) => {
-    await updateUser({ userId: userId ,preferences: data })
+    await updateUser({ userId: userId, preferences: data })
     navigate({
       pathname: location.from
     }, { replace: true })

@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider, store, rbacApi, rbacApiURL } from '@acx-ui/store'
+import { render, screen, waitFor, mockServer }  from '@acx-ui/test-utils'
 
 import { Profile, ProfileTabEnum } from '.'
 
@@ -15,7 +16,8 @@ const sampleProfile = {
   accountId: '"0015000000Gl19SAAV"',
   selectedTenant: {
     role: 'admin'
-  }
+  },
+  userId: '123'
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -37,16 +39,42 @@ jest.mock('./PreferredLanguageFormItem', () => ({
 }))
 
 describe('Profile', () => {
-  it('should render', async () => {
-    render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByText('Notifications')).toBeVisible()
+  beforeEach(() => {
+    store.dispatch(rbacApi.util.resetApiState())
   })
-  it('should handle click', async () => {
+  it('should render', async () => {
+    render(<Profile />,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('Settings')).toBeVisible()
+  })
+  it('should handle notification tab click', async () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    const button = await screen.findByText('Cancel')
-    userEvent.click(button)
-    expect(await screen.findByText('Notifications')).toBeVisible()
+    await userEvent.click(await screen.findByText('Notifications'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/analytics/profile/notifications', hash: '', search: ''
+    }))
+  })
+  it('should handle apply', async () => {
+    mockServer.use(
+      rest.put(
+        `${rbacApiURL}/users/${sampleProfile.userId}`,
+        (_, res, ctx) => {
+          return res(ctx.json(sampleProfile.preferences))
+        }
+      )
+    )
+    render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Apply Settings'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      { pathname: '/test' }, { replace: true }))
+  })
+  it('should handle cancel', async () => {
+    render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Cancel'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      { pathname: '/test' }, { replace: true }))
   })
 })
