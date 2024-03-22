@@ -1,17 +1,17 @@
 import { forwardRef, useState } from 'react'
 
-import { Tooltip }                       from 'antd'
-import { Map }                           from 'immutable'
-import { get, isEmpty, partition, omit } from 'lodash'
-import { defineMessage, useIntl }        from 'react-intl'
+import { Badge }                   from 'antd'
+import { Map }                     from 'immutable'
+import { get, isEmpty, partition } from 'lodash'
+import { defineMessage, useIntl }  from 'react-intl'
 
-import { Tenant, defaultSort, getUserProfile, sortProp } from '@acx-ui/analytics/utils'
-import { Loader, Modal, Table, TableProps, showToast }   from '@acx-ui/components'
-import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Tenant, defaultSort, getUserProfile, sortProp }                  from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
+import { getIntl }                                                        from '@acx-ui/utils'
 
 import { useFetchSmartZoneListQuery, useDeleteSmartZone, OnboardedSystem } from './services'
-import { Errors, Badge }                                                   from './styledComponents'
+import { Errors }                                                          from './styledComponents'
 
 export type FormattedOnboardedSystem = {
   status: string
@@ -62,10 +62,22 @@ const ApiServiceMap = {
 }
 
 const statusTypeColorMap = {
-  onboarded: '--acx-semantics-green-50',
-  ongoing: '--acx-semantics-yellow-40',
-  error: '--acx-semantics-red-50',
-  offboarded: '--acx-neutrals-30'
+  onboarded: {
+    text: defineMessage({ defaultMessage: 'Onboarded' }),
+    color: '--acx-semantics-green-50'
+  },
+  ongoing: {
+    text: defineMessage({ defaultMessage: 'Ongoing' }),
+    color: '--acx-semantics-yellow-40'
+  },
+  error: {
+    text: defineMessage({ defaultMessage: 'Error' }),
+    color: '--acx-semantics-red-50'
+  },
+  offboarded: {
+    text: defineMessage({ defaultMessage: 'Offboarded' }),
+    color: '--acx-neutrals-30'
+  }
 }
 
 const errorMsgMap = {
@@ -165,14 +177,15 @@ const formatDeleteError = ({ name }: FormattedOnboardedSystem, response: Object)
   }, { name, hasMessage: Boolean(message), message })
 }
 
-const SmartZoneBadge = forwardRef<
-  HTMLDivElement,{ status: keyof typeof statusTypeColorMap }
+const SmartZoneBadge = forwardRef<HTMLDivElement, {
+    status: string
+    statusType: keyof typeof statusTypeColorMap
+  }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
->((props, _) =>
-  <Badge
-    {...omit(props, 'status')}
-    color={`var(${statusTypeColorMap[props.status]})`}
-  />)
+>(({ status, statusType, ...props }, _) => {
+  const { text, color } = statusTypeColorMap[statusType]
+  return <Badge {...props} text={useIntl().$t(text)} color={`var(${color})`} />
+})
 
 export const TooltipContent = (value: FormattedOnboardedSystem) =>
   (): JSX.Element => (isEmpty(value.errors))
@@ -189,7 +202,6 @@ export const OnboardedSystems = () => {
   const tenantId = tenant.accountId
   const tenantsMap = Map(tenant.tenants.map(t => [get(t, 'id'), t]))
   const { deleteSmartZone } = useDeleteSmartZone()
-  const [ visible, setVisible ] = useState(false)
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
   const queryResults = useFetchSmartZoneListQuery(tenant.tenants.map(t => t.id), {
@@ -207,12 +219,15 @@ export const OnboardedSystems = () => {
       render: (_, value, index) =>
         <span>
           <Tooltip
+            arrowPointAtCenter
             key={`tooltip-${index}`}
             title={TooltipContent(value)}
             children={<SmartZoneBadge
-              status={value.statusType as keyof typeof statusTypeColorMap} />} />
+              status={value.status}
+              statusType={value.statusType as keyof typeof statusTypeColorMap}
+            />} />
         </span>,
-      width: 35,
+      width: 50,
       fixed: 'left',
       filterable: [
         { key: 'onboarded', value: $t({ defaultMessage: 'Onboarded' }) },
@@ -257,27 +272,26 @@ export const OnboardedSystems = () => {
       }}
       rowActions={[{
         label: 'Delete',
-        onClick: () => setVisible(true),
+        onClick: () => {
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: selected?.name }),
+            content: $t({ defaultMessage:
+              'Historical data for this system will not be viewable anymore if you confirm.' }),
+            onOk: async () => {
+              await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
+                .unwrap()
+                .then(()=> setSelected(undefined))
+                .catch(response => {
+                  showToast({ type: 'error', content: formatDeleteError(selected!, response) })
+                })
+            }
+          })
+        },
         disabled: !(selected?.canDelete),
         tooltip: !(selected?.canDelete)
           ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
     />
-    <Modal
-      title={$t({
-        defaultMessage: 'Do you really want to remove {name}?' }, { name: selected?.name })}
-      subTitle={$t({ defaultMessage:
-          'Historical data for this system will not be viewable anymore if you confirm.' })}
-      visible={visible}
-      onCancel={() => setVisible(false)}
-      onOk={async () => {
-        setVisible(false)
-        await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
-          .unwrap()
-          .catch(response => {
-            showToast({ type: 'error', content: formatDeleteError(selected!, response) })
-          })
-      }}
-    ></Modal>
   </Loader>
 }

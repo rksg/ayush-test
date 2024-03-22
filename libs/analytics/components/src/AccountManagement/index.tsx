@@ -31,7 +31,7 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: 'Onboarded Systems', //$t({ defaultMessage: 'Onboarded Systems' }),
+    title: $t({ defaultMessage: 'Onboarded Systems' }),
     component: <OnboardedSystems />
   }
   const usersTab = {
