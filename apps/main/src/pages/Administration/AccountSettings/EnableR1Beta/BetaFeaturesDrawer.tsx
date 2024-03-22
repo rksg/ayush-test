@@ -40,7 +40,7 @@ function BetaFeaturesDrawer (
       onClick={() => {
         setVisible(false)
       }}>
-      {$t({ defaultMessage: 'Ok' })}
+      {$t({ defaultMessage: 'OK' })}
     </Button>
   </div>
   return ( showBetaList ? <Drawer

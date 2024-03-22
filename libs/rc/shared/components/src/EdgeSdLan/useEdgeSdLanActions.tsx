@@ -1,11 +1,13 @@
 import _ from 'lodash'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
   useAddEdgeSdLanP2Mutation,
   useDeactivateEdgeSdLanNetworkMutation,
+  useGetEdgeSdLanP2ViewDataListQuery,
   useToggleEdgeSdLanDmzMutation,
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
@@ -219,5 +221,44 @@ export const useEdgeSdLanActions = () => {
   return {
     addEdgeSdLan: addSdLan,
     editEdgeSdLan: editSdLan
+  }
+}
+
+// id: is `serialNumber` when SD_LAN HA FF off
+//     means `clusterId` when SD_LAN HA FF on
+export const useGetEdgeSdLanByEdgeOrClusterId = (id?: string) => {
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+
+  const {
+    edgeSdLanData,
+    isLoading,
+    isFetching
+  } = useGetEdgeSdLanP2ViewDataListQuery(
+    { payload: {
+      filters: isEdgeSdLanHaReady
+        ? undefined
+        : { edgeId: [id] },
+      fields: ['id'].concat((isEdgeSdLanHaReady
+        ? ['edgeClusterId', 'guestEdgeClusterId']
+        : 'edgeId'))
+    } },
+    {
+      skip: !id || !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+      selectFromResult: ({ data, isLoading, isFetching }) => ({
+        edgeSdLanData: data?.data?.filter((item, idx) => {
+          return isEdgeSdLanHaReady
+            ? (item.edgeClusterId === id || item.guestEdgeClusterId === id)
+            : idx === 0
+        })[0],
+        isLoading,
+        isFetching
+      })
+    })
+
+  return {
+    edgeSdLanData,
+    isLoading,
+    isFetching
   }
 }
