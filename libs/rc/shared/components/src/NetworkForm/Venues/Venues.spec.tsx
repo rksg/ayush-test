@@ -314,7 +314,10 @@ describe('Create Network: Venues Step', () => {
   it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue(['02e2ddbc88e1428987666d31edbc3d9a'])
+    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
+      sdLansVenueMap: {},
+      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a']
+    })
 
     render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
       wrapper,

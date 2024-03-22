@@ -37,7 +37,9 @@ import {
 import { NetworkVenuesTab } from './index'
 
 // isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
+  && ff !== Features.EDGES_SD_LAN_TOGGLE
+  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -406,10 +408,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       mockedGetApCompatibilitiesNetwork.mockClear()
-    })
-
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.G_MAP ? false : true
     })
 
     mockServer.use(

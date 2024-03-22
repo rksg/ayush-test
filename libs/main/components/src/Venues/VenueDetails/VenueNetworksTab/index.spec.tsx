@@ -328,6 +328,18 @@ describe('VenueNetworksTab', () => {
       await waitFor(() => expect(popup).not.toBeVisible())
     })
 
+    it('should correctly display tunnel column when SD-LAN is running on it', async () => {
+      jest.mocked(useSdLanScopedNetworks).mockReturnValue(mockedSdLanScopeData)
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 0)')
+    })
+
     it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
       jest.mocked(useSdLanScopedNetworks).mockReturnValue({
         sdLans: [],

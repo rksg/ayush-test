@@ -108,7 +108,7 @@ export function ApNetworksTab () {
     //   sorter: true
     // }
     ]
-  }, [$t, sdLanScopedNetworks])
+  }, [$t, sdLanScopedNetworks, isEdgeSdLanHaReady])
 
   return (
     <Loader states={[tableQuery]}>

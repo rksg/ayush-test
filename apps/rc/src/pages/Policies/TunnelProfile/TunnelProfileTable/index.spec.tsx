@@ -242,10 +242,9 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE) return true
-        return false
-      })
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) =>
+        flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_SD_LAN_HA_TOGGLE
+      )
 
       mockServer.use(
         rest.post(
