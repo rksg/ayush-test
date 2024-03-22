@@ -175,7 +175,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         setModalVisible(true)
       })
       const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string || '').toString(),
+        value: (node.name as string || node.id as string).toString(),
         key: (node.id as string).toString(),
         label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
           {node.name as string}</Typography.Title>
