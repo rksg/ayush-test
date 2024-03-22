@@ -5,14 +5,15 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useNavigate }    from 'react-router-dom'
 
-import { Loader, StepsForm }                                           from '@acx-ui/components'
+import { Loader, StepsForm, showActionModal }                          from '@acx-ui/components'
 import { EdgeClusterVirtualIpSettingForm }                             from '@acx-ui/rc/components'
 import { useGetAllInterfacesByTypeQuery, usePatchEdgeClusterMutation } from '@acx-ui/rc/services'
 import {
   EdgeCluster,
   EdgeClusterStatus,
   EdgePortInfo,
-  EdgePortTypeEnum
+  EdgePortTypeEnum,
+  VirtualIpSetting
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -88,6 +89,8 @@ export const VirtualIp = (props: VirtualIpProps) => {
     }
   }, [currentVipConfig, lanInterfaces])
 
+  const isSingleNode = (currentClusterStatus?.edgeList?.length ?? 0) < 2
+
   const handleFinish = async (values: VirtualIpFormType) => {
     try {
       const params = {
@@ -95,6 +98,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
         clusterId: currentClusterStatus?.clusterId
       }
       const vipSettings = values.vipConfig.map(item => {
+        if(!Boolean(item.interfaces)) return undefined
         const ports = Object.entries(item.interfaces).map(([, v2]) => {
           return {
             serialNumber: v2.serialNumber,
@@ -106,16 +110,35 @@ export const VirtualIp = (props: VirtualIpProps) => {
           timeoutSeconds: values.timeout,
           ports
         }
-      })
+      }).filter(item => Boolean(item)) as VirtualIpSetting[]
       const payload = {
         virtualIpSettings: {
           virtualIps: vipSettings
         }
       }
-      await patchEdgeCluster({ params, payload }).unwrap()
+      if(!isSingleNode && isVipConfigChanged(vipSettings.length === 0 ? undefined : vipSettings)) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `Changing any virtual IP configurations might 
+            temporarily cause network disruption and alter the active/backup roles
+            of this cluster. Are you sure you want to continue?`
+          }),
+          onOk: async () => {
+            await patchEdgeCluster({ params, payload }).unwrap()
+          }
+        })
+      } else {
+        await patchEdgeCluster({ params, payload }).unwrap()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const isVipConfigChanged = (vipSettings?: VirtualIpSetting[]) => {
+    return !_.isEqual(vipSettings, currentVipConfig?.virtualIps)
   }
 
   const handleCancel = () => {
