@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { OnboardedSystems } from '../OnboardedSystems'
 import { Support }          from '../Support'
-import { OnboardedSystems } from '../ＯnboardedSystems'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -29,7 +29,7 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: 'Onboarded Systems', //$t({ defaultMessage: 'Onboarded Systems' }),
+    title: $t({ defaultMessage: 'Onboarded Systems' }),
     component: <OnboardedSystems />
   }
   const usersTab = {

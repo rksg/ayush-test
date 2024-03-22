@@ -6,6 +6,6 @@ export const smartZoneApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: smartZoneURL }),
   reducerPath: 'smartZoneApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['SMARTZONE'],
+  tagTypes: ['SmartZone'],
   endpoints: () => ({ })
 })

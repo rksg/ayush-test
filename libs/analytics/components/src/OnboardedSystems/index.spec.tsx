@@ -4,9 +4,9 @@ import { Map }     from 'immutable'
 import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { Tenant, UserProfile, setUserProfile }                                             from '@acx-ui/analytics/utils'
-import { Provider, smartZoneURL }                                                          from '@acx-ui/store'
-import { screen, render, mockServer, waitForElementToBeRemoved, within, mockRestApiQuery } from '@acx-ui/test-utils'
+import { Tenant, UserProfile, setUserProfile }                                              from '@acx-ui/analytics/utils'
+import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
+import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
 import { mockSmartZoneList } from './__tests__/fixtures'
 import { OnboardedSystem }   from './services'
@@ -42,6 +42,8 @@ describe('OnboardedSystems', () => {
     expect(await screen.findByText('Account')).toBeVisible()
     expect(await screen.findByText('Name')).toBeVisible()
     expect(await screen.findByText('Added Time')).toBeVisible()
+
+    expect(await screen.findByText('Onboarded')).toBeVisible()
     expect(await screen.findAllByText('account1')).toHaveLength(10)
     expect(await screen.findByText('sz1')).toBeVisible()
     expect(await screen.findAllByText('02/16/2019 05:32')).toHaveLength(10)
@@ -58,20 +60,13 @@ describe('OnboardedSystems', () => {
     await userEvent.click(radio[1])
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const modal = screen.getByText('Do you really want to remove sz3?')
-    /* eslint-disable testing-library/no-node-access */
-      .closest('.ant-modal-wrap') as HTMLDivElement
-    expect(modal).toBeVisible()
+    expect(await screen.findByText('Delete "sz3"?')).toBeVisible()
+    expect(await screen.findByText(
+      'Historical data for this system will not be viewable anymore if you confirm.')).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    expect(screen.getByText('Historical data for this system will not be viewable anymore if you confirm.')
-      .closest('.ant-modal-wrap') as HTMLDivElement).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
-    await userEvent.click(await within(modal!).findByRole('button', { name: /OK/ }))
-
-    expect(screen.getByText('Do you really want to remove sz3?')
-      .closest('.ant-modal-wrap')).not.toBeVisible()
-    /* eslint-disable testing-library/no-node-access */
+    await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
   })
   it('should handle delete cancel', async () => {
     render(<Provider><OnboardedSystems /></Provider>, { route: {} })
@@ -80,20 +75,13 @@ describe('OnboardedSystems', () => {
     await userEvent.click(radio[1])
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const modal = screen.getByText('Do you really want to remove sz3?')
-    /* eslint-disable testing-library/no-node-access */
-      .closest('.ant-modal-wrap') as HTMLDivElement
-    expect(modal).toBeVisible()
+    expect(await screen.findByText('Delete "sz3"?')).toBeVisible()
+    expect(await screen.findByText(
+      'Historical data for this system will not be viewable anymore if you confirm.')).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    expect(screen.getByText('Historical data for this system will not be viewable anymore if you confirm.')
-      .closest('.ant-modal-wrap') as HTMLDivElement).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
 
-    await userEvent.click(await within(modal!).findByRole('button', { name: /Cancel/ }))
-
-    expect(screen.getByText('Do you really want to remove sz3?')
-      .closest('.ant-modal-wrap')).not.toBeVisible()
-    /* eslint-disable testing-library/no-node-access */
+    await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
   })
   it('should disable delete', async () => {
     render(<Provider><OnboardedSystems /></Provider>, { route: {} })
@@ -114,20 +102,13 @@ describe('OnboardedSystems', () => {
     await userEvent.click(radio[1])
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const modal = screen.getByText('Do you really want to remove sz3?')
-    /* eslint-disable testing-library/no-node-access */
-      .closest('.ant-modal-wrap') as HTMLDivElement
-    expect(modal).toBeVisible()
+    expect(await screen.findByText('Delete "sz3"?')).toBeVisible()
+    expect(await screen.findByText(
+      'Historical data for this system will not be viewable anymore if you confirm.')).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    expect(screen.getByText('Historical data for this system will not be viewable anymore if you confirm.')
-      .closest('.ant-modal-wrap') as HTMLDivElement).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
-    await userEvent.click(await within(modal!).findByRole('button', { name: /OK/ }))
-
-    expect(screen.getByText('Do you really want to remove sz3?')
-      .closest('.ant-modal-wrap')).not.toBeVisible()
-    /* eslint-disable testing-library/no-node-access */
+    await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
 
     expect(await screen.findByTestId('toast-content'))
       .toHaveTextContent('Failed to delete sz3: Offboard this system to enable deletion')
@@ -144,20 +125,13 @@ describe('OnboardedSystems', () => {
     await userEvent.click(radio[1])
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const modal = screen.getByText('Do you really want to remove sz3?')
-    /* eslint-disable testing-library/no-node-access */
-      .closest('.ant-modal-wrap') as HTMLDivElement
-    expect(modal).toBeVisible()
+    expect(await screen.findByText('Delete "sz3"?')).toBeVisible()
+    expect(await screen.findByText(
+      'Historical data for this system will not be viewable anymore if you confirm.')).toBeVisible()
 
-    // eslint-disable-next-line max-len
-    expect(screen.getByText('Historical data for this system will not be viewable anymore if you confirm.')
-      .closest('.ant-modal-wrap') as HTMLDivElement).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
-    await userEvent.click(await within(modal!).findByRole('button', { name: /OK/ }))
-
-    expect(screen.getByText('Do you really want to remove sz3?')
-      .closest('.ant-modal-wrap')).not.toBeVisible()
-    /* eslint-disable testing-library/no-node-access */
+    await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
 
     expect(await screen.findByTestId('toast-content'))
       .toHaveTextContent('Failed to delete sz3')

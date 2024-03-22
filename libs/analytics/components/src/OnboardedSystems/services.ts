@@ -49,7 +49,7 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
         credentials: 'include',
         headers: { 'x-mlisa-tenant-ids': JSON.stringify(tenants) }
       }),
-      providesTags: [{ type: 'SMARTZONE', id: 'list' }]
+      providesTags: [{ type: 'SmartZone', id: 'list' }]
     }),
     deleteSmartZone: build.mutation<string, { id: string, tenants: string[] }>({
       query: ({ id, tenants }) => ({
@@ -58,7 +58,7 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
         credentials: 'include',
         headers: { 'x-mlisa-tenant-ids': JSON.stringify(tenants) }
       }),
-      invalidatesTags: [{ type: 'SMARTZONE', id: 'list' }]
+      invalidatesTags: [{ type: 'SmartZone', id: 'list' }]
     })
   })
 })
