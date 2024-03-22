@@ -228,7 +228,7 @@ export const useEdgeSdLanActions = () => {
   }
 }
 
-export const useSdLanScopedNetworks = (venueId: string | undefined,
+export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
   networkIds: string[] | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)

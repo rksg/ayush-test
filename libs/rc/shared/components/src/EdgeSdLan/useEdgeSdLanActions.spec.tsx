@@ -17,7 +17,7 @@ import { RequestPayload }                          from '@acx-ui/types'
 import {
   checkSdLanScopedNetworkDeactivateAction,
   useEdgeSdLanActions,
-  useSdLanScopedNetworks,
+  useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues
 } from './useEdgeSdLanActions'
 
@@ -462,8 +462,9 @@ describe('useEdgeSdLanActions', () => {
 
 describe('SD-LAN feature functions', () => {
 
-  describe('useSdLanScopedNetworks', () => {
+  describe('useSdLanScopedVenueNetworks', () => {
     const mockedSdLanGet = jest.fn()
+    const mockVenueId = 'mock_venue'
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -481,19 +482,24 @@ describe('SD-LAN feature functions', () => {
     })
 
     it('should return networkId', async () => {
-      const { result } = renderHook(() => useSdLanScopedNetworks(['mocked_network_1']), {
+      const { result } = renderHook(() =>
+        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
       await waitFor(() =>
         expect(result.current)
-          .toStrictEqual(['8e22159cfe264ac18d591ea492fbc05a'])
+          .toStrictEqual({
+            scopedNetworkIds: ['8e22159cfe264ac18d591ea492fbc05a'],
+            sdLans: mockedSdLanDataList
+          })
       )
     })
 
     it('should do nothing when FF is OFF', async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
-      renderHook(() => useSdLanScopedNetworks(['mocked_network_1']), {
+      renderHook(() =>
+        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
@@ -526,7 +532,13 @@ describe('SD-LAN feature functions', () => {
 
       await waitFor(() =>
         expect(result.current)
-          .toStrictEqual(['a307d7077410456f8f1a4fc41d861567', 'a8def420bd6c4f3e8b28114d6c78f237'])
+          .toStrictEqual({
+            sdLansVenueMap: _.groupBy(mockedSdLanDataList, 'venueId'),
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567',
+              'a8def420bd6c4f3e8b28114d6c78f237'
+            ]
+          })
       )
     })
 

@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                              from '@acx-ui/components'
-import { Features }                                                               from '@acx-ui/feature-toggle'
-import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedNetworks } from '@acx-ui/rc/components'
-import { useApNetworkListQuery, useApViewModelQuery }                             from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                                                   from '@acx-ui/components'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
+import { useApNetworkListQuery, useApViewModelQuery }                                  from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -43,7 +43,7 @@ export function ApNetworksTab () {
   const apViewModelQuery = useApViewModelQuery({ apiParams, payload: apViewModelPayload },
     { skip: !isEdgeSdLanHaReady })
 
-  const sdLanScopedNetworks = useSdLanScopedNetworks(apViewModelQuery.data?.venueId
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
     , tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 

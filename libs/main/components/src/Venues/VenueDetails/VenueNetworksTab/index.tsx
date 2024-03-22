@@ -19,7 +19,7 @@ import {
   transformScheduling,
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
-  useSdLanScopedNetworks,
+  useSdLanScopedVenueNetworks,
   checkSdLanScopedNetworkDeactivateAction,
   renderConfigTemplateDetailsComponent,
   useGetNetworkTunnelInfo,
@@ -131,7 +131,7 @@ export function VenueNetworksTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const sdLanScopedNetworks = useSdLanScopedNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   useEffect(()=>{

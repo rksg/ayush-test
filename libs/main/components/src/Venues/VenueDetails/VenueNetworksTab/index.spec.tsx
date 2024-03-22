@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks }                   from '@acx-ui/rc/components'
+import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksData,
   aggregatedVenueNetworksDataV2,
@@ -57,7 +57,7 @@ jest.mock('@acx-ui/rc/components', () => ({
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>,
-  useSdLanScopedNetworks: jest.fn().mockReturnValue({
+  useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
     sdLans: [],
     scopedNetworkIds: []
   }),
@@ -315,7 +315,7 @@ describe('VenueNetworksTab', () => {
     }
 
     it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-      jest.mocked(useSdLanScopedNetworks).mockReturnValue(mockedSdLanScopeData)
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -330,7 +330,7 @@ describe('VenueNetworksTab', () => {
     })
 
     it('should correctly display tunnel column when SD-LAN is running on it', async () => {
-      jest.mocked(useSdLanScopedNetworks).mockReturnValue(mockedSdLanScopeData)
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(<Provider><VenueNetworksTab /></Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -342,7 +342,7 @@ describe('VenueNetworksTab', () => {
     })
 
     it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
-      jest.mocked(useSdLanScopedNetworks).mockReturnValue({
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
         sdLans: [],
         scopedNetworkIds: []
       })

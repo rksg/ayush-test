@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks }                   from '@acx-ui/rc/components'
+import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
 import { CommonUrlsInfo, EdgeSdLanFixtures }        from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import {
@@ -16,7 +16,7 @@ import { ApNetworksTab } from '.'
 jest.mock('socket.io-client')
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useSdLanScopedNetworks: jest.fn().mockReturnValue({
+  useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
     sdLans: [],
     scopedNetworkIds: []
   })
@@ -103,7 +103,7 @@ describe('Networks Table', () => {
     })
 
     it('should render table', async () => {
-      jest.mocked(useSdLanScopedNetworks).mockReturnValue(mockedSdLanScopeData)
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
 
       render(
         <Provider>
