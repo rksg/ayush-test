@@ -5,7 +5,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { TenantNavigate }    from '@acx-ui/react-router-dom'
 import { RolesEnum as Role } from '@acx-ui/types'
 
-import { EdgeScopes, SwitchScopes, UserProfile, WifiScopes } from './types'
+import { UserProfile, WifiScopes, SwitchScopes, EdgeScopes } from './types'
 
 type Profile = {
   profile: UserProfile
@@ -145,8 +145,3 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
 }
-
-
-
-
-

@@ -2,7 +2,7 @@ import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import { RolesEnum }               from '@acx-ui/types'
 
-import { EdgeScopes, SwitchScopes, WifiScopes } from './types'
+import { WifiScopes, SwitchScopes, EdgeScopes } from './types'
 import {
   AuthRoute,
   filterByAccess,
@@ -15,7 +15,8 @@ import {
   WrapIfAccessible
 } from './userProfile'
 
-function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean, scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
+function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
+  scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
