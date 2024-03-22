@@ -10,17 +10,18 @@ import { useIntl } from 'react-intl'
 
 import { EdgeLag, EdgePortInfo } from '@acx-ui/rc/utils'
 
-import { EdgePortCommonForm } from '../PortCommonForm'
+import { EdgePortCommonForm, EdgePortCommonFormProps } from '../PortCommonForm'
 
 import * as UI from './styledComponents'
 
-interface ConfigFormProps {
+interface ConfigFormProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
   formListItemKey: string
   id: string
   statusData?: EdgePortInfo
   isEdgeSdLanRun: boolean
   lagData?: EdgeLag[]
   fieldHeadPath: string[]
+  isCluster?: boolean
 }
 
 const { useWatch, useFormInstance } = Form
@@ -32,7 +33,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     formListItemKey,
     isEdgeSdLanRun,
     lagData,
-    fieldHeadPath = []
+    fieldHeadPath = [],
+    isCluster
   } = props
 
   const { $t } = useIntl()
@@ -58,6 +60,15 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     ? fieldHeadPath.slice(0, fieldHeadPath.length - 2)
     : []
 
+  const forceUpdateCondition = (prev:unknown, cur: unknown) => {
+    // eslint-disable-next-line max-len
+    return _.get(prev, getFieldFullPath('corePortEnabled')) !== _.get(cur, getFieldFullPath('corePortEnabled'))
+            // eslint-disable-next-line max-len
+            || _.get(prev, getFieldFullPath('portType')) !== _.get(cur, getFieldFullPath('portType'))
+            || _.get(prev, getFieldFullPath('enabled')) !== _.get(cur, getFieldFullPath('enabled'))
+            || _.get(prev, getFieldFullPath('ipMode')) !== _.get(cur, getFieldFullPath('ipMode'))
+  }
+
   return (
     <>
       <UI.IpAndMac>
@@ -76,14 +87,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             rules={[
               { max: 63 }
             ]}
-            children={<TextArea />}
+            children={<TextArea disabled={isCluster} />}
           />
           <Form.Item
             noStyle
-            shouldUpdate={(prev, cur) => {
-              return _.get(prev, getFieldFullPath('corePortEnabled'))
-                !== _.get(cur, getFieldFullPath('corePortEnabled'))
-            }}
+            shouldUpdate={forceUpdateCondition}
           >
             {() => {
               const allPortsValues = portsDataRootPath.length

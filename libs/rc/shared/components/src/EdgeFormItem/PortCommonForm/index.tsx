@@ -27,10 +27,10 @@ interface formFieldsPropsType {
     options?: {
       label: string,
       value: EdgePortTypeEnum
-    }[]
+    }[],
   }
 }
-interface EdgePortCommonFormProps {
+export interface EdgePortCommonFormProps {
   formRef: FormInstance,
   fieldHeadPath: string[],
   portsDataRootPath: string[],
@@ -98,6 +98,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
   //     - must be LAN port type
   const hasWANPort = isWANPortExist(portsData, lagData || [])
 
+  const hasCorePortLimitation = !corePortInfo.isExistingCorePortInLagMember && hasCorePortEnabled
+
   const getCurrentSubnetInfo = () => {
     return {
       ip: form.getFieldValue(getFieldFullPath('ip')),
@@ -125,9 +127,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
     if(
-      (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) ||
-      portType === EdgePortTypeEnum.CLUSTER
-    ) {
+      portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled === false) {
       return (
         <>
           <Form.Item
@@ -161,6 +161,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         </>
       )
     } else if (portType === EdgePortTypeEnum.WAN
+      || portType === EdgePortTypeEnum.CLUSTER
       // only core port enabled LAN port can configure `ipMode`
       || (portType === EdgePortTypeEnum.LAN && isCurrentInterfaceCorePortEnabled)) {
       return (
@@ -216,6 +217,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'subnet')}
                 children={<Input />}
               />
+              {portType !== EdgePortTypeEnum.CLUSTER &&
               <Form.Item
                 name={getFieldPathBaseFormList('gateway')}
                 label={$t({ defaultMessage: 'Gateway' })}
@@ -227,6 +229,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'gateway')}
                 children={<Input />}
               />
+              }
             </>
           }
           { // only WAN port can configure NAT enable
@@ -255,12 +258,14 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     <Form.Item
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
-      {..._.get(formFieldsProps, 'portType')}
+      {..._.omit(_.get(formFieldsProps, 'portType'), 'validator')}
+      validateFirst
       rules={[
         { required: true },
         { validator: (_, value) => {
-          if (!corePortInfo.isExistingCorePortInLagMember
-              && hasCorePortEnabled && value === EdgePortTypeEnum.WAN ) {
+          if (hasCorePortLimitation
+              && portEnabled
+              && value === EdgePortTypeEnum.WAN ) {
             return Promise.reject(
               $t({ defaultMessage: 'WAN port cannot be used when Core Port exist' })
             )
@@ -275,8 +280,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
           return <Select.Option
             key={item.value}
             value={item.value}
-            disabled={!corePortInfo.isExistingCorePortInLagMember
-              && hasCorePortEnabled && item.value === EdgePortTypeEnum.WAN}
+            disabled={hasCorePortLimitation && item.value === EdgePortTypeEnum.WAN}
           >
             {item.label}
           </Select.Option>
@@ -341,8 +345,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                   {..._.get(formFieldsProps, 'enabled')}
                   // Not allow to enable WAN port when core port exist
                   children={<Switch
-                    disabled={!corePortInfo.isExistingCorePortInLagMember
-                      && hasCorePortEnabled
+                    disabled={hasCorePortLimitation
                       && !portEnabled
                       && portType === EdgePortTypeEnum.WAN
                     } />

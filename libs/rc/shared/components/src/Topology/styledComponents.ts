@@ -3,9 +3,10 @@ import { createElement } from 'react'
 import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
-import { Button, Modal }          from '@acx-ui/components'
+import { Modal }                  from '@acx-ui/components'
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
-import { DeviceStatus }           from '@acx-ui/rc/utils'
+import { TopologyDeviceStatus }   from '@acx-ui/rc/utils'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import { getDeviceColor } from './utils'
 
@@ -30,7 +31,7 @@ export const Graph = styled('svg')`
     cursor: pointer;
   }`
 
-export const Device = styled('div')<{ deviceStatus: DeviceStatus }>`
+export const Device = styled('div')<{ deviceStatus: TopologyDeviceStatus }>`
    svg {
      color: ${props => getDeviceColor(props.deviceStatus)};
    }
@@ -114,15 +115,14 @@ export const TextNumber = styled.div`
   }
 `
 
-export const NodeTitle = styled(Button)`
-span {
+export const NodeTitle = styled(TenantLink)`
     width: 288px;
     display: inline-block;
     flex: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
+    font-size: 12px;
 `
 export const Topology = styled.div`
 font-family: sans-serif;
@@ -156,7 +156,7 @@ height: 100%;
       .Disconnected-circle {
         fill: none;
       }
-      .Unknown-circle {
+      .Unknown-circle, .Initializing-circle  {
         fill: none;
       }
     }
@@ -178,7 +178,7 @@ height: 100%;
         fill: var(--acx-semantics-red-70);
         opacity: 0.2;
       }
-      .Unknown-circle {
+      .Unknown-circle, .Initializing-circle {
         fill: var(--acx-neutrals-50);
         opacity: 0.2;
       }

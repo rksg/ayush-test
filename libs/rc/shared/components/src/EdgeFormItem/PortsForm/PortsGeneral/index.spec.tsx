@@ -9,6 +9,7 @@ import {
   EdgeLag,
   EdgeLagFixtures,
   EdgePortConfigFixtures,
+  EdgePortInfo,
   EdgePortTypeEnum,
   EdgeSdLanUrls,
   EdgeUrlsInfo
@@ -81,7 +82,7 @@ const defaultContextData = {
 }
 const defaultPortsContextdata = {
   portData: mockEdgePortConfig.ports,
-  portStatus: mockPortInfo,
+  portStatus: mockPortInfo as EdgePortInfo[],
   lagData: mockedEdgeLagList.content as EdgeLag[],
   isLoading: false,
   isFetching: false
@@ -105,6 +106,7 @@ describe('EditEdge ports - ports general', () => {
       >
         <EdgePortsDataContext.Provider value={props.portsContextdata ?? defaultPortsContextdata}>
           <PortsGeneral
+            clusterId='mock-cluster'
             serialNumber={mockedEdgeID}
             onCancel={mockedCancelFn}
             onFinish={mockedSubmitFn}

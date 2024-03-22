@@ -1,4 +1,5 @@
 export * from './DescriptionSection'
+export { AccountManagement, AccountManagementTabEnum } from './AccountManagement'
 export { AnalyticsTabs } from './AnalyticsTabs'
 export { AIDrivenRRM } from './AIDrivenRRM'
 export { AIOperations } from './AIOperations'

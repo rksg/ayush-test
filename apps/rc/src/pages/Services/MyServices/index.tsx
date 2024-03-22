@@ -13,7 +13,7 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -36,6 +36,7 @@ export default function MyServices () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
@@ -75,12 +76,12 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeSdLanViewDataListQuery({
+      tableQuery: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+        skip: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
     },
     {
       type: ServiceType.EDGE_FIREWALL,
