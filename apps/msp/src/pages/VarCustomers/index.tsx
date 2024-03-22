@@ -176,14 +176,13 @@ export function VarCustomers () {
       )
     }
 
-    return (
-      <>
-        <Subtitle level={3}>
-          {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
+    return <div style={{ marginBottom: '50px' }}>
+      <Subtitle level={3}>
+        {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
 
-        <PendingInvitation />
-      </>
-    )
+      <PendingInvitation />
+    </div>
+
   }
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
