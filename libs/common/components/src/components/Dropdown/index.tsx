@@ -15,7 +15,7 @@ export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigg
   children: (selectedKeys: string | null) => React.ReactElement
 }
 
-export function Dropdown ({ overlay, children, ...props }: DropdownProps) {
+export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownProps) {
   const { defaultSelectedKeys, onClick } = overlay.props
   const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(defaultSelectedKeys)
   const menu = React.cloneElement(overlay, {
