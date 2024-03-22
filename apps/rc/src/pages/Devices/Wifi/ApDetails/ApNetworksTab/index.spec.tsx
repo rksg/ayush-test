@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks }            from '@acx-ui/rc/components'
-import { CommonUrlsInfo, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useSdLanScopedNetworks }                   from '@acx-ui/rc/components'
+import { CommonUrlsInfo, EdgeSdLanFixtures }        from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -88,7 +88,9 @@ describe('Networks Table', () => {
 
     const mockApListReq = jest.fn()
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
       mockServer.use(
         rest.post(
           CommonUrlsInfo.getApsList.url,

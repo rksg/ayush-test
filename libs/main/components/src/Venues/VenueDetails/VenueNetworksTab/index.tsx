@@ -22,7 +22,8 @@ import {
   useSdLanScopedNetworks,
   checkSdLanScopedNetworkDeactivateAction,
   renderConfigTemplateDetailsComponent,
-  useGetNetworkTunnelInfo
+  useGetNetworkTunnelInfo,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -129,7 +130,7 @@ export function VenueNetworksTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 

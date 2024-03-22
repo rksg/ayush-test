@@ -61,7 +61,8 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { useGetNetwork } from '../services'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { useGetNetwork }         from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -137,7 +138,7 @@ export function NetworkVenuesTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
 
   const networkQuery = useGetNetwork()

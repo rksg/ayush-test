@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { useGetNetworkTunnelInfo, useSdLanScopedNetworks } from '@acx-ui/rc/components'
-import { useApNetworkListQuery, useApViewModelQuery }      from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                                              from '@acx-ui/components'
+import { Features }                                                               from '@acx-ui/feature-toggle'
+import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedNetworks } from '@acx-ui/rc/components'
+import { useApNetworkListQuery, useApViewModelQuery }                             from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -34,7 +34,7 @@ export function ApNetworksTab () {
     apiParams,
     pagination: { settingsId }
   })
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const apViewModelPayload = {
     entityType: 'aps',
     fields: ['name', 'serialNumber', 'venueId'],

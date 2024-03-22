@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useSdLanScopedNetworks }                   from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksData,
   aggregatedVenueNetworksDataV2,
@@ -301,8 +301,9 @@ describe('VenueNetworksTab', () => {
     expect(icon).toBeVisible()
   })
 
-  describe('VenueNetworksTab', () => {
+  describe('Edge and SD-LAN FF is on', () => {
     beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP)
     })
     const mockedSdLanScopeData = {
