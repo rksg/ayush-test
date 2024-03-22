@@ -1,7 +1,7 @@
-import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
-import { useNavigate, useParams }                    from 'react-router-dom'
+import { defineMessage, useIntl } from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }         from '@acx-ui/components'
+import { PageNotFound, Tabs } from '@acx-ui/components'
 import {
   ActivityTable,
   activityTableColumnState,
@@ -10,8 +10,56 @@ import {
   useActivityTableQuery,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
-import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+
+export enum TimelineTabsEnum {
+  ACTIVITIES = 'activities',
+  EVENTS = 'events'
+}
+interface TimelineTab {
+  key: TimelineTabsEnum,
+  tabPane: JSX.Element,
+  component: JSX.Element
+}
+
+export function SwitchTimelineTab () {
+  const { $t } = useIntl()
+  const { activeSubTab = 'activities', switchId, serialNumber } = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/timeline/`)
+  // TODO: remove istanbul and add unit test once there are more than 1 tab
+  /* istanbul ignore next */
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+
+  const tabs = [{
+    key: TimelineTabsEnum.ACTIVITIES,
+    tabPane: <Tabs.TabPane key={TimelineTabsEnum.ACTIVITIES}
+      tab={$t(defineMessage({ defaultMessage: 'Activities' }))} />,
+    component: <Activities />
+  }, {
+    key: TimelineTabsEnum.EVENTS,
+    tabPane: <Tabs.TabPane key={TimelineTabsEnum.EVENTS}
+      tab={$t(defineMessage({ defaultMessage: 'Events' }))} />,
+    component: <Events />
+  }] as TimelineTab[]
+
+
+  const { component } = tabs.find(({ key }) =>
+    key === activeSubTab) || { component: <PageNotFound /> }
+
+  return <>
+    <Tabs onChange={onTabChange} activeKey={activeSubTab} type='card' >
+      {tabs.map(tab => tab.tabPane)}
+    </Tabs>
+    {component}
+  </>
+}
+
 
 const Events = () => {
   const { serialNumber } = useParams()
@@ -43,45 +91,4 @@ const Activities = () => {
     filterables={['status']}
     columnState={activityTableColumnState}
   />
-}
-
-const tabs : {
-  key: TimelineTypes,
-  title: MessageDescriptor,
-  component: React.ReactNode
-}[] = [
-  {
-    key: 'activities',
-    title: defineMessage({ defaultMessage: 'Activities' }),
-    component: <Activities />
-  },
-  {
-    key: 'events',
-    title: defineMessage({ defaultMessage: 'Events' }),
-    component: <Events />
-  }
-]
-
-export function SwitchTimelineTab () {
-  const { $t } = useIntl()
-  const { activeSubTab = tabs[0].key, switchId, serialNumber } = useParams()
-  const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/timeline/`)
-  // TODO: remove istanbul and add unit test once there are more than 1 tab
-  /* istanbul ignore next */
-  const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
-  }
-
-  return <Tabs
-    onChange={onTabChange}
-    activeKey={activeSubTab}
-    type='card'
-  >
-    {tabs.map(({ key, title, component }) =>
-      <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}
-  </Tabs>
 }
