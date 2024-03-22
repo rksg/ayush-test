@@ -68,6 +68,7 @@ export interface MspEc {
   assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+  accountTier?: MspEcTierEnum;
 }
 
 export interface MspEcData {
