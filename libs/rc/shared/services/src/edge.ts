@@ -939,6 +939,7 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
       portType,
       isLag: !isPhysicalPort,
       isLagMember,
+      ipMode: item.ipMode,
       ip: item.ip ?? '',
       mac: item.mac ?? '',
       subnet: item.subnet ?? '',

@@ -7,6 +7,8 @@ import {
 }                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+
 import type {
   ProColumnType,
   ColumnsState as AntColumnsState
@@ -169,6 +171,7 @@ export type TableAction = {
 
 export type TableRowAction<RecordType> = {
   key?: string
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
   tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
