@@ -4,12 +4,13 @@ import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { useStepFormContext }                                        from '@acx-ui/components'
-import { EdgeLagTable, NodesTabs, TypeForm }                         from '@acx-ui/rc/components'
-import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs } from '@acx-ui/rc/utils'
+import { useStepFormContext }                                                                      from '@acx-ui/components'
+import { EdgeLagTable, NodesTabs, TypeForm }                                                       from '@acx-ui/rc/components'
+import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import * as UI                       from './styledComponents'
 import { InterfaceSettingsFormType } from './types'
 
 export const LagForm = () => {
@@ -52,16 +53,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
 
-  const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
-    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
-    onChange?.([
-      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
-      {
-        serialNumber,
-        lags: [...(targetLagSettings?.lags ?? []), lagData]
-      }
-    ])
-
+  const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
     lagData.lagMembers.forEach(member => {
       let portInterfaceName: (string | undefined)
@@ -84,7 +76,20 @@ const LagSettingView = (props: LagSettingViewProps) => {
         form.setFieldValue(['portSettings', serialNumber, portInterfaceName], [data])
       }
     })
+  }
 
+  const handleAdd = async (serialNumber: string, lagData: EdgeLag) => {
+    const targetLagSettings = value?.find(item => item.serialNumber === serialNumber)
+    onChange?.([
+      ...(value?.filter(item => item.serialNumber !== serialNumber) ?? []),
+      {
+        serialNumber,
+        lags: [...(targetLagSettings?.lags ?? []), lagData]
+      }
+    ])
+
+    // reset physical port config when it is selected as LAG member
+    cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
   const handleEdit = async (serialNumber: string, lagData: EdgeLag) => {
@@ -96,6 +101,9 @@ const LagSettingView = (props: LagSettingViewProps) => {
         lags: [...(targetLagSettings?.lags.filter(item => item.id !== lagData.id) ?? []), lagData]
       }
     ])
+
+    // reset physical port config when it is selected as LAG member
+    cleanupLagMemberPortConfig(lagData, serialNumber)
   }
 
   const handleDelete = async (serialNumber: string, id: string) => {
@@ -113,21 +121,33 @@ const LagSettingView = (props: LagSettingViewProps) => {
     <NodesTabs
       nodeList={clusterInfo?.edgeList}
       content={
-        (serialNumber) => (
-          <EdgeLagTable
-            clusterId={clusterInfo?.clusterId}
-            serialNumber={serialNumber}
-            lagList={value?.find(item => item.serialNumber === serialNumber)?.lags}
-            portList={
-              portSettings?.[serialNumber] ?
-                Object.values(portSettings?.[serialNumber]).flat() :
-                []
-            }
-            onAdd={handleAdd}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        )
+        (serialNumber) => {
+          const lagList = value?.find(item => item.serialNumber === serialNumber)?.lags
+          const portList = portSettings?.[serialNumber]
+            ? Object.values(portSettings?.[serialNumber]).flat()
+            : []
+
+          return <>
+            <UI.StyledHiddenFormItem
+              name='validate'
+              rules={[
+                { validator: () => {
+                  return validateEdgeAllPortsEmptyLag(portList, lagList ?? [])
+                } }
+              ]}
+              children={<input hidden/>}
+            />
+            <EdgeLagTable
+              clusterId={clusterInfo?.clusterId}
+              serialNumber={serialNumber}
+              lagList={lagList}
+              portList={portList}
+              onAdd={handleAdd}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </>
+        }
       }
     />
   )
