@@ -1,4 +1,3 @@
-import { useState } from 'react'
 
 import { Col, Form, Row, Slider } from 'antd'
 import { useIntl }                from 'react-intl'
@@ -6,8 +5,7 @@ import { useIntl }                from 'react-intl'
 import { Button, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { EdgeClusterStatus, EdgePortInfo }                from '@acx-ui/rc/utils'
 
-import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
-import { VipCard }               from './VipCard'
+import { VipCard } from './VipCard'
 
 export interface VirtualIpFormType {
   timeout: number
@@ -30,22 +28,9 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
   const { currentClusterStatus, lanInterfaces } = props
   const { $t } = useIntl()
   const { form } = useStepFormContext()
-  const [selectInterfaceDrawerVisible, setSelectInterfaceDrawerVisible] = useState(false)
-  const [currentIndex, setCurrentIndex] = useState<number>(0)
   const vipConfig = Form.useWatch('vipConfig', form)
 
-  const maxVipCount = 2
-
-  const openDrawer = (index: number) => {
-    setCurrentIndex(index)
-    setSelectInterfaceDrawerVisible(true)
-  }
-
-  const handleSelectPort = (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => {
-    if(index === undefined) return
-    vipConfig[index].interfaces = data
-    form.setFieldValue('vipConfig', vipConfig)
-  }
+  const maxVipCount = 1
 
   return (
     <Row gutter={[16, 30]}>
@@ -58,12 +43,13 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
                   fields.map((field, index) =>
                     <Col key={`vip-${field.key}`} span={24}>
                       <VipCard
+                        rootNamePath={['vipConfig']}
                         field={field}
                         index={index}
                         remove={remove}
                         vipConfig={vipConfig}
-                        currentClusterStatus={currentClusterStatus}
-                        openDrawer={openDrawer}
+                        nodeList={currentClusterStatus?.edgeList}
+                        lanInterfaces={lanInterfaces}
                       />
                     </Col>
                   )
@@ -92,12 +78,14 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
                 $t({ defaultMessage: 'HA Timeout' })
               }
               <Tooltip.Question
-                title={$t({ defaultMessage: `
-                            HA timeout refers to the duration within which if a node
-                            does not receive a periodic heartbeat from the active node.
-                            This triggers the process of selecting the next active node
-                            to maintain system functionality
-                            ` })}
+                title={
+                  $t({ defaultMessage: `
+                    HA timeout refers to the duration within which if a node
+                    does not receive a periodic heartbeat from the active node.
+                    This triggers the process of selecting the next active node
+                    to maintain system functionality
+                  ` })
+                }
                 placement='right'
               />
             </>
@@ -115,16 +103,6 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
             }}
           />
         </Form.Item>
-        <SelectInterfaceDrawer
-          visible={selectInterfaceDrawerVisible}
-          setVisible={setSelectInterfaceDrawerVisible}
-          handleFinish={handleSelectPort}
-          currentVipIndex={currentIndex}
-          editData={vipConfig?.[currentIndex]?.interfaces}
-          currentClusterStatus={currentClusterStatus}
-          selectedInterfaces={vipConfig}
-          lanInterfaces={lanInterfaces}
-        />
       </Col>
     </Row>
   )
