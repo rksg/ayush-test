@@ -21,7 +21,6 @@ import {
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { DataStudio }                                                 from '@acx-ui/reports/components'
 import { Provider }                                                   from '@acx-ui/store'
 import { AccountType, getJwtTokenPayload }                            from '@acx-ui/utils'
 
@@ -75,7 +74,6 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
-      <Route path='dataStudio' element={<DataStudio />} />
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
