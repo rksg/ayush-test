@@ -5,7 +5,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { TenantNavigate }    from '@acx-ui/react-router-dom'
 import { RolesEnum as Role } from '@acx-ui/types'
 
-import { UserProfile } from './types'
+import { EdgeScopes, SwitchScopes, UserProfile, WifiScopes } from './types'
 
 type Profile = {
   profile: UserProfile
@@ -13,7 +13,7 @@ type Profile = {
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
-  scopes?: string[]
+  scopes?: (WifiScopes|SwitchScopes|EdgeScopes)[]
   isCustomRole?: boolean
 }
 const userProfile: Profile = {
@@ -27,10 +27,10 @@ const userProfile: Profile = {
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
-  scopeKey?: string[],
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
   key?: string,
   props?: {
-    scopeKey?: string[],
+    scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
     key?: string
   }
 }
@@ -83,7 +83,10 @@ export function filterByAccess <Item> (items: Item[]) {
   })
 }
 
-export function hasPermission (props?:{ scopes?:string[], allowedOperations?:string }) {
+export function hasPermission (props?: {
+    scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
+    allowedOperations?:string
+  }) {
   const { abacEnabled, isCustomRole } = getUserProfile()
   const { scopes = [], allowedOperations } = props || {}
   if(!abacEnabled) {
@@ -99,10 +102,10 @@ export function hasPermission (props?:{ scopes?:string[], allowedOperations?:str
   }
 }
 
-export function hasScope (userScope: string[]) {
+export function hasScope (userScopes: (WifiScopes|SwitchScopes|EdgeScopes)[]) {
   const { abacEnabled, scopes, isCustomRole } = getUserProfile()
   if(abacEnabled && isCustomRole) {
-    return scopes?.some(scope => userScope.includes(scope))
+    return scopes?.some(scope => userScopes.includes(scope))
   }
   return true
 }
@@ -116,9 +119,12 @@ export function hasRoles (roles: string | string[]) {
   return profile?.roles?.some(role => roles.includes(role))
 }
 
-export function AuthRoute (props: { scope: string[], children: ReactElement }) {
-  const { scope, children } = props
-  return !hasScope(scope) ? <TenantNavigate replace to='/no-permissions' /> : children
+export function AuthRoute (props: {
+    scopes: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    children: ReactElement
+  }) {
+  const { scopes, children } = props
+  return !hasScope(scopes) ? <TenantNavigate replace to='/no-permissions' /> : children
 }
 
 

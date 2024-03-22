@@ -2,7 +2,7 @@ import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import { RolesEnum }               from '@acx-ui/types'
 
-import { SwitchScopes } from './types'
+import { EdgeScopes, SwitchScopes, WifiScopes } from './types'
 import {
   AuthRoute,
   filterByAccess,
@@ -15,7 +15,7 @@ import {
   WrapIfAccessible
 } from './userProfile'
 
-function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean, scopes?:string[]) {
+function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean, scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
@@ -206,7 +206,7 @@ describe('AuthRoute', () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.READ])
     render(
       <Router>
-        <AuthRoute scope={[SwitchScopes.UPDATE]}>
+        <AuthRoute scopes={[SwitchScopes.UPDATE]}>
           <div>test page</div>
         </AuthRoute>
       </Router>
@@ -215,11 +215,23 @@ describe('AuthRoute', () => {
     expect(await screen.findByTestId('no-permissions')).toBeVisible()
   })
 
-  it('should go to correct page', async () => {
+  it('should go to correct page: custom role', async () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])
     render(
       <Router>
-        <AuthRoute scope={[SwitchScopes.UPDATE]}>
+        <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
+
+  it('should go to correct page: system role', async () => {
+    setRole(RolesEnum.PRIME_ADMIN, true, false)
+    render(
+      <Router>
+        <AuthRoute scopes={[SwitchScopes.UPDATE]}>
           <div>test page</div>
         </AuthRoute>
       </Router>
