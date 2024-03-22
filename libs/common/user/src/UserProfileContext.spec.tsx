@@ -226,6 +226,22 @@ describe('UserProfileContext', () => {
     expect(screen.queryByText('abacEnabled:false')).toBeVisible()
     expect(screen.queryByText('isCustomRole:false')).toBeVisible()
   })
+
+  it('should handle abacEnabled value correctly', async () => {
+    mockServer.use(
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({})))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled } = props.userProfileCtx
+      return <div>{`abacEnabled:${abacEnabled}`}</div>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+  })
 })
 
 const checkDataRendered = async () => {
