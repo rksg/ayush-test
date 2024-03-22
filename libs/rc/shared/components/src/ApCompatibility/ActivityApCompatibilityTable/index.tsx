@@ -44,7 +44,7 @@ export const ActivityApCompatibilityTable = ({
         }
         setTotalCount(count)
         if (count !== 0) {
-          const percent = Math.round(incompatibleCount / count )
+          const percent = Math.round(incompatibleCount / count * 100 )
           updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
         }
       }
