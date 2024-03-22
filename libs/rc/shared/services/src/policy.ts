@@ -2392,7 +2392,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UPDATE_CERT',
-            'ADD_CERT'
+            'GENERATE_CERT'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Certificate', id: 'LIST' }
@@ -2414,7 +2414,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         }
       },
-      providesTags: [{ type: 'Certificate', id: 'LIST' }]
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'GENERATE_CERT',
+            'UPDATE_CERT'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     generateCertificate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

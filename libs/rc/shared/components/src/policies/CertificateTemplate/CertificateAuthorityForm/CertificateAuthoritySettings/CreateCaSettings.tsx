@@ -2,9 +2,9 @@ import { Row, Col, Form, Input, Select } from 'antd'
 import moment                            from 'moment'
 import { useIntl }                       from 'react-intl'
 
-import { DatePicker }                                                               from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useLazyGetCertificateAuthoritiesQuery } from '@acx-ui/rc/services'
-import { trailingNorLeadingSpaces, CertificateCategoryType, checkObjectNotExists }  from '@acx-ui/rc/utils'
+import { DatePicker }                                                              from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery }                                       from '@acx-ui/rc/services'
+import { trailingNorLeadingSpaces, CertificateCategoryType, checkObjectNotExists } from '@acx-ui/rc/utils'
 
 import CertificateStrengthSettings                           from '../../CertificateTemplateForm/CertificateTemplateSettings/CertificateStrengthSettings'
 import OrganizationInfoSettings                              from '../../CertificateTemplateForm/CertificateTemplateSettings/OrganizationInfoSettings'
@@ -17,27 +17,24 @@ import { SettingsSectionTitle, Description, Section, Title } from '../../styledC
 export default function CreateCaSettings ({ rootCaMode = true }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const [getCertificateAuthorities] = useLazyGetCertificateAuthoritiesQuery()
-  const { isCaOptionsLoading, caOptions } = useGetCertificateAuthoritiesQuery({
+  const { isCaNameListLoading, caNameList } = useGetCertificateAuthoritiesQuery({
     payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        isCaOptionsLoading: isLoading,
-        caOptions: data?.data?.filter((item) => item.privateKeyBase64)
-          .map((item) => ({ label: item.name, value: item.id }))
+        isCaNameListLoading: isLoading,
+        caNameList: data?.data?.map((item) =>
+          ({ label: item.name, value: item.id, privateKeyBase64: item.privateKeyBase64 }))
       }
     }
   })
 
   const nameValidator = async (value: string) => {
-    try {
-      const payload = { page: 1, pageSize: MAX_CERTIFICATE_PER_TENANT }
-      const list = (await getCertificateAuthorities({ payload }).unwrap())
-        .data.map(n => ({ name: n.name }))
+    if (caNameList) {
+      const list = caNameList.map(n => ({ name: n.label }))
       const entityName = $t({ defaultMessage: 'Certificate Authority' })
       return checkObjectNotExists(list, { name: value }, entityName)
-    } catch {
+    } else {
       return Promise.reject($t({ defaultMessage: 'Validation error' }))
     }
   }
@@ -68,9 +65,9 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
                 }]}
               >
                 <Select
-                  loading={isCaOptionsLoading}
+                  loading={isCaNameListLoading}
                   placeholder={$t({ defaultMessage: 'Select CA...' })}
-                  options={caOptions}
+                  options={caNameList?.filter((item) => item.privateKeyBase64)}
                 />
               </Form.Item>
             </Col>

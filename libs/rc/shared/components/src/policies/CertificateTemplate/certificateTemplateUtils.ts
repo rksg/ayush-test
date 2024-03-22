@@ -7,31 +7,22 @@ import { getIntl, noDataDisplay }                                               
 import { algorithmLabel } from './contentsMap'
 
 const toLocalDateString = (date: string) => {
-  return moment.utc(date).subtract(23, 'h').subtract(59, 'm').subtract(59, 's').local().format()
+  return moment(date).startOf('day').local().format()
 }
 
-const getExpirationTypeByValue = (value: string): ExpirationType => {
-  switch (value) {
-    case 'YEARS':
-      return ExpirationType.YEARS_AFTER_TIME
-    case 'HOURS':
-      return ExpirationType.HOURS_AFTER_TIME
-    case 'DAYS':
-      return ExpirationType.DAYS_AFTER_TIME
-    case 'WEEKS':
-      return ExpirationType.WEEKS_AFTER_TIME
-    case 'MONTHS':
-      return ExpirationType.MONTHS_AFTER_TIME
-    case 'MINUTES':
-      return ExpirationType.MINUTES_AFTER_TIME
-    default:
-      return ExpirationType.SPECIFIED_DATE
-  }
+const expirationTypeMap: Record<CertificateExpirationType, ExpirationType> = {
+  [CertificateExpirationType.YEARS_AFTER_TIME]: ExpirationType.YEARS_AFTER_TIME,
+  [CertificateExpirationType.HOURS_AFTER_TIME]: ExpirationType.HOURS_AFTER_TIME,
+  [CertificateExpirationType.DAYS_AFTER_TIME]: ExpirationType.DAYS_AFTER_TIME,
+  [CertificateExpirationType.WEEKS_AFTER_TIME]: ExpirationType.WEEKS_AFTER_TIME,
+  [CertificateExpirationType.MONTHS_AFTER_TIME]: ExpirationType.MONTHS_AFTER_TIME,
+  [CertificateExpirationType.MINUTES_AFTER_TIME]: ExpirationType.MINUTES_AFTER_TIME,
+  [CertificateExpirationType.SPECIFIED_DATE]: ExpirationType.SPECIFIED_DATE
 }
 
 const setExpirationDateEntity = (type: CertificateExpirationType, date: string, value: number) => {
   const entity = new ExpirationDateEntity()
-  const transferedType = getExpirationTypeByValue(type)
+  const transferedType = expirationTypeMap[type]
 
   if (transferedType === ExpirationType.SPECIFIED_DATE) {
     entity.setToByDate(toLocalDateString(date))

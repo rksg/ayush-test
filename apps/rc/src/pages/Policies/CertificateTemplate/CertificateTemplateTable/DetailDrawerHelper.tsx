@@ -9,16 +9,17 @@ import { DescriptionText }                                                      
 
 import { Content, RenderType } from './DetailDrawer'
 
+export const getCertificateStatus = (certificate: Certificate): CertificateStatusType => {
+  if (certificate?.revocationDate) {
+    return CertificateStatusType.REVOKED
+  } else if (moment(certificate?.notAfterDate).isSameOrBefore(new Date())) {
+    return CertificateStatusType.EXPIRED
+  }
+  return CertificateStatusType.VALID
+}
 
 export const getDisplayedCertificateStatus = (certificate: Certificate): string => {
-  const { $t } = getIntl()
-  if (certificate?.revocationDate) {
-    const revocationDate = moment(certificate?.revocationDate).format(EXPIRATION_TIME_FORMAT)
-    return $t(certificateStatusTypeLabel[CertificateStatusType.REVOKED], { revocationDate })
-  } else if (moment(certificate?.notAfterDate).isSameOrBefore(new Date())) {
-    return $t(certificateStatusTypeLabel[CertificateStatusType.EXPIRED])
-  }
-  return $t(certificateStatusTypeLabel[CertificateStatusType.VALID])
+  return getIntl().$t(certificateStatusTypeLabel[getCertificateStatus(certificate)])
 }
 
 export const getDisplayedItems

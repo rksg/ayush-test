@@ -65,9 +65,9 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
 
   useEffect(() => {
     const fetchAndSetPolicySetData = async (data: Certificate) => {
+      setIsFetching(true)
       try {
         if (!data?.certificateTemplateId) return
-        setIsFetching(true)
         const templateRes = await getCertificateTemplate({
           params: { policyId: data.certificateTemplateId }
         })
@@ -77,36 +77,33 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
           }).unwrap()
           setPolicySetData(policySetRes?.name || noDataDisplay)
         }
-        setIsFetching(false)
       } catch {
-        setIsFetching(false)
         setPolicySetData(null)
+      } finally {
+        setIsFetching(false)
       }
     }
 
     const fetchAndSetSubCas = async (data: CertificateAuthority) => {
+      setIsFetching(true)
       try {
-        setIsFetching(true)
         const subCAsRes = await querySubCAs({
           params: { caId: data.id },
           payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
         }).unwrap()
         setSubCas(subCAsRes.data?.map(d => d.commonName))
-        setIsFetching(false)
       } catch {
-        setIsFetching(false)
         setSubCas([])
+      } finally {
+        setIsFetching(false)
       }
     }
 
     const fetchAndSetParentCa = async (data: CertificateAuthority) => {
-      if (!data.parentCaId) {
-        setParentCaName(null)
-        return
-      }
       try {
-        const parentCaRes = await queryCAs({ params: { caId: data.parentCaId } }).unwrap()
-        setParentCaName(parentCaRes.name)
+        const parentCaName = data.parentCaId
+          ? (await queryCAs({ params: { caId: data.parentCaId } }).unwrap()).name : null
+        setParentCaName(parentCaName)
       } catch {
         setParentCaName(null)
       }

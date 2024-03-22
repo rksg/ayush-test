@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Typography } from 'antd'
 import { Modal as AntModal }    from 'antd'
@@ -23,6 +23,7 @@ export default function CertificateAuthorityTable () {
   const { Text } = Typography
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
   const [detailData, setDetailData] = useState<CertificateAuthority | null>(null)
+  const [detailId, setDetailId] = useState<string | null>(null)
   const [deleteCertificateAuthority] = useDeleteCertificateAuthorityMutation()
   const [modal, contextHolder] = AntModal.useModal()
   const settingsId = 'certificate-authority-table'
@@ -39,6 +40,10 @@ export default function CertificateAuthorityTable () {
     pagination: { settingsId }
   })
 
+  useEffect(() => {
+    tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
+  }, [tableQuery])
+
   const columns: TableProps<CertificateAuthority>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -52,6 +57,7 @@ export default function CertificateAuthorityTable () {
         return (
           <Button type='link'
             onClick={() => {
+              setDetailId(row.id)
               setDetailData(row)
               setDetailDrawerOpen(true)
             }}>
@@ -121,7 +127,7 @@ export default function CertificateAuthorityTable () {
         entityName: 'CA',
         entityValue: selectedRow.name,
         numOfEntities: 1,
-        confirmationText: 'Delete',
+        confirmationText: $t({ defaultMessage: 'Delete' }),
         extraContent: <>
           <Row style={{ marginTop: 10 }}>
             <Col>

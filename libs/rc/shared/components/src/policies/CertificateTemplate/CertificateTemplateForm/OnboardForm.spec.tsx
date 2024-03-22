@@ -11,13 +11,19 @@ import { certificateAuthorityList, certificateTemplateList } from '../__test__/f
 import OnboardForm from './OnboardForm'
 
 describe('OnboardForm', () => {
-  it('should render the form correctly', async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CertificateUrls.getCAs.url,
         (req, res, ctx) => res(ctx.json(certificateAuthorityList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
       )
     )
+  })
+  it('should render the form correctly', async () => {
     render(
       <Provider>
         <Form>
@@ -51,13 +57,6 @@ describe('OnboardForm', () => {
   })
 
   it('should render the form with the given data', async () => {
-    mockServer.use(
-      rest.post(
-        CertificateUrls.getCAs.url,
-        (req, res, ctx) => res(ctx.json(certificateAuthorityList))
-      )
-    )
-
     const data = {
       name: 'templateName',
       onboard: {
@@ -85,17 +84,6 @@ describe('OnboardForm', () => {
   })
 
   it('should validate duplicate certificate template name', async () => {
-    mockServer.use(
-      rest.post(
-        CertificateUrls.getCAs.url,
-        (req, res, ctx) => res(ctx.json(certificateAuthorityList))
-      ),
-      rest.post(
-        CertificateUrls.getCertificateTemplates.url,
-        (req, res, ctx) => res(ctx.json(certificateTemplateList))
-      )
-    )
-
     render(
       <Provider>
         <Form>

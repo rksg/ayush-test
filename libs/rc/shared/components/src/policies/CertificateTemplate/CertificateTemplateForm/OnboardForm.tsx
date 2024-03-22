@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { Row, Col, Form, Select, Input } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Button, Tabs }                                                           from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useLazyGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, trailingNorLeadingSpaces }                         from '@acx-ui/rc/utils'
-import { useParams }                                                              from '@acx-ui/react-router-dom'
+import { Button, Tabs }                                                       from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists, trailingNorLeadingSpaces }                     from '@acx-ui/rc/utils'
+import { useParams }                                                          from '@acx-ui/react-router-dom'
 
 import { MAX_CERTIFICATE_PER_TENANT }                                           from '../constants'
 import { onboardSettingsDescription }                                           from '../contentsMap'
@@ -41,7 +41,16 @@ export default function OnboardForm ({ editMode = false }) {
     }
   ]
   const [activeTabKey, setActiveTabKey] = useState(moreSettingsTabsInfo[0].key)
-  const [getCertificateTemplateList] = useLazyGetCertificateTemplatesQuery()
+  const { certificateNameList } = useGetCertificateTemplatesQuery(
+    { payload: { page: 1, pageSize: MAX_CERTIFICATE_PER_TENANT } },
+    {
+      selectFromResult: ({ data }) => {
+        return {
+          certificateNameList: data?.data?.map((item) =>
+            ({ name: item.name, id: item.id }))
+        }
+      }
+    })
   const { isCaOptionsLoading, caOptions } = useGetCertificateAuthoritiesQuery({
     payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
   }, {
@@ -54,14 +63,11 @@ export default function OnboardForm ({ editMode = false }) {
   })
 
   const nameValidator = async (value: string) => {
-    try {
-      const list = (await getCertificateTemplateList({
-        payload: { page: 1, pageSize: MAX_CERTIFICATE_PER_TENANT }
-      }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
-
+    if (certificateNameList) {
+      const list = certificateNameList.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value },
         $t({ defaultMessage: 'Certificate Template' }))
-    } catch {
+    } else {
       return Promise.reject($t({ defaultMessage: 'Validation error' }))
     }
   }

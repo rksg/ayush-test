@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                    from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, FILTER, SEARCH, useTableQuery }          from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                    from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                                       from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps }                                                                                                  from '@acx-ui/components'
+import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }               from '@acx-ui/rc/services'
+import { Certificate, CertificateCategoryType, CertificateStatusType, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, FILTER, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                                                                                                     from '@acx-ui/utils'
 
 import CertificateSettings from '../CertificateForm/CertificateSettings'
 
-import DetailDrawer                      from './DetailDrawer'
-import { getDisplayedCertificateStatus } from './DetailDrawerHelper'
-import RevokeForm                        from './RevokeForm'
+import DetailDrawer                                            from './DetailDrawer'
+import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDrawerHelper'
+import RevokeForm                                              from './RevokeForm'
 
 
 export default function CertificateTable ({ templateId, showGenerateCert = false }:
@@ -24,7 +24,8 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
   const [certificateDrawerOpen, setCertificateDrawerOpen] = useState(false)
   const [detailData, setDetailData] = useState<Certificate | null>(null)
-  const settingsId = templateId ? `certificate-table-${templateId}` : 'certificate-table'
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const settingsId = 'certificate-table'
   const tableQuery = useTableQuery({
     useQuery:
       templateId ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
@@ -32,6 +33,10 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
     apiParams: templateId ? { templateId } : {},
     pagination: { settingsId }
   })
+
+  useEffect(() => {
+    tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
+  }, [tableQuery])
 
   const [editCertificate] = useEditCertificateMutation()
   const [generateCertificate] = useGenerateCertificateMutation()
@@ -55,6 +60,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
         return (
           <Button type='link'
             onClick={() => {
+              setDetailId(row.id)
               setDetailData(row)
               setDetailDrawerOpen(true)
             }}>{row.commonName}
@@ -161,7 +167,8 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
   const rowActions: TableProps<Certificate>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Revoke' }),
-      disabled: ([selectedRow]) => getDisplayedCertificateStatus(selectedRow) !== 'Valid',
+      disabled: ([selectedRow]) =>
+        getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
       onClick: ([selectedRow], clearSelection) => {
         showRevokeModal(selectedRow.commonName, async (revocationReason) => {
           editCertificate({
@@ -176,7 +183,8 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
     },
     {
       label: $t({ defaultMessage: 'Unrevoke' }),
-      disabled: ([selectedRow]) => getDisplayedCertificateStatus(selectedRow) !== 'Revoked',
+      disabled: ([selectedRow]) =>
+        getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
       onClick: ([selectedRow], clearSelection) => {
         editCertificate({
           params: { templateId: selectedRow.certificateTemplateId, certificateId: selectedRow.id },

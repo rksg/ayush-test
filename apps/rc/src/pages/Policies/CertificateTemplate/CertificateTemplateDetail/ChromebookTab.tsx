@@ -20,7 +20,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         : noDataDisplay
     },
     {
-      title: 'Existing Certificates',
+      title: $t({ defaultMessage: 'Existing Certificates' }),
       content: data?.chromebook?.certRemovalType ?
         // eslint-disable-next-line max-len
         $t(existingCertLabel[data.chromebook.certRemovalType as keyof typeof existingCertLabel])

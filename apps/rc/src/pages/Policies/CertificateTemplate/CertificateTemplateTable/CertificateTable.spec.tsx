@@ -146,5 +146,7 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Revocation Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('Issued By')).toBeInTheDocument()
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
+    expect(within(row[0]).queryByText('CA Name')).not.toBeInTheDocument()
+    expect(within(row[0]).queryByText('Template')).not.toBeInTheDocument()
   })
 })

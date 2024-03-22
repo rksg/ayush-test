@@ -169,7 +169,7 @@ export default function CertificateTemplateTable () {
         entityName: 'template',
         entityValue: selectedRow.name,
         numOfEntities: 1,
-        confirmationText: 'Delete',
+        confirmationText: $t({ defaultMessage: 'Delete' }),
         extraContent: <>
           <Row style={{ marginTop: 10 }}>
             <Col>

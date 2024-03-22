@@ -223,7 +223,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !isCertificateTemplateEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
       disabled: !isCertificateTemplateEnabled
