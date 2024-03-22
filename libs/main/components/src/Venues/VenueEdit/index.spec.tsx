@@ -30,6 +30,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedUseIsConfigTemplateGA = jest.fn()
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
+}))
+
 describe('VenueEdit', () => {
   beforeEach(() => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -52,6 +58,7 @@ describe('VenueEdit', () => {
 
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseIsConfigTemplateGA.mockReturnValue(false)
   })
 
   afterEach(() => {
@@ -70,6 +77,7 @@ describe('VenueEdit', () => {
 
   it('should render correctly when it is a config template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedUseIsConfigTemplateGA.mockReturnValue(true)
 
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     await screen.findByRole('tab', { name: 'Venue Details' })
@@ -83,7 +91,6 @@ describe('VenueEdit', () => {
     // eslint-disable-next-line max-len
     const templateDetailsPath = getConfigTemplatePath(`venues/${params.venueId}/venue-details/networks`)
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
       pathname: `/${params.tenantId}/v/${templateDetailsPath}`,
       hash: '',
       search: ''
