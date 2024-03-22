@@ -139,7 +139,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
   const handleFinishFailed = (errorInfo: ValidateErrorEntity) => {
     const firstErrorTab = errorInfo.errorFields?.[0].name?.[0].toString()
-    if(firstErrorTab) {
+    if(firstErrorTab !== 'validate') {
       setActiveTab(firstErrorTab)
     }
   }
