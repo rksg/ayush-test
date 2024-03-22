@@ -1,7 +1,7 @@
 import { defineMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageNotFound, Tabs } from '@acx-ui/components'
+import { Tabs }         from '@acx-ui/components'
 import {
   ActivityTable,
   activityTableColumnState,
@@ -11,6 +11,7 @@ import {
   useEventsTableQuery
 } from '@acx-ui/rc/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { goToNotFound }  from '@acx-ui/user'
 
 export enum TimelineTabsEnum {
   ACTIVITIES = 'activities',
@@ -49,8 +50,8 @@ export function SwitchTimelineTab () {
   }] as TimelineTab[]
 
 
-  const { component } = tabs.find(({ key }) =>
-    key === activeSubTab) || { component: <PageNotFound /> }
+  const component = tabs.find(({ key }) =>
+    key === activeSubTab)?.component || goToNotFound()
 
   return <>
     <Tabs onChange={onTabChange} activeKey={activeSubTab} type='card' >

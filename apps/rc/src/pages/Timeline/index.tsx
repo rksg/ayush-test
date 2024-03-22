@@ -3,6 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { goToNotFound }                          from '@acx-ui/user'
 import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'
@@ -27,7 +28,7 @@ function Timeline () {
     events: () => <Events />,
     adminLogs: () => <AdminLogs />
   }
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return (
     <>
       <PageHeader
