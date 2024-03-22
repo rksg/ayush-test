@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { Provider }                from '@acx-ui/store'
-import { render, screen, waitFor } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { AccountManagement, AccountManagementTabEnum } from '.'
 
@@ -38,9 +38,15 @@ describe('AccountManagement', () => {
   it('should handle tab click', async () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('Onboarded Systems'))
-    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    await userEvent.click(await screen.findByText('Onboarded Systems'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/analytics/admin/onboarded', hash: '', search: ''
-    }))
+    })
+  })
+  it('should handle opening tabs in new window', async () => {
+    render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Labels'))
+    expect(window.open).toHaveBeenCalledWith('/analytics/admin/labels', '_blank')
   })
 })
