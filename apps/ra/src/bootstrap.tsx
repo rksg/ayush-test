@@ -35,7 +35,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
-function showExpiredSessionModal () {
+export function showExpiredSessionModal () {
   try {
     getIntl()
   } catch {
