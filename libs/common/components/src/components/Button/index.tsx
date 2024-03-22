@@ -2,15 +2,18 @@ import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+
 import { Tooltip } from '../Tooltip'
 
 import * as UI from './styledComponents'
 
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
 }
 
-export function Button ({ type = 'default', ...props }: ButtonProps) {
+export function Button ({ type = 'default', scopeKey, ...props }: ButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const handleOnMouseUp = useCallback(() => {
     ref.current?.blur()
