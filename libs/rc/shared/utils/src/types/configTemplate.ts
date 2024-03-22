@@ -12,7 +12,8 @@ export enum ConfigTemplateType {
   LAYER_2_POLICY = 'L2_ACL',
   LAYER_3_POLICY = 'L3_ACL',
   DEVICE_POLICY = 'DEVICE_POLICY',
-  APPLICATION_POLICY = 'APPLICATION_POLICY'
+  APPLICATION_POLICY = 'APPLICATION_POLICY',
+  PORTAL = 'PORTAL'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {
