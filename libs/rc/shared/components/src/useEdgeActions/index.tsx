@@ -7,7 +7,7 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
-  useGetEdgeSdLanViewDataListQuery,
+  useGetEdgeSdLanP2ViewDataListQuery,
   useRebootEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
@@ -217,7 +217,7 @@ export const useSdLanScopedNetworks = (networkIds: string[] | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  const { scopedNetworkIds } = useGetEdgeSdLanViewDataListQuery({
+  const { scopedNetworkIds } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: { networkIds },
       fields: ['networkIds'],
@@ -237,7 +237,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  const { networkVenueIds } = useGetEdgeSdLanViewDataListQuery({
+  const { networkVenueIds } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: { networkIds: [networkId] },
       fields: ['venueId'],

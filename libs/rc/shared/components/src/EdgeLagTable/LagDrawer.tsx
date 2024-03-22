@@ -8,9 +8,6 @@ import { useIntl }                       from 'react-intl'
 import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
-  useGetEdgeSdLanViewDataListQuery
-} from '@acx-ui/rc/services'
-import {
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
@@ -24,8 +21,9 @@ import {
   getEdgePortTypeOptions
 } from '@acx-ui/rc/utils'
 
-import { getEnabledCorePortInfo } from '../EdgeFormItem/EdgePortsGeneralBase/utils'
-import { EdgePortCommonForm }     from '../EdgeFormItem/PortCommonForm'
+import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
+import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
+import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
 
 interface LagDrawerProps {
   clusterId: string
@@ -64,31 +62,15 @@ export const LagDrawer = (props: LagDrawerProps) => {
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()
   const lagEnabled = Form.useWatch('lagEnabled', form) as boolean
 
-  const getEdgeSdLanPayload = {
-    filters: isEdgeSdLanHaReady
-      ? { edgeClusterId: [clusterId] }
-      : { edgeId: [serialNumber] },
-    fields: ['id', (isEdgeSdLanHaReady?'edgeClusterId':'edgeId')]
-  }
-  const { edgeSdLanData }
-    = useGetEdgeSdLanViewDataListQuery(
-      { payload: getEdgeSdLanPayload },
-      {
-        skip: (isEdgeSdLanReady && !Boolean(serialNumber))
-        || (isEdgeSdLanHaReady && !Boolean(clusterId)),
-        selectFromResult: ({ data, isLoading }) => ({
-          edgeSdLanData: data?.data?.[0],
-          isLoading
-        })
-      }
-    )
+  const {
+    edgeSdLanData
+  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
 
   const isEdgeSdLanRun = !!edgeSdLanData
 
@@ -175,8 +157,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
             .filter(member => member.portId === item.id)[0])
           : undefined
 
-        if (portConfig?.portType === EdgePortTypeEnum.WAN ||
-          portConfig?.portType === EdgePortTypeEnum.LAN) {
+        if (portConfig?.portType && portConfig?.portType !== EdgePortTypeEnum.UNCONFIGURED) {
           showActionModal({
             type: 'confirm',
             title: $t({ defaultMessage: 'Existing Port Configuration Clean-up' }),
@@ -238,22 +219,42 @@ export const LagDrawer = (props: LagDrawerProps) => {
   }
 
   const handlePortTypeChange = (changedValue: EdgePortTypeEnum | undefined) => {
-    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
+    if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue('ipMode', EdgeIpModeEnum.STATIC)
     }
   }
 
   const handleLagMemberChange = (portId: string, enabled: boolean) => {
     const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
-    let updated = _.cloneDeep(currentMembers)
+    let updatedMembers = _.cloneDeep(currentMembers)
 
     if(enabled) {
-      updated.push({ portId, portEnabled: lagEnabled })
+      updatedMembers.push({ portId, portEnabled: lagEnabled })
     } else {
-      _.remove(updated, item => item.portId === portId)
+      _.remove(updatedMembers, item => item.portId === portId)
     }
 
-    form.setFieldValue('lagMembers', updated)
+    const updateValues: Partial<EdgeLag> = {
+      lagMembers: updatedMembers
+    }
+
+    // check if need to reset core port enabled
+    let isLagMemberPortHasCorePort = false
+    for(let idx = 0; idx < updatedMembers.length; idx++) {
+      if (_.find(portList, { id: updatedMembers[idx].portId })?.corePortEnabled) {
+        isLagMemberPortHasCorePort = true
+        break
+      }
+    }
+
+    const currentLadId = form.getFieldValue('id') as EdgeLag['id']
+    const initialCorePortEnabled = existedLagList
+      ?.find(lag => lag.id === currentLadId)?.corePortEnabled
+    if (!isLagMemberPortHasCorePort && !initialCorePortEnabled) {
+      updateValues.corePortEnabled = false
+    }
+
+    form.setFieldsValue(updateValues)
   }
 
   const handlePortEnabled = (portId: string, enabled: boolean) => {
