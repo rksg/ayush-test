@@ -83,9 +83,9 @@ export function filterByAccess <Item> (items: Item[]) {
   })
 }
 
-export function hasPermission (props:{ scopes?:string[], allowedOperations?:string }) {
+export function hasPermission (props?:{ scopes?:string[], allowedOperations?:string }) {
   const { abacEnabled, isCustomRole } = getUserProfile()
-  const { scopes = [], allowedOperations } = props
+  const { scopes = [], allowedOperations } = props || {}
   if(!abacEnabled) {
     return hasAccess(allowedOperations)
   }else {

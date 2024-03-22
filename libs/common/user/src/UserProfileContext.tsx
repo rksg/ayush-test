@@ -22,6 +22,8 @@ export interface UserProfileContextProps {
   isPrimeAdmin: () => boolean
   accountTier?: string
   betaEnabled?: boolean
+  abacEnabled?: boolean
+  isCustomRole?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -44,17 +46,18 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const betaEnabled = (beta?.enabled === 'true')? true : false
   const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
+  const accountTier = accTierResponse?.acx_account_tier
 
+  let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
       { params: { tenantId }, payload: [abacFF] }, { skip: !Boolean(profile) }
     )
 
-  const accountTier = accTierResponse?.acx_account_tier
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
-    let isCustomRole = !!profile?.customRoleName
-    const abacEnabled = featureFlagStates?.[abacFF] ?? false
+    isCustomRole = !!profile?.customRoleName
+    abacEnabled = featureFlagStates?.[abacFF] ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
@@ -82,7 +85,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
-      betaEnabled
+      betaEnabled,
+      abacEnabled,
+      isCustomRole
     }}
     children={props.children}
   />

@@ -170,6 +170,62 @@ describe('UserProfileContext', () => {
     await checkDataRendered()
     expect(screen.queryByText('betaEnabled:true')).toBeVisible()
   })
+
+  it('user profile abac enabled case', async () => {
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          ...mockedUserProfile,
+          scope: ['switch-r'],
+          customRoleName: 'CUSTOM_USER'
+        }))
+      ),
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true })))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:true')).toBeVisible()
+  })
+
+  it('user profile special abac disabled case', async () => {
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          ...mockedUserProfile,
+          scope: ['switch-r'],
+          customRoleName: 'CUSTOM_USER'
+        }))
+      ),
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false })))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+  })
 })
 
 const checkDataRendered = async () => {

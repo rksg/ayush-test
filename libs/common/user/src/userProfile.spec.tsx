@@ -2,8 +2,18 @@ import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import { RolesEnum }               from '@acx-ui/types'
 
-import { SwitchScopes }                                                                                                                 from './types'
-import { filterByAccess, getUserProfile, hasAccess, hasRoles, setUserProfile, WrapIfAccessible, getShowWithoutRbacCheckKey, AuthRoute } from './userProfile'
+import { SwitchScopes } from './types'
+import {
+  AuthRoute,
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  getUserProfile,
+  hasAccess,
+  hasRoles,
+  hasPermission,
+  setUserProfile,
+  WrapIfAccessible
+} from './userProfile'
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean, scopes?:string[]) {
   const profile = getUserProfile()
@@ -13,7 +23,7 @@ function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
       ...profile.profile,
       roles: [role]
     },
-    allowedOperations: ['GET:/networks'],
+    allowedOperations: ['GET:/networks', 'GET:/switches'],
     accountTier: '',
     betaEnabled: false,
     abacEnabled: abacEnabled ?? false,
@@ -116,6 +126,53 @@ describe('filterByAccess', () => {
         key: getShowWithoutRbacCheckKey('test')
       }
     ])).toHaveLength(1)
+  })
+})
+
+describe('hasPermission', () => {
+  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+
+  describe('ABAC FF disabled', () => {
+    it('check ADMIN user permission', () => {
+      expect(hasPermission()).toBe(true)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+    })
+    it('check READ ONLY user permission', () => {
+      setRole(RolesEnum.READ_ONLY)
+      expect(hasPermission()).toBe(false)
+      expect(hasPermission({ allowedOperations: 'GET:/networks' })).toBe(true)
+      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(
+        hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/networks' })
+      ).toBe(true)
+    })
+  })
+
+  describe('ABAC FF enabled', () => {
+    it('check ADMIN user permission', () => {
+      setRole(RolesEnum.ADMINISTRATOR, true)
+      expect(hasPermission()).toBe(true)
+      expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
+      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+    })
+
+    it('check CUSTOM user permission', () => {
+      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ])
+      expect(hasPermission()).toBe(true)
+      expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
+      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
+      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(
+        hasPermission({ scopes: [SwitchScopes.READ], allowedOperations: 'GET:/switches' })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/switches' })
+      ).toBe(false)
+    })
   })
 })
 
