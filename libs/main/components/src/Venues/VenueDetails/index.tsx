@@ -1,6 +1,6 @@
-import { useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
-import { goToNotFound, hasAccess }         from '@acx-ui/user'
+import { useConfigTemplate }       from '@acx-ui/rc/utils'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { goToNotFound, hasAccess } from '@acx-ui/user'
 
 import { VenueAnalyticsTab } from './VenueAnalyticsTab'
 import { VenueClientsTab }   from './VenueClientsTab'
