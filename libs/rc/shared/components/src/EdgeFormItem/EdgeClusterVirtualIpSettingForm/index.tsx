@@ -43,6 +43,7 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
                   fields.map((field, index) =>
                     <Col key={`vip-${field.key}`} span={24}>
                       <VipCard
+                        rootNamePath={['vipConfig']}
                         field={field}
                         index={index}
                         remove={remove}

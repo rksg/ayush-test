@@ -1,8 +1,8 @@
 import { Col, Form, FormListFieldData, Input, Row } from 'antd'
 import { useIntl }                                  from 'react-intl'
 
-import { Button, Fieldset }    from '@acx-ui/components'
-import { DeleteOutlinedIcon }  from '@acx-ui/icons'
+import { Button, Fieldset, useStepFormContext } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                   from '@acx-ui/icons'
 import {
   EdgeIpModeEnum,
   EdgePortInfo,
@@ -28,6 +28,7 @@ interface VipCardProps {
       vip: string
     }
   }
+  rootNamePath?: string[],
   nodeList?: EdgeStatus[]
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
@@ -36,12 +37,18 @@ interface VipCardProps {
 
 export const VipCard = (props: VipCardProps) => {
   const {
-    field, index, remove, vipConfig, nodeList,
+    field, index, remove, vipConfig, rootNamePath = [], nodeList,
     lanInterfaces
   } = props
   const { $t } = useIntl()
-
+  const { form } = useStepFormContext()
   const isCluster = (nodeList?.length ?? 0) > 1
+
+  const handleTableClear = () => {
+    form.setFieldValue(rootNamePath.concat([`${index}`, 'vip']), '')
+    if (!isCluster)
+      form.validateFields()
+  }
 
   return (
     <Fieldset
@@ -87,6 +94,7 @@ export const VipCard = (props: VipCardProps) => {
               nodeList={nodeList}
               lanInterfaces={lanInterfaces}
               selectedInterfaces={vipConfig ? Object.values(vipConfig) : []}
+              onClear={handleTableClear}
             />
           </Form.Item>
         </Col>

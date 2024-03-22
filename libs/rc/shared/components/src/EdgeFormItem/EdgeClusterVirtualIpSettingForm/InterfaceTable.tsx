@@ -20,6 +20,7 @@ interface InterfaceTableProps {
     [key: string]: EdgePortInfo[]
   }
   selectedInterfaces?: VirtualIpFormType['vipConfig']
+  onClear?: () => void
 }
 
 interface InterfaceTableDataType {
@@ -31,7 +32,8 @@ interface InterfaceTableDataType {
 export const InterfaceTable = (props: InterfaceTableProps) => {
   const {
     value, onChange, index = 0, nodeList,
-    lanInterfaces,selectedInterfaces
+    lanInterfaces, selectedInterfaces,
+    onClear
   } = props
   const { $t } = useIntl()
   const [selectInterfaceDrawerVisible, setSelectInterfaceDrawerVisible] = useState(false)
@@ -57,6 +59,7 @@ export const InterfaceTable = (props: InterfaceTableProps) => {
 
   const clearData = () => {
     onChange?.(undefined)
+    onClear?.()
   }
 
   const columns = [
