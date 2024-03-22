@@ -58,7 +58,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const disableBtn = mfaEnabled && !otpToggle && !authAppToggle
 
   return <Modal
-    title={$t({ defaultMessage: 'Multi-Factors Authentication Setup' })}
+    title={$t({ defaultMessage: 'Multi-Factor Authentication Setup' })}
     width={510}
     visible={true}
     okText={$t({ defaultMessage: 'Log in' })}

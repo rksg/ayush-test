@@ -34,7 +34,7 @@ type WrapperProps = {
   disabled: boolean
 }
 export const Wrapper = styled.div<WrapperProps>`
-  width: 100%;
+  width: 260px;
   height: 142px;
   max-height: 142px;
 
@@ -87,12 +87,9 @@ export const Wrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 0
+    padding: 0 10px;
     font-size: var(--acx-body-3-font-size);
     line-height: var(--acx-body-3-line-height);
-    ${(props) => (props.hasWarning
-    ? ''
-    : 'padding-bottom: 1.33em;')}
   }
   .ant-card-actions {
     padding: 0;
