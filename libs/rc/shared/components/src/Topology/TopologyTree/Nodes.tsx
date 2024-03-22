@@ -1,5 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from 'react'
 
+import { useParams } from 'react-router-dom'
+
 import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
 import { Node }                                             from '@acx-ui/rc/utils'
 
@@ -20,6 +22,7 @@ interface NodeProps {
 }
 
 const Nodes: React.FC<NodeProps> = (props) => {
+  const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
   const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
@@ -87,7 +90,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 fill: color[ancestorName],
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
-              className={'node tree-node'}
+              className={`node tree-node
+                ${params?.switchId === node.data.id && 'focusNode'} 
+                ${params?.apId === node.data.id && 'focusNode'}`}
               id={node.data.id}
             >
               <g
