@@ -17,9 +17,9 @@ jest.mock('../Support', () => ({
 }))
 
 
-jest.mock('../ＯnboardedSystems', () => ({
-  ...jest.requireActual('../ＯnboardedSystems'),
-  Support: () => <div data-testid='ＯnboardedSystems' />
+jest.mock('../OnboardedSystems', () => ({
+  ...jest.requireActual('../OnboardedSystems'),
+  Support: () => <div data-testid='OnboardedSystems' />
 }))
 
 describe('AccountManagement', () => {

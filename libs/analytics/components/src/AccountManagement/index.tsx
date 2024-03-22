@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { OnboardedSystems } from '../OnboardedSystems'
 import { Support }          from '../Support'
-import { OnboardedSystems } from '../ＯnboardedSystems'
 
 import { TabNewTabLink, TabTenantLink } from './styledComponents'
 
