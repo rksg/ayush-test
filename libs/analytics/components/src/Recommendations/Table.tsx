@@ -19,7 +19,7 @@ import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions, isCrrmOptimizationMatched, getAvailableActions, RecommendationActionType } from './RecommendationActions'
+import { isCrrmOptimizationMatched, getAvailableActions, RecommendationActionType } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -151,7 +151,8 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
       label: $t(selectedRecommendation?.isMuted
@@ -168,7 +169,11 @@ export function RecommendationTable (
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     },
     ...(selectedRecommendation
-      ? getAvailableActions(selectedRecommendation as RecommendationActionType, true)
+      ? getAvailableActions(
+        selectedRecommendation as RecommendationActionType,
+        isRecommendationRevertEnabled,
+        true
+      )
         .filter(action => !action.icon.props.disabled)
         .map((action) => {
           return {
@@ -311,15 +316,6 @@ export function RecommendationTable (
       },
       sorter: { compare: sortProp('status', defaultSort) },
       filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Actions' }),
-      key: 'id',
-      dataIndex: 'id',
-      width: 100,
-      fixed: 'right',
-      className: 'actions-column',
-      render: (_, value) => <RecommendationActions recommendation={value} />
     },
     ...(showCrrm && isCrrmPartialEnabled ? [{
       title: $t({ defaultMessage: 'Full Optimization' }),

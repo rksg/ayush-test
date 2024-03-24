@@ -60,7 +60,7 @@ type ActionButtonProps = RecommendationActionType & {
   disabled: boolean
   type: keyof typeof actionTooltip
   initialDate: 'scheduledAt' | 'futureDate',
-  showText? : boolean
+  showTextOnly? : boolean
 }
 
 function ApplyCalendar ({
@@ -70,7 +70,7 @@ function ApplyCalendar ({
   code,
   metadata,
   initialDate,
-  showText
+  showTextOnly
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
@@ -138,7 +138,7 @@ function ApplyCalendar ({
   return <DateTimePicker
     key={`apply-${id}`}
     title={$t(actionTooltip[type].text)}
-    icon={showText
+    icon={showTextOnly
       ? <UI.ActionsText>{$t(actionTooltip[type].text)}</UI.ActionsText>
       : <UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
@@ -150,14 +150,14 @@ function ApplyCalendar ({
 }
 
 function CancelCalendar ({
-  disabled,id,showText
+  disabled,id,showTextOnly
 }: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
   return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
-      : showText
+      : showTextOnly
         ? <UI.ActionsText onClick={async () => { await cancelRecommendation({ id }).unwrap() }} >
           {$t({ defaultMessage: 'Cancel' })}
         </UI.ActionsText>
@@ -187,9 +187,10 @@ export const isCrrmOptimizationMatched = (
 
 export const getAvailableActions = (
   recommendation: RecommendationActionType,
-  showText?: boolean) => {
+  isRecommendationRevertEnabled: boolean,
+  showTextOnly?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
-  const props = { ...recommendation, showText }
+  const props = { ...recommendation, showTextOnly }
   if (isMuted) {
     return [
       {
@@ -310,11 +311,20 @@ export const getAvailableActions = (
   }
 }
 
-export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
-  const { recommendation } = props
+export const RecommendationActions = ({
+  recommendation,
+  showTextOnly = false
+}: {
+  recommendation: RecommendationActionType,
+  showTextOnly?: boolean
+}) => {
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
-  const actionButtons = getAvailableActions(recommendation, isRecommendationRevertEnabled)
+  const actionButtons = getAvailableActions(
+    recommendation,
+    isRecommendationRevertEnabled,
+    showTextOnly
+  )
   return <UI.Actions>
     {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
   </UI.Actions>
