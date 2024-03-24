@@ -238,7 +238,7 @@ function Table <RecordType extends Record<string, any>> ({
       : props.columns
 
     return cols.map(column => ({
-      ...column,
+      ..._.omit(column, 'scopeKey'),
       tooltip: null,
       title: column.tooltip
         ? <UI.TitleWithTooltip>

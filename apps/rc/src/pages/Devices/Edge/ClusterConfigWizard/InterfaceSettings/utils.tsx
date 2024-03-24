@@ -7,7 +7,8 @@ import {
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
-  EdgeSerialNumber
+  EdgeSerialNumber,
+  VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
 import {
@@ -81,6 +82,7 @@ export const getLanInterfaces = (
         id: `${item.id}`,
         serialNumber: edgeNode.serialNumber,
         portName: `lag${item.id}`,
+        ipMode: item.ipMode,
         ip: item.ip ?? '',
         subnet: item.subnet ?? '',
         mac: '',
@@ -98,6 +100,7 @@ export const getLanInterfaces = (
           id: item.id,
           serialNumber: edgeNode.serialNumber,
           portName: item.interfaceName ?? '',
+          ipMode: item.ipMode,
           ip: item.ip,
           subnet: item.subnet,
           mac: item.mac,
@@ -324,6 +327,7 @@ export const transformFromFormToApiData =
     })
   }
   const virtualIpSettings = data.vipConfig.map(item => {
+    if(!Boolean(item.interfaces)) return undefined
     const ports = Object.entries(item.interfaces).map(([, v2]) => {
       return {
         serialNumber: v2.serialNumber,
@@ -335,7 +339,7 @@ export const transformFromFormToApiData =
       timeoutSeconds: data.timeout,
       ports
     }
-  })
+  }).filter(item => Boolean(item)) as VirtualIpSetting[]
   return {
     lagSettings: data.lagSettings,
     portSettings,
