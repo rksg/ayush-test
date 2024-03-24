@@ -68,6 +68,7 @@ export interface MspEc {
   assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+  accountTier?: MspEcTierEnum;
 }
 
 export interface MspEcData {
@@ -452,4 +453,13 @@ export interface MspRecCustomer {
 export enum MspEcTierEnum {
   Essentials = 'Gold',
   Professional = 'Platinum'
+}
+
+export interface MspEcWithVenue extends MspEc {
+  isFirstLevel?: boolean,
+  children: {
+    name: string,
+    id: string,
+    selected: boolean
+  }[]
 }

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery } from '@acx-ui/rc/services'
 
-import { retrievedCompatibilitiesOptions } from '../../ApCompatibilityDrawer'
+import { retrievedCompatibilitiesOptions } from '../../ApCompatibility'
 import { ApTable }                         from '../../ApTable'
 
 

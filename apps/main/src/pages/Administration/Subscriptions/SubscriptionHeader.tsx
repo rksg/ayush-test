@@ -108,7 +108,9 @@ export const SubscriptionHeader = () => {
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.filter(data =>
-              data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+              (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
+               data.value !== EntitlementDeviceType.ANALYTICS
+            )
               .map((item) => {
                 const summary = summaryData[item.value]
                 return summary ? <SubscriptionUtilizationWidget

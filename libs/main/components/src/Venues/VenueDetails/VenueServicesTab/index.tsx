@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Tabs }                                                                                                               from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                     from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                     from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                                                 from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                       from '@acx-ui/feature-toggle'
+import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                       from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -27,6 +27,7 @@ export function VenueServicesTab () {
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE) && !isTemplate
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
 
   const { $t } = useIntl()
 
@@ -65,7 +66,7 @@ export function VenueServicesTab () {
       filters: { venueInfoIds: [venueId] }
     }
   }, {
-    skip: !!!venueId || !isEdgeEnabled,
+    skip: !!!venueId || !isEdgeEnabled || !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
         hasNsg: data?.data[0]?.id,
@@ -74,7 +75,7 @@ export function VenueServicesTab () {
     }
   })
 
-  const { edgeSdLanData } = useGetEdgeSdLanViewDataListQuery(
+  const { edgeSdLanData } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
       filters: { venueId: [venueId] }
     } }, {
@@ -111,7 +112,7 @@ export function VenueServicesTab () {
           </Tabs>
         </Tabs.TabPane>
         {
-          isEdgeEnabled && isEdgeReady && hasNsg &&
+          isEdgeEnabled && isEdgeReady && hasNsg && isEdgePinReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Personal Identity Network' })}
             key={ServiceType.NETWORK_SEGMENTATION}

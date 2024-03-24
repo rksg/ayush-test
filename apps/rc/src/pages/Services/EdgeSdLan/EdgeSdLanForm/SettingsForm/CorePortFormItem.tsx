@@ -77,6 +77,8 @@ const PortsFormEditContextProvider = (props: {
       setFormControl
     }}>
       <EdgePortsForm
+        // for BC phase1 & phase2
+        clusterId=''
         serialNumber={edgeId}
         onTabChange={handleTabChange}
         onCancel={handleClose}

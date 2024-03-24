@@ -1,6 +1,6 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { IntlShape }         from 'react-intl'
+import { DefaultOptionType }      from 'antd/lib/select'
+import _, { difference, flatMap } from 'lodash'
+import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -10,6 +10,17 @@ import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, Edg
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
 
 const Netmask = require('netmask').Netmask
+
+export const edgePhysicalPortInitialConfigs = {
+  portType: EdgePortTypeEnum.UNCONFIGURED,
+  ipMode: EdgeIpModeEnum.DHCP,
+  ip: '',
+  subnet: '',
+  gateway: '',
+  enabled: true,
+  natEnabled: true,
+  corePortEnabled: false
+}
 
 export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   if(!alarmSummary) return EdgeServiceStatusEnum.UNKNOWN
@@ -119,16 +130,15 @@ export const getEdgePortIpModeString = ($t: IntlShape['$t'], type: EdgeIpModeEnu
 export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus | EdgeLag) => {
   const payload = _.cloneDeep(formData)
 
+  if (payload.ipMode === EdgeIpModeEnum.DHCP || payload.portType === EdgePortTypeEnum.CLUSTER) {
+    payload.gateway = ''
+  }
+
   if (payload.portType === EdgePortTypeEnum.LAN) {
 
     // LAN port is not allowed to configure NAT enable
     if (payload.natEnabled) {
       payload.natEnabled = false
-    }
-
-    // should clear gateway when core port using DHCP.
-    if (payload.corePortEnabled === true && payload.ipMode === EdgeIpModeEnum.DHCP) {
-      payload.gateway = ''
     }
 
     // normal(non-corePort) LAN port
@@ -271,4 +281,88 @@ export const validateSubnetIsConsistent = (
     }
   }
   return Promise.resolve()
+}
+
+const isUnique = (value: string, index: number, array: string[]) => {
+  return array.indexOf(value) === array.lastIndexOf(value)
+}
+
+export const validateUniqueIp = (ips: string[], value?: string) => {
+  if(!Boolean(value)) return Promise.resolve()
+  const { $t } = getIntl()
+
+  if(ips.every(isUnique)) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t({ defaultMessage: 'IP address cannot be the same as other nodes.' }))
+}
+
+export const validateClusterInterface = (interfaceNames: string[]) => {
+  if((interfaceNames?.length ?? 0) <= 1) return Promise.resolve()
+  const { $t } = getIntl()
+  for(let i=0; i<interfaceNames.length; i++){
+    for(let j=i+1; j<interfaceNames.length; j++) {
+      if (interfaceNames[i].charAt(0) !== interfaceNames[j].charAt(0)) {
+        return Promise.reject(
+          $t({ defaultMessage: `Make sure you select the same interface type
+          (physical port or LAG) as that of another node in this cluster.` })
+        )
+      }
+    }
+  }
+  return Promise.resolve()
+}
+
+export const isAllPortsLagMember = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+  const portIds = portsData.map(port => port.id)
+  const lagMemberPortIds = flatMap(lagData, (lag => lag.lagMembers?.map(m => m.portId)))
+
+  const isAllPortsLagMember = portIds.length && difference(portIds, lagMemberPortIds).length === 0
+  return isAllPortsLagMember
+}
+
+export const getLagGatewayCount = (lagData: EdgeLag[]) => {
+  const lagWithGateway = lagData.filter(lag =>
+    (lag.lagEnabled && lag.lagMembers.length && lag.lagMembers.some(memeber => memeber.portEnabled))
+    && (lag.portType === EdgePortTypeEnum.WAN
+      || (lag.portType === EdgePortTypeEnum.LAN && lag.corePortEnabled))
+  ).length
+  return lagWithGateway
+}
+
+export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+  const { $t } = getIntl()
+
+  const allPortsLagMember = isAllPortsLagMember(portsData, lagData)
+  const lagWithGateway = getLagGatewayCount(lagData)
+
+  if (allPortsLagMember && lagWithGateway === 0) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to form a cluster.' }))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) => {
+  const { $t } = getIntl()
+
+  const portWithGateway = portsData.filter(port =>
+    port.enabled
+    && (port.portType === EdgePortTypeEnum.WAN
+      || (port.portType === EdgePortTypeEnum.LAN && port.corePortEnabled))
+  ).length
+
+  const lagWithGateway = getLagGatewayCount(lagData)
+
+  const totoalGateway = portWithGateway + lagWithGateway
+
+  if (totoalGateway === 0) {
+    // eslint-disable-next-line max-len
+    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to form a cluster.' }))
+  } else if (totoalGateway > 1) {
+    return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
+  } else {
+    return Promise.resolve()
+  }
 }

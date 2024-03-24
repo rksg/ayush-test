@@ -17,8 +17,8 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  NetworkSaveData,
-  NetworkTypeEnum } from '@acx-ui/rc/utils'
+  NetworkTypeEnum,
+  Network } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeSdLanServiceProps {
@@ -103,7 +103,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: activate
+          isGuestTunnelUtilized: !isGuest ? false : activate
         },
         callback: cb
       }).unwrap()
@@ -117,7 +117,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
   const handleActivateChange = async (
     fieldName: string,
-    rowData: NetworkSaveData,
+    rowData: Network,
     checked: boolean
   ) => {
     const networkId = rowData.id!
@@ -125,14 +125,17 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
     try {
       if (data.isGuestTunnelEnabled
-      && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
         const isGuestNetwork = fieldName === 'activatedGuestNetworks'
-        await toggleNetwork(isGuestNetwork, networkId, checked)
+                              || (fieldName === 'activatedNetworks' && checked)
+        await toggleNetwork(isGuestNetwork, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       } else {
-        await toggleNetwork(false, networkId, checked)
+        await toggleNetwork(false, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       }
-
-      setIsActivateUpdating(false)
     } catch(err) {
       setIsActivateUpdating(false)
       // eslint-disable-next-line no-console

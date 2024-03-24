@@ -5,6 +5,8 @@ import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { DateTimePicker, Tooltip, showToast } from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   CalendarOutlined,
@@ -72,10 +74,14 @@ function ApplyCalendar ({
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const onApply = (date: Moment) => {
     const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
     if (futureTime <= date){
-      scheduleRecommendation({ id, scheduledAt: date.toISOString() })
+      scheduleRecommendation({
+        id, type, scheduledAt: date.toISOString(), isRecommendationRevertEnabled
+      })
     } else {
       showToast({
         type: 'error',
@@ -217,17 +223,24 @@ export const getAvailableActions = (
         }
       ]
     case 'applyscheduled':
+      const appliedOnce = recommendation?.statusTrail?.filter(
+        ({ status }) => status === 'applied').length !== 0
       return [
         {
           icon: actions.schedule({
             ...props, disabled: false, type: 'ApplyScheduled', initialDate: 'scheduledAt'
           })
         },
-        recommendation?.statusTrail?.filter(trail => trail.status === 'applied').length === 0
-          && { icon: actions.cancel({ ...props, disabled: false }) },
+        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
-            ...props, disabled: true, type: 'Revert', initialDate: 'futureDate'
+            ...props,
+            disabled: !(isRecommendationRevertEnabled &&
+              appliedOnce &&
+              recommendation.code.startsWith('c-crrm')
+            ),
+            type: 'Revert',
+            initialDate: 'futureDate'
           })
         }
       ].filter(Boolean) as { icon: JSX.Element }[]
@@ -261,6 +274,21 @@ export const getAvailableActions = (
         }
       ]
     case 'applyfailed':
+      return [
+        {
+          icon: actions.schedule({
+            ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
+          })
+        },
+        {
+          icon: actions.schedule({
+            ...props,
+            disabled: !(isRecommendationRevertEnabled && recommendation.code.startsWith('c-crrm')),
+            type: 'Revert',
+            initialDate: 'futureDate'
+          })
+        }
+      ]
     case 'beforeapplyinterrupted':
     case 'afterapplyinterrupted':
     case 'reverted':
@@ -284,7 +312,9 @@ export const getAvailableActions = (
 
 export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
   const { recommendation } = props
-  const actionButtons = getAvailableActions(recommendation)
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
+  const actionButtons = getAvailableActions(recommendation, isRecommendationRevertEnabled)
   return <UI.Actions>
     {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
   </UI.Actions>

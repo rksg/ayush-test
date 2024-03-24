@@ -38,6 +38,7 @@ export * from './property'
 export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
+export * from './topology'
 
 export interface CommonResult {
   requestId: string
