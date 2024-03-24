@@ -50,7 +50,7 @@ function getFutureTime (value: Moment) {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-type RecommendationActionType = Pick<
+export type RecommendationActionType = Pick<
   // eslint-disable-next-line max-len
   RecommendationListItem, 'id' | 'code' | 'statusEnum' | 'metadata' | 'isMuted' | 'statusTrail' | 'preferences'>
 

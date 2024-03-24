@@ -19,7 +19,7 @@ import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions, isCrrmOptimizationMatched, getAvailableActions, actionTooltip } from './RecommendationActions'
+import { RecommendationActions, isCrrmOptimizationMatched, getAvailableActions, RecommendationActionType } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -134,7 +134,6 @@ export const crrmStateSort = (itemA: RecommendationListItem, itemB: Recommendati
   return defaultSort(stateA.order, stateB.order)
 }
 
-
 export function RecommendationTable (
   { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
 ) {
@@ -152,6 +151,7 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
+
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     {
       label: $t(selectedRecommendation?.isMuted
@@ -167,16 +167,16 @@ export function RecommendationTable (
         && selectedRecommendation.statusEnum
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...(selectedRecommendation ? getAvailableActions(selectedRecommendation as any, true)
-      .filter(action => !action.icon.props.disabled)
-      .map((action) => {
-        return {
-          label: action.icon as unknown as string,
-          onClick: () => {},
-          disabled: false
-        }
-      }): [])
+    ...(selectedRecommendation
+      ? getAvailableActions(selectedRecommendation as RecommendationActionType, true)
+        .filter(action => !action.icon.props.disabled)
+        .map((action) => {
+          return {
+            label: action.icon as unknown as string,
+            onClick: () => {},
+            disabled: false
+          }
+        }): [])
   ]
 
   const optimizationTooltipText = get('IS_MLISA_SA')
