@@ -134,7 +134,7 @@ export const api = recommendationApi.injectEndpoints({
       query: ({ id }) => ({
         document: gql`
           query ConfigRecommendationCode($id: String) {
-            recommendation(id: $id) { id code }
+            recommendation(id: $id) { id code status }
           }
         `,
         variables: { id }

@@ -206,7 +206,7 @@ const probeflexConfig = (status: Recommendation['status']): RecommendationConfig
     ]
     : [
       {
-        key: 'prev-avg-mgmt-traffic-per-client',
+        key: 'curr-avg-mgmt-traffic-per-client',
         label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
         format: formatter('bytesFormat'),
         deltaSign: 'none'
@@ -583,19 +583,19 @@ export const codes = (status: Recommendation['status']) => ({
   },
   'c-probeflex-24g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe supression' }),
+    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression for 2.4 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   },
   'c-probeflex-5g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe supression' }),
+    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression for 5 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   },
   'c-probeflex-6g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe supression' }),
+    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression 6 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   }

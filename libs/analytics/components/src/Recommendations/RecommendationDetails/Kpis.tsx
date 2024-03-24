@@ -95,8 +95,7 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 
 export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const { kpis } = getKpis(details)
-  const { monitoring } = details
+  const { kpis, monitoring } = getKpis(details)
 
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>
