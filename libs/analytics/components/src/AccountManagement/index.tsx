@@ -3,7 +3,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Support } from '../Support'
+import { Support }       from '../Support'
+import { WebhooksTable } from '../Webhooks'
 
 import { TabNewTabLink, TabTenantLink } from './styledComponents'
 
@@ -64,8 +65,8 @@ const useTabs = () : Tab[] => {
   }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
-    title: <TabNewTabLink to={'/analytics/admin/webhooks'}>
-      {$t({ defaultMessage: 'Webhooks' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Webhooks' }),
+    component: <WebhooksTable />
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,

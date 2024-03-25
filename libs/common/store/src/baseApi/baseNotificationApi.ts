@@ -21,6 +21,6 @@ export const notificationApi = createApi({
   }),
   reducerPath: 'analytics-notification-api',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Notification'],
+  tagTypes: ['Notification', 'Webhook'],
   endpoints: () => ({})
 })

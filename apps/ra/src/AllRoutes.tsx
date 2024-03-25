@@ -146,6 +146,8 @@ function AllRoutes () {
         <Route path='users' element={<Users/>} />
         <Route path='support'
           element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />
+        <Route path='webhooks'
+          element={<AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>} />
       </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
