@@ -45,7 +45,7 @@ export const EdgeClusterTypeCard = ({
             </Tooltip>]
             : undefined}
         >
-          <UI.CardBody size={5} direction='vertical' align='center'>
+          <UI.CardBody size={10} direction='vertical' align='center'>
             <UI.IconWrapper children={icon} />
             <UI.Title children={title} />
           </UI.CardBody>
