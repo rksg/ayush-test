@@ -167,6 +167,7 @@ export const Links: React.FC<LinksProps> = (props) => {
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}
+            id={`link_${link.source.data.id}_${link.target.data.id}`}
           >
             <path
               d={linkCustom(link, linksInfo)}

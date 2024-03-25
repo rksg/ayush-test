@@ -321,6 +321,8 @@ const editApDetail = {
   healthStatus: 'Excellent'
 }
 
+const vlansPortList = [{ vlanId: 1 },{ vlanId: 10 },{ vlanId: 11 },{ vlanId: 13 },{ vlanId: 200 }]
+
 describe('Topology', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -332,6 +334,10 @@ describe('Topology', () => {
         (req, res, ctx) => {return res(ctx.json(graphData))}),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnionByVenue.url,
+        (req, res, ctx) => res(ctx.json(vlansPortList))
+      ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [editApDetail], totalCount: 0 })))
@@ -347,8 +353,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
@@ -378,8 +386,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
@@ -404,8 +414,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
@@ -433,8 +445,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
@@ -461,8 +475,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
@@ -484,8 +500,10 @@ describe('Topology', () => {
     const scale = 1
     const translate = [0,0]
     const setTranslate = jest.fn()
+    const onDrag = false
+    const setOnDrag = jest.fn()
     render(<Provider>
-      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+      <TopologyTreeContext.Provider value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
         <TopologyGraph
           showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}
           venueId='7231da344778480d88f37f0cca1c534f' />
