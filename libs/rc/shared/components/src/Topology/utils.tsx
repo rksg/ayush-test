@@ -215,26 +215,6 @@ export function getPathColor (connectionStatus: ConnectionStatus): string{
   }
 }
 
-export const switchStatus = (switchStatus: SwitchStatusEnum) => {
-  const { $t } = getIntl()
-  switch (switchStatus) {
-    case SwitchStatusEnum.OPERATIONAL:
-      return $t({ defaultMessage: 'Operational' })
-    case SwitchStatusEnum.DISCONNECTED:
-      return $t({ defaultMessage: 'Disconnected' })
-    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
-      return $t({ defaultMessage: 'Never contacted cloud' })
-    case SwitchStatusEnum.INITIALIZING:
-      return $t({ defaultMessage: 'Initializing' })
-    case SwitchStatusEnum.APPLYING_FIRMWARE:
-      return $t({ defaultMessage: 'Firmware updating' })
-    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
-      return $t({ defaultMessage: 'Never contacted Active Switch' })
-    default:
-      return $t({ defaultMessage: 'Never contacted cloud' })
-  }
-}
-
 export function getMeshRole (meshRole: APMeshRole) {
   const { $t } = getIntl()
 

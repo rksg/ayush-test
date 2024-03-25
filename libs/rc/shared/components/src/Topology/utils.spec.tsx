@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { render } from '@acx-ui/test-utils'
 
-import { getDeviceColor, getPathColor, getDeviceIcon, switchStatus, getMeshRole } from './utils'
+import { getDeviceColor, getPathColor, getDeviceIcon, getMeshRole } from './utils'
 
 describe('Topology utils', () => {
   it('test getDeviceColor', async () => {
@@ -33,15 +33,7 @@ describe('Topology utils', () => {
     expect(getDeviceColor(SwitchStatusEnum.DISCONNECTED)).toBe('var(--acx-semantics-red-70)')
   })
 
-  it('test switchStatus', async () => {
-    expect(switchStatus(SwitchStatusEnum.OPERATIONAL)).toBe('Operational')
-    expect(switchStatus(SwitchStatusEnum.DISCONNECTED)).toBe('Disconnected')
-    expect(switchStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('Never contacted cloud')
-    expect(switchStatus(SwitchStatusEnum.INITIALIZING)).toBe('Initializing')
-    expect(switchStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toBe('Firmware updating')
-    expect(switchStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED))
-      .toBe('Never contacted Active Switch')
-
+  it('test getPatchColor', async () => {
     expect(getPathColor(ConnectionStatus.Good)).toBe('var(--acx-semantics-green-50)')
     expect(getPathColor(ConnectionStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
     expect(getPathColor(ConnectionStatus.Disconnected)).toBe('var(--acx-neutrals-50)')
