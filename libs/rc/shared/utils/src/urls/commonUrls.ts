@@ -9,6 +9,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
+  getWifiNetworksList: {
+    method: 'post',
+    url: '/wifiNetworks/query',
+    newApi: true
+  },
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',
@@ -58,6 +63,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/activities/query',
     oldUrl: '/api/tenant/:tenantId/activity/query',
+    newApi: true
+  },
+  getActivityApCompatibilitiesList: {
+    method: 'post',
+    url: '/apCompatibilities/activities/:activityId/query',
     newApi: true
   },
   getEventList: {

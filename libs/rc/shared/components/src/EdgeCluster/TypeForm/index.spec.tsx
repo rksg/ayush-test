@@ -80,14 +80,15 @@ describe('Edge Cluster Type Form', () => {
     expect(addBtn).toBeVisible()
     await userEvent.click(addBtn)
     expect(mockedOnFinish).toBeCalledTimes(1)
-    expect(mockedOnFinish).toBeCalledWith({ field1: 'item-a' })
+    const call = mockedOnFinish.mock.calls[0]
+    expect(call[0]).toStrictEqual({ field1: 'item-a' })
   })
 
   it('should display custom header', async () => {
     render(
       <TypeForm
         content={<div data-testid='rc-typeForm-content' />}
-        header={() => <div data-testid='rc-typeForm-header' />}
+        header={<div data-testid='rc-typeForm-header' />}
       />)
 
     expect(await screen.findByTestId('rc-typeForm-header')).toBeVisible()

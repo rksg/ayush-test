@@ -53,8 +53,7 @@ export function AaaSettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
-          macAddressAuthentication: data.wlan?.macAddressAuthentication,
-          macAuthMacFormat: data.wlan?.macAuthMacFormat
+          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
         }
       })
     }
@@ -170,7 +169,8 @@ function SettingsForm () {
     const { setData, data } = useContext(NetworkFormContext)
     const form = Form.useFormInstance()
     const enableAccountingService = useWatch('enableAccountingService', form)
-    const enableMacAuthentication = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
+    const enableMacAuthentication = useWatch<boolean>(
+      ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
     const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
@@ -181,7 +181,10 @@ function SettingsForm () {
         ...{
           wlan: {
             ...data?.wlan,
-            macAddressAuthentication: checked
+            macAddressAuthenticationConfiguration: {
+              ...data?.wlan?.macAddressAuthenticationConfiguration,
+              macAddressAuthentication: checked
+            }
           }
         }
       })
@@ -247,11 +250,12 @@ function SettingsForm () {
           )}
         </div>
         {support8021xMacAuth &&
-        <>
+        <div>
           <Form.Item>
             <Form.Item
               noStyle
-              name={['wlan', 'macAddressAuthentication']}
+              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+              initialValue={false}
               valuePropName='checked'>
               <Switch
                 disabled={editMode}
@@ -269,7 +273,7 @@ function SettingsForm () {
           {enableMacAuthentication &&
             <Form.Item
               label={$t({ defaultMessage: 'MAC Address Format' })}
-              name={['wlan', 'macAuthMacFormat']}
+              name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
               initialValue={MacAuthMacFormatEnum.UpperDash}
             >
               <Select>
@@ -277,7 +281,7 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           }
-        </>
+        </div>
         }
       </Space>
     )

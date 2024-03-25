@@ -1,47 +1,28 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useIntl }                                              from 'react-intl'
 
-import { Button, PageHeader }                from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/formatter'
+import { Button, PageHeader } from '@acx-ui/components'
+import { formatter }          from '@acx-ui/formatter'
 import {
-  Port as PortIcon,
-  SubInterface as SubInterfaceIcon,
-  ClusterInterface as ClusterInterfaceIcon
+  ClusterInterface as ClusterInterfaceIcon,
+  Port as PortIcon
 } from '@acx-ui/icons'
 import { EdgeClusterTypeCard, SpaceWrapper }     from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery }            from '@acx-ui/rc/services'
 import { CommonCategory, Device, genUrl }        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
+import * as UI                        from './styledComponents'
 
 export const SelectType = () => {
   const { $t } = useIntl()
   const { clusterId } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const [selected, setSelected] = useState<string | undefined>(undefined)
-
-  const { clusterInfo } = useGetEdgeClusterListQuery({
-    payload: {
-      fields: [
-        'name',
-        'clusterId',
-        'haStatus',
-        'edgeList'
-      ],
-      filters: { clusterId: [clusterId] },
-      sortField: 'name',
-      sortOrder: 'ASC',
-      pageSize: 1
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      clusterInfo: data?.data[0]
-    })
-  })
 
   const typeCards = [{
     id: 'interface',
@@ -54,18 +35,20 @@ export const SelectType = () => {
       'configure',
       'interface'
     ])
-  }, {
-    id: 'subInterface',
-    title: $t({ defaultMessage: 'Sub-interface Settings' }),
-    icon: <SubInterfaceIcon />,
-    targetUrl: genUrl([
-      CommonCategory.Device,
-      Device.EdgeCluster,
-      clusterId!,
-      'configure',
-      'subInterface'
-    ])
-  }, {
+  },
+  // {
+  //   id: 'subInterface',
+  //   title: $t({ defaultMessage: 'Sub-interface Settings' }),
+  //   icon: <SubInterfaceIcon />,
+  //   targetUrl: genUrl([
+  //     CommonCategory.Device,
+  //     Device.EdgeCluster,
+  //     clusterId!,
+  //     'configure',
+  //     'subInterface'
+  //   ])
+  // },
+  {
     id: 'clusterInterface',
     title: $t({ defaultMessage: 'Cluster Interface Settings' }),
     icon: <ClusterInterfaceIcon />,
@@ -140,7 +123,7 @@ export const SelectType = () => {
       >
         <Row gutter={[12, 0]}>
           {typeCards.map(item => (
-            <Col span={6} key={item.id}>
+            <Col key={item.id}>
               <EdgeClusterTypeCard
                 id={item.id}
                 title={item.title}
@@ -151,7 +134,7 @@ export const SelectType = () => {
           ))}
         </Row>
       </Radio.Group>
-      {!isHardwareCompatible &&
+      {clusterInfo && !isHardwareCompatible &&
         <Row>
           <Col span={24}>
             <UI.WarningTitle level={3}>
@@ -176,7 +159,7 @@ export const SelectType = () => {
         children={$t({ defaultMessage: 'Cancel' })}
         style={{ marginRight: 'calc(50% - 70px - 35px)' }}
       />
-      <Space align='center'>
+      <Space align='center' size={12}>
         <Button
           type='primary'
           onClick={handleNext}

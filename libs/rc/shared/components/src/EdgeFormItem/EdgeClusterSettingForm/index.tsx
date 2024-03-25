@@ -9,17 +9,17 @@ import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/com
 import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
 import { useVenuesListQuery }                                  from '@acx-ui/rc/services'
 import {
-  EdgeClusterTableDataType,
+  EdgeClusterStatus,
   EdgeStatusEnum,
   PRODUCT_CODE_VIRTUAL_EDGE,
-  edgeSerialNumberValidator,
-  deriveEdgeModel
+  deriveEdgeModel,
+  edgeSerialNumberValidator
 } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
 
 interface EdgeClusterSettingFormProps {
-  editData?: EdgeClusterTableDataType
+  editData?: EdgeClusterStatus
 }
 
 export interface EdgeClusterSettingFormType {

@@ -15,11 +15,12 @@ import { filterByAccess, hasAccess }                                            
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const isSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -39,6 +40,7 @@ const TunnelProfileTable = () => {
       pageSize: 10000
     }
   }, {
+    skip: !isEdgePinReady,
     selectFromResult: ({ data }) => ({
       nsgOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
@@ -68,7 +70,7 @@ const TunnelProfileTable = () => {
       pageSize: 10000
     }
   }, {
-    skip: !isSdLanReady,
+    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
     selectFromResult: ({ data }) => ({
       sdLanOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
@@ -125,11 +127,12 @@ const TunnelProfileTable = () => {
       key: 'personalIdentityNetworkIds',
       dataIndex: 'personalIdentityNetworkIds',
       align: 'center',
-      filterable: nsgOptions,
+      show: isEdgePinReady,
+      filterable: isEdgePinReady? nsgOptions : false,
       sorter: true,
       render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
-    ...(isSdLanReady
+    ...((isEdgeSdLanReady || isEdgeSdLanHaReady)
       ? [{
         title: $t({ defaultMessage: 'SD-LAN' }),
         key: 'sdLanIds',

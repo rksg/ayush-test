@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
+import { AccessControlUrls, CommonUrlsInfo, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -48,12 +48,10 @@ describe('Access Control Detail Page', () => {
     mockServer.use(
       rest.get(AccessControlUrls.getAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclDetail))),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(
-          ctx.json(networksResponse)
-        )
-      )
+      rest.get(PoliciesConfigTemplateUrlsInfo.getAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse)))
     )
   })
 
