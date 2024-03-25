@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { get }                                       from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
-import { mockServer, render, screen }                from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
 
 import { webhooks, mockResourceGroups, webhooksUrl, resourceGroups } from './__fixtures__'
 import { WebhookDto, webhookDtoKeys }                                from './services'
@@ -157,8 +157,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook created')).toBeVisible()
-        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
+        await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
       it('handle RTKQuery error', async () => {
         const payloadSpy = jest.fn()
@@ -173,8 +173,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Failed to create webhook')).toBeVisible()
-        expect(onClose).not.toBeCalled()
         expect(payloadSpy).toBeCalledWith(dto)
+        expect(onClose).not.toBeCalled()
       })
       it('handle API error', async () => {
         const payloadSpy = jest.fn()
@@ -190,8 +190,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-        expect(onClose).not.toBeCalled()
         expect(payloadSpy).toBeCalledWith(dto)
+        expect(onClose).not.toBeCalled()
       })
     })
 
@@ -209,8 +209,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook updated')).toBeVisible()
-        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
+        await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
       it('handle RTKQuery error', async () => {
         const payloadSpy = jest.fn()
@@ -225,8 +225,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Failed to update webhook')).toBeVisible()
-        expect(onClose).not.toBeCalled()
         expect(payloadSpy).toBeCalledWith(dto)
+        expect(onClose).not.toBeCalled()
       })
       it('handle API error', async () => {
         const payloadSpy = jest.fn()
@@ -242,8 +242,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-        expect(onClose).not.toBeCalled()
         expect(payloadSpy).toBeCalledWith(dto)
+        expect(onClose).not.toBeCalled()
       })
     })
   })
@@ -275,8 +275,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook created')).toBeVisible()
-        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
+        await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
     })
 
@@ -294,8 +294,8 @@ describe('WebhookForm', () => {
         await click(await screen.findByRole('button', { name: 'Save' }))
 
         expect(await screen.findByText('Webhook updated')).toBeVisible()
-        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
+        await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
     })
   })
@@ -347,8 +347,8 @@ describe('WebhookForm', () => {
       await click(await screen.findByRole('button', { name }))
 
       expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
-      expect(onClose).not.toBeCalled()
       expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(onClose).not.toBeCalled()
     })
   })
 
