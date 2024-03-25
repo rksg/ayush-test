@@ -13,7 +13,7 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -76,7 +76,7 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeSdLanViewDataListQuery({
+      tableQuery: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
