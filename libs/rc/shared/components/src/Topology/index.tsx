@@ -359,6 +359,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 data-testid='searchNodes'
                 options={filterNodes}
                 value={searchValue}
+                searchValue={searchValue}
                 filterOption={(inputValue, option) =>{
                   return !!((option as OptionType).item.id as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
