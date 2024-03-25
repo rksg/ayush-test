@@ -84,7 +84,6 @@ const Nodes: React.FC<NodeProps> = (props) => {
             (node.data._children?.length > 0 ? `(${node.data._children.length})` : '')
           return (
             <g
-              key={node.data.id}
               transform={coordinateTransform(node)}
               style={{
                 fill: color[ancestorName],

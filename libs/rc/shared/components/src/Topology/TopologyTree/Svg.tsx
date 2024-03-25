@@ -22,33 +22,33 @@ const Svg: any = (props: any) => {
   const { scale, translate, setTranslate, setOnDrag } =
     useContext(TopologyTreeContext)
 
+  const handleDrag = drag()
+    .on('start', (event) => {
+      setOnDrag(true)
+      event.subject.startX = event.sourceEvent.layerX
+      event.subject.startY = event.sourceEvent.layerY
+    })
+    .on('drag', (event) => {
+      setOnDrag(true)
+      const { startX, startY } = event.subject
+      const dx = event.sourceEvent.layerX - startX
+      const dy = event.sourceEvent.layerY - startY
+      setTranslate([translate[0] + dx, translate[1] + dy])
+    })
+    .on('end', () => {
+      setOnDrag(false)
+    })
+
   useEffect(() => {
     const svg = select(refSvg.current)
 
     if (width && height) {
-      svg.call(
-        drag()
-          .on('start', (event) => {
-            setOnDrag(true)
-            event.subject.startX = event.x
-            event.subject.startY = event.y
-          })
-          .on('drag', (event) => {
-            setOnDrag(true)
-            const { startX, startY } = event.subject
-            const dx = event.x - startX
-            const dy = event.y - startY
-            setTranslate([translate[0] + dx, translate[1] + dy])
-          })
-          .on('end', () => {
-            setOnDrag(false)
-          })
-      )
+      svg.call(handleDrag)
     }
     if (data) {
       setTreeData(transformData(data))
     }
-  }, [width, height, data])
+  }, [width, height, data, translate])
 
   const { nodes, links } = useMemo(() => {
     if (treeData && edges) {

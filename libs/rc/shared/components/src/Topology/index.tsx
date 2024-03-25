@@ -250,7 +250,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     setShowLinkTooltip(false)
   }
 
-  const debouncedHandleMouseClick = debounce(function (node){
+  const debouncedHandleMouseClick = debounce(function (){
+    /** TODO:
     const treeContainer = document.querySelector('.d3-tree-container')
 
     if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
@@ -258,13 +259,15 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       const translateY = treeContainer.clientHeight/2 - node.x
       setTranslate([translateX, translateY])
       setScale(3)
-    }
+    } **/
   })
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
     if(onDrag){
       return
     }
+
+    closeLinkTooltipHandler()
     setShowDeviceTooltip(true)
     setTooltipNode(node.data as typeof node)
     setTooltipPosition({ x: d?.nativeEvent.layerX + 30
@@ -314,6 +317,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         selectedEdge = rearrangedData(topologyData.edges.filter(
           item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
       }
+
+      closeTooltipHandler()
       setTooltipSourceNode(sourceNode)
       setTooltipTargetNode(targetNode)
       setShowLinkTooltip(true)

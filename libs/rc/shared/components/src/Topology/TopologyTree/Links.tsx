@@ -144,7 +144,7 @@ export const Links: React.FC<LinksProps> = (props) => {
         className='unknownMarker'>
         <circle cx='5' cy='5' r='5' />
       </marker>
-      {links.map((link, i) => {
+      {links.map((link) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
         const targetNodeStatusColor = targetNodeColor[getDeviceColor(link.target.data.status)]
         const targetNodeMarker = targetNodeMarkerColor[getDeviceColor(link.target.data.status)]
@@ -161,7 +161,7 @@ export const Links: React.FC<LinksProps> = (props) => {
             targetNodeMarker)
 
         return (
-          <g key={i}
+          <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
             className={`edgePath ${linkClass} ${link.source.data.id}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
