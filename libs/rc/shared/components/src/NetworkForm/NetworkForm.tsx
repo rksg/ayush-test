@@ -14,7 +14,8 @@ import {
   useUpdateNetworkVenuesMutation,
   useAddNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
-  useUpdateNetworkTemplateMutation
+  useUpdateNetworkTemplateMutation,
+  useAddNetworkVenueTemplatesMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -30,7 +31,7 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum
+  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -114,7 +115,9 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
+  )
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()

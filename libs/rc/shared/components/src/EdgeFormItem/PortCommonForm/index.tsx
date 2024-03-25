@@ -27,10 +27,10 @@ interface formFieldsPropsType {
     options?: {
       label: string,
       value: EdgePortTypeEnum
-    }[]
+    }[],
   }
 }
-interface EdgePortCommonFormProps {
+export interface EdgePortCommonFormProps {
   formRef: FormInstance,
   fieldHeadPath: string[],
   portsDataRootPath: string[],
@@ -217,6 +217,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'subnet')}
                 children={<Input />}
               />
+              {portType !== EdgePortTypeEnum.CLUSTER &&
               <Form.Item
                 name={getFieldPathBaseFormList('gateway')}
                 label={$t({ defaultMessage: 'Gateway' })}
@@ -228,6 +229,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 {..._.get(formFieldsProps, 'gateway')}
                 children={<Input />}
               />
+              }
             </>
           }
           { // only WAN port can configure NAT enable
@@ -256,7 +258,8 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
     <Form.Item
       name={getFieldPathBaseFormList('portType')}
       label={$t({ defaultMessage: 'Port Type' })}
-      {..._.get(formFieldsProps, 'portType')}
+      {..._.omit(_.get(formFieldsProps, 'portType'), 'validator')}
+      validateFirst
       rules={[
         { required: true },
         { validator: (_, value) => {
