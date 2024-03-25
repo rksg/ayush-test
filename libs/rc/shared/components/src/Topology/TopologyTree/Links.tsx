@@ -66,10 +66,10 @@ export const Links: React.FC<LinksProps> = (props) => {
   const linkCustom = ({ source, target }: any,
     linksInfo: { [key: string]: any }) => {
     const linkInfo = linksInfo[`${source.data.id}_${target.data.id}`]
-    const sourceX = linkInfo.source.x
-    const sourceY = linkInfo.source.y
-    const targetX = linkInfo.target.x
-    const targetY = linkInfo.target.y
+    const sourceX = linkInfo?.source?.x
+    const sourceY = linkInfo?.source?.y
+    const targetX = linkInfo?.target?.x
+    const targetY = linkInfo?.target?.y
 
     if (sourceY === targetY) {
       return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
@@ -173,7 +173,7 @@ export const Links: React.FC<LinksProps> = (props) => {
               d={linkCustom(link, linksInfo)}
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
               markerEnd={`url(#${markerClass})`}
-              strokeDasharray={linkInfo.connectionType === 'Mesh' ? '1' : '0'}
+              strokeDasharray={linkInfo?.connectionType === 'Mesh' ? '1' : '0'}
             />
             <path
               d={linkCustom(link, linksInfo)}
