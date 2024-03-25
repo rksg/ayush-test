@@ -220,6 +220,7 @@ export const OnboardedSystems = () => {
         <span>
           <Tooltip
             arrowPointAtCenter
+            dottedUnderline={!isEmpty(value.errors)}
             key={`tooltip-${index}`}
             title={TooltipContent(value)}
             children={<SmartZoneBadge
