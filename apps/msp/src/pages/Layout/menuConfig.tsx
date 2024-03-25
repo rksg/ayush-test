@@ -33,7 +33,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   const { names: { brand } } = useBrand360Config()
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -69,7 +69,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       : [ mspCustomersMenu, ...recCustomerMenu])
 
   return [
-    ...(showMenuesforHsp && isBrand360 && !isInstaller ? [{
+    ...(showMenuesforHsp && isBrand360Enabled && !isInstaller ? [{
       uri: '/brand360',
       label: brand,
       tenantType: 'v' as TenantType,
