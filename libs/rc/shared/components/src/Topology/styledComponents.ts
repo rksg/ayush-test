@@ -198,7 +198,11 @@ height: 100%;
       cursor: default;
     }
 
-    .d3-tree-good-links.focusNode, .d3-tree-good-links:hover {
+    .d3-tree-good-links.focusNode {
+      filter: drop-shadow(0 0 3px var(--acx-semantics-green-50));
+    }
+
+    .d3-tree-good-links:hover {
       filter: drop-shadow(0 0 1px var(--acx-semantics-green-50));
     }
 
@@ -213,7 +217,11 @@ height: 100%;
       cursor: default;
     }
 
-    .d3-tree-degraded-links.focusNode, .d3-tree-degraded-links:hover {
+    .d3-tree-degraded-links.focusNode {
+      filter: drop-shadow(0 0 3px var(--acx-semantics-yellow-40));
+    }
+
+    .d3-tree-degraded-links:hover {
       filter: drop-shadow(0 0 1px var(--acx-semantics-yellow-40));
     }
 
@@ -228,7 +236,11 @@ height: 100%;
       cursor: default;
     }
 
-    .d3-tree-disconnected-links.focusNode, .d3-tree-disconnected-links:hover {
+    .d3-tree-disconnected-links.focusNode {
+      filter: drop-shadow(0 0 3px var(--acx-semantics-red-70));
+    }
+
+    .d3-tree-disconnected-links:hover {
       filter: drop-shadow(0 0 1px var(--acx-semantics-red-70));
     }
 
@@ -243,7 +255,12 @@ height: 100%;
       cursor: default;
     }
 
-    .d3-tree-unknown-links.focusNode, .d3-tree-unknown-links:hover {
+    .d3-tree-unknown-links.focusNode {
+      filter: drop-shadow(0 0 3px var(--acx-neutrals-50));
+    }
+
+
+    .d3-tree-unknown-links:hover {
       filter: drop-shadow(0 0 1px var(--acx-neutrals-50));
     }
 
