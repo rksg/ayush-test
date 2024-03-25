@@ -184,9 +184,9 @@ export type StateType = keyof typeof states
 
 const probeflexConfig = (status: Recommendation['status']): RecommendationConfig => ({
   valueFormatter: formatter('enabledFormat'),
-  valueText: defineMessage({ defaultMessage: 'AI probe suppression' }),
-  actionText: defineMessage({ defaultMessage: 'AI probe suppression for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {product}. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
-  reasonText: defineMessage({ defaultMessage: 'AI probe suppression suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
+  valueText: defineMessage({ defaultMessage: 'AirFlexAI' }),
+  actionText: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {product}. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
+  reasonText: defineMessage({ defaultMessage: 'AirFlexAI suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
   tradeoffText: defineMessage({ defaultMessage: 'This feature may cause a slight increase (~1 secs) in time to connect for a very small percentage of clients since probes are being suppressed.' }),
   recommendedValueTooltipContent: () => defineMessage({ defaultMessage: 'Enabling AI probe suppression will disable Airtime Decongestion' }),
   kpis: status === 'applied'
@@ -583,19 +583,19 @@ export const codes = (status: Recommendation['status']) => ({
   },
   'c-probeflex-24g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression for 2.4 GHz' }),
+    summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 2.4 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   },
   'c-probeflex-5g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression for 5 GHz' }),
+    summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 5 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   },
   'c-probeflex-6g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AI probe suppression 6 GHz' }),
+    summary: defineMessage({ defaultMessage: 'Enable AirFlexAI 6 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   }
