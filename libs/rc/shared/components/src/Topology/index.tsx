@@ -236,7 +236,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       async function getVlanList (){
         const vlanList = await getSwitchesVlan({ params }).unwrap()
         const vlansOptionValues: DefaultOptionType[] =
-          [{ label: '', value: '' }]
+          [{ label: $t({ defaultMessage: 'Select...' }), value: '' }]
         vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
         setVlansOption(vlansOptionValues)
       }
