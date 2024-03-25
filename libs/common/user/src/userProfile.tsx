@@ -145,7 +145,3 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
 }
-
-export function goToNotFound () {
-  return <TenantNavigate replace to='/not-found' />
-}
