@@ -104,7 +104,8 @@ export const VipCard = (props: VipCardProps) => {
             label={$t({ defaultMessage: 'Virtual IP Address' })}
             rules={[
               ...(
-                isCluster || Boolean(vipConfig?.[index]?.interfaces) ?
+                isCluster || (Boolean(vipConfig?.[index]?.interfaces) &&
+                Object.keys(vipConfig?.[index]?.interfaces).length > 0) ?
                   [{ required: true }] :
                   []
               ),
