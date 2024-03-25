@@ -276,7 +276,6 @@ const EapDrawer = (props: EapDrawerProps) => {
 
   const onSave = async (addAnotherChecked: boolean) => {
     try {
-      console.debug('fromData:', form.getFieldsValue())
       await form.validateFields()
       const { method, authInfos } = form.getFieldsValue()
 
