@@ -240,7 +240,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
         setVlansOption(vlansOptionValues)
       }
-      getVlanList()
+      if(showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW){
+        getVlanList()
+      }
     }
   }, [topologyData])
 
