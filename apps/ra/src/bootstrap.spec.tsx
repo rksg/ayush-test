@@ -64,11 +64,12 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     }
   }
   )),
-  getUserProfile: () => ({
-    preferences: {
-      preferredLanguage: 'en-US'
-    }
-  })
+  // getUserProfile: () => ({
+  //   preferences: {
+  //     preferredLanguage: 'en-US'
+  //   }
+  // })
+  getUserProfile: jest.fn()
 }))
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockImplementation((name: string) => ({
@@ -91,6 +92,12 @@ describe('bootstrap.init', () => {
     mockServer.resetHandlers()
   })
   it('calls pendo and renders', async () => {
+    const mockedGetUserProfile = require('@acx-ui/analytics/utils').getUserProfile
+    mockedGetUserProfile.mockImplementationOnce(() => ({
+      preferences: {
+        preferredLanguage: 'en-US'
+      }
+    }))
     mockServer.use(
       rest.get(
         '/analytics/api/rsa-mlisa-rbac/users/profile',
@@ -144,6 +151,10 @@ describe('bootstrap.init', () => {
     })
   })
   it('shows expired session if profile or any api gives 401', async () => {
+    const mockedGetUserProfile = require('@acx-ui/analytics/utils').getUserProfile
+    mockedGetUserProfile.mockImplementationOnce(() => ({
+      preferences: undefined
+    }))
     mockServer.use(
       rest.get(
         '/analytics/api/rsa-mlisa-rbac/users/profile',
@@ -168,7 +179,14 @@ describe('bootstrap.init', () => {
     expect(next).toHaveBeenCalledTimes(1)
     expect(actionModal).toHaveBeenCalledTimes(2)
   })
+})
+
+describe('showExpiredSessionModal', () => {
   it('should handle if getIntl is empty', () => {
+    const mockedGetIntl = require('@acx-ui/utils').getIntl
+    mockedGetIntl.mockImplementationOnce(() => {
+      throw new Error('getIntl error')
+    })
     const mockedSetUpIntl = require('@acx-ui/utils').setUpIntl
     mockedSetUpIntl.mockImplementation(undefined)
     showExpiredSessionModal()
