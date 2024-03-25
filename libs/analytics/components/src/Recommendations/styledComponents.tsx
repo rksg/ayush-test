@@ -38,6 +38,9 @@ export const OptimizedIcon = styled(AntBadge)
 export const RecommendationTableWrapper =
 styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
   ${mutedStyles}
+  .ant-picker-suffix {
+    margin-left: 0;
+  }
 `
 
 export const OptimizationHeader = styled.div`
