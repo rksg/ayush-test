@@ -35,6 +35,11 @@ type EapDrawerProps = {
 const AllowShowAddAnotherLength = EAP_MAX_COUNT - 1
 const AuthInfoTypeSelectWidth = '200px'
 
+const initEap: EapType = {
+  method: NaiRealmEapMethodEnum.MD5,
+  authInfos: []
+}
+
 const EapDrawer = (props: EapDrawerProps) => {
   const { $t } = useIntl()
 
@@ -98,9 +103,7 @@ const EapDrawer = (props: EapDrawerProps) => {
 
 
   useEffect(() => {
-    if (form) {
-      let eap = { method: NaiRealmEapMethodEnum.MD5, authInfos: [] } as EapType
-
+    if (visible && form) {
       const authInfosInfo = [
         NaiRealmAuthInfoEnum.Expanded,
         NaiRealmAuthInfoEnum.Expanded,
@@ -109,17 +112,17 @@ const EapDrawer = (props: EapDrawerProps) => {
       ]
 
       if (isEditMode) {
-        eap = dataList?.[editIndex]!
+        const eap = cloneDeep(dataList?.[editIndex]!)
         eap.authInfos?.forEach((authInfo, index) => {
           authInfosInfo[index] = authInfo.info
         })
+        form.setFieldsValue(eap)
       }
 
       setAuthInfoTypes(authInfosInfo)
-      form.setFieldsValue(eap)
     }
 
-  }, [editIndex, form, isEditMode, dataList])
+  }, [editIndex, visible, form, isEditMode, dataList])
 
   const updateAuthInfoType = async (v: NaiRealmAuthInfoEnum, index: number) => {
     const newData = cloneDeep(authInfoTypes)
@@ -130,11 +133,14 @@ const EapDrawer = (props: EapDrawerProps) => {
   const content = (
     <Form form={form}
       layout='vertical'
+      preserve={visible && isEditMode}
+      initialValues={cloneDeep(initEap)}
     >
       <Form.Item
         name='method'
         label={$t({ defaultMessage: 'EAP Method' })}
         style={{ width: '455px' }}
+        rules={[{ required: true }]}
         children={<Select options={EapMethodOptions} />}
       />
 
@@ -142,15 +148,15 @@ const EapDrawer = (props: EapDrawerProps) => {
         {(fields, { add, remove }) => (
           <Row >
             {
-              fields.map((field, index, ...restField) =>
+              fields.map((field, index) =>
                 <Space key={`authInfo-${index}`}>
                   <Col>
                     <Form.Item
-                      {...restField}
                       name={[index, 'info']}
                       label={$t({ defaultMessage: 'Auth Type' })}
                       style={{ width: '250px' }}
                       initialValue={NaiRealmAuthInfoEnum.Expanded}
+                      rules={[{ required: true }]}
                       children={<Select options={EapAuthInfoOptions}
                         onChange={(v) => updateAuthInfoType(v, index)}
                       />}
@@ -161,31 +167,27 @@ const EapDrawer = (props: EapDrawerProps) => {
                       <Col>
                         <Space style={{ width: AuthInfoTypeSelectWidth }}>
                           <Form.Item
-                            {...restField}
                             name={[index, 'vendorId']}
                             label={$t({ defaultMessage: 'Vendor ID' })}
                             style={{ width: '85px' }}
-                            rules={[
-                              { required: true, message: '' }
-                            ]}
+                            rules={[{ required: true }]}
                             children={<InputNumber
                               controls={false}
                               min={0}
                               max={16777215}
+                              precision={0}
                             />}
                           />
                           <Form.Item
-                            {...restField}
                             name={[index, 'vendorType']}
                             label={$t({ defaultMessage: 'Vendor Type' })}
-                            rules={[
-                              { required: true, message: '' }
-                            ]}
+                            rules={[{ required: true }]}
                             children={<InputNumber
                               style={{ width: '110px' }}
                               controls={false}
                               min={0}
                               max={4294967295}
+                              precision={0}
                             />}
                           />
                         </Space>
@@ -194,13 +196,10 @@ const EapDrawer = (props: EapDrawerProps) => {
                   {authInfoTypes[index] === NaiRealmAuthInfoEnum.Non_Eap &&
                       <Col>
                         <Form.Item
-                          {...restField}
                           name={[index, 'nonEapAuth']}
                           label={$t({ defaultMessage: 'SubType' })}
                           style={{ width: AuthInfoTypeSelectWidth }}
-                          rules={[
-                            { required: true }
-                          ]}
+                          rules={[{ required: true }]}
                           children={<Select options={EapAuthTypeNonEapOptions} />}
                         />
                       </Col>
@@ -208,7 +207,6 @@ const EapDrawer = (props: EapDrawerProps) => {
                   {authInfoTypes[index] === NaiRealmAuthInfoEnum.Inner &&
                     <Col>
                       <Form.Item
-                        {...restField}
                         name={[index, 'eapInnerAuth']}
                         label={$t({ defaultMessage: 'SubType' })}
                         style={{ width: AuthInfoTypeSelectWidth }}
@@ -222,13 +220,10 @@ const EapDrawer = (props: EapDrawerProps) => {
                   {authInfoTypes[index] === NaiRealmAuthInfoEnum.Credential &&
                     <Col>
                       <Form.Item
-                        {...restField}
                         name={[index, 'credentialType']}
                         label={$t({ defaultMessage: 'SubType' })}
                         style={{ width: AuthInfoTypeSelectWidth }}
-                        rules={[
-                          { required: true }
-                        ]}
+                        rules={[{ required: true }]}
                         children={<Select options={EapAuthTypeCredentialOptions} />}
                       />
                     </Col>
@@ -236,18 +231,15 @@ const EapDrawer = (props: EapDrawerProps) => {
                   {authInfoTypes[index] === NaiRealmAuthInfoEnum.Tunneled &&
                     <Col>
                       <Form.Item
-                        {...restField}
                         name={[index, 'tunneledType']}
                         label={$t({ defaultMessage: 'SubType' })}
                         style={{ width: AuthInfoTypeSelectWidth }}
-                        rules={[
-                          { required: true }
-                        ]}
+                        rules={[{ required: true }]}
                         children={<Select options={EapAuthTypeTunneledOptions} />}
                       />
                     </Col>
                   }
-                  {//index > 0 &&
+                  {
                     <Col style={{ textAlign: 'end' }}>
                       <Button
                         aria-label='delete'
@@ -274,7 +266,6 @@ const EapDrawer = (props: EapDrawerProps) => {
           </Row>
         )}
       </Form.List>
-
     </Form>
   )
 
@@ -285,41 +276,24 @@ const EapDrawer = (props: EapDrawerProps) => {
 
   const onSave = async (addAnotherChecked: boolean) => {
     try {
+      console.debug('fromData:', form.getFieldsValue())
       await form.validateFields()
       const { method, authInfos } = form.getFieldsValue()
 
-      if (isEditMode) {
-        const newData = dataList.map((value, index) => {
-          if (index === editIndex) {
-            return {
-              method,
-              authInfos,
-              rowId: editIndex
-            }
-          }
-          return value
+      const newData = (isEditMode)
+        ? dataList.map((value, index) => {
+          return (index === editIndex)? { method, authInfos, rowId: editIndex } : value
         })
-        updateDataList(newData)
+        : [...dataList, { method, authInfos, rowId: dataList?.length || 0 }]
 
-      } else {
-        const newData = [
-          ...dataList,
-          {
-            method,
-            authInfos,
-            rowId: dataList?.length || 0
-          }
-        ]
-
-        updateDataList(newData)
-      }
+      updateDataList(newData)
 
       form.submit()
-      form.resetFields()
 
-      if (!addAnotherChecked || //isEditMode ||
-          dataList.length >= AllowShowAddAnotherLength) {
+      if (!addAnotherChecked || dataList.length >= AllowShowAddAnotherLength) {
         onClose()
+      } else {
+        form.resetFields()
       }
     } catch (error) {
       if (error instanceof Error) throw error

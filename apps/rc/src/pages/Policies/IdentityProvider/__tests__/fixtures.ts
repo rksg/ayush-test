@@ -31,7 +31,7 @@ export const editDataWithRealms = {
   naiRealms: [{
     name: 'r1',
     encoding: NaiRealmEcodingEnum.RFC4282,
-    eap: [{
+    eaps: [{
       method: NaiRealmEapMethodEnum.MD5,
       authInfos: [{
         info: NaiRealmAuthInfoEnum.Expanded,
@@ -67,7 +67,7 @@ export const editDataWithRealms = {
   }, {
     name: 'r2',
     encoding: NaiRealmEcodingEnum.UTF8,
-    eap: [{
+    eaps: [{
       method: NaiRealmEapMethodEnum.MD5,
       authInfos: [{
         info: NaiRealmAuthInfoEnum.Expanded,
@@ -104,7 +104,7 @@ export const dummyIdenetityPrividerData1 = {
   naiRealms: [{
     name: 'abc.com',
     encoding: NaiRealmEcodingEnum.RFC4282,
-    eap: [{
+    eaps: [{
       method: NaiRealmEapMethodEnum.MD5,
       authInfos: [{
         info: NaiRealmAuthInfoEnum.Expanded,
@@ -134,10 +134,10 @@ export const dummyTableResult: TableResult<IdentityProviderViewModel> = {
   page: 1,
   data: [{
     ...dummyIdenetityPrividerData1,
-    networkIds: ['0c41e2e116514dc698c53dc8c752a1b8']
+    wifiNetworkIds: ['0c41e2e116514dc698c53dc8c752a1b8']
   }, {
     ...dummyIdenetityPrividerData2,
-    networkIds: ['0c41e2e116514dc698c53dc8c752a1b8']
+    wifiNetworkIds: ['0c41e2e116514dc698c53dc8c752a1b8']
   }]
 }
 

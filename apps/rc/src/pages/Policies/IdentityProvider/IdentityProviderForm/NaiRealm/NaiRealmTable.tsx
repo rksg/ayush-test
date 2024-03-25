@@ -48,12 +48,12 @@ const NaiRealmTable = () => {
       }
     }, {
       title: $t({ defaultMessage: 'EAP Method' }),
-      dataIndex: 'eap',
-      key: 'eap',
+      dataIndex: 'eaps',
+      key: 'eaps',
       align: 'center',
       render: (_, row) => {
-        const { eap } = row
-        return eap? eap.length : ''
+        const { eaps } = row
+        return eaps? eaps.length : ''
       }
     }
   ]

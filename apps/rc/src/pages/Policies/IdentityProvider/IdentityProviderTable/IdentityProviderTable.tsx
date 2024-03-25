@@ -28,7 +28,7 @@ import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: ['id', 'name',
-    'naiRealms', 'plmns', 'roamingConsortiumOIs',
+    'naiRealms', 'plmns', 'roamConsortiumOIs',
     'authRadiusId', 'accountingRadiusId', 'networkIds' ],
   searchString: '',
   searchTargetFields: ['name'],
@@ -58,7 +58,7 @@ export default function IdentityProviderTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () => {
         const ids = selectedRows.map(row => row.id)
         for (let i=0; i<ids.length; i++) {
@@ -278,12 +278,12 @@ function useColumns () {
       filterKey: 'networkIds',
       filterable: networkNameMap,
       sorter: false,
-      render: (_, { networkIds }) => {
-        if (!networkIds || networkIds.length === 0) return 0
+      render: (_, { wifiNetworkIds }) => {
+        if (!wifiNetworkIds || wifiNetworkIds.length === 0) return 0
 
         return <SimpleListTooltip
-          items={networkNameMap.filter(kv => networkIds.includes(kv.key)).map(kv => kv.value)}
-          displayText={networkIds.length} />
+          items={networkNameMap.filter(kv => wifiNetworkIds.includes(kv.key)).map(kv => kv.value)}
+          displayText={wifiNetworkIds.length} />
       }
     }
   ]

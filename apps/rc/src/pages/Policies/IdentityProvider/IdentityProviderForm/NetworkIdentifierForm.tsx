@@ -45,7 +45,7 @@ const NetworkIdentifierForm = () => {
   const nameValidator = async (value: string) => {
     const payload = { ...IdentityProviderListPayload, searchString: value }
     const list = (await getInstanceList({ params, payload }, true).unwrap()).data
-      .filter(n => n.id !== params.profileId)
+      .filter(n => n.id !== params.policyId)
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, $t({ defaultMessage: 'Identity Provider' }))

@@ -76,10 +76,6 @@ describe('Identity Provider Form - AaaSettingsForm', () => {
     })
     expect(screen.queryByText('192.168.0.101:1812')).toBeVisible()
 
-    const dynamicVlan = screen.getByRole('spinbutton', { name: 'Dynamic VLAN ID' })
-    await userEvent.type(dynamicVlan, '10')
-    expect(dynamicVlan).toHaveValue('10')
-
     const enabledAccounting = await screen.findByRole('switch')
     await userEvent.click(enabledAccounting)
 

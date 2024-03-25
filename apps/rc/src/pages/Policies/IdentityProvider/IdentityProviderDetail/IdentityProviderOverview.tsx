@@ -34,7 +34,7 @@ export function IdentityProviderOverview (props: { data: IdentityProviderViewMod
       title: $t({ defaultMessage: 'NAI Realm' }),
       content: (
         data.naiRealms?.map((realm) => (
-          <div>`${realm.name}`</div>
+          <div>{`${realm.name}`}</div>
         ))
       )
     },
@@ -44,7 +44,7 @@ export function IdentityProviderOverview (props: { data: IdentityProviderViewMod
     },
     {
       title: $t({ defaultMessage: 'Roaming Consortium OI' }),
-      content: (data.roamConsortiumOIs?.length)
+      content: (data.roamConsortiumOIs?.length || 0)
     },
     {
       title: $t({ defaultMessage: 'Authentication Service' }),
@@ -79,6 +79,6 @@ export function IdentityProviderOverview (props: { data: IdentityProviderViewMod
   ]
 
   return (
-    <SummaryCard data={identityProviderInfo} />
+    <SummaryCard data={identityProviderInfo} colPerRow={6} />
   )
 }

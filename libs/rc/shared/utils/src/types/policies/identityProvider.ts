@@ -86,7 +86,7 @@ export type EapType = {
 export type NaiRealmType = {
   name: string
   encoding: NaiRealmEcodingEnum
-  eap?: EapType[],
+  eaps?: EapType[],
   rowId?: number // for GUI - table
 }
 
@@ -111,11 +111,10 @@ export type IdentityProvider = {
   authRadiusId: string
   accountingRadiusEnabled: boolean
   accountingRadiusId?: string
-  dynamicVlan?: number
 }
 
 export type IdentityProviderViewModel = IdentityProvider & {
-  networkIds?: string[]
+  wifiNetworkIds?: string[]
 }
 
 // action, dispatch, store
@@ -133,7 +132,6 @@ export enum IdentityProviderActionType {
   AUTH_RADIUS_ID = 'AUTH_RADIUS_ID',
   ACCOUNT_RADIUS_ENABLED = 'ACCOUNT_RADIUS_ENABLED',
   ACCOUNT_RADIUS_ID = 'ACCOUNT_RADIUS_ID',
-  DYNAMIC_VLAN = 'DYNAMIC_VLAN',
   UPDATE_STATE = 'UPDATE_STATE'
 }
 
@@ -189,11 +187,6 @@ export type IdentityProviderActionPayload = {
   type: IdentityProviderActionType.ACCOUNT_RADIUS_ID,
   payload: {
     accountingRadiusId: string
-  }
-} | {
-  type: IdentityProviderActionType.DYNAMIC_VLAN,
-  payload: {
-    dynamicVlan: number
   }
 } | {
   type: IdentityProviderActionType.UPDATE_STATE,

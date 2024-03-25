@@ -35,7 +35,7 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
   const { data } = props
 
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const networkIds = data?.networkIds || []
+  const networkIds = data?.wifiNetworkIds || []
 
   const tableQuery = useTableQuery<Network>({
     useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
@@ -92,7 +92,7 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
 
   return (
     <Card title={$t({ defaultMessage: 'Instances ({count})' },
-      { count: tableQuery.data?.totalCount }
+      { count: tableQuery.data?.totalCount || 0 }
     )}>
       <Loader states={[tableQuery]} >
         <Table

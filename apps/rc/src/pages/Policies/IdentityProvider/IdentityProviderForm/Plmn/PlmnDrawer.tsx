@@ -28,7 +28,7 @@ const PlmnDrawer = (props: PlmnDrawerProps) => {
     : $t({ defaultMessage: 'Add PLMN' })
 
   useEffect(() => {
-    if (form) {
+    if (visible && form) {
       let plmn = { mcc: '', mnc: '' } as PlmnType
       if (isEditMode) {
         plmn = state.plmns?.[editIndex]!
@@ -36,7 +36,7 @@ const PlmnDrawer = (props: PlmnDrawerProps) => {
       form.setFieldsValue(plmn)
     }
 
-  }, [editIndex, form, isEditMode, state])
+  }, [editIndex, visible, form, isEditMode, state])
 
   const content = (
     <Form form={form}

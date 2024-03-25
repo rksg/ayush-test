@@ -48,7 +48,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
   }
 
   useEffect(() => {
-    if (form) {
+    if (visible && form) {
       let roi = { name: '', organizationId: '' } as RoamConsortiumType
       if (isEditMode) {
         roi = state.roamConsortiumOIs?.[editIndex]!
@@ -61,7 +61,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
       const formData = convertToFormData(roi)
       form.setFieldsValue(formData)
     }
-  }, [editIndex, form, isEditMode, state])
+  }, [editIndex, visible, form, isEditMode, state])
 
   const nameDuplicationValidator = async (value: string) => {
     const { roamConsortiumOIs } = state

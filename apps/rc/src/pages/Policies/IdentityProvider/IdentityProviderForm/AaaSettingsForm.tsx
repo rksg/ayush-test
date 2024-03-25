@@ -1,12 +1,11 @@
 import { useContext, useEffect } from 'react'
 
-import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
-import { useIntl }                                    from 'react-intl'
+import { Col, Form, Row, Space, Switch } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 import { StepsForm, Subtitle }        from '@acx-ui/components'
 import { AAAInstance }                from '@acx-ui/rc/components'
 import { IdentityProviderActionType } from '@acx-ui/rc/utils'
-import { validationMessages }         from '@acx-ui/utils'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 
@@ -44,14 +43,6 @@ const AaaSettingsForm = () => {
     }
   }, [watchAccountingRadiusId, accountingRadiusEnabled])
 
-  const onVlanIdChanged = (dynamicVlan: number) => {
-    dispatch({
-      type: IdentityProviderActionType.DYNAMIC_VLAN,
-      payload: {
-        dynamicVlan
-      }
-    })
-  }
 
   const onAccountingEnabledChanged = (isEnabled: boolean) => {
     dispatch({
@@ -69,21 +60,6 @@ const AaaSettingsForm = () => {
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'/>
-        <Form.Item
-          name='dynamicVlan'
-          label={$t({ defaultMessage: 'Dynamic VLAN ID' })}
-          rules={[
-            {
-              type: 'number', max: 4094, min: 1,
-              message: $t(validationMessages.vlanRange)
-            }]}
-          children={<InputNumber
-            controls={false}
-            min={1}
-            max={4094}
-            onChange={onVlanIdChanged}
-          />}
-        />
         <div style={{ display: 'grid', gridTemplateColumns: '250px 50px' }}>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
           <Form.Item

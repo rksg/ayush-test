@@ -34,7 +34,7 @@ describe('EapTable Component', () => {
   })
 
   it('Render EapTable component with data successfully', async () => {
-    const editData = editDataWithRealms.naiRealms[0].eap
+    const editData = editDataWithRealms.naiRealms[0].eaps
     render(<EapTable
       data={editData}
       setData={mockSetData} />

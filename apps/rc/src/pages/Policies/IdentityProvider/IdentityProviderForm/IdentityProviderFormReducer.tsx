@@ -36,12 +36,10 @@ export const IdentityProviderFormReducer = (
       return {
         ...state,
         naiRealms: state.naiRealms.map((value, index) => {
-          if (index === action.payload.rowId) {
-            return {
-              name: action.payload.name,
-              encoding: action.payload.encoding,
-              eap: action.payload.eap
-            }
+          const { rowId } = action.payload
+          if (index === rowId) {
+            const { name, encoding, eaps } = action.payload
+            return { name, encoding, eaps, rowId }
           }
           return value
         })
@@ -79,11 +77,10 @@ export const IdentityProviderFormReducer = (
       return {
         ...state,
         plmns: state.plmns?.map((value, index) => {
-          if (index === action.payload.rowId) {
-            return {
-              mcc: action.payload.mcc,
-              mnc: action.payload.mnc
-            }
+          const { rowId } = action.payload
+          if (index === rowId) {
+            const { mcc, mnc } = action.payload
+            return { mcc, mnc, rowId }
           }
           return value
         })
@@ -121,11 +118,10 @@ export const IdentityProviderFormReducer = (
       return {
         ...state,
         roamConsortiumOIs: state.roamConsortiumOIs?.map((value, index) => {
-          if (index === action.payload.rowId) {
-            return {
-              name: action.payload.name,
-              organizationId: action.payload.organizationId
-            }
+          const { rowId } = action.payload
+          if (index === rowId) {
+            const { name, organizationId } = action.payload
+            return { name, organizationId, rowId }
           }
           return value
         })
@@ -157,11 +153,6 @@ export const IdentityProviderFormReducer = (
       return {
         ...state,
         accountingRadiusId: action.payload.accountingRadiusId
-      }
-    case IdentityProviderActionType.DYNAMIC_VLAN:
-      return {
-        ...state,
-        dynamicVlan: action.payload.dynamicVlan
       }
     case IdentityProviderActionType.UPDATE_STATE:
       return {

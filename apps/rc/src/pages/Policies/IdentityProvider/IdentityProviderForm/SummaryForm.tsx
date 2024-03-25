@@ -51,7 +51,7 @@ const SummaryForm = () => {
           <Form.Item label={$t({ defaultMessage: 'NAI Realm' })}
             children={state.naiRealms?.map((realm, index) =>
               <div key={`realm-${index}`}>
-                {`${realm.name} (${realm.eap?.length || 0} EAP methods)`}
+                {`${realm.name} (${realm.eaps?.length || 0} EAP methods)`}
               </div>
             )} />
           <Form.Item label={$t({ defaultMessage: 'PLMN' })}

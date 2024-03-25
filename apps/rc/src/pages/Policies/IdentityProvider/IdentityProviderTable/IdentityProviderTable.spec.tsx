@@ -9,7 +9,8 @@ import {
   PolicyOperation,
   PolicyType,
   CommonUrlsInfo,
-  IdentityProviderUrls
+  IdentityProviderUrls,
+  AaaUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -19,6 +20,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  dummayRadiusServiceList,
   dummyNetworksResult,
   dummyTableResult,
   mockedTenantId
@@ -61,6 +63,10 @@ describe('IdentityProviderTable', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(dummyNetworksResult))
       ),
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+      ),
       rest.delete(
         IdentityProviderUrls.deleteIdentityProvider.url,
         (_, res, ctx) => {
@@ -91,10 +97,11 @@ describe('IdentityProviderTable', () => {
     expect(editButton).toBeInTheDocument()
     let deleteButton = await screen.findByText('Delete')
     expect(deleteButton).toBeInTheDocument()
-    //await userEvent.click(deleteButton)
-    //const dailogBtn = await screen.findByRole('button', { name: 'Delete Policy' })
-    //await userEvent.click(dailogBtn)
-    //expect(mockDeleteFn).toBeCalled()
+
+    await userEvent.click(deleteButton)
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {

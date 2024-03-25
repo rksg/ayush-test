@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { removeRowIds } from '../utils'
+import { AddRowIdToIdenetityProvider, removeRowIds } from '../utils'
 
 import AaaSettingsForm                              from './AaaSettingsForm'
 import IdentityProviderFormContext, { mainReducer } from './IdentityProviderFormContext'
@@ -68,12 +68,15 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
     if (editMode && data) {
       // update state from API data
       if (state.name === '') {
+        // add RowId
+        const newData = AddRowIdToIdenetityProvider(data)
+
         dispatch({
           type: IdentityProviderActionType.UPDATE_STATE,
           payload: {
             state: {
               ...state,
-              ...data
+              ...newData
             }
           }
         })
@@ -91,12 +94,12 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
     const { naiRealms, plmns, roamConsortiumOIs, accountingRadiusEnabled } = newData
     // remove rowId
     const newRealms = naiRealms.map(realm => {
-      const { eap } = realm
-      const newEap = eap? removeRowIds(eap) : undefined
+      const { eaps } = realm
+      const newEap = eaps? removeRowIds(eaps) : undefined
 
       return {
         ...realm,
-        ...(newEap && { eap: newEap })
+        ...(newEap && { eaps: newEap })
       }
     })
 

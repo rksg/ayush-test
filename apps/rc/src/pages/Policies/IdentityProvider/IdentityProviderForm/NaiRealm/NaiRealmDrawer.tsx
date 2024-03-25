@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 
 import { Form, Input } from 'antd'
+import { cloneDeep }   from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { Drawer, Select }   from '@acx-ui/components'
@@ -16,7 +17,10 @@ import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 import EapTable from './EapTable'
 
-
+const initNaiRealm: NaiRealmType = {
+  name: '',
+  encoding: NaiRealmEcodingEnum.RFC4282
+}
 
 type NaiRealmDrawerProps = {
   visible: boolean
@@ -46,20 +50,14 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
   }, [])
 
   useEffect(() => {
-    if (form) {
-      let naiRealm = {
-        name: '',
-        encoding: NaiRealmEcodingEnum.RFC4282
-      } as NaiRealmType
+    if (visible && form) {
+      const naiRealm = cloneDeep(isEditMode ? state.naiRealms?.[editIndex]! : initNaiRealm)
 
-      if (isEditMode) {
-        naiRealm = state.naiRealms?.[editIndex]!
-      }
       form.setFieldsValue(naiRealm)
-      setEapMethods(naiRealm.eap)
+      setEapMethods(naiRealm.eaps)
     }
 
-  }, [editIndex, form, isEditMode, state])
+  }, [editIndex, visible, form, isEditMode, state])
 
 
   const nameDuplicationValidator = async (value: string) => {
@@ -76,6 +74,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
   const content = (
     <Form form={form}
       layout='vertical'
+      initialValues={cloneDeep(initNaiRealm)}
     >
       <Form.Item
         name='name'
@@ -96,14 +95,20 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
         children={<Select options={realmEcodingOptions} />}
       />
       <Form.Item
-        name='eap'
+        name='eaps'
         label={$t({ defaultMessage: 'EAP Methods' })}
         children={<EapTable data={eapMethods} setData={setEapMethods} />}
       />
     </Form>
   )
 
+  const resetData = () => {
+    form.resetFields()
+    setEapMethods([])
+  }
+
   const onClose = () => {
+    resetData()
     setVisible(false)
   }
 
@@ -118,7 +123,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
           payload: {
             name: name,
             encoding: encoding,
-            eap: eapMethods,
+            eaps: eapMethods,
             rowId: editIndex
           }
         })
@@ -129,17 +134,18 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
           payload: {
             name: name,
             encoding: encoding,
-            eap: eapMethods,
+            eaps: eapMethods,
             rowId: index
           }
         })
       }
 
       form.submit()
-      form.resetFields()
 
       if (!addAnotherRuleChecked) {
         onClose()
+      } else {
+        resetData()
       }
     } catch (error) {
       if (error instanceof Error) throw error
