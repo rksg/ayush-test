@@ -157,8 +157,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
             .filter(member => member.portId === item.id)[0])
           : undefined
 
-        if (portConfig?.portType === EdgePortTypeEnum.WAN ||
-          portConfig?.portType === EdgePortTypeEnum.LAN) {
+        if (portConfig?.portType && portConfig?.portType !== EdgePortTypeEnum.UNCONFIGURED) {
           showActionModal({
             type: 'confirm',
             title: $t({ defaultMessage: 'Existing Port Configuration Clean-up' }),
