@@ -46,7 +46,11 @@ const brandField = 'brandName'
 const lspField = 'lspName'
 const propertyField = 'propertyName'
 const maxNameLength = 100
-
+const namingConfig = [
+  { label: 'Brand', field: brandField },
+  { label: 'LSP', field: lspField },
+  { label: 'Property', field: propertyField }
+]
 const tooltipMsg = defineMessage({
   defaultMessage: `
     Regular expression should be compatible with Java standards.
@@ -69,9 +73,9 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const ssidValue = Form.useWatch(ssidField, form)
-  const brandValue = Form.useWatch(brandField, form)
-  const lspValue = Form.useWatch(lspField, form)
-  const propertyValue = Form.useWatch(propertyField, form)
+  const brandValue = (Form.useWatch(brandField, form) as string)?.trim()
+  const lspValue = (Form.useWatch(lspField, form) as string)?.trim()
+  const propertyValue = (Form.useWatch(propertyField, form) as string)?.trim()
   const failureLines = getFailureLines(ssidValue)
   const isDisabled = (ssidValue === ''
     || ssidValue === ssidRegex
@@ -156,16 +160,13 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
               })}
           </Typography.Text>
           <br/><br/>
-          <Form.Item
-            name={brandField}
-            label={$t(
-              {
-                defaultMessage: 'Brand'
-              })
-            }
+          {namingConfig.map(({ label, field }) => <Form.Item
+            name={field}
+            label={$t({ defaultMessage: '{label}' }, { label })}
             rules={[{
               required: true,
-              message: $t({ defaultMessage: 'Brand name is required!' })
+              whitespace: true,
+              message: $t({ defaultMessage: '{label} name is required!' }, { label })
             },
             {
               type: 'string',
@@ -173,46 +174,8 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
               max: 100,
               message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
             }]}
-            children={<Input data-testid={brandField} />}
-          />
-          <Form.Item
-            name={lspField}
-            label={$t(
-              {
-                defaultMessage: 'LSP'
-              })
-            }
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'LSP name is required!' })
-            },
-            {
-              type: 'string',
-              min: 1,
-              max: 100,
-              message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
-            }]}
-            children={<Input data-testid={lspField} />}
-          />
-          <Form.Item
-            name={propertyField}
-            label={$t(
-              {
-                defaultMessage: 'Property'
-              })
-            }
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Property name is required!' })
-            },
-            {
-              type: 'string',
-              min: 1,
-              max: 100,
-              message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
-            }]}
-            children={<Input data-testid={propertyField} />}
-          />
+            children={<Input data-testid={field} />} />
+          )}
           <UI.Line />
           <Typography.Text strong>{$t({ defaultMessage: 'Compliance Rules' })}</Typography.Text>
           <br/><br/>
