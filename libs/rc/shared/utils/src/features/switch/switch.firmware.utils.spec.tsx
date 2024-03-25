@@ -38,6 +38,7 @@ describe('switch.firmware.utils', () => {
     expect(compareSwitchVersion('09010h_rc80', '09010h_cd1_b2')).toBe(-1)
     expect(compareSwitchVersion('09010h_cd1_rc80', '09010h_cd1_b2')).toBe(1)
 
+    expect(compareSwitchVersion('SPR09010j_cd1', '09010h_cd1_b2')).toBe(1)
     expect(compareSwitchVersion('SPR09010j_cd1.bin', '09010h_cd1_b2')).toBe(1)
   })
 
