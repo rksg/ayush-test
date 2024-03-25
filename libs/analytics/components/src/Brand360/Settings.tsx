@@ -73,24 +73,28 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const ssidValue = Form.useWatch(ssidField, form)
-  const brandValue = (Form.useWatch(brandField, form) as string)?.trim()
-  const lspValue = (Form.useWatch(lspField, form) as string)?.trim()
-  const propertyValue = (Form.useWatch(propertyField, form) as string)?.trim()
+  const brandValue = (Form.useWatch(brandField, form) as string)?.trim() || ''
+  const lspValue = (Form.useWatch(lspField, form) as string)?.trim() || ''
+  const propertyValue = (Form.useWatch(propertyField, form) as string)?.trim() || ''
   const failureLines = getFailureLines(ssidValue)
-  const isDisabled = (ssidValue === ''
-    || ssidValue === ssidRegex
+  const isInvalid = [(ssidValue === ''
     || ssidValue?.length >= maxSSIDLength
     || failureLines.length > 0
-  ) && (brandValue === ''
+  ), (brandValue === ''
     || brandValue.length >= maxNameLength
-    || brandValue === brandName
-  ) && (lspValue === ''
+  ), (lspValue === ''
     || lspValue.length >= maxNameLength
-    || lspValue === lspName
-  ) && (propertyValue === ''
+  ), (propertyValue === ''
     || propertyValue.length >= maxNameLength
-    || propertyValue === propertyName
-  )
+  )].some(isInvalid => isInvalid)
+  const hasChanged = [
+    (ssidValue !== ssidRegex),
+    (brandValue !== brandName),
+    (lspValue !== lspName),
+    (propertyValue !== propertyName)
+  ].some(hasChanged => hasChanged)
+  const isDisabled = isInvalid || !hasChanged
+
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
   const saveSettings = useCallback(() => {
     updateSettings({
@@ -161,6 +165,7 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
           </Typography.Text>
           <br/><br/>
           {namingConfig.map(({ label, field }) => <Form.Item
+            key={label}
             name={field}
             label={$t({ defaultMessage: '{label}' }, { label })}
             rules={[{
