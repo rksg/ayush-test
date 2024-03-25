@@ -46,30 +46,31 @@ export const VirtualIpForm = () => {
   useEffect(() => {
     // eslint-disable-next-line max-len
     const currentVipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
+    if(!currentVipConfig) return
 
-    if(currentVipConfig) {
-      const editVipConfig = [] as InterfaceSettingsFormType['vipConfig']
-      if(lanInterfaces) {
-        for(let i=0; i < currentVipConfig.length; i++) {
-          const currentConfig = currentVipConfig[i]
-          const interfaces = {} as { [key: string]: EdgePortInfo }
+    const editVipConfig = [] as InterfaceSettingsFormType['vipConfig']
+    if(lanInterfaces) {
+      for(let i=0; i < currentVipConfig.length; i++) {
+        const currentConfig = currentVipConfig[i]
+        const interfaces = {} as { [key: string]: EdgePortInfo }
 
+        if(currentConfig.interfaces) {
           for(let serialNumber of Object.keys(currentConfig.interfaces)) {
             const config = currentConfig.interfaces[serialNumber]
             const tmp = lanInterfaces?.[config.serialNumber]?.find(item =>
               toLower(item.portName) === toLower(config.portName))
             interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
           }
-
-          editVipConfig.push({
-            vip: currentConfig.vip,
-            interfaces
-          })
         }
-      }
 
-      form.setFieldValue('vipConfig', editVipConfig)
+        editVipConfig.push({
+          vip: currentConfig.vip,
+          interfaces
+        })
+      }
     }
+
+    form.setFieldValue('vipConfig', editVipConfig)
   }, [])
 
   return (
