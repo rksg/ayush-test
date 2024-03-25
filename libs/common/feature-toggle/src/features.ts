@@ -155,7 +155,8 @@ export enum Features {
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
-  SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle'
+  SWITCH_EXTERNAL_IP_TOGGLE = 'acx-ui-display-external-ip-address-for-switches-toggle',
+  AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

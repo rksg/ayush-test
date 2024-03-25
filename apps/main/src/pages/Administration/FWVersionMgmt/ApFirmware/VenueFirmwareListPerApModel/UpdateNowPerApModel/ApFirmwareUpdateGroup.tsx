@@ -6,7 +6,7 @@ import { useIntl }                        from 'react-intl'
 
 import { Tooltip, cssStr } from '@acx-ui/components'
 
-import * as UI from '../styledComponents'
+import * as UI from '../../VenueFirmwareList/styledComponents'
 
 export interface ApFirmwareUpdateGroupProps {
   apModels: string[]

@@ -7,7 +7,7 @@ import { FirmwareCategory } from '@acx-ui/rc/utils'
 import { getIntl }          from '@acx-ui/utils'
 
 import { VersionLabelType, getVersionLabel } from '../../../FirmwareUtils'
-import * as UI                               from '../styledComponents'
+import * as UI                               from '../../VenueFirmwareList/styledComponents'
 
 import { ApFirmwareUpdateGroup, ApFirmwareUpdateGroupProps } from './ApFirmwareUpdateGroup'
 

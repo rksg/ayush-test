@@ -6,8 +6,8 @@ import { useIntl }       from 'react-intl'
 import { Modal }                              from '@acx-ui/components'
 import { VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
 
-import * as UI                          from '../styledComponents'
-import { firmwareNote1, firmwareNote2 } from '../UpdateNowDialog'
+import * as UI                          from '../../VenueFirmwareList/styledComponents'
+import { firmwareNote1, firmwareNote2 } from '../../VenueFirmwareList/UpdateNowDialog'
 
 import { ApFirmwareUpdateGroupPanel }      from './ApFirmwareUpdateGroupPanel'
 import { ApFirmwareUpdateIndividualPanel } from './ApFirmwareUpdateIndividualPanel'
