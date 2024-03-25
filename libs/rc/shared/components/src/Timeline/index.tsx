@@ -92,7 +92,8 @@ export const Timeline = (props: TimelineProps) => {
   )
 
   const EndDot = (item: TimelineItem, index: number) => {
-    const isShowCheckApCompatibilities = item.id === 'CheckApCompatibilities'
+    const isShowCheckApCompatibilities =
+      item.status === 'SUCCESS' && item.id === 'CheckApCompatibilities'
     return (
       <AntTimeline.Item
         key={`timeline-end-${index}`}
