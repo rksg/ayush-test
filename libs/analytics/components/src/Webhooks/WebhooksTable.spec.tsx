@@ -123,6 +123,8 @@ describe('WebhooksTable', () => {
 
         expect(await within(await findTBody()).findAllByRole('row'))
           .toHaveLength(webhooks.length - 1)
+
+        expect(await screen.findByText('Webhook deleted')).toBeVisible()
       })
       it('handle delete RTKQuery error', async () => {
         const { dialog } = await renderElements()

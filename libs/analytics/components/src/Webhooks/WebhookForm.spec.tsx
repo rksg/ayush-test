@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { get }                                       from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store } from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }       from '@acx-ui/test-utils'
+import { mockServer, render, screen }                from '@acx-ui/test-utils'
 
 import { webhooks, mockResourceGroups, webhooksUrl, resourceGroups } from './__fixtures__'
 import { WebhookDto, webhookDtoKeys }                                from './services'
@@ -156,7 +156,8 @@ describe('WebhookForm', () => {
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+        expect(await screen.findByText('Webhook created')).toBeVisible()
+        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
       })
       it('handle RTKQuery error', async () => {
@@ -207,7 +208,8 @@ describe('WebhookForm', () => {
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+        expect(await screen.findByText('Webhook updated')).toBeVisible()
+        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
       })
       it('handle RTKQuery error', async () => {
@@ -261,19 +263,20 @@ describe('WebhookForm', () => {
 
     describe('Create new Webhook', () => {
       it('handle create flow', async () => {
+        const payloadSpy = jest.fn()
         const { dto, onClose } = await renderCreateAndFillIn(false)
 
         mockServer.use(
           rest.post(webhooksUrl(), (req, res, ctx) => {
-            expect(req.body).toEqual(dto)
+            payloadSpy(req.body)
             return res(ctx.json({ success: true }))
           })
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        await waitFor(() => {
-          expect(onClose).toHaveBeenCalledTimes(1)
-        })
+        expect(await screen.findByText('Webhook created')).toBeVisible()
+        expect(onClose).toHaveBeenCalledTimes(1)
+        expect(payloadSpy).toBeCalledWith(dto)
       })
     })
 
@@ -290,7 +293,8 @@ describe('WebhookForm', () => {
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1))
+        expect(await screen.findByText('Webhook updated')).toBeVisible()
+        expect(onClose).toHaveBeenCalledTimes(1)
         expect(payloadSpy).toBeCalledWith(dto)
       })
     })

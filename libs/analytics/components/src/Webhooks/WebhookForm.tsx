@@ -5,10 +5,10 @@ import { Checkbox, Form, FormInstance, FormProps, Input, Select, Switch } from '
 import _                                                                  from 'lodash'
 import { useIntl }                                                        from 'react-intl'
 
-import { incidentSeverities }                                            from '@acx-ui/analytics/utils'
-import { Button, Drawer, DrawerProps, Loader, showActionModal, Tooltip } from '@acx-ui/components'
-import { get }                                                           from '@acx-ui/config'
-import { URLProtocolRegExp }                                             from '@acx-ui/rc/utils'
+import { incidentSeverities }                                                       from '@acx-ui/analytics/utils'
+import { Button, Drawer, DrawerProps, Loader, showActionModal, showToast, Tooltip } from '@acx-ui/components'
+import { get }                                                                      from '@acx-ui/config'
+import { URLProtocolRegExp }                                                        from '@acx-ui/rc/utils'
 
 import {
   useCreateWebhookMutation,
@@ -66,7 +66,15 @@ export function WebhookForm (props: {
   useEffect(() => { form.resetFields() }, [form, props.webhook?.id])
 
   useEffect(() => {
-    if (response.isSuccess) { onClose() }
+    if (response.isSuccess) {
+      showToast({
+        type: 'success',
+        content: webhook?.id
+          ? $t({ defaultMessage: 'Webhook updated' })
+          : $t({ defaultMessage: 'Webhook created' })
+      })
+      onClose()
+    }
 
     if (response.isError) {
       handleError(

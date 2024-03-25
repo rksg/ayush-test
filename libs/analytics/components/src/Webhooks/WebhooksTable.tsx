@@ -8,7 +8,8 @@ import {
   Loader,
   Table,
   TableProps,
-  showActionModal
+  showActionModal,
+  showToast
 } from '@acx-ui/components'
 import { get } from '@acx-ui/config'
 
@@ -63,16 +64,23 @@ export default function WebhooksTable () {
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
   const { webhook, webhooks, states } = useWebhooks(selectedId)
-  const [doDelete, deleteResponse] = useDeleteWebhookMutation()
+  const [doDelete, response] = useDeleteWebhookMutation()
 
   useEffect(() => {
-    if (!deleteResponse.isError) return
+    if (response.isSuccess) {
+      showToast({ type: 'success', content: $t({ defaultMessage: 'Webhook deleted' }) })
+    }
+    if (response.isError) {
+      handleError(
+        response.error as FetchBaseQueryError,
+        $t({ defaultMessage: 'Failed to delete webhook' })
+      )
+    }
 
-    handleError(
-      deleteResponse.error as FetchBaseQueryError,
-      $t({ defaultMessage: 'Failed to delete webhook' })
-    )
-  }, [$t, deleteResponse])
+    // reset mutation response everytime submission ended
+    const isEnded = response.isSuccess || response.isError
+    if (isEnded) response.reset()
+  }, [$t, response])
 
   const columns: WebhookTableProps['columns'] = [{
     key: 'name',
