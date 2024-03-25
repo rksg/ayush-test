@@ -67,13 +67,13 @@ export function WebhookForm (props: {
 
   useEffect(() => {
     if (response.isSuccess) {
+      onClose()
       showToast({
         type: 'success',
         content: webhook?.id
           ? $t({ defaultMessage: 'Webhook updated' })
           : $t({ defaultMessage: 'Webhook created' })
       })
-      onClose()
     }
 
     if (response.isError) {
