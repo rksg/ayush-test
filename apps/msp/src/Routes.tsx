@@ -8,10 +8,12 @@ import {
   DHCPDetail,
   DHCPForm, DpskForm,
   NetworkDetails, NetworkForm,
-  AccessControlForm
+  AccessControlForm, AccessControlDetail,
+  useConfigTemplateVisibilityMap
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
+  ConfigTemplateType,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -37,10 +39,12 @@ import { AssignMspLicense }                        from './pages/Subscriptions/A
 import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
   const { tenantType } = getJwtTokenPayload()
   const isShowBrand360 =
-    tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR
+    isBrand360Enabled &&
+    (tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR)
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
@@ -109,70 +113,106 @@ function CustomersRoutes () {
   )
 }
 
-function ConfigTemplatesRoutes () {
-  const isConfigTemplateEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE)
+export function ConfigTemplatesRoutes () {
+  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
 
-  return isConfigTemplateEnabled ? rootRoutes(
+  return rootRoutes(
     <Route path=':tenantId/v/'>
-      <Route path={getConfigTemplatePath()}
-        element={<LayoutWithConfigTemplateContext />}
-      >
+      <Route path={getConfigTemplatePath()} element={<LayoutWithConfigTemplateContext />}>
         <Route index
           element={<TenantNavigate replace to={CONFIG_TEMPLATE_LIST_PATH} tenantType='v'/>}
         />
         <Route path=':activeTab' element={<ConfigTemplate />} />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-          element={<AAAForm edit={false} />}
-        />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
-          element={<AAAForm edit={true} />}
-        />
-        <Route
-          path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-          element={<AAAPolicyDetail />}
-        />
-        <Route
-          path={getPolicyRoutePath({
-            type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
-          })}
-          element={<AccessControlForm editMode={false}/>}
-        />
-        <Route path='networks/wireless/add' element={<NetworkForm />} />
-        <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
-        <Route path='networks/wireless/:networkId/network-details/:activeTab'
-          element={<NetworkDetails />}
-        />
-        <Route path='venues/add' element={<VenuesForm />} />
-        <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
-        <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
-        <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-          element={<DpskForm />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-          element={<DpskForm editMode={true} />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
-          element={<DpskDetails />}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-          element={<DHCPForm/>}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-          element={<DHCPForm editMode={true}/>}
-        />
-        <Route
-          path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-          element={<DHCPDetail/>}
-        />
+        {configTemplateVisibilityMap[ConfigTemplateType.RADIUS] && <>
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+            element={<AAAForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+            element={<AAAForm edit={true} />}
+          />
+          <Route
+            path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+            element={<AAAPolicyDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ACCESS_CONTROL] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE
+            })}
+            element={<AccessControlForm editMode={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT
+            })}
+            element={<AccessControlForm editMode={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL
+            })}
+            element={<AccessControlDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.NETWORK] && <>
+          <Route path='networks/wireless/add' element={<NetworkForm />} />
+          <Route path='networks/wireless/:networkId/:action' element={<NetworkForm />} />
+          <Route path='networks/wireless/:networkId/network-details/:activeTab'
+            element={<NetworkDetails />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VENUE] && <>
+          <Route path='venues/add' element={<VenuesForm />} />
+          <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
+          <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
+          <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.DPSK] && <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            element={<DpskForm />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+            element={<DpskForm editMode={true} />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
+            element={<DpskDetails />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.DHCP] && <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+            element={<DHCPForm/>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
+            element={<DHCPForm editMode={true}/>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
+            element={<DHCPDetail/>}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.PORTAL] && <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+            element={<div>Portal Creation</div>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
+            element={<div>Portal Edition</div>}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
+            element={<div>Portal Details</div>}
+          />
+        </>}
       </Route>
     </Route>
-  ) : null
+  )
 }

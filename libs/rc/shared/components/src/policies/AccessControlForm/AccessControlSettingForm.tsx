@@ -1,17 +1,30 @@
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
 
-import { GridCol, GridRow }                                                     from '@acx-ui/components'
-import { StepsFormLegacy }                                                      from '@acx-ui/components'
-import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
-import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
+import { GridCol, GridRow }         from '@acx-ui/components'
+import { StepsFormLegacy }          from '@acx-ui/components'
+import {
+  useGetAccessControlProfileListQuery,
+  useGetAccessControlProfileQuery
+} from '@acx-ui/rc/services'
+import {
+  useGetAccessControlProfileTemplateListQuery,
+  useGetAccessControlProfileTemplateQuery
+} from '@acx-ui/rc/services'
+import {
+  AccessControlInfoType,
+  AclEmbeddedObject,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
-import AccessControlComponent from './AccessControlComponent'
+import AccessControlComponent    from './AccessControlComponent'
+import { QUERY_DEFAULT_PAYLOAD } from './constants'
 
 type AccessControlSettingFormProps = {
   editMode: boolean,
@@ -26,12 +39,15 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     embeddedMode = false,
     embeddedObject = {} as AclEmbeddedObject
   } = props
-  const params = useParams()
   const form = Form.useFormInstance()
 
-  const { data } = useGetAccessControlProfileQuery({ params }, { skip: !editMode })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetAccessControlProfileQuery,
+    useGetAccessControlProfileTemplateQuery,
+    !editMode
+  )
 
-  const { data: aclProfileList } = useGetAccessControlProfileListQuery({ params })
+  const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
 
   useEffect(() => {
     if (data) {
@@ -143,4 +159,20 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
       </GridCol>
     </GridRow>
   )
+}
+
+const GetAclPolicyListInstance = (editMode: boolean) => {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const tableQuery = useGetAccessControlProfileTemplateListQuery({
+    params, payload: QUERY_DEFAULT_PAYLOAD
+  }, { skip: !isTemplate })
+
+  const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]
+
+  // eslint-disable-next-line max-len
+  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode || isTemplate })
+
+  return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }

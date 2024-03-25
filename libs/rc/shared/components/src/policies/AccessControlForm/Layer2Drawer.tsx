@@ -18,23 +18,33 @@ import {
 import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
+  useGetEnhancedL2AclProfileListQuery,
   useGetL2AclPolicyQuery,
-  useL2AclPolicyListQuery,
   useUpdateL2AclPolicyMutation
+} from '@acx-ui/rc/services'
+import {
+  useAddL2AclPolicyTemplateMutation,
+  useGetL2AclPolicyTemplateListQuery,
+  useGetL2AclPolicyTemplateQuery,
+  useUpdateL2AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
   defaultSort,
+  L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp
+  sortProp, TableResult,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }     from './AccessControlForm'
-import { PROFILE_MAX_COUNT_LAYER2_POLICY } from './constants'
-import { useScrollLock }                   from './ScrollLock'
+
+import { AddModeProps, editModeProps }                            from './AccessControlForm'
+import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import { useScrollLock }                                          from './ScrollLock'
 
 
 const { useWatch } = Form
@@ -47,6 +57,7 @@ export interface Layer2DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -85,6 +96,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -119,34 +131,29 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useWatch<string>([...inputName, 'l2AclPolicyId'])
   ]
 
-  const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
+  const [ createL2AclPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddL2AclPolicyMutation, useAddL2AclPolicyTemplateMutation)
 
-  const [ updateL2AclPolicy ] = useUpdateL2AclPolicyMutation()
+  const [ updateL2AclPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateL2AclPolicyMutation, useUpdateL2AclPolicyTemplateMutation)
 
-  const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer2SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer2List: data ? data.map(item => item.name) : []
-      }
-    }
-  })
+  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(editMode.isEdit)
 
-  const { data: layer2PolicyInfo } = useGetL2AclPolicyQuery(
-    {
-      params: { ...params, l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
-    },
-    { skip: skipFetch }
+  const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetL2AclPolicyQuery,
+    useGetL2AclPolicyTemplateQuery,
+    skipFetch,
+    {},
+    { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
   )
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
       return false
+    }
+
+    if (drawerViewModeId !== '') {
+      return !_.isNil(layer2PolicyInfo)
     }
 
     if (editMode.isEdit || localEditMode.isEdit) {
@@ -169,6 +176,13 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined))
   }, [isOnlyViewMode, l2AclPolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -572,7 +586,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   </RuleContentWrapper>
 
   const modeContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -642,8 +656,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={() => handleLayer2DrawerClose()
-        }
+        onClose={() => handleLayer2DrawerClose()}
         destroyOnClose={true}
         children={content}
         footer={
@@ -711,4 +724,23 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       />
     </>
   )
+}
+
+const useGetL2AclPolicyListInstance = (isEdit: boolean): {
+  layer2SelectOptions: JSX.Element[], layer2List: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>(
+    useGetEnhancedL2AclProfileListQuery,
+    useGetL2AclPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
+
+  return {
+    layer2SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer2List: data?.data?.map(item => item.name) ?? []
+  }
 }

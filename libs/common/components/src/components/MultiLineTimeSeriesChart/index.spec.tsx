@@ -12,6 +12,7 @@ import { getData, getSeriesData } from './stories'
 import {
   useBrush,
   useOnMarkAreaClick,
+  useTimeMarkers,
   MultiLineTimeSeriesChart
 } from '.'
 
@@ -65,6 +66,46 @@ describe('MultiLineTimeSeriesChart', () => {
       dataFormatter={formatter}
     />)
     expect(formatter).toBeCalled()
+  })
+
+  it('should render multiple yAxis', () => {
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData(2)}
+      yAxisConfig={[{
+        axisName: 'Wireless Clients Count',
+        nameRotate: 90,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-1')
+      }, {
+        axisName: 'Wired Clients Count',
+        nameRotate: 270,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-2')
+      }]}
+    />)
+    expect(screen.getByText('Wireless Clients Count')).toBeVisible()
+    expect(screen.getByText('Wired Clients Count')).toBeVisible()
+  })
+
+  it('should render multiple yAxis with only one axis label', () => {
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData(2)}
+      yAxisConfig={[{
+        axisName: 'Wireless Clients Count',
+        nameRotate: 90,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-1')
+      }, {
+        axisName: 'Wired Clients Count',
+        nameRotate: 270,
+        showLabel: false,
+        color: cssStr('--acx-viz-qualitative-2')
+      }]}
+      seriesYAxisIndexes={[0, 0, 1]}
+      seriesChartTypes={['area', 'line', 'line']}
+    />)
+    expect(screen.getByText('Wireless Clients Count')).toBeVisible()
+    expect(screen.queryByText('Wired Clients Count')).toBeNull()
   })
 
   it('should not render legend if disabled', () => {
@@ -158,6 +199,70 @@ describe('MultiLineTimeSeriesChart', () => {
       const markAreaPaths = asFragment().querySelectorAll('path[stroke="#FF00FF"]')
       expect(markAreaPaths.length).toEqual(2)
     })
+  })
+})
+
+describe('useTimeMarkers', () => {
+  let convertToPixel: jest.Mock<ECharts['convertToPixel']>
+  let setOption: jest.Mock<ECharts['setOption']>
+
+  beforeEach(() => {
+    setOption = jest.fn() as jest.Mock<ECharts['setOption']>
+    convertToPixel = jest.fn()
+      .mockImplementation((type, value) => value) as jest.Mock<ECharts['convertToPixel']>
+    eChartsRef = {
+      current: {
+        getEchartsInstance: () => ({
+          convertToPixel,
+          setOption
+        })
+      }
+    } as unknown as RefObject<ReactECharts>
+  })
+  it('handles null chart ref', async () => {
+    eChartsRef = { current: null } as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef))
+    // intentionally no assertion to cover the line where echart ref is null
+  })
+  it('handles markers not defined', async () => {
+    const getEchartsInstance = jest.fn() as jest.Mock<ReactECharts['getEchartsInstance']>
+    eChartsRef = { current: { getEchartsInstance } } as unknown as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef, undefined))
+    expect(getEchartsInstance).not.toHaveBeenCalled()
+  })
+  it('handles empty markers', async () => {
+    const getEchartsInstance = jest.fn() as jest.Mock<ReactECharts['getEchartsInstance']>
+    eChartsRef = { current: { getEchartsInstance } } as unknown as RefObject<ReactECharts>
+    renderHook(() => useTimeMarkers(eChartsRef, []))
+    expect(getEchartsInstance).not.toHaveBeenCalled()
+  })
+  it('combine labels when marker time very close', async () => {
+    renderHook(() => useTimeMarkers(eChartsRef, [
+      { timestamp: 0, label: 'a' },
+      { timestamp: 1, label: 'b' },
+      { timestamp: 2, label: 'c' }
+    ]))
+    expect(setOption).toBeCalledWith({ graphic: expect.arrayContaining([
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'text' })
+    ]) })
+  })
+  it('renders time markers', async () => {
+    renderHook(() => useTimeMarkers(eChartsRef, [
+      { timestamp: 0, label: 'a' },
+      { timestamp: 100, label: 'b' },
+      { timestamp: 200, label: 'c' }
+    ]))
+    expect(setOption).toBeCalledWith({ graphic: expect.arrayContaining([
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'line' }),
+      expect.objectContaining({ type: 'text' }),
+      expect.objectContaining({ type: 'text' }),
+      expect.objectContaining({ type: 'text' })
+    ]) })
   })
 })
 

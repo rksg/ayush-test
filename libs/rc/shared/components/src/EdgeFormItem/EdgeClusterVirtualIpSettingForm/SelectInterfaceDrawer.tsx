@@ -6,8 +6,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                                                              from '@acx-ui/components'
-import { EdgeClusterStatus, EdgePortInfo, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
+import { Drawer, Select }                                                                                       from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePortInfo, EdgeStatus, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -16,9 +16,9 @@ import { VirtualIpFormType } from '.'
 interface SelectInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  handleFinish: (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => void
+  handleFinish: (data: { [key: string]: EdgePortInfo | undefined }) => void
   currentVipIndex?: number
-  currentClusterStatus?: EdgeClusterStatus
+  nodeList?: EdgeStatus[]
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
   }
@@ -33,7 +33,7 @@ interface SelectInterfaceDrawerFormType {
 export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   const {
     visible, setVisible, currentVipIndex = 0,
-    currentClusterStatus, handleFinish: handleOk , editData,
+    nodeList, handleFinish: handleOk , editData,
     selectedInterfaces, lanInterfaces
   } = props
   const { $t } = useIntl()
@@ -57,13 +57,15 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   }, [lanInterfaces])
 
   useEffect(() => {
-    if(visible && editData) {
+    if(visible) {
       form.resetFields()
-      const tmp = {} as SelectInterfaceDrawerFormType
-      for(let [k, v] of Object.entries(editData)) {
-        tmp[k] = { port: v?.portName ?? '' }
+      if(editData) {
+        const tmp = {} as SelectInterfaceDrawerFormType
+        for(let [k, v] of Object.entries(editData)) {
+          tmp[k] = { port: v?.portName ?? '' }
+        }
+        form.setFieldsValue(tmp)
       }
-      form.setFieldsValue(tmp)
     }
   }, [visible, editData])
 
@@ -80,7 +82,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     for(let [k, v] of Object.entries(data)) {
       result[k] = lanInterfaces?.[k].find(lanInterface => lanInterface.portName === v.port)
     }
-    handleOk(result, currentVipIndex)
+    handleOk(result)
     handleClose()
   }
 
@@ -91,7 +93,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber].portName).filter(item => item !== undefined)
+      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
     const editPortName = editData?.[targetSerialNumber]?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)
@@ -100,7 +102,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   const getAllIpForValidation = () => {
     const formData = form.getFieldsValue() as SelectInterfaceDrawerFormType
     return Object.entries(formData).map(([k, v]) => {
-      const target = lanInterfaces?.[k].find(item => item.portName === v.port)
+      const target = lanInterfaces?.[k].find(item =>
+        item.portName === v.port && item.ipMode !== EdgeIpModeEnum.DHCP)
       return {
         ip: target?.ip,
         subnet: target?.subnet
@@ -116,7 +119,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     >
       <Row gutter={[16, 10]}>
         {
-          currentClusterStatus?.edgeList?.map(item => (
+          nodeList?.map(item => (
             <Col key={`node-${item.serialNumber}`} span={24}>
               <UI.EdgeNameHeadLine>{item.name}</UI.EdgeNameHeadLine>
               <Form.Item
@@ -143,7 +146,10 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                         item.portName === currentPort)
                       return currentPort && $t({ defaultMessage: 'IP subnet: {ip}' },
                         {
-                          ip: getIpWithBitMask(currentInterface?.ip, currentInterface?.subnet)
+                          ip: currentInterface?.ipMode === EdgeIpModeEnum.DHCP ?
+                            $t({ defaultMessage: 'Dynamic' }) :
+                            (getIpWithBitMask(currentInterface?.ip, currentInterface?.subnet) ||
+                            'N/A')
                         })
                     }}
                   </Form.Item>
@@ -154,17 +160,19 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                       filterPortOptions(
                         lanInterfacesOptions[item.serialNumber],
                         item.serialNumber
-                      )?.map(option => (
-                        <Select.Option
+                      )?.map(option => {
+                        const targetInterface = lanInterfaces?.[item.serialNumber]?.find(item =>
+                          item.portName === option.value)
+                        return <Select.Option
                           key={option.value}
                           value={option.value}
                           children={option.label}
                           disabled={
-                            !lanInterfaces?.[item.serialNumber]?.find(item =>
-                              item.portName === option.value)?.ip
+                            !Boolean(targetInterface?.ip) &&
+                            targetInterface?.ipMode !== EdgeIpModeEnum.DHCP
                           }
                         />
-                      ))
+                      })
                     }
                   />
                 }

@@ -6,18 +6,24 @@ import { flatMap, isEqual }    from 'lodash'
 import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
-import { Loader, NoData, StepsForm }                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
-import { useGetEdgeSdLanViewDataListQuery, useUpdatePortConfigMutation }                            from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortWithStatus, convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
+import { Loader, NoData, StepsForm }   from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
+import {
+  EdgeIpModeEnum,
+  EdgePortTypeEnum,
+  EdgePortWithStatus,
+  convertEdgePortsConfigToApiPayload } from '@acx-ui/rc/utils'
 
 import { EdgePortTabEnum }                                  from '..'
+import { useGetEdgeSdLanByEdgeOrClusterId }                 from '../../../EdgeSdLan/useEdgeSdLanActions'
 import { EditContext }                                      from '../../EdgeEditContext'
 import { EdgePortConfigFormType, EdgePortsGeneralBase }     from '../../EdgePortsGeneralBase'
 import { getFieldFullPath, transformApiDataToFormListData } from '../../EdgePortsGeneralBase/utils'
 import { EdgePortsDataContext }                             from '../PortDataProvider'
 
 interface PortsGeneralProps {
+  clusterId: string
   serialNumber: string
   onFinish?: (formValues?: EdgePortWithStatus[]) => Promise<void>
   onCancel: () => void
@@ -28,34 +34,26 @@ interface PortsGeneralProps {
   }
 }
 
+// TODO: this will be deprecated after SD-LAN P1 deprecated
 const PortsGeneral = (props: PortsGeneralProps) => {
-  const { serialNumber, onCancel, buttonLabel } = props
+  const { clusterId, serialNumber, onCancel, buttonLabel } = props
   const { $t } = useIntl()
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string|undefined>()
   const editEdgeContext = useContext(EditContext)
   const { portData, portStatus, lagData, isFetching } = useContext(EdgePortsDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
-  const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-    = useGetEdgeSdLanViewDataListQuery(
-      { payload: {
-        filters: { edgeId: [serialNumber] },
-        fields: ['id', 'edgeId', 'corePortMac']
-      } },
-      {
-        skip: !isEdgeSdLanReady,
-        selectFromResult: ({ data, isLoading, isFetching }) => ({
-          edgeSdLanData: data?.data?.[0],
-          isEdgeSdLanLoading: isLoading,
-          isEdgeSdLanFetching: isFetching
-        })
-      }
-    )
+  const {
+    edgeSdLanData,
+    isLoading: isEdgeSdLanLoading,
+    isFetching: isEdgeSdLanFetching
+  } = useGetEdgeSdLanByEdgeOrClusterId(isEdgeSdLanHaReady ? clusterId : serialNumber)
 
   const handleFormChange = async (changedValues: Object) => {
-    // due to form.List, must use the trailling 0
+    // due to form.List,must use the trailling 0
     const changedField = Object.values(changedValues)?.[0]?.[0]
     if(changedField) {
       const changedPortName = Object.keys(changedValues)?.[0]
@@ -102,7 +100,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     //   })
     // }
 
-    if (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER) {
+    if (changedValue === EdgePortTypeEnum.LAN) {
       form.setFieldValue(getFieldFullPath(interfaceName, 'ipMode'), EdgeIpModeEnum.STATIC)
     } else if (changedValue === EdgePortTypeEnum.WAN) {
       const initialPortType = portData.find(port => port.interfaceName === interfaceName)?.portType
@@ -141,7 +139,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
   const handleFinishFailed = (errorInfo: ValidateErrorEntity) => {
     const firstErrorTab = errorInfo.errorFields?.[0].name?.[0].toString()
-    if(firstErrorTab) {
+    if(firstErrorTab !== 'validate') {
       setActiveTab(firstErrorTab)
     }
   }
