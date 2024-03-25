@@ -327,7 +327,7 @@ export const transformFromFormToApiData =
     })
   }
   const virtualIpSettings = data.vipConfig.map(item => {
-    if(!Boolean(item.interfaces)) return undefined
+    if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
     const ports = Object.entries(item.interfaces).map(([, v2]) => {
       return {
         serialNumber: v2.serialNumber,
