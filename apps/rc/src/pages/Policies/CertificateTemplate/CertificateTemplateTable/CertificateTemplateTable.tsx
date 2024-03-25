@@ -1,17 +1,17 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Loader, Table, TableProps, showActionModal }                                                                                         from '@acx-ui/components'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                              from '@acx-ui/rc/components'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel }                                                                            from '@acx-ui/rc/components'
 import { useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                      from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                               from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
 import { noDataDisplay }                                                                                                                              from '@acx-ui/utils'
 
-import { caTypeShortLabel, deleteDescription } from '../contentsMap'
+import { deleteDescription } from '../contentsMap'
 
 
 export default function CertificateTemplateTable () {
@@ -19,10 +19,6 @@ export default function CertificateTemplateTable () {
   const { Text } = Typography
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-  const [
-    caFilterOptions,
-    setCaFilterOptions
-  ] = useState<{ key: string; value: string; label?: ReactNode; }[]>([])
   const [policySetData, setPolicySetData] = useState(new Map())
   const [queryPolicySet] = useLazyGetAdaptivePolicySetQuery()
   const [deleteCertificateTemplate] = useDeleteCertificateTemplateMutation()
@@ -34,30 +30,31 @@ export default function CertificateTemplateTable () {
       searchString: ''
     }
   })
-  const caTableQuery = useTableQuery({
-    useQuery: useGetCertificateAuthoritiesQuery,
-    defaultPayload: {},
-    pagination: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
-  })
 
-  useEffect(() => {
-    const policySetMap = new Map()
-    tableQuery.data?.data?.forEach((item) => {
-      if (item.policySetId) {
-        queryPolicySet({ params: { policySetId: item.policySetId } }).then((res) => {
-          policySetMap.set(item.policySetId, res.data?.name)
-        })
-      }
+  const { caFilterOptions } = useGetCertificateAuthoritiesQuery(
+    {
+      payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
+    },
+    {
+      selectFromResult: ({ data }) => ({
+        caFilterOptions: data?.data.map((ca) => ({ key: ca.id, value: ca.name })) || []
+      })
     })
-    setPolicySetData(policySetMap)
-  }, [tableQuery.data])
 
   useEffect(() => {
-    if (caTableQuery.data) {
-      const options = caTableQuery.data.data.map((ca) => ({ key: ca.id, value: ca.name }))
-      setCaFilterOptions(options)
+    const fetchPolicySets = async () => {
+      if (!tableQuery.data?.data) return
+      const policySetMap = new Map()
+      for (const item of tableQuery.data.data) {
+        if (item.policySetId) {
+          const res = await queryPolicySet({ params: { policySetId: item.policySetId } })
+          policySetMap.set(item.policySetId, res.data?.name)
+        }
+      }
+      setPolicySetData(policySetMap)
     }
-  }, [caTableQuery.data])
+    fetchPolicySets()
+  }, [tableQuery.data])
 
   const columns: TableProps<CertificateTemplate>['columns'] = [
     {
@@ -166,7 +163,7 @@ export default function CertificateTemplateTable () {
       type: 'confirm',
       customContent: {
         action: 'DELETE',
-        entityName: 'template',
+        entityName: $t({ defaultMessage: 'template' }),
         entityValue: selectedRow.name,
         numOfEntities: 1,
         confirmationText: $t({ defaultMessage: 'Delete' }),

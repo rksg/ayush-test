@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Divider, Form, Row } from 'antd'
 import { useIntl }                         from 'react-intl'
 
-import { Collapse, Drawer, Loader }                                                                                                                                                           from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }                                                                                                                                                   from '@acx-ui/icons'
-import { MAX_CERTIFICATE_PER_TENANT, UploadCaSettings }                                                                                                                                       from '@acx-ui/rc/components'
-import { useLazyGetAdaptivePolicySetQuery, useLazyGetCertificateAuthorityQuery, useLazyGetCertificateTemplateQuery, useLazyGetSubCertificateAuthoritiesQuery, useUploadCaPrivateKeyMutation } from '@acx-ui/rc/services'
-import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                                         from '@acx-ui/rc/utils'
-import { noDataDisplay }                                                                                                                                                                      from '@acx-ui/utils'
+import { Collapse, Drawer, Loader }                                                                                                                                           from '@acx-ui/components'
+import { CollapseActive, CollapseInactive }                                                                                                                                   from '@acx-ui/icons'
+import { MAX_CERTIFICATE_PER_TENANT, UploadCaSettings }                                                                                                                       from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSubCertificateAuthoritiesQuery, useUploadCaPrivateKeyMutation } from '@acx-ui/rc/services'
+import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                         from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                                                                                                                      from '@acx-ui/utils'
 
+import { certDetailTitle }                                                                                                    from '../contentsMap'
 import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
 
 import { getCertificateAuthorityDetails, getCertificateDetails } from './DetailDrawerHelper'
@@ -34,13 +35,13 @@ export enum RenderType {
 export interface Content {
   type: RenderType;
   title: string;
-  content: SubContent[] | CertificateCategoryType | JSX.Element[] | JSX.Element;
+  content: SubContent[] | CertificateCategoryType | JSX.Element;
 }
 
 export interface SubContent {
   type: RenderType;
   title?: string;
-  content?: string | JSX.Element[] | JSX.Element | number | null;
+  content?: string | JSX.Element | number | null;
   detailTitle?: string;
   detail?: string;
 }
@@ -52,84 +53,57 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
   const [rawInfoDrawerOpen, setRawInfoDrawerOpen] = useState(false)
   const [rawInfoDrawerData, setRawInfoDrawerData] = useState('')
   const [rawInfoDrawerTitle, setRawInfoDrawerTitle] = useState('')
-  const [getCertificateTemplate] = useLazyGetCertificateTemplateQuery()
-  const [queryPolicySet] = useLazyGetAdaptivePolicySetQuery()
-  const [querySubCAs] = useLazyGetSubCertificateAuthoritiesQuery()
-  const [queryCAs] = useLazyGetCertificateAuthorityQuery()
   const [uploadPrivateKey] = useUploadCaPrivateKeyMutation()
-  const [subCas, setSubCas] = useState(new Array<string>())
-  const [parentCaName, setParentCaName] = useState<string | null>(null)
-  const [policySetData, setPolicySetData] = useState<string | null>(null)
-  const [isFetching, setIsFetching] = useState(false)
-
 
   useEffect(() => {
-    const fetchAndSetPolicySetData = async (data: Certificate) => {
-      setIsFetching(true)
-      try {
-        if (!data?.certificateTemplateId) return
-        const templateRes = await getCertificateTemplate({
-          params: { policyId: data.certificateTemplateId }
-        })
-        if (templateRes?.data?.policySetId) {
-          const policySetRes = await queryPolicySet({
-            params: { policySetId: templateRes?.data?.policySetId }
-          }).unwrap()
-          setPolicySetData(policySetRes?.name || noDataDisplay)
-        }
-      } catch {
-        setPolicySetData(null)
-      } finally {
-        setIsFetching(false)
-      }
-    }
-
-    const fetchAndSetSubCas = async (data: CertificateAuthority) => {
-      setIsFetching(true)
-      try {
-        const subCAsRes = await querySubCAs({
-          params: { caId: data.id },
-          payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
-        }).unwrap()
-        setSubCas(subCAsRes.data?.map(d => d.commonName))
-      } catch {
-        setSubCas([])
-      } finally {
-        setIsFetching(false)
-      }
-    }
-
-    const fetchAndSetParentCa = async (data: CertificateAuthority) => {
-      try {
-        const parentCaName = data.parentCaId
-          ? (await queryCAs({ params: { caId: data.parentCaId } }).unwrap()).name : null
-        setParentCaName(parentCaName)
-      } catch {
-        setParentCaName(null)
-      }
-    }
-
     setRawInfoDrawerOpen(false)
     setUploadDrawerOpen(false)
     uploadPrivateKeyForm.resetFields()
-    if (data && type === CertificateCategoryType.CERTIFICATE) {
-      fetchAndSetPolicySetData(data as Certificate)
-    } else if (data && type === CertificateCategoryType.CERTIFICATE_AUTHORITY) {
-      fetchAndSetSubCas(data as CertificateAuthority)
-      fetchAndSetParentCa(data as CertificateAuthority)
-    }
   }, [data])
 
-  const getTitle = () => {
-    return type === CertificateCategoryType.CERTIFICATE ?
-      $t({ defaultMessage: 'Certificate Details' }) :
-      $t({ defaultMessage: 'Certificate Authority Details' })
-  }
+  const { policySetId, isCertDataFetching } = useGetCertificateTemplateQuery({
+    params: { policyId: (data as Certificate)?.certificateTemplateId }
+  }, {
+    skip: type === CertificateCategoryType.CERTIFICATE_AUTHORITY
+      // eslint-disable-next-line max-len
+      || (type === CertificateCategoryType.CERTIFICATE && !(data as Certificate)?.certificateTemplateId),
+    selectFromResult: ({ data, isFetching }) =>
+      ({ policySetId: data?.policySetId, isCertDataFetching: isFetching })
+  })
 
-  const getCollapsedHeader = (header: string) => < CollapseTitle >{header}</CollapseTitle >
-  const setRawInfoDrawer = (title: string | undefined, data: string | undefined, open: boolean) => {
-    setRawInfoDrawerData(data || '')
-    setRawInfoDrawerTitle(title || '')
+  const { policySetData } = useGetAdaptivePolicySetQuery({
+    params: { policySetId: policySetId }
+  }, {
+    skip: !policySetId,
+    selectFromResult: ({ data, isUninitialized }) =>
+      ({ policySetData: isUninitialized ? noDataDisplay : data?.name || noDataDisplay })
+  })
+
+  const { subCas, isCaDataFetching } = useGetSubCertificateAuthoritiesQuery({
+    params: { caId: data?.id },
+    payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
+  }, {
+    skip: type === CertificateCategoryType.CERTIFICATE
+      || (type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.id),
+    selectFromResult: ({ data, isFetching }) => ({
+      subCas: data?.data.map(d => d.commonName) || [],
+      isCaDataFetching: isFetching
+    })
+  })
+
+  const { parentCaName } = useGetCertificateAuthorityQuery(
+    { params: { caId: (data as CertificateAuthority)?.parentCaId } },
+    {
+      skip: type === CertificateCategoryType.CERTIFICATE
+        // eslint-disable-next-line max-len
+        || (type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !(data as CertificateAuthority)?.parentCaId),
+      selectFromResult: ({ data, isUninitialized }) => (
+        { parentCaName: isUninitialized ? noDataDisplay : (data?.name || noDataDisplay) })
+    })
+
+  const setRawInfoDrawer = (title: string = '', data: string = '', open: boolean) => {
+    setRawInfoDrawerData(data)
+    setRawInfoDrawerTitle(title)
     setRawInfoDrawerOpen(open)
   }
 
@@ -190,11 +164,9 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
 
     switch (item.type) {
       case RenderType.TITLE:
-        return (
-          <>{Array.isArray(item.content) && item.content.map(renderItemContent)}</>
-        )
+        return Array.isArray(item.content) ? <>{item.content.map(renderItemContent)}</> : null
       case RenderType.TITLE_WITH_DETAILS:
-        return <>{item.content}</>
+        return item.content as JSX.Element
       case RenderType.DOWNLOAD:
         return <DownloadSection
           type={item.content as CertificateCategoryType}
@@ -227,24 +199,25 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
   return (
     <>
       <Drawer
-        title={getTitle()}
+        title={$t(certDetailTitle[type])}
         visible={open}
         onClose={() => setOpen(false)}
         width={550}
         destroyOnClose={true}
       >
-        <Loader states={[{ isLoading: false, isFetching }]}>
+        <Loader states={[{
+          isLoading: false,
+          isFetching: isCertDataFetching || isCaDataFetching
+        }]}>
           <CollapseWrapper>
             <Collapse
-              className='site-collapse-custom-collapse'
               expandIcon={({ isActive }) => isActive ?
                 <CollapseInactive width={10} /> : <CollapseActive width={10} />}
               ghost
             >
               {getDetails().map((item, index) => (
-                <Collapse.Panel header={getCollapsedHeader(item.title)}
-                  key={index}
-                  className='site-collapse-custom-panel'>
+                <Collapse.Panel header={<CollapseTitle>{item.title}</CollapseTitle>}
+                  key={index}>
                   <CollapsePanelContentWrapper>
                     <CollapsePanelContent
                       data={data}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 
@@ -19,29 +19,24 @@ export default function EditCertificateAuthorityForm (props: {
   const { $t } = getIntl()
   const { data, modal } = props
   const [form] = Form.useForm<CertificateAuthority>()
-  const [okButtonDisabled, setOkButtonDisabled] = useState(true)
   const [editCA] = useEditCertificateAuthorityMutation()
 
   useEffect(() => {
     modal.update({
       onOk: async () => {
-        try {
-          await form.validateFields()
-          const params = { caId: data.id }
-          const formData = form.getFieldsValue()
-          const { name, description } = formData
-          await editCA({ params, payload: { name, description } })
-          return Promise.resolve()
-        } catch {
-          return Promise.reject('validation error')
-        }
-      },
-      okButtonProps: { disabled: okButtonDisabled }
+        await form.validateFields()
+        const params = { caId: data.id }
+        const formData = form.getFieldsValue()
+        const { name, description } = formData
+        await editCA({ params, payload: { name, description } })
+      }
     })
-  }, [okButtonDisabled])
+  }, [])
 
   const onFieldsChange = () => {
-    setOkButtonDisabled(form.getFieldsError().some(item => item.errors.length > 0))
+    modal.update({
+      okButtonProps: { disabled: form.getFieldsError().some(item => item.errors.length > 0) }
+    })
   }
 
   const [getCertificateAuthorities] = useLazyGetCertificateAuthoritiesQuery()

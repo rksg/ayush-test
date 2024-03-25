@@ -255,6 +255,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
                   payload: { ...rest }
                 })
                 setCertificateDrawerOpen(false)
+                certificateForm.resetFields()
               } catch { }
             }}
           />

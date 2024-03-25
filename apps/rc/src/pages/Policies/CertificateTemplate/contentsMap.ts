@@ -1,23 +1,8 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { AlgorithmType, CertificateAuthorityType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { CertificateCategoryType, CertificateStatusType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 
-
-export const caTypeShortLabel: Record<CertificateAuthorityType, MessageDescriptor> = {
-  [CertificateAuthorityType.ONBOARD]: defineMessage({ defaultMessage: 'Onboard' }),
-  [CertificateAuthorityType.MICROSOFT]: defineMessage({ defaultMessage: 'Microsoft' }),
-  [CertificateAuthorityType.INCOMMON]: defineMessage({ defaultMessage: 'inCommon' }),
-  [CertificateAuthorityType.NETWORKFX]: defineMessage({ defaultMessage: 'NetworkFX' }),
-  [CertificateAuthorityType.CUSTOM]: defineMessage({ defaultMessage: 'Custom' })
-}
-
-export const algorithmLabel: Record<AlgorithmType, MessageDescriptor> = {
-  [AlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
-  [AlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
-  [AlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
-  [AlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
-}
 
 export const usagesLabel: Record<UsageType, MessageDescriptor> = {
   [UsageType.CLIENT_AUTH]: defineMessage({ defaultMessage: 'Client Authentication' }),
@@ -30,19 +15,6 @@ export const keyUsagesLabel: Record<KeyUsageType, MessageDescriptor> = {
   [KeyUsageType.DATA_ENCIPHERMENT]: defineMessage({ defaultMessage: 'Data Encipherment' }),
   [KeyUsageType.KEY_CERT_SIGN]: defineMessage({ defaultMessage: 'Certificate Signing' }),
   [KeyUsageType.CRL_SIGN]: defineMessage({ defaultMessage: 'CRL Signing' })
-}
-
-export const enrollmentTypeLabel: Record<ChromebookEnrollmentType, MessageDescriptor> = {
-  [ChromebookEnrollmentType.DEVICE]: defineMessage({ defaultMessage: 'Device' }),
-  [ChromebookEnrollmentType.USER]: defineMessage({ defaultMessage: 'User' })
-}
-
-export const existingCertLabel: Record<ChromebookCertRemovalType, MessageDescriptor> = {
-  [ChromebookCertRemovalType.NONE]: defineMessage({ defaultMessage: 'Do not remove existing certificates.' }),
-  [ChromebookCertRemovalType.SAME_CN]: defineMessage({ defaultMessage: 'Remove certificates with same common name.' }),
-  [ChromebookCertRemovalType.SAME_CA]: defineMessage({ defaultMessage: 'Remove certificates with same issuing CA.' }),
-  [ChromebookCertRemovalType.SAME_CN_OR_SAME_CA]: defineMessage({ defaultMessage: 'Remove certificate with same CN or issuing CA.' }),
-  [ChromebookCertRemovalType.ALL]: defineMessage({ defaultMessage: 'Remove all certificates.' })
 }
 
 export const certificateDescription: Record<string, MessageDescriptor> = {
@@ -82,4 +54,10 @@ export const deleteDescription: Record<string, MessageDescriptor> = {
   UNDONE: defineMessage({
     defaultMessage: 'This action cannot be undone.'
   })
+}
+
+export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor> = {
+  [CertificateCategoryType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate Details' }),
+  [CertificateCategoryType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority Details' }),
+  [CertificateCategoryType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template Details' })
 }

@@ -71,7 +71,7 @@ export default function CertificateSettings ({ specificTemplate = false }) {
             <Form.Item
               name='csrString'
               label={$t({ defaultMessage: 'Certificate Signing Request' })}
-              rules={[{ required: csrType === 'copy' }]}
+              rules={[{ required: true }]}
             >
               <Input.TextArea rows={5} />
             </Form.Item>

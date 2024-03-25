@@ -1,11 +1,12 @@
 import moment from 'moment-timezone'
 
+import { algorithmLabel }                                                                                                                                             from '@acx-ui/rc/components'
 import { Certificate, CertificateStatusType, EXPIRATION_TIME_FORMAT, CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 import { getIntl, noDataDisplay }                                                                                                                                     from '@acx-ui/utils'
 
 
-import { algorithmLabel, certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from '../contentsMap'
-import { DescriptionText }                                                         from '../styledComponents'
+import { certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from '../contentsMap'
+import { DescriptionText }                                         from '../styledComponents'
 
 import { Content, RenderType } from './DetailDrawer'
 
@@ -26,7 +27,7 @@ export const getDisplayedItems
   = (items: string[] | KeyUsageType[] | UsageType[], type?: string) => {
     const { $t } = getIntl()
     if (items && items.length === 0) return <div>{noDataDisplay}</div>
-    return items?.map((item, index) => {
+    return <>{items.map((item, index) => {
       if (type === 'keyUsages') {
         return <DescriptionText key={index}>
           {$t(keyUsagesLabel[item as KeyUsageType])}
@@ -36,7 +37,7 @@ export const getDisplayedItems
       } else {
         return <DescriptionText key={index}>{item}</DescriptionText>
       }
-    })
+    })}</>
   }
 
 export const getCertificateDetails =

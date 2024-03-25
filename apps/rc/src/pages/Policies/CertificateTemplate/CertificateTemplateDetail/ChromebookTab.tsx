@@ -1,11 +1,11 @@
 import { Divider, Typography } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { CertificateTemplate } from '@acx-ui/rc/utils'
-import { noDataDisplay }       from '@acx-ui/utils'
+import { enrollmentTypeLabel, existingCertLabel } from '@acx-ui/rc/components'
+import { CertificateTemplate }                    from '@acx-ui/rc/utils'
+import { noDataDisplay }                          from '@acx-ui/utils'
 
-import { enrollmentTypeLabel, existingCertLabel } from '../contentsMap'
-import { Description, DescriptionRow, Section }   from '../styledComponents'
+import { Description, DescriptionRow, Section } from '../styledComponents'
 
 export default function ChromebookTab ({ data }: { data: CertificateTemplate | undefined }) {
   const { $t } = useIntl()

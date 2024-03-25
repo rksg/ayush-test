@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                  from '@acx-ui/components'
-import { useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery, useLazyGetAdaptivePolicySetQuery, useLazyGetCertificateAuthorityQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath }                                                  from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                 from '@acx-ui/user'
-import { noDataDisplay }                                                                                                                                  from '@acx-ui/utils'
+import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                          from '@acx-ui/components'
+import { caTypeShortLabel }                                                                                                                       from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery } from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath }                                          from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                         from '@acx-ui/user'
+import { noDataDisplay }                                                                                                                          from '@acx-ui/utils'
 
-import CertificateTable     from '../CertificateTemplateTable/CertificateTable'
-import { caTypeShortLabel } from '../contentsMap'
-import { Section }          from '../styledComponents'
+import CertificateTable from '../CertificateTemplateTable/CertificateTable'
+import { Section }      from '../styledComponents'
 
 import ChromebookTab from './ChromebookTab'
 
@@ -25,30 +25,27 @@ export default function CertificateTemplateDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const [activeTab, setActiveTab] = useState<TabKeyType>(TabKeyType.CERTIFICATE)
-  const [policySetName, setPolicySetName] = useState<string | undefined>()
-  const [privateKeyBase64, setPrivateKeyBase64] = useState<string | undefined>()
-  const [queryPolicySet] = useLazyGetAdaptivePolicySetQuery()
-  const [queryCA] = useLazyGetCertificateAuthorityQuery()
   const certificate = useGetSpecificTemplateCertificatesQuery({
     params: { templateId: params.policyId },
     payload: { pageSize: 1, page: 1 }
   })
   const { data: certificateTemplateData, isLoading } = useGetCertificateTemplateQuery({ params })
-
-  useEffect(() => {
-    if (certificateTemplateData?.policySetId) {
-      queryPolicySet({ params: { policySetId: certificateTemplateData.policySetId } })
-        .unwrap().then((res) => {
-          setPolicySetName(res.name)
-        })
-    }
-    if (certificateTemplateData?.onboard?.certificateAuthorityId) {
-      queryCA({ params: { caId: certificateTemplateData?.onboard?.certificateAuthorityId } })
-        .unwrap().then((res) => {
-          setPrivateKeyBase64(res.privateKeyBase64)
-        })
-    }
-  }, [certificateTemplateData])
+  const { policySetName } = useGetAdaptivePolicySetQuery(
+    { params: { policySetId: certificateTemplateData?.policySetId } },
+    {
+      skip: !certificateTemplateData?.policySetId,
+      selectFromResult: ({ data }) => ({
+        policySetName: data?.name || certificateTemplateData?.policySetId
+      })
+    })
+  const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
+    { params: { caId: certificateTemplateData?.onboard?.certificateAuthorityId } },
+    {
+      skip: !certificateTemplateData?.onboard?.certificateAuthorityId,
+      selectFromResult: ({ data }) => ({
+        privateKeyBase64: data?.privateKeyBase64
+      })
+    })
 
   const summaryInfo = [
     {

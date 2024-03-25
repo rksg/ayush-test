@@ -124,7 +124,7 @@ export default function CertificateAuthorityTable () {
       type: 'confirm',
       customContent: {
         action: 'DELETE',
-        entityName: 'CA',
+        entityName: $t({ defaultMessage: 'CA' }),
         entityValue: selectedRow.name,
         numOfEntities: 1,
         confirmationText: $t({ defaultMessage: 'Delete' }),
@@ -182,6 +182,8 @@ export default function CertificateAuthorityTable () {
           rowSelection={hasAccess() && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
+          enableApiFilter={true}
+          onFilterChange={tableQuery.handleFilterChange}
         />
       </Loader>
       <DetailDrawer
