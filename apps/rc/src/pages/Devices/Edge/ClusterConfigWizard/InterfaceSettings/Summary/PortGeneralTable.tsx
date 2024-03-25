@@ -80,7 +80,8 @@ export const PortGeneralTable = (props: PortGeneralTableProps) => {
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      render: (_data, { ipMode }) => ipMode !== EdgeIpModeEnum.DHCP ? _data : ''
     }
   ]
 
