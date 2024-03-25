@@ -55,7 +55,7 @@ export const smartZoneStateMap = {
     defineMessage({ defaultMessage: 'Updating SZ configuration' })
 }
 
-const ApiServiceMap = {
+const apiServiceMap = {
   licensing_api_error: defineMessage({ defaultMessage: 'License API' }),
   rbac_api_error: defineMessage({ defaultMessage: 'Access control API' }),
   sz_api_error: defineMessage({ defaultMessage: 'SmartZone API' })
@@ -130,8 +130,8 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
             // eslint-disable-next-line max-len
             { defaultMessage: '{error}: {httpBody} {isHttpStatusCode, select, true {(status code: {httpStatusCode})} other {} }' },
             {
-              error: (error in ApiServiceMap)
-                ? $t(ApiServiceMap[error as keyof typeof ApiServiceMap]) : error,
+              error: (error in apiServiceMap)
+                ? $t(apiServiceMap[error as keyof typeof apiServiceMap]) : error,
               httpBody: (httpBody && !isEmpty(httpBody))
                 ? (get(httpBody, 'message') || get(httpBody, 'error') || httpBody)
                 : $t({ defaultMessage: 'Unknown Error' }),
