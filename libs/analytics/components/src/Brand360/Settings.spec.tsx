@@ -1,25 +1,31 @@
 import userEvent from '@testing-library/user-event'
 import { range } from 'lodash'
 
-import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
-import type { Settings }                   from '@acx-ui/analytics/utils'
-import { Provider }                        from '@acx-ui/store'
-import { screen, render, fireEvent }       from '@acx-ui/test-utils'
+import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
+import type { Settings }                                      from '@acx-ui/analytics/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { screen, render, fireEvent }                          from '@acx-ui/test-utils'
 
-import { ComplianceSetting } from './ComplianceSetting'
+import { ConfigSettings } from './Settings'
 
 const mockedUseUpdateTenantSettingsMutation = useUpdateTenantSettingsMutation as jest.Mock
+const mockedUseBrand360Config = useBrand360Config as jest.Mock
 const mockedUpdateTenantSettingsMutation = jest.fn()
 jest.mock('@acx-ui/analytics/services', () => ({
   ...jest.requireActual('@acx-ui/analytics/services'),
-  useUpdateTenantSettingsMutation: jest.fn()
+  useUpdateTenantSettingsMutation: jest.fn(),
+  useBrand360Config: jest.fn()
 }))
+
 const route = { params: { tenantId: '0012h00000NrljgAAB' } }
-describe('ComplianceSetting Drawer', () => {
+describe('ConfigSettings Drawer', () => {
   beforeEach(() => {
     mockedUseUpdateTenantSettingsMutation.mockImplementation(
       () => [mockedUpdateTenantSettingsMutation, { isLoading: false }]
     )
+    mockedUseBrand360Config.mockImplementation(() => ({
+      names: { lsp: 'lsp', brand: 'brand', property: 'property' }
+    }))
   })
   afterEach(() => {
     jest.clearAllMocks()
@@ -28,38 +34,41 @@ describe('ComplianceSetting Drawer', () => {
     const settings = {
       'brand-ssid-compliance-matcher': '^[a-zA-Z0-9]{5}_GUEST$'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     expect(await screen.findByText('^[a-zA-Z0-9]{5}_GUEST$')).toBeVisible()
     await userEvent.click(await screen.findByText('Cancel'))
-    expect(await screen.findByTestId('ssidSettings')).toBeVisible()
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    expect(await screen.findByTestId('settings')).toBeVisible()
+    await userEvent.click(await screen.findByTestId('settings'))
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
-    expect(await screen.findByTestId('ssidSettings')).toBeVisible()
+    expect(await screen.findByTestId('settings')).toBeVisible()
   })
-  it('should save ssid regex', async () => {
+  it('should save settings', async () => {
     const settings = {
       'brand-ssid-compliance-matcher': ''
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     const target = '  ssidRegex1  \n ssidRegex2 '
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: target } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).toBeCalledWith({
-      'brand-ssid-compliance-matcher': 'ssidRegex1\nssidRegex2'
+      'brand-ssid-compliance-matcher': 'ssidRegex1\nssidRegex2',
+      'brand-name': 'brand',
+      'property-name': 'property',
+      'lsp-name': 'lsp'
     })
   })
   it('should not save if invalid ssid regex', async () => {
     const settings = {
       'brand-ssid-compliance-matcher': 'test'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'abc(' } })
@@ -72,8 +81,8 @@ describe('ComplianceSetting Drawer', () => {
     const settings = {
       'brand-ssid-compliance-matcher': 'test'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: '' } })
@@ -86,8 +95,8 @@ describe('ComplianceSetting Drawer', () => {
     const settings = {
       'brand-ssid-compliance-matcher': 'test'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: 'test' } })
@@ -98,8 +107,8 @@ describe('ComplianceSetting Drawer', () => {
     const settings = {
       'brand-ssid-compliance-matcher': 'test'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     const thousandChar = range(1001).map(() => '1').join('')
@@ -111,8 +120,8 @@ describe('ComplianceSetting Drawer', () => {
     const settings = {
       'brand-ssid-compliance-matcher': 'test'
     }
-    render(<ComplianceSetting settings={settings as Settings} />, { wrapper: Provider, route })
-    await userEvent.click(await screen.findByTestId('ssidSettings'))
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
     const spaceRegex = 'brand360\n\nxd'
