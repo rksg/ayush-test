@@ -197,6 +197,6 @@ describe('Edge Cluster Table', () => {
     await userEvent.click(within(row).getByRole('button'))
     const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    expect(screen.getByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })).toBeDisabled()
+    expect(screen.queryByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })).toBeNull()
   })
 })

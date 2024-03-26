@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { useBrand360Config }                                  from '@acx-ui/analytics/services'
 import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
 import {
@@ -188,9 +189,8 @@ export const UsersTable = ({
   setDrawerType
 }: UsersTableProps) => {
   const { $t } = useIntl()
-  const user = getUserProfile()
-  const { franchisor } = user.selectedTenant.settings
-  const users = transformUsers(data, franchisor)
+  const { names: { brand } } = useBrand360Config()
+  const users = transformUsers(data, brand)
 
   const columns: TableProps<DisplayUser>['columns'] = [
     {

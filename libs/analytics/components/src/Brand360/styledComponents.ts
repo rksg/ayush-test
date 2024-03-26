@@ -1,16 +1,19 @@
 import styled from 'styled-components/macro'
 
+
 import { SettingsSolid } from '@acx-ui/icons'
 
-export const ComplianceSetting = {
+export const Setting = {
   Icon: styled(SettingsSolid)`
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
+    width: 16px;
+    height: 16px;
   `,
-  Wrapper: styled.div`
-    margin-bottom: 20px
+  Line: styled.div`
+    border-bottom: 1px solid var(--acx-neutrals-25);
+    margin: 16px 0;
+    display: block;
+    width: 100%;
+    height: 2px;
   `
 }
 

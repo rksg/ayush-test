@@ -193,6 +193,7 @@ export const ConnectedClientsTable = (props: {
         width: 60,
         title: intl.$t({ defaultMessage: 'OS' }),
         dataIndex: 'osType',
+        align: 'center',
         sorter: true,
         render: (_, { osType }) => {
           return <UI.IconContainer>
@@ -207,6 +208,7 @@ export const ConnectedClientsTable = (props: {
         width: 70,
         title: intl.$t({ defaultMessage: 'Health' }),
         dataIndex: 'healthCheckStatus',
+        align: 'center',
         sorter: true,
         filterMultiple: false,
         filterValueNullable: false,
@@ -346,6 +348,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'VLAN' }),
         dataIndex: 'clientVlan',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { clientVlan }) => clientVlan || noDataDisplay
       },
@@ -354,6 +357,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'VNI' }),
         dataIndex: 'vni',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { vni }) => vni || noDataDisplay
       },
@@ -362,6 +366,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Device Type' }),
         dataIndex: 'deviceTypeStr',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { deviceTypeStr }) => {
           return <UI.IconContainer>
@@ -408,6 +413,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'RSSI' }),
         dataIndex: 'receiveSignalStrength',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { receiveSignalStrength }) => receiveSignalStrength || noDataDisplay
       },
@@ -416,6 +422,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'SNR' }),
         dataIndex: 'rssi',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { rssi }) => rssi || noDataDisplay
       },
@@ -477,6 +484,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets To Client' }),
         dataIndex: 'packetsToClient',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { packetsToClient }) => packetsToClient || noDataDisplay
       },
@@ -485,6 +493,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets From Client' }),
         dataIndex: 'packetsFromClient',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { packetsFromClient }) => packetsFromClient || noDataDisplay
       },
@@ -493,6 +502,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets Dropped' }),
         dataIndex: 'packetsDropFrom',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { packetsDropFrom }) => packetsDropFrom || noDataDisplay
       },
@@ -501,6 +511,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'RF Channel' }),
         dataIndex: ['radio', 'channel'],
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { radio }) => radio?.channel || noDataDisplay
       }

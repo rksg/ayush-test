@@ -46,10 +46,10 @@ import {
   getSwitchModel,
   getAdminPassword
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload }                                           from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, SwitchScopes } from '@acx-ui/user'
+import { exportMessageMapping, getIntl, noDataDisplay }             from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -99,7 +99,7 @@ const PasswordTooltip = {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -345,6 +345,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       title: $t({ defaultMessage: 'Ext. IP Address' }),
       dataIndex: 'extIp',
       sorter: true,
+      searchable: searchable,
       show: false,
       render: (_: React.ReactNode, row: SwitchRow) => {
         return row.isFirstLevel ? row.extIp || noDataDisplay : ''
@@ -367,6 +368,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
       const serialNumber = selectedRows[0].serialNumber
@@ -440,6 +442,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }

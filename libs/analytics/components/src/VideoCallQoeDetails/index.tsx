@@ -213,8 +213,12 @@ export function VideoCallQoeDetails (){
       dataIndex: 'leaveTime',
       key: 'leaveTime',
       render: (_, row)=>{
-        return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
-          {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}</Tooltip>
+        return <Tooltip
+          title={row.leaveReason.replace('<br>','\n')}
+          dottedUnderline={true}
+        >
+          {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}
+        </Tooltip>
       }
     },
     {

@@ -1,8 +1,8 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }  from '@acx-ui/components'
-import { useEdgeSdLanActions } from '@acx-ui/rc/components'
+import { Loader, PageHeader, StepsFormGotoStepFn } from '@acx-ui/components'
+import { useEdgeSdLanActions }                     from '@acx-ui/rc/components'
 import {
   useGetEdgeSdLanP2Query } from '@acx-ui/rc/services'
 import {
@@ -29,7 +29,7 @@ const EditEdgeSdLan = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const { editEdgeSdLan } = useEdgeSdLanActions()
-  const { data, isLoading } = useGetEdgeSdLanP2Query({ params })
+  const { data, isFetching } = useGetEdgeSdLanP2Query({ params })
 
   const steps = [
     {
@@ -42,8 +42,13 @@ const EditEdgeSdLan = () => {
     }
   ]
 
-  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
+  const handleFinish = async (formData: EdgeSdLanFormModelP2, gotoStep: StepsFormGotoStepFn) => {
     try {
+      if (formData.isGuestTunnelEnabled && !formData.guestTunnelProfileId) {
+        gotoStep(1)
+        return
+      }
+
       const payload = {
         id: params.serviceId,
         venueId: formData.venueId,
@@ -88,7 +93,7 @@ const EditEdgeSdLan = () => {
           { text: $t({ defaultMessage: 'SD-LAN' }), link: cfListRoute }
         ]}
       />
-      <Loader states={[{ isLoading }]}>
+      <Loader states={[{ isLoading: isFetching }]}>
         <EdgeSdLanFormP2
           form={form}
           steps={steps}

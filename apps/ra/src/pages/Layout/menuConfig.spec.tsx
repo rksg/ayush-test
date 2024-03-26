@@ -316,7 +316,7 @@ describe('useMenuConfig', () => {
     const match = find(flattenConfig(result.current), target)
     expect(match).toMatchObject(target)
   })
-  it('should open new tab for users page if ruckus-ai-users-toggle is disabled', () => {
+  it('should open new tab for users page if ruckus-ai-users-new-roles-toggle is disabled', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const mockUserProfile = {

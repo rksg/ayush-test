@@ -1,13 +1,15 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { EdgeSdLanUrls, EdgeSdLanSettingP2, CommonErrorsResult, CatchErrorDetails } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                          from '@acx-ui/test-utils'
-import { RequestPayload }                                                           from '@acx-ui/types'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { EdgeSdLanUrls, EdgeSdLanSettingP2, CommonErrorsResult, CatchErrorDetails, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                                             from '@acx-ui/test-utils'
+import { RequestPayload }                                                                              from '@acx-ui/types'
 
-import { useEdgeSdLanActions } from '..'
+import { useEdgeSdLanActions, useGetEdgeSdLanByEdgeOrClusterId } from '..'
 
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const mockedCallback = jest.fn()
 const mockedActivateEdgeSdLanDmzClusterReq = jest.fn()
 const mockedDeactivateEdgeSdLanDmzClusterReq = jest.fn()
@@ -16,7 +18,6 @@ const mockedDeactivateDmzTunnelReq = jest.fn()
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
 const mockedToggleDmzReq = jest.fn()
-
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useAddEdgeSdLanP2Mutation: () => {
@@ -131,20 +132,23 @@ describe('useEdgeSdLanActions', () => {
         payload: mockedData,
         callback: mockedCallback
       })
-
+      await waitFor(() =>
+        expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+          edgeClusterId: '0000000005',
+          serviceId: 'mocked_service_id',
+          venueId: 'mocked_venue_id'
+        }))
+      expect(mockedToggleDmzReq).not.toBeCalled()
+      await waitFor(() =>
+        expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+          tunnelProfileId: 't-tunnelProfile-id-2',
+          serviceId: 'mocked_service_id'
+        }))
       await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
       expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true })
-      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
-        edgeClusterId: '0000000005',
-        serviceId: 'mocked_service_id',
-        venueId: 'mocked_venue_id'
-      })
-      expect(mockedActivateDmzTunnelReq).toBeCalledWith({
-        tunnelProfileId: 't-tunnelProfile-id-2',
-        serviceId: 'mocked_service_id'
-      })
+
       expect(mockedActivateNetworkReq).toBeCalledTimes(2)
       expect(mockedActivateNetworkReq).toBeCalledWith({
         wifiNetworkId: 'network_3',
@@ -179,13 +183,13 @@ describe('useEdgeSdLanActions', () => {
       }, { isGuestTunnelUtilized: false })
     })
 
-    it('should handle relation requests failed', async () => {
-      const mockedReq = jest.fn()
+    it('should not send guest tunnel enabled request when mandatory request failed', async () => {
+      const mockedDMZClusterReq = jest.fn()
       mockServer.use(
         rest.put(
           EdgeSdLanUrls.activateEdgeSdLanDmzCluster.url,
           (req, res, ctx) => {
-            mockedReq(req.params)
+            mockedDMZClusterReq(req.params)
             return res(ctx.status(403), ctx.json({
               requestId: 'failed_req_id',
               errors: [{
@@ -212,11 +216,15 @@ describe('useEdgeSdLanActions', () => {
 
       await waitFor(() => expect(mockedCBFn).toBeCalledTimes(1))
       expect(mockedCallbackInnerFn).toBeCalledWith('EDGE-00000')
-      expect(mockedReq).toBeCalledWith({
+      expect(mockedDMZClusterReq).toBeCalledWith({
         edgeClusterId: '0000000005',
         serviceId: 'mocked_service_id',
         venueId: 'mocked_venue_id'
       })
+      // other mandatory field is trigger at same time.
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(1)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
     })
   })
 
@@ -253,10 +261,6 @@ describe('useEdgeSdLanActions', () => {
 
       await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
       // handle dmz tunnel changes
-      expect(mockedDeactivateDmzTunnelReq).toBeCalledWith({
-        tunnelProfileId: 't-tunnelProfile-id-2',
-        serviceId: 'mocked_service_id'
-      })
       expect(mockedActivateDmzTunnelReq).toBeCalledWith({
         tunnelProfileId: 't-tunnelProfile-id-3',
         serviceId: 'mocked_service_id'
@@ -439,5 +443,144 @@ describe('useEdgeSdLanActions', () => {
         wifiNetworkId: 'network_3'
       })
     })
+  })
+})
+
+
+describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
+  const mockedReq = jest.fn()
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+    mockedReq.mockClear()
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.json({ data: mockedSdLanDataListP2 }))
+        }
+      ))
+  })
+
+  it('should successfully get data by edgeClusterId', async () => {
+    const targetClusterId = mockedSdLanDataListP2[0].edgeClusterId
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should successfully get data by guestEdgeClusterId', async () => {
+    const targetClusterId = mockedSdLanDataListP2[0].guestEdgeClusterId
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should not return data when target id is not exist', async () => {
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('test-id'), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should return the first get data by edgeId when only P1 FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE)
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('edge_id'), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should handle get requests failed', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should not trigger API when given ID is empty', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+    expect(mockedReq).not.toBeCalled()
+  })
+
+  it('should not trigger API when FF are all disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+    expect(mockedReq).not.toBeCalled()
   })
 })
