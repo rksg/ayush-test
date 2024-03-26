@@ -68,6 +68,46 @@ describe('MultiLineTimeSeriesChart', () => {
     expect(formatter).toBeCalled()
   })
 
+  it('should render multiple yAxis', () => {
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData(2)}
+      yAxisConfig={[{
+        axisName: 'Wireless Clients Count',
+        nameRotate: 90,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-1')
+      }, {
+        axisName: 'Wired Clients Count',
+        nameRotate: 270,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-2')
+      }]}
+    />)
+    expect(screen.getByText('Wireless Clients Count')).toBeVisible()
+    expect(screen.getByText('Wired Clients Count')).toBeVisible()
+  })
+
+  it('should render multiple yAxis with only one axis label', () => {
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData(2)}
+      yAxisConfig={[{
+        axisName: 'Wireless Clients Count',
+        nameRotate: 90,
+        showLabel: true,
+        color: cssStr('--acx-viz-qualitative-1')
+      }, {
+        axisName: 'Wired Clients Count',
+        nameRotate: 270,
+        showLabel: false,
+        color: cssStr('--acx-viz-qualitative-2')
+      }]}
+      seriesYAxisIndexes={[0, 0, 1]}
+      seriesChartTypes={['area', 'line', 'line']}
+    />)
+    expect(screen.getByText('Wireless Clients Count')).toBeVisible()
+    expect(screen.queryByText('Wired Clients Count')).toBeNull()
+  })
+
   it('should not render legend if disabled', () => {
     render(<MultiLineTimeSeriesChart
       data={getSeriesData()}
