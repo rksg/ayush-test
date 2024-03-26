@@ -70,7 +70,7 @@ onClose: () => void
       case DeviceTypes.ApMesh:
       case DeviceTypes.ApMeshRoot:
       case DeviceTypes.ApWired:
-        return DeviceTypes.Ap
+        return DeviceTypes.Ap.toUpperCase()
       case DeviceTypes.Switch:
       case DeviceTypes.SwitchStack:
         return DeviceTypes.Switch
@@ -158,12 +158,12 @@ onClose: () => void
             children={
               <Card type='solid-bg'>
                 <VlansTrunked
-                  title={tooltipEdge?.fromName || ''}
+                  title={tooltipEdge?.fromName || tooltipEdge?.from}
                   untagged={tooltipEdge?.connectedPortUntaggedVlan}
                   tagged={tooltipEdge?.connectedPortTaggedVlan}
                 />
                 <VlansTrunked
-                  title={tooltipEdge?.toName || ''}
+                  title={tooltipEdge?.toName || tooltipEdge?.to}
                   untagged={tooltipEdge?.correspondingPortUntaggedVlan}
                   tagged={tooltipEdge?.correspondingPortTaggedVlan}
                 />
