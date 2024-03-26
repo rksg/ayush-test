@@ -54,6 +54,8 @@ export interface EdgeSdLanViewDataP2 {
   name?: string
   tags?: string[]
   venueId: string
+  edgeId?: string
+  edgeName?: string
   edgeClusterId: string
   networkIds: string[]
   tunnelProfileId: string
