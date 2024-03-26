@@ -168,9 +168,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const [tooltipSourceNode, setTooltipSourceNode] = useState<Node>()
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
-  const [scale, setScale] = useState<number>(1)
+  const [scale, setScale] = useState<number>(1.5)
   const [translate, setTranslate] = useState<number[]>([0,0])
-  let newScale = useRef(1)
+  let newScale = useRef(1.5)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
   const [onDrag, setOnDrag] = useState<boolean>(false)
   const [vlansOption, setVlansOption] = useState([] as DefaultOptionType[])
@@ -270,8 +270,16 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     closeLinkTooltipHandler()
     setShowDeviceTooltip(true)
     setTooltipNode(node.data as typeof node)
-    setTooltipPosition({ x: d?.nativeEvent.layerX + 30
-      , y: d?.nativeEvent.layerY })
+
+    const treeContainer = document.querySelector('.TopologyGraphContainer')
+    let x = d?.nativeEvent.layerX + 30
+    let y = d?.nativeEvent.layerY
+    const cardHeight = node.data.type.toLowerCase().indexOf('switch') > -1 ? 275 : 547
+    if(treeContainer?.clientWidth && treeContainer?.clientHeight){
+      y = y + cardHeight > treeContainer?.clientHeight ?
+        treeContainer?.clientHeight - cardHeight : y
+    }
+    setTooltipPosition({ x, y })
   }, 100)
 
 
@@ -324,8 +332,17 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       setShowLinkTooltip(true)
       setShowDeviceTooltip(false) // close device detail tooltip if already opened.
       setTooltipEdge(selectedEdge)
-      setTooltipPosition({ x: d?.nativeEvent.layerX + 30
-        , y: d?.nativeEvent.layerY })
+
+      const treeContainer = document.querySelector('.TopologyGraphContainer')
+      let x = d?.nativeEvent.layerX + 30
+      let y = d?.nativeEvent.layerY
+      const cardHeight = sourceNode?.type?.includes('Switch') &&
+        targetNode?.type?.includes('Switch') ? 415 : 200
+      if(treeContainer?.clientWidth && treeContainer?.clientHeight){
+        y = y + cardHeight > treeContainer?.clientHeight ?
+          treeContainer?.clientHeight - cardHeight : y
+      }
+      setTooltipPosition({ x, y })
     }
   }, 100)
 
