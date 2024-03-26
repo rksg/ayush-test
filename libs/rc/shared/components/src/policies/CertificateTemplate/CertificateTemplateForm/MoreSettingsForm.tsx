@@ -31,10 +31,10 @@ export default function MoreSettingsForm () {
     <>
       <Title>{$t({ defaultMessage: 'More Settings' })}</Title>
       <Section>
+        <SettingsSectionTitle>
+          {$t({ defaultMessage: 'Adaptive Policy Set' })}
+        </SettingsSectionTitle>
         <GridRow>
-          <SettingsSectionTitle>
-            {$t({ defaultMessage: 'Adaptive Policy Set' })}
-          </SettingsSectionTitle>
           <Description>{$t(moreSettingsDescription.POLICY_SET)}</Description>
           <GridCol col={{ span: 10 }}>
             <Form.Item label={$t({ defaultMessage: 'Adaptive Policy Set' })}>
