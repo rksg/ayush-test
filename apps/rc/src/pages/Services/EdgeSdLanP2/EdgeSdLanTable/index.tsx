@@ -65,7 +65,26 @@ const EdgeSdLanTable = () => {
   const settingsId = 'services-edge-sd-lan-p2-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeSdLanP2ViewDataListQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      fields: [
+        'id',
+        'name',
+        'venueId',
+        'venueName',
+        'tunnelProfileId',
+        'tunnelProfileName',
+        'guestTunnelProfileId',
+        'guestTunnelProfileName',
+        'edgeClusterId',
+        'edgeClusterName',
+        'guestEdgeClusterId',
+        'guestEdgeClusterName',
+        'isGuestTunnelEnabled',
+        'networkIds',
+        'networkName',
+        'edgeAlarmSummary'
+      ]
+    },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'

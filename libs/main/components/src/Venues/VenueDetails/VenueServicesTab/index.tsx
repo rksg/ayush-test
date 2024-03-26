@@ -77,6 +77,24 @@ export function VenueServicesTab () {
 
   const { edgeSdLanData } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
+      fields: [
+        'id',
+        'name',
+        'venueId',
+        'venueName',
+        'tunnelProfileId',
+        'tunnelProfileName',
+        'guestTunnelProfileId',
+        'guestTunnelProfileName',
+        'edgeClusterId',
+        'edgeClusterName',
+        'guestEdgeClusterId',
+        'guestEdgeClusterName',
+        'isGuestTunnelEnabled',
+        'networkIds',
+        'guestNetworkIds',
+        'networkName'
+      ],
       filters: { venueId: [venueId] }
     } }, {
       skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
