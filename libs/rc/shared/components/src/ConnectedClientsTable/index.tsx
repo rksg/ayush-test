@@ -252,10 +252,12 @@ export const ConnectedClientsTable = (props: {
         disable: false,
         show: false,
         render: (_: React.ReactNode, row: ClientList) => {
-          const mac = row.mldAddr?.toLowerCase() || undefined
-          return <Tooltip title={mac}>
-            {mac || noDataDisplay}
-          </Tooltip>
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            const mac = row.mldAddr?.toLowerCase() || undefined
+            return <Tooltip title={mac}>
+              {mac || noDataDisplay}
+            </Tooltip>
+          })
         }
       }] : []),
       {
@@ -383,7 +385,11 @@ export const ConnectedClientsTable = (props: {
         sorter: true,
         align: 'center',
         show: !!showAllColumns,
-        render: (_, { vni }) => vni || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.vni || noDataDisplay
+          })
+        }
       },
       {
         key: 'deviceTypeStr',
@@ -482,7 +488,11 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'cpeMac',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { cpeMac }) => cpeMac || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.cpeMac || noDataDisplay
+          })
+        }
       },
       {
         key: 'authmethod',
