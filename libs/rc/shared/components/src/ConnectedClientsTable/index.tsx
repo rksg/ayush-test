@@ -318,13 +318,15 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'switchName',
         sorter: true,
         render: (_, row) => {
-          if(!row.switchName){
-            return noDataDisplay
-          }else{
-            return (
-              <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
-            )
-          }
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            if(!row.switchName){
+              return noDataDisplay
+            } else {
+              return (
+                <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
+              )
+            }
+          })
         }
       },
       ...(networkId ? [] : [{
