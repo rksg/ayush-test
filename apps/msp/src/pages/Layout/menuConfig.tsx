@@ -8,6 +8,8 @@ import {
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid,
   MspSubscriptionOutlined,
   MspSubscriptionSolid,
   IntegratorsOutlined,
@@ -112,6 +114,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(showMenuesforHsp && isBrand360Enabled && !isInstaller ? [{
+      uri: '/dataStudio',
+      label: $t({ defaultMessage: 'Data Studio' }),
+      tenantType: 'v' as TenantType,
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    }] : []),
     ...(isConfigTemplateEnabled
       ? [{
         uri: '/' + getConfigTemplatePath(),
