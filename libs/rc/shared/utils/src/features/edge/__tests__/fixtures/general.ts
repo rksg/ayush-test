@@ -1,5 +1,5 @@
-import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
-import { ClusterNetworkSettings }                                                                                               from '../../../../types/edge'
+import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNetworkSettings }                                                                                                                                                         from '../../../../types/edge'
 
 export const mockEdgeList = {
   fields: [
@@ -404,12 +404,12 @@ export const mockedHaNetworkSettings = {
     lags: [{
       id: 0,
       description: 'string',
-      lagType: 'LACP',
-      lacpMode: 'ACTIVE',
-      lacpTimeout: 'SHORT',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [],
-      portType: 'LAN',
-      ipMode: 'DHCP',
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.DHCP,
       ip: '',
       subnet: '',
       gateway: '',
@@ -422,15 +422,15 @@ export const mockedHaNetworkSettings = {
     lags: [{
       id: 1,
       description: 'string',
-      lagType: 'LACP',
-      lacpMode: 'ACTIVE',
-      lacpTimeout: 'SHORT',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [{
         portId: 'port1',
         portEnabled: true
       }],
-      portType: 'LAN',
-      ipMode: 'STATIC',
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.STATIC,
       ip: '1.10.10.1',
       subnet: '255.255.0.0',
       gateway: '127.1.1.0',
