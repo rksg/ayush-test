@@ -154,20 +154,6 @@ export function RecommendationTable (
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
-    {
-      label: $t(selectedRecommendation?.isMuted
-        ? defineMessage({ defaultMessage: 'Unmute' })
-        : defineMessage({ defaultMessage: 'Mute' })
-      ),
-      onClick: async () => {
-        const { id, isMuted } = selectedRecommendation
-        await muteRecommendation({ id, mute: !isMuted }).unwrap()
-        setSelectedRowData([])
-      },
-      disabled: selectedRecommendation
-        && selectedRecommendation.statusEnum
-        && disableMuteStatus.includes(selectedRecommendation.statusEnum)
-    },
     ...(selectedRecommendation
       ? getAvailableActions(
         selectedRecommendation as RecommendationActionType,
@@ -181,7 +167,21 @@ export function RecommendationTable (
             onClick: () => {},
             disabled: false
           }
-        }): [])
+        }): []),
+    {
+      label: $t(selectedRecommendation?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
+      onClick: async () => {
+        const { id, isMuted } = selectedRecommendation
+        await muteRecommendation({ id, mute: !isMuted }).unwrap()
+        setSelectedRowData([])
+      },
+      disabled: selectedRecommendation
+            && selectedRecommendation.statusEnum
+            && disableMuteStatus.includes(selectedRecommendation.statusEnum)
+    }
   ]
 
   const optimizationTooltipText = get('IS_MLISA_SA')
