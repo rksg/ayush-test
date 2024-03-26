@@ -1,8 +1,9 @@
 import { createContext } from 'react'
 
-import { Loader }                                                                                     from '@acx-ui/components'
-import { useGetEdgeClusterListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetEdgesPortStatusQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeNodesPortsInfo, EdgeSdLanViewDataP2 }                                 from '@acx-ui/rc/utils'
+import { Loader }                                                     from '@acx-ui/components'
+import { useGetEdgeSdLanByEdgeOrClusterId }                           from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery, useGetEdgesPortStatusQuery }     from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeNodesPortsInfo, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
 
 export interface ClusterConfigWizardContextType {
   clusterInfo?: EdgeClusterStatus
@@ -56,20 +57,11 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
     skip: !Boolean(clusterInfo?.edgeList?.length)
   })
 
-  const { edgeSdLanData, isEdgeSdLanLoading, isEdgeSdLanFetching }
-  = useGetEdgeSdLanP2ViewDataListQuery(
-    { payload: {
-      filters: { edgeClusterId: [clusterInfo?.clusterId] },
-      fields: ['id', 'edgeClusterId']
-    } },
-    {
-      selectFromResult: ({ data, isLoading, isFetching }) => ({
-        edgeSdLanData: data?.data?.[0],
-        isEdgeSdLanLoading: isLoading,
-        isEdgeSdLanFetching: isFetching
-      })
-    }
-  )
+  const {
+    edgeSdLanData,
+    isLoading: isEdgeSdLanLoading,
+    isFetching: isEdgeSdLanFetching
+  } = useGetEdgeSdLanByEdgeOrClusterId(clusterInfo?.clusterId)
 
   return <ClusterConfigWizardContext.Provider value={{
     clusterInfo,

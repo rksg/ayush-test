@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { Col, Form, FormInstance, Input, Radio, Row, Space } from 'antd'
 import _                                                     from 'lodash'
 import { useIntl }                                           from 'react-intl'
@@ -15,6 +17,8 @@ import {
   validateUniqueIp
 } from '@acx-ui/rc/utils'
 
+import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+
 interface EdgeClusterInterfaceSettingFormProps {
   form: FormInstance
   interfaceList?: EdgePortInfo[]
@@ -30,6 +34,7 @@ export interface EdgeClusterInterfaceSettingFormType {
 
 export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSettingFormProps) => {
   const { form, interfaceList, rootNamePath = [] } = props
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const { $t } = useIntl()
 
   const interfaceOptions = interfaceList?.filter(item =>
@@ -140,6 +145,7 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
                 <Form.Item
                   name={rootNamePath.concat('ip')}
                   label={$t({ defaultMessage: 'IP Address' })}
+                  dependencies={clusterInfo?.edgeList?.map(node => [node.serialNumber].concat('subnet'))}
                   rules={[
                     { required: true },
                     { validator: (_, value) =>

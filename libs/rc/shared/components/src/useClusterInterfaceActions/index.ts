@@ -79,7 +79,8 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
   const isDataChanged = (data: ClusterInterfaceInfo[]) => {
     for(let interfaceData of data) {
       const oldInterfaceData = getOldInterfaceConfig(interfaceData.serialNumber)
-      if(oldInterfaceData?.portName !== interfaceData.interfaceName) {
+      if(oldInterfaceData !== undefined
+        && oldInterfaceData?.portName !== interfaceData.interfaceName) {
         return true
       }
     }

@@ -123,7 +123,7 @@ export const SelectType = () => {
       >
         <Row gutter={[12, 0]}>
           {typeCards.map(item => (
-            <Col span={6} key={item.id}>
+            <Col key={item.id}>
               <EdgeClusterTypeCard
                 id={item.id}
                 title={item.title}
