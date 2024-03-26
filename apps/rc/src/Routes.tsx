@@ -143,7 +143,6 @@ import SwitchClientList                     from './pages/Users/Switch/ClientLis
 import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
-import { AuthRoute, SwitchScopes } from '@acx-ui/user'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -226,33 +225,15 @@ function DeviceRoutes () {
       <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
         element={<EdgeClusterConfigWizard />} />
 
-      <AuthRoute scopes={[SwitchScopes.READ]}>
-        <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
-      </AuthRoute>
-
+      <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
-
-      <AuthRoute scopes={[SwitchScopes.UPDATE, SwitchScopes.CREATE]}>
-        <Route path='devices/switch/:action' element={<SwitchForm />} />
-      </AuthRoute>
-
-      <AuthRoute scopes={[SwitchScopes.UPDATE, SwitchScopes.CREATE]}>
-        <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
-      </AuthRoute>
-
-      <AuthRoute scopes={[SwitchScopes.UPDATE, SwitchScopes.CREATE]}>
-        <Route path='devices/switch/stack/:action' element={<StackForm />} />
-      </AuthRoute>
-
-      <AuthRoute scopes={[SwitchScopes.UPDATE, SwitchScopes.CREATE]}>
-        <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
-      </AuthRoute>
-
-      <AuthRoute scopes={[SwitchScopes.UPDATE, SwitchScopes.CREATE]}>
-        <Route path='devices/switch/:switchId/:serialNumber/stack/:action'
-          element={<StackForm />} />
-      </AuthRoute>
+      <Route path='devices/switch/:action' element={<SwitchForm />} />
+      <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
+      <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
+      <Route path='devices/switch/:switchId/:serialNumber/stack/:action'
+        element={<StackForm />} />
 
       <Route path='devices/edge' element={<Edges />} />
     </Route>
