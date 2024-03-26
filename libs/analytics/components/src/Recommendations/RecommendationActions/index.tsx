@@ -137,7 +137,7 @@ function ApplyCalendar ({
 
   return <DateTimePicker
     key={`apply-${id}`}
-    title={$t(actionTooltip[type].text)}
+    title={showTextOnly ? undefined : $t(actionTooltip[type].text)}
     icon={showTextOnly
       ? <UI.ActionsText>{$t(actionTooltip[type].text)}</UI.ActionsText>
       : <UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
@@ -232,7 +232,6 @@ export const getAvailableActions = (
             ...props, disabled: false, type: 'ApplyScheduled', initialDate: 'scheduledAt'
           })
         },
-        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
             ...props,
@@ -243,7 +242,8 @@ export const getAvailableActions = (
             type: 'Revert',
             initialDate: 'futureDate'
           })
-        }
+        },
+        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) }
       ].filter(Boolean) as { icon: JSX.Element }[]
     case 'applied':
     case 'applywarning':
@@ -267,12 +267,12 @@ export const getAvailableActions = (
             ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
           })
         },
-        { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
             ...props, disabled: false, type: 'RevertScheduled', initialDate: 'scheduledAt'
           })
-        }
+        },
+        { icon: actions.cancel({ ...props, disabled: false }) }
       ]
     case 'applyfailed':
       return [
