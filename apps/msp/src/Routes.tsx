@@ -3,6 +3,7 @@ import { ConfigProvider, PageNotFound }                              from '@acx-
 import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
+import { useGetTenantDetailQuery, useHospitalityVerticalCheck }      from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -10,7 +11,7 @@ import {
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
-  WifiCallingForm, WifiCallingDetailView, WifiCallingConfigureForm
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -23,9 +24,9 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                                                   from '@acx-ui/store'
-import { AccountType, getJwtTokenPayload }                            from '@acx-ui/utils'
+import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Provider }                                                              from '@acx-ui/store'
+import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
@@ -41,11 +42,14 @@ import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const { tenantId } = useParams()
+  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
+  const params = useParams()
   const { tenantType } = getJwtTokenPayload()
-  const isShowBrand360 =
-    isBrand360Enabled &&
-    (tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR)
+  const isHospitalityVerticalEnabled =
+  useHospitalityVerticalCheck(data?.mspEc?.parentMspId as string, tenantType as string, params)
+  const isInstaller = tenantType === AccountType.MSP_INSTALLER
+  const isShowBrand360 = isBrand360Enabled && isHospitalityVerticalEnabled && !isInstaller
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
