@@ -68,7 +68,7 @@ export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: TopologyDe
   | SwitchStatusEnum
   | ApDeviceStatusEnum) {
   switch(deviceType) {
-    case DeviceTypes.AP:
+    case DeviceTypes.Ap:
       switch(deviceStatus) {
         case TopologyDeviceStatus.Operational:
         case ApDeviceStatusEnum.APPLYING_CONFIGURATION:

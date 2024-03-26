@@ -67,7 +67,7 @@ closeTooltip: Function
 
 
   function skipAPCall (deviceType: DeviceTypes): boolean {
-    return ![DeviceTypes.AP, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
+    return ![DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
       .includes(deviceType)
   }
 

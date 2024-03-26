@@ -671,7 +671,7 @@ export function DeviceIcon (props: { deviceType: DeviceTypes,
         return <Switch />
       case DeviceTypes.SwitchStack:
         return <StackDevice />
-      case DeviceTypes.AP:
+      case DeviceTypes.Ap:
         return <AccessPointWifi />
       case DeviceTypes.Cloud:
         return <CloudSolid />

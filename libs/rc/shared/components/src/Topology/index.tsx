@@ -555,7 +555,7 @@ export function DeviceIcon (props: { deviceType: DeviceTypes,
         return <Switch width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.SwitchStack:
         return <StackDevice />
-      case DeviceTypes.AP:
+      case DeviceTypes.Ap:
         return <AccessPointWifi width={24} height={24} x={-12} y={-12} />
       case DeviceTypes.Cloud:
         return <CloudSolid />

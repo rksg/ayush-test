@@ -113,7 +113,7 @@ const graphData = {
       }],
       nodes: [
         {
-          type: DeviceTypes.AP,
+          type: DeviceTypes.Ap,
           category: 'Ap',
           name: 'Ap001',
           mac: '5C:DF:89:2A:AF:01',
@@ -123,7 +123,7 @@ const graphData = {
           childCount: 0
         },
         {
-          type: DeviceTypes.AP,
+          type: DeviceTypes.Ap,
           category: 'Ap',
           name: '',
           mac: '',
@@ -154,7 +154,7 @@ const graphData = {
           childCount: 3
         },
         {
-          type: DeviceTypes.AP,
+          type: DeviceTypes.Ap,
           category: 'Ap',
           name: 'Ap003',
           mac: '5C:DF:89:2A:AF:03',
@@ -164,7 +164,7 @@ const graphData = {
           childCount: 0
         },
         {
-          type: DeviceTypes.AP,
+          type: DeviceTypes.Ap,
           category: 'Ap',
           name: 'Ap004',
           mac: '5C:DF:89:2A:AF:04',
@@ -184,7 +184,7 @@ const graphData = {
           childCount: 0
         },
         {
-          type: DeviceTypes.AP,
+          type: DeviceTypes.Ap,
           category: 'Ap',
           name: '',
           mac: '',
@@ -443,7 +443,7 @@ describe('Topology', () => {
 
     for (let i=0; i<100; i++) {
       scaleData.data[0].nodes.push({
-        type: DeviceTypes.AP,
+        type: DeviceTypes.Ap,
         category: 'Ap',
         name: 'ApName',
         mac: '5C:DF:89:2A:AF:06' + i,

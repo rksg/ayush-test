@@ -42,10 +42,10 @@ describe('Topology utils', () => {
 
   it('test getDeviceIcon', async () => {
     const testCases = [
-      { deviceType: DeviceTypes.AP, deviceStatus: TopologyDeviceStatus.Operational },
-      { deviceType: DeviceTypes.AP, deviceStatus: TopologyDeviceStatus.Degraded },
-      { deviceType: DeviceTypes.AP, deviceStatus: TopologyDeviceStatus.Disconnected },
-      { deviceType: DeviceTypes.AP, deviceStatus: TopologyDeviceStatus.Unknown },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Operational },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Degraded },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Disconnected },
+      { deviceType: DeviceTypes.Ap, deviceStatus: TopologyDeviceStatus.Unknown },
       { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Operational },
       { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Degraded },
       { deviceType: DeviceTypes.ApMesh, deviceStatus: TopologyDeviceStatus.Disconnected },
