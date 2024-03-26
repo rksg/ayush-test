@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
-import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                               from '@acx-ui/rc/services'
-import { EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                       from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                                                  from '@acx-ui/rc/services'
+import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                          from '@acx-ui/test-utils'
 
 import EditTunnelProfile from '.'
 
@@ -13,6 +13,7 @@ const {
   mockedTunnelProfileData,
   mockedDefaultTunnelProfileData
 } = EdgeTunnelProfileFixtures
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -143,6 +144,8 @@ describe('EditTunnelProfile', () => {
     beforeEach(() => {
       store.dispatch(edgeSdLanApi.util.resetApiState())
       store.dispatch(nsgApi.util.resetApiState())
+      mockedReqSdLan.mockClear()
+      mockedReqNSG.mockClear()
 
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
         if (flag === Features.EDGES_SD_LAN_TOGGLE ||
@@ -170,7 +173,7 @@ describe('EditTunnelProfile', () => {
       )
     })
 
-    it('should lock type fields when it is used in NSG/SD-LAN', async () => {
+    it('should lock type fields when it is used in NSG/SD-LAN P1', async () => {
       render(
         <Provider>
           <EditTunnelProfile />
@@ -181,6 +184,39 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqNSG).toBeCalled()
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
+    })
+
+    it('should lock type fields when it is used in SD-LAN HA case', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
+        if (flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
+          flag === Features.EDGES_TOGGLE) return true
+        return false
+      })
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedReqSdLan()
+            return res(ctx.json({ data: mockedSdLanDataListP2 }))
+          }
+        )
+      )
+      render(
+        <Provider>
+          <EditTunnelProfile />
+        </Provider>
+        , { route: { path: editViewPath, params: {
+          ...params,
+          policyId: mockedSdLanDataListP2[0].tunnelProfileId
+        } } }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(mockedReqSdLan).toBeCalled()
+      expect(mockedReqNSG).not.toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
     })

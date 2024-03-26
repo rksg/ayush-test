@@ -5,8 +5,8 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, StepsFormProps }               from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
+import { Loader, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }    from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
@@ -14,6 +14,7 @@ import {
 import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
 
+import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 import { LagForm }            from './LagForm'
@@ -132,7 +133,7 @@ export const InterfaceSettings = () => {
       if (changedField === 'corePortEnabled' && changedValue === false) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType'
-        && (changedValue === EdgePortTypeEnum.LAN || changedValue === EdgePortTypeEnum.CLUSTER)) {
+        && (changedValue === EdgePortTypeEnum.LAN)) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType' && changedValue === EdgePortTypeEnum.WAN) {
         const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfNaem][0]
@@ -153,7 +154,7 @@ export const InterfaceSettings = () => {
 
     configWizardForm.validateFields()
       .then(() => doCompatibleCheck(typeKey))
-      .catch(() => {/* no nothing */})
+      .catch(() => {/* do nothing */})
   }, 1000)
 
   const steps = [
@@ -209,17 +210,43 @@ export const InterfaceSettings = () => {
     callback: () => void
   ) => {
     try {
-      await updateNetworkConfig({
-        params: {
-          venueId: clusterInfo?.venueId,
-          clusterId
-        },
-        payload: transformFromFormToApiData(value)
-      }).unwrap()
-      callback()
+      if(!isSingleNode && isVipConfigChanged(value.vipConfig)) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `Changing any virtual IP configurations might 
+            temporarily cause network disruption and alter the active/backup roles
+            of this cluster. Are you sure you want to continue?`
+          }),
+          onOk: async () => {
+            await updateNetworkConfig({
+              params: {
+                venueId: clusterInfo?.venueId,
+                clusterId
+              },
+              payload: transformFromFormToApiData(value)
+            }).unwrap()
+            callback()
+          }
+        })
+      } else {
+        await updateNetworkConfig({
+          params: {
+            venueId: clusterInfo?.venueId,
+            clusterId
+          },
+          payload: transformFromFormToApiData(value)
+        }).unwrap()
+        callback()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const isVipConfigChanged = (config: VirtualIpFormType['vipConfig']) => {
+    return !_.isEqual(config, clusterNetworkSettings.vipConfig)
   }
 
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {

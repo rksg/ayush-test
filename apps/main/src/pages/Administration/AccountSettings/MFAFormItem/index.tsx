@@ -66,7 +66,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
 
   const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-  const isDisabled = !isPrimeAdminUser || isUpdating
+  const isDisabled = !isPrimeAdminUser || isUpdating || isMspEc
 
   return (
     <Row gutter={24} className={className}>

@@ -18,31 +18,31 @@ import { RequestPayload }        from '@acx-ui/types'
 
 import { commonQueryFn, configTemplateApi } from './common'
 
-const L2AclTemplateUseCases = [
+export const L2AclTemplateUseCases = [
   'AddL2AclPolicyTemplate',
   'UpdateL2AclPolicyTemplate',
   'DeleteL2AclPolicyTemplate'
 ]
 
-const L3AclTemplateUseCases = [
+export const L3AclTemplateUseCases = [
   'AddL3AclPolicyTemplate',
   'UpdateL3AclPolicyTemplate',
   'DeleteL3AclPolicyTemplate'
 ]
 
-const DeviceTemplateUseCases = [
+export const DeviceTemplateUseCases = [
   'AddDevicePolicyTemplate',
   'UpdateDevicePolicyTemplate',
   'DeleteDevicePolicyTemplate'
 ]
 
-const ApplicationTemplateUseCases = [
+export const ApplicationTemplateUseCases = [
   'AddApplicationPolicyTemplate',
   'UpdateApplicationPolicyTemplate',
   'DeleteApplicationPolicyTemplate'
 ]
 
-const AccessControlTemplateUseCases = [
+export const AccessControlTemplateUseCases = [
   'AddAccessControlProfileTemplate',
   'UpdateAccessControlProfileTemplate',
   'DeleteAccessControlProfileTemplate'
