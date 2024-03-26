@@ -1,3 +1,4 @@
+import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
@@ -334,7 +335,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getUEDetailBeforeDisconnect: build.mutation<unknown, RequestPayload>({
+    getUEDetailAndDisconnect: build.mutation<CommonResult | 'done', RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ){
         let serialNumber = arg.params?.serialNumber
         if(!serialNumber) {
@@ -344,19 +345,20 @@ export const clientApi = baseClientApi.injectEndpoints({
           const ueDetailQuery = await fetchWithBQ(ueDetailRequest)
           const result = ueDetailQuery?.data as UEDetail
           serialNumber = result.apSerialNumber
-          console.log(serialNumber)
         }
-        const disconnectRequest = createHttpRequest(ClientUrlsInfo.disconnectClient, {
-          venueId: arg.params?.venueId,
-          serialNumber: serialNumber,
-          clientMacAddress: arg.params?.clientMacAddress
-        })
-        const disconnectQuery = await fetchWithBQ({
-          ...disconnectRequest,
-          body: arg.payload
-        })
-        console.log(disconnectQuery.data)
-        return disconnectQuery
+        if(serialNumber){
+          const disconnectRequest = createHttpRequest(ClientUrlsInfo.disconnectClient, {
+            venueId: arg.params?.venueId,
+            serialNumber: serialNumber,
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const disconnectQuery = await fetchWithBQ({
+            ...disconnectRequest,
+            body: arg.payload
+          })
+          return disconnectQuery as QueryReturnValue<CommonResult, FetchBaseQueryError>
+        }
+        return { data: 'done' }
       }
     })
   })
@@ -411,5 +413,5 @@ export const {
   useImportGuestPassMutation,
   useGetClientOrHistoryDetailQuery,
   useGetClientUEDetailQuery,
-  useGetUEDetailBeforeDisconnectMutation
+  useGetUEDetailAndDisconnectMutation
 } = clientApi

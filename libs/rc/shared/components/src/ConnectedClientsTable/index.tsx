@@ -11,7 +11,7 @@ import {
   useVenuesListQuery,
   useApListQuery,
   useNetworkListQuery,
-  useGetUEDetailBeforeDisconnectMutation,
+  useGetUEDetailAndDisconnectMutation,
   useRevokeClientMutation
 } from '@acx-ui/rc/services'
 import {
@@ -124,7 +124,7 @@ export const ConnectedClientsTable = (props: {
       }
     }
   })
-  const [ sendCombineRequest ] = useGetUEDetailBeforeDisconnectMutation()
+  const [ sendCombineRequest ] = useGetUEDetailAndDisconnectMutation()
   const [ sendRevoke ] = useRevokeClientMutation()
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
