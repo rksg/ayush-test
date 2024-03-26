@@ -145,7 +145,8 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
                 <Form.Item
                   name={rootNamePath.concat('ip')}
                   label={$t({ defaultMessage: 'IP Address' })}
-                  dependencies={clusterInfo?.edgeList?.map(node => [node.serialNumber].concat('subnet'))}
+                  dependencies={clusterInfo?.edgeList?.map(node =>
+                    [node.serialNumber].concat('subnet'))}
                   rules={[
                     { required: true },
                     { validator: (_, value) =>
