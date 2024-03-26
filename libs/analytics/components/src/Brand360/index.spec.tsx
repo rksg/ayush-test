@@ -44,22 +44,22 @@ jest.mock('./SlaTile', () => ({
     sliceType,
     chartData,
     prevData,
-    currData,
-    settings
+    currData
   }
   :{
     chartKey: string,
     sliceType: string,
     chartData: string,
     prevData: string,
-    currData: string,
-    settings: Settings
+    currData: string
   }) =>
     <div data-testid={'brand360Tile'}>
-      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData, settings })}
+      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData })}
     </div>
 }))
-
+jest.mock('./Settings', () => ({
+  ConfigSettings: () => <div data-testid='settings'></div>
+}))
 
 describe('Brand360', () => {
   beforeEach(() => {
