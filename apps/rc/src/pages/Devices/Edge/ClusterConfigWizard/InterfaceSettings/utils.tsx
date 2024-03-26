@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import _              from 'lodash'
+import { Space, Typography } from 'antd'
+import _                     from 'lodash'
 
 import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
 import {
@@ -7,7 +7,8 @@ import {
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
-  EdgeSerialNumber
+  EdgeSerialNumber,
+  VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
 import {
@@ -81,6 +82,7 @@ export const getLanInterfaces = (
         id: `${item.id}`,
         serialNumber: edgeNode.serialNumber,
         portName: `lag${item.id}`,
+        ipMode: item.ipMode,
         ip: item.ip ?? '',
         subnet: item.subnet ?? '',
         mac: '',
@@ -98,6 +100,7 @@ export const getLanInterfaces = (
           id: item.id,
           serialNumber: edgeNode.serialNumber,
           portName: item.interfaceName ?? '',
+          ipMode: item.ipMode,
           ip: item.ip,
           subnet: item.subnet,
           mac: item.mac,
@@ -138,13 +141,16 @@ export const getPortFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return Object.keys(errors.portTypes)
-        .map((portType) => errors.portTypes[portType].value
-          ? <Typography.Text
-            type={errors.portTypes[portType].isError ? 'danger' : undefined}
-            children={portType}
-          />
-          : '')
+      return <Space size={10}>
+        {Object.keys(errors.portTypes)
+          .map((portType) => errors.portTypes[portType].value
+            ? <Typography.Text
+              key={portType}
+              type={errors.portTypes[portType].isError ? 'danger' : undefined}
+              children={portType}
+            />
+            : '').filter(i => !!i)}
+      </Space>
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
@@ -170,11 +176,16 @@ export const getLagFormCompatibilityFields = () => {
     title: 'Port Types',
     render: (errors:
       CompatibilityNodeError<InterfacePortFormCompatibility>['errors']) => {
-      return Object.keys(errors.portTypes)
-        .map((portType) => <Typography.Text
-          type={errors.portTypes[portType].isError ? 'danger' : undefined}
-          children={portType}
-        />)
+      return <Space size={10}>
+        {Object.keys(errors.portTypes)
+          .map((portType) => errors.portTypes[portType].value
+            ?<Typography.Text
+              key={portType}
+              type={errors.portTypes[portType].isError ? 'danger' : undefined}
+              children={portType}
+            />
+            : '').filter(i => !!i)}
+      </Space>
     }
   }] as SingleNodeDetailsField<InterfacePortFormCompatibility>[]
 }
@@ -244,8 +255,9 @@ export const interfaceCompatibilityCheck = (
 
     // do counting
     Object.values(portsData).flat().forEach(port => {
-      // only count on non-lagMember port
-      if (nodeLagMembers?.includes(port.id)) return
+      // only count on non-lagMember port and enabled port
+      // TODO: need more discussion on considering `enabled`
+      if (nodeLagMembers?.includes(port.id) /*|| !port.enabled*/) return
 
       result.errors.ports.value++
       if (port.corePortEnabled) result.errors.corePorts.value++
@@ -283,6 +295,10 @@ export const lagSettingsCompatibleCheck = (
 
     // do counting
     lagsData?.forEach(lag => {
+      // TODO: need more discussion on considering `lagEnabled`
+      // only consider the enabled
+      // if (!lag.lagEnabled) return
+
       result.errors.ports.value++
       if (lag.corePortEnabled) result.errors.corePorts.value++
       if (!result.errors.portTypes[lag.portType]) {
@@ -311,6 +327,7 @@ export const transformFromFormToApiData =
     })
   }
   const virtualIpSettings = data.vipConfig.map(item => {
+    if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
     const ports = Object.entries(item.interfaces).map(([, v2]) => {
       return {
         serialNumber: v2.serialNumber,
@@ -322,7 +339,7 @@ export const transformFromFormToApiData =
       timeoutSeconds: data.timeout,
       ports
     }
-  })
+  }).filter(item => Boolean(item)) as VirtualIpSetting[]
   return {
     lagSettings: data.lagSettings,
     portSettings,

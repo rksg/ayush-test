@@ -144,6 +144,19 @@ export const xAxisNameOptions = (name: string) => ({
   nameLocation: 'middle'
 } as XAXisComponentOption)
 
+export const yAxisNameOptions = (name: string, color: string | undefined) => ({
+  name,
+  nameGap: 40,
+  nameTextStyle: {
+    color: color || cssStr('--acx-neutrals-50'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight-bold')
+  },
+  nameLocation: 'middle'
+} as YAXisComponentOption)
+
 export const barChartAxisLabelOptions = () => ({
   color: cssStr('--acx-primary-black'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
@@ -172,8 +185,8 @@ export const yAxisOptions = () => ({
   }
 } as YAXisComponentOption)
 
-export const axisLabelOptions = () => ({
-  color: cssStr('--acx-neutrals-50'),
+export const axisLabelOptions = (color?: string | undefined) => ({
+  color: color || cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
   lineHeight: cssNumber('--acx-body-5-line-height'),
