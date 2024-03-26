@@ -67,9 +67,14 @@ const PortalInstance = (props: {
     data?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id })) ?? []
   const [portalList, setPortalList] = useState(portalServices)
   const [portalData, setPortalData] = useState([] as Portal[])
+
+  const getTemplateContent = async (serviceId: string) =>
+  (await getPortalTemplate({ params: { serviceId } }).unwrap())?.content as Demo
+  const getContent = (list: (Portal|PortalDetail)[], portalServiceProfileId: string ) =>
+    ( _.find(list, { id: portalServiceProfileId }) as Portal)?.content as Demo
   const setPortal = async (value: string) => {
-    const currentPortal = _.find(portalData, { id: value })
-    const content = currentPortal?.content as Demo
+    const content = isTemplate ?
+      await getTemplateContent(value) : getContent(portalData, value)
     const tempValue = {
       ...initialPortalData.content,
       ...content,
@@ -85,8 +90,6 @@ const PortalInstance = (props: {
     props.updatePortalData?.(tempValue)
   }
 
-  const getContent = async () => (await getPortalTemplate({ params }).unwrap())?.content as Demo
-
   useEffect(() => {
     const fetchData = async (data: TableResult<Portal|PortalDetail>) => {
       setPortalData([...(data.data as Portal[])])
@@ -98,10 +101,9 @@ const PortalInstance = (props: {
           'portalServiceProfileId',
           networkData.portalServiceProfileId
         )
-        const currentPortal = _.find(data.data, {
-          id: networkData.portalServiceProfileId
-        })
-        const content = isTemplate ? await getContent() : (currentPortal as Portal)?.content as Demo
+        const content = isTemplate ?
+          await getTemplateContent(networkData.portalServiceProfileId) :
+          getContent(data.data, networkData.portalServiceProfileId)
         const tempValue = {
           ...initialPortalData.content,
           ...content,
