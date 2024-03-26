@@ -31,10 +31,10 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
 import NetworkFormContext                                                       from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -194,7 +194,7 @@ export function Venues (props: VenuesProps) {
         return !enabled
       },
       onClick: (rows) => {
-        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
           () => {
             handleActivateVenue(false, rows)
@@ -325,7 +325,7 @@ export function Venues (props: VenuesProps) {
             onClick={(checked, event) => {
               event.stopPropagation()
               if (!checked) {
-                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
                   [row.id],
                   () => {
                     handleActivateVenue(false, [row])
