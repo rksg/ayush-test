@@ -5,14 +5,14 @@ import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuer
 import { Card, Descriptions, Loader }                                               from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                              from '@acx-ui/icons'
-import { SwitchStatusEnum, SwitchViewModel }                                        from '@acx-ui/rc/utils'
+import { SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus }             from '@acx-ui/rc/utils'
 import { useLocation }                                                              from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
-import IncidentStackedBar               from './IncidentStackedBar'
-import * as UI                          from './styledComponents'
-import { getDeviceColor, switchStatus } from './utils'
+import IncidentStackedBar from './IncidentStackedBar'
+import * as UI            from './styledComponents'
+import { getDeviceColor } from './utils'
 
 
 export function SwitchDetailsCard (props: {
@@ -88,7 +88,7 @@ export function SwitchDetailsCard (props: {
         children={<Badge
           key={switchDetail?.id + 'status'}
           color={getDeviceColor(switchDetail?.deviceStatus as SwitchStatusEnum)}
-          text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
+          text={transformSwitchUnitStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
 
       {/* Incidents */}
       <Descriptions.Item
