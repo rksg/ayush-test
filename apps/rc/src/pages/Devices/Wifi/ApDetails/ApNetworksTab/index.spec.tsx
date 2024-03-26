@@ -1,16 +1,28 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
+import { CommonUrlsInfo, EdgeSdLanFixtures }        from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { ApNetworksTab } from '.'
 
 jest.mock('socket.io-client')
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
+    sdLans: [],
+    scopedNetworkIds: []
+  })
+}))
+
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 const list = {
   totalCount: 10,
@@ -48,7 +60,7 @@ describe('Networks Table', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApNetworkList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (_req, res, ctx) => res(ctx.json(list))
       )
     )
   })
@@ -62,5 +74,49 @@ describe('Networks Table', () => {
       })
 
     expect(await screen.findByRole('row', { name: /network-01/ })).toBeVisible()
+    expect(screen.queryByRole('columnheader', { name: 'Tunnel' })).toBeNull()
+  })
+
+  describe('SD-LAN FF is ON', () => {
+    const mockedSdLanScopeData = {
+      sdLans: [{
+        ...mockedSdLanDataListP2[0],
+        networkIds: [list.data[0].id]
+      }],
+      scopedNetworkIds: [list.data[0].id]
+    }
+
+    const mockApListReq = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+      mockServer.use(
+        rest.post(
+          CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => {
+            mockApListReq()
+            return res(ctx.json({ data: [] }))
+          }
+        )
+      )
+    })
+
+    it('should render table', async () => {
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
+
+      render(
+        <Provider>
+          <ApNetworksTab />
+        </Provider>, {
+          route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/networks' }
+        })
+
+      const row = await screen.findByRole('row', { name: /network-01/ })
+      expect(row).toBeVisible()
+      expect(screen.getByRole('columnheader', { name: 'Tunnel' })).toBeVisible()
+      await waitFor(() => expect(mockApListReq).toBeCalled())
+      expect(row).toHaveTextContent('Tunneled (SE_Cluster 0)')
+    })
   })
 })
