@@ -3,19 +3,21 @@ import { useEffect, useRef } from 'react'
 
 import * as reactRouterDom from 'react-router-dom'
 
-import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance }                                                                         from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, StepsFormLegacy, StepsFormLegacyInstance }                                                       from '@acx-ui/components'
 import { useAddWifiOperatorMutation, useGetWifiOperatorQuery, useUpdateWifiOperatorMutation }                                           from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, WifiOperatorContext, generatePolicyPageHeaderTitle, getPolicyRoutePath, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                                                                from '@acx-ui/react-router-dom'
 
 import WifiOperatorSettingForm from './WifiOperatorSettingForm'
+import { useIntl } from 'react-intl'
 
 type WifiOperatorFormProps = {
   edit: boolean
 }
 
 export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
-
+  
+  const { $t } = useIntl()
   const navigate = reactRouterDom.useNavigate()
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })
@@ -76,7 +78,14 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
         }}
       >
         <StepsFormLegacy.StepForm>
-          <WifiOperatorSettingForm edit={isEdit}/>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
+              <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+              <WifiOperatorSettingForm edit={isEdit}/>
+            </GridCol>
+            <GridCol col={{ span: 14 }}>
+            </GridCol>
+          </GridRow>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>

@@ -77,33 +77,32 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
 
   return (
     <Drawer
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Protocol' })
-          : $t({ defaultMessage: 'Add Protocol' })
-        }
-        visible={visible}
-        destroyOnClose={true}
-        width={400}
-        onClose={handleDrawerClose}
-        children={content}
-        footer={
-          <Drawer.FormFooter
-            showAddAnother={false}
-            onCancel={handleDrawerClose}
-            onSave={async () => {
-              try {
-                await drawerForm.validateFields()
-                handleDrawerSave()
-                drawerForm.resetFields()
-                handleDrawerClose()
-              } catch (error) {
-                if (error instanceof Error) throw error
-              }
-            }}
-          />
-        }
-        
-      />
+      title={editMode
+        ? $t({ defaultMessage: 'Edit Protocol' })
+        : $t({ defaultMessage: 'Add Protocol' })
+      }
+      visible={visible}
+      destroyOnClose={true}
+      width={430}
+      onClose={handleDrawerClose}
+      children={content}
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={false}
+          onCancel={handleDrawerClose}
+          onSave={async () => {
+            try {
+              await drawerForm.validateFields()
+              handleDrawerSave()
+              drawerForm.resetFields()
+              handleDrawerClose()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+    />
   )
 }
 

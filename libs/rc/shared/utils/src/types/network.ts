@@ -153,7 +153,6 @@ export interface NetworkSaveData {
   enableOwe?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
-  useHotspot20?: boolean
   hotspot20Settings?: NetworkHotspot20Settings
 }
 

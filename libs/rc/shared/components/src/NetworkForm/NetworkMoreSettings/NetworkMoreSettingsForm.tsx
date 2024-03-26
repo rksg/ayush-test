@@ -115,7 +115,7 @@ export function MoreSettingsTabs (props: {
       display: defineMessage({ defaultMessage: 'VLAN' }),
       style: { width: '10px' }
     },
-    ...(supportHotspot20 ? [{
+    ...(supportHotspot20 && data?.type === NetworkTypeEnum.HOTSPOT20 ? [{
       key: 'hotspot20',
       display: defineMessage({defaultMessage: 'Hotspot 2.0'}),
       style: { width: '19px'}

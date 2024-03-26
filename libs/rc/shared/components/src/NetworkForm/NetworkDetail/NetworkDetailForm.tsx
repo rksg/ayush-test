@@ -144,6 +144,7 @@ export function NetworkDetailForm () {
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
+    { type: NetworkTypeEnum.HOTSPOT20, disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)},
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]

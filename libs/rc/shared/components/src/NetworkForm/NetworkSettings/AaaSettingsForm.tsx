@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Input, Space } from 'antd'
 import {
@@ -11,7 +11,6 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
-  Button,
   StepsFormLegacy,
   Subtitle,
   Tooltip
@@ -32,9 +31,6 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import * as UI                     from '../NetworkMoreSettings/styledComponents'
-import { useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
 
 const { Option } = Select
 
@@ -82,13 +78,10 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode, setData, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
-  const hotspot20 = useWatch('useHotspot20')
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-  const supportHotspot20 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const labelWidth = '516px'
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -139,41 +132,10 @@ function SettingsForm () {
     form.setFieldValue(['wlan', 'managementFrameProtection'], managementFrameProtection)
   }
 
-  const onHotspot20Change = (checked: boolean) => {
-    setData && setData({
-      ...data,
-      ...{
-        useHotspot20: checked
-      }
-    })
-  }
-
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
-        {supportHotspot20 &&
-          <UI.FieldLabel width={labelWidth}>
-            <Space>
-              { $t({ defaultMessage: 'Use Hotspot 2.0' }) }
-              <Tooltip.Question
-                title={$t(WifiNetworkMessages.ENABLE_HOTSPOT_20_TOOLTIP)}
-                placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
-            </Space>
-            <Form.Item
-              name='useHotspot20'
-              initialValue={false}
-              valuePropName='checked'>
-              <Switch
-                disabled={editMode}
-                onChange={onHotspot20Change}
-                data-testid='hotspot8021x'
-              />
-            </Form.Item>
-          </UI.FieldLabel>
-        }
         {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
@@ -197,7 +159,7 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-        {supportHotspot20 && hotspot20 ? (<Hotspot20Service />) : (<AaaService />)}
+        <AaaService />
       </div>
     </Space>
   )
@@ -321,109 +283,6 @@ function SettingsForm () {
           }
         </div>
         }
-      </Space>
-    )
-  }
-
-  function Hotspot20Service () {
-    const params = useParams()
-    const { setData, data } = useContext(NetworkFormContext)
-    const [showOperatorModal, setShowOperatorModal] = useState(false)
-    const [showProviderModal, setShowProviderModal] = useState(false)
-    const [wifiOperatorId, setWifiOperatorId] = useState('')
-    const [identityProviderId, setIdentityProviderId] = useState('')
-
-    const handleOperatorChange = (operatorId: string) => {
-      setWifiOperatorId(operatorId)
-    }
-
-    const handleProviderChange = (providerId: string) => {
-      setIdentityProviderId(providerId)
-    }
-
-    const queryByNetworkId = (networkId: string) => {
-      return {
-        searchString: '',
-        fields: [
-          'id',
-          'name'
-        ],
-        page: 1,
-        pageSize: 5,
-        sortField: 'name',
-        sortOrder: 'DESC',
-        filters: {
-          networkIds: [networkId]
-        }
-      }
-    }
-
-    const operatorSelectOptions
-      = data?.id ? useGetWifiOperatorListQuery({ 
-        params, payload: queryByNetworkId( data?.id )}, {
-          selectFromResult ({ data }) {
-            return data?.data.map(
-                operator => <Option key={operator.id}>{operator.name}</Option>) ?? []
-          }
-        }) : []
-
-    const handleAddOperator = () => {
-      setShowOperatorModal(true)
-    }
-
-    const handleAddProvider = () => {
-      setShowProviderModal(true)
-    }
-
-    return (
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <Form.Item
-          label={$t({ defaultMessage: 'Wi-Fi Operator' })}
-          name='hotspot20Operator'
-          rules={[
-            { required: true },
-            { validator: (_, value) => {
-              if (value === 'Select...') {
-                return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
-              }
-              return Promise.resolve()
-            } }
-          ]}
-        >
-          <Select placeholder={$t({ defaultMessage: 'Select...' })}
-            onChange={handleOperatorChange}
-            children={operatorSelectOptions} />
-        </Form.Item>
-
-        <Button type='link'
-          onClick={handleAddOperator}
-          children={$t({ defaultMessage: 'Add' })}
-          style={{ paddingTop: '10px' }} />
-
-        <Form.Item
-          label='Identity Provider'
-          name='hotspot20Identity'
-          rules={[
-            { required: true },
-            { validator: (_, value) => {
-              if (value === 'Select...') {
-                return Promise.reject(
-                  $t({ defaultMessage: 'Please select the identity provider' }))
-              }
-              return Promise.resolve()
-            } }
-          ]}
-        >
-          <Select placeholder={$t({ defaultMessage: 'Select...' })}
-            onChange={handleProviderChange}
-            value={identityProviderId} />
-        </Form.Item>
-
-        <Button type='link'
-          onClick={handleAddProvider}
-          children={$t({ defaultMessage: 'Add' })}
-          style={{ paddingTop: '10px' }} />
-
       </Space>
     )
   }
