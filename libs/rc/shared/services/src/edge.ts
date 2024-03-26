@@ -41,6 +41,7 @@ import {
   TableResult,
   TraceRouteEdge,
   downloadFile,
+  getEdgePortIpModeEnumValue,
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
@@ -939,7 +940,7 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
       portType,
       isLag: !isPhysicalPort,
       isLagMember,
-      ipMode: item.ipMode,
+      ipMode: getEdgePortIpModeEnumValue(item.ipMode),
       ip: item.ip ?? '',
       mac: item.mac ?? '',
       subnet: item.subnet ?? '',
