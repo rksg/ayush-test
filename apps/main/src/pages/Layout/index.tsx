@@ -79,20 +79,31 @@ function Layout () {
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
+  const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}`
-      })
+      (params['*'] === 'userprofile')
+        ? navigate({
+          ...userProfileBasePath,
+          pathname: `${userProfileBasePath.pathname}`
+        })
+        : navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}`
+        })
     }
     if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
-      navigate({
-        ...dpskBasePath,
-        pathname: `${dpskBasePath.pathname}`
-      })
+      (params['*'] === 'userprofile')
+        ? navigate({
+          ...userProfileBasePath,
+          pathname: `${userProfileBasePath.pathname}`
+        })
+        : navigate({
+          ...dpskBasePath,
+          pathname: `${dpskBasePath.pathname}`
+        })
     }
   }, [isGuestManager, isDPSKAdmin, params['*']])
 

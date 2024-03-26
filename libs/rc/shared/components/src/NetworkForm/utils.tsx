@@ -11,8 +11,14 @@ import {
   NetworkTypeEnum,
   DpskWlanAdvancedCustomization,
   TunnelTypeEnum,
-  TunnelProfileViewData
+  TunnelProfileViewData,
+  useConfigTemplate,
+  ConfigTemplateType,
+  configTemplatePolicyTypeMap,
+  configTemplateServiceTypeMap
 } from '@acx-ui/rc/utils'
+
+import { useIsConfigTemplateEnabledByType } from '../configTemplates'
 
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
@@ -118,3 +124,26 @@ export const useNetworkVxLanTunnelProfileInfo =
       vxLanTunnels
     }
   }
+
+// eslint-disable-next-line max-len
+export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
+  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
+  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
+  const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
+  const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(configTemplateType)
+  const result = !isTemplate || isConfigTemplateEnabledByType
+
+  if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
+
+  if (isPolicyConfigTemplate) {
+    return isPolicyEnabled && result
+  }
+
+  if (isServiceConfigTemplate) {
+    return isServiceEnabled && result
+  }
+
+  return false
+}
