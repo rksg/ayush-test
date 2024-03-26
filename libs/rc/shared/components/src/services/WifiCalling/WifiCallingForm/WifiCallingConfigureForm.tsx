@@ -7,12 +7,13 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useUpdateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import { useUpdateWifiCallingServiceMutation }       from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG, getServiceRoutePath,
+  EPDG, generateServicePageHeaderTitle,
   QosPriorityEnum, ServiceOperation, ServiceType,
-  useServiceListBreadcrumb
+  useConfigTemplate,
+  useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,10 +26,9 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 export const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING,
-    oper: ServiceOperation.LIST
-  })
+  const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const { pathname: tablePath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
 
@@ -75,7 +75,7 @@ export const WifiCallingConfigureForm = () => {
   return (
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
+        title={generateServicePageHeaderTitle(true, isTemplate, ServiceType.WIFI_CALLING)}
         breadcrumb={breadcrumb}
       />
       <StepsForm<CreateNetworkFormFields>
