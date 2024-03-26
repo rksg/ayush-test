@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Col, Form, InputNumber, Row, Space } from 'antd'
 import { cloneDeep }                          from 'lodash'
@@ -7,6 +7,7 @@ import { useIntl }                            from 'react-intl'
 import { Button, Drawer, Select } from '@acx-ui/components'
 import { DeleteOutlinedIcon }     from '@acx-ui/icons'
 import {
+  AuthInfoType,
   EapType,
   NaiRealmAuthInfoDisplayMap,
   NaiRealmAuthInfoEnum,
@@ -40,10 +41,17 @@ const initEap: EapType = {
   authInfos: []
 }
 
+const { useWatch } = Form
+
 const EapDrawer = (props: EapDrawerProps) => {
   const { $t } = useIntl()
 
   const [form] = Form.useForm()
+
+  const authInfos = useWatch('authInfos', form)
+  const authInfoTypes = authInfos?.map((authInfo: AuthInfoType) => (
+    authInfo?.info || NaiRealmAuthInfoEnum.Expanded
+  )) || [ NaiRealmAuthInfoEnum.Expanded ]
 
   const { visible, setVisible, editIndex, dataList, updateDataList } = props
   const isEditMode = (editIndex !== -1)
@@ -95,45 +103,19 @@ const EapDrawer = (props: EapDrawerProps) => {
     }))
   }, [])
 
-  const [ authInfoTypes, setAuthInfoTypes ] = useState([
-    NaiRealmAuthInfoEnum.Expanded,
-    NaiRealmAuthInfoEnum.Expanded,
-    NaiRealmAuthInfoEnum.Expanded,
-    NaiRealmAuthInfoEnum.Expanded ])
-
-
   useEffect(() => {
     if (visible && form) {
-      const authInfosInfo = [
-        NaiRealmAuthInfoEnum.Expanded,
-        NaiRealmAuthInfoEnum.Expanded,
-        NaiRealmAuthInfoEnum.Expanded,
-        NaiRealmAuthInfoEnum.Expanded
-      ]
-
       if (isEditMode) {
         const eap = cloneDeep(dataList?.[editIndex]!)
-        eap.authInfos?.forEach((authInfo, index) => {
-          authInfosInfo[index] = authInfo.info
-        })
         form.setFieldsValue(eap)
       }
-
-      setAuthInfoTypes(authInfosInfo)
     }
-
   }, [editIndex, visible, form, isEditMode, dataList])
-
-  const updateAuthInfoType = async (v: NaiRealmAuthInfoEnum, index: number) => {
-    const newData = cloneDeep(authInfoTypes)
-    newData[index] = v
-    setAuthInfoTypes(newData)
-  }
 
   const content = (
     <Form form={form}
       layout='vertical'
-      preserve={visible && isEditMode}
+      preserve={visible}
       initialValues={cloneDeep(initEap)}
     >
       <Form.Item
@@ -146,23 +128,22 @@ const EapDrawer = (props: EapDrawerProps) => {
 
       <Form.List name='authInfos' >
         {(fields, { add, remove }) => (
-          <Row >
+          <>
             {
               fields.map((field, index) =>
-                <Space key={`authInfo-${index}`}>
-                  <Col>
-                    <Form.Item
-                      name={[index, 'info']}
-                      label={$t({ defaultMessage: 'Auth Type' })}
-                      style={{ width: '250px' }}
-                      initialValue={NaiRealmAuthInfoEnum.Expanded}
-                      rules={[{ required: true }]}
-                      children={<Select options={EapAuthInfoOptions}
-                        onChange={(v) => updateAuthInfoType(v, index)}
-                      />}
-                    />
-                  </Col>
-                  {(authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded ||
+                <Row>
+                  <Space key={`authInfo-${index}`}>
+                    <Col>
+                      <Form.Item
+                        name={[index, 'info']}
+                        label={$t({ defaultMessage: 'Auth Type' })}
+                        style={{ width: '250px' }}
+                        initialValue={NaiRealmAuthInfoEnum.Expanded}
+                        rules={[{ required: true }]}
+                        children={<Select options={EapAuthInfoOptions} />}
+                      />
+                    </Col>
+                    {(authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded ||
                       authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded_Inner) &&
                       <Col>
                         <Space style={{ width: AuthInfoTypeSelectWidth }}>
@@ -192,8 +173,8 @@ const EapDrawer = (props: EapDrawerProps) => {
                           />
                         </Space>
                       </Col>
-                  }
-                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Non_Eap &&
+                    }
+                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Non_Eap &&
                       <Col>
                         <Form.Item
                           name={[index, 'nonEapAuth']}
@@ -203,8 +184,8 @@ const EapDrawer = (props: EapDrawerProps) => {
                           children={<Select options={EapAuthTypeNonEapOptions} />}
                         />
                       </Col>
-                  }
-                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Inner &&
+                    }
+                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Inner &&
                     <Col>
                       <Form.Item
                         name={[index, 'eapInnerAuth']}
@@ -216,8 +197,8 @@ const EapDrawer = (props: EapDrawerProps) => {
                         children={<Select options={EapAuthTypeInnerOptions} />}
                       />
                     </Col>
-                  }
-                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Credential &&
+                    }
+                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Credential &&
                     <Col>
                       <Form.Item
                         name={[index, 'credentialType']}
@@ -227,8 +208,8 @@ const EapDrawer = (props: EapDrawerProps) => {
                         children={<Select options={EapAuthTypeCredentialOptions} />}
                       />
                     </Col>
-                  }
-                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Tunneled &&
+                    }
+                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Tunneled &&
                     <Col>
                       <Form.Item
                         name={[index, 'tunneledType']}
@@ -238,9 +219,8 @@ const EapDrawer = (props: EapDrawerProps) => {
                         children={<Select options={EapAuthTypeTunneledOptions} />}
                       />
                     </Col>
-                  }
-                  {
-                    <Col style={{ textAlign: 'end' }}>
+                    }
+                    {<Col style={{ textAlign: 'end' }}>
                       <Button
                         aria-label='delete'
                         type='link'
@@ -249,21 +229,23 @@ const EapDrawer = (props: EapDrawerProps) => {
                         style={{ width: '50px' }}
                         onClick={() => remove(field.name)}
                       />
-                    </Col>
-                  }
-                </Space>
+                    </Col>}
+                  </Space>
+                </Row>
               )
             }
-            <Col span={24}>
-              {fields.length < EAP_AUTH_INFO_MAX_COUNT &&
+            <Row >
+              <Col span={24}>
+                {fields.length < EAP_AUTH_INFO_MAX_COUNT &&
                   <Button
                     type='link'
                     onClick={() => add()}
                     children={$t({ defaultMessage: 'Add another Auth' })}
                   />
-              }
-            </Col>
-          </Row>
+                }
+              </Col>
+            </Row>
+          </>
         )}
       </Form.List>
     </Form>

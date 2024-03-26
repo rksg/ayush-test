@@ -90,8 +90,7 @@ describe('EapDrawer Component', () => {
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
     expect(saveBtn).toBeInTheDocument()
 
-    //await userEvent.click(saveBtn)
-    //expect(mockUpdateDataList).toBeCalled()
-    //expect(mockSetVisible).toBeCalledWith(false)
+    await userEvent.click(saveBtn)
+    expect(mockSetVisible).toBeCalledWith(false)
   })
 })
