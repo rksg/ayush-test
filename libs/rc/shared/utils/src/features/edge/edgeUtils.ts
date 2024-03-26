@@ -312,3 +312,14 @@ export const validateClusterInterface = (interfaceNames: string[]) => {
   }
   return Promise.resolve()
 }
+
+export const getEdgePortIpModeEnumValue = (type: string) => {
+  switch (type) {
+    case EdgeIpModeEnum.DHCP:
+      return EdgeIpModeEnum.DHCP
+    case 'Static':
+      return EdgeIpModeEnum.STATIC
+    default:
+      return ''
+  }
+}

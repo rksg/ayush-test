@@ -397,6 +397,7 @@ export interface EdgePortInfo {
   serialNumber: EdgeSerialNumber
   id: string
   portName: string
+  ipMode: EdgeIpModeEnum,
   ip: string
   mac: string
   subnet: string
