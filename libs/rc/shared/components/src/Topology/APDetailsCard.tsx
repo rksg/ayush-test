@@ -76,7 +76,7 @@ export function APDetailsCard (props: {
       {/* MAC address  */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'MAC Address' })}
-        children={apDetail?.apMac || 'noDataDisplay'} />
+        children={apDetail?.apMac || noDataDisplay} />
 
       {/* IP Address  */}
       <Descriptions.Item
