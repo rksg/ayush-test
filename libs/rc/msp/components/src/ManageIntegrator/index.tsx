@@ -664,6 +664,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'First Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}
@@ -674,6 +676,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'Last Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}

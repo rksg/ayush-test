@@ -42,7 +42,7 @@ export function PortalSummaryForm (props: {
           {summaryData.guestPortal?.socialIdentities?.twitter&&
             <div><UI.Twitter/>{$t({ defaultMessage: 'X' })}</div>}
           {summaryData.guestPortal?.socialIdentities?.linkedin&&
-            <div><UI.LinkedIn/>{}</div>}
+            <div><UI.LinkedIn/>{$t({ defaultMessage: 'LinkedIn' })}</div>}
         </>}
       />
       }
