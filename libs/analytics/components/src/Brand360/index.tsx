@@ -35,10 +35,11 @@ import {
   useFetchBrandPropertiesQuery,
   BrandVenuesSLA
 } from './services'
-import { SlaSliders }   from './SlaSliders'
-import { SlaTile }      from './SlaTile'
-import { BrandTable }   from './Table'
-import { useSliceType } from './useSliceType'
+import { ConfigSettings } from './Settings'
+import { SlaSliders }     from './SlaSliders'
+import { SlaTile }        from './SlaTile'
+import { BrandTable }     from './Table'
+import { useSliceType }   from './useSliceType'
 
 
 const mspPayload = {
@@ -138,6 +139,7 @@ export function Brand360 () {
             selectionType={range}
             showLast8hours
           />
+          <ConfigSettings settings={settings as Settings} />
         </>
       ]}
     />
@@ -152,7 +154,6 @@ export function Brand360 () {
             chartData={chartData}
             prevData={prevData}
             currData={currData}
-            settings={settings as Settings}
             lsp={lsp}
             property={property}
           />
