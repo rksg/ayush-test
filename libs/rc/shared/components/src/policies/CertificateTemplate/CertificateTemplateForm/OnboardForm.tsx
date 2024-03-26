@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Select, Input } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { Form, Select, Input } from 'antd'
+import { useIntl }             from 'react-intl'
 
-import { Button, Tabs }                                                           from '@acx-ui/components'
+import { Button, GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
 import { useGetCertificateAuthoritiesQuery, useLazyGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists, trailingNorLeadingSpaces }                         from '@acx-ui/rc/utils'
 import { useParams }                                                              from '@acx-ui/react-router-dom'
 
 import { MAX_CERTIFICATE_PER_TENANT }                                           from '../constants'
 import { onboardSettingsDescription }                                           from '../contentsMap'
-import { Description, Section, SettingsSectionTitle, TabItem, TabLable, Title } from '../styledComponents'
+import { Description, Section, SettingsSectionTitle, TabItem, TabLabel, Title } from '../styledComponents'
 
 import AddCertificateAuthorityDrawer from './AddCertificateAuthorityDrawer'
 import CertificateStrengthSettings   from './CertificateTemplateSettings/CertificateStrengthSettings'
@@ -81,20 +81,14 @@ export default function OnboardForm ({ editMode = false }) {
 
   return (
     <>
-      <Row style={{ marginBottom: '24px' }}>
-        <Col>
-          <Title>{$t({ defaultMessage: 'Onboard CA' })}</Title>
-          <Description>{$t(onboardSettingsDescription.INFORMATION)}</Description>
-        </Col>
-      </Row>
+      <div style={{ marginBottom: '24px' }}>
+        <Title>{$t({ defaultMessage: 'Onboard CA' })}</Title>
+        <Description>{$t(onboardSettingsDescription.INFORMATION)}</Description>
+      </div>
       <Section>
-        <Row>
-          <Col span={24}>
-            <SettingsSectionTitle>{$t({ defaultMessage: 'CA Sources' })}</SettingsSectionTitle>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={10}>
+        <SettingsSectionTitle>{$t({ defaultMessage: 'CA Sources' })}</SettingsSectionTitle>
+        <GridRow>
+          <GridCol col={{ span: 12 }}>
             <Form.Item
               name={['onboard', 'certificateAuthorityId']}
               label={$t({ defaultMessage: 'Onboard Certificate Authority' })}
@@ -109,20 +103,16 @@ export default function OnboardForm ({ editMode = false }) {
                 disabled={editMode}
               />
             </Form.Item>
-          </Col>
+          </GridCol>
           {!editMode && <AddCertificateAuthorityDrawer certificateTemplateForm={form} />}
-        </Row>
+        </GridRow>
       </Section>
       <Section>
-        <Row>
-          <Col span={24}>
-            <SettingsSectionTitle>
-              {$t({ defaultMessage: 'Certificate Template Information' })}
-            </SettingsSectionTitle>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={10}>
+        <SettingsSectionTitle>
+          {$t({ defaultMessage: 'Certificate Template Information' })}
+        </SettingsSectionTitle>
+        <GridRow>
+          <GridCol col={{ span: 10 }}>
             <Form.Item
               name='name'
               label={$t({ defaultMessage: 'Certificate Template Name' })}
@@ -152,12 +142,14 @@ export default function OnboardForm ({ editMode = false }) {
               validateFirst>
               <Input placeholder='${USERNAME}@byod.company.com' />
             </Form.Item>
-          </Col>
-        </Row >
+          </GridCol>
+        </GridRow>
       </Section>
-      <Row>
-        <Col span={10}>
-          <Button type='link' onClick={() => setShowMoreSettings(!showMoreSettings)}>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
+          <Button type='link'
+            style={{ maxWidth: 120 }}
+            onClick={() => setShowMoreSettings(!showMoreSettings)}>
             {showMoreSettings
               ? $t({ defaultMessage: 'Show less settings' })
               : $t({ defaultMessage: 'Show more settings' })}
@@ -168,15 +160,15 @@ export default function OnboardForm ({ editMode = false }) {
               activeKey={activeTabKey}
             >
               {moreSettingsTabsInfo.map(({ key, display }) =>
-                (<Tabs.TabPane key={key} tab={<TabLable>{display}</TabLable>} />))}
+                (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
             </Tabs>
             <TabItem>
               {moreSettingsTabsInfo.find(info => (info.key === activeTabKey))?.content}
             </TabItem>
           </>
           }
-        </Col >
-      </Row>
+        </GridCol>
+      </GridRow>
     </>
   )
 }

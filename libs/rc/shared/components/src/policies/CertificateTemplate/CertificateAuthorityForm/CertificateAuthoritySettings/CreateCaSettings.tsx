@@ -1,8 +1,8 @@
-import { Row, Col, Form, Input, Select } from 'antd'
-import moment                            from 'moment'
-import { useIntl }                       from 'react-intl'
+import { Form, Input, Select } from 'antd'
+import moment                  from 'moment'
+import { useIntl }             from 'react-intl'
 
-import { DatePicker }                                                              from '@acx-ui/components'
+import { DatePicker, GridCol, GridRow }                                            from '@acx-ui/components'
 import { useGetCertificateAuthoritiesQuery }                                       from '@acx-ui/rc/services'
 import { trailingNorLeadingSpaces, CertificateCategoryType, checkObjectNotExists } from '@acx-ui/rc/utils'
 
@@ -55,8 +55,8 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
       {
         !rootCaMode &&
         <Section>
-          <Row>
-            <Col span={10}>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item
                 name={'caId'}
                 label={$t({ defaultMessage: 'Certificate Authority' })}
@@ -70,15 +70,15 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
                   options={caNameList?.filter((item) => item.privateKeyBase64)}
                 />
               </Form.Item>
-            </Col>
-          </Row>
+            </GridCol>
+          </GridRow>
         </Section>
       }
       <Section>
         <SettingsSectionTitle>{$t({ defaultMessage: 'CA Information' })}</SettingsSectionTitle>
         <Description>{$t(caFormDescription.INFORMATION)}</Description>
-        <Row>
-          <Col span={10}>
+        <GridRow>
+          <GridCol col={{ span: 10 }} >
             <Form.Item
               name='name'
               label={$t({ defaultMessage: 'Certificate Authority Name' })}
@@ -111,14 +111,14 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
               ]}
               children={<Input />}
             />
-          </Col>
-        </Row>
+          </GridCol>
+        </GridRow>
       </Section>
       <Section>
         <SettingsSectionTitle>{$t({ defaultMessage: 'Validity Period' })}</SettingsSectionTitle>
         <Description>{$t(caFormDescription.VALIDITY_PERIOD)}</Description>
-        <Row>
-          <Col span={10}>
+        <GridRow>
+          <GridCol col={{ span: 10 }} >
             <Form.Item label={$t({ defaultMessage: 'Start Date' })}
               name={'startDateMoment'}
               rules={[{ required: true }]}>
@@ -133,27 +133,27 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
                 disabledDate={current => current && current < moment().endOf('day')}
               />
             </Form.Item>
-          </Col>
-        </Row>
-      </Section>
+          </GridCol>
+        </GridRow>
+      </Section >
       <Section>
         <SettingsSectionTitle>{$t({ defaultMessage: 'CA Strength' })}</SettingsSectionTitle>
         <Description>{$t(caFormDescription.STRENGTH)}</Description>
-        <Row>
-          <Col span={10}>
+        <GridRow>
+          <GridCol col={{ span: 10 }} >
             <CertificateStrengthSettings />
-          </Col>
-        </Row>
-      </Section>
+          </GridCol>
+        </GridRow>
+      </Section >
       <Section>
         <SettingsSectionTitle>{$t({ defaultMessage: 'CA Properties' })}</SettingsSectionTitle>
         <Description>{$t(caFormDescription.PROPERTIES)}</Description>
-        <Row>
-          <Col span={10}>
+        <GridRow>
+          <GridCol col={{ span: 10 }} >
             <OrganizationInfoSettings type={CertificateCategoryType.CERTIFICATE_AUTHORITY} />
-          </Col>
-        </Row>
-      </Section>
+          </GridCol>
+        </GridRow>
+      </Section >
     </>
   )
 }

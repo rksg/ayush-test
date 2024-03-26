@@ -4,11 +4,12 @@ import {
   FileTextOutlined,
   WarningOutlined
 } from '@ant-design/icons'
-import { Button, Col, Form, Input, Row, Space, Typography, Upload } from 'antd'
-import { useIntl }                                                  from 'react-intl'
+import { Button, Form, Input, Space, Typography, Upload } from 'antd'
+import { useIntl }                                        from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
-import { KeyType }   from '@acx-ui/rc/utils'
+import { GridRow, GridCol } from '@acx-ui/components'
+import { formatter }        from '@acx-ui/formatter'
+import { KeyType }          from '@acx-ui/rc/utils'
 
 import { caFormDescription }           from '../../contentsMap'
 import { Description, Section, Title } from '../../styledComponents'
@@ -32,7 +33,7 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
     try {
       let errorMsg = ''
       const extension: string = file?.name.split('.').pop() as string
-      if (!acceptableFileExtensions?.includes(extension)) {
+      if (!acceptableFileExtensions.includes(extension)) {
         errorMsg = $t({ defaultMessage: 'Invalid file type.' })
       }
       if (file.size > maxSize) {
@@ -60,8 +61,8 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
       {showPublicKeyUpload && <>
         <Title>{$t({ defaultMessage: 'Upload CA' })}</Title>
         <Section>
-          <Row>
-            <Col span={16}>
+          <GridRow>
+            <GridCol col={{ span: 16 }}>
               <Form.Item
                 name={'publicKey'}
                 label={$t({ defaultMessage: 'Public Key' })}
@@ -74,7 +75,7 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
                 valuePropName='file'>
                 <Upload.Dragger
                   data-testid='public-key-upload'
-                  accept={acceptableFileExtensions?.map(type => `.${String(type)}`).join(', ')}
+                  accept={acceptableFileExtensions.map(type => `.${String(type)}`).join(', ')}
                   maxCount={1}
                   showUploadList={false}
                   beforeUpload={(file) => beforeUpload(file, KeyType.PUBLIC)} >
@@ -90,12 +91,12 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
                   </Space>
                 </Upload.Dragger>
               </Form.Item>
-            </Col>
-          </Row>
+            </GridCol>
+          </GridRow>
         </Section>
       </>}
-      <Row style={{ marginBottom: '30px' }}>
-        <Col span={16}>
+      <GridRow style={{ marginBottom: '30px' }}>
+        <GridCol col={{ span: 16 }}>
           <Form.Item
             name={'privateKey'}
             label={$t({ defaultMessage: 'Private Key' })}
@@ -107,7 +108,7 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
             valuePropName='file'>
             <Upload.Dragger
               data-testid='private-key-upload'
-              accept={acceptableFileExtensions?.map(type => `.${String(type)}`).join(', ')}
+              accept={acceptableFileExtensions.map(type => `.${String(type)}`).join(', ')}
               maxCount={1}
               showUploadList={false}
               beforeUpload={(file) => beforeUpload(file, KeyType.PRIVATE)} >
@@ -123,24 +124,24 @@ export function UploadCaSettings (props: UploadCaSettingsProps) {
               </Space>
             </Upload.Dragger>
           </Form.Item>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={16}>
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 16 }}>
           <Description>{$t(caFormDescription.PRIVATE_KEY)}</Description>
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
       <Section>
-        <Row>
-          <Col span={16}>
+        <GridRow>
+          <GridCol col={{ span: 16 }}>
             <Form.Item
               name='password'
               label={$t({ defaultMessage: 'Private Key Password' })}>
               <Input.Password maxLength={255}
               />
             </Form.Item>
-          </Col>
-        </Row>
+          </GridCol>
+        </GridRow>
       </Section>
     </>
   )

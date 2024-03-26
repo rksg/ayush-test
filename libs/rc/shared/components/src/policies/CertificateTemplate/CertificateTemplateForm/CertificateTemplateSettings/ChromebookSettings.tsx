@@ -4,9 +4,10 @@ import {
   FileTextOutlined,
   WarningOutlined
 } from '@ant-design/icons'
-import { Col, Form, Select, Input, Upload, Space, Typography, Button, Row, Switch } from 'antd'
-import { useIntl }                                                                  from 'react-intl'
+import { Form, Select, Input, Upload, Space, Typography, Button, Switch } from 'antd'
+import { useIntl }                                                        from 'react-intl'
 
+import { GridRow, GridCol }                                    from '@acx-ui/components'
 import { formatter }                                           from '@acx-ui/formatter'
 import { ChromebookCertRemovalType, ChromebookEnrollmentType } from '@acx-ui/rc/utils'
 
@@ -96,26 +97,18 @@ export default function ChromebookSettings () {
 
   return (
     <>
-      <Row>
-        <Col span={24}>
-          <SettingsSectionTitle>
-            {$t({ defaultMessage: 'Chromebook Enrollment' })}
-          </SettingsSectionTitle>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <Form.Item name={['chromebook', 'enabled']}
-            label={$t({ defaultMessage: 'Enable Chromebook Enrollment' })}
-            valuePropName='checked'>
-            <Switch />
-          </Form.Item>
-        </Col>
-      </Row>
+      <SettingsSectionTitle>
+        {$t({ defaultMessage: 'Chromebook Enrollment' })}
+      </SettingsSectionTitle>
+      <Form.Item name={['chromebook', 'enabled']}
+        label={$t({ defaultMessage: 'Enable Chromebook Enrollment' })}
+        valuePropName='checked'>
+        <Switch />
+      </Form.Item>
       {chromebookEnabled &&
         <>
-          <Row>
-            <Col span={10}>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item name={['chromebook', 'enrollmentType']}
                 label={$t({ defaultMessage: 'Enrollment Type' })}
               >
@@ -125,10 +118,10 @@ export default function ChromebookSettings () {
                       ({ value, label: $t(enrollmentTypeLabel[value]) }))}
                   placeholder={$t({ defaultMessage: 'Select Enrollment Type...' })} />
               </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={10}>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item name={['chromebook', 'certRemovalType']}
                 label={$t({ defaultMessage: 'Existing Certificates' })}
               >
@@ -138,19 +131,19 @@ export default function ChromebookSettings () {
                       ({ value, label: $t(existingCertLabel[value]) }))}
                   placeholder={$t({ defaultMessage: 'Select Existing Certificates...' })} />
               </Form.Item >
-            </Col>
-          </Row>
-          <Row>
-            <Col span={10}>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item name={['chromebook', 'notifyAppId']}
                 label={$t({ defaultMessage: 'App ID To Notify' })}
               >
                 <Input></Input>
               </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={10}>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item
                 name={['chromebook', 'apiKey']}
                 label={$t({ defaultMessage: 'Google API Key' })}
@@ -158,10 +151,10 @@ export default function ChromebookSettings () {
               >
                 <Input></Input>
               </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={10}>
+            </GridCol>
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
               <Form.Item
                 name={['chromebook', 'accountCredentialFile']}
                 label={$t({ defaultMessage: 'Service Account JSON Private Key' })}
@@ -187,8 +180,8 @@ export default function ChromebookSettings () {
                   </Space>
                 </Upload.Dragger>
               </Form.Item>
-            </Col>
-          </Row>
+            </GridCol>
+          </GridRow>
         </>
       }
     </>

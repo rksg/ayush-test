@@ -10,7 +10,7 @@ import { noDataDisplay }                                                        
 
 import { getDisplayedAlgorithm }                                                                from '../certificateTemplateUtils'
 import { caTypeShortLabel, certificateExpirationLabel, enrollmentTypeLabel, existingCertLabel } from '../contentsMap'
-import { TabItem, TabLable, Title }                                                             from '../styledComponents'
+import { TabItem, TabLabel, Title }                                                             from '../styledComponents'
 
 
 export default function Summary () {
@@ -77,7 +77,7 @@ export default function Summary () {
           activeKey={activeTabKey}
         >
           {moreSettingsTabsInfo.map(({ key, display }) => (<Tabs.TabPane key={key}
-            tab={<TabLable>{display}</TabLable>}
+            tab={<TabLabel>{display}</TabLabel>}
           />))}
         </Tabs>
         <TabItem>

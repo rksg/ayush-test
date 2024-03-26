@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
-import { Row, Col, Form, Select } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Form, Select } from 'antd'
+import { useIntl }      from 'react-intl'
 
-import { SelectionControl }              from '@acx-ui/components'
-import { useAdaptivePolicySetListQuery } from '@acx-ui/rc/services'
+import { GridCol, GridRow, SelectionControl } from '@acx-ui/components'
+import { useAdaptivePolicySetListQuery }      from '@acx-ui/rc/services'
 
 import { moreSettingsDescription }                           from '../contentsMap'
 import { Description, Section, SettingsSectionTitle, Title } from '../styledComponents'
@@ -31,14 +31,12 @@ export default function MoreSettingsForm () {
     <>
       <Title>{$t({ defaultMessage: 'More Settings' })}</Title>
       <Section>
-        <Row>
-          <Col span={24}>
-            <SettingsSectionTitle>
-              {$t({ defaultMessage: 'Adaptive Policy Set' })}
-            </SettingsSectionTitle>
-            <Description>{$t(moreSettingsDescription.POLICY_SET)}</Description>
-          </Col>
-          <Col span={10}>
+        <GridRow>
+          <SettingsSectionTitle>
+            {$t({ defaultMessage: 'Adaptive Policy Set' })}
+          </SettingsSectionTitle>
+          <Description>{$t(moreSettingsDescription.POLICY_SET)}</Description>
+          <GridCol col={{ span: 10 }}>
             <Form.Item label={$t({ defaultMessage: 'Adaptive Policy Set' })}>
               <Form.Item name='policySetId'
                 rules={[
@@ -65,8 +63,8 @@ export default function MoreSettingsForm () {
                 />
               </Form.Item>
             }
-          </Col>
-        </Row>
+          </GridCol>
+        </GridRow>
       </Section>
       <Section>
         <ChromebookSettings />
