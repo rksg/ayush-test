@@ -705,6 +705,10 @@ Table.SearchInput = UI.SearchInput
 
 export { Table }
 
+export function AsyncColumnLoader () {
+  return <UI.AsyncColumnLoader />
+}
+
 type ScrollXReducerColumn = {
   key: string
   width: number
