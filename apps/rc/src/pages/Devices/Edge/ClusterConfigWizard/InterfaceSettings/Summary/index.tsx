@@ -18,6 +18,7 @@ export const Summary = () => {
   const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
   const timeout = form.getFieldValue('timeout')
   const valideVipConfig = vipConfig?.filter(item => item.vip && item.interfaces)
+  console.log(portSettings)
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
@@ -40,7 +41,7 @@ export const Summary = () => {
       { $t({ defaultMessage: 'Cluster Virtual IP' }) }
     </Subtitle>
     {
-      valideVipConfig.length > 0 &&
+      (valideVipConfig?.length ?? 0) > 0 &&
       <>
         <Form.Item>
           {

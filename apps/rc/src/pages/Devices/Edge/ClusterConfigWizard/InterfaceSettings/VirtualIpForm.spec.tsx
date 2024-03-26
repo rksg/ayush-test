@@ -28,7 +28,9 @@ describe('InterfaceSettings - VirtualIpForm', () => {
 
     render(
       <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+        isLoading: false,
+        isFetching: false
       }}>
         <StepsForm>
           <StepsForm.StepForm>
