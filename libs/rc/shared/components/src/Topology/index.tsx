@@ -2,12 +2,13 @@
 import { useRef, useEffect, useState } from 'react'
 
 import { AutoComplete, Button, Col, Empty, Input, Row, Typography } from 'antd'
+import { DefaultOptionType }                                        from 'antd/lib/select'
 import * as d3                                                      from 'd3'
-import { debounce }                                                 from 'lodash'
+import { debounce, uniq }                                           from 'lodash'
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader } from '@acx-ui/components'
+import { Loader, Select } from '@acx-ui/components'
 import {
   CloudSolid,
   MagnifyingGlassMinusOutlined,
@@ -22,13 +23,14 @@ import {
   SearchOutlined,
   ArrowsOut
 } from '@acx-ui/icons'
-import { useGetTopologyQuery } from '@acx-ui/rc/services'
+import { useGetTopologyQuery, useLazyGetSwitchVlanUnionByVenueQuery } from '@acx-ui/rc/services'
 import {
   TopologyDeviceStatus,
   DeviceTypes,
   Link,
   Node,
-  ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+  ShowTopologyFloorplanOn
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
 
@@ -54,7 +56,29 @@ interface NodeData {
   children: NodeData[];
 }
 
-export function parseTopologyData (topologyData: any): any {
+type VlanPortData = {
+  [key: string]: string[];
+}
+
+type SetVlanDataFunction = React.Dispatch<React.SetStateAction<VlanPortData>>
+
+function updateVlanPortData (portNumber: any,
+  portData: string, setVlanPortData: SetVlanDataFunction){
+  if(Array.isArray(portNumber)){
+    portNumber.forEach(port =>
+    {
+      if(port !== '' && port !== undefined && port) {
+        setVlanPortData(prevData => ({
+          ...prevData,
+          [port]: uniq([...prevData[port] || [], portData])
+        }))
+      }
+    }
+    )
+  }
+}
+
+export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDataFunction): any {
   const nodes = topologyData.nodes
   const edges = topologyData.edges
 
@@ -80,6 +104,15 @@ export function parseTopologyData (topologyData: any): any {
         fromNode.children.push(toNode)
       }
     }
+
+    const portData = [
+      edge.connectedPortTaggedVlan !== '' && edge.connectedPortTaggedVlan?.split(' '),
+      edge.connectedPortUntaggedVlan !== '' && edge.connectedPortUntaggedVlan?.split(' '),
+      edge.correspondingPortTaggedVlan !== '' && edge.correspondingPortTaggedVlan?.split(' '),
+      edge.correspondingPortUntaggedVlan !== '' && edge.correspondingPortUntaggedVlan?.split(' ')
+    ]
+
+    updateVlanPortData(portData, `link_${edge.from}_${edge.to}`, setVlanPortData)
   })
 
   const idsToRemove: string[] = []
@@ -125,6 +158,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const { data: topologyData,
     isLoading: isTopologyLoading } = useGetTopologyQuery({ params: { ...params,
     venueId: _venueId } })
+  const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
 
   const [treeData, setTreeData] = useState<any>()
   const [showLinkTooltip, setShowLinkTooltip] = useState<boolean>(false)
@@ -134,14 +168,19 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const [tooltipSourceNode, setTooltipSourceNode] = useState<Node>()
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
-  const [scale, setScale] = useState<number>(1)
+  const [scale, setScale] = useState<number>(1.5)
   const [translate, setTranslate] = useState<number[]>([0,0])
-  let newScale = useRef(1)
+  let newScale = useRef(1.5)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
+  const [onDrag, setOnDrag] = useState<boolean>(false)
+  const [vlansOption, setVlansOption] = useState([] as DefaultOptionType[])
+  const [selectedVlan, setSelectedVlan] = useState<string>()
+  const [searchValue, setSearchValue] = useState('')
+  const [vlanPortData, setVlanPortData] = useState<VlanPortData>({})
 
   useEffect(() => {
     if(topologyData) {
-      const schema1Equivalent = parseTopologyData(topologyData)
+      const schema1Equivalent = parseTopologyData(topologyData, setVlanPortData)
       const nodes: Node[] = topologyData?.nodes
 
       setTreeData(
@@ -173,8 +212,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       d3.select('#enter-fullscreen').on('click', function () {
         setModalVisible(true)
       })
+
       const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string).toString(),
+        value: (node.name as string || node.id as string).toString(),
         key: (node.id as string).toString(),
         label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
           {node.name as string}</Typography.Title>
@@ -192,6 +232,17 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         const translateY = treeContainer.clientHeight/3
         setTranslate([translateX, translateY])
       }
+
+      async function getVlanList (){
+        const vlanList = await getSwitchesVlan({ params }).unwrap()
+        const vlansOptionValues: DefaultOptionType[] =
+          [{ label: $t({ defaultMessage: 'Select...' }), value: '' }]
+        vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
+        setVlansOption(vlansOptionValues)
+      }
+      if(showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW){
+        getVlanList()
+      }
     }
   }, [topologyData])
 
@@ -199,7 +250,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     setShowLinkTooltip(false)
   }
 
-  const debouncedHandleMouseClick = debounce(function (node){
+  const debouncedHandleMouseClick = debounce(function (){
+    /** TODO:
     const treeContainer = document.querySelector('.d3-tree-container')
 
     if(treeContainer?.clientWidth && treeContainer?.clientHeight ){
@@ -207,14 +259,27 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       const translateY = treeContainer.clientHeight/2 - node.x
       setTranslate([translateX, translateY])
       setScale(3)
-    }
+    } **/
   })
 
   const debouncedHandleMouseEnter = debounce(function (node, d){
+    if(onDrag){
+      return
+    }
+
+    closeLinkTooltipHandler()
     setShowDeviceTooltip(true)
     setTooltipNode(node.data as typeof node)
-    setTooltipPosition({ x: d?.nativeEvent.layerX + 30
-      , y: d?.nativeEvent.layerY })
+
+    const treeContainer = document.querySelector('.TopologyGraphContainer')
+    let x = d?.nativeEvent.layerX + 30
+    let y = d?.nativeEvent.layerY
+    const cardHeight = node.data.type.toLowerCase().indexOf('switch') > -1 ? 275 : 547
+    if(treeContainer?.clientWidth && treeContainer?.clientHeight){
+      y = y + cardHeight > treeContainer?.clientHeight ?
+        treeContainer?.clientHeight - cardHeight : y
+    }
+    setTooltipPosition({ x, y })
   }, 100)
 
 
@@ -246,6 +311,9 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   }
 
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
+    if(onDrag){
+      return
+    }
     if(topologyData?.edges){
       if (edge.source.data.id === 'Cloud')
         return
@@ -257,19 +325,41 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         selectedEdge = rearrangedData(topologyData.edges.filter(
           item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
       }
+
+      closeTooltipHandler()
       setTooltipSourceNode(sourceNode)
       setTooltipTargetNode(targetNode)
       setShowLinkTooltip(true)
       setShowDeviceTooltip(false) // close device detail tooltip if already opened.
       setTooltipEdge(selectedEdge)
-      setTooltipPosition({ x: d?.nativeEvent.layerX + 30
-        , y: d?.nativeEvent.layerY })
+
+      const treeContainer = document.querySelector('.TopologyGraphContainer')
+      let x = d?.nativeEvent.layerX + 30
+      let y = d?.nativeEvent.layerY
+      const cardHeight = sourceNode?.type?.includes('Switch') &&
+        targetNode?.type?.includes('Switch') ? 415 : 200
+      if(treeContainer?.clientWidth && treeContainer?.clientHeight){
+        y = y + cardHeight > treeContainer?.clientHeight ?
+          treeContainer?.clientHeight - cardHeight : y
+      }
+      setTooltipPosition({ x, y })
     }
   }, 100)
 
   function closeTooltipHandler () {
     setShowDeviceTooltip(false)
     debouncedHandleMouseEnter.cancel()
+  }
+
+  const handleVlanChange = async (value: string) => {
+    setSelectedVlan(value)
+    setSearchValue('')
+    document.querySelectorAll('.focusNode').forEach(
+      item => item.classList.remove('focusNode'))
+    if(Array.isArray(vlanPortData[value])){
+      vlanPortData[value].forEach(
+        item => document.getElementById(item)?.classList.add('focusNode'))
+    }
   }
 
   return <Loader states={
@@ -287,50 +377,67 @@ export function TopologyGraphComponent (props:{ venueId?: string,
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
             && !!filterNodes?.length
-            && <AutoComplete
-              id='searchNodes'
-              data-testid='searchNodes'
-              options={filterNodes}
-              filterOption={(inputValue, option) =>{
-                return !!((option as OptionType).item.id as string).toLowerCase()
-                  .includes(inputValue.toLowerCase()) ||
+            && <UI.HeaderComps>
+              <AutoComplete
+                id='searchNodes'
+                data-testid='searchNodes'
+                options={filterNodes}
+                value={searchValue}
+                searchValue={searchValue}
+                filterOption={(inputValue, option) =>{
+                  return !!((option as OptionType).item.id as string).toLowerCase()
+                    .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.name as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.mac as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.ipAddress as string).toLowerCase()
                     .includes(inputValue.toLowerCase())
-              }
-              }
-              style={{ width: 280 }}
-              onSelect={(value: any, option: OptionType) => {
-                document.querySelectorAll('.focusNode').forEach(
-                  item => item.classList.remove('focusNode'))
-                if(option.item.id){
-                  document.getElementById(option.item.id)?.classList.add('focusNode')
                 }
-              }}
-              allowClear={true}
-              onSearch={
-                (inputValue) => {
-                  if (inputValue === '') {
-                    return false
+                }
+                style={{ width: 280 }}
+                onSelect={(value: any, option: OptionType) => {
+                  document.querySelectorAll('.focusNode').forEach(
+                    item => item.classList.remove('focusNode'))
+                  if(option.item.id){
+                    document.getElementById(option.item.id)?.classList.add('focusNode')
                   }
-                  return
+                  setSelectedVlan('')
+                  setSearchValue(value)
+                }}
+                allowClear={true}
+                onSearch={
+                  (inputValue) => {
+                    setSelectedVlan('')
+                    setSearchValue(inputValue)
+                    if (inputValue === '') {
+                      return false
+                    }
+                    return
+                  }
                 }
-              }
-              onClear={() => {
-                document.querySelectorAll('.focusNode').forEach(
-                  item => item.classList.remove('focusNode'))
-              }}
-            >
-              <Input
-                prefix={<SearchOutlined />}
-                placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}/>
-            </AutoComplete>
+                onClear={() => {
+                  document.querySelectorAll('.focusNode').forEach(
+                    item => item.classList.remove('focusNode'))
+                }}
+              >
+                <Input
+                  prefix={<SearchOutlined />}
+                  placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}/>
+              </AutoComplete>
+              <Select
+                style={{ width: 100 }}
+                placeholder={$t({ defaultMessage: 'VLANs' })}
+                options={vlansOption}
+                defaultValue={selectedVlan}
+                value={selectedVlan}
+                onChange={async (value) => await handleVlanChange(value)}
+              />
+            </UI.HeaderComps>
           }
           <UI.Topology>
-            <TopologyTreeContext.Provider value={{ scale, translate, setTranslate }}>
+            <TopologyTreeContext.Provider
+              value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
               <TopologyTree
                 ref={graphRef}
                 data={treeData}
