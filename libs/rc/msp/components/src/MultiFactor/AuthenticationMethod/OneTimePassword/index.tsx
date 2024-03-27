@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Form, Input, Radio, Space, Typography } from 'antd'
 import { useIntl }                               from 'react-intl'
+import { useParams }                             from 'react-router-dom'
 import styled                                    from 'styled-components/macro'
 
 import { cssNumber, Drawer } from '@acx-ui/components'
@@ -10,7 +11,7 @@ import {
   phoneRegExp,
   emailRegExp
 } from '@acx-ui/rc/utils'
-import { MFAMethod, useMfaRegisterAdminMutation } from '@acx-ui/user'
+import { MFAMethod, useMfaRegisterAdminMutation, useToggleMFAMutation } from '@acx-ui/user'
 
 import { VerifyCodeModal } from '../VerifyCodeModal'
 
@@ -21,6 +22,7 @@ interface OneTimePasswordProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   userId: string;
+  isMspEc: boolean;
 }
 
 export interface OTPMethodProps {
@@ -31,12 +33,14 @@ export interface OTPMethodProps {
 
 export const OneTimePassword = styled((props: OneTimePasswordProps) => {
   const { $t } = useIntl()
-  const { className, visible, setVisible, userId } = props
+  const { tenantId } = useParams()
+  const { className, visible, setVisible, userId, isMspEc } = props
   const [verifyModalVisible, setVerifyModalVisible] = useState(false)
   const [verifyCodeData, setVerifyCodeData] = useState<OTPMethodProps>({} as OTPMethodProps)
   const [form] = Form.useForm()
 
   const [mfaRegisterAdmin] = useMfaRegisterAdminMutation()
+  const [enableMFA] = useToggleMFAMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -44,6 +48,19 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
   }
 
   const handleSubmit = async () => {
+    if(isMspEc) {
+      try {
+        await enableMFA({
+          params: {
+            tenantId: tenantId,
+            enable: true + ''
+          }
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
+
     const formValues = form.getFieldsValue()
     const { otpSelection, mobilePhoneNumber, email } = formValues
 

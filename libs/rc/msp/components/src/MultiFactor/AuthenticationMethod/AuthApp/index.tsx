@@ -1,12 +1,14 @@
 import { Form, Input, Tooltip, Typography, Row } from 'antd'
 import { useIntl }                               from 'react-intl'
+import { useParams }                             from 'react-router-dom'
 import styled                                    from 'styled-components/macro'
 
-import { Drawer }              from '@acx-ui/components'
+import { Drawer }        from '@acx-ui/components'
 import {
   MFAMethod,
   useMfaRegisterPhoneQuery,
-  useSetupMFAAccountMutation
+  useSetupMFAAccountMutation,
+  useToggleMFAMutation
 } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
@@ -16,21 +18,37 @@ interface AuthAppProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   userId: string
+  isMspEc: boolean
 }
 
 export const AuthApp = styled((props: AuthAppProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, userId } = props
+  const { tenantId } = useParams()
+  const { visible, setVisible, userId, isMspEc } = props
   const [form] = Form.useForm()
   const { data } = useMfaRegisterPhoneQuery({ params: { userId: userId } })
   const [setupMFAAccount] = useSetupMFAAccountMutation()
+  const [enableMFA] = useToggleMFAMutation()
 
   const onClose = () => {
     setVisible(false)
     form.resetFields()
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (isMspEc) {
+      try {
+        await enableMFA({
+          params: {
+            tenantId: tenantId,
+            enable: true + ''
+          }
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
+
     const verificationCode = form.getFieldValue('verificationCode')
 
     const payload = {
