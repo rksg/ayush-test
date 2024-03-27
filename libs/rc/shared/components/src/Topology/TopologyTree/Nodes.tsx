@@ -56,14 +56,14 @@ const Nodes: React.FC<NodeProps> = (props) => {
     }
     delayHandler = setTimeout(() => {
       onHover(node, event)
-    }, 1000)
+    }, 100)
   }
 
   const handleMouseLeave = () => {
-    setTimeout(() => {
+    delayHandler = setTimeout(() => {
       onMouseLeave()
       clearTimeout(delayHandler)
-    }, 1000)
+    }, 100)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

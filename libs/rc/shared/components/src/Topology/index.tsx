@@ -282,7 +282,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     const treeContainer = document.querySelector('.TopologyGraphContainer')
     let x = d?.nativeEvent.layerX + 30
     let y = d?.nativeEvent.layerY
-    const cardHeight = node.data.type.toLowerCase().indexOf('switch') > -1 ? 275 : 547
+    const cardHeight = node.data.type.includes('Switch') ? 275 : 547
     if(treeContainer?.clientWidth && treeContainer?.clientHeight){
       y = y + cardHeight > treeContainer?.clientHeight ?
         treeContainer?.clientHeight - cardHeight : y
@@ -396,10 +396,15 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   document.querySelectorAll('.focusNode').forEach(
                     item => item.classList.remove('focusNode'))
                 }}
+                notFoundContent={
+                  $t({ defaultMessage: 'No results for "{searchValue}"' }, { searchValue })
+                }
               >
                 <Input
                   prefix={<SearchOutlined />}
-                  placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}/>
+                  placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}
+                  title={$t({ defaultMessage: 'Search by device name or MAC address' })}
+                />
               </AutoComplete>
               <Select
                 style={{ width: 100 }}

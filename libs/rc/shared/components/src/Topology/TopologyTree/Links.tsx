@@ -93,14 +93,14 @@ export const Links: React.FC<LinksProps> = (props) => {
   const handleMouseEnter = (link: any , event: any) => {
     delayHandler = setTimeout(() => {
       onClick(link, event)
-    }, 1000)
+    }, 100)
   }
 
   const handleMouseLeave = () => {
-    setTimeout(() => {
+    delayHandler = setTimeout(() => {
       onMouseLeave()
       clearTimeout(delayHandler)
-    }, 1000)
+    }, 100)
   }
 
   return (
