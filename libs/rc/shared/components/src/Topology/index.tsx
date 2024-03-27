@@ -407,7 +407,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 />
               </AutoComplete>
               <Select
-                style={{ width: 100 }}
+                style={{ width: 120 }}
                 placeholder={$t({ defaultMessage: 'VLANs' })}
                 options={vlansOption}
                 defaultValue={selectedVlan}
