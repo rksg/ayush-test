@@ -1,9 +1,25 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory }                      from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                           from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery, useGetEnhancedIdentityProviderListQuery, useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard,
+  StepsFormLegacy,
+  RadioCardCategory
+}              from '@acx-ui/components'
+import {
+  Features,
+  TierFeatures,
+  useIsSplitOn,
+  useIsTierAllowed
+} from '@acx-ui/feature-toggle'
+import {
+  useGetApSnmpViewModelQuery,
+  useGetIdentityProviderListQuery,
+  useGetWifiOperatorListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -44,7 +60,7 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
-  const IdentityProviderTotalCount = useGetEnhancedIdentityProviderListQuery({
+  const IdentityProviderTotalCount = useGetIdentityProviderListQuery({
     params,
     payload: {
       fields: ['id']
