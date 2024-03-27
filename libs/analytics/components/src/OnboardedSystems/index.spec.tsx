@@ -67,6 +67,8 @@ describe('OnboardedSystems', () => {
     await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
+    expect(await screen.findByTestId('toast-content'))
+      .toHaveTextContent('sz3 was deleted')
   })
   it('should handle delete cancel', async () => {
     render(<Provider><OnboardedSystems /></Provider>, { route: {} })

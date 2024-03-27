@@ -60,7 +60,6 @@ export function DpskForm (props: DpskFormProps) {
 
   const idAfterCreatedRef = useRef<string>()
 
-  // eslint-disable-next-line max-len
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
     useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery, !isModalMode()
   )
