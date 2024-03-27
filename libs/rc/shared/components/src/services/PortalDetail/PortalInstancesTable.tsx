@@ -3,18 +3,20 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                      from '@acx-ui/components'
-import { useGetPortalProfileDetailQuery, useNetworkListQuery }  from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                     from '@acx-ui/components'
+import { useGetPortalProfileDetailQuery, useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery }             from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                               from '@acx-ui/react-router-dom'
 
-export default function PortalInstancesTable (){
+export function PortalInstancesTable (){
 
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetPortalProfileDetailQuery({ params })
-  const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+  const { isTemplate } = useConfigTemplate()
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const tableQuery = useTableQuery<Network>({
+    useQuery,
     defaultPayload: {
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
