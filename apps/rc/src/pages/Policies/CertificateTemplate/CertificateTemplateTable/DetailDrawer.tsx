@@ -263,9 +263,9 @@ export default function DetailDrawer ({ open = false, setOpen, data, type }: Det
               setUploadDrawerOpen(false)
             }}
           />}
-        children={<> <Form layout='vertical' form={uploadPrivateKeyForm}>
+        children={<Form layout='vertical' form={uploadPrivateKeyForm}>
           <UploadCaSettings showPublicKeyUpload={false} />
-        </Form></>}
+        </Form>}
       />
     </>
   )

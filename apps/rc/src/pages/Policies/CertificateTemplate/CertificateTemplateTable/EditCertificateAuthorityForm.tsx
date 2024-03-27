@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react'
-
 import { Form, Input } from 'antd'
 
 import { ModalRef }                                                                   from '@acx-ui/components'
@@ -21,8 +19,9 @@ export default function EditCertificateAuthorityForm (props: {
   const [form] = Form.useForm<CertificateAuthority>()
   const [editCA] = useEditCertificateAuthorityMutation()
 
-  useEffect(() => {
+  const onFieldsChange = () => {
     modal.update({
+      okButtonProps: { disabled: form.getFieldsError().some(item => item.errors.length > 0) },
       onOk: async () => {
         await form.validateFields()
         const params = { caId: data.id }
@@ -30,12 +29,6 @@ export default function EditCertificateAuthorityForm (props: {
         const { name, description } = formData
         await editCA({ params, payload: { name, description } })
       }
-    })
-  }, [])
-
-  const onFieldsChange = () => {
-    modal.update({
-      okButtonProps: { disabled: form.getFieldsError().some(item => item.errors.length > 0) }
     })
   }
 
