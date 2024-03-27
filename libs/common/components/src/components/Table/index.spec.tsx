@@ -13,6 +13,7 @@ import {
   dataWithStatus
 } from './stories/FilteredTable'
 import { GroupTable }                           from './stories/GroupTable'
+import { AsyncColumnLoader }                    from './styledComponents'
 import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
 import { Table, TableProps, NestedTableExpandableDefaultConfig } from '.'
@@ -39,6 +40,13 @@ type TestRow = {
   address: string,
   isFirstLevel?: boolean
 }
+
+describe('Async Column Loader Test case', () => {
+  it('should render correctly', () => {
+    render(<AsyncColumnLoader data-testid='async-column-loader-animation'/>)
+    expect(screen.getByTestId('async-column-loader-animation')).toBeInTheDocument()
+  })
+})
 
 describe('Table component', () => {
   afterEach(() => cleanup())
