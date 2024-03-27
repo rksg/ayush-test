@@ -13,6 +13,7 @@ import {
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
+import { REALM_MAX_COUNT }         from '../../constants'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 import EapTable from './EapTable'
@@ -21,6 +22,8 @@ const initNaiRealm: NaiRealmType = {
   name: '',
   encoding: NaiRealmEcodingEnum.RFC4282
 }
+
+const AllowShowAddAnotherLength = REALM_MAX_COUNT - 1
 
 type NaiRealmDrawerProps = {
   visible: boolean
@@ -36,6 +39,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
   const [ eapMethods, setEapMethods ] = useState<EapType[]>()
   const { visible, setVisible, editIndex } = props
   const isEditMode = (editIndex !== -1)
+  const naiRealmsCount = state?.naiRealms?.length ?? 0
 
   const title = isEditMode
     ? $t({ defaultMessage: 'Edit Realm' })
@@ -128,7 +132,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
           }
         })
       } else {
-        const index = state.plmns?.length || 0
+        const index = state.plmns?.length ?? 0
         dispatch({
           type: IdentityProviderActionType.ADD_REALM,
           payload: {
@@ -142,7 +146,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
 
       form.submit()
 
-      if (!addAnotherRuleChecked) {
+      if (!addAnotherRuleChecked || naiRealmsCount >= AllowShowAddAnotherLength) {
         onClose()
       } else {
         resetData()
@@ -164,7 +168,7 @@ const NaiRealmDrawer = (props: NaiRealmDrawerProps) => {
       push={false}
       footer={
         <Drawer.FormFooter
-          showAddAnother={!isEditMode}
+          showAddAnother={!isEditMode && naiRealmsCount < AllowShowAddAnotherLength}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another Realm' }),
             save: isEditMode? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })

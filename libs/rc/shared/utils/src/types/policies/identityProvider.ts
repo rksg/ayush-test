@@ -231,11 +231,11 @@ export const NaiRealmAuthTypeNonEapDisplayMap = {
 }
 
 export const NaiRealmAuthTypeInnerDisplayMap = {
-  [NaiRealmAuthTypeInnerEnum.EAP_TLS]: defineMessage({ defaultMessage: 'EAP_TLS' }),
-  [NaiRealmAuthTypeInnerEnum.EAP_SIM]: defineMessage({ defaultMessage: 'EAP_SIM' }),
-  [NaiRealmAuthTypeInnerEnum.EAP_TTLS]: defineMessage({ defaultMessage: 'EAP_TTLS' }),
-  [NaiRealmAuthTypeInnerEnum.EAP_AKA]: defineMessage({ defaultMessage: 'EAP_AKA' }),
-  [NaiRealmAuthTypeInnerEnum.EAP_AKAs]: defineMessage({ defaultMessage: 'EAP_AKAs' })
+  [NaiRealmAuthTypeInnerEnum.EAP_TLS]: defineMessage({ defaultMessage: 'EAP-TLS' }),
+  [NaiRealmAuthTypeInnerEnum.EAP_SIM]: defineMessage({ defaultMessage: 'EAP-SIM' }),
+  [NaiRealmAuthTypeInnerEnum.EAP_TTLS]: defineMessage({ defaultMessage: 'EAP-TTLS' }),
+  [NaiRealmAuthTypeInnerEnum.EAP_AKA]: defineMessage({ defaultMessage: 'EAP-AKA' }),
+  [NaiRealmAuthTypeInnerEnum.EAP_AKAs]: defineMessage({ defaultMessage: 'EAP-AKAs' })
 }
 
 export const NaiRealmAuthTypeCredentialDisplayMap = {

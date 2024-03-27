@@ -10,6 +10,7 @@ import {
   NaiRealmType
 } from '@acx-ui/rc/utils'
 
+import { REALM_MAX_COUNT }         from '../../constants'
 import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
@@ -61,7 +62,7 @@ const NaiRealmTable = () => {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Realm' }),
-      disabled: drawerVisible,
+      disabled: drawerVisible || tableData?.length === REALM_MAX_COUNT,
       onClick: () => {
         setDrawerVisible(true)
         setEditIndex(-1)
