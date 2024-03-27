@@ -1,6 +1,7 @@
 import { renderHook } from '@acx-ui/test-utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
+import { AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -42,7 +43,7 @@ describe('useGetAAAPolicyInstanceList', () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     renderHook(() => useGetAAAPolicyInstanceList({}))
     expect(mockedUseGetAAAPolicyTemplateListQuery).toHaveBeenCalledWith(
-      { params: {}, payload: {} },
+      { params: {}, payload: { page: 1, pageSize: AAA_LIMIT_NUMBER } },
       { skip: false }
     )
   })
@@ -50,7 +51,7 @@ describe('useGetAAAPolicyInstanceList', () => {
   it('should return AAA Policy List result when isTemplate is false', () => {
     renderHook(() => useGetAAAPolicyInstanceList({}))
     expect(mockedUseGetAAAPolicyTemplateListQuery).toHaveBeenCalledWith(
-      { params: {}, payload: {} },
+      { params: {}, payload: { page: 1, pageSize: AAA_LIMIT_NUMBER } },
       { skip: true }
     )
   })
