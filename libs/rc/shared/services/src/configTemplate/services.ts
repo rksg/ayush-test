@@ -3,7 +3,7 @@ import { Params } from 'react-router-dom'
 import {
   CommonResult, DHCPSaveData, DpskMutationResult, DpskSaveData,
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
-  onSocketActivityChanged
+  onSocketActivityChanged, WifiCallingFormContextType, WifiCallingSetting
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -128,6 +128,80 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           })
         })
       }
+    }),
+    createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling, true),
+      invalidatesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ]
+    }),
+    getWifiCallingServiceTemplate: build.query<WifiCallingFormContextType, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCalling, true),
+      providesTags: [
+        { type: 'ConfigTemplate', id: 'DETAIL' }, { type: 'WifiCallingTemplate', id: 'DETAIL' }
+      ]
+    }),
+    getWifiCallingServiceTemplateList: build.query<WifiCallingSetting[], RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCallingList),
+      providesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddWifiCallingServiceProfile',
+            'UpdateWifiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfiles'
+          ], () => {
+            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
+              { type: 'ConfigTemplate', id: 'LIST' },
+              { type: 'WifiCallingTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList, true),
+      providesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddWifiCallingServiceProfile',
+            'UpdateWifiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfile',
+            'DeleteWifiCallingServiceProfiles'
+          ], () => {
+            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
+              { type: 'ConfigTemplate', id: 'LIST' },
+              { type: 'WifiCallingTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    updateWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.updateWifiCalling, true),
+      invalidatesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ]
+    }),
+    deleteWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteWifiCalling),
+      invalidatesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ]
+    }),
+    deleteWifiCallingServicesTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteWifiCallingList),
+      invalidatesTags: [
+        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
+      ]
     })
   })
 })
@@ -143,7 +217,14 @@ export const {
   useCreateOrUpdateDhcpTemplateMutation,
   useDeleteDhcpTemplateMutation,
   useGetDhcpTemplateListQuery,
-  useLazyGetDhcpTemplateListQuery
+  useLazyGetDhcpTemplateListQuery,
+  useCreateWifiCallingServiceTemplateMutation,
+  useGetWifiCallingServiceTemplateQuery,
+  useGetWifiCallingServiceTemplateListQuery,
+  useGetEnhancedWifiCallingServiceTemplateListQuery,
+  useUpdateWifiCallingServiceTemplateMutation,
+  useDeleteWifiCallingServiceTemplateMutation,
+  useDeleteWifiCallingServicesTemplateMutation
 } = servicesConfigTemplateApi
 
 

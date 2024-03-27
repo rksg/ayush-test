@@ -50,5 +50,47 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
     newApi: true
+  },
+  getWifiCalling: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
+  },
+  getWifiCallingList: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
+  },
+  getEnhancedWifiCallingList: {
+    method: 'post',
+    url: '/templates/enhancedWifiCallingProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedWifiCallingProfiles/query',
+    newApi: true
+  },
+  addWifiCalling: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
+  },
+  updateWifiCalling: {
+    method: 'put',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
+  },
+  deleteWifiCalling: {
+    method: 'delete',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
+  },
+  deleteWifiCallingList: {
+    method: 'delete',
+    url: '/templates/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
   }
 }

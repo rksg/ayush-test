@@ -7,7 +7,8 @@ import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/compon
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
-  useGetEnhancedWifiCallingServiceListQuery,
+  useDeleteWifiCallingServicesTemplateMutation,
+  useGetEnhancedWifiCallingServiceListQuery, useGetEnhancedWifiCallingServiceTemplateListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,7 +22,7 @@ import {
   AclOptionType,
   WifiCallingSetting,
   QosPriorityEnum,
-  wifiCallingQosPriorityLabelMapping
+  wifiCallingQosPriorityLabelMapping, useConfigTemplateMutationFnSwitcher, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
@@ -42,15 +43,20 @@ export default function WifiCallingTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
+  const [ deleteFn ] = useConfigTemplateMutationFnSwitcher(
+    useDeleteWifiCallingServicesMutation,
+    useDeleteWifiCallingServicesTemplateMutation
+  )
   const WIFICALLING_LIMIT_NUMBER = 5
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
   const tableQuery = useTableQuery({
-    useQuery: useGetEnhancedWifiCallingServiceListQuery,
+    // eslint-disable-next-line max-len
+    useQuery: isTemplate ? useGetEnhancedWifiCallingServiceTemplateListQuery : useGetEnhancedWifiCallingServiceListQuery,
     defaultPayload
   })
 

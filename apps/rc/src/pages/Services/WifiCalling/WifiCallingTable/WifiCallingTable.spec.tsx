@@ -7,6 +7,7 @@ import {
   getServiceDetailsLink,
   getServiceRoutePath,
   ServiceOperation,
+  ServicesConfigTemplateUrlsInfo,
   ServiceType,
   WifiCallingUrls
 } from '@acx-ui/rc/utils'
@@ -98,6 +99,10 @@ describe('WifiCallingTable', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
+        ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
@@ -138,6 +143,13 @@ describe('WifiCallingTable', () => {
     mockServer.use(
       rest.delete(
         WifiCallingUrls.deleteWifiCallingList.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      ),
+      rest.delete(
+        ServicesConfigTemplateUrlsInfo.deleteWifiCallingList.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
