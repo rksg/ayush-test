@@ -211,7 +211,7 @@ export const SettingsForm = () => {
                 {$t({ defaultMessage: 'Tunnel guest traffic to another cluster (DMZ)' })}
               </UI.FieldText>
             </Col>
-            <Col span={3}>
+            <UI.FlexEndCol span={3}>
               <Form.Item
                 name='isGuestTunnelEnabled'
                 valuePropName='checked'
@@ -219,7 +219,7 @@ export const SettingsForm = () => {
               >
                 <Switch aria-label='dmzEnabled' />
               </Form.Item>
-            </Col>
+            </UI.FlexEndCol>
           </Row>
 
           <Row>

@@ -80,6 +80,10 @@ export interface EdgeSdLanViewDataP2 {
   edgeAlarmSummary?: EdgeAlarmSummary
   vlanNum?: number
   vxlanTunnelNum?: number
+  guestVlanNum?: number
+  guestVxlanTunnelNum?: number
+  vlans?: string[]
+  guestVlans?: string[]
 }
 
 export interface EdgeSdLanActivateNetworkPayload {

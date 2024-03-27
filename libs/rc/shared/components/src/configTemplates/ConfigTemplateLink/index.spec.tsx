@@ -121,6 +121,14 @@ describe('ConfigTemplateLink', () => {
     )
     // eslint-disable-next-line max-len
     expect(screen.getByText(getConfigTemplatePath('networks/wireless/network_id/network-details/venues'))).toBeInTheDocument()
+
+    // Specific activeTab : venues
+    rerender(
+      // eslint-disable-next-line max-len
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, 'network_id', 'network_name', 'tests')
+    )
+    // eslint-disable-next-line max-len
+    expect(screen.getByText(getConfigTemplatePath('networks/wireless/network_id/network-details/tests'))).toBeInTheDocument()
   })
 
   it('should render the correct service link with the config template flag', () => {
