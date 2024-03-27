@@ -12,8 +12,9 @@ import {
   useVenuesListQuery,
   useApListQuery,
   useNetworkListQuery,
-  useGetUEDetailAndDisconnectMutation,
-  useRevokeClientMutation
+  useRevokeClientMutation,
+  useDisconnectClientMutation,
+  useLazyApListQuery
 } from '@acx-ui/rc/services'
 import {
   ClientList,
@@ -84,7 +85,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni', 'apMac']
 }
 
 export const networkDisplayTransformer = (intl: ReturnType<typeof useIntl>, networkType?: string) => {
@@ -132,8 +133,9 @@ export const ConnectedClientsTable = (props: {
       }
     }
   })
-  const [ sendCombineRequest ] = useGetUEDetailAndDisconnectMutation()
   const [ sendRevoke ] = useRevokeClientMutation()
+  const [ sendDisconnect ] = useDisconnectClientMutation()
+  const [ getApList] = useLazyApListQuery()
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
       params.apId ? { serialNumber: [params.apId] } :
@@ -610,13 +612,18 @@ export const ConnectedClientsTable = (props: {
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      onClick: (selectedRows, clearRowSelections) => {
+      onClick: async (selectedRows, clearRowSelections) => {
+        const selectedVenues = selectedRows.map((row) => row.venueId)
+        const allAps = (await getApList({ params, payload: {
+          fields: ['serialNumber', 'apMac'],
+          filters: { venueId: selectedVenues }
+        } })).data
         selectedRows.forEach((row) => {
-          sendCombineRequest({
+          sendDisconnect({
             params: {
               venueId: row.venueId,
               clientMacAddress: row.clientMac,
-              serialNumber: row.serialNumber
+              serialNumber: allAps?.data.find((ap) => ap.apMac === row.apMac)?.serialNumber
             }, payload: {
               status: 'DISCONNECTED'
             } })

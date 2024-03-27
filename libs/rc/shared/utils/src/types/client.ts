@@ -1,4 +1,5 @@
 export interface ClientList {
+  apMac: string
   hostname: string
   osType: string
   healthCheckStatus: string
