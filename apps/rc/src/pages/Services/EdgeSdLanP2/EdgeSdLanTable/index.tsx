@@ -81,7 +81,7 @@ const EdgeSdLanTable = () => {
         'guestEdgeClusterName',
         'isGuestTunnelEnabled',
         'networkIds',
-        'networkName',
+        'networkInfos',
         'edgeAlarmSummary'
       ]
     },

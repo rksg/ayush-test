@@ -93,7 +93,7 @@ export function VenueServicesTab () {
         'isGuestTunnelEnabled',
         'networkIds',
         'guestNetworkIds',
-        'networkName'
+        'networkInfos'
       ],
       filters: { venueId: [venueId] }
     } }, {
