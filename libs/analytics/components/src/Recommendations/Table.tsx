@@ -309,7 +309,7 @@ export function RecommendationTable (
         return <Tooltip
           placement='top'
           title={code === 'unknown' ? '' : statusTooltip}
-          dottedUnderline={true}
+          dottedUnderline={code !== 'unknown'}
         >
           <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
