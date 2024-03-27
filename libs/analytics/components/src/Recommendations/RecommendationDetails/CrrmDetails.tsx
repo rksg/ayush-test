@@ -48,6 +48,8 @@ export const CrrmDetails = () => {
       ]}
       extra={[<RecommendationSetting {...{
         id: details.id,
+        status: details.status,
+        trigger: details.trigger,
         isMuted: details.isMuted,
         link,
         type: $t(crrm),

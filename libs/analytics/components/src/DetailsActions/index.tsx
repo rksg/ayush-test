@@ -1,45 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { Divider, Switch } from 'antd'
+import { Divider } from 'antd'
 
 import { Dropdown, Button }      from '@acx-ui/components'
 import { ConfigurationOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
-type Overlay = {
-  title: string
-  content: string | React.ReactNode
+interface OverlayElement {
+  title: string | React.ReactNode | JSX.Element
+  content: string | React.ReactNode | JSX.Element
 }
-interface DetailsActionsProps {
-  toggleCallback: CallableFunction
-  muted: boolean
-  overlay: Overlay
-  extraOverlay?: Overlay
-}
-function DetailsActions (
-  { toggleCallback, muted, overlay, extraOverlay } : DetailsActionsProps) {
-  const [ isMuted, setIsMuted ] = useState(muted)
 
+interface DetailsActionsProps {
+  overlayElements: OverlayElement[]
+}
+
+export function DetailsActions ({ overlayElements } : DetailsActionsProps) {
   return <Dropdown
     overlay={<UI.DetailsActions>
-      {extraOverlay && <>
-        <Dropdown.OverlayTitle>{extraOverlay.title}</Dropdown.OverlayTitle>
-        {extraOverlay.content}
-        <Divider />
-      </>}
-      <Dropdown.OverlayTitle>{overlay.title}</Dropdown.OverlayTitle>
-      <Switch
-        checked={isMuted}
-        onChange={async (checked) => {
-          setIsMuted(checked)
-          toggleCallback(checked)
-        }}
-      />
-      <p>{overlay.content}</p>
+      {overlayElements.map(({ title, content }, index) => (
+        <>
+          <Dropdown.OverlayTitle>{title}</Dropdown.OverlayTitle>
+          {content}
+          {index < overlayElements.length - 1 && <Divider />}
+        </>
+      ))}
     </UI.DetailsActions>}
   >
     {() => <Button icon={<ConfigurationOutlined />} />}
   </Dropdown>
 }
-export default DetailsActions

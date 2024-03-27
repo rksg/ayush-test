@@ -24,7 +24,8 @@ import {
   useRecommendationListQuery,
   RecommendationListItem,
   useMuteRecommendationMutation,
-  useSetPreferenceMutation
+  useSetPreferenceMutation,
+  useDeleteRecommendationMutation
 } from './services'
 import * as UI from './styledComponents'
 
@@ -128,6 +129,32 @@ const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
   'revertscheduleinprogress'
 ]
 
+export const enabledDeleteStatus: Array<RecommendationListItem['statusEnum']> = [
+  'applyfailed', 'revertfailed'
+]
+
+export const getDeleteTooltipText = (recommendation: RecommendationListItem) => {
+  const { $t } = getIntl()
+  const statusMap = {
+    applyfailed: $t({ defaultMessage: 'apply failed' }),
+    revertfailed: $t({ defaultMessage: 'revert failed' })
+  } as Record<RecommendationListItem['statusEnum'], string>
+  const values = {
+    statue: statusMap[recommendation.status as RecommendationListItem['statusEnum']]
+  }
+
+  return get('IS_MLISA_SA')
+    ? $t({ defaultMessage: `
+  Since a previous {statue} has failed, you have the option to delete this,
+  in order for RUCKUS AI to re-run the recommendation algorithm for this zone
+  in the next 24 hours.` }, values)
+    : $t({ defaultMessage: `
+  Since a previous {statue} has failed, you have the option to delete this,
+  in order for RUCKUS AI to re-run the recommendation algorithm for this venue
+  in the next 24 hours.` }, values)
+}
+
+
 export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
   const stateA = itemA.crrmOptimizedState!
   const stateB = itemB.crrmOptimizedState!
@@ -144,6 +171,7 @@ export function RecommendationTable (
 
   const [setPreference] = useSetPreferenceMutation()
   const [muteRecommendation] = useMuteRecommendationMutation()
+  const [deleteRecommendation] = useDeleteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     isMuted: boolean,
@@ -166,6 +194,21 @@ export function RecommendationTable (
       disabled: selectedRecommendation
         && selectedRecommendation.statusEnum
         && disableMuteStatus.includes(selectedRecommendation.statusEnum)
+    },
+    {
+      label: $t(defineMessage({ defaultMessage: 'Delete' })),
+      onClick: async () => {
+        const { id } = selectedRecommendation
+        await deleteRecommendation({ id }).unwrap()
+        setSelectedRowData([])
+      },
+      visible: (selectedRows) =>
+        ( selectedRows[0] &&
+          selectedRows[0].trigger === 'daily' &&
+          enabledDeleteStatus.includes(selectedRows[0].statusEnum)
+        )
+          ? true : false,
+      tooltip: selectedRows => getDeleteTooltipText(selectedRows[0])
     }
   ]
 
