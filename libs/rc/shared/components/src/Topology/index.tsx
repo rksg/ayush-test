@@ -244,7 +244,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       async function getVlanList (){
         const vlanList = await getSwitchesVlan({ params }).unwrap()
         const vlansOptionValues: DefaultOptionType[] =
-          [{ label: $t({ defaultMessage: 'Select...' }), value: '' }]
+          [{ label: $t({ defaultMessage: 'Select VLAN...' }), value: '' }]
         vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
         setVlansOption(vlansOptionValues)
       }
@@ -280,7 +280,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     setTooltipNode(node.data as typeof node)
 
     const treeContainer = document.querySelector('.TopologyGraphContainer')
-    let x = d?.nativeEvent.layerX + 30
+    let x = d?.nativeEvent.layerX
     let y = d?.nativeEvent.layerY
     const cardHeight = node.data.type.includes('Switch') ? 275 : 547
     if(treeContainer?.clientWidth && treeContainer?.clientHeight){
@@ -310,7 +310,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       setTooltipEdge(selectedEdge)
 
       const treeContainer = document.querySelector('.TopologyGraphContainer')
-      let x = d?.nativeEvent.layerX + 30
+      let x = d?.nativeEvent.layerX
       let y = d?.nativeEvent.layerY
       const cardHeight = sourceNode?.type?.includes('Switch') &&
         targetNode?.type?.includes('Switch') ? 415 : 200
@@ -428,6 +428,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 onLinkClick={debouncedHandleMouseEnterLink}
                 onNodeMouseLeave={closeTooltipHandler}
                 onLinkMouseLeave={closeLinkTooltipHandler}
+                closeTooltipHandler={closeTooltipHandler}
+                closeLinkTooltipHandler={closeLinkTooltipHandler}
               />
             </TopologyTreeContext.Provider>
           </UI.Topology>

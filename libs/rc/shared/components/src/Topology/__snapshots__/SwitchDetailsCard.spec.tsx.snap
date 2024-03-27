@@ -224,7 +224,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                         <span
                           class="ant-descriptions-item-content"
                         >
-                          1 days, 0:42:16.00
+                          1 days, 00:42:16
                         </span>
                       </div>
                     </td>
