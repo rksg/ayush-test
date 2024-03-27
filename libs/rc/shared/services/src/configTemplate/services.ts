@@ -73,7 +73,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         const getDpskListReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedDpskList, params)
         const defaultPayload = {
           page: 1,
-          pageSize: 10,
+          pageSize: 10000,
           sortField: 'name',
           sortOrder: 'ASC'
         }

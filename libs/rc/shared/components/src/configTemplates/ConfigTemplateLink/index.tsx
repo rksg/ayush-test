@@ -119,8 +119,8 @@ export function ServiceConfigTemplateLinkSwitcher (props: React.PropsWithChildre
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string) {
-  const activeTab = configTemplateDefaultDetailsTab[type]
+export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string | number, activeTab?: string) {
+  const targetTab = activeTab ?? configTemplateDefaultDetailsTab[type]
   const policyType = configTemplatePolicyTypeMap[type]
   const serviceType = configTemplateServiceTypeMap[type]
 
@@ -128,7 +128,7 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <PolicyConfigTemplateDetailsLink
       type={policyType}
       oper={PolicyOperation.DETAIL}
-      activeTab={activeTab as PolicyDetailsLinkProps['activeTab']}
+      activeTab={targetTab as PolicyDetailsLinkProps['activeTab']}
       policyId={id}
       children={name}
     />
@@ -136,15 +136,15 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ServiceConfigTemplateDetailsLink
       type={serviceType}
       oper={ServiceOperation.DETAIL}
-      activeTab={activeTab as ServiceDetailsLinkProps['activeTab']}
+      activeTab={targetTab as ServiceDetailsLinkProps['activeTab']}
       serviceId={id}
       children={name}
     />
   } else if (type === ConfigTemplateType.NETWORK) {
     // eslint-disable-next-line max-len
-    return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${activeTab}`} children={name} />
+    return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${targetTab}`} children={name} />
   } else if (type === ConfigTemplateType.VENUE) {
-    return <ConfigTemplateLink to={`venues/${id}/venue-details/${activeTab}`} children={name} />
+    return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
   }
 
   return <></>
