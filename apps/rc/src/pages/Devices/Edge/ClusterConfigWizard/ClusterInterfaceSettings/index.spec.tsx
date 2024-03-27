@@ -75,6 +75,7 @@ describe('ClusterInterfaceSettings', () => {
           .find(node => node.serialNumber ===item.serialNumber)?.name,
         serialNumber: item.serialNumber,
         interfaceName: item.portName,
+        ipMode: item.ipMode,
         ip: item.ip,
         subnet: item.subnet
       }))
@@ -102,6 +103,7 @@ describe('ClusterInterfaceSettings', () => {
           .find(node => node.serialNumber ===item.serialNumber)?.name,
         serialNumber: item.serialNumber,
         interfaceName: item.portName,
+        ipMode: item.ipMode,
         ip: item.ip,
         subnet: item.subnet
       }))
