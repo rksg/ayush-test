@@ -8,7 +8,7 @@ export const baseConfigTemplateApi = createApi({
   tagTypes: [
     'ConfigTemplate', 'AAATemplate', 'NetworkTemplate', 'VenueTemplate', 'VenueTemplateRadio',
     'VenueTemplateExternalAntenna', 'DpskTemplate', 'AccessControlTemplate', 'DhcpTemplate',
-    'VenueTemplateSwitchAAA'
+    'PortalTemplate', 'VenueTemplateSwitchAAA'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
