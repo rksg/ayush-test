@@ -29,7 +29,7 @@ import { PROFILE_MAX_COUNT } from '../constants'
 const defaultPayload = {
   fields: ['id', 'name',
     'naiRealms', 'plmns', 'roamConsortiumOIs',
-    'authRadiusId', 'accountingRadiusId', 'networkIds' ],
+    'authRadiusId', 'accountingRadiusId', 'wifiNetworkIds' ],
   searchString: '',
   searchTargetFields: ['name'],
   filters: {},

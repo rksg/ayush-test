@@ -37,8 +37,9 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
 
   const convertToFormData = (data: RoamConsortiumType) => {
     const { name='', organizationId='' } = data || {}
-    const oidArray = organizationId.toLocaleLowerCase()
-      ? organizationId.match(/[0-9a-fA-F]{1,2}/g)
+    const oid = organizationId.toLocaleLowerCase()
+    const oidArray = oid
+      ? oid.match(/[0-9a-f]{1,2}/g)
       : ['', '', '']
 
     return {

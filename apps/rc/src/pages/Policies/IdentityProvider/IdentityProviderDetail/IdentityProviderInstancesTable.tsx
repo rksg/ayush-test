@@ -92,7 +92,7 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
 
   return (
     <Card title={$t({ defaultMessage: 'Instances ({count})' },
-      { count: tableQuery.data?.totalCount || 0 }
+      { count: tableQuery.data?.totalCount ?? 0 }
     )}>
       <Loader states={[tableQuery]} >
         <Table
