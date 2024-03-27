@@ -13,10 +13,9 @@ import {
   dataWithStatus
 } from './stories/FilteredTable'
 import { GroupTable }                           from './stories/GroupTable'
-import { AsyncColumnLoader }                    from './styledComponents'
 import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
-import { Table, TableProps, NestedTableExpandableDefaultConfig } from '.'
+import { Table, TableProps, NestedTableExpandableDefaultConfig, AsyncColumnLoader } from '.'
 
 const { type, clear } = userEvent
 
@@ -43,7 +42,7 @@ type TestRow = {
 
 describe('Async Column Loader Test case', () => {
   it('should render correctly', () => {
-    render(<AsyncColumnLoader data-testid='async-column-loader-animation'/>)
+    render(<AsyncColumnLoader />)
     expect(screen.getByTestId('async-column-loader-animation')).toBeInTheDocument()
   })
 })
