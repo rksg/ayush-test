@@ -13,6 +13,9 @@ describe('crrmStateSort', () => {
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('sorts by optimized state', () => {
     const itemA = { crrmOptimizedState: crrmStates.optimized } as RecommendationListItem
     const itemB = { crrmOptimizedState: crrmStates.nonOptimized } as RecommendationListItem
