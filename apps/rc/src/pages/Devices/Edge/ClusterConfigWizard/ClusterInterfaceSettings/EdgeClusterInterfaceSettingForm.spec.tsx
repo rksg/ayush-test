@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { EdgePortConfigFixtures }     from '@acx-ui/rc/utils'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { EdgeIpModeEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }             from '@acx-ui/test-utils'
 
 import { EdgeClusterInterfaceSettingForm } from './EdgeClusterInterfaceSettingForm'
 
@@ -39,6 +39,7 @@ const mockedAllNodeData = {
     nodeName: 'Smart Edge 1',
     serialNumber: 'serialNumber-1',
     interfaceName: 'lag0',
+    ipMode: EdgeIpModeEnum.STATIC,
     ip: '192.168.11.136',
     subnet: '255.255.255.0'
   },
@@ -46,6 +47,7 @@ const mockedAllNodeData = {
     nodeName: 'Smart Edge 2',
     serialNumber: 'serialNumber-2',
     interfaceName: 'lag0',
+    ipMode: EdgeIpModeEnum.STATIC,
     ip: '192.168.11.135',
     subnet: '255.255.255.0'
   }
@@ -68,6 +70,8 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     )
 
     expect(screen.getByRole('combobox', { name: 'Set cluster interface on:' })).toBeVisible()
+    await userEvent.click(screen.getByRole('radio', { name: 'Static/Manual' }))
+    expect(screen.getByRole('radio', { name: 'DHCP' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'IP Address' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toBeVisible()
   })
@@ -91,10 +95,33 @@ describe('EdgeClusterInterfaceSettingForm', () => {
       screen.getByRole('combobox', { name: 'Set cluster interface on:' }),
       mockClusterInterfaceOptionData['serialNumber-1'][0].portName
     )
-    expect(screen.getByRole('textbox', { name: 'IP Address' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Static/Manual' }))
+    expect(await screen.findByRole('textbox', { name: 'IP Address' }))
       .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip)
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' }))
       .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].subnet)
+  })
+
+  it('Should be able to use DHCP mode when selecting interface', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Form form={formRef.current}>
+        <EdgeClusterInterfaceSettingForm
+          form={formRef.current}
+          interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+        />
+      </Form>
+    )
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox', { name: 'Set cluster interface on:' }),
+      mockClusterInterfaceOptionData['serialNumber-1'][0].portName
+    )
+    await userEvent.click(screen.getByRole('radio', { name: 'DHCP' }))
   })
 
   it('Should block by subnet range not consistent', async () => {
