@@ -16,7 +16,8 @@ import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -89,8 +90,10 @@ describe('IdentityProviderTable', () => {
     const targetName = dummyTableResult.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add Identity Provider/i })).toBeVisible()
+    await waitFor(() => {
+      expect(screen.queryByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+    })
     const row1 = await screen.findByRole('row', { name: new RegExp(targetName) })
-    expect(row1).toBeVisible()
     await userEvent.click(row1)
 
     let editButton = await screen.findByText('Edit')
