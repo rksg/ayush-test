@@ -70,7 +70,17 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Client', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
