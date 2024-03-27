@@ -15,3 +15,23 @@ export const trafficSummaryNoDataFixture = {
     }
   }
 }
+
+
+export const incidentSummaryFixture = {
+  network: {
+    hierarchyNode: {
+      apIncidentCount: 461,
+      switchIncidentCount: 8
+    }
+  }
+}
+
+export const incidentSummaryNoDataFixture = {
+  network: {
+    hierarchyNode: {
+      apIncidentCount: null,
+      switchIncidentCount: null
+    }
+  }
+}
+

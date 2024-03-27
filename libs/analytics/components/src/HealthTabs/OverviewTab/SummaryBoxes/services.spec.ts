@@ -1,8 +1,8 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { trafficSummaryFixture } from './__tests__/fixtures'
-import { api, RequestPayload }   from './services'
+import { incidentSummaryFixture, trafficSummaryFixture } from './__tests__/fixtures'
+import { api, RequestPayload }                           from './services'
 
 describe('Summary tile apis', () => {
   afterEach(() =>
@@ -29,6 +29,28 @@ describe('Summary tile apis', () => {
       })
       const { status, data, error } = await store.dispatch(
         api.endpoints.traffic.initiate(payload)
+      )
+      expect(status).toBe('rejected')
+      expect(data).toBe(undefined)
+      expect(error).not.toBe(undefined)
+    })
+  })
+  describe('incident summary', () => {
+    it('should return correct data', async () => {
+      mockGraphqlQuery(dataApiURL, 'IncidentSummary', { data: incidentSummaryFixture })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.incidents.initiate(payload)
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(incidentSummaryFixture)
+      expect(error).toBe(undefined)
+    })
+    it('should return error', async () => {
+      mockGraphqlQuery(dataApiURL, 'IncidentSummary', {
+        error: new Error('something went wrong!')
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.incidents.initiate(payload)
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
