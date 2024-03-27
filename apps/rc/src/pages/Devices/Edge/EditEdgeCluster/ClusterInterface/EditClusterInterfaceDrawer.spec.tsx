@@ -1,7 +1,7 @@
 
 import userEvent from '@testing-library/user-event'
 
-import { EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
 import {
   render,
   screen,
@@ -42,6 +42,7 @@ const mockedAllNodeData = [
     nodeName: 'Smart Edge 1',
     serialNumber: 'serialNumber-1',
     interfaceName: 'lag0',
+    ipMode: EdgeIpModeEnum.STATIC,
     ip: '192.168.12.135',
     subnet: '255.255.255.0'
   },
@@ -49,6 +50,7 @@ const mockedAllNodeData = [
     nodeName: 'Smart Edge 2',
     serialNumber: 'serialNumber-2',
     interfaceName: 'lag0',
+    ipMode: EdgeIpModeEnum.STATIC,
     ip: '192.168.12.136',
     subnet: '255.255.255.0'
   }
@@ -69,6 +71,7 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     expect(screen.getByText('Select Cluster Interface: Smart Edge 1')).toBeVisible()
     expect(screen.getByRole('combobox', { name: /Set cluster interface on/i })).toHaveValue('lag0')
+    expect(screen.getByRole('radio', { name: 'Static/Manual' })).toBeChecked()
     expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.12.135')
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toHaveValue('255.255.255.0')
   })

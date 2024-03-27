@@ -10,8 +10,9 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
-import { GridRow, Button }      from '@acx-ui/components'
-import { DeleteOutlinedIcon }   from '@acx-ui/icons'
+import { GridRow, Button }              from '@acx-ui/components'
+import { DeleteOutlinedIcon }           from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,
@@ -25,9 +26,6 @@ import {
   getServiceRoutePath, ServiceOperation, ServiceType,
   useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import {
-  useTenantLink
-} from '@acx-ui/react-router-dom'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
@@ -46,6 +44,11 @@ const VenueDHCPForm = (props: {
   const form = props.form
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
+  const addDhcpPath = usePathBasedOnConfigTemplate(
+    getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
+  )
+  // eslint-disable-next-line max-len
+  const venueServicesTabPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/venue-details/services`)
 
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
     useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
@@ -79,7 +82,7 @@ const VenueDHCPForm = (props: {
     }
   }
   const isMaxNumberReached = ()=>{
-    return dhcpProfileList&&dhcpProfileList.length >= DHCP_LIMIT_NUMBER
+    return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
 
   useEffect(() => {
@@ -302,20 +305,19 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={isMaxNumberReached() ?
-          { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }:
-          { marginLeft: 10 }}
-        onClick={(e)=>{
+        <Link style={isMaxNumberReached()
+          ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
+          : { marginLeft: 10 }}
+        onClick={(e) => {
           if(isMaxNumberReached()){
             e.preventDefault()
             e.stopPropagation()
           }
         }}
-        // eslint-disable-next-line max-len
-        to={useTenantLink(getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }))}
+        to={addDhcpPath}
         state={{
           from: {
-            pathname: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+            pathname: venueServicesTabPath,
             returnParams: { showConfig: true }
           }
         }}>
