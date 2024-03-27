@@ -8,7 +8,7 @@ import { mockServer, render, screen }        from '@acx-ui/test-utils'
 
 import EdgeDetails from '.'
 
-const { mockEdgeList, mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -50,11 +50,15 @@ describe('EdgeDetails', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+        (_req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+        (_req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
