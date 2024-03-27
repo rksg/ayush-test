@@ -11,8 +11,8 @@ import {
   TypeForm,
   useClusterInterfaceActions
 } from '@acx-ui/rc/components'
-import { EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                      from '@acx-ui/react-router-dom'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
+import { useTenantLink }                                      from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -49,6 +49,7 @@ export const ClusterInterfaceSettings = () => {
       const currentcClusterInterface = getTargetInterfaceConfig(edgeNode.serialNumber)
       result[edgeNode.serialNumber] = {
         interfaceName: currentcClusterInterface?.portName ?? '',
+        ipMode: currentcClusterInterface?.ipMode ?? EdgeIpModeEnum.STATIC,
         ip: currentcClusterInterface?.ip?.split('/')[0] ?? '',
         subnet: currentcClusterInterface?.subnet ?? ''
       }
@@ -95,6 +96,7 @@ export const ClusterInterfaceSettings = () => {
           nodeName: nodeInfo?.name ?? '',
           serialNumber: k,
           interfaceName: v.interfaceName,
+          ipMode: v.ipMode,
           ip: v.ip,
           subnet: v.subnet
         }
