@@ -1,7 +1,7 @@
-import { renderHook } from '@acx-ui/test-utils'
+import { AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
+import { renderHook }       from '@acx-ui/test-utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from './aaaPolicyQuerySwitcher'
-import { AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
