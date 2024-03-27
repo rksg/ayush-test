@@ -1,76 +1,62 @@
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import _ from 'lodash'
 
-import { FirmwareCategory } from '@acx-ui/rc/utils'
-import { getIntl }          from '@acx-ui/utils'
+import { Loader }                             from '@acx-ui/components'
+import { ApModelFirmwares, FirmwareCategory } from '@acx-ui/rc/utils'
+import { getIntl }                            from '@acx-ui/utils'
 
-import { VersionLabelType, getVersionLabel } from '../../../FirmwareUtils'
-import * as UI                               from '../../VenueFirmwareList/styledComponents'
+import { getVersionLabel }     from '../../../FirmwareUtils'
+import * as UI                 from '../../VenueFirmwareList/styledComponents'
+import {
+  ApFirmwareUpdateGroupType,
+  convertApModelFirmwaresToUpdateGroups,
+  filterUpdateGroupsByVenues
+} from '../venueFirmwareListPerApModelUtils'
 
 import { ApFirmwareUpdateGroup, ApFirmwareUpdateGroupProps } from './ApFirmwareUpdateGroup'
 
-import { TargetFirmwaresType } from '.'
+import { TargetFirmwaresType, VenueIdAndCurrentApFirmwares } from '.'
 
-type RowDataType = { apModels: string[], firmwares: VersionLabelType[] }
 type DisplayDataType = Omit<ApFirmwareUpdateGroupProps, 'update'>
-
-const data: RowDataType[] = [
-  {
-    apModels: ['R770', 'R750', 'R550', 'R610', 'R700'],
-    firmwares: [
-      {
-        name: '7.0.0.104.1162',
-        category: FirmwareCategory.RECOMMENDED,
-        onboardDate: '2024-01-21T09:24:11.636+0000',
-        releaseDate: '2024-01-24T03:29:59.824+00:00'
-      },
-      {
-        name: '7.0.0.104.1154',
-        category: FirmwareCategory.RECOMMENDED,
-        onboardDate: '2024-01-18T01:48:08.061+0000',
-        releaseDate: '2024-01-24T03:29:19.451+00:00'
-      }
-    ]
-  },
-  {
-    apModels: ['R350', 'T310D'],
-    firmwares: [
-      {
-        name: '6.2.3.103.180',
-        category: FirmwareCategory.RECOMMENDED,
-        onboardDate: '2023-08-25T07:42:49.519+0000',
-        releaseDate: '2023-10-18T01:58:00.993+00:00'
-      }
-    ]
-  }
-]
 
 interface ApFirmwareUpdateGroupPanelPrpos {
   updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void
+  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
 }
 
 export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrpos) {
-  const { updateTargetFirmwares } = props
-  const displayData: DisplayDataType[] = convertToDisplayData(data)
+  const { selectedVenuesFirmwares, updateTargetFirmwares } = props
+  const [ updateGroups, setUpdateGroups ] = useState<ApFirmwareUpdateGroupType[]>()
+  const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
+  const [ isLoading, setIsLoading ] = useState(true)
   const targetFirmwares = useRef<TargetFirmwaresType>()
 
   useEffect(() => {
-    // Ensure that 'updateTargetFirmwares' only call once when the componnent intializes
-    if (!data || targetFirmwares.current) return
+    setTimeout(() => {
+      const updateGrps = convertApModelFirmwaresToUpdateGroups(getTestData())
+      setUpdateGroups(filterUpdateGroupsByVenues(selectedVenuesFirmwares, updateGrps))
+      setDisplayData(convertToDisplayData(updateGrps))
+      setIsLoading(false)
+    }, 2000)
+  }, [])
 
-    targetFirmwares.current = convertToTargetFirmwaresType(data)
+  useEffect(() => {
+    // Ensure that 'updateTargetFirmwares' only call once when the componnent intializes
+    if (!updateGroups || targetFirmwares.current) return
+
+    targetFirmwares.current = convertToTargetFirmwaresType(updateGroups)
     updateTargetFirmwares(targetFirmwares.current)
-  }, [data])
+  }, [updateGroups])
 
   const update = (apModels: string[], version: string | undefined) => {
     targetFirmwares.current = patchTargetFirmwares(targetFirmwares.current!, apModels, version)
     updateTargetFirmwares(targetFirmwares.current)
   }
 
-  return (<>
-    {displayData.map(item => {
+  return (<Loader states={[{ isLoading }]}>
+    {displayData?.map(item => {
       return <UI.Section key={item.apModels.join('')}>
         <ApFirmwareUpdateGroup
           apModels={item.apModels}
@@ -80,10 +66,10 @@ export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrp
         />
       </UI.Section>
     })}
-  </>)
+  </Loader>)
 }
 
-function convertToDisplayData (data: RowDataType[]): DisplayDataType[] {
+function convertToDisplayData (data: ApFirmwareUpdateGroupType[]): DisplayDataType[] {
   const intl = getIntl()
 
   return data.map(item => ({
@@ -96,15 +82,15 @@ function convertToDisplayData (data: RowDataType[]): DisplayDataType[] {
   }))
 }
 
-function convertToTargetFirmwaresType (data: RowDataType[]): TargetFirmwaresType {
+function convertToTargetFirmwaresType (data: ApFirmwareUpdateGroupType[]): TargetFirmwaresType {
   return data.map(initTargetFirmwares).flat()
 }
 
-function getDefaultValueFromFirmwares (firmwares: RowDataType['firmwares']): string {
+function getDefaultValueFromFirmwares (firmwares: ApFirmwareUpdateGroupType['firmwares']): string {
   return firmwares[0].name
 }
 
-function initTargetFirmwares (data: RowDataType): TargetFirmwaresType {
+function initTargetFirmwares (data: ApFirmwareUpdateGroupType): TargetFirmwaresType {
   return data.apModels.map(apModel => {
     return { apModel, firmware: getDefaultValueFromFirmwares(data.firmwares) }
   })
@@ -125,4 +111,79 @@ function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModels: s
   }
 
   return result
+}
+
+function getTestData (): ApModelFirmwares[] {
+  return [
+    {
+      id: '7.0.0.104.1242',
+      name: '7.0.0.104.1242',
+      supportedApModels: [
+        'R550', 'R770', 'R750', 'R350'
+      ],
+      releaseDate: '2024-02-27T07:27:53.405+00:00',
+      onboardDate: '2024-02-21T05:18:57.254+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '7.0.0.104.1240',
+      name: '7.0.0.104.1240',
+      supportedApModels: [
+        'R550', 'R770', 'R750', 'R350'
+      ],
+      releaseDate: '2024-02-27T07:55:30.500+00:00',
+      onboardDate: '2024-02-17T09:36:43.742+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '6.2.4.103.244',
+      name: '6.2.4.103.244',
+      supportedApModels: [
+        'R550', 'R720'
+      ],
+      releaseDate: '2023-12-25T07:19:26.919+00:00',
+      onboardDate: '2023-12-21T03:09:32.204+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '6.2.3.103.249',
+      name: '6.2.3.103.249',
+      supportedApModels: [
+        'R550', 'R720'
+      ],
+      releaseDate: '2024-02-22T06:51:52.115+00:00',
+      onboardDate: '2024-02-05T08:10:35.886+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '6.2.2.103.143',
+      name: '6.2.2.103.143',
+      supportedApModels: [
+        'R550', 'R720'
+      ],
+      releaseDate: '2023-11-16T09:13:48.863+00:00',
+      onboardDate: '2023-07-22T05:49:47.774+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '6.2.0.103.554',
+      name: '6.2.0.103.554',
+      supportedApModels: [
+        'R500', 'R550'
+      ],
+      releaseDate: '2024-02-27T07:29:28.160+00:00',
+      onboardDate: '2023-11-14T10:36:14.119+0000',
+      category: FirmwareCategory.RECOMMENDED
+    },
+    {
+      id: '6.2.0.103.548',
+      name: '6.2.0.103.548',
+      supportedApModels: [
+        'R500', 'R550'
+      ],
+      releaseDate: '2023-11-01T08:59:36.189+00:00',
+      onboardDate: '2023-06-07T02:51:42.317+0000',
+      category: FirmwareCategory.RECOMMENDED
+    }
+  ]
 }

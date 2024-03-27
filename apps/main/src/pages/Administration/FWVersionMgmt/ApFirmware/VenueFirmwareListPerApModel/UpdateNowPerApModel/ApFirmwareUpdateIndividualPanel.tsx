@@ -14,7 +14,7 @@ import * as UI                               from '../../VenueFirmwareList/style
 
 import { ApFirmwareUpdateIndividual, ApFirmwareUpdateIndividualProps } from './ApFirmwareUpdateIndividual'
 
-import { TargetFirmwaresType } from '.'
+import { TargetFirmwaresType, VenueIdAndCurrentApFirmwares } from '.'
 
 type DisplayDataType = Omit<ApFirmwareUpdateIndividualProps, 'update'>
 
@@ -54,7 +54,8 @@ const data: ApModelFirmwares[] = [
 ]
 
 interface ApFirmwareUpdateIndividualPanelPrpos {
-  updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void
+  updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void,
+  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
 }
 
 export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividualPanelPrpos) {

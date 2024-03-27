@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Modal }                              from '@acx-ui/components'
-import { VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
+import { Modal }                                                       from '@acx-ui/components'
+import { FirmwareVenuePerApModel, VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
 
 import * as UI                          from '../../VenueFirmwareList/styledComponents'
 import { firmwareNote1, firmwareNote2 } from '../../VenueFirmwareList/UpdateNowDialog'
@@ -20,17 +20,24 @@ enum UpdateMode {
   INDIVIDUAL
 }
 
-interface UpdateNowPerApModelProps {
+// eslint-disable-next-line max-len
+export type VenueIdAndCurrentApFirmwares = Pick<FirmwareVenuePerApModel, 'id' | 'currentApFirmwares'>
+
+export interface UpdateNowPerApModelProps {
   onCancel: () => void
+  afterSubmit: () => void
+  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
 }
 
 export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
   const { $t } = useIntl()
-  const { onCancel } = props
+  const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
   const [disableSave, setDisableSave] = useState(false)
   const [updateMode, setUpdateMode] = useState<UpdateMode>(UpdateMode.GROUP)
 
-  const triggerSubmit = () => {
+  const triggerSubmit = async () => {
+    onModalCancel()
+    afterSubmit()
   }
 
   const onModalCancel = () => {
@@ -71,7 +78,10 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
         />
         <span>{$t({ defaultMessage: 'Update firmware by AP model' })}</span>
       </Space>
-      <ActivePanel updateTargetFirmwares={updateTargetFirmwares} />
+      <ActivePanel
+        updateTargetFirmwares={updateTargetFirmwares}
+        selectedVenuesFirmwares={selectedVenuesFirmwares}
+      />
       <UI.Section>
         <UI.Ul>
           <UI.Li>{$t(firmwareNote1)}</UI.Li>

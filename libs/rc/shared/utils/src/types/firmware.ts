@@ -335,9 +335,9 @@ export interface FirmwareVenuePerApModel {
   id: string;
   name: string;
   isFirmwareUpToDate: boolean;
-  currentApFirmwares: { apModel: string, firmware: string }[];
-  lastScheduleUpdate: string;
-  nextSchedules: Schedule[];
+  currentApFirmwares?: { apModel: string, firmware: string }[];
+  lastScheduleUpdate?: string;
+  nextSchedules?: Schedule[];
 }
 
 export interface ApModelFirmwares {
