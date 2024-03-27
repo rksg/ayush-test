@@ -978,3 +978,5 @@ export const {
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery
 } = mspApi
+
+export * from './hospitalityVerticalFFCheck'
