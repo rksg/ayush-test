@@ -148,6 +148,15 @@ const nodeDetail = {
   numOfPorts: 32
 }
 
+const r1RaApiURL = '/api/a4rc/api/rsa-data-api/graphql/analytics'
+
+
+const expectedIncidents = {
+  incidentCount0: { P1: 1, P2: 2, P3: 3, P4: 4 },
+  incidentCount1: { P1: 4, P2: 3, P3: 2, P4: 1 },
+  incidentCount2: { P1: 0, P2: 3, P3: 2, P4: 0 }
+}
+
 describe('NodeTooltip', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -155,7 +164,11 @@ describe('NodeTooltip', () => {
     global.window.innerHeight = 1080
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(nodeDetail)))
+        (_, res, ctx) => res(ctx.json(nodeDetail))),
+      rest.post(
+        r1RaApiURL,
+        (req, res, ctx) => res(ctx.json(expectedIncidents))
+      )
     )
   })
   it('should render correctly', async () => {
