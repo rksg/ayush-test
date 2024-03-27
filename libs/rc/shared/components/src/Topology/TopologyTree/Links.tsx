@@ -27,12 +27,13 @@ interface LinksProps {
   sourceNode?: any;
   targetNode?: any;
   onClick: (node: Link, event: MouseEvent) => void;
+  onMouseLeave: () => void;
 }
 
 // eslint-disable-next-line max-len
 
 export const Links: React.FC<LinksProps> = (props) => {
-  const { links, linksInfo, onClick } = props
+  const { links, linksInfo, onClick, onMouseLeave } = props
   let delayHandler: NodeJS.Timeout
 
   const linkColor: { [key in ConnectionStatus]: string } = {
@@ -96,7 +97,10 @@ export const Links: React.FC<LinksProps> = (props) => {
   }
 
   const handleMouseLeave = () => {
-    clearTimeout(delayHandler)
+    setTimeout(() => {
+      onMouseLeave()
+      clearTimeout(delayHandler)
+    }, 1000)
   }
 
   return (

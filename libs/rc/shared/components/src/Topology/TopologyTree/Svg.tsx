@@ -13,7 +13,8 @@ import { TopologyTreeContext } from './TopologyTreeContext'
 const NODE_SIZE: [number, number] = [45, 150]
 
 const Svg: any = (props: any) => {
-  const { width, height, data, edges, onNodeHover, onNodeClick, onLinkClick } = props
+  const { width, height, data, edges, onNodeHover,
+    onNodeClick, onLinkClick, onNodeMouseLeave, onLinkMouseLeave } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
@@ -132,6 +133,7 @@ const Svg: any = (props: any) => {
               links={links as any}
               linksInfo={linksInfo}
               onClick={onLinkClick}
+              onMouseLeave={onLinkMouseLeave}
             />
           }
           {links && (
@@ -140,6 +142,7 @@ const Svg: any = (props: any) => {
               expColEvent={expColEvent}
               onHover={onNodeHover}
               onClick={onNodeClick}
+              onMouseLeave={onNodeMouseLeave}
               nodesCoordinate={nodesCoordinate}
             />
           )}

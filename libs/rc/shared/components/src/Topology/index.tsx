@@ -53,6 +53,8 @@ interface NodeData {
   name: string;
   type: string;
   isConnectedCloud: boolean;
+  untaggedVlan?: string;
+  taggedVlan?: string;
   children: NodeData[];
 }
 
@@ -90,26 +92,32 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       ...node,
       children: []
     }
+
+    const portData = [
+      node?.untaggedVlan !== '' && node.untaggedVlan?.split(' '),
+      node?.taggedVlan !== '' && node.taggedVlan?.split(' ')
+    ]
+
+    updateVlanPortData(portData, `node_${node.id}`, setVlanPortData)
   })
 
   // Build the tree structure based on the edges
   edges.forEach((edge: Link) => {
+    if(edge.from === edge.to){ //invalid edge with same from, to id
+      return
+    }
     const fromNode = nodeMap[edge.from]
     const toNode = nodeMap[edge.to]
 
     if((fromNode && toNode)){
-      if(toNode.isConnectedCloud) {
-        toNode.children.push(fromNode)
-      } else {
-        fromNode.children.push(toNode)
-      }
+      fromNode.children.push(toNode)
     }
 
     const portData = [
-      edge.connectedPortTaggedVlan !== '' && edge.connectedPortTaggedVlan?.split(' '),
-      edge.connectedPortUntaggedVlan !== '' && edge.connectedPortUntaggedVlan?.split(' '),
-      edge.correspondingPortTaggedVlan !== '' && edge.correspondingPortTaggedVlan?.split(' '),
-      edge.correspondingPortUntaggedVlan !== '' && edge.correspondingPortUntaggedVlan?.split(' ')
+      edge?.connectedPortTaggedVlan !== '' && edge.connectedPortTaggedVlan?.split(' '),
+      edge?.connectedPortUntaggedVlan !== '' && edge.connectedPortUntaggedVlan?.split(' '),
+      edge?.correspondingPortTaggedVlan !== '' && edge.correspondingPortTaggedVlan?.split(' '),
+      edge?.correspondingPortUntaggedVlan !== '' && edge.correspondingPortUntaggedVlan?.split(' ')
     ]
 
     updateVlanPortData(portData, `link_${edge.from}_${edge.to}`, setVlanPortData)
@@ -282,34 +290,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     setTooltipPosition({ x, y })
   }, 100)
 
-
-  function rearrangedData (data: Link) {
-    return {
-      source: data.target,
-      target: data.source,
-      from: data.to,
-      to: data.from,
-      fromMac: data.toMac,
-      toMac: data.fromMac,
-      fromName: data.toName,
-      toName: data.fromName,
-      connectedPort: data.correspondingPort,
-      correspondingPort: data.connectedPort,
-      fromSerial: data.toSerial,
-      toSerial: data.fromSerial,
-      connectedPortUntaggedVlan: data.correspondingPortUntaggedVlan,
-      correspondingPortUntaggedVlan: data.connectedPortUntaggedVlan,
-      connectedPortTaggedVlan: data.correspondingPortTaggedVlan,
-      correspondingPortTaggedVlan: data.connectedPortTaggedVlan,
-      poeEnabled: data.poeEnabled,
-      linkSpeed: data.linkSpeed,
-      poeUsed: data.poeUsed,
-      poeTotal: data.poeTotal,
-      connectionType: data.connectionType,
-      connectionStatus: data.connectionStatus
-    }
-  }
-
   const debouncedHandleMouseEnterLink = debounce(function (edge, d){
     if(onDrag){
       return
@@ -321,10 +301,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       let targetNode = topologyData.nodes.filter(item => item.id === edge.target.data.id)[0]
       let selectedEdge = topologyData.edges.filter(
         item => item.from === edge.source.data.id && item.to === edge.target.data.id)[0]
-      if(!selectedEdge){ // Swap source and target nodes if API return reverse result
-        selectedEdge = rearrangedData(topologyData.edges.filter(
-          item => item.from === edge.target.data.id && item.to === edge.source.data.id)[0])
-      }
 
       closeTooltipHandler()
       setTooltipSourceNode(sourceNode)
@@ -445,6 +421,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 onNodeHover={debouncedHandleMouseEnter}
                 onNodeClick={debouncedHandleMouseClick}
                 onLinkClick={debouncedHandleMouseEnterLink}
+                onNodeMouseLeave={closeTooltipHandler}
+                onLinkMouseLeave={closeLinkTooltipHandler}
               />
             </TopologyTreeContext.Provider>
           </UI.Topology>

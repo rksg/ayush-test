@@ -18,6 +18,7 @@ interface NodeProps {
   expColEvent: (nodeId: string) => void;
   onHover: (node: NodeData, event: MouseEvent) => void;
   onClick: (node: NodeData, event: MouseEvent) => void;
+  onMouseLeave: () => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
 }
 
@@ -25,7 +26,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
   const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
+  const { nodes, expColEvent, onHover, onClick, onMouseLeave, nodesCoordinate } = props
 
   useEffect(() => {
     nodes
@@ -59,7 +60,10 @@ const Nodes: React.FC<NodeProps> = (props) => {
   }
 
   const handleMouseLeave = () => {
-    clearTimeout(delayHandler)
+    setTimeout(() => {
+      onMouseLeave()
+      clearTimeout(delayHandler)
+    }, 1000)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
