@@ -98,7 +98,7 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       node?.taggedVlan !== '' && node.taggedVlan?.split(' ')
     ]
 
-    updateVlanPortData(portData, `node_${node.id}`, setVlanPortData)
+    updateVlanPortData(portData, node.id, setVlanPortData)
   })
 
   // Build the tree structure based on the edges
