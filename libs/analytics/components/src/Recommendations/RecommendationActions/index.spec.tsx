@@ -340,6 +340,21 @@ describe('RecommendationActions', () => {
     await user.click(screen.getByTestId('CancelCircleOutlined'))
     expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
   })
+  it('should render cancel text correctly', async () => {
+    const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
+    render(
+      <RecommendationActions
+        showTextOnly
+        recommendation={
+        { ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(await screen.findByText('Cancel')).toBeVisible()
+    const user = userEvent.setup()
+    await user.click(await screen.findByText('Cancel'))
+    expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
+  })
   it('should show toast if scheduled time is before buffer', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
