@@ -25,3 +25,7 @@ export const VerticalSplitLine = styled(Col)`
   height: 350px;
   border-left: 1px solid var(--acx-neutrals-30);
 `
+export const FlexEndCol = styled(Col)`
+  display: flex;
+  justify-content: end;
+`
