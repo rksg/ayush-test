@@ -8,11 +8,11 @@ import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomi
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkHotspot20Settings }       from '../models/NetworkHotspot20Settings'
 import { NetworkVenue }                   from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
 import { Radius }                         from '../models/Radius'
-import { NetworkHotspot20Settings } from '../models/NetworkHotspot20Settings'
 
 
 export interface CreateNetworkFormFields {

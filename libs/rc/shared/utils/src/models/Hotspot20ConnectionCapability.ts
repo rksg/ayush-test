@@ -1,4 +1,4 @@
-import { Hotspot20ConnectionCapabilityStatusEnum } from "./Hotspot20ConnectionCapabilityStatusEnum"
+import { Hotspot20ConnectionCapabilityStatusEnum } from './Hotspot20ConnectionCapabilityStatusEnum'
 
 export interface Hotspot20ConnectionCapability {
     protocol?: string

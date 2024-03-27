@@ -1,6 +1,8 @@
-import { Drawer } from '@acx-ui/components'
-import { useIntl } from "react-intl"
 import { Form, FormInstance } from 'antd'
+import { useIntl }            from 'react-intl'
+
+import { Drawer } from '@acx-ui/components'
+
 import WifiOperatorSettingForm from '../../policies/WifiOperator/WifiOperatorForm/WifiOperatorSettingForm'
 
 interface WifiOperatorDrawerProps {
@@ -15,8 +17,8 @@ const WifiOperatorDrawer = (props: WifiOperatorDrawerProps) => {
   const { visible, drawerForm, handleClose, handleSave } = props
 
   const content = <Form layout='vertical' form={drawerForm}>
-      <WifiOperatorSettingForm edit={false} />
-    </Form>
+    <WifiOperatorSettingForm edit={false} />
+  </Form>
 
   return (
     <Drawer

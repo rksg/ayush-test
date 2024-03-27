@@ -13,13 +13,13 @@ import { NetworkSaveData, NetworkTypeEnum }                       from '@acx-ui/
 import NetworkFormContext from '../NetworkFormContext'
 
 import { AdvancedTab }       from './AdvancedTab'
+import { Hotspot20Tab }      from './Hotspot20Tab'
 import { NetworkControlTab } from './NetworkControlTab'
 import { NetworkingTab }     from './NetworkingTab'
 import { RadioTab }          from './RadioTab'
 import * as UI               from './styledComponents'
 import { UserConnectionTab } from './UserConnectionTab'
 import { VlanTab }           from './VlanTab'
-import { Hotspot20Tab } from './Hotspot20Tab'
 
 
 
@@ -117,8 +117,8 @@ export function MoreSettingsTabs (props: {
     },
     ...(supportHotspot20 && data?.type === NetworkTypeEnum.HOTSPOT20 ? [{
       key: 'hotspot20',
-      display: defineMessage({defaultMessage: 'Hotspot 2.0'}),
-      style: { width: '19px'}
+      display: defineMessage({ defaultMessage: 'Hotspot 2.0' }),
+      style: { width: '19px' }
     }] : []),
     ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL)? [{
       key: 'userConnection',

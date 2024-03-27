@@ -1,8 +1,8 @@
 import { Form, FormInstance, Input, Select } from 'antd'
 import { useIntl }                           from 'react-intl'
 
+import { Drawer }                                              from '@acx-ui/components'
 import { Hotspot20ConnectionCapabilityStatusEnum, portRegExp } from '@acx-ui/rc/utils'
-import { Drawer } from '@acx-ui/components'
 
 interface ConnectionCapabilityDrawerProps {
   visible: boolean,

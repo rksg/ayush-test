@@ -7,46 +7,48 @@ import {
   Row,
   Select
 } from 'antd'
-import NetworkFormContext from '../NetworkFormContext'
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { FormattedMessage, useIntl } from 'react-intl'
+
+import { Button, StepsFormLegacy }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                     from '@acx-ui/icons'
+import { useAddWifiOperatorMutation, useGetWifiOperatorListQuery }              from '@acx-ui/rc/services'
+import { AAAWlanSecurityEnum, ManagementFrameProtectionEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useParams }                                                            from '@acx-ui/react-router-dom'
+
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
+import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { useAddWifiOperatorMutation, useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
-import { Button, StepsFormLegacy } from '@acx-ui/components'
-import { FormattedMessage, useIntl } from 'react-intl'
-import { AAAWlanSecurityEnum, ManagementFrameProtectionEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { InformationSolid } from '@acx-ui/icons'
-import { MLOContext } from '../NetworkForm'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import WifiOperatorDrawer from './WifiOperatorDrawer'
 
 const { Option } = Select
 
-export function Hotspot20SettingsForm() {
-    const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+export function Hotspot20SettingsForm () {
+  const { editMode, data } = useContext(NetworkFormContext)
 
-    return (<>
-        <Row gutter={20}>
-            <Col span={10}>
-            <Hotspot20Form />
-            </Col>
-            <Col span={14} style={{ height: '100%' }}>
-            <NetworkDiagram />
-            </Col>
-        </Row>
-        {!(editMode) && <Row>
-            <Col span={24}>
-            <NetworkMoreSettingsForm wlanData={data} />
-            </Col>
-        </Row>}
-        </>)
+  return (<>
+    <Row gutter={20}>
+      <Col span={10}>
+        <Hotspot20Form />
+      </Col>
+      <Col span={14} style={{ height: '100%' }}>
+        <NetworkDiagram />
+      </Col>
+    </Row>
+    {!(editMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
 }
 
-function Hotspot20Form() {
+function Hotspot20Form () {
   const { $t } = useIntl()
   const { useWatch } = Form
-  const { editMode, cloneMode, setData, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
@@ -102,17 +104,18 @@ function Hotspot20Form() {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Hotspot 2.0 Settings' }) }</StepsFormLegacy.Title>
+        <StepsFormLegacy.Title>{
+          $t({ defaultMessage: 'Hotspot 2.0 Settings' }) }</StepsFormLegacy.Title>
         {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name={['wlan', 'wlanSecurity']}
             extra={
               wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-              ? wpa2Description
-              : wpa3Description
+                ? wpa2Description
+                : wpa3Description
             }
-            >
+          >
             <Select onChange={handleWlanSecurityChanged}>
               <Option value={WlanSecurityEnum.WPA2Enterprise}>
                 { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
@@ -134,9 +137,9 @@ function Hotspot20Form() {
   function Hotspot20Service () {
     const { $t } = useIntl()
     const params = useParams()
-    const { setData, data } = useContext(NetworkFormContext)
+    // const { setData, data } = useContext(NetworkFormContext)
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
-    const [showProviderDrawer, setShowProviderDrawer] = useState(false)
+    // const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [wifiOperatorId, setWifiOperatorId] = useState('')
     const [identityProviderId, setIdentityProviderId] = useState('')
     const [operatorForm] = Form.useForm()
@@ -149,24 +152,6 @@ function Hotspot20Form() {
 
     const handleProviderChange = (providerId: string) => {
       setIdentityProviderId(providerId)
-    }
-
-    const queryOperatorsPayload = () => {
-      return {
-        fields:[
-           'id',
-           'name',
-           'wifiNetworkIds'
-        ],
-        searchString:'',
-        filters:{
-        },
-        page:1,
-        pageSize:10,
-        defaultPageSize:10,
-        sortField:'name',
-        sortOrder:'ASC'
-     }
     }
 
     useEffect(() => {
@@ -188,11 +173,11 @@ function Hotspot20Form() {
           }
         }
       })
-      
+
     const handleAddOperator = () => {
       setShowOperatorDrawer(true)
     }
-    
+
     const handleSaveWifiOperator = async () => {
       try {
         await operatorForm.validateFields()
@@ -205,7 +190,6 @@ function Hotspot20Form() {
           payload
         }).unwrap().then((res)=>{
           setWifiOperatorId(res.response?.id as string)
-          console.log(res.response?.id)
         })
         operatorForm.resetFields()
         handleCloseWifiOperator()
@@ -219,7 +203,7 @@ function Hotspot20Form() {
     }
 
     const handleAddProvider = () => {
-      setShowProviderDrawer(true)
+      // setShowProviderDrawer(true)
     }
 
     return (
@@ -232,10 +216,10 @@ function Hotspot20Form() {
             rules={[
               { required: true },
               { validator: (_, value) => {
-              if (value === 'Select...') {
-                return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
-              }
-              return Promise.resolve()
+                if (value === 'Select...') {
+                  return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
+                }
+                return Promise.resolve()
               } }
             ]}>
             <Select placeholder={$t({ defaultMessage: 'Select...' })}
@@ -265,9 +249,9 @@ function Hotspot20Form() {
               } }
             ]}
           >
-          <Select placeholder={$t({ defaultMessage: 'Select...' })}
-            onChange={handleProviderChange}
-            value={identityProviderId} />
+            <Select placeholder={$t({ defaultMessage: 'Select...' })}
+              onChange={handleProviderChange}
+              value={identityProviderId} />
           </Form.Item>
 
           <Button type='link'
