@@ -52,7 +52,6 @@ export const api = dataApi.injectEndpoints({
         }
       })
     }),
-    //type: "switchId"
     incidents: build.query<IncidentSummary, RequestPayload>({
       query: payload => ({
         document: gql`
