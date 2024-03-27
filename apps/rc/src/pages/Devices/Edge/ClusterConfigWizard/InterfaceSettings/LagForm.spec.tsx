@@ -5,7 +5,8 @@ import { StepsForm }                                                        from
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures } from '@acx-ui/rc/utils'
 import { render, renderHook, screen }                                       from '@acx-ui/test-utils'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { mockClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }  from '../ClusterConfigWizardDataProvider'
 
 import { LagForm }                   from './LagForm'
 import { InterfaceSettingsFormType } from './types'
@@ -39,7 +40,7 @@ jest.mock('@acx-ui/rc/components', () => ({
       TestAdd
     </button>
     <button onClick={() => onEdit('serialNumber-1', mockExpectedEditResult)}>TestEdit</button>
-    <button onClick={() => onDelete('serialNumber-1', '1')}>TestDelete</button>
+    <button onClick={() => onDelete('serialNumber-1', '0')}>TestDelete</button>
   </div>
 }))
 
@@ -146,6 +147,7 @@ describe('InterfaceSettings - LagForm', () => {
   it('should delete successfully', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldsValue(mockClusterConfigWizardData)
       return form
     })
     render(
@@ -164,20 +166,11 @@ describe('InterfaceSettings - LagForm', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
       })
 
-    formRef.current.setFieldValue('lagSettings', [
-      {
-        serialNumber: 'serialNumber-1',
-        lags: mockedEdgeLagList.content
-      }
-    ])
-
     expect(await screen.findByTestId('lag-table')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'TestDelete' }))
     // eslint-disable-next-line max-len
     const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
-    expect(lagSettings.length).toBe(1)
-    expect(lagSettings[0].serialNumber).toBe('serialNumber-1')
-    expect(lagSettings[0].lags.length).toBe(1)
-    expect(lagSettings[0].lags[0]).toBe(mockedEdgeLagList.content[1])
+    expect(lagSettings.length).toBe(2)
+    expect(lagSettings.find(item => item.serialNumber === 'serialNumber-1')?.lags.length).toBe(0)
   })
 })

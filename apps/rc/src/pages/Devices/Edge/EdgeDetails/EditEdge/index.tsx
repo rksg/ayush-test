@@ -113,7 +113,6 @@ export const EditEdgeTabs = () => {
   }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'ports') activeKey = `${activeKey}/${EdgePortTabEnum.PORTS_GENERAL}`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`

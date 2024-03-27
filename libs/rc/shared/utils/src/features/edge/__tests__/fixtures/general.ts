@@ -504,7 +504,7 @@ export const mockedHaNetworkSettings = {
     virtualIp: '1.1.1.1',
     ports: [{
       serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
-      portName: 'port1'
+      portName: 'port2'
     }, {
       serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'lag1'

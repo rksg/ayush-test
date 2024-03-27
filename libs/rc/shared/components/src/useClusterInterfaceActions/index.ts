@@ -33,7 +33,8 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
   const {
     data: allInterfaceData,
-    isLoading: isInterfaceDataLoading
+    isLoading: isInterfaceDataLoading,
+    isFetching: isInterfaceDataFetching
   } = useGetAllInterfacesByTypeQuery({
     payload: {
       edgeIds: edgeNodeList?.map(item => item.serialNumber),
@@ -220,6 +221,7 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
   return {
     allInterfaceData,
     isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   }
 }

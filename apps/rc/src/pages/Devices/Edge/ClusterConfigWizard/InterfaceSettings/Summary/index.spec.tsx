@@ -1,8 +1,9 @@
 import { Form } from 'antd'
 
-import { StepsForm }                        from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }       from '@acx-ui/test-utils'
+import { StepsForm }                  from '@acx-ui/components'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
+
+import { mockClusterConfigWizardData } from '../../__tests__/fixtures'
 
 import { Summary } from '.'
 
@@ -23,26 +24,8 @@ describe('InterfaceSettings - Summary', () => {
   it('should correctly render', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', [
-        {
-          interfaces: {
-            'serialNumber-1': {
-              serialNumber: 'serialNumber-1',
-              id: 'portId-1',
-              portName: 'port1',
-              ipMode: EdgeIpModeEnum.DHCP,
-              mac: '00:00:00:00',
-              portType: EdgePortTypeEnum.WAN,
-              isCorePort: false,
-              isLag: false,
-              isLagMember: false,
-              portEnabled: true
-            }
-          },
-          vip: '192.168.0.23'
-        }
-      ])
-      form.setFieldValue('timeout', 3)
+      form.setFieldValue('vipConfig', mockClusterConfigWizardData.vipConfig)
+      form.setFieldValue('timeout', mockClusterConfigWizardData.timeout)
       return form
     })
     render(

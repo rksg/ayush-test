@@ -33,7 +33,7 @@ export const ClusterInterfaceSettings = () => {
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const {
     allInterfaceData,
-    isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(clusterInfo)
 
@@ -124,7 +124,7 @@ export const ClusterInterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataFetching }]}>
       <StepsForm<ClusterInterfaceSettingsFormType>
         form={form}
         onFinish={applyAndFinish}
