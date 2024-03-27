@@ -19,7 +19,7 @@ import {
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { useSdLanScopedNetworkVenues }                              from '../../useEdgeActions'
+import { useSdLanScopedNetworkVenues }                              from '../../EdgeSdLan/useEdgeSdLanActions'
 import { list, network, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
 import NetworkFormContext                                           from '../NetworkFormContext'
 
@@ -48,9 +48,12 @@ jest.mock('../../NetworkVenueScheduleDialog', () => ({
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>
 }))
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({
+    sdLansVenueMap: {},
+    networkVenueIds: []
+  })
 }))
 
 function wrapper ({ children }: { children: React.ReactElement }) {
@@ -311,7 +314,10 @@ describe('Create Network: Venues Step', () => {
   it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue(['02e2ddbc88e1428987666d31edbc3d9a'])
+    jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
+      sdLansVenueMap: {},
+      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a']
+    })
 
     render(<Venues defaultActiveVenues={[list.data[0].id]} />, {
       wrapper,

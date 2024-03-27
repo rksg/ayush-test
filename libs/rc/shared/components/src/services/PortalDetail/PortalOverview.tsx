@@ -3,18 +3,19 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { SummaryCard }                                        from '@acx-ui/components'
-import { PortalPreviewModal, getLanguage, initialPortalData } from '@acx-ui/rc/components'
-import { useGetPortalLangMutation }                           from '@acx-ui/rc/services'
-import { Demo, PortalLanguageEnum }                           from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                   from '@acx-ui/utils'
+import { SummaryCard }              from '@acx-ui/components'
+import { useGetPortalLangMutation } from '@acx-ui/rc/services'
+import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }         from '@acx-ui/utils'
 
-import Photo   from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo    from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { initialPortalData }               from '../../services/PortalForm'
+import { PortalPreviewModal, getLanguage } from '../PortalDemo'
+import Photo                               from '../PortalForm/assets/images/portal-demo/PortalPhoto.svg'
+import Powered                             from '../PortalForm/assets/images/portal-demo/PoweredLogo.svg'
+import Logo                                from '../PortalForm/assets/images/portal-demo/RuckusCloud.svg'
 
-export default function PortalOverview (props: { demoValue: Demo }) {
+export function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
   const params = useParams()

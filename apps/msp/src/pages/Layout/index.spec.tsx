@@ -68,29 +68,6 @@ const tenantInstallerDetail = {
   upgradeGroup: 'production'
 }
 
-const integratorCustomersList = {
-  data: [{
-    accountType: 'TRIAL',
-    apSwLicenses: 50,
-    creationDate: '1706776366333',
-    edgeLicenses: 0,
-    entitlements: [{ expirationDateTs: '1709368337000', consumed: '0', quantity: '50' }],
-    id: '42aba1adf0e544df8e13ece0515c8d4f',
-    installerCount: 0,
-    integrator: 'fe39255f8c1547ed9893b79f793fd333',
-    integratorCount: 1,
-    mspAdminCount: 1,
-    mspEcAdminCount: 0,
-    mspIntegratorAdminCount: 1,
-    name: 'customer1234',
-    status: 'Active',
-    streetAddress: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-    switchLicenses: 0,
-    tenantType: 'MSP_REC',
-    wifiLicenses: 0
-  }]
-}
-
 const userProfile1 = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -234,6 +211,9 @@ describe('Layout', () => {
     services.useGetGlobalValuesQuery = jest.fn().mockImplementation(() => {
       return { data: {} }
     })
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return true
+    })
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getFirmwareVersionIdList.url,
@@ -311,8 +291,8 @@ describe('Layout', () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantLSPDetail }
     })
-    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
-      return { data: [] }
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return false
     })
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile2 }
@@ -334,12 +314,13 @@ describe('Layout', () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantLSPDetail }
     })
-    services.useIntegratorCustomerListQuery = jest.fn().mockImplementation(() => {
-      return { data: integratorCustomersList }
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return true
     })
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile2 }
     })
+
     render(
       <Provider>
         <Layout />
@@ -427,6 +408,9 @@ describe('Layout', () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantNonVarDetail }
     })
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return true
+    })
     render(
       <Provider>
         <Layout />
@@ -444,6 +428,9 @@ describe('Layout', () => {
 
   it('should render config template layout for MSP-Non-Var users', async () => {
     mockedHasConfigTemplateAccess.mockReturnValue(true)
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return true
+    })
 
     render(
       <Provider>
@@ -455,6 +442,9 @@ describe('Layout', () => {
   it('should render layout correctly for MSP_INSTALLER', async () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantInstallerDetail }
+    })
+    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
+      return false
     })
 
     render(
