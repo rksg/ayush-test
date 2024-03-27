@@ -282,7 +282,13 @@ export const OnboardedSystems = () => {
             onOk: async () => {
               await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
                 .unwrap()
-                .then(()=> setSelected(undefined))
+                .then(()=> {
+                  showToast({
+                    type: 'success',
+                    content: $t({
+                      defaultMessage: '{name} was deleted' }, { name: selected!.name }) })
+                  setSelected(undefined)
+                })
                 .catch(response => {
                   showToast({ type: 'error', content: formatDeleteError(selected!, response) })
                 })
