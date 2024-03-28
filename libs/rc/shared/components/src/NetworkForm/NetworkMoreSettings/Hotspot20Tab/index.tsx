@@ -4,7 +4,7 @@ import { Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                            from 'lodash'
 import { useIntl }                                  from 'react-intl'
 
-import { Drawer, Tooltip } from '@acx-ui/components'
+import { Tooltip } from '@acx-ui/components'
 // import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 // import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { Table, TableProps }                      from '@acx-ui/components'
@@ -19,8 +19,6 @@ import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
 import ConnectionCapabilityDrawer from './ConnectionCapabilityDrawer'
-
-const { useWatch } = Form
 
 const defaultConnectionCapabilities = [
   {
@@ -97,7 +95,7 @@ export function Hotspot20Tab (props: {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
   const { wlanData } = props
-  const form = Form.useFormInstance()
+  // const form = Form.useFormInstance()
   const [editMode, setEditMode] = useState(false)
   const [connectionCapabilityDrawerVisible, setConnectionCapabilityDrawerVisible] = useState(false)
   const [connectionCapabilities, setConnectionCapabilities] =

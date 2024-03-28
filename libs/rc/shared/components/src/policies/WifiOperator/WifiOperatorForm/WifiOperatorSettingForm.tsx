@@ -2,7 +2,7 @@ import { Button, Form, Input, Space } from 'antd'
 import TextArea                       from 'antd/lib/input/TextArea'
 import { useIntl }                    from 'react-intl'
 
-import { GridCol, GridRow, Select, StepsFormLegacy, Subtitle }             from '@acx-ui/components'
+import { Select, Subtitle }                                                from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                              from '@acx-ui/icons'
 import { useGetWifiOperatorListQuery }                                     from '@acx-ui/rc/services'
 import { FriendlyName, domainNameWildcardRegExp, servicePolicyNameRegExp } from '@acx-ui/rc/utils'

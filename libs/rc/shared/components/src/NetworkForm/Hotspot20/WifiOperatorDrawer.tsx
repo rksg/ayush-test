@@ -24,14 +24,12 @@ const WifiOperatorDrawer = (props: WifiOperatorDrawerProps) => {
     <Drawer
       title={$t({ defaultMessage: 'Add Wi-Fi Operator' })}
       visible={visible}
-      width={430}
+      width={450}
       children={content}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
-          onCancel={() => {
-            drawerForm.resetFields()
-            handleClose()}}
+          onCancel={() => { handleClose() }}
           onSave={async () => handleSave()}
         />
       }
