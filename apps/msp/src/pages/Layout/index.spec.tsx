@@ -7,6 +7,8 @@ import { Provider, rbacApiURL }                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                   from '@acx-ui/user'
 
+import HspContext from '../../HspContext'
+
 import Layout from '.'
 
 const tenantDetail = {
@@ -39,20 +41,6 @@ const tenantNonVarDetail = {
   upgradeGroup: 'production'
 }
 
-const tenantLSPDetail = {
-  createdDate: '2022-12-24T01:06:03.205+00:00',
-  entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
-  externalId: '_24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
-  id: '3061bd56e37445a8993ac834c01e2710',
-  isActivated: true,
-  maintenanceState: false,
-  name: 'Din Tai Fung',
-  ruckusUser: false,
-  status: 'active',
-  tenantType: 'MSP_INTEGRATOR',
-  updatedDate: '2022-12-24T01:06:05.021+00:00',
-  upgradeGroup: 'production'
-}
 const tenantInstallerDetail = {
   createdDate: '2022-12-24T01:06:03.205+00:00',
   entitlementId: 'asgn__24de8731-832c-4191-b1b0-c2d2a339d6b1_GioRFRJW',
@@ -211,9 +199,7 @@ describe('Layout', () => {
     services.useGetGlobalValuesQuery = jest.fn().mockImplementation(() => {
       return { data: {} }
     })
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return true
-    })
+
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getFirmwareVersionIdList.url,
@@ -285,54 +271,33 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'Settings' })).toBeNull()
   })
 
-  // below tests cases are temporary and need to revert once BE changes available
-  // show / hide brand 360 and Ruckus End customer menu option for LSP
-  it('should hide menu options in case of LSP has no REC data', async () => {
-    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantLSPDetail }
-    })
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return false
-    })
+  it('should hide menu options in case of LSP', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile2 }
     })
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantInstallerDetail }
+    })
     render(
       <Provider>
-        <Layout />
+        <HspContext.Provider value={{
+          state: {
+            isHsp: true
+          },
+          dispatch: jest.fn()
+        }}>
+          <Layout />
+        </HspContext.Provider>
       </Provider>, { route: { params } })
 
-    await waitFor(async () => {
-      expect(await screen.findByText('My Customers')).toBeVisible()
-    })
+
+    await expect(await screen.findByText('My Customers')).toBeVisible()
+
     expect(screen.queryByRole('menuitem', { name: 'testBrand' })).toBeNull()
     await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
-    await waitFor(async () => expect(await screen.findByText('MSP Customers')).toBeInTheDocument())
+    await expect(await screen.findByText('MSP Customers')).toBeInTheDocument()
   })
 
-  it('should show menu options in case of LSP has REC data', async () => {
-    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
-      return { data: tenantLSPDetail }
-    })
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return true
-    })
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile2 }
-    })
-
-    render(
-      <Provider>
-        <Layout />
-      </Provider>, { route: { params } })
-
-    await waitFor(async () => {
-      expect(await screen.findByText('My Customers')).toBeVisible()
-    })
-    expect(await screen.findByRole('menuitem', { name: 'testBrand' })).toBeVisible()
-    await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
-    await waitFor(async () => expect(await screen.findByText('MSP Customers')).not.toBeVisible())
-  })
   it('should render layout correctly for non-support', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile2 }
@@ -408,9 +373,6 @@ describe('Layout', () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantNonVarDetail }
     })
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return true
-    })
     render(
       <Provider>
         <Layout />
@@ -428,9 +390,6 @@ describe('Layout', () => {
 
   it('should render config template layout for MSP-Non-Var users', async () => {
     mockedHasConfigTemplateAccess.mockReturnValue(true)
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return true
-    })
 
     render(
       <Provider>
@@ -442,9 +401,6 @@ describe('Layout', () => {
   it('should render layout correctly for MSP_INSTALLER', async () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
       return { data: tenantInstallerDetail }
-    })
-    services.useHospitalityVerticalCheck = jest.fn().mockImplementation(() => {
-      return false
     })
 
     render(
@@ -463,18 +419,24 @@ describe('Layout', () => {
   it('should render menues correctly for HSP', async () => {
 
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_BRAND_360)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
-        <Layout />
+        <HspContext.Provider value={{
+          state: {
+            isHsp: true
+          },
+          dispatch: jest.fn()
+        }}>
+          <Layout />
+        </HspContext.Provider>
       </Provider>, { route: { params } })
 
-    await waitFor(async () => {
-      expect(await screen.findByText('My Customers')).toBeVisible()
-      await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
-      await waitFor(async () => expect(await screen.findByText('Brand Properties'))
-        .toBeInTheDocument())
-    })
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    await fireEvent.mouseOver(screen.getByRole('menuitem', { name: 'My Customers' }))
+    await expect(await screen.findByText('Brand Properties'))
+      .toBeInTheDocument()
   })
 })
