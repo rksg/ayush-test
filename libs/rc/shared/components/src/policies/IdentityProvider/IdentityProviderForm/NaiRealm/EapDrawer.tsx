@@ -131,8 +131,8 @@ const EapDrawer = (props: EapDrawerProps) => {
           <>
             {
               fields.map((field, index) =>
-                <Row>
-                  <Space key={`authInfo-${index}`}>
+                <Row key={`authInfo-${index}`}>
+                  <Space >
                     <Col>
                       <Form.Item
                         name={[index, 'info']}

@@ -35,7 +35,7 @@ type IdentityProviderFormProps = {
    modalCallBack?: (id?: string) => void
 }
 
-const IdentityProviderForm = (props: IdentityProviderFormProps) => {
+export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -173,5 +173,3 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   </>
   )
 }
-
-export default IdentityProviderForm

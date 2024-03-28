@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader }  from '@acx-ui/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteIdentityProviderMutation,
@@ -23,8 +23,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
-
-import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: ['id', 'name',
@@ -112,7 +110,7 @@ export default function IdentityProviderTable () {
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}>
             <Button
               type='primary'
-              disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
+              disabled={tableQuery.data?.totalCount! >= IDENTITY_PROVIDER_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Identity Provider' })}
             </Button>
           </TenantLink>
