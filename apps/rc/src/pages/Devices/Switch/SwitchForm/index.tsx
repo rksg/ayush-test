@@ -43,7 +43,8 @@ import {
   VenueMessages,
   checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
-  convertInputToUppercase
+  convertInputToUppercase,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -116,6 +117,7 @@ export function SwitchForm () {
   const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSupport8100 = true//useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const switchListPayload = {
     searchString: '',
@@ -326,7 +328,8 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupport8100 ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) :
+      new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
