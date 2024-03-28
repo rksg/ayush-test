@@ -8,6 +8,11 @@ import {
   WlanSecurityEnum,
   AuthRadiusEnum, RadioEnum, RadioTypeEnum, SchedulerTypeEnum
 } from '@acx-ui/rc/utils'
+
+import Photo   from '../assets/images/portal-demo/PortalPhoto.svg'
+import Powered from '../assets/images/portal-demo/PoweredLogo.svg'
+import Logo    from '../assets/images/portal-demo/RuckusCloud.svg'
+
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -1024,6 +1029,55 @@ export const portalListWithPhoto = [
     }
   }
 ]
+
+export const portalTemaplteResponse = {
+  id: '1',
+  name: 'test111',
+  content: {
+    bgColor: 'var(--acx-primary-white)',
+    bgImage: '',
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: 'var(--acx-primary-black)',
+    welcomeSize: 16,
+    photo: Photo,
+    photoRatio: 170,
+    logo: Logo,
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, '+
+      'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: 'var(--acx-primary-black)',
+    secondarySize: 12,
+    buttonColor: 'var(--acx-accents-orange-50)',
+    poweredBgColor: 'var(--acx-primary-white)',
+    poweredColor: 'var(--acx-primary-black)',
+    poweredSize: 14,
+    poweredImg: Powered,
+    poweredImgRatio: 50,
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    } ,
+    displayLangCode: 'en',
+    wifi4EUNetworkId: '',
+    alternativeLang: {
+      cs: false,
+      zh_TW: false,
+      fi: false,
+      fr: false,
+      de: false,
+      el: false,
+      hu: false,
+      it: false
+    }
+  }
+}
+
 export const externalProviders = {
   providers: [
     {
