@@ -80,8 +80,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (res: { data: ActivityIncompatibleFeatures[], page: number, incompatibleCount: number, totalCount: number }) => {
-        const extra = { incompatibleCount: res.incompatibleCount } as ActivityApCompatibilityExtraParams
+      transformResponse: (res: { data: ActivityIncompatibleFeatures[], page: number, impactedCount: number, totalCount: number }) => {
+        const extra = { impactedCount: res.impactedCount } as ActivityApCompatibilityExtraParams
         return { data: res.data, page: res.page, totalCount: res.totalCount, extra }
       },
       extraOptions: { maxRetries: 5 }

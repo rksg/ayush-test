@@ -34,23 +34,23 @@ export const ActivityApCompatibilityTable = ({
   })
 
   useEffect(() => {
-    setVisible(true)
+    setVisible(false)
     updateActivityDesc('')
   },[requestId])
 
   useEffect(() => {
     if (tableQuery.data?.data) {
       const count = tableQuery.data?.totalCount ?? 0
-      let incompatibleCount = tableQuery.data?.extra?.incompatibleCount ?? count
-      if (incompatibleCount === 0) {
-        incompatibleCount = count
-      }
+      const impactedCount = tableQuery.data?.extra?.impactedCount ?? count
+
       if (count !== 0) {
-        const percent = Math.round(incompatibleCount / count * 100 )
+        const percent = Math.round(count / impactedCount * 100 )
         setVisible(true)
-        updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
-      } else if (count === 0) setVisible(false)
-    } else setVisible(false)
+        updateActivityDesc(`(${count} / ${impactedCount} devices, ${percent}%)`)
+      } else if (count === 0) {
+        setVisible(false)
+      }
+    }
   },[tableQuery.data?.data])
 
   const columns: TableProps<ActivityIncompatibleFeatures>['columns'] = [
