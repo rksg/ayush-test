@@ -208,6 +208,9 @@ export const edgePortsSetting:EdgePortStatus[] = [{
 export const mockLanInterfaces = {
   'serialNumber-1': [
     {
+      id: 'se1-port3',
+      mac: '00:00:00:00',
+      ipMode: EdgeIpModeEnum.STATIC,
       serialNumber: 'serialNumber-1',
       portName: 'port3',
       ip: '192.168.14.135',
@@ -215,9 +218,13 @@ export const mockLanInterfaces = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      isLag: false
     },
     {
+      id: 'se1-port2',
+      mac: '00:00:00:01',
+      ipMode: EdgeIpModeEnum.STATIC,
       serialNumber: 'serialNumber-1',
       portName: 'port2',
       ip: '192.168.13.136',
@@ -225,11 +232,29 @@ export const mockLanInterfaces = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      isLag: false
+    },
+    {
+      id: 'se1-lag0',
+      mac: '00:00:00:04',
+      ipMode: EdgeIpModeEnum.DHCP,
+      serialNumber: 'serialNumber-1',
+      portName: 'lag0',
+      ip: '',
+      subnet: '',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: true,
+      isLagMember: false,
+      portEnabled: true,
+      isLag: true
     }
   ],
   'serialNumber-2': [
     {
+      id: 'se2-port3',
+      mac: '00:00:00:02',
+      ipMode: EdgeIpModeEnum.STATIC,
       serialNumber: 'serialNumber-2',
       portName: 'port3',
       ip: '192.168.14.135',
@@ -237,9 +262,13 @@ export const mockLanInterfaces = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      isLag: false
     },
     {
+      id: 'se2-port2',
+      mac: '00:00:00:03',
+      ipMode: EdgeIpModeEnum.STATIC,
       serialNumber: 'serialNumber-2',
       portName: 'port2',
       ip: '192.168.13.134',
@@ -247,7 +276,22 @@ export const mockLanInterfaces = {
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
       isLagMember: false,
-      portEnabled: true
+      portEnabled: true,
+      isLag: false
+    },
+    {
+      id: 'se2-lag0',
+      mac: '00:00:00:05',
+      ipMode: EdgeIpModeEnum.DHCP,
+      serialNumber: 'serialNumber-2',
+      portName: 'lag0',
+      ip: '',
+      subnet: '',
+      portType: EdgePortTypeEnum.LAN,
+      isCorePort: true,
+      isLagMember: false,
+      portEnabled: true,
+      isLag: true
     }
   ]
 }

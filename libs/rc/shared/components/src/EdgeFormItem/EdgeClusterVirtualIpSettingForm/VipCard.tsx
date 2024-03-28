@@ -157,7 +157,7 @@ const validateInterfaces = async (
     await validateSubnetIsConsistent(interfacesArr.map(item => ({
       ip: item.ip?.split('/')[0],
       subnet: item.subnet
-    })))
+    })), 'true')
   } catch (error) {
     return Promise.reject(
       $t({ defaultMessage: 'Make sure that each node is within the same subnet range.' })
