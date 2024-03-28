@@ -68,7 +68,7 @@ export default function WebhooksTable () {
 
   useEffect(() => {
     if (response.isSuccess) {
-      showToast({ type: 'success', content: $t({ defaultMessage: 'Webhook deleted' }) })
+      showToast({ type: 'success', content: $t({ defaultMessage: 'Webhook was deleted' }) })
     }
     if (response.isError) {
       handleError(
@@ -116,7 +116,8 @@ export default function WebhooksTable () {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([webhook]) => showActionModal({
       type: 'confirm',
-      title: $t({ defaultMessage: 'Are you sure you want to delete this webhook?' }),
+      title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
+      content: $t({ defaultMessage: 'Are you sure you want to delete this webhook?' }),
       onOk: () => doDelete(webhook.id)
     })
   }]

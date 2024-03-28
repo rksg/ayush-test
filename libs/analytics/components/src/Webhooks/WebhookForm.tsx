@@ -5,10 +5,18 @@ import { Checkbox, Form, FormInstance, FormProps, Input, Select, Switch } from '
 import _                                                                  from 'lodash'
 import { useIntl }                                                        from 'react-intl'
 
-import { incidentSeverities }                                                       from '@acx-ui/analytics/utils'
-import { Button, Drawer, DrawerProps, Loader, showActionModal, showToast, Tooltip } from '@acx-ui/components'
-import { get }                                                                      from '@acx-ui/config'
-import { URLProtocolRegExp }                                                        from '@acx-ui/rc/utils'
+import { incidentSeverities } from '@acx-ui/analytics/utils'
+import {
+  Button,
+  DisabledButton,
+  Drawer,
+  DrawerProps,
+  Loader,
+  showActionModal,
+  showToast
+} from '@acx-ui/components'
+import { get }               from '@acx-ui/config'
+import { URLProtocolRegExp } from '@acx-ui/rc/utils'
 
 import {
   useCreateWebhookMutation,
@@ -71,8 +79,8 @@ export function WebhookForm (props: {
       showToast({
         type: 'success',
         content: webhook?.id
-          ? $t({ defaultMessage: 'Webhook updated' })
-          : $t({ defaultMessage: 'Webhook created' })
+          ? $t({ defaultMessage: 'Webhook was updated' })
+          : $t({ defaultMessage: 'Webhook was created' })
       })
     }
 
@@ -93,8 +101,17 @@ export function WebhookForm (props: {
   const formProps: FormProps<WebhookDto> = {
     layout: 'vertical',
     form,
-    initialValues: _.pick(webhook, webhookDtoKeys) as Partial<WebhookDto>,
-    onFinish: (values) => { submit(values) }
+    initialValues: _.pick(webhook, webhookDtoKeys) as Partial<WebhookDto>
+  }
+
+  const onSave = async () => {
+    try {
+      await form.validateFields()
+      const values = form.getFieldsValue()
+      await submit(values).unwrap()
+    } catch (error) {
+      if (error instanceof Error) throw error
+    }
   }
 
   const drawerProps: DrawerProps = {
@@ -105,19 +122,15 @@ export function WebhookForm (props: {
       ? $t({ defaultMessage: 'Edit Webhook' })
       : $t({ defaultMessage: 'Create Webhook' }),
     onClose: onClose,
-    footer: <>
-      <WebhookSwitch key={`toggle-${webhook?.id}`} {...{ form, webhook }} />
-      <div>
-        <Button
-          onClick={onClose}
-          children={$t({ defaultMessage: 'Cancel' })} />
-        <Button
-          type='primary'
-          onClick={() => form.submit()}
-          children={$t({ defaultMessage: 'Save' })}
-        />
-      </div>
-    </>
+    footer: <Drawer.FormFooter
+      extra={<WebhookSwitch key={`toggle-${webhook?.id}`} {...{ form, webhook }} />}
+      buttonLabel={{ save: webhook?.id
+        ? $t({ defaultMessage: 'Save' })
+        : $t({ defaultMessage: 'Create' })
+      }}
+      onCancel={onClose}
+      onSave={onSave}
+    />
   }
   return <Drawer {...drawerProps}>
     <Loader states={[rg]}>
@@ -189,7 +202,6 @@ function SendSampleIncident () {
     Form.useWatch('secret'),
     Form.useWatch('callbackUrl')
   ]
-  const disabled = Boolean(secret && callbackUrl) !== true || response.isLoading
 
   const onClick = useCallback(
     () => { sendSample({ secret, callbackUrl }) },
@@ -227,25 +239,25 @@ function SendSampleIncident () {
     if (isEnded) response.reset()
   }, [$t, response])
 
-  let children = <Button
-    {...{ disabled, onClick }}
-    htmlType='button'
-    type='default'
-    size='small'
-    children={response.isLoading
-      ? $t({ defaultMessage: 'Sending Sample Incident' })
-      : $t({ defaultMessage: 'Send Sample Incident' })}
-  />
-
-  if  (disabled) {
-    const tooltip = $t({ defaultMessage: 'Please fill in Webhook URL and Secret' })
-    children = <>
-      {children}
-      <Tooltip.Info title={tooltip} />
-    </>
-  }
-
-  return children
+  const buttonText = $t({ defaultMessage: 'Send Sample Incident' })
+  return (Boolean(secret && callbackUrl) === true)
+    ? <Button
+      onClick={onClick}
+      disabled={response.isLoading}
+      loading={response.isLoading}
+      htmlType='button'
+      type='default'
+      size='small'
+      children={response.isLoading
+        ? $t({ defaultMessage: 'Sending Sample Incident' })
+        : buttonText
+      }
+    />
+    : <DisabledButton
+      title={$t({ defaultMessage: 'Please fill in Webhook URL and Secret' })}
+      size='small'
+      children={buttonText}
+    />
 }
 
 function EventTypesInput (props: CheckboxGroupProps) {
@@ -290,7 +302,6 @@ function WebhookSwitch (props: { webhook?: Webhook, form: FormInstance<WebhookDt
         props.form.setFieldsValue({ enabled: value })
       }}
     />
-    {' '}
-    {enabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}
+    <span>{enabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}</span>
   </label>)
 }

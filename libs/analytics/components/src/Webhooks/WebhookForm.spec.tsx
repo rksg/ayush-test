@@ -57,7 +57,7 @@ describe('WebhookForm', () => {
     const name = await screen.findByRole('textbox', { name: 'Name' })
 
     // trigger required validations
-    await click(await screen.findByRole('button', { name: 'Save' }))
+    await click(await screen.findByRole('button', { name: 'Create' }))
 
     expect(await screen.findAllByRole('alert', {
       name: (_, el) => el.textContent!.includes('Please enter')
@@ -154,9 +154,9 @@ describe('WebhookForm', () => {
             return res(ctx.json({ success: true }))
           })
         )
-        await click(await screen.findByRole('button', { name: 'Save' }))
+        await click(await screen.findByRole('button', { name: 'Create' }))
 
-        expect(await screen.findByText('Webhook created')).toBeVisible()
+        expect(await screen.findByText('Webhook was created')).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
         await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
@@ -170,7 +170,7 @@ describe('WebhookForm', () => {
             return res.networkError('Failed to connect')
           })
         )
-        await click(await screen.findByRole('button', { name: 'Save' }))
+        await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText('Failed to create webhook')).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
@@ -187,7 +187,7 @@ describe('WebhookForm', () => {
             return res(ctx.status(status), ctx.json({ error }))
           })
         )
-        await click(await screen.findByRole('button', { name: 'Save' }))
+        await click(await screen.findByRole('button', { name: 'Create' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
@@ -208,7 +208,7 @@ describe('WebhookForm', () => {
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        expect(await screen.findByText('Webhook updated')).toBeVisible()
+        expect(await screen.findByText('Webhook was updated')).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
         await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
@@ -272,9 +272,9 @@ describe('WebhookForm', () => {
             return res(ctx.json({ success: true }))
           })
         )
-        await click(await screen.findByRole('button', { name: 'Save' }))
+        await click(await screen.findByRole('button', { name: 'Create' }))
 
-        expect(await screen.findByText('Webhook created')).toBeVisible()
+        expect(await screen.findByText('Webhook was created')).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
         await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
@@ -293,7 +293,7 @@ describe('WebhookForm', () => {
         )
         await click(await screen.findByRole('button', { name: 'Save' }))
 
-        expect(await screen.findByText('Webhook updated')).toBeVisible()
+        expect(await screen.findByText('Webhook was updated')).toBeVisible()
         expect(payloadSpy).toBeCalledWith(dto)
         await waitFor(() => expect(onClose).toBeCalledTimes(1))
       })
