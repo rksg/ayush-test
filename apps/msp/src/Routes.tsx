@@ -108,6 +108,7 @@ export default function MspRoutes () {
         setLoadMspRoute(true)
       } catch (error) {
         setLoadMspRoute(false)
+        // eslint-disable-next-line no-console
         console.log(error)
       }
     }
