@@ -38,6 +38,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { hasAccess }      from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
@@ -388,7 +389,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
-        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)

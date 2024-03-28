@@ -25,6 +25,9 @@ const EditTunnelProfile = () => {
 
   const { isSdLanP1Used, isSdLanP1Fetching } = useGetEdgeSdLanViewDataListQuery(
     { payload: {
+      fields: [
+        'tunnelProfileId'
+      ],
       filters: { tunnelProfileId: [policyId] }
     } },
     {
@@ -37,7 +40,13 @@ const EditTunnelProfile = () => {
   )
 
   const { isSdLanHaUsed, isDMZUsed, isSdLanHaFetching } = useGetEdgeSdLanP2ViewDataListQuery(
-    { payload: {} },
+    { payload: {
+      fields: [
+        'isGuestTunnelEnabled',
+        'tunnelProfileId',
+        'guestTunnelProfileId'
+      ]
+    } },
     {
       skip: !isEdgeSdLanHaReady,
       selectFromResult: ({ data, isFetching }) => ({
