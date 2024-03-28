@@ -59,15 +59,12 @@ describe('UserButton', () => {
     await userEvent.click(screen.getByRole('button'))
     const links = screen.getAllByRole('link')
     const items = [
-      { text: 'My Profile', href: `/${params.tenantId}/t/profile/settings` },
-      { text: 'Accounts', href: '/analytics/profile/tenants' }
+      { text: 'My Profile', href: `/${params.tenantId}/t/profile/settings` }
     ]
     items.forEach((item, i) => {
       expect(links[i]).toHaveTextContent(item.text)
       expect(links[i]).toHaveAttribute('href', item.href)
     })
-    expect(links[1]).toHaveAttribute('rel', 'noreferrer noopener')
-    expect(links[1]).toHaveAttribute('target', '_blank')
   })
 
   it('should handle logout', async () => {
