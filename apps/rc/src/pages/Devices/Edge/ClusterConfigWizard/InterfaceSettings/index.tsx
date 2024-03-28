@@ -38,6 +38,12 @@ import { VirtualIpForm } from './VirtualIpForm'
 const lagCompatibleErrorFields = getLagFormCompatibilityFields()
 const portCompatibleErrorFields = getPortFormCompatibilityFields()
 
+const enum InterfaceSettingsTypeEnum {
+  LAGS = 'lagSettings',
+  PORTS = 'portSettings',
+  VIRTUAL_IP = 'virtualIpSettings'
+}
+
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
   const { $t } = useIntl()
@@ -71,19 +77,34 @@ export const InterfaceSettings = () => {
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
 
-  const doCompatibleCheck = (typeKey: string): CompatibilityCheckResult => {
+  const doCompatibleCheck = (typeKey: string): void => {
+    const checkResult = getCompatibleCheckResult(typeKey)
+    updateAlertMessage(checkResult, typeKey)
+  }
+
+  const getCompatibleCheckResult = (typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
-    let errorFieldsConfig
-    if (typeKey === 'lagSettings') {
-      errorFieldsConfig = lagCompatibleErrorFields
+    if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
       checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
     } else {
-      errorFieldsConfig = portCompatibleErrorFields
       const lagFormData = _.get(configWizardForm.getFieldsValue(true), 'lagSettings')
       checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
     }
 
+    return checkResult
+  }
+
+  const updateAlertMessage = (
+    checkResult: CompatibilityCheckResult,
+    typeKey?: string
+  ) => {
+    let errorFieldsConfig
+    if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
+      errorFieldsConfig = lagCompatibleErrorFields
+    } else {
+      errorFieldsConfig = portCompatibleErrorFields
+    }
 
     setAlertData({
       type: checkResult.isError?'error':'success',
@@ -101,8 +122,6 @@ export const InterfaceSettings = () => {
           : undefined)}
       />
     })
-
-    return checkResult
   }
 
   const handlePortValueChange = (changedValues: Partial<InterfaceSettingsFormType>) => {
@@ -148,7 +167,7 @@ export const InterfaceSettings = () => {
     typeKey: string,
     changedValues: Partial<InterfaceSettingsFormType>
   ) => {
-    if (typeKey === 'portSettings') {
+    if (typeKey === InterfaceSettingsTypeEnum.PORTS) {
       handlePortValueChange(changedValues)
     }
 
@@ -160,22 +179,46 @@ export const InterfaceSettings = () => {
   const steps = [
     {
       title: $t({ defaultMessage: 'LAG' }),
-      id: 'lagSettings',
-      content: <LagForm />,
+      id: InterfaceSettingsTypeEnum.LAGS,
+      content: <LagForm
+        onInit={() => {
+          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.LAGS)
+          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.LAGS)
+        }}
+      />,
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange('lagSettings', changedValues),
-      onFinish: async (typeKey: string) => {
-        const checkResult = doCompatibleCheck(typeKey)
-        return !checkResult.isError
+        handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
+      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
+        const isBackBtn = event?.currentTarget?.getAttribute('value') === 'pre'
+
+        const checkResult = getCompatibleCheckResult(typeKey)
+        if (isBackBtn) {
+          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+          return true
+        } else {
+          updateAlertMessage(checkResult, typeKey)
+          return !checkResult.isError
+        }
       }
     },
     {
       title: $t({ defaultMessage: 'Port General' }),
-      id: 'portSettings',
-      content: <PortForm />,
+      id: InterfaceSettingsTypeEnum.PORTS,
+      content: <PortForm
+        onInit={() => {
+          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.PORTS)
+          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.PORTS)
+        }}
+      />,
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange('portSettings', changedValues),
-      onFinish: async (typeKey: string) => {
+        handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
+      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
+        const isBackBtn = event?.currentTarget?.getAttribute('value') === 'pre'
+        if (isBackBtn) {
+          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+          return true
+        }
+
         // eslint-disable-next-line max-len
         const allValues = (configWizardForm.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']) ?? {}
 
@@ -189,13 +232,14 @@ export const InterfaceSettings = () => {
         }
         configWizardForm.setFieldValue(['portSettings'], allValues)
 
-        const checkResult = doCompatibleCheck(typeKey)
+        const checkResult = getCompatibleCheckResult(typeKey)
+        updateAlertMessage(checkResult, typeKey)
         return !checkResult.isError
       }
     },
     {
       title: $t({ defaultMessage: 'Cluster Virtual IP' }),
-      id: 'virtualIpSettings',
+      id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
       content: <VirtualIpForm />
     },
     {
@@ -290,7 +334,7 @@ export const InterfaceSettings = () => {
               name={index.toString()}
               title={item.title}
               onFinish={item.onFinish
-                ? () => item.onFinish?.(item.id)
+                ? (_, e?: React.MouseEvent) => item.onFinish?.(item.id, e)
                 : undefined}
               onValuesChange={
                 item.onValuesChange
