@@ -2,9 +2,9 @@ import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                          from '@acx-ui/analytics/utils'
+import { getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
-  qualitativeColorSet, StackedAreaChart, NoData } from '@acx-ui/components'
+  qualitativeColorSet, StackedAreaChart, NoData, Select } from '@acx-ui/components'
 import { formatter }            from '@acx-ui/formatter'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -12,6 +12,7 @@ import {
   useSwitchesTrafficByVolumeQuery,
   SwitchesTrafficByVolumeData
 } from './services'
+import * as UI from './styledComponents'
 
 type Key = keyof Omit<SwitchesTrafficByVolumeData, 'time'>
 
@@ -39,6 +40,22 @@ export function SwitchesTrafficByVolume ({
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
+        <UI.SelectPort>
+          <Select
+            showSearch
+            options={[
+              { label: 'Select...', value: '' },
+              { label: '1/1/1', value: 1 },
+              { label: '1/1/2', value: 2 },
+              { label: '1/1/3', value: 3 },
+              { label: '1/1/4', value: 4 },
+              { label: '1/1/5', value: 5 }
+            ]}
+            onChange={() => {
+              // console.log('value: ', value)
+            }}
+          />
+        </UI.SelectPort>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
