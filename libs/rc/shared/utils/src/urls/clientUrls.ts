@@ -63,9 +63,14 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   disconnectClient: {
     method: 'PATCH',
-    url: '/aps/clients',
+    url: '/venues/:venueId/aps/:serialNumber/clients/:clientMacAddress',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
+    newApi: true
+  },
+  getClientUEDetail: {
+    method: 'GET',
+    url: '/clients/:clientMacAddress',
     newApi: true
   }
 }
