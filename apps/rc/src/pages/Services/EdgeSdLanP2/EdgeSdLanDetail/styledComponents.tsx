@@ -11,7 +11,11 @@ export const InstancesContainer = styled(Space)`
   justify-content: space-between;
 `
 export const InstancesTitle = styled(Typography.Title)`
- &.ant-typography {
-   margin-bottom: 0px;
- }
+  &.ant-typography {
+    margin-bottom: 0px;
+  }
+`
+
+export const StyledTableInfoText = styled(Typography.Text)`
+  color: var(--acx-neutrals-50)
 `
