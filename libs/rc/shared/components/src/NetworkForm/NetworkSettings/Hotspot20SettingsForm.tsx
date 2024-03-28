@@ -27,13 +27,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-// import IdentityProviderDrawer      from '../Hotspot20/IdentityProviderDrawer'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import WifiOperatorDrawer from './Hotspot20/WifiOperatorDrawer'
+import { NETWORK_IDENTITY_PROVIDER_MAX_COUNT } from './Hotspot20/constants'
+import IdentityProviderDrawer                  from './Hotspot20/IdentityProviderDrawer'
+import WifiOperatorDrawer                      from './Hotspot20/WifiOperatorDrawer'
 
 
 const { Option } = Select
@@ -154,7 +155,9 @@ function Hotspot20Form () {
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [wifiOperatorId, setWifiOperatorId] = useState('')
-    const [disabledProviders, setDisabledProviders] = useState(false)
+    const [disabledAddOperator, setDisabledAddOperator] = useState(false)
+    const [disabledAddProvider, setDisabledAddProvider] = useState(false)
+    const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
     const [identityProviders, setIdentityProviders] = useState<string[]>([])
     const [operatorForm] = Form.useForm()
     const defaultPayload = {
@@ -171,14 +174,6 @@ function Hotspot20Form () {
     const handleOperatorChange = (operatorId: string) => {
       setWifiOperatorId(operatorId)
     }
-
-    // const handleProviderChange = (providerId: string) => {
-    //   if (!identityProviders.includes(providerId)) {
-    //     const providers = identityProviders
-    //     providers.push(providerId)
-    //     setIdentityProviders(providers)
-    //   }
-    // }
 
     useEffect(() => {
       form.setFieldValue(['hotspot20Operator'], wifiOperatorId)
@@ -197,7 +192,7 @@ function Hotspot20Form () {
 
     const providerSelectOptions =
       providersData?.data.map(item =>
-        ({ label: item.name, value: item.id, disabled: disabledProviders })) ?? []
+        ({ label: item.name, value: item.id, disabled: disabledSelectProviders })) ?? []
 
     const handleAddOperator = () => {
       setShowOperatorDrawer(true)
@@ -232,11 +227,14 @@ function Hotspot20Form () {
       setShowProviderDrawer(true)
     }
 
-    // const handleIdentityProvider = (id?: string) => {
-    //   if (id !== undefined) {
-    //     handleProviderChange(id)
-    //   }
-    // }
+    const handleIdentityProvider = (id?: string) => {
+      if (id !== undefined && !identityProviders.includes(id)) {
+        const providers = identityProviders
+        providers.push(id)
+        setIdentityProviders(providers)
+      }
+      setShowProviderDrawer(false)
+    }
 
     return (
       <>
@@ -254,6 +252,7 @@ function Hotspot20Form () {
               onChange={handleOperatorChange}
               options={operatorSelectOptions} />
             <Button type='link'
+              disabled={disabledAddOperator}
               onClick={handleAddOperator}
               children={$t({ defaultMessage: 'Add' })}
               style={{ paddingTop: '10px' }} />
@@ -276,15 +275,16 @@ function Hotspot20Form () {
               showArrow
               allowClear
               onChange={(newProviders: string[]) => {
-                if (newProviders.length >= 6) {
-                  setDisabledProviders(true)
+                if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
+                  setDisabledSelectProviders(true)
                 } else {
-                  setDisabledProviders(false)
+                  setDisabledSelectProviders(false)
                 }
                 setIdentityProviders(newProviders)
               }}
             />
             <Button type='link'
+              disabled={disabledAddProvider}
               onClick={handleAddProvider}
               children={$t({ defaultMessage: 'Add' })}
               style={{ paddingTop: '10px' }} />
@@ -298,10 +298,10 @@ function Hotspot20Form () {
           handleSave={handleSaveWifiOperator}
         />
 
-        {/* <IdentityProviderDrawer
+        <IdentityProviderDrawer
           visible={showProviderDrawer}
           handleCancelAndSave={handleIdentityProvider}
-        /> */}
+        />
       </>
     )
   }

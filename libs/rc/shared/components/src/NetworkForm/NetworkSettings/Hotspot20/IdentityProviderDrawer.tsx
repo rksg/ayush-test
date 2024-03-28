@@ -1,9 +1,9 @@
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
-import IdentityProviderForm from '../../../policies/IdentityProvider/IdentityProviderForm/IdentityProviderForm'
+import { IdentityProviderForm } from '../../../policies/IdentityProvider'
+
 
 interface IdentityProviderDrawerProps {
   visible: boolean,
@@ -14,15 +14,13 @@ const IdentityProviderDrawer = (props: IdentityProviderDrawerProps) => {
   const { $t } = useIntl()
   const { visible, handleCancelAndSave } = props
 
-  const content = <Form layout='vertical'>
-    <IdentityProviderForm modalMode={true} modalCallBack={handleCancelAndSave} />
-  </Form>
+  const content = <IdentityProviderForm modalMode={true} modalCallBack={handleCancelAndSave} />
 
   return (
     <Drawer
       title={$t({ defaultMessage: 'Add Identity Provider' })}
       visible={visible}
-      width={500}
+      width={1202}
       children={content}
       footer={
         <Drawer.FormFooter
