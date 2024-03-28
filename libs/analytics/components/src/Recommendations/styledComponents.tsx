@@ -39,7 +39,7 @@ export const RecommendationTableWrapper =
 styled((props: TableProps<RecommendationListItem>) => <Table {...props} />)`
   ${mutedStyles}
   .ant-picker-suffix {
-    margin: 0 !important;
+    margin-left: 0;
   }
 `
 

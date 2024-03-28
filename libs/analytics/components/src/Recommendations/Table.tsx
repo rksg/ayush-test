@@ -151,9 +151,6 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-  const selectedMuteDisabled = selectedRecommendation
-    && selectedRecommendation.statusEnum
-    && disableMuteStatus.includes(selectedRecommendation.statusEnum)
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
@@ -181,14 +178,9 @@ export function RecommendationTable (
         await muteRecommendation({ id, mute: !isMuted }).unwrap()
         setSelectedRowData([])
       },
-      disabled: selectedMuteDisabled,
-      tooltip: selectedMuteDisabled
-        ? $t(
-          // eslint-disable-next-line max-len
-          defineMessage({ defaultMessage: 'Cannot {isMuted, select, false {mute} other {unmute}} scheduled recommendation' }),
-          { isMuted: selectedRecommendation?.isMuted }
-        )
-        : undefined
+      disabled: selectedRecommendation
+            && selectedRecommendation.statusEnum
+            && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
 
