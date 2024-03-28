@@ -20,13 +20,14 @@ interface NodeProps {
   onClick: (node: NodeData, event: MouseEvent) => void;
   onMouseLeave: () => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
+  selectedVlanPortList: string[];
 }
 
 const Nodes: React.FC<NodeProps> = (props) => {
   const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
+  const { nodes, expColEvent, onHover, onClick, nodesCoordinate, selectedVlanPortList } = props
 
   useEffect(() => {
     nodes
@@ -92,7 +93,10 @@ const Nodes: React.FC<NodeProps> = (props) => {
               }}
               className={`node tree-node
                 ${params?.switchId === node.data.id && 'focusNode'} 
-                ${params?.apId === node.data.id && 'focusNode'}`}
+                ${params?.apId === node.data.id && 'focusNode'} 
+                ${selectedVlanPortList &&
+                  selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
+              }
               id={node.data.id}
             >
               <g

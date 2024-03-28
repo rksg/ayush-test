@@ -28,12 +28,13 @@ interface LinksProps {
   targetNode?: any;
   onClick: (node: Link, event: MouseEvent) => void;
   onMouseLeave: () => void;
+  selectedVlanPortList: string[];
 }
 
 // eslint-disable-next-line max-len
 
 export const Links: React.FC<LinksProps> = (props) => {
-  const { links, linksInfo, onClick } = props
+  const { links, linksInfo, onClick, selectedVlanPortList } = props
   let delayHandler: NodeJS.Timeout
 
   const linkColor: { [key in ConnectionStatus]: string } = {
@@ -164,7 +165,11 @@ export const Links: React.FC<LinksProps> = (props) => {
         return (
           <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
-            className={`edgePath ${linkClass} ${link.source.data.id}`}
+            className={`edgePath 
+              ${linkClass} 
+              ${link.source.data.id} 
+              ${selectedVlanPortList && selectedVlanPortList.includes(
+            'link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}

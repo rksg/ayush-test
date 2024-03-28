@@ -94,8 +94,8 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
     }
 
     const portData = [
-      node?.untaggedVlan !== '' && node.untaggedVlan?.split(' '),
-      node?.taggedVlan !== '' && node.taggedVlan?.split(' ')
+      ...node.taggedVlan?.split(' ') || [],
+      ...node.untaggedVlan?.split(' ') || []
     ]
 
     updateVlanPortData(portData, node.id, setVlanPortData)
@@ -114,10 +114,10 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
     }
 
     const portData = [
-      edge?.connectedPortTaggedVlan !== '' && edge.connectedPortTaggedVlan?.split(' '),
-      edge?.connectedPortUntaggedVlan !== '' && edge.connectedPortUntaggedVlan?.split(' '),
-      edge?.correspondingPortTaggedVlan !== '' && edge.correspondingPortTaggedVlan?.split(' '),
-      edge?.correspondingPortUntaggedVlan !== '' && edge.correspondingPortUntaggedVlan?.split(' ')
+      ...edge.connectedPortTaggedVlan?.split(' ') || [],
+      ...edge.connectedPortUntaggedVlan?.split(' ') || [],
+      ...edge.correspondingPortTaggedVlan?.split(' ') || [],
+      ...edge.correspondingPortUntaggedVlan?.split(' ') || []
     ]
 
     updateVlanPortData(portData, `link_${edge.from}_${edge.to}`, setVlanPortData)
@@ -327,7 +327,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
     debouncedHandleMouseEnter.cancel()
   }
 
-  const handleVlanChange = async (value: string) => {
+  const handleVlanChange = (value: string) => {
     setSelectedVlan(value)
     setSearchValue('')
     document.querySelectorAll('.focusNode').forEach(
@@ -412,7 +412,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 options={vlansOption}
                 defaultValue={selectedVlan}
                 value={selectedVlan}
-                onChange={async (value) => await handleVlanChange(value)}
+                onChange={(value) => handleVlanChange(value)}
               />
             </UI.HeaderComps>
           }
@@ -430,6 +430,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 onLinkMouseLeave={closeLinkTooltipHandler}
                 closeTooltipHandler={closeTooltipHandler}
                 closeLinkTooltipHandler={closeLinkTooltipHandler}
+                selectedVlanPortList={selectedVlan && vlanPortData[selectedVlan]}
               />
             </TopologyTreeContext.Provider>
           </UI.Topology>

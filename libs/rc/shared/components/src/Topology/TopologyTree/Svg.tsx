@@ -15,7 +15,7 @@ const NODE_SIZE: [number, number] = [45, 150]
 const Svg: any = (props: any) => {
   const { width, height, data, edges, onNodeHover,
     onNodeClick, onLinkClick, onNodeMouseLeave, onLinkMouseLeave,
-    closeTooltipHandler, closeLinkTooltipHandler
+    closeTooltipHandler, closeLinkTooltipHandler, selectedVlanPortList
   } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
@@ -138,6 +138,7 @@ const Svg: any = (props: any) => {
               linksInfo={linksInfo}
               onClick={onLinkClick}
               onMouseLeave={onLinkMouseLeave}
+              selectedVlanPortList={selectedVlanPortList}
             />
           }
           {links && (
@@ -148,6 +149,7 @@ const Svg: any = (props: any) => {
               onClick={onNodeClick}
               onMouseLeave={onNodeMouseLeave}
               nodesCoordinate={nodesCoordinate}
+              selectedVlanPortList={selectedVlanPortList}
             />
           )}
         </g>
