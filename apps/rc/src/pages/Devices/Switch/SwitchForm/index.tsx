@@ -117,7 +117,7 @@ export function SwitchForm () {
   const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
-  const isSupport8100 = true//useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const switchListPayload = {
     searchString: '',
