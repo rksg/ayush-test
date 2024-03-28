@@ -140,7 +140,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
         return { ...allAg, ...apGroup, selected: !!apGroup }
       })
-    allApGroups = _.isEmpty(allApGroups) ? [defaultAG] : allApGroups
+    allApGroups = _.isEmpty(allApGroups) ? [defaultAG] : _.uniq(allApGroups)
 
     return {
       selectionType: isAllAps ? 0 : 1,
