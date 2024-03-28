@@ -26,7 +26,6 @@ export const ActivityApCompatibilityTable = ({
   updateActivityDesc
 }: ActivityApCompatibilityTableProps) => {
   const { $t } = useIntl()
-  const [totalCount, setTotalCount] = useState(-1)
   const [visible, setVisible] = useState(true)
   const tableQuery = useTableQuery<ActivityIncompatibleFeatures, RequestPayload<unknown>, ActivityApCompatibilityExtraParams>({
     useQuery: useActivityApCompatibilitiesQuery,
@@ -35,25 +34,24 @@ export const ActivityApCompatibilityTable = ({
   })
 
   useEffect(() => {
+    setVisible(false)
+    updateActivityDesc('')
+  },[requestId])
+
+  useEffect(() => {
     if (tableQuery.data?.data) {
-      if (totalCount === -1) {
-        const count = tableQuery.data?.totalCount ?? 0
-        let incompatibleCount = tableQuery.data?.extra?.incompatibleCount ?? count
-        if (incompatibleCount === 0) {
-          incompatibleCount = count
-        }
-        setTotalCount(count)
-        if (count !== 0) {
-          const percent = Math.round(incompatibleCount / count )
-          updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
-        }
+      const count = tableQuery.data?.totalCount ?? 0
+      const impactedCount = tableQuery.data?.extra?.impactedCount ?? count
+
+      if (count !== 0) {
+        const percent = Math.round(count / impactedCount * 100 )
+        setVisible(true)
+        updateActivityDesc(`(${count} / ${impactedCount} devices, ${percent}%)`)
+      } else if (count === 0) {
+        setVisible(false)
       }
-    } else {
-      setVisible(true)
-      setTotalCount(-1)
-      updateActivityDesc('')
     }
-  },[tableQuery.data?.data, requestId])
+  },[tableQuery.data?.data])
 
   const columns: TableProps<ActivityIncompatibleFeatures>['columns'] = [
     {

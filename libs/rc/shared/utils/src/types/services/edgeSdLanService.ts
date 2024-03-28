@@ -54,6 +54,8 @@ export interface EdgeSdLanViewDataP2 {
   name?: string
   tags?: string[]
   venueId: string
+  edgeId?: string
+  edgeName?: string
   edgeClusterId: string
   networkIds: string[]
   tunnelProfileId: string
@@ -78,6 +80,10 @@ export interface EdgeSdLanViewDataP2 {
   edgeAlarmSummary?: EdgeAlarmSummary
   vlanNum?: number
   vxlanTunnelNum?: number
+  guestVlanNum?: number
+  guestVxlanTunnelNum?: number
+  vlans?: string[]
+  guestVlans?: string[]
 }
 
 export interface EdgeSdLanActivateNetworkPayload {

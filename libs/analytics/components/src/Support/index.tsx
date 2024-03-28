@@ -23,24 +23,26 @@ export const Support = () => {
   }, [result])
 
   return <Loader states={[result]}>
-    <StepsForm.DescriptionWrapper>
-      <Form.Item>
-        <Checkbox
-          onChange={()=>setSupport({
-            account: user.accountId,
-            support: !user.selectedTenant.support
-          })}
-          checked={user.selectedTenant.support}
-          value={user.selectedTenant.support}
-        >
-          {$t({ defaultMessage: 'Enable access to Ruckus Support' })}
-        </Checkbox>
-      </Form.Item>
-      <Typography.Paragraph className='description descriptionsWrapper greyText'>
-        {$t({ defaultMessage: `Enable this when requested by RUCKUS support team.
-          By enabling this, you are granting RUCKUS support with temporary
-          administrator-level access.` })}
-      </Typography.Paragraph>
-    </StepsForm.DescriptionWrapper>
+    <Form layout='horizontal' labelAlign='left'>
+      <StepsForm.DescriptionWrapper>
+        <Form.Item>
+          <Checkbox
+            onChange={()=>setSupport({
+              account: user.accountId,
+              support: !user.selectedTenant.support
+            })}
+            checked={user.selectedTenant.support}
+            value={user.selectedTenant.support}
+          >
+            {$t({ defaultMessage: 'Enable access to Ruckus Support' })}
+          </Checkbox>
+        </Form.Item>
+        <Typography.Paragraph className='description descriptionsWrapper greyText'>
+          {$t({ defaultMessage: `Enable this when requested by RUCKUS support team.
+            By enabling this, you are granting RUCKUS support with temporary
+            administrator-level access.` })}
+        </Typography.Paragraph>
+      </StepsForm.DescriptionWrapper>
+    </Form>
   </Loader>
 }
