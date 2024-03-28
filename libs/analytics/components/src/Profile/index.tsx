@@ -90,7 +90,7 @@ const useTabs = () : Tab[] => {
   const notificationsTab = {
     key: ProfileTabEnum.NOTIFICATIONS,
     title: $t({ defaultMessage: 'Notifications' }),
-    url: '/analytics/profile/notifications'
+    url: '/analytics/profile/settings'
   }
   return [ settingsTab, notificationsTab ]
 }
@@ -119,7 +119,7 @@ export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'User Profile' })}
+      title={$t({ defaultMessage: 'My Profile' })}
     />
     <UserProfileSection />
     {tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

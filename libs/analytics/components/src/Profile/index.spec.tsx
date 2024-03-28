@@ -58,7 +58,7 @@ describe('Profile', () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Notifications'))
-    expect(window.open).toHaveBeenCalledWith('/analytics/profile/notifications', '_blank')
+    expect(window.open).toHaveBeenCalledWith('/analytics/profile/settings', '_blank')
   })
   it('should handle apply', async () => {
     mockServer.use(
