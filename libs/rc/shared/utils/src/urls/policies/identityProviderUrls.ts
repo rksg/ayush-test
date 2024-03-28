@@ -6,19 +6,31 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     url: '/hotspot20IdentityProviders',
     newApi: true
   },
+  getIdentityProvider: {
+    method: 'get',
+    url: '/hotspot20IdentityProviders/:policyId',
+    newApi: true
+  },
   updateIdentityProvider: {
     method: 'put',
     url: '/hotspot20IdentityProviders/:policyId',
     newApi: true
   },
+  deleteIdentityProvider: {
+    method: 'delete',
+    url: '/hotspot20IdentityProviders/:policyId',
+    newApi: true
+  },
+  /*
   deleteIdentityProviderList: {
     method: 'delete',
     url: '/hotspot20IdentityProviders',
     newApi: true
   },
-  getEnhancedIdentityProviderList: {
+  */
+  getIdentityProviderList: {
     method: 'post',
-    url: '/enhancedHotspot20IdentityProviders/query',
+    url: '/hotspot20IdentityProviders/query',
     newApi: true
   }
 }
