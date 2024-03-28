@@ -1,5 +1,6 @@
 import { IntlProvider } from 'react-intl'
 
+import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { sample } from './__tests__/stories'
@@ -8,6 +9,11 @@ import { Timeline } from '.'
 
 describe('Timeline', () => {
   const requestId = 'requestId'
+
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
+
   it('should render', async () => {
     const { asFragment } = render(<IntlProvider locale='en'>
       <Timeline requestId={requestId} items={sample} status={'INPROGRESS'}/>
