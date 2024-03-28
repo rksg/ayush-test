@@ -3,7 +3,7 @@ import { useIntl }            from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
-import WifiOperatorSettingForm from '../../policies/WifiOperator/WifiOperatorForm/WifiOperatorSettingForm'
+import WifiOperatorSettingForm from '../../../policies/WifiOperator/WifiOperatorForm/WifiOperatorSettingForm'
 
 interface WifiOperatorDrawerProps {
     visible: boolean,

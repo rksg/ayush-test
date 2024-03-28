@@ -28,11 +28,12 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 // import IdentityProviderDrawer      from '../Hotspot20/IdentityProviderDrawer'
-import WifiOperatorDrawer          from '../Hotspot20/WifiOperatorDrawer'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+
+import WifiOperatorDrawer from './Hotspot20/WifiOperatorDrawer'
 
 
 const { Option } = Select
@@ -153,7 +154,8 @@ function Hotspot20Form () {
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [wifiOperatorId, setWifiOperatorId] = useState('')
-    // const [identityProviders, setIdentityProviders] = useState<string[]>([])
+    const [disabledProviders, setDisabledProviders] = useState(false)
+    const [identityProviders, setIdentityProviders] = useState<string[]>([])
     const [operatorForm] = Form.useForm()
     const defaultPayload = {
       fields: ['name', 'id'],
@@ -194,7 +196,8 @@ function Hotspot20Form () {
       })
 
     const providerSelectOptions =
-      providersData?.data.map(item => ({ label: item.name, value: item.id })) ?? []
+      providersData?.data.map(item =>
+        ({ label: item.name, value: item.id, disabled: disabledProviders })) ?? []
 
     const handleAddOperator = () => {
       setShowOperatorDrawer(true)
@@ -271,6 +274,15 @@ function Hotspot20Form () {
               mode='multiple'
               options={providerSelectOptions}
               showArrow
+              allowClear
+              onChange={(newProviders: string[]) => {
+                if (newProviders.length >= 6) {
+                  setDisabledProviders(true)
+                } else {
+                  setDisabledProviders(false)
+                }
+                setIdentityProviders(newProviders)
+              }}
             />
             <Button type='link'
               onClick={handleAddProvider}

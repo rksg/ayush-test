@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
-import IdentityProviderForm from '../../policies/IdentityProvider/IdentityProviderForm/IdentityProviderForm'
+import IdentityProviderForm from '../../../policies/IdentityProvider/IdentityProviderForm/IdentityProviderForm'
 
 interface IdentityProviderDrawerProps {
   visible: boolean,
