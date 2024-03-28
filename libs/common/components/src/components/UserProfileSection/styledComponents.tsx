@@ -1,17 +1,9 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { Subtitle }           from '@acx-ui/components'
 import { EnvelopClosedSolid } from '@acx-ui/icons'
-import { NewTabLink }         from '@acx-ui/react-router-dom'
 
-export const TabNewTabLink = styled(NewTabLink)`
-  color: var(--acx-primary-black);
-  &:hover {
-    color: var(--acx-accents-orange-50);
-    text-decoration: none;
-  }
-`
+import { Subtitle } from '../Subtitle'
 
 export const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
   width: 16px;
@@ -50,12 +42,5 @@ export const UserAttributes = styled(Space).attrs({ size: 20, align: 'start' })`
     .ant-typography {
       margin-bottom: 0;
     }
-  }
-`
-export const UserEmailLabel = styled(Space).attrs({ direction: 'vertical', size: 0 })`
-  margin-bottom: 16px;
-  .ant-space-item:last-of-type {
-    color: var(--acx-neutrals-60);
-    font-size: var(--acx-body-5-font-size);
   }
 `

@@ -77,6 +77,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
+  const tabs = useTabs()
   // TODO: add tab onchange unit test after second tab added
   /* istanbul ignore next */
   const onTabChange = (tabKey: string) => {
@@ -86,7 +87,6 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
       pathname: `${basePath.pathname}/admin/${tab?.url || tab.key}`
     })
   }
-  const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader

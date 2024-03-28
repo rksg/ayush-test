@@ -16,8 +16,7 @@ import {
   VideoCallQoeForm,
   VideoCallQoeDetails,
   CrrmDetails,
-  UnknownDetails,
-  Profile
+  UnknownDetails
 }                                                   from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -38,9 +37,6 @@ export default function AnalyticsRoutes () {
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
-      <Route path='analytics/profile/'>
-        <Route path=':activeTab' element={<Profile />} />
-      </Route>
       <Route path='analytics/incidents'
         element={(!canUseAnltAdv
           ? <IncidentListPage />

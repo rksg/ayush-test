@@ -64,11 +64,6 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     }
   }
   )),
-  // getUserProfile: () => ({
-  //   preferences: {
-  //     preferredLanguage: 'en-US'
-  //   }
-  // })
   getUserProfile: jest.fn()
 }))
 jest.mock('@acx-ui/config', () => ({

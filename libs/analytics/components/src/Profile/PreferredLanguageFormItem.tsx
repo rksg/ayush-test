@@ -15,7 +15,7 @@ const PreferredLanguageFormItem = () => {
     <Form.Item
       name='preferredLanguage'
       label={$t({ defaultMessage: 'Preferred Language' })}
-      initialValue={preferences?.preferredLanguage || 'en-US'}
+      initialValue={preferences?.preferredLanguage || DEFAULT_SYS_LANG}
     >
       <Select
         value={preferences?.preferredLanguage || DEFAULT_SYS_LANG}

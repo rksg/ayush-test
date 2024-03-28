@@ -1,18 +1,18 @@
-import { Col, Row, Typography }                      from 'antd'
+import { Col, Row }                                  from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { useUpdatePreferencesMutation }                       from '@acx-ui/analytics/services'
-import { getUserProfile }                                     from '@acx-ui/analytics/utils'
-import { PageHeader, StepsForm, Tabs }                        from '@acx-ui/components'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useUpdatePreferencesMutation }                                               from '@acx-ui/analytics/services'
+import { getUserProfile }                                                             from '@acx-ui/analytics/utils'
+import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
+import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
-import * as UI                       from './styledComponents'
 
 interface Tab {
   key: ProfileTabEnum,
   title: string | JSX.Element,
   component?: JSX.Element,
+  url?: string
 }
 
 interface fromLoc {
@@ -36,78 +36,52 @@ const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
   [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Manager' })
 }
 
-const UserData = () => {
-  const { $t } = useIntl()
+const UserProfileSection = () => {
   const { email, accountId, selectedTenant, firstName, lastName } = getUserProfile()
-  const { Paragraph } = Typography
-  const initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
-  const fullName = `${firstName} ${lastName}`
-  const role = selectedTenant?.role as RolesEnum
+  return <BasicUserProfileSection
+    userProfile={{
+      initials: `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`,
+      fullName: `${firstName} ${lastName}`,
+      role: selectedTenant?.role,
+      email
+    }}
+    tenantId={accountId}
+    roleStringMap={roleStringMap}/>
+}
+
+const SettingsTab = () => {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const [ updatePreferences ] = useUpdatePreferencesMutation()
+  const location = useLocation().state as fromLoc
+  const dashboardPath = useTenantLink('/dashboard')
+  const backPathname = location?.from ?? dashboardPath.pathname
+  const { userId } = getUserProfile()
 
   return (
-    <UI.UserDataWrapper>
-      <UI.UserData>
-        <UI.UserCircle>{initials}</UI.UserCircle>
-        {<div>
-          <UI.UserName>{fullName}</UI.UserName>
-          <UI.UserRole>
-            {$t(roleStringMap[role])}
-          </UI.UserRole>
-          <UI.UserAttributes>
-            <div>
-              <b><UI.EnvelopClosedSolidIcon /></b>
-              <Paragraph>{email}</Paragraph>
-            </div>
-            <div>
-              <b>Tenant ID</b>
-              <Paragraph copyable>{accountId}</Paragraph>
-            </div>
-          </UI.UserAttributes>
-        </div>}
-      </UI.UserData>
-    </UI.UserDataWrapper>
+    <StepsForm
+      buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
+      onFinish={async (data: { preferredLanguage: string }) => {
+        await updatePreferences({ userId, preferences: data }).then(()=>{
+          navigate({ pathname: backPathname }, { replace: true })
+          window.location.reload()
+        })
+      }}
+      onCancel={() => navigate({ pathname: backPathname }, { replace: true })}
+    >
+      <StepsForm.StepForm>
+        <Row gutter={20}>
+          <Col span={8}>
+            <PreferredLanguageFormItem />
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const [ updatePreferences ] = useUpdatePreferencesMutation()
-  const location = useLocation().state as fromLoc
-  const { userId } = getUserProfile()
-
-  const handleUpdateSettings = async (data: { preferredLanguage: string }) => {
-    await updatePreferences({ userId: userId, preferences: data })
-    navigate({
-      pathname: location.from
-    }, { replace: true })
-    window.location.reload()
-  }
-
-  const handleCancel = () => {
-    navigate({
-      pathname: location.from
-    }, { replace: true })
-  }
-
-  const SettingsTab = () => {
-    return (
-      <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
-        onFinish={handleUpdateSettings}
-        onCancel={async () => handleCancel()}
-      >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <PreferredLanguageFormItem />
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
-  }
-
   const settingsTab = {
     key: ProfileTabEnum.SETTINGS,
     title: $t({ defaultMessage: 'Settings' }),
@@ -115,24 +89,26 @@ const useTabs = () : Tab[] => {
   }
   const notificationsTab = {
     key: ProfileTabEnum.NOTIFICATIONS,
-    title: <UI.TabNewTabLink to={'/analytics/profile/settings'}>
-      {$t({ defaultMessage: 'Notifications' })}</UI.TabNewTabLink>
+    title: $t({ defaultMessage: 'Notifications' }),
+    url: '/analytics/profile/notifications'
   }
-
-  return [
-    settingsTab,
-    notificationsTab
-  ]
+  return [ settingsTab, notificationsTab ]
 }
 
 export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
-  const onTabChange = (tab: string) => {
-    navigate({
+  const tabs = useTabs()
+  const onTabChange = (tabKey: string) => {
+    const tab = tabs.find(({ key }) => key === tabKey)
+    if (tab?.url) {
+      window.open(tab.url, '_blank')
+      return
+    }
+    tab && navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/profile/${tab}`
+      pathname: `${basePath.pathname}/profile/${tab.key}`
     })
   }
   const { activeTab } = useParams()
@@ -140,18 +116,15 @@ export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   if (!tab) {
     tab = ProfileTabEnum[tabEnumKey as keyof typeof ProfileTabEnum]
   }
-  const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'User Profile' })}
-      footer={<>
-        <UserData />
-        {tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
-          {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
-        </Tabs>}
-      </>}
     />
+    <UserProfileSection />
+    {tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+      {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
+    </Tabs>}
     {TabComp}
   </>
 }

@@ -8,41 +8,20 @@ import { DEFAULT_SYS_LANG } from '@acx-ui/utils'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useSupportedLangs: jest.fn(() => [
+    { label: 'English', value: 'en-US' },
+    { label: 'Japanese', value: 'ja-JP' }
+  ])
+}))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn(() => ({ data: { preferredLanguage: 'en-US' } }))
 }))
 const mockGetUserProfile = getUserProfile as jest.Mock
 const params = { tenantId: 'tenant-id' }
-const mockUserProfile = {
-  preferredLanguage: DEFAULT_SYS_LANG
-}
-/* eslint-disable max-len */
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ children, showSearch, allowClear, optionFilterProp, ...props
-
-  }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
-
-    let userPreferredLang = 'en'
-    const localeLangName = new Intl.DisplayNames([userPreferredLang], { type: 'language' })
-    const supportedLangs = [
-      { label: `${localeLangName.of('en')}`, value: 'en-US' },
-      { label: `${localeLangName.of('ja')}`, value: 'ja-JP' },
-      { label: `${localeLangName.of('fr')}`, value: 'fr-FR' },
-      { label: `${localeLangName.of('pt')}`, value: 'pt-BR' },
-      { label: `${localeLangName.of('ko')}`, value: 'ko-KR' },
-      { label: `${localeLangName.of('es')}`, value: 'es-ES' }
-    ]
-    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
-      {supportedLangs.map(({ label, value }) =>
-        (<Select.Option value={value} key={value} children={label}/>)
-      )}
-    </select>)
-  }
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+const mockUserProfile = { preferredLanguage: DEFAULT_SYS_LANG }
 
 describe('PreferredLanguageFormItem', () => {
   beforeEach(() => {
@@ -56,64 +35,33 @@ describe('PreferredLanguageFormItem', () => {
       </Provider>, {
         route: { params }
       })
-    expect(await screen.findByRole('combobox', { name: 'Preferred Language' })).toBeVisible()
+    expect(await screen.findByText('Preferred Language')).toBeVisible()
+    expect(await screen.findByText('English')).toBeVisible()
   })
 
   it('should render successfully when userProfile is undefined', async () => {
     jest.mocked(mockGetUserProfile).mockReturnValue({ data: null })
-
     render(
       <Provider>
         <Form> <PreferredLanguageFormItem /> </Form>
       </Provider>, {
         route: { params }
       })
-    expect(await screen.findByRole('combobox', { name: 'Preferred Language' })).toBeVisible()
-  })
-
-  it('renders the form item with the correct initial value and label', async () => {
-    render(
-      <Provider>
-        <Form> <PreferredLanguageFormItem /> </Form>
-      </Provider>
-    )
-    await screen.findByText('Preferred Language')
-    await screen.findByText('English')
-    await screen.findByText('Japanese')
-    await screen.findByText('French')
-    await screen.findByText('Portuguese')
-    await screen.findByText('Korean')
-    await screen.findByText('Spanish')
+    expect(await screen.findByText('English')).toBeVisible()
   })
 
   it('should be able to select new language', async () => {
-    render(
+    const { asFragment } = render(
       <Provider>
         <Form> <PreferredLanguageFormItem /> </Form>
       </Provider>, {
         route: { params }
       })
-
-    await screen.findByText('English')
-    const selector = await screen.findByRole('combobox')
-    await userEvent.click(selector)
-    await userEvent.selectOptions(selector, 'French')
-  })
-
-  it('renders the language options correctly', async () => {
-    render(
-      <Provider>
-        <Form> <PreferredLanguageFormItem /> </Form>
-      </Provider>, {
-        route: { params }
-      })
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[0],
-      screen.getByRole('option', { name: 'English' })
-    )
-
-    const combobox = await screen.findByRole('combobox', { name: 'Preferred Language' })
-    await userEvent.click(combobox)
-    await userEvent.click(await screen.findByText( 'English' ))
+    await userEvent.click(await screen.findByText('English'))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('.ant-select-selection-item')?.textContent).toBe('English')
+    await userEvent.click(await screen.findByText('Japanese'))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('.ant-select-selection-item')?.textContent).toBe('Japanese')
   })
 })

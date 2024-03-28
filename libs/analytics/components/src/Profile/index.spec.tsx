@@ -13,7 +13,7 @@ const sampleProfile = {
   firstName: 'first',
   lastName: 'name',
   email: 'test123@gmail.com',
-  accountId: '"0015000000Gl19SAAV"',
+  accountId: '0015000000Gl19SAAV',
   selectedTenant: {
     role: 'admin'
   },
@@ -34,8 +34,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 
 jest.mock('./PreferredLanguageFormItem', () => ({
-  PreferredLanguageFormItem: () => <div data-testid={'PreferredLanguageFormItem'}
-    title='PreferredLanguageFormItem' />
+  PreferredLanguageFormItem: () => <div data-testid={'PreferredLanguageFormItem'}/>
 }))
 
 describe('Profile', () => {
@@ -47,13 +46,19 @@ describe('Profile', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Settings')).toBeVisible()
   })
-  it('should handle notification tab click', async () => {
+  it('should handle tab click', async () => {
+    render(<Profile tab={ProfileTabEnum.NOTIFICATIONS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Settings'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/analytics/profile/settings', hash: '', search: ''
+    })
+  })
+  it('should handle opening tabs in new window', async () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Notifications'))
-    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/tenant-id/t/analytics/profile/notifications', hash: '', search: ''
-    }))
+    expect(window.open).toHaveBeenCalledWith('/analytics/profile/notifications', '_blank')
   })
   it('should handle apply', async () => {
     mockServer.use(
