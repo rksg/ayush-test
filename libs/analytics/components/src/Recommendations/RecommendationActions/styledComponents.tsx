@@ -21,6 +21,11 @@ export const IconWrapper = styled.span<{ $disabled?: boolean }>`
       color: var(--acx-primary-black);
     `}
 `
+export const ActionsText = styled.span`
+    cursor: pointer;
+    color: var(--acx-accents-blue-50);
+    font-size: 12px !important;
+`
 
 export const RevertIcon = styled(Reload)`
     height: 24px;

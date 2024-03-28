@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -40,7 +40,6 @@ import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
-  EntitlementNetworkDeviceType,
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -57,13 +56,11 @@ import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
 export function MspCustomers () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
-  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const MAX_ALLOWED_SELECTED_EC = 200
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
@@ -242,6 +239,7 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
+        width: 80,
         render: function (_, row) {
           return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
         }
@@ -250,7 +248,8 @@ export function MspCustomers () {
         title: $t({ defaultMessage: 'Address' }),
         dataIndex: 'streetAddress',
         key: 'streetAddress',
-        sorter: true
+        sorter: true,
+        show: false
       },
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
@@ -259,6 +258,7 @@ export function MspCustomers () {
         align: 'center',
         key: 'mspAdminCount',
         sorter: true,
+        width: 140,
         onCell: (data) => {
           return allowManageAdmin ? {
             onClick: () => {
@@ -298,6 +298,7 @@ export function MspCustomers () {
           : $t({ defaultMessage: 'Integrator' }),
         dataIndex: 'integrator',
         key: 'integrator',
+        width: 130,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {
             onClick: () => {
@@ -324,6 +325,7 @@ export function MspCustomers () {
           : $t({ defaultMessage: 'Installer' }),
         dataIndex: 'installer',
         key: 'installer',
+        width: 120,
         onCell: (data: MspEc) => {
           return allowSelectTechPartner ? {
             onClick: () => {
@@ -345,83 +347,40 @@ export function MspCustomers () {
           )
         }
       }]),
-      ...(isDeviceAgnosticEnabled ? [
-        {
-          title: $t({ defaultMessage: 'Installed Devices' }),
-          dataIndex: 'apswLicenseInstalled',
-          key: 'apswLicenseInstalled',
-          sorter: true,
-          render: function (_: React.ReactNode, row: MspEc) {
-            return <div style={{ textAlign: 'center' }}>
-              {mspUtils.transformInstalledDevice(row.entitlements)}</div>
-          }
-        },
-        {
-          title: <div style={{ textAlign: 'center' }}>
-            <div>{$t({ defaultMessage: 'Assigned Device' })}</div>
-            <div>{$t({ defaultMessage: 'Subscriptions' })}</div></div>,
-          dataIndex: 'apswLicense',
-          key: 'apswLicense',
-          sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return <div style={{ textAlign: 'center' }}>
-              {mspUtils.transformDeviceEntitlement(row.entitlements)}</div>
-          }
-        },
-        {
-          title: <div style={{ textAlign: 'center' }}>
-            <div>{$t({ defaultMessage: 'Device Subscriptions' })}</div>
-            <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
-          dataIndex: 'apswLicensesUtilization',
-          key: 'apswLicensesUtilization',
-          sorter: true,
-          render: function (_: React.ReactNode, row: MspEc) {
-            return <div style={{ textAlign: 'center' }}>
-              {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
-          }
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicenseInstalled',
+        key: 'apswLicenseInstalled',
+        align: 'center',
+        sorter: true,
+        width: 140,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return mspUtils.transformInstalledDevice(row.entitlements)
         }
-      ] : [
-        {
-          title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-          dataIndex: 'wifiLicense',
-          key: 'wifiLicense',
-          // align: 'center',
-          sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformApEntitlement(row)
-          }
-        },
-        {
-          title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-          dataIndex: 'wifiLicensesUtilization',
-          // align: 'center',
-          key: 'wifiLicensesUtilization',
-          sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
-          }
-        },
-        {
-          title: $t({ defaultMessage: 'Switch Licenses' }),
-          dataIndex: 'switchLicense',
-          // align: 'center',
-          key: 'switchLicense',
-          sorter: true,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return mspUtils.transformSwitchEntitlement(row)
-          }
-        },
-        {
-          title: $t({ defaultMessage: 'SmartEdge Licenses' }),
-          dataIndex: 'edgeLicenses',
-          // align: 'center',
-          key: 'edgeLicenses',
-          sorter: true,
-          show: edgeEnabled,
-          render: function (data: React.ReactNode, row: MspEc) {
-            return row?.edgeLicenses ? row?.edgeLicenses : 0
-          }
-        }]),
+      },
+      {
+        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        align: 'center',
+        sorter: true,
+        width: 230,
+        render: function (data: React.ReactNode, row: MspEc) {
+          return mspUtils.transformDeviceEntitlement(row.entitlements)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        align: 'center',
+        sorter: true,
+        width: 230,
+        render: function (_: React.ReactNode, row: MspEc) {
+          return <div style={{ textAlign: 'center' }}>
+            {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
+        }
+      },
       ...(!isSupportTier ? [] : [{
         title: $t({ defaultMessage: 'Service Tier' }),
         dataIndex: 'accountTier',
