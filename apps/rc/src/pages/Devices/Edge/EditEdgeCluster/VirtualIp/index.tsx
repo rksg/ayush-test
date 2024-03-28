@@ -1,67 +1,68 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import { Col, Form, FormListFieldData, Input, Row, Slider } from 'antd'
-import { useIntl }                                          from 'react-intl'
-import { useNavigate }                                      from 'react-router-dom'
+import { Col, Form, Row } from 'antd'
+import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
+import { useNavigate }    from 'react-router-dom'
 
-import { Button, Fieldset, Loader, StepsForm, Tooltip }                from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                          from '@acx-ui/icons'
+import { Loader, StepsForm, showActionModal }                          from '@acx-ui/components'
+import { EdgeClusterVirtualIpSettingForm }                             from '@acx-ui/rc/components'
 import { useGetAllInterfacesByTypeQuery, usePatchEdgeClusterMutation } from '@acx-ui/rc/services'
 import {
   EdgeCluster,
-  EdgeClusterTableDataType,
+  EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
-  IpInSubnetPool,
-  getSuggestedIpRange,
-  networkWifiIpRegExp
+  VirtualIpSetting
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { InterfaceTable }        from './InterfaceTable'
-import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
-import * as UI                   from './styledComponents'
+import * as CommUI from '../styledComponents'
 
 interface VirtualIpProps {
-  currentCluster?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
   currentVipConfig?: EdgeCluster['virtualIpSettings']
 }
 
-export interface VirtualIpFormType {
-  timeout: number
-  vipConfig: {
+export interface VirtualIpConfigFormType {
     interfaces: {
       [key: string]: EdgePortInfo
     }
     vip: string
-  }[]
+}
+export interface VirtualIpFormType {
+  timeout: number
+  vipConfig: VirtualIpConfigFormType[]
 }
 
+export const defaultHaTimeoutValue = 3
+const defaultVirtualIpFormValues = {
+  timeout: defaultHaTimeoutValue,
+  vipConfig: [{}]
+} as VirtualIpFormType
+
 export const VirtualIp = (props: VirtualIpProps) => {
-  const { currentCluster, currentVipConfig } = props
+  const { currentClusterStatus, currentVipConfig } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
-  const [selectInterfaceDrawerVisible, setSelectInterfaceDrawerVisible] = useState(false)
-  const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const vipConfig = Form.useWatch('vipConfig', form)
   const [patchEdgeCluster] = usePatchEdgeClusterMutation()
   const {
     data: lanInterfaces,
     isLoading: isLanInterfacesLoading
   } = useGetAllInterfacesByTypeQuery({
     payload: {
-      edgeIds: currentCluster?.edgeList?.map(node => node.serialNumber),
+      edgeIds: currentClusterStatus?.edgeList?.map(node => node.serialNumber),
       portTypes: [EdgePortTypeEnum.LAN]
     }
   }, {
-    skip: !currentCluster?.edgeList || currentCluster?.edgeList.length === 0
+    skip: !currentClusterStatus?.edgeList || currentClusterStatus?.edgeList.length === 0
   })
 
   useEffect(() => {
     if(currentVipConfig) {
-      const timeout = currentVipConfig.virtualIps?.[0]?.timeoutSeconds ?? 3
+      const timeout = currentVipConfig.virtualIps?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
       const editVipConfig = [] as VirtualIpFormType['vipConfig']
       if(lanInterfaces) {
         for(let i=0; i<currentVipConfig.virtualIps.length; i++) {
@@ -69,7 +70,7 @@ export const VirtualIp = (props: VirtualIpProps) => {
           const interfaces = {} as { [key: string]: EdgePortInfo }
           for(let config of currentConfig.ports) {
             const tmp = lanInterfaces?.[config.serialNumber].find(item =>
-              item.portName === config.portName)
+              _.toLower(item.portName) === _.toLower(config.portName))
             interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
           }
           editVipConfig.push({
@@ -78,27 +79,26 @@ export const VirtualIp = (props: VirtualIpProps) => {
           })
         }
       }
+
       form.setFieldsValue({
         timeout,
         vipConfig: editVipConfig
       })
+    } else {
+      form.setFieldsValue(defaultVirtualIpFormValues)
     }
   }, [currentVipConfig, lanInterfaces])
 
-  const maxVipCount = 2
-
-  const openDrawer = (index: number) => {
-    setCurrentIndex(index)
-    setSelectInterfaceDrawerVisible(true)
-  }
+  const isSingleNode = (currentClusterStatus?.edgeList?.length ?? 0) < 2
 
   const handleFinish = async (values: VirtualIpFormType) => {
     try {
       const params = {
-        venueId: currentCluster?.venueId,
-        clusterId: currentCluster?.clusterId
+        venueId: currentClusterStatus?.venueId,
+        clusterId: currentClusterStatus?.clusterId
       }
       const vipSettings = values.vipConfig.map(item => {
+        if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
         const ports = Object.entries(item.interfaces).map(([, v2]) => {
           return {
             serialNumber: v2.serialNumber,
@@ -110,38 +110,51 @@ export const VirtualIp = (props: VirtualIpProps) => {
           timeoutSeconds: values.timeout,
           ports
         }
-      })
+      }).filter(item => Boolean(item)) as VirtualIpSetting[]
       const payload = {
         virtualIpSettings: {
           virtualIps: vipSettings
         }
       }
-      await patchEdgeCluster({ params, payload }).unwrap()
+      if(!isSingleNode && isVipConfigChanged(vipSettings.length === 0 ? undefined : vipSettings)) {
+        showActionModal({
+          type: 'confirm',
+          title: $t({ defaultMessage: 'Warning' }),
+          content: $t({
+            defaultMessage: `Changing any virtual IP configurations might 
+            temporarily cause network disruption and alter the active/backup roles
+            of this cluster. Are you sure you want to continue?`
+          }),
+          onOk: async () => {
+            await patchEdgeCluster({ params, payload }).unwrap()
+          }
+        })
+      } else {
+        await patchEdgeCluster({ params, payload }).unwrap()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const isVipConfigChanged = (vipSettings?: VirtualIpSetting[]) => {
+    return !_.isEqual(vipSettings, currentVipConfig?.virtualIps)
   }
 
   const handleCancel = () => {
     navigate(clusterListPage)
   }
 
-  const handleSelectPort = (data: { [key: string]: EdgePortInfo | undefined }, index?: number) => {
-    if(index === undefined) return
-    vipConfig[index].interfaces = data
-    form.setFieldValue('vipConfig', vipConfig)
-  }
-
   return (
     <Loader states={[{ isLoading: isLanInterfacesLoading }]}>
       <Row>
         <Col span={10}>
-          <UI.Mt15>
+          <CommUI.Mt15>
             {
               // eslint-disable-next-line max-len
               $t({ defaultMessage: 'Please select the node interfaces and assign virtual IPs for seamless failover :' })
             }
-          </UI.Mt15>
+          </CommUI.Mt15>
           <StepsForm
             form={form}
             onFinish={handleFinish}
@@ -149,224 +162,16 @@ export const VirtualIp = (props: VirtualIpProps) => {
             buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
           >
             <StepsForm.StepForm>
-              <UI.Mt15>
-                <Row gutter={[16, 30]}>
-                  <Col span={24}>
-                    <Form.List
-                      name='vipConfig'
-                      initialValue={[{}]}
-                    >
-                      {
-                        (fields, { add, remove }) => (
-                          <Row gutter={[16, 20]}>
-                            {
-                              fields.map((field, index) =>
-                                <Col key={`vip-${index}`} span={24}>
-                                  <VipCard
-                                    field={field}
-                                    index={index}
-                                    remove={remove}
-                                    vipConfig={vipConfig}
-                                    currentCluster={currentCluster}
-                                    openDrawer={openDrawer}
-                                  />
-                                </Col>
-                              )
-                            }
-                            <Col span={24}>
-                              {
-                                fields.length < maxVipCount &&
-                                <Button
-                                  type='link'
-                                  onClick={() => add()}
-                                  children={$t({ defaultMessage: 'Add another virtual IP' })}
-                                />
-                              }
-                            </Col>
-                          </Row>
-                        )
-                      }
-                    </Form.List>
-                  </Col>
-                  <Col span={24}>
-                    <StepsForm.Title>{$t({ defaultMessage: 'Failover Settings' })}</StepsForm.Title>
-                    <Form.Item
-                      label={
-                        <>
-                          {
-                            $t({ defaultMessage: 'HA Timeout' })
-                          }
-                          <Tooltip.Question
-                            title={$t({ defaultMessage: `
-                            HA timeout refers to the duration within which if a node
-                            does not receive a periodic heartbeat from the active node.
-                            This triggers the process of selecting the next active node
-                            to maintain system functionality
-                            ` })}
-                            placement='right'
-                          />
-                        </>
-                      }
-                      name='timeout'
-                      initialValue={3}
-                    >
-                      <Slider
-                        tooltipVisible={false}
-                        style={{ width: '240px' }}
-                        min={3}
-                        max={15}
-                        marks={{
-                          3: $t({ defaultMessage: '3 seconds' }),
-                          15: $t({ defaultMessage: '15 seconds' })
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </UI.Mt15>
+              <CommUI.Mt15>
+                <EdgeClusterVirtualIpSettingForm
+                  currentClusterStatus={currentClusterStatus}
+                  lanInterfaces={lanInterfaces}
+                />
+              </CommUI.Mt15>
             </StepsForm.StepForm>
           </StepsForm>
         </Col>
       </Row>
-      <SelectInterfaceDrawer
-        visible={selectInterfaceDrawerVisible}
-        setVisible={setSelectInterfaceDrawerVisible}
-        handleFinish={handleSelectPort}
-        currentVipIndex={currentIndex}
-        editData={vipConfig?.[currentIndex]?.interfaces}
-        currentCluster={currentCluster}
-        selectedInterfaces={vipConfig}
-        lanInterfaces={lanInterfaces}
-      />
     </Loader>
-  )
-}
-
-interface VipCardProps {
-  field: FormListFieldData
-  index: number
-  remove: (index: number | number[]) => void
-  vipConfig: {
-    [key: number]: {
-      interfaces: {
-        [key: string]: EdgePortInfo
-      }
-      vip: string
-    }
-  }
-  currentCluster?: EdgeClusterTableDataType
-  openDrawer: (index: number) => void
-}
-
-const VipCard = (props: VipCardProps) => {
-  const { field, index, remove, vipConfig, currentCluster, openDrawer } = props
-  const { $t } = useIntl()
-
-  return (
-    <Fieldset
-      key={field.key}
-      label={
-        $t({ defaultMessage: '#{index} Virtual IP' },
-          { index: index + 1 })
-      }
-      switchStyle={{ display: 'none' }}
-      checked={true}
-      style={index !== 0 ? { paddingTop: 0 } : {}}
-    >
-      <Row>
-        {
-          index > 0 &&
-          <Col span={24} style={{ textAlign: 'end' }}>
-            <Button
-              aria-label='delete'
-              type='link'
-              size='large'
-              icon={<DeleteOutlinedIcon />}
-              onClick={() => remove(field.name)}
-            />
-          </Col>
-        }
-        <Col span={18}>
-          <Form.Item
-            name={[index, 'interfaces']}
-            rules={[
-              {
-                required: true,
-                // eslint-disable-next-line max-len
-                message: $t({ defaultMessage: 'Please select interfaces' })
-              }
-            ]}
-            label={$t({ defaultMessage: 'Interfaces ' })}
-          >
-            {
-              vipConfig?.[index]?.interfaces ?
-                <>
-                  <div style={{ textAlign: 'end' }}>
-                    <Button
-                      type='link'
-                      onClick={() => openDrawer(index)}
-                      children={
-                        $t({ defaultMessage: 'Change' })
-                      }
-                    />
-                  </div>
-                  <InterfaceTable
-                    nodeList={currentCluster?.edgeList}
-                    selectedInterface={vipConfig?.[index]?.interfaces}
-                  />
-                </>
-                :
-                <Button
-                  type='link'
-                  onClick={() => openDrawer(index)}
-                  children={
-                    $t({ defaultMessage: 'Select interface' })
-                  }
-                />
-            }
-          </Form.Item>
-        </Col>
-        <Col span={10}>
-          <Form.Item
-            name={[index, 'vip']}
-            label={$t({ defaultMessage: 'Virtual IP Address' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(value) },
-              {
-                validator: (_, value) => IpInSubnetPool(
-                  value,
-                  Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0].ip,
-                  Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0].subnet
-                )
-              }
-            ]}
-            extra={
-              <SuggestedRange portInfo={Object.values(vipConfig?.[index]?.interfaces ?? {})?.[0]} />
-            }
-            children={<Input />}
-            validateFirst
-          />
-        </Col>
-      </Row>
-    </Fieldset>
-  )
-}
-
-const SuggestedRange = ({ portInfo }: { portInfo: EdgePortInfo }) => {
-  const { $t } = useIntl()
-
-  return (
-    <span>
-      {
-        portInfo &&
-        $t({ defaultMessage: 'Suggested range: {ip}' }, {
-          ip: getSuggestedIpRange(
-            portInfo?.ip,
-            portInfo?.subnet
-          )
-        })
-      }
-    </span>
   )
 }

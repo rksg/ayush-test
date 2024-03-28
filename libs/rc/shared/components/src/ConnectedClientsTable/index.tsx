@@ -5,14 +5,16 @@ import { Space }              from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
+import { AsyncColumnLoader }                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useGetClientListQuery,
   useVenuesListQuery,
   useApListQuery,
   useNetworkListQuery,
+  useRevokeClientMutation,
   useDisconnectClientMutation,
-  useRevokeClientMutation
+  useLazyApListQuery
 } from '@acx-ui/rc/services'
 import {
   ClientList,
@@ -83,7 +85,7 @@ export const defaultClientPayload = {
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
     'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel',
-    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni']
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime', 'networkType', 'mldAddr', 'vni', 'apMac']
 }
 
 export const networkDisplayTransformer = (intl: ReturnType<typeof useIntl>, networkType?: string) => {
@@ -101,6 +103,13 @@ export const isEqualCaptivePortal = (networkType?: string) : boolean => {
     return false
   }
   return networkType === NetworkTypeEnum.CAPTIVEPORTAL
+}
+
+const AsyncLoadingInColumn = (apName: string, venueName: string, callBack: Function) : React.ReactNode => {
+  if(apName === undefined && venueName === undefined) {
+    return <AsyncColumnLoader />
+  }
+  return callBack()
 }
 
 
@@ -124,8 +133,9 @@ export const ConnectedClientsTable = (props: {
       }
     }
   })
-  const [ sendDisconnect ] = useDisconnectClientMutation()
   const [ sendRevoke ] = useRevokeClientMutation()
+  const [ sendDisconnect ] = useDisconnectClientMutation()
+  const [ getApList] = useLazyApListQuery()
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } :
       params.apId ? { serialNumber: [params.apId] } :
@@ -193,6 +203,7 @@ export const ConnectedClientsTable = (props: {
         width: 60,
         title: intl.$t({ defaultMessage: 'OS' }),
         dataIndex: 'osType',
+        align: 'center',
         sorter: true,
         render: (_, { osType }) => {
           return <UI.IconContainer>
@@ -207,16 +218,19 @@ export const ConnectedClientsTable = (props: {
         width: 70,
         title: intl.$t({ defaultMessage: 'Health' }),
         dataIndex: 'healthCheckStatus',
+        align: 'center',
         sorter: true,
         filterMultiple: false,
         filterValueNullable: false,
         filterable: statusFilterOptions,
         render: (_, row) => {
-          return <Tooltip title={row.healthCheckStatus}>
-            <Space>
-              <ClientHealthIcon type={row.healthClass} />
-            </Space>
-          </Tooltip>
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return <Tooltip title={row.healthCheckStatus}>
+              <Space>
+                <ClientHealthIcon type={row.healthClass} />
+              </Space>
+            </Tooltip>
+          })
         }
       },
       {
@@ -240,10 +254,12 @@ export const ConnectedClientsTable = (props: {
         disable: false,
         show: false,
         render: (_: React.ReactNode, row: ClientList) => {
-          const mac = row.mldAddr?.toLowerCase() || undefined
-          return <Tooltip title={mac}>
-            {mac || noDataDisplay}
-          </Tooltip>
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            const mac = row.mldAddr?.toLowerCase() || undefined
+            return <Tooltip title={mac}>
+              {mac || noDataDisplay}
+            </Tooltip>
+          })
         }
       }] : []),
       {
@@ -262,10 +278,12 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Username' }),
         dataIndex: 'Username',
         sorter: true,
-        render: (_, { Username }) => {
-          return <Tooltip title={Username}>
-            {Username || noDataDisplay}
-          </Tooltip>
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return <Tooltip title={row.Username}>
+              {row.Username || noDataDisplay}
+            </Tooltip>
+          })
         }
       },
       ...(venueId ? [] : [{
@@ -276,9 +294,11 @@ export const ConnectedClientsTable = (props: {
         filterKey: 'venueId',
         filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
         render: (_: React.ReactNode, row: ClientList) => {
-          return (
-            <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{row.venueName}</TenantLink>
-          )
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return (
+              <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{row.venueName}</TenantLink>
+            )
+          })
         }
       }]),
       {
@@ -289,9 +309,11 @@ export const ConnectedClientsTable = (props: {
         filterKey: 'serialNumber',
         filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
         render: (_, row) => {
-          return (
-            <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{row.apName}</TenantLink>
-          )
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return (
+              <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{row.apName}</TenantLink>
+            )
+          })
         }
       },
       {
@@ -300,13 +322,15 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'switchName',
         sorter: true,
         render: (_, row) => {
-          if(!row.switchName){
-            return noDataDisplay
-          }else{
-            return (
-              <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
-            )
-          }
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            if(!row.switchName){
+              return noDataDisplay
+            } else {
+              return (
+                <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
+              )
+            }
+          })
         }
       },
       ...(networkId ? [] : [{
@@ -317,13 +341,15 @@ export const ConnectedClientsTable = (props: {
         filterKey: 'ssid',
         filterable: networkId ? false : listOfClientsPerWlanFlag ? GetNetworkFilterOptions(tenantId) : false,
         render: (_: React.ReactNode, row: ClientList) => {
-          if (!row.healthCheckStatus) {
-            return row.ssid
-          } else {
-            return (
-              <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{row.ssid}</TenantLink>
-            )
-          }
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            if (!row.healthCheckStatus) {
+              return row.ssid
+            } else {
+              return (
+                <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{row.ssid}</TenantLink>
+              )
+            }
+          })
         }
       }]),
       ...(wifiEDAClientRevokeToggle ?[{
@@ -332,7 +358,11 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['networkType'],
         sorter: true,
         filterable: Object.entries(networkTypes).map(([key, value]) => {return { key: key, value: $t(value) }}),
-        render: (_: React.ReactNode, row: ClientList) => networkDisplayTransformer(intl, row.networkType)
+        render: (_: React.ReactNode, row: ClientList) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return networkDisplayTransformer(intl, row.networkType)
+          })
+        }
       }] : []),
       {
         key: 'sessStartTime',
@@ -346,6 +376,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'VLAN' }),
         dataIndex: 'clientVlan',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { clientVlan }) => clientVlan || noDataDisplay
       },
@@ -354,21 +385,29 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'VNI' }),
         dataIndex: 'vni',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { vni }) => vni || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.vni || noDataDisplay
+          })
+        }
       },
       {
         key: 'deviceTypeStr',
         title: intl.$t({ defaultMessage: 'Device Type' }),
         dataIndex: 'deviceTypeStr',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { deviceTypeStr }) => {
-          return <UI.IconContainer>
-            <Tooltip title={deviceTypeStr}>
-              {getDeviceTypeIcon(deviceTypeStr)}
-            </Tooltip>
-          </UI.IconContainer>
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return <UI.IconContainer>
+              <Tooltip title={row.deviceTypeStr}>
+                {getDeviceTypeIcon(row.deviceTypeStr)}
+              </Tooltip>
+            </UI.IconContainer>
+          })
         }
       },
       {
@@ -385,7 +424,11 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'totalTraffic',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { totalTraffic }) => totalTraffic || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.totalTraffic || noDataDisplay
+          })
+        }
       },
       {
         key: 'trafficToClient',
@@ -408,16 +451,26 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'RSSI' }),
         dataIndex: 'receiveSignalStrength',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { receiveSignalStrength }) => receiveSignalStrength || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.receiveSignalStrength || noDataDisplay
+          })
+        }
       },
       {
         key: 'rssi',
         title: intl.$t({ defaultMessage: 'SNR' }),
         dataIndex: 'rssi',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { rssi }) => rssi || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.rssi || noDataDisplay
+          })
+        }
       },
       {
         key: 'radio.mode',
@@ -425,7 +478,11 @@ export const ConnectedClientsTable = (props: {
         dataIndex: ['radio', 'mode'],
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { radio }) => radio?.mode || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.radio?.mode || noDataDisplay
+          })
+        }
       },
       {
         key: 'cpeMac',
@@ -433,7 +490,11 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'cpeMac',
         sorter: true,
         show: !!showAllColumns,
-        render: (_, { cpeMac }) => cpeMac || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.cpeMac || noDataDisplay
+          })
+        }
       },
       {
         key: 'authmethod',
@@ -477,6 +538,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets To Client' }),
         dataIndex: 'packetsToClient',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { packetsToClient }) => packetsToClient || noDataDisplay
       },
@@ -485,6 +547,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets From Client' }),
         dataIndex: 'packetsFromClient',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
         render: (_, { packetsFromClient }) => packetsFromClient || noDataDisplay
       },
@@ -493,16 +556,26 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Packets Dropped' }),
         dataIndex: 'packetsDropFrom',
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { packetsDropFrom }) => packetsDropFrom || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.packetsDropFrom || noDataDisplay
+          })
+        }
       },
       {
         key: 'radio.channel',
         title: intl.$t({ defaultMessage: 'RF Channel' }),
         dataIndex: ['radio', 'channel'],
         sorter: true,
+        align: 'center',
         show: !!showAllColumns,
-        render: (_, { radio }) => radio?.channel || noDataDisplay
+        render: (_, row) => {
+          return AsyncLoadingInColumn(row.apName, row.venueName, () => {
+            return row.radio?.channel || noDataDisplay
+          })
+        }
       }
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',
@@ -517,7 +590,12 @@ export const ConnectedClientsTable = (props: {
     selectedRowKeys: tableSelected.selectedRowKeys,
     onChange: (newSelectedRowKeys: React.Key[], newSelectedRows: ClientList[]) => {
       const isNoGuestNetworkExist = newSelectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).length === 0
-      const isOtherNetworkExist = newSelectedRows.filter((row) => !isEqualCaptivePortal(row.networkType)).length !== 0
+      const isOtherNetworkExist = newSelectedRows.filter((row) => {
+        if (row.serialNumber === undefined) {
+          return false
+        }
+        return !isEqualCaptivePortal(row.networkType)
+      }).length !== 0
       setTableSelected({
         selectedRowKeys: newSelectedRowKeys,
         selectRows: newSelectedRows,
@@ -528,24 +606,27 @@ export const ConnectedClientsTable = (props: {
           }
         }
       })
-    },
-    getCheckboxProps: (record: ClientList) => ({
-      disabled: record.serialNumber === undefined
-    })
+    }
   }
 
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
-      onClick: (selectedRows, clearRowSelections) => {
-        const disconnectList = selectedRows.map((row) => {
-          return {
-            clientMac: row.clientMac,
-            serialNumber: row.serialNumber
-          }
-        })
-        sendDisconnect({
-          payload: disconnectList
+      onClick: async (selectedRows, clearRowSelections) => {
+        const selectedVenues = selectedRows.map((row) => row.venueId)
+        const allAps = (await getApList({ params, payload: {
+          fields: ['serialNumber', 'apMac'],
+          filters: { venueId: selectedVenues }
+        } })).data
+        selectedRows.forEach((row) => {
+          sendDisconnect({
+            params: {
+              venueId: row.venueId,
+              clientMacAddress: row.clientMac,
+              serialNumber: allAps?.data.find((ap) => ap.apMac === row.apMac)?.serialNumber
+            }, payload: {
+              status: 'DISCONNECTED'
+            } })
         })
         clearRowSelections()
       }
@@ -558,13 +639,6 @@ export const ConnectedClientsTable = (props: {
       ),
       disabled: tableSelected.actionButton.revoke.disable,
       onClick: (selectedRows, clearRowSelections) => {
-        const revokeList = selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).map((row) => {
-          return {
-            clientMac: row.clientMac,
-            serialNumber: row.serialNumber
-          }
-        })
-
         if (tableSelected.actionButton.revoke.showModal){
           showActionModal({
             type: 'info',
@@ -573,11 +647,23 @@ export const ConnectedClientsTable = (props: {
             content: $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' }),
             okText: $t({ defaultMessage: 'OK' }),
             onOk: async () => {
-              sendRevoke({ payload: revokeList })
+              selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).forEach((row) => {
+                sendRevoke({ params: {
+                  venueId: row.venueId,
+                  clientMacAddress: row.clientMac,
+                  serialNumber: row.serialNumber
+                } })
+              })
             }
           })
         } else {
-          sendRevoke({ payload: revokeList })
+          selectedRows.filter((row) => isEqualCaptivePortal(row.networkType)).forEach((row) => {
+            sendRevoke({ params: {
+              venueId: row.venueId,
+              clientMacAddress: row.clientMac,
+              serialNumber: row.serialNumber
+            } })
+          })
         }
 
         clearRowSelections()

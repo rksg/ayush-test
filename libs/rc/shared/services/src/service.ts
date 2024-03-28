@@ -216,21 +216,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...dhcpDetailReq
         }
       },
-      transformResponse (dhcpProfile: DHCPSaveData) {
-        _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
-            pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
-          }else{
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
-
-          // eslint-disable-next-line max-len
-          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
-        })
-        return dhcpProfile
-      },
+      transformResponse: transformDhcpResponse,
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
@@ -423,10 +409,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
-          PortalUrlsInfo.savePortal, params
+          PortalUrlsInfo.createPortal, params
         )
         return {
           ...createPortalReq,
@@ -993,7 +979,7 @@ export const {
   useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
-  useSavePortalMutation,
+  useCreatePortalMutation,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,
@@ -1022,4 +1008,20 @@ export function createDpskHttpRequest (
     { ...defaultHeaders, ...customHeaders },
     ignoreDelegation
   )
+}
+
+export function transformDhcpResponse (dhcpProfile: DHCPSaveData) {
+  _.each(dhcpProfile.dhcpPools, (pool)=>{
+    if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
+      pool.leaseUnit = LeaseUnit.MINUTES
+      pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+    }else{
+      pool.leaseUnit = LeaseUnit.HOURS
+      pool.leaseTime = pool.leaseTimeHours
+    }
+
+    // eslint-disable-next-line max-len
+    pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
+  })
+  return dhcpProfile
 }

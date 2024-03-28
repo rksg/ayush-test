@@ -9,7 +9,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 1',
       createdOn: 1690598400000,
       createdBy: 'Author 1',
-      ecTenants: ['t1', 't2'],
+      appliedOnTenants: ['t1', 't2'],
       type: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
@@ -19,7 +19,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 2',
       createdOn: 1690598500000,
       createdBy: 'Author 2',
-      ecTenants: [],
+      appliedOnTenants: [],
       type: 'NETWORK',
       lastModified: 1690598500000,
       lastApplied: 1690598505000
@@ -29,10 +29,18 @@ export const mockedConfigTemplateList = {
       name: 'Template 3',
       createdOn: 1690598500000,
       createdBy: 'Author 3',
-      ecTenants: ['t1'],
+      appliedOnTenants: ['t1'],
       templateType: 'RADIUS',
       lastModified: 1690598500000,
       lastApplied: 1690598510000
+    },
+    {
+      id: '4',
+      name: 'Template 4',
+      createdOn: 1690598500000,
+      createdBy: 'Author 4',
+      templateType: 'Layer 2 Policy',
+      lastModified: 1690598500000
     }
   ] as ConfigTemplate[]
 }
@@ -85,61 +93,156 @@ export const mockedMSPCustomerList = {
   ]
 }
 
-export const layer2PolicyListResponse = [
-  {
-    id: '36ec4826b5da48cc8118eda83aa4080f',
-    name: 'layer2policy1',
-    macAddressesCount: 1,
-    networksCount: 0
-  }
-]
+export const mockPortalList = {
+  fields: [
+    'id',
+    'network',
+    'venues',
+    'health',
+    'abandonmentRate',
+    'clients',
+    'clientsPortal'
+  ],
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'NetA',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 88
+    },
+    {
+      id: '7',
+      name: 'NetB',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
+        name: 'Network B',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 64
+    },
+    {
+      id: '8',
+      name: 'NetC',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
+        name: 'Network C',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 1, names: [] },
+      clients: 86
+    },
+    {
+      id: '4',
+      name: 'NetD',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
+        name: 'Network E',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 2, names: [] },
+      clients: 70
+    }
+  ]
+}
+export const mockPortalDetailResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgImage: '',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
 
-export const layer3PolicyListResponse = [
-  {
-    id: '233d3182a1aa49ee9f50aeb039347021',
-    name: 'layer3policy1',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
+    photoRatio: 170,
 
-export const avcCat = [
-  {
-    catName: 'Web',
-    catId: 30
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+        { cs: true, zh_TW: false, fi: true,
+          fr: true, de: true, el: true, hu: true, it: false }
+  }
+}
+
+export const mockPortalDetailChangeResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+    logo: 'logo',
+    photo: 'photo',
+    bgImage: 'bgimage',
+    poweredImg: 'poweredimg',
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: true
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+        { cs: true, zh_TW: false, fi: true,
+          fr: true, de: true, el: true, hu: true, it: false }
   },
-  {
-    catName: 'Printer',
-    catId: 21
-  },
-  {
-    catName: 'Audio/Video',
-    catId: 3
-  }
-]
-
-export const avcApp = [{
-  appName: 'BBC',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 1754
-  }
-}, {
-  appName: 'AppsFlyer',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 2334
-  }
-}, {
-  appName: 'BJNP',
-  avcAppAndCatId: {
-    catId: 21,
-    appId: 2481
-  }
-}, {
-  appName: '050 plus',
-  avcAppAndCatId: {
-    catId: 3,
-    appId: 1123
-  }
-}]
+  networkIds: [1, 2]
+}

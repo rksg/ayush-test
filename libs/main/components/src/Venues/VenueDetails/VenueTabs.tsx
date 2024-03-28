@@ -4,9 +4,9 @@ import { Tabs }                                                    from '@acx-ui
 import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
 import {
-  getConfigTemplatePath,
   PropertyConfigStatus,
   useConfigTemplate,
+  useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -16,9 +16,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
-  const templateBasePath = useTenantLink(
-    getConfigTemplatePath(`venues/${params.venueId}/venue-details/`), 'v'
-  )
+  const templateBasePath = useConfigTemplateTenantLink(`venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   const enabledServices = useIsSplitOn(Features.SERVICES)
@@ -70,6 +68,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
           key='networks'
+        />
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Services' })}
+          key='services'
         />
       </Tabs>
     )

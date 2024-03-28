@@ -1,8 +1,9 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 
-import { MenuProps } from 'antd'
-import moment        from 'moment'
-import { useIntl }   from 'react-intl'
+import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
+import { MutationDefinition } from '@reduxjs/toolkit/query'
+import moment                 from 'moment'
+import { useIntl }            from 'react-intl'
 
 
 import {
@@ -12,48 +13,42 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat } from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
 import {
-  ConfigTemplateLink,
-  PolicyConfigTemplateLink,
-  ServiceConfigTemplateLink,
-  renderConfigTemplateDetailsComponent
+  renderConfigTemplateDetailsComponent,
+  useAccessControlSubPolicyVisible,
+  ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
+  isAccessControlSubPolicy,
+  AccessControlSubPolicyDrawers,
+  AccessControlSubPolicyVisibility, subPolicyMappingType
 } from '@acx-ui/rc/components'
 import {
-  useDeleteAAAPolicyTemplateMutation,
-  useDelAppPolicyMutation,
-  useDelDevicePolicyMutation,
-  useDeleteAccessControlProfileMutation,
   useDeleteDpskTemplateMutation,
+  useDeleteAAAPolicyTemplateMutation,
   useDeleteNetworkTemplateMutation,
-  useDeleteVenueTemplateMutation, useDelL2AclPolicyMutation, useDelL3AclPolicyMutation,
-  useGetConfigTemplateListQuery
+  useDeleteVenueTemplateMutation,
+  useGetConfigTemplateListQuery,
+  useDeleteDhcpTemplateMutation,
+  useDeleteAccessControlProfileTemplateMutation,
+  useDelL2AclPolicyTemplateMutation,
+  useDelAppPolicyTemplateMutation,
+  useDelL3AclPolicyTemplateMutation,
+  useDelDevicePolicyTemplateMutation,
+  useDeletePortalTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  PolicyOperation,
-  PolicyType,
-  policyTypeLabelMapping,
   useTableQuery,
   ConfigTemplate,
   ConfigTemplateType,
   getConfigTemplateEditPath,
-  ServiceType,
-  ServiceOperation,
-  serviceTypeLabelMapping
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
-import { getIntl }                                 from '@acx-ui/utils'
 
-import {
-  AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, createAccessControlPolicyMenuItem,
-  useAccessControlSubPolicyVisible
-} from './AccessControlPolicy'
-import { AppliedToTenantDrawer } from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }   from './ApplyTemplateDrawer'
-import * as UI                   from './styledComponents'
-
+import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
+import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -74,17 +69,28 @@ export function ConfigTemplateList () {
       searchTargetFields: ['name']
     }
   })
+  const addTemplateMenuProps = useAddTemplateMenuProps()
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
-        const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
-        navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        if (isAccessControlSubPolicy(selectedRow.type)) {
+          setAccessControlSubPolicyVisible({
+            ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
+            [subPolicyMappingType[selectedRow.type] as PolicyType]: {
+              visible: true, id: selectedRow.id
+            }
+          })
+        } else {
+          const editPath = getConfigTemplateEditPath(selectedRow.type, selectedRow.id!)
+          navigate(`${mspTenantLink.pathname}/${editPath}`, { state: { from: location } })
+        }
       }
     },
     {
       label: $t({ defaultMessage: 'Apply Template' }),
+      disabled: (selectedRows) => selectedRows.some(row => isAccessControlSubPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
@@ -105,6 +111,9 @@ export function ConfigTemplateList () {
           },
           onOk: async () => {
             const deleteFn = deleteMutationMap[selectedRow.type]
+
+            if (!deleteFn) return
+
             deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
           }
         })
@@ -115,7 +124,7 @@ export function ConfigTemplateList () {
   const actions: TableProps<ConfigTemplate>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Template' }),
-      dropdownMenu: getAddTemplateMenuProps({ setAccessControlSubPolicyVisible })
+      dropdownMenu: addTemplateMenuProps
     }
   ]
 
@@ -124,7 +133,7 @@ export function ConfigTemplateList () {
       <Loader states={[tableQuery]}>
         <Table<ConfigTemplate>
           columns={useColumns({
-            setAppliedToTenantDrawerVisible, setSelectedTemplates
+            setAppliedToTenantDrawerVisible, setSelectedTemplates, setAccessControlSubPolicyVisible
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -157,13 +166,23 @@ export function ConfigTemplateList () {
 
 interface templateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
-  setSelectedTemplates: (row: ConfigTemplate[]) => void
+  setSelectedTemplates: (row: ConfigTemplate[]) => void,
+  // eslint-disable-next-line max-len
+  setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
 }
 
 function useColumns (props: templateColumnProps) {
   const { $t } = useIntl()
-  const { setAppliedToTenantDrawerVisible, setSelectedTemplates } = props
+  const {
+    setAppliedToTenantDrawerVisible,
+    setSelectedTemplates,
+    setAccessControlSubPolicyVisible
+  } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
+
+  const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
+    ({ key: type[1], value: type[0] })
+  ))
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
@@ -173,6 +192,23 @@ function useColumns (props: templateColumnProps) {
       sorter: true,
       searchable: true,
       render: (_, row) => {
+        if (isAccessControlSubPolicy(row.type)) {
+          return <Button
+            type='link'
+            size={'small'}
+            onClick={() => {
+              setAccessControlSubPolicyVisible({
+                ...ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
+                [subPolicyMappingType[row.type] as PolicyType]: {
+                  id: row.id,
+                  visible: true,
+                  drawerViewMode: true
+                }
+              })
+            }}>
+            {row.name}
+          </Button>
+        }
         return renderConfigTemplateDetailsComponent(row.type, row.id!, row.name)
       }
     },
@@ -180,24 +216,25 @@ function useColumns (props: templateColumnProps) {
       key: 'type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      filterable: typeFilterOptions,
       sorter: true
     },
     {
-      key: 'ecTenants',
+      key: 'appliedOnTenants',
       title: $t({ defaultMessage: 'Applied To' }),
-      dataIndex: 'ecTenants',
+      dataIndex: 'appliedOnTenants',
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.ecTenants) return 0
-        if (!row.ecTenants.length) return row.ecTenants.length
+        if (!row.appliedOnTenants) return 0
+        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.ecTenants.length}
+          {row.appliedOnTenants.length}
         </Button>
       }
     },
@@ -239,86 +276,33 @@ function useColumns (props: templateColumnProps) {
   return columns
 }
 
-function useDeleteMutation () {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
+// eslint-disable-next-line max-len
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()
   const [ deleteDpskTemplate ] = useDeleteDpskTemplateMutation()
-  const [ deleteLayer2 ] = useDelL2AclPolicyMutation()
-  const [ deleteLayer3 ] = useDelL3AclPolicyMutation()
-  const [ deleteDevice ] = useDelDevicePolicyMutation()
-  const [ deleteApplication ] = useDelAppPolicyMutation()
-  const [ deleteAccessControlSet ] = useDeleteAccessControlProfileMutation()
+  const [ deleteAccessControlSetTemplate ] = useDeleteAccessControlProfileTemplateMutation()
+  const [ deleteLayer2Template ] = useDelL2AclPolicyTemplateMutation()
+  const [ deleteLayer3Template ] = useDelL3AclPolicyTemplateMutation()
+  const [ deleteDeviceTemplate ] = useDelDevicePolicyTemplateMutation()
+  const [ deleteApplicationTemplate ] = useDelAppPolicyTemplateMutation()
+  const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
+  const [ deletePortalTemplate ] = useDeletePortalTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
     [ConfigTemplateType.RADIUS]: deleteAaaTemplate,
     [ConfigTemplateType.VENUE]: deleteVenueTemplate,
     [ConfigTemplateType.DPSK]: deleteDpskTemplate,
-    [ConfigTemplateType.LAYER_2_POLICY]: deleteLayer2,
-    [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3,
-    [ConfigTemplateType.DEVICE_POLICY]: deleteDevice,
-    [ConfigTemplateType.APPLICATION_POLICY]: deleteApplication,
-    [ConfigTemplateType.ACCESS_CONTROL_SET]: deleteAccessControlSet
-  }
-}
-
-function getAddTemplateMenuProps (props: {
-  setAccessControlSubPolicyVisible: Dispatch<SetStateAction<AccessControlSubPolicyVisibility>>
-}): Omit<MenuProps, 'placement'> {
-  const { setAccessControlSubPolicyVisible } = props
-  const { $t } = getIntl()
-
-  return {
-    expandIcon: <UI.MenuExpandArrow />,
-    subMenuCloseDelay: 0.2,
-    items: [
-      {
-        key: 'add-wifi-network',
-        label: <ConfigTemplateLink to='networks/wireless/add'>
-          {$t({ defaultMessage: 'Wi-Fi Network' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-venue',
-        label: <ConfigTemplateLink to='venues/add'>
-          {$t({ defaultMessage: 'Venue' })}
-        </ConfigTemplateLink>
-      }, {
-        key: 'add-policy',
-        label: $t({ defaultMessage: 'Policies' }),
-        children: [
-          createPolicyMenuItem(PolicyType.AAA, 'add-aaa'),
-          createAccessControlPolicyMenuItem(setAccessControlSubPolicyVisible)
-        ]
-      }, {
-        key: 'add-service',
-        label: $t({ defaultMessage: 'Services' }),
-        children: [
-          createServiceMenuItem(ServiceType.DPSK, 'add-dpsk')
-        ]
-      }
-    ]
-  }
-}
-
-export function createPolicyMenuItem (policyType: PolicyType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
-      {$t(policyTypeLabelMapping[policyType])}
-    </PolicyConfigTemplateLink>
-  }
-}
-
-function createServiceMenuItem (serviceType: ServiceType, key: string) {
-  const { $t } = getIntl()
-
-  return {
-    key,
-    label: <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
-      {$t(serviceTypeLabelMapping[serviceType])}
-    </ServiceConfigTemplateLink>
+    [ConfigTemplateType.ACCESS_CONTROL]: deleteAccessControlSetTemplate,
+    [ConfigTemplateType.LAYER_2_POLICY]: deleteLayer2Template,
+    [ConfigTemplateType.LAYER_3_POLICY]: deleteLayer3Template,
+    [ConfigTemplateType.DEVICE_POLICY]: deleteDeviceTemplate,
+    [ConfigTemplateType.APPLICATION_POLICY]: deleteApplicationTemplate,
+    [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
+    [ConfigTemplateType.PORTAL]: deletePortalTemplate
   }
 }

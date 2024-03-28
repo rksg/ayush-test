@@ -159,4 +159,64 @@ describe.only('Search Results', () => {
     const clientHref = clientLink.getAttribute('href')
     expect((clientHref as string).includes('/details/reports')).toBeTruthy()
   })
+  it('should handle results for non report-only user', async () => {
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'admin'
+      }
+    })
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: {
+        search: {
+          clients: searchFixture.search.clients
+        }
+      }
+    })
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('some text') }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const clientLink = screen.getByText('02AA01AB50120H4M')
+    const clientHref = clientLink.getAttribute('href')
+    expect((clientHref as string)
+      // eslint-disable-next-line max-len
+      .includes('/users/wifi/clients/18:B4:30:03:E6:03/details/troubleshooting?period=%7B%22startDate%22%3A%222023-08-23T01%3A08%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-08-23T09%3A08%3A20%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D'))
+      .toBeTruthy()
+  })
+  it('should handle client results link when event time is closer to current time', async () => {
+    const mockCurrentTime = new Date('2023-08-23T05:00:00Z').getTime()
+    jest.spyOn(Date, 'now').mockImplementation(() => mockCurrentTime)
+    userProfile.mockReturnValue({
+      ...defaultUserProfile,
+      selectedTenant: {
+        ...defaultUserProfile.selectedTenant,
+        role: 'admin'
+      }
+    })
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: {
+        search: {
+          clients: searchFixture.search.clients
+        }
+      }
+    })
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('some text') }
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const clientLink = screen.getByText('02AA01AB50120H4M')
+    const clientHref = clientLink.getAttribute('href')
+    expect((clientHref as string)
+      // eslint-disable-next-line max-len
+      .includes('/users/wifi/clients/18:B4:30:03:E6:03/details/troubleshooting?period=%7B%22startDate%22%3A%222023-08-23T01%3A08%3A20%2B00%3A00%22%2C%22endDate%22%3A%222023-08-23T05%3A00%3A00%2B00%3A00%22%2C%22range%22%3A%22Custom%22%7D'))
+      .toBeTruthy()
+  })
 })

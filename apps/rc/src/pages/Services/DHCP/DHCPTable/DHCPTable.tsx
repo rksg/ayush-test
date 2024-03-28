@@ -223,7 +223,8 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {

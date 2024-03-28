@@ -1,6 +1,8 @@
 import React from 'react'
 
 import {
+  AccountManagement,
+  AccountManagementTabEnum,
   RecommendationDetails,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
@@ -141,10 +143,19 @@ function AllRoutes () {
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
+        <Route path='onboarded'
+          element={<AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>} />
         <Route path='users' element={<Users/>} />
+        <Route path='support'
+          element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />
       </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        <Route path=':activeSubTab'
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />}>
+          <Route path='tab/:categoryTab'
+            element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        </Route>
         <Route index={false}
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />

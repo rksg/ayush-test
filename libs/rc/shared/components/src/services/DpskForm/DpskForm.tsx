@@ -53,13 +53,13 @@ interface DpskFormProps {
 export function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToInstances = useServicePreviousPath(ServiceType.DPSK, ServiceOperation.LIST)
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.DPSK, ServiceOperation.LIST)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
 
-  // eslint-disable-next-line max-len
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
     useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery, !isModalMode()
   )
@@ -124,7 +124,7 @@ export function DpskForm (props: DpskFormProps) {
       if (modalMode) {
         idAfterCreatedRef.current = (result as DpskNewFlowMutationResult).id
       } else {
-        navigate(linkToInstances, { replace: true })
+        navigate(previousPath, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -140,7 +140,7 @@ export function DpskForm (props: DpskFormProps) {
       <Loader states={[{ isLoading, isFetching }]}>
         <StepsFormLegacy<CreateDpskFormFields>
           formRef={formRef}
-          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToInstances)}
+          onCancel={() => modalMode ? modalCallBack?.() : navigate(previousPath)}
           onFinish={saveData}
           editMode={editMode}
         >

@@ -1,7 +1,10 @@
+import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }   from '@acx-ui/components'
-import { EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { Table, TableProps, Tooltip } from '@acx-ui/components'
+import { EdgeSdLanViewDataP2 }        from '@acx-ui/rc/utils'
+
+import * as UI from './styledComponents'
 
 interface SmartEdgesTableProps {
   sdLanData: EdgeSdLanViewDataP2 | undefined;
@@ -9,9 +12,10 @@ interface SmartEdgesTableProps {
 
 interface SmartEdgesTableData {
   id: string;
-  edgeName: string;
+  edgeClusterName: string;
   vxlanTunnelNum?: number;
   vlanNum?: number;
+  vlans?: string[]
 }
 
 export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
@@ -21,18 +25,20 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
   const tableData = [] as SmartEdgesTableData[]
   if (sdLanData) {
     tableData.push({
-      id: sdLanData.edgeId,
-      edgeName: sdLanData.edgeName!,
+      id: sdLanData.edgeClusterId,
+      edgeClusterName: sdLanData.edgeClusterName!,
       vxlanTunnelNum: sdLanData.vxlanTunnelNum,
-      vlanNum: sdLanData.vlanNum
+      vlanNum: sdLanData.vlanNum,
+      vlans: sdLanData.vlans
     })
 
     if (sdLanData.isGuestTunnelEnabled) {
       tableData.push({
-        id: sdLanData.guestEdgeId,
-        edgeName: sdLanData.guestEdgeName!,
-        vxlanTunnelNum: undefined,
-        vlanNum: undefined
+        id: sdLanData.guestEdgeClusterId,
+        edgeClusterName: sdLanData.guestEdgeClusterName!,
+        vxlanTunnelNum: sdLanData.guestVxlanTunnelNum,
+        vlanNum: sdLanData.guestVlanNum,
+        vlans: sdLanData.guestVlans
       })
     }
   }
@@ -40,8 +46,8 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
   const columns: TableProps<SmartEdgesTableData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edgeName',
-      dataIndex: 'edgeName',
+      key: 'edgeClusterName',
+      dataIndex: 'edgeClusterName',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
@@ -55,15 +61,38 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
       title: $t({ defaultMessage: '# of tunneled VLANs' }),
       key: 'vlanNum',
       dataIndex: 'vlanNum',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        return (row.vlanNum && row.vlans)
+          ? <Tooltip
+            placement='bottom'
+            title={
+              row.vlans.map(vlan => (
+                <Row key={`edge-sdlan-tooltip-${vlan}`}>
+                  {vlan}
+                </Row>
+              ))
+            }
+          >
+            <span data-testid={`sdlan-vlan-${row.id}`}>{row.vlanNum}</span>
+          </Tooltip>
+          : row.vlanNum
+      }
     }
   ]
 
   return (
-    <Table
-      rowKey='id'
-      columns={columns}
-      dataSource={tableData}
-    />
+    <>
+      <Row justify='end'>
+        <UI.StyledTableInfoText>
+          {$t({ defaultMessage: '(Stats updated every 5 mins)' })}
+        </UI.StyledTableInfoText>
+      </Row>
+      <Table
+        rowKey='id'
+        columns={columns}
+        dataSource={tableData}
+      />
+    </>
   )
 }

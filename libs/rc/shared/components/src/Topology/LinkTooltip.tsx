@@ -1,12 +1,13 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions }              from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol } from '@acx-ui/icons'
-import { DeviceTypes, Link, Node }         from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
-import { noDataDisplay }                   from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow }     from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }          from '@acx-ui/icons'
+import { DeviceTypes, Link, Node, vlanPortsParser } from '@acx-ui/rc/utils'
+import { useTenantLink }                            from '@acx-ui/react-router-dom'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 
 export default function LinkTooltip (props: { tooltipPosition: {
     x: number,
@@ -37,6 +38,46 @@ onClose: () => void
     return link
   }
 
+  function VlansTrunked (props: {
+    title: string
+    tagged?: string
+    untagged?: string
+  }) {
+    const { title, tagged, untagged } = props
+
+    const untaggedVlanText = <Space size={4}>
+      <UI.TagsOutlineIcon />{ (untagged && vlanPortsParser(untagged)) || '--' }
+    </Space>
+
+    const taggedVlanText = <Space size={4}>
+      <UI.TagsSolidIcon />{ (tagged && vlanPortsParser(tagged)) || '--' }
+    </Space>
+
+    return <GridRow $divider>
+      <GridCol col={{ span: 8 }}>
+        {title}
+      </GridCol>
+      <GridCol col={{ span: 16 }}>
+        <div>{untaggedVlanText}</div>
+        <div>{taggedVlanText}</div>
+      </GridCol>
+    </GridRow>
+  }
+
+  function transformTitle (deviceType: DeviceTypes | undefined) {
+    switch(deviceType) {
+      case DeviceTypes.Ap:
+      case DeviceTypes.ApMesh:
+      case DeviceTypes.ApMeshRoot:
+      case DeviceTypes.ApWired:
+        return DeviceTypes.Ap.toUpperCase()
+      case DeviceTypes.Switch:
+      case DeviceTypes.SwitchStack:
+        return DeviceTypes.Switch
+    }
+    return deviceType
+  }
+
   return <div
     data-testid='edgeTooltip'
     style={{
@@ -47,18 +88,23 @@ onClose: () => void
       top: tooltipPosition.y - 100,
       left: tooltipPosition.x + 15
     }}>
-    <Card
-      type='no-border'
-    >
+    <Card>
       <Card.Title>
         <Space style={{
           display: 'flex',
           justifyContent: 'space-between'
         }}>
           <div>
-            {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
+            {transformTitle(tooltipSourceNode?.type)} <span>
+              <BiDirectionalArrow />&nbsp;</span>
+            {transformTitle(tooltipTargetNode?.type)}
           </div>
-          <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+          <Button
+            size='small'
+            type='link'
+            onClick={onClose}
+            icon={<CloseSymbol />}
+            data-testid='closeLinkTooltip'/>
         </Space>
       </Card.Title>
 
@@ -67,7 +113,7 @@ onClose: () => void
           alignItems: 'center'
         }}>
         <Descriptions.Item
-          label={tooltipSourceNode?.type}
+          label={transformTitle(tooltipSourceNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -80,7 +126,7 @@ onClose: () => void
           } />
 
         <Descriptions.Item
-          label={tooltipTargetNode?.type}
+          label={transformTitle(tooltipTargetNode?.type)}
           children={
             <Typography.Link
               style={{
@@ -96,11 +142,49 @@ onClose: () => void
           label={$t({ defaultMessage: 'Link Speed' })}
           children={tooltipEdge?.linkSpeed || noDataDisplay} />
 
+        {(tooltipSourceNode?.type === DeviceTypes.Switch ||
+        tooltipSourceNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipTargetNode?.type === DeviceTypes.Switch
+          || tooltipTargetNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
+        || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
+        &&
+        <>
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'VLANs trunked' })}
+            children={null}
+          />
+          <Descriptions.Item
+            children={
+              <Card type='solid-bg'>
+                <VlansTrunked
+                  title={tooltipEdge?.fromName || tooltipEdge?.from}
+                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
+                  tagged={tooltipEdge?.connectedPortTaggedVlan}
+                />
+                <VlansTrunked
+                  title={tooltipEdge?.toName || tooltipEdge?.to}
+                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
+                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
+                />
+              </Card>}
+          />
+        </>
+        }
         {
           /* TODO: does we get PoE usage if poe disabled?
           How to calculate and set unit for PoE? */
         }
+        <Descriptions.Item
+          label={tooltipEdge?.correspondingPort ?
+            $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
+          children={tooltipEdge?.connectedPort || noDataDisplay} />
 
+        {tooltipEdge?.correspondingPort &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'To Port' })}
+            children={tooltipEdge?.correspondingPort || noDataDisplay} />
+        }
         { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'PoE' })}
@@ -108,10 +192,6 @@ onClose: () => void
             +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
               : $t({ defaultMessage: 'Off' })} />
         }
-
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Port' })}
-          children={tooltipEdge?.connectedPort || noDataDisplay} />
       </Descriptions>
     </Card>
   </div>

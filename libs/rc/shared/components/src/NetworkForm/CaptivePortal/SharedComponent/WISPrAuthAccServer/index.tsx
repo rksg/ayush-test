@@ -16,7 +16,7 @@ import { get }                                from '@acx-ui/config'
 import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../../../policies/AAAForm/aaaPolicyQuerySwitcher'
-import AAAInstance                                                  from '../../../AAAInstance'
+import { AAAInstance }                                              from '../../../AAAInstance'
 import AAAPolicyModal                                               from '../../../AAAInstance/AAAPolicyModal'
 import * as contents                                                from '../../../contentsMap'
 import NetworkFormContext                                           from '../../../NetworkFormContext'

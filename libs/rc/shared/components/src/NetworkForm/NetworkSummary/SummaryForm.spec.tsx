@@ -2,11 +2,18 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, DpskUrls, NetworkTypeEnum, RadioEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum }   from '@acx-ui/rc/utils'
-import { Provider }                                                           from '@acx-ui/store'
-import { mockServer, render }                                                 from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                       from '@acx-ui/user'
+import {
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  DpskUrls,
+  NetworkTypeEnum,
+  RadioEnum,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render }                                               from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                     from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -67,8 +74,10 @@ describe('SummaryForm', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (req, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url,
@@ -77,8 +86,6 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
