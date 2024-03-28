@@ -78,7 +78,7 @@ describe('WifiOperatorForm', () => {
 
     const params = { tenantId: 'tenant-id' }
 
-    render(<Provider><WifiOperatorForm edit={false}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={false}/></Provider>, {
       route: { params }
     })
 
@@ -97,7 +97,7 @@ describe('WifiOperatorForm', () => {
 
   it('should render breadcrumb correctly', async () => {
     const params = { tenantId: 'tenant-id' }
-    render(<Provider><WifiOperatorForm edit={false}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={false}/></Provider>, {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
@@ -127,7 +127,7 @@ describe('WifiOperatorForm', () => {
 
     const params = { tenantId: 'tenant-id', policyId: '70ea860d29d34c218de1b42268b563dc' }
 
-    render(<Provider><WifiOperatorForm edit={true}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={true}/></Provider>, {
       route: { params }
     })
 
@@ -159,7 +159,7 @@ describe('WifiOperatorForm', () => {
     )
     const params = { tenantId: 'tenant-id', policyId: '70ea860d29d34c218de1b42268b563dc' }
 
-    render(<Provider><WifiOperatorForm edit={true}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={true}/></Provider>, {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Cancel'))

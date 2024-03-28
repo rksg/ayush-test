@@ -1,36 +1,58 @@
 
 import { useEffect, useRef } from 'react'
 
-import { useIntl }         from 'react-intl'
-import * as reactRouterDom from 'react-router-dom'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { GridCol, GridRow, PageHeader, StepsFormLegacy, StepsFormLegacyInstance }                                                       from '@acx-ui/components'
-import { useAddWifiOperatorMutation, useGetWifiOperatorQuery, useUpdateWifiOperatorMutation }                                           from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, WifiOperatorContext, generatePolicyPageHeaderTitle, getPolicyRoutePath, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                from '@acx-ui/react-router-dom'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  StepsFormLegacy,
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import {
+  useAddWifiOperatorMutation,
+  useGetWifiOperatorQuery,
+  useUpdateWifiOperatorMutation
+} from '@acx-ui/rc/services'
+import {
+  PolicyOperation,
+  PolicyType,
+  WifiOperatorContext,
+  generatePolicyPageHeaderTitle,
+  getPolicyRoutePath,
+  usePolicyListBreadcrumb
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import WifiOperatorSettingForm from './WifiOperatorSettingForm'
 
 type WifiOperatorFormProps = {
-  edit: boolean
+  editMode?: boolean,
+  modalMode?: boolean,
+  modalCallBack?: (id?: string) => void
 }
 
 export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
-
   const { $t } = useIntl()
-  const navigate = reactRouterDom.useNavigate()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })
+  const params = useParams()
+  const navigate = useNavigate()
+  const tablePath = getPolicyRoutePath({
+    type: PolicyType.WIFI_OPERATOR,
+    oper: PolicyOperation.LIST
+  })
   const linkToPolicies = useTenantLink(tablePath)
-  const params = reactRouterDom.useParams()
-  const isEdit = props.edit
+
+  const { editMode=false, modalMode=false, modalCallBack } = props
+
   const formRef = useRef<StepsFormLegacyInstance<WifiOperatorContext>>()
-  const { data } = useGetWifiOperatorQuery({ params }, { skip: !isEdit })
-  const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
-
+  const { data } = useGetWifiOperatorQuery({ params }, { skip: !editMode })
   const [ createWifiOperator ] = useAddWifiOperatorMutation()
-
   const [ updateWifiOperator ] = useUpdateWifiOperatorMutation()
+
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
+  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.WIFI_OPERATOR)
 
   useEffect(() => {
     if (data) {
@@ -44,20 +66,22 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
       const payload = { ...formData,
         domainNames: formData.domainNames.split(/\r?\n/)
       }
-      if (!isEdit) {
+      if (!editMode) {
         await createWifiOperator({
           params,
           payload
         }).unwrap().then((res)=>{
-          formData.id = res.response?.id
+          const id = res.response?.id
+          formData.id = id
+          modalMode? modalCallBack?.(id) : navigate(linkToPolicies, { replace: true })
         })
       } else {
         await updateWifiOperator({
           params,
           payload
         }).unwrap()
+        modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
       }
-      navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -65,26 +89,37 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
 
   return (
     <>
+      {!modalMode &&
       <PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, false, PolicyType.WIFI_OPERATOR)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
+      }
       <StepsFormLegacy<WifiOperatorContext>
         formRef={formRef}
-        editMode={isEdit}
-        onCancel={() => navigate(linkToPolicies)}
+        editMode={editMode}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
         onFinish={async (data) => {
           return handleWifiOperator(data)
         }}
       >
         <StepsFormLegacy.StepForm>
           <GridRow>
-            <GridCol col={{ span: 10 }}>
-              <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
-              <WifiOperatorSettingForm edit={isEdit}/>
-            </GridCol>
-            <GridCol col={{ span: 14 }}>
-            </GridCol>
+            {!modalMode?
+              <>
+                <GridCol col={{ span: 10 }}>
+                  <StepsFormLegacy.Title>
+                    {$t({ defaultMessage: 'Settings' })}
+                  </StepsFormLegacy.Title>
+                  <WifiOperatorSettingForm edit={editMode}/>
+                </GridCol>
+                <GridCol col={{ span: 14 }}>
+                </GridCol>
+              </> :
+              <GridCol col={{ span: 10 }}>
+                <WifiOperatorSettingForm edit={editMode}/>
+              </GridCol>
+            }
           </GridRow>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
