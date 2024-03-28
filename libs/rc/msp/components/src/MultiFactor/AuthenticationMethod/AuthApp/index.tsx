@@ -30,7 +30,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
     form.resetFields()
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const verificationCode = form.getFieldValue('verificationCode')
 
     const payload = {
