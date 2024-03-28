@@ -14,7 +14,7 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { NetworkTypeEnum }            from '@acx-ui/rc/utils'
 
-import AAAInstance        from '../AAAInstance'
+import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
 
 

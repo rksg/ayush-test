@@ -8,6 +8,7 @@ import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
   DHCPForm, DpskForm,
+  PortalForm,
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap
@@ -29,6 +30,7 @@ import { AccountType, getJwtTokenPayload }                                      
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
+import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -205,15 +207,15 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.PORTAL] && <>
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
-            element={<div>Portal Creation</div>}
+            element={<PortalForm/>}
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
-            element={<div>Portal Edition</div>}
+            element={<PortalForm editMode={true}/>}
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
-            element={<div>Portal Details</div>}
+            element={<PortalDetail/>}
           />
         </>}
       </Route>
