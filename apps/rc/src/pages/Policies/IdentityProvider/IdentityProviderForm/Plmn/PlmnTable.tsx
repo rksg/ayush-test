@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                    from '@acx-ui/components'
 import { IdentityProviderActionType, PlmnType } from '@acx-ui/rc/utils'
 
+import { PLMN_MAX_COUNT }          from '../../constants'
 import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
@@ -44,7 +45,7 @@ const PlmnTable = () => {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add PLMN' }),
-      disabled: drawerVisible,
+      disabled: drawerVisible || tableData?.length === PLMN_MAX_COUNT,
       onClick: () => {
         setDrawerVisible(true)
         setEditIndex(-1)

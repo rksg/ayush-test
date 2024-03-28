@@ -6,6 +6,7 @@ import { useIntl }     from 'react-intl'
 import { Drawer }                               from '@acx-ui/components'
 import { IdentityProviderActionType, PlmnType } from '@acx-ui/rc/utils'
 
+import { PLMN_MAX_COUNT }                   from '../../constants'
 import IdentityProviderFormContext          from '../IdentityProviderFormContext'
 import { validatePlmnMcc, validatePlmnMnc } from '../IdentityProviderFormValidator'
 
@@ -15,6 +16,8 @@ type PlmnDrawerProps = {
   editIndex: number
 }
 
+const AllowShowAddAnotherLength = PLMN_MAX_COUNT - 1
+
 const PlmnDrawer = (props: PlmnDrawerProps) => {
   const { $t } = useIntl()
 
@@ -22,6 +25,7 @@ const PlmnDrawer = (props: PlmnDrawerProps) => {
   const { state, dispatch } = useContext(IdentityProviderFormContext)
   const { visible, setVisible, editIndex } = props
   const isEditMode = (editIndex !== -1)
+  const plmnsCount = state?.plmns?.length ?? 0
 
   const title = isEditMode
     ? $t({ defaultMessage: 'Edit PLMN' })
@@ -95,7 +99,7 @@ const PlmnDrawer = (props: PlmnDrawerProps) => {
       form.submit()
       form.resetFields()
 
-      if (!addAnotherChecked) {
+      if (!addAnotherChecked || plmnsCount >= AllowShowAddAnotherLength) {
         onClose()
       }
     } catch (error) {
@@ -114,7 +118,7 @@ const PlmnDrawer = (props: PlmnDrawerProps) => {
       width={'350px'}
       footer={
         <Drawer.FormFooter
-          showAddAnother={!isEditMode}
+          showAddAnother={!isEditMode && plmnsCount < AllowShowAddAnotherLength}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another PLMN' }),
             save: isEditMode? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })

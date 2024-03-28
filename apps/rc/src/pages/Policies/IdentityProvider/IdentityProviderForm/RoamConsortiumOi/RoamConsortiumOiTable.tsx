@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                              from '@acx-ui/components'
 import { IdentityProviderActionType, RoamConsortiumType } from '@acx-ui/rc/utils'
 
+import { ROI_MAX_COUNT }           from '../../constants'
 import { updateRowIds }            from '../../utils'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
@@ -44,7 +45,7 @@ const RoamConsortiumOiTable = () => {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add OI' }),
-      disabled: drawerVisible,
+      disabled: drawerVisible || tableData?.length === ROI_MAX_COUNT,
       onClick: () => {
         setDrawerVisible(true)
         setEditIndex(-1)

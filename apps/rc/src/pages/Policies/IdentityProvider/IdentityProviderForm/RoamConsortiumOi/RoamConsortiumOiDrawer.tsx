@@ -7,6 +7,7 @@ import { FormattedMessage, useIntl }    from 'react-intl'
 import { Drawer, Select, cssStr }                                                  from '@acx-ui/components'
 import { IdentityProviderActionType, RoamConsortiumType, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
+import { ROI_MAX_COUNT }           from '../../constants'
 import IdentityProviderFormContext from '../IdentityProviderFormContext'
 
 type RoamConsortiumOiDrawerProps = {
@@ -14,6 +15,8 @@ type RoamConsortiumOiDrawerProps = {
   setVisible: (visible: boolean) => void
   editIndex: number
 }
+
+const AllowShowAddAnotherLength = ROI_MAX_COUNT - 1
 
 const OidTypeOptions = [
   { label: '3 hex', value: 3 },
@@ -29,6 +32,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
   const [ errorOidIndexes, setErrorOidIndexes] = useState<number[]>([])
   const { visible, setVisible, editIndex } = props
   const isEditMode = (editIndex !== -1)
+  const roisCount = state?.roamConsortiumOIs?.length ?? 0
 
 
   const title = isEditMode
@@ -203,7 +207,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
       form.submit()
       form.resetFields()
 
-      if (!addAnotherChecked) {
+      if (!addAnotherChecked || roisCount >= AllowShowAddAnotherLength) {
         onClose()
       }
     } catch (error) {
@@ -222,7 +226,7 @@ const RoamConsortiumOiDrawer = (props: RoamConsortiumOiDrawerProps) => {
       width={'350px'}
       footer={
         <Drawer.FormFooter
-          showAddAnother={!isEditMode}
+          showAddAnother={!isEditMode && roisCount < AllowShowAddAnotherLength}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another OI' }),
             save: isEditMode? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })

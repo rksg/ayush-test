@@ -8,7 +8,7 @@ import {
   RadioCard,
   StepsFormLegacy,
   RadioCardCategory
-}              from '@acx-ui/components'
+} from '@acx-ui/components'
 import {
   Features,
   TierFeatures,
