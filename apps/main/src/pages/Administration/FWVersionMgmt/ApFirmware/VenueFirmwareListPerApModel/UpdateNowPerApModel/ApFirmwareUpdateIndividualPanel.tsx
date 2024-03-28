@@ -1,88 +1,62 @@
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Checkbox, Space }     from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { ApModelFirmwares, FirmwareCategory } from '@acx-ui/rc/utils'
-import { getIntl }                            from '@acx-ui/utils'
+import { Loader }                                   from '@acx-ui/components'
+import { ApModelFirmware, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { getIntl }                                  from '@acx-ui/utils'
 
-import { VersionLabelType, getVersionLabel } from '../../../FirmwareUtils'
-import * as UI                               from '../../VenueFirmwareList/styledComponents'
+import { VersionLabelType, compareVersions, getVersionLabel } from '../../../FirmwareUtils'
+import * as UI                                                from '../../VenueFirmwareList/styledComponents'
 
+import { useTestData }                                                 from './ApFirmwareUpdateGroupPanel'
 import { ApFirmwareUpdateIndividual, ApFirmwareUpdateIndividualProps } from './ApFirmwareUpdateIndividual'
 
-import { TargetFirmwaresType, VenueIdAndCurrentApFirmwares } from '.'
+import { ApFirmwareUpdateRequestPayload } from '.'
 
 type DisplayDataType = Omit<ApFirmwareUpdateIndividualProps, 'update'>
 
-const data: ApModelFirmwares[] = [
-  {
-    id: '7.0.0.104.1242',
-    name: '7.0.0.104.1242',
-    supportedApModels: ['R770', 'R750', 'R550', 'R610', 'R700'],
-    releaseDate: '2024-02-27T07:27:53.405+00:00',
-    onboardDate: '2024-02-21T05:18:57.254+0000',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '7.0.0.104.1162',
-    name: '7.0.0.104.1242',
-    supportedApModels: ['R770', 'R750', 'R550', 'R610', 'R700'],
-    releaseDate: '2024-01-24T03:29:59.824+00:00',
-    onboardDate: '2024-01-21T09:24:11.636+0000',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '7.0.0.104.1154',
-    name: '7.0.0.104.1154',
-    supportedApModels: ['R770', 'R750', 'R550', 'R610', 'R700'],
-    releaseDate: '2024-01-24T03:29:19.451+00:00',
-    onboardDate: '2024-01-18T01:48:08.061+0000',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '6.2.3.103.180',
-    name: '6.2.3.103.180',
-    supportedApModels: ['R350', 'T310D'],
-    releaseDate: '2023-10-18T01:58:00.993+00:00',
-    onboardDate: '2023-08-25T07:42:49.519+0000',
-    category: FirmwareCategory.RECOMMENDED
-  }
-]
-
 interface ApFirmwareUpdateIndividualPanelPrpos {
-  updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void,
-  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
+  updateUpdateRequestPayload: (targetFirmwares: ApFirmwareUpdateRequestPayload) => void,
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
 }
 
 export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividualPanelPrpos) {
   const { $t } = useIntl()
-  const { updateTargetFirmwares } = props
-  const displayData: DisplayDataType[] = useMemo(() => convertToDisplayData(data), [data])
-  const targetFirmwares = useRef<TargetFirmwaresType>()
+  const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
+  const { data, isLoading } = useTestData()
+  const updateRequestPayloadRef = useRef<ApFirmwareUpdateRequestPayload>()
   const [ showAvailableFirmwareOnly, setShowAvailableFirmwareOnly ] = useState(true)
+  const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
 
   useEffect(() => {
-    // Ensure that 'updateTargetFirmwares' only call once when the componnent intializes
-    if (!data || targetFirmwares.current) return
+    if (!data) return
 
-    targetFirmwares.current = convertToTargetFirmwaresType(displayData)
-    updateTargetFirmwares(targetFirmwares.current)
+    const updatedDisplayData = convertToDisplayData(data, selectedVenuesFirmwares)
+
+    if (!updateRequestPayloadRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
+      updateRequestPayloadRef.current = convertToUpdateRequestPayload(updatedDisplayData)
+      updateUpdateRequestPayload(updateRequestPayloadRef.current)
+    }
+
+    setDisplayData(updatedDisplayData)
   }, [data])
 
   const update = (apModel: string, version: string) => {
-    targetFirmwares.current = patchTargetFirmwares(targetFirmwares.current!, apModel, version)
-    updateTargetFirmwares(targetFirmwares.current)
+    // eslint-disable-next-line max-len
+    updateRequestPayloadRef.current = patchUpdateRequestPayload(updateRequestPayloadRef.current!, apModel, version)
+    updateUpdateRequestPayload(updateRequestPayloadRef.current)
   }
 
   const handleShowAvailableFirmwareOnlyChange = (e: CheckboxChangeEvent) => {
     setShowAvailableFirmwareOnly(e.target.checked)
   }
 
-  return (<UI.Section>
+  return (<Loader states={[{ isLoading }]}><UI.Section>
     <Space direction='vertical' size={20}>
       <Checkbox
         onChange={handleShowAvailableFirmwareOnlyChange}
@@ -91,7 +65,7 @@ export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividu
         {$t({ defaultMessage: 'Show APs with available firmware only' })}
       </Checkbox>
       <Space direction='vertical' size={10}>
-        {displayData.map(item => {
+        {displayData?.map(item => {
           if (showAvailableFirmwareOnly && item.versionOptions.length === 0) return null
 
           return <div key={item.apModel}>
@@ -105,20 +79,26 @@ export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividu
         })}
       </Space>
     </Space>
-  </UI.Section>)
+  </UI.Section></Loader>)
 }
 
-function convertToDisplayData (data: ApModelFirmwares[]): DisplayDataType[] {
+// eslint-disable-next-line max-len
+function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: FirmwareVenuePerApModel[]): DisplayDataType[] {
   const intl = getIntl()
   const result: { [apModel in string]: DisplayDataType['versionOptions'] } = {}
+  const apModelMaxFirmwareFromVenues = findApModelMaxFirmwareFromVenues(venuesFirmwares)
 
-  data.forEach((apModelFirmwares: ApModelFirmwares) => {
+  data.forEach((apModelFirmware: ApModelFirmware) => {
     const option = {
-      key: apModelFirmwares.id,
-      label: getVersionLabel(intl, apModelFirmwares as VersionLabelType)
+      key: apModelFirmware.id,
+      label: getVersionLabel(intl, apModelFirmware as VersionLabelType)
     }
 
-    apModelFirmwares.supportedApModels.forEach(apModel => {
+    apModelFirmware.supportedApModels.forEach(apModel => {
+      if (!apModelMaxFirmwareFromVenues[apModel] ||
+        compareVersions(apModelMaxFirmwareFromVenues[apModel], apModelFirmware.id) > 0
+      ) return
+
       if (result[apModel]) {
         result[apModel].push(option)
       } else {
@@ -134,7 +114,7 @@ function convertToDisplayData (data: ApModelFirmwares[]): DisplayDataType[] {
   }))
 }
 
-function convertToTargetFirmwaresType (data: DisplayDataType[]): TargetFirmwaresType {
+function convertToUpdateRequestPayload (data: DisplayDataType[]): ApFirmwareUpdateRequestPayload {
   return data.map((displayDataItem: DisplayDataType) => ({
     apModel: displayDataItem.apModel,
     firmware: displayDataItem.defaultVersion
@@ -145,9 +125,11 @@ function getDefaultValueFromFirmwares (versionOptions: DisplayDataType['versionO
   return versionOptions.length === 0 ? '' : versionOptions[0].key
 }
 
-// eslint-disable-next-line max-len
-function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModel: string, version: string): TargetFirmwaresType {
-  const result: Array<TargetFirmwaresType[number] | null> = [...targetFirmwares]
+function patchUpdateRequestPayload (
+  targetFirmwares: ApFirmwareUpdateRequestPayload, apModel: string, version: string
+): ApFirmwareUpdateRequestPayload {
+
+  const result: Array<ApFirmwareUpdateRequestPayload[number] | null> = [...targetFirmwares]
 
   const targetFirmware = version ? { apModel, firmware: version } : null
   const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
@@ -159,4 +141,23 @@ function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModel: st
   }
 
   return _.compact(result)
+}
+
+function findApModelMaxFirmwareFromVenues (
+  venuesFirmwares: FirmwareVenuePerApModel[]
+): { [apModel in string]: string } {
+
+  return venuesFirmwares.reduce((acc, curr) => {
+    if (!curr.currentApFirmwares) return acc
+
+    curr.currentApFirmwares.forEach(currentApFw => {
+      if (!acc[currentApFw.apModel]) {
+        acc[currentApFw.apModel] = currentApFw.firmware
+      } else if (compareVersions(currentApFw.firmware, acc[currentApFw.apModel]) > 0) {
+        acc[currentApFw.apModel] = currentApFw.firmware
+      }
+    })
+
+    return acc
+  }, {} as { [apModel in string]: string })
 }

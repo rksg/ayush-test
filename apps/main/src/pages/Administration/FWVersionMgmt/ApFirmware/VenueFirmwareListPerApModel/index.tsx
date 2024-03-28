@@ -21,10 +21,9 @@ export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const { data, isLoading } = useData()
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
-  const {
-    updateNowVisible, setUpdateNowVisible, updateNowData,
-    convertToUpdateNowData, handleUpdateModalCancel
-  } = useUpdateNowPerApModel()
+  const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
+  // eslint-disable-next-line max-len
+  const { updateNowVisible, setUpdateNowVisible, handleUpdateModalCancel } = useUpdateNowPerApModel()
   const {
     preferencesModelVisible, setPreferencesModelVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
@@ -40,10 +39,10 @@ export function VenueFirmwareListPerApModel () {
 
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.some(row => !row.isFirmwareUpToDate),
+      visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Update Now' }),
-      onClick: (selectedRows) => {
-        convertToUpdateNowData(selectedRows)
+      onClick: (rows) => {
+        setSelectedRows(rows)
         setUpdateNowVisible(true)
       }
     }
@@ -66,10 +65,10 @@ export function VenueFirmwareListPerApModel () {
         }])}
       />
     </Loader>
-    {updateNowVisible && updateNowData && <UpdateNowPerApModel
+    {updateNowVisible && selectedRows && <UpdateNowPerApModel
       onCancel={handleUpdateModalCancel}
       afterSubmit={afterUpdateModalSubmit}
-      selectedVenuesFirmwares={updateNowData}
+      selectedVenuesFirmwares={selectedRows}
     />}
     <PreferencesDialog
       visible={preferencesModelVisible}

@@ -4,6 +4,7 @@ import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 
 import { Modal }                                                       from '@acx-ui/components'
+import { usePatchVenueApModelFirmwaresMutation }                       from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel, VenueApModelFirmwaresUpdatePayload } from '@acx-ui/rc/utils'
 
 import * as UI                          from '../../VenueFirmwareList/styledComponents'
@@ -13,31 +14,45 @@ import { ApFirmwareUpdateGroupPanel }      from './ApFirmwareUpdateGroupPanel'
 import { ApFirmwareUpdateIndividualPanel } from './ApFirmwareUpdateIndividualPanel'
 
 
-export type TargetFirmwaresType = VenueApModelFirmwaresUpdatePayload['targetFirmwares']
+export type ApFirmwareUpdateRequestPayload = VenueApModelFirmwaresUpdatePayload['targetFirmwares']
 
 enum UpdateMode {
   GROUP,
   INDIVIDUAL
 }
 
-// eslint-disable-next-line max-len
-export type VenueIdAndCurrentApFirmwares = Pick<FirmwareVenuePerApModel, 'id' | 'currentApFirmwares'>
-
 export interface UpdateNowPerApModelProps {
   onCancel: () => void
   afterSubmit: () => void
-  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
 }
 
 export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
   const { $t } = useIntl()
   const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
-  const [disableSave, setDisableSave] = useState(false)
-  const [updateMode, setUpdateMode] = useState<UpdateMode>(UpdateMode.GROUP)
+  const [ disableSave, setDisableSave ] = useState(false)
+  const [ updateMode, setUpdateMode ] = useState<UpdateMode>(UpdateMode.GROUP)
+  // eslint-disable-next-line max-len
+  const [ updateRequestPayload, setUpdateRequestPayload ] = useState<ApFirmwareUpdateRequestPayload>([])
+  const [ updateVenueApModelFirmwares ] = usePatchVenueApModelFirmwaresMutation()
 
   const triggerSubmit = async () => {
-    onModalCancel()
-    afterSubmit()
+    try {
+
+      const requests = selectedVenuesFirmwares.filter(v => !v.isFirmwareUpToDate).map(venueFw => {
+        return updateVenueApModelFirmwares({
+          params: { venueId: venueFw.id },
+          payload: { targetFirmwares: updateRequestPayload }
+        }).unwrap()
+      })
+
+      await Promise.all(requests)
+
+      onModalCancel()
+      afterSubmit()
+    } catch (err) {
+      console.log(err) // eslint-disable-line no-console
+    }
   }
 
   const onModalCancel = () => {
@@ -48,8 +63,9 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
     setUpdateMode(checked ? UpdateMode.INDIVIDUAL : UpdateMode.GROUP)
   }
 
-  const updateTargetFirmwares = (targetFirmwares: TargetFirmwaresType = []) => {
+  const updateUpdateRequestPayload = (targetFirmwares: ApFirmwareUpdateRequestPayload = []) => {
     const compactedTargetFirmwares = targetFirmwares.filter(fw => fw.firmware)
+    setUpdateRequestPayload(compactedTargetFirmwares)
     setDisableSave(compactedTargetFirmwares.length === 0)
   }
 
@@ -79,7 +95,7 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
         <span>{$t({ defaultMessage: 'Update firmware by AP model' })}</span>
       </Space>
       <ActivePanel
-        updateTargetFirmwares={updateTargetFirmwares}
+        updateUpdateRequestPayload={updateUpdateRequestPayload}
         selectedVenuesFirmwares={selectedVenuesFirmwares}
       />
       <UI.Section>

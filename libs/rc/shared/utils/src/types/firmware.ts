@@ -340,7 +340,7 @@ export interface FirmwareVenuePerApModel {
   nextSchedules?: Schedule[];
 }
 
-export interface ApModelFirmwares {
+export interface ApModelFirmware {
   id: string;
   name: string;
   category: FirmwareCategory;

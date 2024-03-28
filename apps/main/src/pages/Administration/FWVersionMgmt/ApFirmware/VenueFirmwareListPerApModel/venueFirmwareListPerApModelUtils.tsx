@@ -5,32 +5,20 @@ import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
 import { useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
-import { ApModelFirmwares, FirmwareVenuePerApModel, UpgradePreferences }      from '@acx-ui/rc/utils'
+import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       from '@acx-ui/rc/utils'
 
 import { VersionLabelType } from '../../FirmwareUtils'
 import * as UI              from '../../styledComponents'
 
-import { VenueIdAndCurrentApFirmwares } from './UpdateNowPerApModel'
-
 
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)
-  const [ updateNowData, setUpdateNowData ] = useState<VenueIdAndCurrentApFirmwares[]>()
   const handleUpdateModalCancel = () => {
     setUpdateNowVisible(false)
   }
 
-  const convertToUpdateNowData = (selectedRows: FirmwareVenuePerApModel[]) => {
-    const result = selectedRows.filter(fw => !fw.isFirmwareUpToDate)
-      .map(({ id, currentApFirmwares }) => ({ id, currentApFirmwares }))
-
-    setUpdateNowData(result)
-  }
-
   return {
     updateNowVisible,
-    updateNowData,
-    convertToUpdateNowData,
     setUpdateNowVisible,
     handleUpdateModalCancel
   }
@@ -97,41 +85,24 @@ function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): 
 
 export type ApFirmwareUpdateGroupType = { apModels: string[], firmwares: VersionLabelType[] }
 // eslint-disable-next-line max-len
-export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmwares[]): ApFirmwareUpdateGroupType[] {
-  return data.reduce((acc, curr) => {
-    curr.supportedApModels.forEach(apModel => {
-      if (acc.map(item => item.apModels).flat().includes(apModel)) return
+export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmware[]): ApFirmwareUpdateGroupType[] {
+  const hasHandledApModels: string[] = []
 
-      acc.push({ apModels: [ apModel ], firmwares: [{
-        name: curr.name,
-        category: curr.category,
-        releaseDate: curr.releaseDate,
-        onboardDate: curr.onboardDate
-      }] })
-    })
+  return data.reduce((acc, curr) => {
+    const diff = _.difference(curr.supportedApModels, hasHandledApModels)
+
+    if (diff.length > 0) {
+      acc.push({
+        apModels: diff,
+        firmwares: [{
+          name: curr.name,
+          category: curr.category,
+          releaseDate: curr.releaseDate,
+          onboardDate: curr.onboardDate
+        }]
+      })
+      hasHandledApModels.push(...diff)
+    }
     return acc
   }, [] as ApFirmwareUpdateGroupType[])
-}
-
-export function filterUpdateGroupsByVenues (
-  venuesFirmwares: VenueIdAndCurrentApFirmwares[],
-  updateGroups: ApFirmwareUpdateGroupType[]
-): ApFirmwareUpdateGroupType[] {
-  const allVenueApModels = _.uniq(_.compact(
-    venuesFirmwares.map(venueFw => venueFw.currentApFirmwares)
-  ).flat().map(currentApFw => currentApFw.apModel))
-
-
-  const result: ApFirmwareUpdateGroupType[] = []
-  updateGroups.forEach(updateGroup => {
-    const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
-    if (intersectionApModels.length !== 0) {
-      result.push({
-        ...updateGroup,
-        apModels: intersectionApModels
-      })
-    }
-  })
-
-  return result
 }

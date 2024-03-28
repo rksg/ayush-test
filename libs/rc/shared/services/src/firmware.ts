@@ -18,7 +18,7 @@ import {
   SwitchFirmware,
   ApModelFamily,
   FirmwareVenuePerApModel,
-  ApModelFirmwares,
+  ApModelFirmware,
   VenueApModelFirmwaresUpdatePayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
@@ -439,7 +439,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'Firmware', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getAllApModelFirmwareList: build.query<ApModelFirmwares[], RequestPayload>({
+    getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList, params)
         return { ...req }

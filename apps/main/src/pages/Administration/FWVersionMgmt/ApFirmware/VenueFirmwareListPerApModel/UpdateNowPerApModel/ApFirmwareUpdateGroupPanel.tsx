@@ -3,56 +3,52 @@ import { useEffect, useRef, useState } from 'react'
 
 import _ from 'lodash'
 
-import { Loader }                             from '@acx-ui/components'
-import { ApModelFirmwares, FirmwareCategory } from '@acx-ui/rc/utils'
-import { getIntl }                            from '@acx-ui/utils'
+import { Loader }                                                     from '@acx-ui/components'
+import { ApModelFirmware, FirmwareCategory, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                    from '@acx-ui/utils'
 
-import { getVersionLabel }     from '../../../FirmwareUtils'
-import * as UI                 from '../../VenueFirmwareList/styledComponents'
+import { getVersionLabel }                from '../../../FirmwareUtils'
+import * as UI                            from '../../VenueFirmwareList/styledComponents'
 import {
   ApFirmwareUpdateGroupType,
-  convertApModelFirmwaresToUpdateGroups,
-  filterUpdateGroupsByVenues
+  convertApModelFirmwaresToUpdateGroups
 } from '../venueFirmwareListPerApModelUtils'
 
 import { ApFirmwareUpdateGroup, ApFirmwareUpdateGroupProps } from './ApFirmwareUpdateGroup'
 
-import { TargetFirmwaresType, VenueIdAndCurrentApFirmwares } from '.'
+import { ApFirmwareUpdateRequestPayload } from '.'
 
 type DisplayDataType = Omit<ApFirmwareUpdateGroupProps, 'update'>
 
 interface ApFirmwareUpdateGroupPanelPrpos {
-  updateTargetFirmwares: (targetFirmwares: TargetFirmwaresType) => void
-  selectedVenuesFirmwares: VenueIdAndCurrentApFirmwares[]
+  updateUpdateRequestPayload: (targetFirmwares: ApFirmwareUpdateRequestPayload) => void
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
 }
 
 export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrpos) {
-  const { selectedVenuesFirmwares, updateTargetFirmwares } = props
-  const [ updateGroups, setUpdateGroups ] = useState<ApFirmwareUpdateGroupType[]>()
+  const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
+  const { data, isLoading } = useTestData()
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
-  const [ isLoading, setIsLoading ] = useState(true)
-  const targetFirmwares = useRef<TargetFirmwaresType>()
+  const targetFirmwaresRef = useRef<ApFirmwareUpdateRequestPayload>()
 
   useEffect(() => {
-    setTimeout(() => {
-      const updateGrps = convertApModelFirmwaresToUpdateGroups(getTestData())
-      setUpdateGroups(filterUpdateGroupsByVenues(selectedVenuesFirmwares, updateGrps))
-      setDisplayData(convertToDisplayData(updateGrps))
-      setIsLoading(false)
-    }, 2000)
-  }, [])
+    if (!data) return
 
-  useEffect(() => {
-    // Ensure that 'updateTargetFirmwares' only call once when the componnent intializes
-    if (!updateGroups || targetFirmwares.current) return
+    const updateGrps = convertApModelFirmwaresToUpdateGroups(data)
+    const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
 
-    targetFirmwares.current = convertToTargetFirmwaresType(updateGroups)
-    updateTargetFirmwares(targetFirmwares.current)
-  }, [updateGroups])
+    if (!targetFirmwaresRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
+      targetFirmwaresRef.current = convertToUpdateRequestPayload(venuesBasedUpdateGrps)
+      updateUpdateRequestPayload(targetFirmwaresRef.current)
+    }
+
+    setDisplayData(convertToDisplayData(venuesBasedUpdateGrps))
+  }, [data])
 
   const update = (apModels: string[], version: string | undefined) => {
-    targetFirmwares.current = patchTargetFirmwares(targetFirmwares.current!, apModels, version)
-    updateTargetFirmwares(targetFirmwares.current)
+    // eslint-disable-next-line max-len
+    targetFirmwaresRef.current = patchUpdateRequestPayload(targetFirmwaresRef.current!, apModels, version)
+    updateUpdateRequestPayload(targetFirmwaresRef.current)
   }
 
   return (<Loader states={[{ isLoading }]}>
@@ -82,22 +78,26 @@ function convertToDisplayData (data: ApFirmwareUpdateGroupType[]): DisplayDataTy
   }))
 }
 
-function convertToTargetFirmwaresType (data: ApFirmwareUpdateGroupType[]): TargetFirmwaresType {
-  return data.map(initTargetFirmwares).flat()
+// eslint-disable-next-line max-len
+function convertToUpdateRequestPayload (data: ApFirmwareUpdateGroupType[]): ApFirmwareUpdateRequestPayload {
+  return data.map(getDefaultFirmwareForApModel).flat()
 }
 
 function getDefaultValueFromFirmwares (firmwares: ApFirmwareUpdateGroupType['firmwares']): string {
   return firmwares[0].name
 }
 
-function initTargetFirmwares (data: ApFirmwareUpdateGroupType): TargetFirmwaresType {
+// eslint-disable-next-line max-len
+function getDefaultFirmwareForApModel (data: ApFirmwareUpdateGroupType): ApFirmwareUpdateRequestPayload {
   return data.apModels.map(apModel => {
     return { apModel, firmware: getDefaultValueFromFirmwares(data.firmwares) }
   })
 }
 
-// eslint-disable-next-line max-len
-function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModels: string[], version: string | undefined): TargetFirmwaresType {
+function patchUpdateRequestPayload (
+  targetFirmwares: ApFirmwareUpdateRequestPayload, apModels: string[], version: string | undefined
+): ApFirmwareUpdateRequestPayload {
+
   const result = [...targetFirmwares]
 
   if (version) {
@@ -113,7 +113,30 @@ function patchTargetFirmwares (targetFirmwares: TargetFirmwaresType, apModels: s
   return result
 }
 
-function getTestData (): ApModelFirmwares[] {
+function filterByVenues (
+  venuesFirmwares: FirmwareVenuePerApModel[],
+  updateGroups: ApFirmwareUpdateGroupType[]
+): ApFirmwareUpdateGroupType[] {
+  const allVenueApModels = _.uniq(
+    _.compact(venuesFirmwares.map(venueFw => venueFw.currentApFirmwares))
+      .flat().map(currentApFw => currentApFw.apModel)
+  )
+
+  const result: ApFirmwareUpdateGroupType[] = []
+  updateGroups.forEach(updateGroup => {
+    const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
+    if (intersectionApModels.length !== 0) {
+      result.push({
+        ...updateGroup,
+        apModels: intersectionApModels
+      })
+    }
+  })
+
+  return result
+}
+
+function getTestData (): ApModelFirmware[] {
   return [
     {
       id: '7.0.0.104.1242',
@@ -186,4 +209,18 @@ function getTestData (): ApModelFirmwares[] {
       category: FirmwareCategory.RECOMMENDED
     }
   ]
+}
+
+export function useTestData () {
+  const [ data, setData ] = useState<ApModelFirmware[]>()
+  const [ isLoading, setIsLoading ] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false)
+      setData(getTestData())
+    }, 2000)
+  }, [])
+
+  return { data, isLoading }
 }
