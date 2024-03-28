@@ -44,13 +44,20 @@ export default function CertificateTemplateTable () {
   useEffect(() => {
     const fetchPolicySets = async () => {
       if (!tableQuery.data?.data) return
-      const policySetMap = new Map()
-      for (const item of tableQuery.data.data) {
+      const policySetPromises = tableQuery.data.data.map(async (item) => {
         if (item.policySetId) {
-          const res = await queryPolicySet({ params: { policySetId: item.policySetId } })
-          policySetMap.set(item.policySetId, res.data?.name)
+          return queryPolicySet({ params: { policySetId: item.policySetId } })
         }
-      }
+        return null
+      })
+
+      const policySetResponses = await Promise.all(policySetPromises)
+      const policySetMap = new Map()
+      policySetResponses.forEach((res) => {
+        if (res && res.data?.name) {
+          policySetMap.set(res.data.id, res.data.name)
+        }
+      })
       setPolicySetData(policySetMap)
     }
     fetchPolicySets()

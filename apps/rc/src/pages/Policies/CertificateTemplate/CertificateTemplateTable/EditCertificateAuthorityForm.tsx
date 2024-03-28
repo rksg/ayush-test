@@ -19,16 +19,19 @@ export default function EditCertificateAuthorityForm (props: {
   const [form] = Form.useForm<CertificateAuthority>()
   const [editCA] = useEditCertificateAuthorityMutation()
 
+
+  const handleEditCA = async () => {
+    await form.validateFields()
+    const params = { caId: data.id }
+    const formData = form.getFieldsValue()
+    const { name, description } = formData
+    await editCA({ params, payload: { name, description } })
+  }
+
   const onFieldsChange = () => {
     modal.update({
       okButtonProps: { disabled: form.getFieldsError().some(item => item.errors.length > 0) },
-      onOk: async () => {
-        await form.validateFields()
-        const params = { caId: data.id }
-        const formData = form.getFieldsValue()
-        const { name, description } = formData
-        await editCA({ params, payload: { name, description } })
-      }
+      onOk: handleEditCA
     })
   }
 
