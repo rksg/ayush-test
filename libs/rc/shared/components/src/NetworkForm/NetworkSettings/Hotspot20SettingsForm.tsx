@@ -27,10 +27,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import { MLOContext }              from '../NetworkForm'
-import NetworkFormContext          from '../NetworkFormContext'
-import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT } from '../../policies'
+import { NetworkDiagram }                                       from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                                           from '../NetworkForm'
+import NetworkFormContext                                       from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }                              from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { NETWORK_IDENTITY_PROVIDER_MAX_COUNT } from './Hotspot20/constants'
 import IdentityProviderDrawer                  from './Hotspot20/IdentityProviderDrawer'
@@ -155,8 +156,6 @@ function Hotspot20Form () {
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [wifiOperatorId, setWifiOperatorId] = useState('')
-    const [disabledAddOperator, setDisabledAddOperator] = useState(false)
-    const [disabledAddProvider, setDisabledAddProvider] = useState(false)
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
     const [identityProviders, setIdentityProviders] = useState<string[]>([])
     const [operatorForm] = Form.useForm()
@@ -252,7 +251,7 @@ function Hotspot20Form () {
               onChange={handleOperatorChange}
               options={operatorSelectOptions} />
             <Button type='link'
-              disabled={disabledAddOperator}
+              disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
               onClick={handleAddOperator}
               children={$t({ defaultMessage: 'Add' })}
               style={{ paddingTop: '10px' }} />
@@ -284,7 +283,7 @@ function Hotspot20Form () {
               }}
             />
             <Button type='link'
-              disabled={disabledAddProvider}
+              disabled={providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT}
               onClick={handleAddProvider}
               children={$t({ defaultMessage: 'Add' })}
               style={{ paddingTop: '10px' }} />

@@ -3,13 +3,14 @@ import TextArea                       from 'antd/lib/input/TextArea'
 import { useIntl }                    from 'react-intl'
 
 import { Select, Subtitle }                                                from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                              from '@acx-ui/icons'
 import { useGetWifiOperatorListQuery }                                     from '@acx-ui/rc/services'
 import { FriendlyName, domainNameWildcardRegExp, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { FriendlyNameEnum }        from '../constants'
 import { friendlyNameEnumOptions } from '../contentMaps'
+
+import { DeleteOutlinedIcon } from './styledComponents'
 
 
 type WifiOperatorSettingFormProps = {
@@ -101,7 +102,7 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
         {(fields, { add, remove }) => (
           <>
             {fields?.map((field, index) =>
-              <Space align='start' size={12} key={`friendlyName_${index}`}>
+              <Space key={`friendlyName_${index}`}>
                 {<Form.Item
                   name={[field.name, 'language']}
                   label={$t({ defaultMessage: 'Language' })}
@@ -126,21 +127,22 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
                   ]}
                   children={<Input data-testid={`input_name_${index}`} />}
                 />
+                {fields.length > 1 &&
                 <Button
                   aria-label='delete'
                   type='link'
-                  hidden={fields.length === 1}
-                  style={{ marginTop: '20px', marginLeft: '6px' }}
                   icon={<DeleteOutlinedIcon />}
+                  style={{ width: '50px' }}
                   onClick={() => remove(field.name)}
                 />
+                }
               </Space>
             )}
             <Button type='link'
               data-testid='addFriendlyNameBtn'
               style={{ textAlign: 'left' }}
               onClick={() => {
-                add( undefined, fields.length)
+                add(undefined, fields.length)
               }}>
               {$t({ defaultMessage: 'Add another name' })}
             </Button>

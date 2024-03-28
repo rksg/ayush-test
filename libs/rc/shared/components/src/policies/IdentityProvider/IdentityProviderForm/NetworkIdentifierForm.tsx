@@ -60,52 +60,66 @@ const NetworkIdentifierForm = () => {
     })
   }
 
-  return (<Row gutter={20}>
-    <Col span={15}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Network Identifier' })}</StepsForm.Title>
-      <Form.Item
-        name='name'
-        label={$t({ defaultMessage: 'Profile Name' })}
-        rules={[
-          { required: true },
-          { min: 2 },
-          { max: 32 },
-          { validator: (_, value) => servicePolicyNameRegExp(value) },
-          { validator: (_, value) => nameValidator(value) }
-        ]}
-        initialValue={state.name}
-        validateFirst
-        hasFeedback
-        children={<Input
-          style={{ width: '350px' }}
-          onChange={(e => {handleNameChanged(e.target.value)})}/>}
-      />
-      <Form.Item
-        name='naiRealms'
-        label={$t({ defaultMessage: 'NAI Realm' })}
-        required
-        rules={[
-          { validator: () => {
-            if (state.naiRealms?.length) return Promise.resolve()
-            return Promise.reject($t({
-              defaultMessage: 'NAI Realm list must contain at least one entry'
-            }))
-          } }
-        ]}
-        children={<NaiRealmTable />}
-      />
-      <Form.Item
-        name='plmns'
-        label={$t({ defaultMessage: 'PLMN' })}
-        children={<PlmnTable />}
-      />
-      <Form.Item
-        name='roamConsortiumOIs'
-        label={$t({ defaultMessage: 'Roaming Consortium OI' })}
-        children={<RoamConsortiumOiTable />}
-      />
-    </Col>
-  </Row>
+  return (<>
+    <Row gutter={20} >
+      <Col span={15}>
+        <StepsForm.Title>{$t({ defaultMessage: 'Network Identifier' })}</StepsForm.Title>
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'Profile Name' })}
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 32 },
+            { validator: (_, value) => servicePolicyNameRegExp(value) },
+            { validator: (_, value) => nameValidator(value) }
+          ]}
+          initialValue={state.name}
+          validateFirst
+          hasFeedback
+          children={<Input
+            style={{ width: '350px' }}
+            onChange={(e => {handleNameChanged(e.target.value)})}/>}
+        />
+      </Col>
+    </Row>
+    <Row gutter={20} style={{ marginBottom: '16px' }}>
+      <Col span={15}>
+        <Form.Item
+          name='naiRealms'
+          label={$t({ defaultMessage: 'NAI Realm' })}
+          required
+          rules={[
+            { validator: () => {
+              if (state.naiRealms?.length) return Promise.resolve()
+              return Promise.reject($t({
+                defaultMessage: 'NAI Realm list must contain at least one entry'
+              }))
+            } }
+          ]}
+          children={<NaiRealmTable />}
+        />
+      </Col>
+    </Row>
+    <Row gutter={20} style={{ marginBottom: '16px' }}>
+      <Col span={15}>
+        <Form.Item
+          name='plmns'
+          label={$t({ defaultMessage: 'PLMN' })}
+          children={<PlmnTable />}
+        />
+      </Col>
+    </Row>
+    <Row gutter={20} >
+      <Col span={15}>
+        <Form.Item
+          name='roamConsortiumOIs'
+          label={$t({ defaultMessage: 'Roaming Consortium OI' })}
+          children={<RoamConsortiumOiTable />}
+        />
+      </Col>
+    </Row>
+  </>
   )
 }
 

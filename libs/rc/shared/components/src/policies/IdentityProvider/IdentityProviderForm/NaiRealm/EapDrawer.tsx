@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
 
-import { Col, Form, InputNumber, Row, Space } from 'antd'
-import { cloneDeep }                          from 'lodash'
-import { useIntl }                            from 'react-intl'
+import { Form, InputNumber, Space } from 'antd'
+import { cloneDeep }                from 'lodash'
+import { useIntl }                  from 'react-intl'
 
 import { Button, Drawer, Select } from '@acx-ui/components'
 import { DeleteOutlinedIcon }     from '@acx-ui/icons'
@@ -131,120 +131,98 @@ const EapDrawer = (props: EapDrawerProps) => {
           <>
             {
               fields.map((field, index) =>
-                <Row key={`authInfo-${index}`}>
-                  <Space >
-                    <Col>
-                      <Form.Item
-                        name={[index, 'info']}
-                        label={$t({ defaultMessage: 'Auth Type' })}
-                        style={{ width: '250px' }}
-                        initialValue={NaiRealmAuthInfoEnum.Expanded}
-                        rules={[{ required: true }]}
-                        children={<Select options={EapAuthInfoOptions} />}
-                      />
-                    </Col>
-                    {(authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded ||
-                      authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded_Inner) &&
-                      <Col>
-                        <Space style={{ width: AuthInfoTypeSelectWidth }}>
-                          <Form.Item
-                            name={[index, 'vendorId']}
-                            label={$t({ defaultMessage: 'Vendor ID' })}
-                            style={{ width: '85px' }}
-                            rules={[{ required: true }]}
-                            children={<InputNumber
-                              controls={false}
-                              min={0}
-                              max={16777215}
-                              precision={0}
-                            />}
-                          />
-                          <Form.Item
-                            name={[index, 'vendorType']}
-                            label={$t({ defaultMessage: 'Vendor Type' })}
-                            rules={[{ required: true }]}
-                            children={<InputNumber
-                              style={{ width: '110px' }}
-                              controls={false}
-                              min={0}
-                              max={4294967295}
-                              precision={0}
-                            />}
-                          />
-                        </Space>
-                      </Col>
-                    }
-                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Non_Eap &&
-                      <Col>
-                        <Form.Item
-                          name={[index, 'nonEapAuth']}
-                          label={$t({ defaultMessage: 'SubType' })}
-                          style={{ width: AuthInfoTypeSelectWidth }}
-                          rules={[{ required: true }]}
-                          children={<Select options={EapAuthTypeNonEapOptions} />}
-                        />
-                      </Col>
-                    }
-                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Inner &&
-                    <Col>
-                      <Form.Item
-                        name={[index, 'eapInnerAuth']}
-                        label={$t({ defaultMessage: 'SubType' })}
-                        style={{ width: AuthInfoTypeSelectWidth }}
-                        rules={[
-                          { required: true }
-                        ]}
-                        children={<Select options={EapAuthTypeInnerOptions} />}
-                      />
-                    </Col>
-                    }
-                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Credential &&
-                    <Col>
-                      <Form.Item
-                        name={[index, 'credentialType']}
-                        label={$t({ defaultMessage: 'SubType' })}
-                        style={{ width: AuthInfoTypeSelectWidth }}
-                        rules={[{ required: true }]}
-                        children={<Select options={EapAuthTypeCredentialOptions} />}
-                      />
-                    </Col>
-                    }
-                    {authInfoTypes[index] === NaiRealmAuthInfoEnum.Tunneled &&
-                    <Col>
-                      <Form.Item
-                        name={[index, 'tunneledType']}
-                        label={$t({ defaultMessage: 'SubType' })}
-                        style={{ width: AuthInfoTypeSelectWidth }}
-                        rules={[{ required: true }]}
-                        children={<Select options={EapAuthTypeTunneledOptions} />}
-                      />
-                    </Col>
-                    }
-                    {<Col style={{ textAlign: 'end' }}>
-                      <Button
-                        aria-label='delete'
-                        type='link'
-                        size='large'
-                        icon={<DeleteOutlinedIcon />}
-                        style={{ width: '50px' }}
-                        onClick={() => remove(field.name)}
-                      />
-                    </Col>}
+                <Space key={`authInfo-${index}`}>
+                  <Form.Item
+                    name={[index, 'info']}
+                    label={$t({ defaultMessage: 'Auth Type' })}
+                    style={{ width: '250px' }}
+                    initialValue={NaiRealmAuthInfoEnum.Expanded}
+                    rules={[{ required: true }]}
+                    children={<Select options={EapAuthInfoOptions} />}
+                  />
+
+                  {(authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded ||
+                    authInfoTypes[index] === NaiRealmAuthInfoEnum.Expanded_Inner) &&
+                  <Space style={{ width: AuthInfoTypeSelectWidth }}>
+                    <Form.Item
+                      name={[index, 'vendorId']}
+                      label={$t({ defaultMessage: 'Vendor ID' })}
+                      style={{ width: '85px' }}
+                      rules={[{ required: true }]}
+                      children={<InputNumber
+                        controls={false}
+                        min={0}
+                        max={16777215}
+                        precision={0} />}
+                    />
+                    <Form.Item
+                      name={[index, 'vendorType']}
+                      label={$t({ defaultMessage: 'Vendor Type' })}
+                      rules={[{ required: true }]}
+                      children={<InputNumber
+                        style={{ width: '110px' }}
+                        controls={false}
+                        min={0}
+                        max={4294967295}
+                        precision={0}
+                      />}
+                    />
                   </Space>
-                </Row>
+                  }
+                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Non_Eap &&
+                  <Form.Item
+                    name={[index, 'nonEapAuth']}
+                    label={$t({ defaultMessage: 'SubType' })}
+                    style={{ width: AuthInfoTypeSelectWidth }}
+                    rules={[{ required: true }]}
+                    children={<Select options={EapAuthTypeNonEapOptions} />}
+                  />
+                  }
+                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Inner &&
+                  <Form.Item
+                    name={[index, 'eapInnerAuth']}
+                    label={$t({ defaultMessage: 'SubType' })}
+                    style={{ width: AuthInfoTypeSelectWidth }}
+                    rules={[{ required: true }]}
+                    children={<Select options={EapAuthTypeInnerOptions} />}
+                  />
+                  }
+                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Credential &&
+                  <Form.Item
+                    name={[index, 'credentialType']}
+                    label={$t({ defaultMessage: 'SubType' })}
+                    style={{ width: AuthInfoTypeSelectWidth }}
+                    rules={[{ required: true }]}
+                    children={<Select options={EapAuthTypeCredentialOptions} />}
+                  />
+                  }
+                  {authInfoTypes[index] === NaiRealmAuthInfoEnum.Tunneled &&
+                  <Form.Item
+                    name={[index, 'tunneledType']}
+                    label={$t({ defaultMessage: 'SubType' })}
+                    style={{ width: AuthInfoTypeSelectWidth }}
+                    rules={[{ required: true }]}
+                    children={<Select options={EapAuthTypeTunneledOptions} />}
+                  />
+                  }
+                  <Button
+                    aria-label='delete'
+                    type='link'
+                    size='large'
+                    icon={<DeleteOutlinedIcon />}
+                    style={{ width: '50px' }}
+                    onClick={() => remove(field.name)}
+                  />
+                </Space>
               )
             }
-            <Row >
-              <Col span={24}>
-                {fields.length < EAP_AUTH_INFO_MAX_COUNT &&
-                  <Button
-                    type='link'
-                    onClick={() => add()}
-                    children={$t({ defaultMessage: 'Add another Auth' })}
-                  />
-                }
-              </Col>
-            </Row>
+            {fields.length < EAP_AUTH_INFO_MAX_COUNT &&
+              <Button
+                type='link'
+                onClick={() => add()}
+                children={$t({ defaultMessage: 'Add another Auth' })}
+              />
+            }
           </>
         )}
       </Form.List>
