@@ -55,7 +55,7 @@ export const SummaryBoxes = ({ filters }: {
     },
     {
       type: 'red',
-      title: defineMessage({ defaultMessage: 'Incidents by' }),
+      title: defineMessage({ defaultMessage: 'Incidents' }),
       values: [{
         title: defineMessage({ defaultMessage: 'APs' }),
         value: incidentsSummary.apIncidentCount ?

@@ -86,7 +86,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -392,7 +392,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
