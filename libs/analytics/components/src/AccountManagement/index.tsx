@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { OnboardedSystems } from '../OnboardedSystems'
@@ -28,6 +29,7 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
     title: $t({ defaultMessage: 'Onboarded Systems' }),
@@ -35,7 +37,8 @@ const useTabs = () : Tab[] => {
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: $t({ defaultMessage: 'Users' })
+    title: $t({ defaultMessage: 'Users' }),
+    url: isNewUserRolesEnabled ? undefined : '/analytics/admin/users'
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,
