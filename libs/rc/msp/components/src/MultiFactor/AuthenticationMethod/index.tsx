@@ -9,12 +9,9 @@ import {
   Tooltip,
   FormInstance
 } from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { Subtitle }                               from '@acx-ui/components'
-import { useGetMspEcProfileQuery }                from '@acx-ui/msp/services'
-import { MSPUtils }                               from '@acx-ui/msp/utils'
 import { MFAMethod, useDisableMFAMethodMutation } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
@@ -25,13 +22,9 @@ import { OneTimePassword } from './OneTimePassword'
 export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
   const { formRef } = props
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const [otpVisible, setOtpVisible] = useState(false)
   const [authAppVisible, setAuthAppVisible] = useState(false)
   const [disableMFAMethod] = useDisableMFAMethodMutation()
-  const mspEcProfileData = useGetMspEcProfileQuery({ params: { tenantId } })
-  const mspUtils = MSPUtils()
-  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
 
   const onChangeSms = async (checked: boolean) => {
     if (checked) {
@@ -205,14 +198,12 @@ export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
               visible={authAppVisible}
               setVisible={setAuthAppVisible}
               userId={userId}
-              isMspEc={isMspEc}
             /> : ''}
 
             {(otpVisible && userId) ? <OneTimePassword
               visible={otpVisible}
               setVisible={setOtpVisible}
               userId={userId}
-              isMspEc={isMspEc}
             />:''}
           </>
         }}
