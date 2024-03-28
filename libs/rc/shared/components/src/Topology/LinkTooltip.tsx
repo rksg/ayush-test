@@ -29,7 +29,7 @@ onClose: () => void
     if(node && node.type &&
       [DeviceTypes.Ap, DeviceTypes.ApMesh, DeviceTypes.ApMeshRoot, DeviceTypes.ApWired]
         .includes(node.type)) {
-      link = `${wifiBasePath.pathname}/${node?.mac}/details/overview`
+      link = `${wifiBasePath.pathname}/${node?.id || node?.serial}/details/overview`
     } else if (node && node.type &&
       [DeviceTypes.Switch, DeviceTypes.SwitchStack].includes(node.type)) {
       // eslint-disable-next-line max-len
