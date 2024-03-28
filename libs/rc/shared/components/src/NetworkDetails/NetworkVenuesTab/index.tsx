@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Switch }           from 'antd'
 import _                          from 'lodash'
@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -27,7 +27,9 @@ import {
   useDeleteNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useGetVenueTemplateCityListQuery,
-  useGetVenueCityListQuery
+  useGetVenueCityListQuery,
+  useAddNetworkVenueTemplatesMutation,
+  useDeleteNetworkVenuesTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -47,6 +49,8 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }  from '@acx-ui/user'
 import { transformToCityListOptions } from '@acx-ui/utils'
 
+import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
+import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import {
@@ -57,8 +61,8 @@ import {
   transformAps,
   transformRadios,
   transformScheduling } from '../../pipes/apGroupPipes'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
-import { useGetNetwork }                                                        from '../services'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { useGetNetwork }         from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -134,7 +138,7 @@ export function NetworkVenuesTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
-
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
 
   const networkQuery = useGetNetwork()
@@ -147,9 +151,10 @@ export function NetworkVenuesTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
 
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
@@ -215,7 +220,7 @@ export function NetworkVenuesTab () {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
-        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, [row.id], () => {
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
           if (!deactivateNetworkVenueId) {
             tableData.forEach((venue: Venue) => {
               if (venue && venue.id === row.id) {
@@ -329,7 +334,7 @@ export function NetworkVenuesTab () {
       label: $t({ defaultMessage: 'Deactivate' }),
       visible: activation,
       onClick: (rows, clearSelection) => {
-        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues, rows.map(item => item.id), () => {
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, rows.map(item => item.id), () => {
           const deActivateNetworkVenueIds = deActivateSelected(rows)
           handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
         })
@@ -379,6 +384,19 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Venue) {
+        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
+        if (Boolean(row.activated?.isActivated)) {
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -550,7 +568,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && !isTemplate && {
+        rowSelection={hasAccess() && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}

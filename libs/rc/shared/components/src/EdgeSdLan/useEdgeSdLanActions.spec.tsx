@@ -1,13 +1,31 @@
-import _        from 'lodash'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+import { rest }  from 'msw'
 
-import { EdgeSdLanUrls, EdgeSdLanSettingP2, CommonErrorsResult, CatchErrorDetails } from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                          from '@acx-ui/test-utils'
-import { RequestPayload }                                                           from '@acx-ui/types'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  EdgeSdLanUrls,
+  EdgeSdLanSettingP2,
+  CommonErrorsResult,
+  CatchErrorDetails,
+  EdgeSdLanFixtures
+} from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, renderHook, waitFor, screen } from '@acx-ui/test-utils'
+import { RequestPayload }                          from '@acx-ui/types'
 
-import { useEdgeSdLanActions } from '..'
+import {
+  useGetEdgeSdLanByEdgeOrClusterId,
+  checkSdLanScopedNetworkDeactivateAction,
+  useEdgeSdLanActions,
+  useSdLanScopedVenueNetworks,
+  useSdLanScopedNetworkVenues
+} from './useEdgeSdLanActions'
 
+const { mockedSdLanDataList } = EdgeSdLanFixtures
+
+
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const mockedCallback = jest.fn()
 const mockedActivateEdgeSdLanDmzClusterReq = jest.fn()
 const mockedDeactivateEdgeSdLanDmzClusterReq = jest.fn()
@@ -440,6 +458,306 @@ describe('useEdgeSdLanActions', () => {
         serviceId: 'mocked_service_id',
         wifiNetworkId: 'network_3'
       })
+    })
+  })
+})
+
+
+describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
+  const mockedReq = jest.fn()
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+    mockedReq.mockClear()
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.json({ data: mockedSdLanDataListP2 }))
+        }
+      ))
+  })
+
+  it('should successfully get data by edgeClusterId', async () => {
+    const targetClusterId = mockedSdLanDataListP2[0].edgeClusterId
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should successfully get data by guestEdgeClusterId', async () => {
+    const targetClusterId = mockedSdLanDataListP2[0].guestEdgeClusterId
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(targetClusterId), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should not return data when target id is not exist', async () => {
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('test-id'), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should return the first get data by edgeId when only P1 FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE)
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('edge_id'), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    await waitFor(() => expect(mockedReq).toBeCalled())
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: mockedSdLanDataListP2[0],
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should handle get requests failed', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+  })
+
+  it('should not trigger API when given ID is empty', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+    expect(mockedReq).not.toBeCalled()
+  })
+
+  it('should not trigger API when FF are all disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_req, res, ctx) => {
+          mockedReq()
+          return res(ctx.status(401))
+        }
+      ))
+
+    const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    expect(result.current).toStrictEqual({
+      edgeSdLanData: undefined,
+      isLoading: false,
+      isFetching: false
+    })
+    expect(mockedReq).not.toBeCalled()
+  })
+})
+
+describe('SD-LAN feature functions', () => {
+
+  describe('useSdLanScopedVenueNetworks', () => {
+    const mockedSdLanGet = jest.fn()
+    const mockVenueId = 'mock_venue'
+    beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockedSdLanGet.mockClear()
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanGet()
+            return res(ctx.json({ data: mockedSdLanDataList }))
+          }
+        )
+      )
+    })
+
+    it('should return networkId', async () => {
+      const { result } = renderHook(() =>
+        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            scopedNetworkIds: ['8e22159cfe264ac18d591ea492fbc05a'],
+            sdLans: mockedSdLanDataList
+          })
+      )
+    })
+
+    it('should do nothing when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      renderHook(() =>
+        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      expect(mockedSdLanGet).not.toBeCalled()
+    })
+  })
+
+  describe('useSdLanScopedNetworkVenues', () => {
+    const mockedSdLanGet = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockedSdLanGet.mockClear()
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanGet()
+            return res(ctx.json({ data: mockedSdLanDataList }))
+          }
+        )
+      )
+    })
+
+    it('should return venueId', async () => {
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('mocked_network_2'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: _.groupBy(mockedSdLanDataList, 'venueId'),
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567',
+              'a8def420bd6c4f3e8b28114d6c78f237'
+            ]
+          })
+      )
+    })
+
+    it('should do nothing when FF is OFF', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      renderHook(() => useSdLanScopedNetworkVenues('mocked_network_2'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      expect(mockedSdLanGet).not.toBeCalled()
+    })
+  })
+
+  describe('checkSdLanScopedNetworkDeactivateAction', () => {
+
+    it('should poup confirm dialog when intersection is exactly 1', async () => {
+      const mockedCallback = jest.fn()
+      checkSdLanScopedNetworkDeactivateAction(
+        ['network_id_1'], ['network_id_1'], mockedCallback
+      )
+
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toHaveTextContent('This network is running the SD-LAN')
+      await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }))
+      expect(mockedCallback).toBeCalled()
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should poup confirm dialog when more than 1 intersectted', async () => {
+      const mockedCallback = jest.fn()
+      checkSdLanScopedNetworkDeactivateAction(
+        ['network_id_1', 'network_id_2', 'network_id_3'],
+        ['network_id_2', 'network_id_3'],
+        mockedCallback
+      )
+
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toHaveTextContent('The SD-LAN service is running on one or some')
+      await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }))
+      expect(mockedCallback).toBeCalled()
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('when click cancel, should do nothing and close dialog', async () => {
+      const mockedCallback = jest.fn()
+      checkSdLanScopedNetworkDeactivateAction(
+        ['network_id_1'], ['network_id_1'], mockedCallback
+      )
+
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toHaveTextContent('This network is running the SD-LAN')
+      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      expect(mockedCallback).not.toBeCalled()
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should no poup dialog when no intersectted', async () => {
+      const mockedCallback = jest.fn()
+      checkSdLanScopedNetworkDeactivateAction(
+        ['network_id_1', 'network_id_2', 'network_id_3'],
+        ['network_id_5'],
+        mockedCallback
+      )
+
+      expect(mockedCallback).toBeCalled()
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+
+    it('should no poup dialog when the given data is invalid', async () => {
+      const mockedCallback = jest.fn()
+      checkSdLanScopedNetworkDeactivateAction(
+        undefined,
+        ['network_id_5'],
+        mockedCallback
+      )
+
+      expect(mockedCallback).toBeCalled()
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 })

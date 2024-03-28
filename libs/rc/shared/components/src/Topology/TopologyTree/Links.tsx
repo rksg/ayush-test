@@ -5,6 +5,8 @@ import * as d3 from 'd3'
 
 import { ConnectionStatus } from '@acx-ui/rc/utils'
 
+import { getDeviceColor } from '../utils'
+
 export interface Link {
   source: {
     data: {
@@ -22,6 +24,8 @@ export interface Link {
 interface LinksProps {
   links: any[];
   linksInfo: any;
+  sourceNode?: any;
+  targetNode?: any;
   onClick: (node: Link, event: MouseEvent) => void;
 }
 
@@ -45,13 +49,27 @@ export const Links: React.FC<LinksProps> = (props) => {
     [ConnectionStatus.Unknown]: 'unknownMarker'
   }
 
+  const targetNodeColor: { [key in string]: string } = {
+    'var(--acx-semantics-green-50)': 'd3-tree-good-links',
+    'var(--acx-semantics-red-70)': 'd3-tree-disconnected-links',
+    'var(--acx-semantics-yellow-40)': 'd3-tree-degraded-links',
+    'var(--acx-neutrals-50)': 'd3-tree-degraded-links'
+  }
+
+  const targetNodeMarkerColor: { [key in string]: string } = {
+    'var(--acx-semantics-green-50)': 'goodMarker',
+    'var(--acx-semantics-red-70)': 'disconnectedMarker',
+    'var(--acx-semantics-yellow-40)': 'degradedMarker',
+    'var(--acx-neutrals-50)': 'degradedMarker'
+  }
+
   const linkCustom = ({ source, target }: any,
     linksInfo: { [key: string]: any }) => {
     const linkInfo = linksInfo[`${source.data.id}_${target.data.id}`]
-    const sourceX = linkInfo.source.x
-    const sourceY = linkInfo.source.y
-    const targetX = linkInfo.target.x
-    const targetY = linkInfo.target.y
+    const sourceX = linkInfo?.source?.x
+    const sourceY = linkInfo?.source?.y
+    const targetX = linkInfo?.target?.x
+    const targetY = linkInfo?.target?.y
 
     if (sourceY === targetY) {
       return `M${sourceY} ${sourceX}  L${targetY} ${targetX - 100}`
@@ -126,33 +144,36 @@ export const Links: React.FC<LinksProps> = (props) => {
         className='unknownMarker'>
         <circle cx='5' cy='5' r='5' />
       </marker>
-      {links.map((link, i) => {
+      {links.map((link) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
+        const targetNodeStatusColor = targetNodeColor[getDeviceColor(link.target.data.status)]
+        const targetNodeMarker = targetNodeMarkerColor[getDeviceColor(link.target.data.status)]
         const linkClass = linkInfo?.connectionStatus ?
           linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
           (Object.values(ConnectionStatus).includes(link.target.data.status) ?
             linkColor[link.target.data.status as ConnectionStatus] :
-            linkColor[ConnectionStatus.Good])
+            targetNodeStatusColor)
 
         const markerClass = linkInfo?.connectionStatus ?
           markerColor[linkInfo?.connectionStatus as ConnectionStatus] :
           (Object.values(ConnectionStatus).includes(link.target.data.status) ?
             markerColor[link.target.data.status as ConnectionStatus] :
-            markerColor[ConnectionStatus.Good])
+            targetNodeMarker)
 
         return (
-          <g key={i}
+          <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
             className={`edgePath ${linkClass} ${link.source.data.id}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}
+            id={`link_${link.source.data.id}_${link.target.data.id}`}
           >
             <path
               d={linkCustom(link, linksInfo)}
               markerStart={link.source.depth === 0 ? `url(#${markerClass})` : ''}
               markerEnd={`url(#${markerClass})`}
-              strokeDasharray={linkInfo.connectionType === 'Mesh' ? '1' : '0'}
+              strokeDasharray={linkInfo?.connectionType === 'Mesh' ? '1' : '0'}
             />
             <path
               d={linkCustom(link, linksInfo)}

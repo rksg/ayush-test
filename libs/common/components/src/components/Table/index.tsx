@@ -238,7 +238,7 @@ function Table <RecordType extends Record<string, any>> ({
       : props.columns
 
     return cols.map(column => ({
-      ...column,
+      ..._.omit(column, 'scopeKey'),
       tooltip: null,
       title: column.tooltip
         ? <UI.TitleWithTooltip>
@@ -704,6 +704,10 @@ Table.Highlighter = UI.Highlighter
 Table.SearchInput = UI.SearchInput
 
 export { Table }
+
+export function AsyncColumnLoader () {
+  return <UI.AsyncColumnLoader data-testid='async-column-loader-animation'/>
+}
 
 type ScrollXReducerColumn = {
   key: string

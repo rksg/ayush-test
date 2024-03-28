@@ -855,6 +855,7 @@ export function ManageCustomer () {
           style={{ width: '300px' }}
           rules={[
             { required: true },
+            { max: 255 },
             { validator: (_, value) => emailRegExp(value) },
             { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
           ]}
@@ -865,6 +866,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'First Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -875,6 +878,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'Last Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}

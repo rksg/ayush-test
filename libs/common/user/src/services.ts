@@ -141,6 +141,11 @@ export const UserUrlsInfo = {
     method: 'put',
     url: '/tenants/betaStatus/:enable',
     newApi: true
+  },
+  getFeatureFlagStates: {
+    method: 'post',
+    url: '/featureFlagStates',
+    newApi: true
   }
 }
 
@@ -168,7 +173,8 @@ export const {
   useMfaResendOTPMutation,
   useDisableMFAMethodMutation,
   useGetBetaStatusQuery,
-  useToggleBetaStatusMutation
+  useToggleBetaStatusMutation,
+  useFeatureFlagStatesQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -308,6 +314,15 @@ export const {
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
       invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    featureFlagStates: build.query<{ [key: string]: boolean }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.getFeatureFlagStates, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })

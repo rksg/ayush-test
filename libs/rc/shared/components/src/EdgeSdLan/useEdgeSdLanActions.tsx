@@ -1,11 +1,14 @@
 import _ from 'lodash'
 
+import { showActionModal }              from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
   useAddEdgeSdLanP2Mutation,
   useDeactivateEdgeSdLanNetworkMutation,
+  useGetEdgeSdLanP2ViewDataListQuery,
   useToggleEdgeSdLanDmzMutation,
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
@@ -15,6 +18,9 @@ import {
   CommonResult,
   EdgeSdLanSettingP2
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export const useEdgeSdLanActions = () => {
   const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
@@ -219,5 +225,132 @@ export const useEdgeSdLanActions = () => {
   return {
     addEdgeSdLan: addSdLan,
     editEdgeSdLan: editSdLan
+  }
+}
+
+export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
+  networkIds: string[] | undefined) => {
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+
+  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
+    payload: {
+      filters: { networkIds, venueId: [venueId] },
+      fields: [
+        'id',
+        'venueId',
+        'isGuestTunnelEnabled',
+        'tunnelProfileId',
+        'guestTunnelProfileId',
+        'networkIds',
+        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+      ],
+      pageSize: 10000
+    }
+  }, {
+    skip: !venueId || !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+  })
+
+  return {
+    sdLans: data?.data,
+    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
+  }
+}
+
+export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+
+  const { data } = useGetEdgeSdLanP2ViewDataListQuery({
+    payload: {
+      filters: { networkIds: [networkId] },
+      fields: [
+        'id',
+        'venueId',
+        'isGuestTunnelEnabled',
+        'tunnelProfileId',
+        'guestTunnelProfileId',
+        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+      ],
+      pageSize: 10000
+    }
+  }, {
+    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+  })
+
+  return {
+    sdLansVenueMap: _.groupBy(data?.data, 'venueId'),
+    networkVenueIds: data?.data?.map(item => item.venueId)
+  }
+}
+
+export const checkSdLanScopedNetworkDeactivateAction =
+  (
+    scopedIds: string[] | undefined,
+    selectedIds: string[] | undefined,
+    cb: () => void
+  ) => {
+    if (!scopedIds || !selectedIds) {
+      cb()
+      return
+    }
+
+    const { $t } = getIntl()
+
+    if (_.intersection(scopedIds, selectedIds).length > 0) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Deactivate network' }),
+        content: selectedIds!.length === 1
+          // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' })
+          // eslint-disable-next-line max-len
+          : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected venues. Are you sure you want to deactivate?' }),
+        okText: $t({ defaultMessage: 'Deactivate' }),
+        onOk: () => {
+          cb()
+        }
+      })
+    } else {
+      cb()
+    }
+  }
+
+// id: is `serialNumber` when SD_LAN HA FF off
+//     means `clusterId` when SD_LAN HA FF on
+export const useGetEdgeSdLanByEdgeOrClusterId = (id?: string) => {
+  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+
+  const {
+    edgeSdLanData,
+    isLoading,
+    isFetching
+  } = useGetEdgeSdLanP2ViewDataListQuery(
+    { payload: {
+      filters: isEdgeSdLanHaReady
+        ? undefined
+        : { edgeId: [id] },
+      fields: ['id'].concat((isEdgeSdLanHaReady
+        ? ['edgeClusterId', 'guestEdgeClusterId']
+        : 'edgeId'))
+    } },
+    {
+      skip: !id || !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+      selectFromResult: ({ data, isLoading, isFetching }) => ({
+        edgeSdLanData: data?.data?.filter((item, idx) => {
+          return isEdgeSdLanHaReady
+            ? (item.edgeClusterId === id || item.guestEdgeClusterId === id)
+            : idx === 0
+        })[0],
+        isLoading,
+        isFetching
+      })
+    })
+
+  return {
+    edgeSdLanData,
+    isLoading,
+    isFetching
   }
 }

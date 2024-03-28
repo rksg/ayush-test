@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: values-acx-ui
+data:
+  # add any overrides to acx_standard1/values.yaml here
+  values.yaml: |
+    service:
+      destinationRule:
+        enabled: True
+      livenessProbe:
+        enabled: True
+        initialDelaySeconds: 300
+        periodSeconds: 5
+        health: /health
+      readinessProbe:
+        enabled: True
+        initialDelaySeconds: 120
+        periodSeconds: 5
+        health: /health
+      resources:
+        limits:
+          memory: 200Mi
+        requests:
+          cpu: 20m
+          memory: 32Mi
+      hpa:
+        enabled: True
+        minReplicas: 1
+        maxReplicas: 3
+        cpu:
+          enabled: True
+          targetAverageUtilization: 80
+        memory:
+          enabled: False
+          targetAverageUtilization: 0

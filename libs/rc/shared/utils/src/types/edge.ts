@@ -62,6 +62,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   haStatus?: NodeClusterRoleEnum
   clusterNodeStatus?: ClusterNodeStatusEnum
   clusterId?: string
+  hasCorePort?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -383,6 +384,7 @@ export interface EdgeClusterStatus {
   clusterStatus?: string
   edgeList?: EdgeStatus[]
   description?: string
+  hasCorePort?: boolean
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,
@@ -395,6 +397,7 @@ export interface EdgePortInfo {
   serialNumber: EdgeSerialNumber
   id: string
   portName: string
+  ipMode: EdgeIpModeEnum,
   ip: string
   mac: string
   subnet: string

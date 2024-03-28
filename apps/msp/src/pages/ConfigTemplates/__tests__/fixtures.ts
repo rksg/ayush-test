@@ -93,159 +93,156 @@ export const mockedMSPCustomerList = {
   ]
 }
 
-export const layer2PolicyListResponse = [
-  {
-    id: '36ec4826b5da48cc8118eda83aa4080f',
-    name: 'layer2policy1',
-    macAddressesCount: 1,
-    networksCount: 0
-  }
-]
-
-export const layer2PolicyDetailResponse = {
-  name: 'blockL2Acl',
-  access: 'ALLOW',
-  macAddresses: [
-    '11:11:11:11:11:11'
+export const mockPortalList = {
+  fields: [
+    'id',
+    'network',
+    'venues',
+    'health',
+    'abandonmentRate',
+    'clients',
+    'clientsPortal'
   ],
-  id: 'a760d3fee7934128b16fce99f78e94df'
-}
-
-export const layer3PolicyListResponse = [
-  {
-    id: '233d3182a1aa49ee9f50aeb039347021',
-    name: 'layer3policy1',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
-
-export const layer3PolicyDetailResponse = {
-  name: 'l3-010',
-  defaultAccess: 'ALLOW',
-  l3Rules: [
+  totalCount: 4,
+  page: 1,
+  data: [
     {
-      priority: 1,
-      access: 'ALLOW',
-      source: {
-        enableIpSubnet: false
+      id: '1',
+      name: 'NetA',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
       },
-      destination: {
-        enableIpSubnet: false
+      venues: { count: 0, names: [] },
+      clients: 88
+    },
+    {
+      id: '7',
+      name: 'NetB',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
+        name: 'Network B',
+        captiveType: 'Guest Pass'
       },
-      id: '96b80fe415fe4131addbb1a6e967167d'
-    }
-  ],
-  id: '233d3182a1aa49ee9f50aeb039347021'
-}
-
-export const devicePolicyDetailResponse = {
-  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-  name: 'device1-another',
-  defaultAccess: 'ALLOW',
-  rules: [
-    {
-      name: 'vlan101',
-      action: 'ALLOW',
-      deviceType: 'Tablet',
-      osVendor: 'Ios'
+      venues: { count: 0, names: [] },
+      clients: 64
     },
     {
-      name: 'rule_f',
-      action: 'ALLOW',
-      deviceType: 'Smartphone',
-      osVendor: 'Ios',
-      downloadRateLimit: 107.7,
-      uploadRateLimit: 200,
-      vlan: 12
-    }
-  ],
-  id: 'fdd2bc421cb445daac8937dbb2366f5e'
-}
-
-export const applicationDetailResponse = {
-  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-  name: 'app1',
-  rules: [
-    {
-      name: 'appRule3',
-      ruleType: 'SIGNATURE',
-      accessControl: 'RATE_LIMIT',
-      priority: 3,
-      category: 'Antivirus',
-      categoryId: 1,
-      applicationName: 'Lookout Mobile Security',
-      applicationId: 2795,
-      uplink: 1250,
-      downlink: 9250,
-      id: '5d7414032d254bb39926792181276e4b'
+      id: '8',
+      name: 'NetC',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
+        name: 'Network C',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 1, names: [] },
+      clients: 86
     },
     {
-      name: 'appRule2',
-      ruleType: 'USER_DEFINED',
-      accessControl: 'DENY',
-      priority: 2,
-      applicationName: 'userDefinedAppName',
-      applicationId: 1,
-      portMapping: 'IP_WITH_PORT',
-      destinationIp: '1.1.1.1',
-      netmask: '255.255.255.0',
-      destinationPort: 20,
-      protocol: 'TCP',
-      id: 'd0c06ec39bac4515b150ca4dac7e9b30'
-    },
-    {
-      name: 'appRule1',
-      ruleType: 'SIGNATURE',
-      accessControl: 'DENY',
-      priority: 1,
-      category: 'Audio/Video',
-      categoryId: 3,
-      applicationName: '050 plus',
-      applicationId: 1123,
-      id: 'bcbcb881099946f5aad7841e2ca0d73f'
+      id: '4',
+      name: 'NetD',
+      nwSubType: 'guest',
+      captiveType: 'SelfSignIn',
+      network: {
+        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
+        name: 'Network E',
+        captiveType: 'Self Sign In'
+      },
+      venues: { count: 2, names: [] },
+      clients: 70
     }
-  ],
-  id: 'edac8b0c22e140cd95e63a9e81421576'
+  ]
+}
+export const mockPortalDetailResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgImage: '',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+        { cs: true, zh_TW: false, fi: true,
+          fr: true, de: true, el: true, hu: true, it: false }
+  }
 }
 
-export const avcCat = [
-  {
-    catName: 'Web',
-    catId: 30
+export const mockPortalDetailChangeResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+    logo: 'logo',
+    photo: 'photo',
+    bgImage: 'bgimage',
+    poweredImg: 'poweredimg',
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: true
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+        { cs: true, zh_TW: false, fi: true,
+          fr: true, de: true, el: true, hu: true, it: false }
   },
-  {
-    catName: 'Printer',
-    catId: 21
-  },
-  {
-    catName: 'Audio/Video',
-    catId: 3
-  }
-]
-
-export const avcApp = [{
-  appName: 'BBC',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 1754
-  }
-}, {
-  appName: 'AppsFlyer',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 2334
-  }
-}, {
-  appName: 'BJNP',
-  avcAppAndCatId: {
-    catId: 21,
-    appId: 2481
-  }
-}, {
-  appName: '050 plus',
-  avcAppAndCatId: {
-    catId: 3,
-    appId: 1123
-  }
-}]
+  networkIds: [1, 2]
+}
