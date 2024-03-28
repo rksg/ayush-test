@@ -1,3 +1,4 @@
+import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
@@ -19,7 +20,9 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData, ClientStatusEnum
+  RequestFormData,
+  ClientStatusEnum,
+  UEDetail
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -67,14 +70,23 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Client', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
         payload = {
-          action: 'disconnect',
-          clients: payload
+          status: 'DISCONNECTED'
         }
         return {
           ...req,
@@ -86,8 +98,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
         payload = {
-          action: 'revoke',
-          clients: payload
+          status: 'REVOKED'
         }
         return {
           ...req,
@@ -325,6 +336,40 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getClientUEDetail: build.query<UEDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClientUEDetail, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getUEDetailAndDisconnect: build.mutation<CommonResult | 'done', RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ){
+        let serialNumber = arg.params?.serialNumber
+        if(!serialNumber) {
+          const ueDetailRequest = createHttpRequest(ClientUrlsInfo.getClientUEDetail, {
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const ueDetailQuery = await fetchWithBQ(ueDetailRequest)
+          const result = ueDetailQuery?.data as UEDetail
+          serialNumber = result.apSerialNumber
+        }
+        if(serialNumber){
+          const disconnectRequest = createHttpRequest(ClientUrlsInfo.disconnectClient, {
+            venueId: arg.params?.venueId,
+            serialNumber: serialNumber,
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const disconnectQuery = await fetchWithBQ({
+            ...disconnectRequest,
+            body: arg.payload
+          })
+          return disconnectQuery as QueryReturnValue<CommonResult, FetchBaseQueryError>
+        }
+        return { data: 'done' }
+      }
     })
   })
 })
@@ -376,5 +421,7 @@ export const {
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useImportGuestPassMutation,
-  useGetClientOrHistoryDetailQuery
+  useGetClientOrHistoryDetailQuery,
+  useGetClientUEDetailQuery,
+  useGetUEDetailAndDisconnectMutation
 } = clientApi
