@@ -212,15 +212,11 @@ function Hotspot20Form () {
           <Form.Item
             label={$t({ defaultMessage: 'Wi-Fi Operator' })}
             name='hotspot20Operator'
-            style={{ width: '553px' }}
+            style={{ width: '542.84px' }}
             rules={[
-              { required: true },
-              { validator: (_, value) => {
-                if (value === 'Select...') {
-                  return Promise.reject($t({ defaultMessage: 'Please select the Wi-Fi operator' }))
-                }
-                return Promise.resolve()
-              } }
+              { required: true,
+                message: $t({ defaultMessage: 'Please select Wi-Fi operator' })
+              }
             ]}>
             <Select placeholder={$t({ defaultMessage: 'Select...' })}
               onChange={handleOperatorChange}
@@ -237,16 +233,11 @@ function Hotspot20Form () {
           <Form.Item
             label='Identity Provider'
             name='hotspot20Identity'
-            style={{ width: '553px' }}
+            style={{ width: '542.84px' }}
             rules={[
-              { required: true },
-              { validator: (_, value) => {
-                if (value === 'Select...') {
-                  return Promise.reject(
-                    $t({ defaultMessage: 'Please select the identity provider' }))
-                }
-                return Promise.resolve()
-              } }
+              { required: true,
+                message: $t({ defaultMessage: 'Please select identity provider(s)' })
+              }
             ]}
           >
             <Select placeholder={$t({ defaultMessage: 'Select...' })}
