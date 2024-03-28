@@ -1,8 +1,8 @@
-import { Col, Row }                                  from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { useUpdatePreferencesMutation }                                               from '@acx-ui/analytics/services'
-import { getUserProfile }                                                             from '@acx-ui/analytics/utils'
+import { roleStringMap, getUserProfile }                                              from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
 
@@ -19,21 +19,9 @@ interface fromLoc {
   from: string
 }
 
-enum RolesEnum {
-  ADMINISTRATOR = 'admin',
-  REPORT_ONLY = 'report-only',
-  NETWORK_ADMIN = 'network-admin'
-}
-
 export enum ProfileTabEnum {
   SETTINGS = 'settings',
   NOTIFICATIONS = 'notifications'
-}
-
-const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-  [RolesEnum.REPORT_ONLY]: defineMessage({ defaultMessage: 'Report Only' }),
-  [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Manager' })
 }
 
 const UserProfileSection = () => {
