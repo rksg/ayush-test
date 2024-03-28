@@ -114,7 +114,7 @@ describe('NetworkForm', () => {
       rest.get(PortalUrlsInfo.getPortalProfileList.url
         .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
       (_, res, ctx) => res(ctx.json({ content: portalList }))),
-      rest.post(PortalUrlsInfo.savePortal.url,
+      rest.post(PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => res(ctx.json({ response: {
           requestId: 'request-id', id: 'test', serviceName: 'test' } }))),
       rest.get(PortalUrlsInfo.getPortalLang.url,

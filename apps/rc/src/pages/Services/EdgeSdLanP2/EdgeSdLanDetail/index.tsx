@@ -23,6 +23,7 @@ const EdgeSdLanDetail = () => {
       filters: { id: [params.serviceId] }
     } },
     {
+      pollingInterval: 5 * 60 * 1000,
       selectFromResult: ({ data, isLoading, isFetching, isUninitialized }) => ({
         edgeSdLanData: data?.data?.[0],
         isLoading: isUninitialized || isLoading,

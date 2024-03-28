@@ -3,9 +3,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Support } from '../Support'
-
-import { TabNewTabLink, TabTenantLink } from './styledComponents'
+import { OnboardedSystems } from '../OnboardedSystems'
+import { Support }          from '../Support'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -20,9 +19,9 @@ export enum AccountManagementTabEnum {
 
 interface Tab {
   key: AccountManagementTabEnum,
-  url?: string,
   title: string | JSX.Element,
   component?: JSX.Element,
+  url?: string,
   headerExtra?: JSX.Element[]
 }
 
@@ -30,22 +29,22 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: <TabNewTabLink to={'/analytics/admin/onboarded'}>
-      {$t({ defaultMessage: 'Onboarded Systems' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Onboarded Systems' }),
+    component: <OnboardedSystems />
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: <TabTenantLink to={'/admin/users'}> {$t({ defaultMessage: 'Users' })}</TabTenantLink>
+    title: $t({ defaultMessage: 'Users' })
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,
-    title: <TabNewTabLink to={'/analytics/admin/labels'}>
-      {$t({ defaultMessage: 'Labels' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Labels' }),
+    url: '/analytics/admin/labels'
   }
   const resourceGroupsTab = {
     key: AccountManagementTabEnum.RESOURCE_GROUPS,
-    title: <TabNewTabLink to={'/analytics/admin/resourceGroups'}>
-      {$t({ defaultMessage: 'Resource Groups' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Resource Groups' }),
+    url: '/analytics/admin/resourceGroups'
   }
   const supportTab = {
     key: AccountManagementTabEnum.SUPPORT,
@@ -54,18 +53,18 @@ const useTabs = () : Tab[] => {
   }
   const licenseTab = {
     key: AccountManagementTabEnum.LICENSES,
-    title: <TabNewTabLink to={'/analytics/admin/license'}>
-      {$t({ defaultMessage: 'Licenses' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Licenses' }),
+    url: '/analytics/admin/license'
   }
   const schedulesTab = {
     key: AccountManagementTabEnum.SCHEDULES,
-    title: <TabNewTabLink to={'/analytics/admin/schedules'}>
-      {$t({ defaultMessage: 'Schedules' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Schedules' }),
+    url: '/analytics/admin/schedules'
   }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
-    title: <TabNewTabLink to={'/analytics/admin/webhooks'}>
-      {$t({ defaultMessage: 'Webhooks' })}</TabNewTabLink>
+    title: $t({ defaultMessage: 'Webhooks' }),
+    url: '/analytics/admin/webhooks'
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
@@ -77,13 +76,15 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
-  // TODO: add tab onchange unit test after second tab added
-  /* istanbul ignore next */
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
-    tab?.component && navigate({
+    if (tab?.url) {
+      window.open(tab.url, '_blank')
+      return
+    }
+    tab && navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/admin/${tab?.url || tab.key}`
+      pathname: `${basePath.pathname}/admin/${tab.key}`
     })
   }
   const tabs = useTabs()
