@@ -362,13 +362,13 @@ describe('StepsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
-    expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onFinish1.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
-    expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onFinish2.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
 
     expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
     expect(onFinish).not.toBeCalled()
@@ -417,13 +417,13 @@ describe('StepsForm', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 1' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onFinish1.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
     expect(logError).toHaveBeenCalledWith(true)
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
-    expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onFinish2.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
     expect(onFinishFailed2).toBeCalledWith(true)
 
     expect(onFinishFailed).not.toBeCalled()
@@ -507,13 +507,13 @@ describe('StepsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
-    expect(onStep1Finish).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onStep1Finish.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'ApplyAndContinue' }))
 
     expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
-    expect(onStep2Finish).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onStep2Finish.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
 
     expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
     expect(onFinish).not.toBeCalled()
