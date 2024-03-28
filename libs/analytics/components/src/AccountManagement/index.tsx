@@ -53,7 +53,7 @@ const useTabs = () : Tab[] => {
   const supportTab = {
     key: AccountManagementTabEnum.SUPPORT,
     title: $t({ defaultMessage: 'Support' }),
-    component: <Support/>
+    component: <Support />
   }
   const licenseTab = {
     key: AccountManagementTabEnum.LICENSES,

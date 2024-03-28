@@ -7,7 +7,8 @@ import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, withi
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
-import WebhooksTable                                 from './WebhooksTable'
+
+import { WebhooksTable } from '.'
 
 const { click } = userEvent
 

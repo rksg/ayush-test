@@ -55,7 +55,7 @@ const useWebhooks = (selectedId?: Webhook['id'] | null) => {
   }
 }
 
-export default function WebhooksTable () {
+export const WebhooksTable = () => {
   const { $t } = useIntl()
 
   // string    = existing record
