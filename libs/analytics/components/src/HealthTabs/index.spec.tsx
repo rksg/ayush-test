@@ -19,6 +19,11 @@ jest.mock('../Health', () => ({
   HealthPage: () => <div>HealthPage</div>
 }))
 
+jest.mock('./OverviewTab', () => ({
+  OverviewTab: () => <div>Mocked OverviewTab</div>
+}))
+
+
 describe('HealthTabs', () => {
   beforeEach(() => {
     mockedUsedNavigate.mockReset()
