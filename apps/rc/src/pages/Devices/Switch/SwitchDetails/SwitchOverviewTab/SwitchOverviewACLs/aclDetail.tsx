@@ -8,6 +8,7 @@ import { Table }       from '@acx-ui/components'
 import {
   Acl,
   AclRule,
+  AclTypeEnum,
   defaultSort,
   sortProp,
   transformTitleCase
@@ -98,15 +99,14 @@ export const AclDetail = (props: { row : Acl }) => {
         children={transformTitleCase(row.aclType)}
       />
 
-      {row.aclType === 'standard' && <Table
+      {(row.aclType === AclTypeEnum.STANDARD || row.aclType === AclTypeEnum.V6) && <Table
         columns={standardColumns}
         type={'form'}
         dataSource={row.aclRules}
         rowKey='id'
       />}
 
-
-      {row.aclType === 'extended' && <Table
+      {row.aclType === AclTypeEnum.EXTENDED && <Table
         columns={extendedColumns}
         type={'form'}
         dataSource={row.aclRules}

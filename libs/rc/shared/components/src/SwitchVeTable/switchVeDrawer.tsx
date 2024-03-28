@@ -25,8 +25,8 @@ import {
   VlanVePort,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { useParams }                                  from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 interface SwitchVeProps {
   visible: boolean
@@ -457,6 +457,23 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               ]}
             />
           </Form.Item>
+
+          {isEditMode && <>
+            <Form.Item
+              label={$t({ defaultMessage: 'V6 Ingress ACL' })}
+              name='vsixIngressAcl'
+              initialValue={''}
+            >
+              { editData?.vsixIngressAclName || noDataDisplay }
+            </Form.Item>
+            <Form.Item
+              label={$t({ defaultMessage: 'V6 Egress ACL' })}
+              name='vsixEgressAcl'
+              initialValue={''}
+            >
+              { editData?.vsixEgressAclName || noDataDisplay }
+            </Form.Item>
+          </>}
 
         </Form>
       </>}

@@ -40,9 +40,9 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { store }     from '@acx-ui/store'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { store }                  from '@acx-ui/store'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'
@@ -454,6 +454,9 @@ export function EditPortDrawer ({
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
       case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
+      case 'vsixIngressAclName':
+      case 'vsixEgressAclName':
+        return true
       default: return false
     }
   }
@@ -1364,6 +1367,31 @@ export function EditPortDrawer ({
             </Tooltip>}
           </>,
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+        )}
+
+        { getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='vsixIngressAclName'
+            label={$t({ defaultMessage: 'V6 Ingress ACL' })}
+            initialValue=''
+            children={<>{
+              editPortData?.vsixIngressAclName || noDataDisplay
+            }</>}
+          />,
+          'vsixIngressAclName', $t({ defaultMessage: 'V6 Ingress ACL' })
+        )}
+        { getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='vsixEgressAclName'
+            label={$t({ defaultMessage: 'V6 Egress ACL' })}
+            initialValue=''
+            children={<>{
+              editPortData?.vsixEgressAclName || noDataDisplay
+            }</>}
+          />,
+          'vsixEgressAclName', $t({ defaultMessage: 'V6 Egress ACL' })
         )}
 
         {getFieldTemplate(

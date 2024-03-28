@@ -62,7 +62,10 @@ export function SwitchVeTable ( { isVenueLevel } : {
       'ipAddress',
       'ipSubnetMask',
       'ingressAclName',
-      'egressAclName']
+      'egressAclName',
+      'vsixIngressAclName',
+      'vsixEgressAclName'
+    ]
   }
 
 
@@ -126,6 +129,16 @@ export function SwitchVeTable ( { isVenueLevel } : {
     key: 'egressAclName',
     title: $t({ defaultMessage: 'Egress ACL' }),
     dataIndex: 'egressAclName',
+    sorter: true
+  }, {
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'V6 Ingress ACL' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'V6 Egress ACL' }),
+    dataIndex: 'vsixEgressAclName',
     sorter: true
   }]
 

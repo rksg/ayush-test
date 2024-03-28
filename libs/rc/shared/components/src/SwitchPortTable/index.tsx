@@ -71,7 +71,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
     'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
     'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-    'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+    'lagId', 'syncedSwitchConfig', 'usedInFormingStack',
+    'ingressAclName', 'egressAclName', 'vsixIngressAclName', 'vsixEgressAclName',
     'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
     'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
     'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
@@ -260,6 +261,18 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'egressAclName',
     title: $t({ defaultMessage: 'Egress ACL' }),
     dataIndex: 'egressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'V6 Ingress ACL' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'V6 Egress ACL' }),
+    dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false
   },

@@ -377,7 +377,7 @@ export interface AclRule {
 }
 
 export interface Acl {
-	aclType: 'standard' | 'extended'
+	aclType: 'standard' | 'extended' | 'v6'
 	id: string,
 	name: string,
 	aclRules: AclRule[]
