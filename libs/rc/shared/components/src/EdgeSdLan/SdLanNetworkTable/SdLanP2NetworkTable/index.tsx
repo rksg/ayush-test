@@ -222,7 +222,7 @@ const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean
 
   return <Drawer
     title={$t({ defaultMessage: 'Forward Guest Traffic to DMZ' })}
-    width={400}
+    width={450}
     visible={props.visible}
     onClose={() => props.setVisible(false)}
   >

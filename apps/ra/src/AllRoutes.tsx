@@ -147,6 +147,8 @@ function AllRoutes () {
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
+        <Route path='onboarded'
+          element={<AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>} />
         <Route path='users' element={<Users/>} />
         <Route path='support'
           element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />

@@ -376,7 +376,7 @@ export function StackForm () {
         id: activeSerialNumber,
         description: values.description,
         venueId: values.venueId,
-        stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter(item => item.id).map(item => ({ id: item.id })),
         enableStack: true,
         jumboMode: false,
         igmpSnooping: 'none',
@@ -406,7 +406,7 @@ export function StackForm () {
     try {
       let payload = {
         ...values,
-        stackMembers: tableData.map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter(item => item.id).map(item => ({ id: item.id })),
         trustPorts: formRef.current?.getFieldValue('trustPorts')
       }
 

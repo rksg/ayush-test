@@ -63,6 +63,7 @@ export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
+export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidget, MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
@@ -161,10 +162,7 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady,
-  useSdLanScopedNetworks,
-  useSdLanScopedNetworkVenues,
-  checkSdLanScopedNetworkDeactivateAction
+  useIsEdgeFeatureReady
 } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
@@ -187,9 +185,13 @@ export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
   useEdgeSdLanActions,
-  useGetEdgeSdLanByEdgeOrClusterId
+  useGetEdgeSdLanByEdgeOrClusterId,
+  useSdLanScopedVenueNetworks,
+  useSdLanScopedNetworkVenues,
+  checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
+export { useGetNetworkTunnelInfo } from './EdgeSdLan/edgeSdLanUtils'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

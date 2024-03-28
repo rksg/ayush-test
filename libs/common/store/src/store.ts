@@ -40,7 +40,8 @@ import {
   baseRWGApi as rwgApi,
   notificationApi,
   baseEdgeSdLanApi,
-  baseConfigTemplateApi
+  baseConfigTemplateApi,
+  smartZoneApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -84,7 +85,8 @@ export const store = configureStore({
     [rwgApi.reducerPath]: rwgApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
-    [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer
+    [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
+    [smartZoneApi.reducerPath]: smartZoneApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -130,7 +132,8 @@ export const store = configureStore({
       rwgApi.middleware,
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
-      baseConfigTemplateApi.middleware
+      baseConfigTemplateApi.middleware,
+      smartZoneApi.middleware
     ])
   },
 
