@@ -85,6 +85,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(updateFirmwareByApModelToggle)
 
 
+    // eslint-disable-next-line max-len
     expect(await within(confirmDialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })).toBeVisible()
 
     await userEvent.click(within(confirmDialog).getByRole('button', { name: 'Cancel' }))
