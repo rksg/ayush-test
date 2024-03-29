@@ -232,7 +232,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/lag',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/lags',
         hash: '',
         search: ''
       })
