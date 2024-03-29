@@ -76,14 +76,14 @@ export const SummaryBoxes = ({ filters }: {
       type: 'yellow',
       title: defineMessage({ defaultMessage: 'Total Traffic' }),
       values: [{
-        title: defineMessage({ defaultMessage: 'APs' }),
+        title: defineMessage({ defaultMessage: 'Wireless' }),
         value: trafficSummary.apTotalTraffic ?
           formatter('bytesFormat')(trafficSummary.apTotalTraffic).split(' ')[0] : noDataDisplay,
         suffix: trafficSummary.apTotalTraffic ?
           formatter('bytesFormat')(trafficSummary.apTotalTraffic).split(' ')[1] : undefined
       },
       {
-        title: defineMessage({ defaultMessage: 'Switches' }),
+        title: defineMessage({ defaultMessage: 'Wired' }),
         value: trafficSummary.switchTotalTraffic ?
           formatter('bytesFormat')(trafficSummary.switchTotalTraffic).split(' ')[0] : noDataDisplay,
         suffix: trafficSummary.switchTotalTraffic ?
