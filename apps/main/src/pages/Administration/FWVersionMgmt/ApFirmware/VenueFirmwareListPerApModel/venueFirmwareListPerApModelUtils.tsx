@@ -10,7 +10,6 @@ import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       fr
 import { VersionLabelType } from '../../FirmwareUtils'
 import * as UI              from '../../styledComponents'
 
-
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)
   const handleUpdateModalCancel = () => {
@@ -26,7 +25,7 @@ export function useUpdateNowPerApModel () {
 
 export function useUpgradePerferences () {
   const params = useParams()
-  const [preferencesModelVisible, setPreferencesModelVisible] = useState(false)
+  const [preferencesModalVisible, setPreferencesModalVisible] = useState(false)
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const preferenceDays = preferencesData?.days?.map((day) => {
@@ -35,7 +34,7 @@ export function useUpgradePerferences () {
   const preferences = { ...preferencesData, days: preferenceDays }
 
   const handlePreferencesModalCancel = () => {
-    setPreferencesModelVisible(false)
+    setPreferencesModalVisible(false)
   }
   const handlePreferencesModalSubmit = async (payload: UpgradePreferences) => {
     try {
@@ -46,8 +45,8 @@ export function useUpgradePerferences () {
   }
 
   return {
-    preferencesModelVisible,
-    setPreferencesModelVisible,
+    preferencesModalVisible,
+    setPreferencesModalVisible,
     preferences,
     handlePreferencesModalCancel,
     handlePreferencesModalSubmit

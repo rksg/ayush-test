@@ -25,7 +25,7 @@ export function VenueFirmwareListPerApModel () {
   // eslint-disable-next-line max-len
   const { updateNowVisible, setUpdateNowVisible, handleUpdateModalCancel } = useUpdateNowPerApModel()
   const {
-    preferencesModelVisible, setPreferencesModelVisible, preferences,
+    preferencesModalVisible, setPreferencesModalVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
   } = useUpgradePerferences()
 
@@ -61,7 +61,7 @@ export function VenueFirmwareListPerApModel () {
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
-          onClick: () => setPreferencesModelVisible(true)
+          onClick: () => setPreferencesModalVisible(true)
         }])}
       />
     </Loader>
@@ -71,7 +71,7 @@ export function VenueFirmwareListPerApModel () {
       selectedVenuesFirmwares={selectedRows}
     />}
     <PreferencesDialog
-      visible={preferencesModelVisible}
+      visible={preferencesModalVisible}
       data={preferences}
       onCancel={handlePreferencesModalCancel}
       onSubmit={handlePreferencesModalSubmit}
@@ -97,10 +97,7 @@ function useColumns () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
-      searchable: true,
-      render: function (_, row) {
-        return row.name
-      }
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Current Firmware' }),
@@ -164,7 +161,7 @@ function useData () {
     setTimeout(() => {
       setData(getTestingData())
       setIsLoading(false)
-    }, 2000)
+    }, 100)
   }, [])
 
   return {

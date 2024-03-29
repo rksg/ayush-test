@@ -219,7 +219,7 @@ export function useTestData () {
     setTimeout(() => {
       setIsLoading(false)
       setData(getTestData())
-    }, 2000)
+    }, 100)
   }, [])
 
   return { data, isLoading }
