@@ -12,10 +12,8 @@ import {
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  getServiceRoutePath,
   ServiceOperation,
-  ServiceType,
+  ServiceType, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
@@ -34,6 +32,8 @@ export const WifiCallingDetailView = () => {
     params: params
   })
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
+
   useEffect(() => {
     if (data && data.hasOwnProperty('networkIds')) {
       setNetworkIds(data.networkIds)
@@ -46,17 +46,7 @@ export const WifiCallingDetailView = () => {
     }}>
       <PageHeader
         title={data?.serviceName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Wi-Fi Calling' }),
-            link: getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
           <TenantLink
             to={getServiceDetailsLink({

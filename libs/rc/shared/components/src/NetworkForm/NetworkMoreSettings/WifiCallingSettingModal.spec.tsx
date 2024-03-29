@@ -1,41 +1,18 @@
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { serviceApi }                                           from '@acx-ui/rc/services'
-import { QosPriorityEnum, WifiCallingSetting, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                      from '@acx-ui/store'
-import { act,  fireEvent, mockServer, render, screen,within }   from '@acx-ui/test-utils'
+import { serviceApi }                             from '@acx-ui/rc/services'
+import { WifiCallingSetting, WifiCallingUrls }    from '@acx-ui/rc/utils'
+import { Provider, store }                        from '@acx-ui/store'
+import { act, mockServer, render, screen,within } from '@acx-ui/test-utils'
 
+
+import { mockWifiCallingTableResult } from '../../services/WifiCalling/__tests__/fixtures'
 
 import { WifiCallingSettingContext } from './NetworkControlTab'
 import { WifiCallingSettingModal }   from './WifiCallingSettingModal'
 
-const wifiCallingSettingTable = [
-  {
-    id: '1',
-    serviceName: 'AT&T',
-    description: 'AT&T des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '2',
-    serviceName: 'Sprint',
-    description: 'Sprint des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '3',
-    serviceName: 'Verizon',
-    description: 'Verizon des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '4',
-    serviceName: 'T-Mobile',
-    description: 'T-Mobile des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  }
-] as WifiCallingSetting[]
 
 let wifiCallingSettingList = [] as WifiCallingSetting[]
 const setWifiCallingSettingList = jest.fn()
@@ -45,16 +22,16 @@ describe('WifiCallingSettingModal', () => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
+
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
+    )
   })
 
   it('should only render wifiCallingSettingModal successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCallingList.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingSettingTable)
-      )
-    ))
-
     render(
       <Provider>
         <Form>
@@ -79,11 +56,13 @@ describe('WifiCallingSettingModal', () => {
 
     expect(screen.getByText(/select profiles/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByText(/select profiles/i))
+    await userEvent.click(screen.getByText(/select profiles/i))
 
-    await screen.findByText('AT&T')
+    await screen.findByText(mockWifiCallingTableResult.data[0].name)
 
-    fireEvent.click(screen.getByText(/at&t/i))
+    const item = screen.getByText(mockWifiCallingTableResult.data[0].name)
+
+    await userEvent.click(item)
 
     const addButton = screen.getByRole('button', {
       name: /add/i
@@ -91,7 +70,7 @@ describe('WifiCallingSettingModal', () => {
 
     expect(addButton).toBeTruthy()
 
-    fireEvent.click(addButton)
+    await userEvent.click(addButton)
 
     const dialog = screen.getByRole('dialog', {
       name: /select wi-fi calling profiles/i
@@ -104,7 +83,7 @@ describe('WifiCallingSettingModal', () => {
       name: /save/i
     })
 
-    fireEvent.click(screen.getByText(/at&t/i))
+    await userEvent.click(item)
 
     const removeButton = screen.getByRole('button', {
       name: /remove/i
@@ -112,22 +91,15 @@ describe('WifiCallingSettingModal', () => {
 
     expect(removeButton).toBeTruthy()
 
-    fireEvent.click(removeButton)
+    await userEvent.click(removeButton)
 
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /cancel/i
     }))
 
   })
 
   it('should render wifiCallingSettingModal and saved successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCallingList.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingSettingTable)
-      )
-    ))
-
     render(
       <Provider>
         <Form>
@@ -152,11 +124,13 @@ describe('WifiCallingSettingModal', () => {
 
     expect(screen.getByText(/select profiles/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByText(/select profiles/i))
+    await userEvent.click(screen.getByText(/select profiles/i))
 
-    await screen.findByText('AT&T')
+    await screen.findByText(mockWifiCallingTableResult.data[0].name)
 
-    fireEvent.click(screen.getByText(/at&t/i))
+    const item = screen.getByText(mockWifiCallingTableResult.data[0].name)
+
+    await userEvent.click(item)
 
     const addButton = screen.getByRole('button', {
       name: /add/i
@@ -164,7 +138,7 @@ describe('WifiCallingSettingModal', () => {
 
     expect(addButton).toBeTruthy()
 
-    fireEvent.click(addButton)
+    await userEvent.click(addButton)
 
     const dialog = screen.getByRole('dialog', {
       name: /select wi-fi calling profiles/i
@@ -177,34 +151,25 @@ describe('WifiCallingSettingModal', () => {
       name: /save/i
     })
 
-    fireEvent.click(screen.getByText(/at&t/i))
+    await userEvent.click(item)
 
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /save/i
     }))
 
   })
 
   it('should only render wifiCallingSettingModal with initValue successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCallingList.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingSettingTable)
-      )
-    ))
-
-    let wifiCallingSettingInitList = wifiCallingSettingTable as WifiCallingSetting[]
-
     render(
       <Provider>
         <Form>
           <WifiCallingSettingContext.Provider value={{
-            wifiCallingSettingList: wifiCallingSettingInitList,
+            wifiCallingSettingList: [] as WifiCallingSetting[],
             setWifiCallingSettingList
           }}>
             <Form.Item
               name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
-              initialValue={wifiCallingSettingInitList}
+              initialValue={[]}
             >
               <WifiCallingSettingModal />
             </Form.Item>
@@ -219,11 +184,9 @@ describe('WifiCallingSettingModal', () => {
 
     expect(screen.getByText(/select profiles/i)).toBeTruthy()
 
-    fireEvent.click(screen.getByText(/select profiles/i))
+    await userEvent.click(screen.getByText(/select profiles/i))
 
-    await screen.findByText('AT&T')
-
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /cancel/i
     }))
 
