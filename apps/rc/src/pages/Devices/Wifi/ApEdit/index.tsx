@@ -4,6 +4,7 @@ import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
 import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
 import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
+import { goToNotFound }                             from '@acx-ui/user'
 import { getIntl }                                  from '@acx-ui/utils'
 
 
@@ -63,7 +64,7 @@ export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 export function ApEdit () {
   const params = useParams()
   const { activeTab } = params
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
   const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
