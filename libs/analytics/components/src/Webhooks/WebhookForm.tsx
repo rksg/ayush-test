@@ -110,7 +110,7 @@ export function WebhookForm (props: {
       const values = form.getFieldsValue()
       await submit(values).unwrap()
     } catch (error) {
-      if (error instanceof Error) throw error
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
