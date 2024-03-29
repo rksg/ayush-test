@@ -331,7 +331,25 @@ describe('WebhookForm', () => {
       expect(dialog).toBeVisible()
       expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
     })
-    it('handle error', async () => {
+    it('handle RTKQuery error', async () => {
+      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
+
+      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+
+      mockServer.use(
+        rest.post(webhooksUrl('send-sample-incident'), (req, res) => {
+          payloadSpy(req.body)
+          return res.networkError('Failed to connect')
+        })
+      )
+
+      await click(await screen.findByRole('button', { name }))
+
+      expect(await screen.findByText('Failed to send sample incident')).toBeVisible()
+      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      expect(onClose).not.toBeCalled()
+    })
+    it('handle API error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 
       render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
