@@ -1,6 +1,7 @@
-import { take }    from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { DefaultOptionType } from 'antd/lib/select'
+import { take }              from 'lodash'
+import { useIntl }           from 'react-intl'
+import AutoSizer             from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
@@ -21,8 +22,15 @@ SwitchesTrafficByVolume.defaultProps = {
 }
 
 export function SwitchesTrafficByVolume ({
-  filters, vizType, refreshInterval
-} : { filters : AnalyticsFilter, vizType: string, refreshInterval?: number }) {
+  filters, vizType, refreshInterval, enableSelectPort, portOptions, onPortChange
+} : {
+  filters : AnalyticsFilter,
+  vizType: string,
+  refreshInterval?: number,
+  enableSelectPort?: boolean,
+  portOptions?: DefaultOptionType[],
+  onPortChange?: (value: string) => void
+}) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
@@ -40,22 +48,17 @@ export function SwitchesTrafficByVolume ({
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
-        <UI.SelectPort>
-          <Select
-            showSearch
-            options={[
-              { label: 'Select...', value: '' },
-              { label: '1/1/1', value: 1 },
-              { label: '1/1/2', value: 2 },
-              { label: '1/1/3', value: 3 },
-              { label: '1/1/4', value: 4 },
-              { label: '1/1/5', value: 5 }
-            ]}
-            onChange={() => {
-              // console.log('value: ', value)
-            }}
-          />
-        </UI.SelectPort>
+        {
+          enableSelectPort &&
+          <UI.SelectPort>
+            <Select
+              showSearch
+              options={portOptions}
+              onChange={onPortChange}
+            />
+          </UI.SelectPort>
+        }
+
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?

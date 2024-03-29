@@ -1,15 +1,23 @@
 
-import { SwitchesTrafficByVolume }                                                                     from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                                                                          from '@acx-ui/analytics/components'
-import { GridCol, GridRow }                                                                            from '@acx-ui/components'
-import { TopologyFloorPlanWidget }                                                                     from '@acx-ui/rc/components'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                           from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                        from '@acx-ui/utils'
+import { useEffect, useState } from 'react'
+
+import { DefaultOptionType } from 'antd/lib/select'
+import { useIntl }           from 'react-intl'
+
+import { SwitchesTrafficByVolume }                                                                                       from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                                                                                            from '@acx-ui/analytics/components'
+import { GridCol, GridRow }                                                                                              from '@acx-ui/components'
+import { TopologyFloorPlanWidget }                                                                                       from '@acx-ui/rc/components'
+import { useSwitchPortlistQuery }                                                                                        from '@acx-ui/rc/services'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel, sortPortFunction } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                             from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                                          from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
+
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
@@ -41,6 +49,39 @@ export function SwitchOverviewPanel (props:{
 
 function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
+  const { $t } = useIntl()
+  const { tenantId, switchId } = useParams()
+  const portPayload = {
+    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
+    page: 1,
+    pageSize: 10000,
+    filters: { switchId: [switchId] },
+    sortField: 'portIdentifier',
+    sortOrder: 'ASC'
+  }
+
+  const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
+  const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
+
+  useEffect(() => {
+    if (!portList.isLoading) {
+      setPortOptions([
+        { label: $t({ defaultMessage: 'Select...' }), value: null },
+        ...(portList?.data?.data?.map(port => ({ id: port.portIdentifier }))
+          .sort(sortPortFunction)
+          .map(item => ({
+            label: item.id, value: item.id
+          }))
+      ?? [])
+      ])
+    }
+  }, [portList])
+
+  const onPortChange = (value: string) =>{
+    // eslint-disable-next-line no-console
+    console.log(value, filters)
+  }
+
   return (
     <>
       <GridCol col={{ span: 24 }} style={{ height: '100px' }}>
@@ -49,7 +90,11 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <SwitchesTrafficByVolume filters={filters}
-          refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} />
+          refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL}
+          enableSelectPort={true}
+          portOptions={portOptions}
+          onPortChange={onPortChange}
+        />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ResourceUtilization filters={filters} />
