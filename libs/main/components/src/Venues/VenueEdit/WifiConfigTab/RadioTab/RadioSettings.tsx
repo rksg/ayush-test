@@ -663,10 +663,13 @@ export function RadioSettings () {
       tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
+
+    const errors = formRef?.current?.getFieldsError().find((field) => field.errors.length > 0)
+
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings,
+      updateWifiRadio: errors ? () => {} : handleUpdateRadioSettings,
       discardWifiRadioChanges: handleDiscard
     })
   }

@@ -21,6 +21,7 @@ export interface ClusterInterfaceInfo {
   nodeName: string
   serialNumber: string
   interfaceName?: string
+  ipMode?: EdgeIpModeEnum
   ip?: string
   subnet?: string
 }
@@ -115,6 +116,7 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
         )
       }
     }
+
     try {
       await updateNetworkConfig({
         params: {
@@ -149,10 +151,11 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
       let subnet = item.subnet
       let lagEnabled = item.lagEnabled
       if(lagName === newInterfaceData.interfaceName?.toLocaleLowerCase()) {
+        const currentIpMode = newInterfaceData.ipMode
         portType = EdgePortTypeEnum.CLUSTER
-        ip = newInterfaceData.ip ?? ''
-        subnet = newInterfaceData.subnet ?? ''
-        ipMode = EdgeIpModeEnum.STATIC
+        ipMode = currentIpMode ?? EdgeIpModeEnum.STATIC
+        ip = currentIpMode === EdgeIpModeEnum.DHCP ? '' : (newInterfaceData.ip ?? '')
+        subnet = currentIpMode === EdgeIpModeEnum.DHCP ? '' : (newInterfaceData.subnet ?? '')
         lagEnabled = true
       } else if(lagName === oldInterfaceData?.portName.toLocaleLowerCase()) {
         lagEnabled = false
@@ -191,10 +194,11 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
       let subnet = item.subnet
       let enabled = item.enabled
       if(item.interfaceName === newInterfaceData.interfaceName) {
+        const currentIpMode = newInterfaceData.ipMode
         portType = EdgePortTypeEnum.CLUSTER
-        ip = newInterfaceData.ip ?? ''
-        subnet = newInterfaceData.subnet ?? ''
-        ipMode = EdgeIpModeEnum.STATIC
+        ipMode = currentIpMode ?? EdgeIpModeEnum.STATIC
+        ip = currentIpMode === EdgeIpModeEnum.DHCP ? '' : (newInterfaceData.ip ?? '')
+        subnet = currentIpMode === EdgeIpModeEnum.DHCP ? '' : (newInterfaceData.subnet ?? '')
         enabled = true
       } else if(item.interfaceName === oldInterfaceData?.portName) {
         enabled = false

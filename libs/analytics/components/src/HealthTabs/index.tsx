@@ -5,6 +5,8 @@ import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { HealthPage } from '..'
 
+import { OverviewTab } from './OverviewTab'
+
 export function HealthTabs () {
   const { $t } = useIntl()
   const location = useLocation()
@@ -25,9 +27,7 @@ export function HealthTabs () {
     type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview'>
-      <div>
-        Health Overview Page
-      </div>
+      <OverviewTab/>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
       <HealthPage path='/health/wireless/tab/'/>

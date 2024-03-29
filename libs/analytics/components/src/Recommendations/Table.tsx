@@ -19,7 +19,7 @@ import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions, isCrrmOptimizationMatched } from './RecommendationActions'
+import { isCrrmOptimizationMatched, getAvailableActions, RecommendationActionType } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -151,8 +151,23 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
+    ...(selectedRecommendation
+      ? getAvailableActions(
+        selectedRecommendation as RecommendationActionType,
+        isRecommendationRevertEnabled,
+        true
+      )
+        .filter(action => !action.icon.props.disabled)
+        .map((action) => {
+          return {
+            label: action.icon as unknown as string,
+            onClick: () => {},
+            disabled: false
+          }
+        }): []),
     {
       label: $t(selectedRecommendation?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
@@ -164,8 +179,8 @@ export function RecommendationTable (
         setSelectedRowData([])
       },
       disabled: selectedRecommendation
-        && selectedRecommendation.statusEnum
-        && disableMuteStatus.includes(selectedRecommendation.statusEnum)
+            && selectedRecommendation.statusEnum
+            && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
 
@@ -294,22 +309,13 @@ export function RecommendationTable (
         return <Tooltip
           placement='top'
           title={code === 'unknown' ? '' : statusTooltip}
-          dottedUnderline={true}
+          dottedUnderline={code !== 'unknown'}
         >
           <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
       filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Actions' }),
-      key: 'id',
-      dataIndex: 'id',
-      width: 100,
-      fixed: 'right',
-      className: 'actions-column',
-      render: (_, value) => <RecommendationActions recommendation={value} />
     },
     ...(showCrrm && isCrrmPartialEnabled ? [{
       title: $t({ defaultMessage: 'Full Optimization' }),
@@ -365,11 +371,7 @@ export function RecommendationTable (
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
-            row && setSelectedRowData([{
-              id: row.id,
-              isMuted: row.isMuted,
-              statusEnum: row.statusEnum
-            }])
+            row && setSelectedRowData([row])
           }
         }}
         rowKey='id'
