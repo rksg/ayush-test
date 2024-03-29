@@ -39,7 +39,6 @@ const defaultPayload = {
 export default function IdentityProviderTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteIdentityProviderMutation()
 
@@ -58,15 +57,8 @@ export default function IdentityProviderTable () {
       selectedRows[0].name,
       [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () => {
-        const ids = selectedRows.map(row => row.id)
-        for (let i=0; i<ids.length; i++) {
-          const curParams = {
-            ...params,
-            profileId: ids[i]
-          }
-          await deleteFn({ params: curParams })
-        }
-        callback()
+        Promise.all(selectedRows.map(row => deleteFn({ params: { policyId: row.id } })))
+          .then(callback)
       }
     )
   }
@@ -116,7 +108,7 @@ export default function IdentityProviderTable () {
           </TenantLink>
         ])}
       />
-      <Loader states={[{ isLoading: false } /*tableQuery*/]}>
+      <Loader states={[tableQuery]}>
         <Table<IdentityProviderViewModel>
           settingsId={settingsId}
           columns={useColumns()}
@@ -181,15 +173,16 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (_, row) => (
+      render: (_, row, __, highlightFn) => (
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.IDENTITY_PROVIDER,
             oper: PolicyOperation.DETAIL,
             policyId: row.id!
           })}>
-          {row.name}
+          {highlightFn(row.name || '--')}
         </TenantLink>
       )
     },
@@ -197,7 +190,7 @@ function useColumns () {
       key: 'naiRealm',
       title: $t({ defaultMessage: 'NAI Realm' }),
       dataIndex: 'naiRealms',
-      sorter: true,
+      //sorter: true,
       render: (_, { naiRealms }) => naiRealms.map(realm => realm.name).join(', ')
     },
     {
@@ -205,7 +198,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'PLMN' }),
       dataIndex: 'plmns',
       align: 'center',
-      sorter: true,
+      //sorter: true,
       render: (_, { plmns }) => (
         plmns
           ? <SimpleListTooltip
@@ -221,7 +214,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Roaming Consortium OI' }),
       dataIndex: 'roamConsortiumOIs',
       align: 'center',
-      sorter: true,
+      //sorter: true,
       render: (_, { roamConsortiumOIs }) => (
         roamConsortiumOIs
           ? <SimpleListTooltip
@@ -236,7 +229,6 @@ function useColumns () {
       key: 'authRadiusId',
       title: $t({ defaultMessage: 'Auth Service' }),
       dataIndex: 'authRadiusId',
-      align: 'center',
       sorter: false,
       render: (_, { authRadiusId }) => {
         return (!authRadiusId)
@@ -254,7 +246,6 @@ function useColumns () {
       key: 'accountingRadiusId',
       title: $t({ defaultMessage: 'Accounting Service' }),
       dataIndex: 'accountingRadiusId',
-      align: 'center',
       sorter: false,
       render: (_, { accountingRadiusId }) => {
         return (!accountingRadiusId)

@@ -93,7 +93,9 @@ export function Hotspot20Tab (props: {
   wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data } = useContext(NetworkFormContext)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { wlanData } = props
   // const form = Form.useFormInstance()
   const [editMode, setEditMode] = useState(false)

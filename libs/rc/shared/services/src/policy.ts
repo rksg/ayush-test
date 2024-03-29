@@ -92,7 +92,7 @@ const WifiOperatorMutationUseCases = [
 const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
-  'DeleteHotspot20IdentityProviders'
+  'DeleteHotspot20IdentityProvider'
 ]
 
 const L2AclUseCases = [
@@ -1301,18 +1301,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
-    /*
-    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
-    }),
-    */
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)

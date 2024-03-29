@@ -119,7 +119,7 @@ export default function WifiOperatorTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -156,16 +156,17 @@ function useColumns () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: (_, row) => (
+      render: (_, row, __, highlightFn) => (
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.WIFI_OPERATOR,
             oper: PolicyOperation.DETAIL,
             policyId: row.id!
           })}>
-          {row.name}
+          {highlightFn(row.name || '--')}
         </TenantLink>
       )
     },
