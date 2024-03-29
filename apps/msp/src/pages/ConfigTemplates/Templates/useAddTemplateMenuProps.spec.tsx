@@ -16,6 +16,7 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.RADIUS]: true,
   [ConfigTemplateType.DHCP]: true,
   [ConfigTemplateType.ACCESS_CONTROL]: true,
+  [ConfigTemplateType.PORTAL]: true,
   [ConfigTemplateType.VLAN_POOL]: false
 }
 

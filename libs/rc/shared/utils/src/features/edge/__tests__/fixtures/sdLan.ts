@@ -121,7 +121,11 @@ export const mockedSdLanDataListP2 = [{
   },
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 12,
-  vlanNum: 37
+  vlanNum: 37,
+  guestVlanNum: 20,
+  guestVxlanTunnelNum: 10,
+  vlans: ['2-9', '20', '22', '62-63'],
+  guestVlans: ['11-15', '30', '32', '51-53']
 }, {
   id: 'mocked-sd-lan-2',
   name: 'Mocked_SDLAN_2',
