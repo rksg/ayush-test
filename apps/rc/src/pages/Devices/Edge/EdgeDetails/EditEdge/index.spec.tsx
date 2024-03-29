@@ -130,7 +130,7 @@ describe('EditEdge', () => {
     await user.click(screen.getByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports`,
       hash: '',
       search: ''
     })
