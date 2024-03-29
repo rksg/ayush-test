@@ -18,9 +18,10 @@ import { hasRoles } from '@acx-ui/user'
 
 import { ServiceCard } from '.'
 
-
-jest.mock('@acx-ui/user')
-const mockedHasRoles = hasRoles as jest.MockedFunction<typeof hasRoles>
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  hasRoles: jest.fn()
+}))
 
 const mockedUseNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -44,7 +45,7 @@ describe('ServiceCard', () => {
   const path = '/t/:tenantId'
 
   beforeEach(() => {
-    mockedHasRoles.mockReturnValue(true)
+    (hasRoles as jest.Mock).mockReturnValue(true)
   })
 
   it('should render LIST service card', async () => {
@@ -113,7 +114,7 @@ describe('ServiceCard', () => {
   })
 
   it('should render readonly service card', async () => {
-    mockedHasRoles.mockReturnValue(false)
+    (hasRoles as jest.Mock).mockReturnValue(false)
 
     render(
       <ServiceCard

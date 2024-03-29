@@ -42,6 +42,7 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
+          <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />

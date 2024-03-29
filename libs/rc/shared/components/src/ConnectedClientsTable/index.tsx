@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { Space }              from 'antd'
+import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
@@ -124,7 +125,7 @@ export const ConnectedClientsTable = (props: {
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
-    selectedRowKeys: [] as React.Key[],
+    selectedRowKeys: [] as string[],
     selectRows: [] as ClientList[],
     actionButton: {
       revoke: {
@@ -157,6 +158,29 @@ export const ConnectedClientsTable = (props: {
   useEffect(() => {
     if (tableQuery.data?.data && setConnectedClientCount) {
       setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+    // Remove selection when UE is disconnected.
+    const connectedClientList = tableQuery.data?.data
+    if (!connectedClientList) {
+      setTableSelected({
+        ...tableSelected,
+        selectedRowKeys: [] as string[],
+        selectRows: [] as ClientList[]
+      })
+    }
+    else {
+      const clonedSelection = _.cloneDeep(tableSelected)
+      const newSelectRows = clonedSelection.selectRows.filter((row) => {
+        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === row.clientMac.toLocaleLowerCase())
+      })
+      const newSelectRowkeys = clonedSelection.selectedRowKeys.filter((key) => {
+        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === key.toLocaleLowerCase())
+      })
+      setTableSelected({
+        ...tableSelected,
+        selectedRowKeys: newSelectRowkeys,
+        selectRows: newSelectRows
+      })
     }
   }, [tableQuery.data?.data, tableQuery.data?.totalCount])
 
@@ -597,7 +621,7 @@ export const ConnectedClientsTable = (props: {
         return !isEqualCaptivePortal(row.networkType)
       }).length !== 0
       setTableSelected({
-        selectedRowKeys: newSelectedRowKeys,
+        selectedRowKeys: newSelectedRowKeys as string[],
         selectRows: newSelectedRows,
         actionButton: {
           revoke: {
