@@ -1,11 +1,11 @@
 import { Button, Space, Typography } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow }     from '@acx-ui/components'
-import { BiDirectionalArrow, CloseSymbol }          from '@acx-ui/icons'
-import { DeviceTypes, Link, Node, vlanPortsParser } from '@acx-ui/rc/utils'
-import { useTenantLink }                            from '@acx-ui/react-router-dom'
-import { noDataDisplay }                            from '@acx-ui/utils'
+import { Card, Descriptions, GridCol, GridRow, Tabs }                   from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol }                              from '@acx-ui/icons'
+import { DeviceTypes, Link, LinkConnectionInfo, Node, vlanPortsParser } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -18,7 +18,6 @@ tooltipTargetNode: Node,
 tooltipEdge: Link,
 onClose: () => void
 }) {
-
   const { tooltipPosition, tooltipSourceNode, tooltipTargetNode, tooltipEdge, onClose } = props
   const { $t } = useIntl()
   const wifiBasePath = useTenantLink('/devices/wifi')
@@ -76,6 +75,66 @@ onClose: () => void
         return DeviceTypes.Switch
     }
     return deviceType
+  }
+
+  function edgesInfoComponent (
+    tooltipEdge: Link, tooltipSourceNode: Node, tooltipTargetNode: Node) {
+    return <>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Link Speed' })}
+        children={tooltipEdge?.linkSpeed || noDataDisplay} />
+
+      {(tooltipSourceNode?.type === DeviceTypes.Switch ||
+        tooltipSourceNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipTargetNode?.type === DeviceTypes.Switch
+          || tooltipTargetNode?.type === DeviceTypes.SwitchStack)
+        && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
+        || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
+        &&
+        <>
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'VLANs trunked' })}
+            children={null}
+          />
+          <Descriptions.Item
+            children={
+              <Card type='solid-bg'>
+                <VlansTrunked
+                  title={tooltipSourceNode.name}
+                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
+                  tagged={tooltipEdge?.connectedPortTaggedVlan}
+                />
+                <VlansTrunked
+                  title={tooltipTargetNode.name}
+                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
+                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
+                />
+              </Card>}
+          />
+        </>
+      }
+      {
+        /* TODO: does we get PoE usage if poe disabled?
+          How to calculate and set unit for PoE? */
+      }
+      <Descriptions.Item
+        label={tooltipEdge?.correspondingPort ?
+          $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
+        children={tooltipEdge?.connectedPort || noDataDisplay} />
+
+      {tooltipEdge?.correspondingPort &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'To Port' })}
+            children={tooltipEdge?.correspondingPort || noDataDisplay} />
+      }
+      { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'PoE' })}
+            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
+            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
+              : $t({ defaultMessage: 'Off' })} />
+      }
+    </>
   }
 
   return <div
@@ -137,62 +196,29 @@ onClose: () => void
               {tooltipTargetNode?.name || tooltipTargetNode?.mac || tooltipTargetNode?.id}
             </Typography.Link>
           } />
-
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Link Speed' })}
-          children={tooltipEdge?.linkSpeed || noDataDisplay} />
-
-        {(tooltipSourceNode?.type === DeviceTypes.Switch ||
-        tooltipSourceNode?.type === DeviceTypes.SwitchStack)
-        && (tooltipTargetNode?.type === DeviceTypes.Switch
-          || tooltipTargetNode?.type === DeviceTypes.SwitchStack)
-        && (tooltipEdge?.connectedPortTaggedVlan || tooltipEdge?.connectedPortUntaggedVlan
-        || tooltipEdge?.correspondingPortTaggedVlan || tooltipEdge?.correspondingPortUntaggedVlan)
-        &&
-        <>
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'VLANs trunked' })}
-            children={null}
-          />
-          <Descriptions.Item
-            children={
-              <Card type='solid-bg'>
-                <VlansTrunked
-                  title={tooltipEdge?.fromName || tooltipEdge?.from}
-                  untagged={tooltipEdge?.connectedPortUntaggedVlan}
-                  tagged={tooltipEdge?.connectedPortTaggedVlan}
-                />
-                <VlansTrunked
-                  title={tooltipEdge?.toName || tooltipEdge?.to}
-                  untagged={tooltipEdge?.correspondingPortUntaggedVlan}
-                  tagged={tooltipEdge?.correspondingPortTaggedVlan}
-                />
-              </Card>}
-          />
-        </>
-        }
-        {
-          /* TODO: does we get PoE usage if poe disabled?
-          How to calculate and set unit for PoE? */
-        }
-        <Descriptions.Item
-          label={tooltipEdge?.correspondingPort ?
-            $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
-          children={tooltipEdge?.connectedPort || noDataDisplay} />
-
-        {tooltipEdge?.correspondingPort &&
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'To Port' })}
-            children={tooltipEdge?.correspondingPort || noDataDisplay} />
-        }
-        { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'PoE' })}
-            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
-            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
-              : $t({ defaultMessage: 'Off' })} />
-        }
+        {!tooltipEdge.extraEdges &&
+            edgesInfoComponent(tooltipEdge, tooltipSourceNode, tooltipTargetNode)}
       </Descriptions>
+      {tooltipEdge.extraEdges && tooltipEdge.extraEdges.length > 0 &&
+        <Tabs type='third' defaultActiveKey={'#1'}>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: '#1' })}
+            key='#1'>
+            <Descriptions>
+              {edgesInfoComponent(tooltipEdge, tooltipSourceNode, tooltipTargetNode)}
+            </Descriptions>
+          </Tabs.TabPane>
+          {tooltipEdge.extraEdges.map((item: LinkConnectionInfo, index: number) =>
+            <Tabs.TabPane
+              tab={`#${index+2}`}
+              key={`#${index+2}`}>
+              <Descriptions>
+                {edgesInfoComponent(item as Link, tooltipSourceNode, tooltipTargetNode)}
+              </Descriptions>
+            </Tabs.TabPane>
+          )}
+        </Tabs>
+      }
     </Card>
   </div>
 }
