@@ -189,7 +189,7 @@ export const InterfaceSettings = () => {
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
         handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
       onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = event?.currentTarget?.getAttribute('value') === 'pre'
+        const isBackBtn = StepsForm.isBackStepClicked(event)
 
         const checkResult = getCompatibleCheckResult(typeKey)
         if (isBackBtn) {
@@ -213,7 +213,7 @@ export const InterfaceSettings = () => {
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
         handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
       onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = event?.currentTarget?.getAttribute('value') === 'pre'
+        const isBackBtn = StepsForm.isBackStepClicked(event)
         if (isBackBtn) {
           updateAlertMessage({ isError: false } as CompatibilityCheckResult)
           return true

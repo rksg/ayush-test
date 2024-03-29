@@ -14,6 +14,10 @@ import type { InternalStepFormProps, StepsFormGotoStepFn }      from './types'
 import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
 import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
+export function isBackStepClicked (event?: React.MouseEvent): boolean {
+  return event?.currentTarget.getAttribute('value') === 'pre'
+}
+
 function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
 }

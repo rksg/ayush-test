@@ -65,7 +65,7 @@ export function AlertMessageBar () {
 
       <StepsForm.StepForm title='Step 2'
         onFinish={async (v: unknown, event?: React.MouseEvent) => {
-          const isBackBtn = event?.currentTarget.getAttribute('value') === 'pre'
+          const isBackBtn = StepsForm.isBackStepClicked(event)
           // no need to block back step when crossValidation failed
           if (isBackBtn) {
             setAlertData(undefined)
