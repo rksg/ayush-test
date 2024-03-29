@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Typography } from 'antd'
+import styled         from 'styled-components/macro'
 
 export const DiagramContainer = styled.div`
   position: relative;
@@ -23,8 +24,6 @@ export const FrameOverDiagram = styled.div`
   z-index: 1;
 `
 
-export const TitleWithTooltip = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+export const StyledParagraph = styled(Typography.Paragraph)`
+  line-height: var(--acx-body-3-line-height);
 `
