@@ -80,6 +80,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
+  const tabs = useTabs()
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
     if (tab?.url) {
@@ -91,7 +92,6 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
       pathname: `${basePath.pathname}/admin/${tab.key}`
     })
   }
-  const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader

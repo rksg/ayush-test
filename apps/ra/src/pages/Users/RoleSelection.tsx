@@ -3,9 +3,7 @@
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { roles } from '@acx-ui/analytics/utils'
-
-import { messages } from './'
+import { RolesEnum, roleStringMap } from '@acx-ui/analytics/utils'
 
 export const RoleSelection = ({
   onChange,
@@ -18,8 +16,8 @@ export const RoleSelection = ({
   return (
     <Select
       style={{ width: 350 }}
-      options={roles.map((role, i) => ({
-        label: $t(messages[role as keyof typeof messages]),
+      options={Object.values(RolesEnum).map((role, i) => ({
+        label: $t(roleStringMap[role]),
         value: role,
         key: i
       }))}
