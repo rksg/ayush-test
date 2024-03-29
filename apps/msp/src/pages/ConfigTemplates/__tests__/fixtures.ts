@@ -46,14 +46,7 @@ export const mockedConfigTemplateList = {
 }
 
 export const mockedMSPCustomerList = {
-  fields: [
-    'tenantType',
-    'streetAddress',
-    'name',
-    'id',
-    'check-all',
-    'status'
-  ],
+  fields: ['tenantType', 'streetAddress', 'name', 'id', 'check-all', 'status'],
   totalCount: 1,
   page: 1,
   data: [
@@ -173,7 +166,8 @@ export const mockPortalDetailResult = {
     photoRatio: 170,
 
     logoRatio: 105,
-    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+    secondaryText:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing' +
       ' elit. Aenean euismod bibendum laoreet.',
     secondaryColor: '#333333',
     secondarySize: 14,
@@ -195,10 +189,16 @@ export const mockPortalDetailResult = {
     },
     displayLangCode: 'en',
 
-    alternativeLang:
-
-        { cs: true, zh_TW: false, fi: true,
-          fr: true, de: true, el: true, hu: true, it: false }
+    alternativeLang: {
+      cs: true,
+      zh_TW: false,
+      fi: true,
+      fr: true,
+      de: true,
+      el: true,
+      hu: true,
+      it: false
+    }
   }
 }
 
@@ -217,7 +217,8 @@ export const mockPortalDetailChangeResult = {
     photoRatio: 170,
 
     logoRatio: 105,
-    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+    secondaryText:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing' +
       ' elit. Aenean euismod bibendum laoreet.',
     secondaryColor: '#333333',
     secondarySize: 14,
@@ -239,10 +240,50 @@ export const mockPortalDetailChangeResult = {
     },
     displayLangCode: 'en',
 
-    alternativeLang:
-
-        { cs: true, zh_TW: false, fi: true,
-          fr: true, de: true, el: true, hu: true, it: false }
+    alternativeLang: {
+      cs: true,
+      zh_TW: false,
+      fi: true,
+      fr: true,
+      de: true,
+      el: true,
+      hu: true,
+      it: false
+    }
   },
   networkIds: [1, 2]
+}
+
+export const mockedNetworkTemplates = {
+  fields: [
+    'id',
+    'name',
+    'nwSubType',
+    'captiveType',
+    'network',
+    'venues',
+    'clients'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'NetT',
+      nwSubType: 'guest',
+      captiveType: 'GuestPass',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
+      },
+      venues: { count: 0, names: [] },
+      clients: 88
+    }
+  ]
+}
+
+export const mockedEnhancedPortalList = {
+  content: [{ id: 'test', name: 'test', wifiNetworkIds: ['networkId'] }],
+  paging: { page: 1, pageSize: 10, totalCount: 1 }
 }
