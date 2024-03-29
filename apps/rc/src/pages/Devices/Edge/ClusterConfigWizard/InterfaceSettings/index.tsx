@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum }    from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, Loader, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }                                from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
@@ -82,7 +82,7 @@ export const InterfaceSettings = () => {
     updateAlertMessage(checkResult, typeKey)
   }
 
-  const getCompatibleCheckResult = (typeKey: string): CompatibilityCheckResult => {
+  const getCompatibleCheckResult = useCallback((typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
     if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
@@ -93,7 +93,7 @@ export const InterfaceSettings = () => {
     }
 
     return checkResult
-  }
+  }, [configWizardForm, clusterInfo])
 
   const updateAlertMessage = (
     checkResult: CompatibilityCheckResult,
@@ -176,7 +176,7 @@ export const InterfaceSettings = () => {
       .catch(() => {/* do nothing */})
   }, 1000)
 
-  const steps = [
+  const steps = useMemo(() => [
     {
       title: $t({ defaultMessage: 'LAG' }),
       id: InterfaceSettingsTypeEnum.LAGS,
@@ -189,7 +189,7 @@ export const InterfaceSettings = () => {
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
         handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
       onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = StepsForm.isBackStepClicked(event)
+        const isBackBtn = isStepsFormBackStepClicked(event)
 
         const checkResult = getCompatibleCheckResult(typeKey)
         if (isBackBtn) {
@@ -213,7 +213,7 @@ export const InterfaceSettings = () => {
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
         handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
       onFinish: async (typeKey: string, event?: React.MouseEvent) => {
-        const isBackBtn = StepsForm.isBackStepClicked(event)
+        const isBackBtn = isStepsFormBackStepClicked(event)
         if (isBackBtn) {
           updateAlertMessage({ isError: false } as CompatibilityCheckResult)
           return true
@@ -247,7 +247,7 @@ export const InterfaceSettings = () => {
       id: 'summary',
       content: <Summary />
     }
-  ]
+  ], [configWizardForm, getCompatibleCheckResult, handleValuesChange])
 
   const invokeUpdateApi = async (
     value: InterfaceSettingsFormType,

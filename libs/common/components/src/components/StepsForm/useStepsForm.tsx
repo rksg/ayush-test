@@ -14,8 +14,10 @@ import type { InternalStepFormProps, StepsFormGotoStepFn }      from './types'
 import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
 import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
-export function isBackStepClicked (event?: React.MouseEvent): boolean {
-  return event?.currentTarget.getAttribute('value') === 'pre'
+export const enum StepsFormActionButtonEnum {
+  PRE = 'pre',
+  NEXT = 'next',
+  SUBMIT = 'submit'
 }
 
 function isPromise <T> (value: unknown): value is Promise<T> {
@@ -220,7 +222,7 @@ export function useStepsForm <T> ({
       children={labels.cancel}
     />,
     pre: <Button
-      value='pre'
+      value={StepsFormActionButtonEnum.PRE}
       onClick={(e) => newConfig.gotoStep(formConfig.current - 1, e)}
       children={labels.pre}
       hidden={formConfig.current === 0}
@@ -229,6 +231,7 @@ export function useStepsForm <T> ({
     // - handle disable when validation not passed
     apply: <Button
       type='primary'
+      value={StepsFormActionButtonEnum.SUBMIT}
       loading={loading}
       disabled={customSubmitLoading}
       onClick={() => submit()}
@@ -237,13 +240,14 @@ export function useStepsForm <T> ({
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
         type='primary'
-        value='next'
+        value={StepsFormActionButtonEnum.NEXT}
         loading={loading}
         onClick={(e) => newConfig.gotoStep(formConfig.current + 1, e)}
         children={labels.next}
       />
       : <Button
         type='primary'
+        value={StepsFormActionButtonEnum.SUBMIT}
         loading={loading}
         disabled={customSubmitLoading}
         onClick={() => submit()}
@@ -252,6 +256,7 @@ export function useStepsForm <T> ({
     customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
       ? <Button
         type='primary'
+        value={StepsFormActionButtonEnum.SUBMIT}
         loading={customSubmitLoading}
         disabled={loading}
         onClick={() => customSubmitHandler()}

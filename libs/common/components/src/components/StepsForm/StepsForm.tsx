@@ -9,7 +9,7 @@ import { noDataDisplay } from '@acx-ui/utils'
 
 import * as UI                                                                       from './styledComponents'
 import { InternalStepFormProps, StepFormProps, StepsFormGotoStepFn, StepsFormProps } from './types'
-import { isBackStepClicked, useStepsForm }                                           from './useStepsForm'
+import { useStepsForm }                                                              from './useStepsForm'
 
 interface IStepsFormContext <T> {
   form: FormInstance<T>
@@ -82,7 +82,6 @@ StepsForm.MultiSelect = UI.MultiSelect
 StepsForm.DescriptionWrapper = UI.DescriptionWrapper
 StepsForm.DescriptionTextWrapper = UI.DescriptionTextWrapper
 StepsForm.ActionsContainer = UI.ActionsContainer
-StepsForm.isBackStepClicked = isBackStepClicked
 
 export type FieldSummaryProps <T = unknown> = {
   value?: T

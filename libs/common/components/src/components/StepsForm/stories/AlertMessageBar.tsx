@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { Row, Col, Form, Input, Button, AlertProps, Space, Switch } from 'antd'
 
-import { StepsForm, StepsFormProps } from '..'
-import { Drawer }                    from '../../Drawer'
-import { showToast }                 from '../../Toast'
+import { StepsForm, StepsFormProps, isStepsFormBackStepClicked } from '..'
+import { Drawer }                                                from '../../Drawer'
+import { showToast }                                             from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -65,7 +65,7 @@ export function AlertMessageBar () {
 
       <StepsForm.StepForm title='Step 2'
         onFinish={async (v: unknown, event?: React.MouseEvent) => {
-          const isBackBtn = StepsForm.isBackStepClicked(event)
+          const isBackBtn = isStepsFormBackStepClicked(event)
           // no need to block back step when crossValidation failed
           if (isBackBtn) {
             setAlertData(undefined)
