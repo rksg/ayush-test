@@ -8,19 +8,31 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Modal, Transfer }           from '@acx-ui/components'
-import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
+import { Button, Modal, Transfer }                   from '@acx-ui/components'
+import { useGetEnhancedWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
 import { WifiCallingSettingContext } from './NetworkControlTab'
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'qosPriority',
+    'tenantId',
+    'epdgs',
+    'networkIds'
+  ]
+}
 
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
   const params = useParams()
   const { wifiCallingSettingList, setWifiCallingSettingList }= useContext(WifiCallingSettingContext)
-  const { data } = useGetWifiCallingServiceListQuery({
-    params: params
+  const { data } = useGetEnhancedWifiCallingServiceListQuery({
+    params,
+    payload: defaultPayload
   })
 
   const [visible, setVisible] = useState(false)
@@ -46,10 +58,10 @@ export function WifiCallingSettingModal () {
       height: 300
     }}
     operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
-    dataSource={data?.map(data => {
+    dataSource={data?.data.map(data => {
       return { ...data, key: data.id }
     }) || []}
-    render={item => item.serviceName}
+    render={item => item.name}
     onChange={onChange}
     onSelectChange={onSelectChange}
     targetKeys={targetKeys}
@@ -65,7 +77,7 @@ export function WifiCallingSettingModal () {
   }
 
   const handleOk = async () => {
-    data && setWifiCallingSettingList(data.filter(data => targetKeys.indexOf(data.id) !== -1))
+    data && setWifiCallingSettingList(data.data.filter(data => targetKeys.indexOf(data.id) !== -1))
     setVisible(false)
     form.setFieldValue(
       ['wlan', 'advancedCustomization', 'wifiCallingIds'],
@@ -86,7 +98,7 @@ export function WifiCallingSettingModal () {
   useEffect(() => {
     const networkIds = form.getFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'])
     if (!wifiCallingSettingList.length && data && networkIds) {
-      setWifiCallingSettingList(data.filter(item => networkIds.indexOf(item.id) !== -1))
+      setWifiCallingSettingList(data.data.filter(item => networkIds.indexOf(item.id) !== -1))
       setTargetKeys(networkIds)
     }
   }, [data, wifiCallingSettingList.length])

@@ -3,7 +3,7 @@ import React from 'react'
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
+import { getPendoConfig, getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
@@ -17,7 +17,8 @@ import {
   useLocaleContext,
   LocaleProvider,
   setUpIntl,
-  getIntl
+  getIntl,
+  LangKey
 } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
@@ -34,7 +35,12 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
-function showExpiredSessionModal () {
+export function showExpiredSessionModal () {
+  try {
+    getIntl()
+  } catch {
+    setUpIntl({ locale: 'en-US' })
+  }
   const { $t } = getIntl()
   showActionModal({
     type: 'info',
@@ -54,17 +60,19 @@ function detectExpiredSession (action: AnyAction, next: CallableFunction) {
 
 export async function init (root: Root) {
   addMiddleware(() => next => action => detectExpiredSession(action, next))
-  setUpIntl({ locale: 'en-US' })
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
   if (user.status === 401) {
     showExpiredSessionModal()
   } else {
     setUserProfile(await(user).json())
   }
+  const { preferences } = getUserProfile()
+  const preferredLanguage = preferences?.preferredLanguage || 'en-US'
+  setUpIntl({ locale: preferredLanguage })
   root.render(
     <React.StrictMode>
       <Provider>
-        <LocaleProvider>
+        <LocaleProvider lang={preferredLanguage as LangKey}>
           <PreferredLangConfigProvider>
             <BrowserRouter>
               <React.Suspense fallback={null}>

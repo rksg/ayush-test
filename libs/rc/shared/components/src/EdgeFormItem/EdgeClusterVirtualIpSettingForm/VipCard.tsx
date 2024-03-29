@@ -154,10 +154,13 @@ const validateInterfaces = async (
   }
 
   try {
-    await validateSubnetIsConsistent(interfacesArr.map(item => ({
+    const interfacesToValidate = interfacesArr.filter(
+      item => item.ipMode !== EdgeIpModeEnum.DHCP
+    ).map(item => ({
       ip: item.ip?.split('/')[0],
       subnet: item.subnet
-    })))
+    }))
+    await validateSubnetIsConsistent(interfacesToValidate, 'true')
   } catch (error) {
     return Promise.reject(
       $t({ defaultMessage: 'Make sure that each node is within the same subnet range.' })
