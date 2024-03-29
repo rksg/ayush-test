@@ -29,7 +29,8 @@ import {
   DeviceTypes,
   Link,
   Node,
-  ShowTopologyFloorplanOn
+  ShowTopologyFloorplanOn,
+  LinkConnectionInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }  from '@acx-ui/user'
@@ -130,7 +131,18 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       ...edge.correspondingPortUntaggedVlan?.split(' ') || []
     ]
 
-    updateVlanPortData(portData, `link_${edge.from}_${edge.to}`, setVlanPortData)
+    if(edge.extraEdges && edge.extraEdges.length > 0){
+      edge.extraEdges.forEach((item: LinkConnectionInfo) => {
+        portData.push(
+          ...(item.connectedPortTaggedVlan?.split(' ') || []),
+          ...(item.connectedPortUntaggedVlan?.split(' ') || []),
+          ...(item.correspondingPortTaggedVlan?.split(' ') || []),
+          ...(item.correspondingPortUntaggedVlan?.split(' ') || [])
+        )
+      })
+    }
+
+    updateVlanPortData(uniq(portData), `link_${edge.from}_${edge.to}`, setVlanPortData)
   })
 
   const idsToRemove: string[] = []
