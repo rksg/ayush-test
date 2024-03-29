@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+import { TenantNavigate } from '@acx-ui/react-router-dom'
+
 import { UserSettingsUIModel, UserSettingsValuePath } from './types'
 
 export const USER_SETTINGS_SEP_CHAR = '$'
@@ -25,4 +27,8 @@ export const setDeepUserSettings = (
 
 export const getProductKey = (path: UserSettingsValuePath): string => {
   return path.split(USER_SETTINGS_SEP_CHAR)[0]
+}
+
+export function goToNotFound () {
+  return <TenantNavigate replace to='/not-found' />
 }
