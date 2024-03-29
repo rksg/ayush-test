@@ -1,8 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { useBrand360Config }                                  from '@acx-ui/analytics/services'
-import { defaultSort, getUserProfile, ManagedUser, sortProp } from '@acx-ui/analytics/utils'
-import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
+import { useBrand360Config } from '@acx-ui/analytics/services'
+import {
+  defaultSort,
+  getUserProfile,
+  ManagedUser,
+  sortProp,
+  roleStringMap
+} from '@acx-ui/analytics/utils'
+import { Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
   EditOutlined,
   DeleteOutlined,
@@ -59,7 +65,7 @@ const transformUsers = (
   if (!users) return []
   return users.map(user => ({
     ...user,
-    displayRole: $t(messages[user.role as keyof typeof messages]),
+    displayRole: $t(roleStringMap[user.role]),
     displayType: getDisplayType(user.type, franchisor),
     displayInvitationState: getDisplayState(user.invitation?.state),
     displayInvitor: user.invitation

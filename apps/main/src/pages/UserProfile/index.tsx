@@ -1,13 +1,9 @@
-import { Row, Col, Form, Select, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Row, Col, Form, Select } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import {
-  PageHeader,
-  StepsForm,
-  Tabs
-} from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MultiFactor }            from '@acx-ui/msp/components'
+import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
@@ -26,7 +22,6 @@ import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
 } from './RecentLogin'
-import * as UI from './styledComponents'
 
 interface fromLoc {
   from: string
@@ -36,7 +31,6 @@ export function UserProfile () {
   const { $t } = useIntl()
   const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
-  const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfileContext()
@@ -57,32 +51,6 @@ export function UserProfile () {
     navigate({
       pathname: backPathname
     }, { replace: true })
-  }
-
-  const UserData = () => {
-    return (
-      <UI.UserDataWrapper>
-        <UI.UserData>
-          <UI.UserCircle>{userProfile?.initials}</UI.UserCircle>
-          {userProfile && <div>
-            <UI.UserName>{userProfile?.fullName}</UI.UserName>
-            <UI.UserRole>
-              {$t(roleStringMap[userProfile?.role])}
-            </UI.UserRole>
-            <UI.UserAttributes>
-              <div>
-                <b><UI.EnvelopClosedSolidIcon /></b>
-                <Paragraph>{userProfile?.email}</Paragraph>
-              </div>
-              <div>
-                <b>Tenant ID</b>
-                <Paragraph copyable>{tenantId}</Paragraph>
-              </div>
-            </UI.UserAttributes>
-          </div>}
-        </UI.UserData>
-      </UI.UserDataWrapper>
-    )
   }
 
   const SettingsTab = () => {
@@ -146,7 +114,11 @@ export function UserProfile () {
       <PageHeader
         title={$t({ defaultMessage: 'User Profile' })}
       />
-      <UserData/>
+      <UserProfileSection
+        userProfile={userProfile}
+        tenantId={tenantId}
+        roleStringMap={roleStringMap}
+      />
 
       <Tabs type='line' defaultActiveKey={'Settings'}>
         <Tabs.TabPane
