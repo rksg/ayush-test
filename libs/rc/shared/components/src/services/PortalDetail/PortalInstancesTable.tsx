@@ -1,26 +1,37 @@
+/* eslint-disable max-len */
 
 import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                     from '@acx-ui/components'
-import { useGetPortalProfileDetailQuery, useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery }             from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                               from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                                                            from '@acx-ui/components'
+import { useGetPortalProfileDetailQuery, useGetEnhancedPortalTemplateListQuery, useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery }                                                    from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                                      from '@acx-ui/react-router-dom'
 
 export function PortalInstancesTable (){
 
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useGetPortalProfileDetailQuery({ params })
   const { isTemplate } = useConfigTemplate()
+  const { data } = useGetPortalProfileDetailQuery({ params }, { skip: isTemplate })
+  const templatePayload = {
+    fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
+    filters: {
+      id: [params.serviceId]
+    },
+    pageSize: 1024
+  }
+  const { data: templateData } = useGetEnhancedPortalTemplateListQuery({ params, payload: templatePayload }, { skip: !isTemplate })
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+
   const tableQuery = useTableQuery<Network>({
     useQuery,
     defaultPayload: {
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
-        id: data?.networkIds?.length? data?.networkIds : ['none']
+        id: isTemplate ? templateData?.data?.[0]?.wifiNetworkIds?.length? templateData.data[0]?.wifiNetworkIds: ['none'] :
+          (data?.networkIds?.length? data?.networkIds: ['none'])
       }
     },
     search: {
@@ -39,6 +50,17 @@ export function PortalInstancesTable (){
       })
     }
   },[data])
+
+  useEffect(()=>{
+    if(templateData){
+      tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: {
+          id: templateData?.data?.[0]?.wifiNetworkIds?.length? templateData.data[0]?.wifiNetworkIds: ['none']
+        }
+      })
+    }
+  },[templateData])
 
   const columns: TableProps<Network>['columns'] = [
     {
