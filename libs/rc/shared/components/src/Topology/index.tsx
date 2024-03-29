@@ -101,8 +101,18 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
     updateVlanPortData(portData, node.id, setVlanPortData)
   })
 
+  let uniqueValues: any = {}
+  let edgeResult: Link[] = []
+
+  edges.forEach((item: Link) => {
+    if (!uniqueValues[item.to]) {
+      uniqueValues[item.to] = true
+      edgeResult.push(item)
+    }
+  })
+
   // Build the tree structure based on the edges
-  edges.forEach((edge: Link) => {
+  edgeResult.forEach((edge: Link) => {
     if(edge.from === edge.to){ //invalid edge with same from, to id
       return
     }
