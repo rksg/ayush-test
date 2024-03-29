@@ -340,12 +340,21 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const handleVlanChange = (value: string) => {
     setSelectedVlan(value)
     setSearchValue('')
-    document.querySelectorAll('.focusNode').forEach(
-      item => item.classList.remove('focusNode'))
-    if(Array.isArray(vlanPortData[value])){
-      vlanPortData[value].forEach(
-        item => document.getElementById(item)?.classList.add('focusNode'))
-    }
+    removeFocusNodes().then(() => {
+      if(Array.isArray(vlanPortData[value])){
+        vlanPortData[value].forEach(
+          item => document.getElementById(item)?.classList.add('focusNode'))
+      }
+    })
+  }
+
+  function removeFocusNodes (): Promise<void> {
+    return new Promise<void>((resolve) => {
+      document.querySelectorAll('.focusNode').forEach(item => {
+        item.classList.remove('focusNode')
+      })
+      resolve()
+    })
   }
 
   return <Loader states={
@@ -383,13 +392,13 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 }
                 style={{ width: 280 }}
                 onSelect={(value: any, option: OptionType) => {
-                  document.querySelectorAll('.focusNode').forEach(
-                    item => item.classList.remove('focusNode'))
-                  if(option.item.id){
-                    document.getElementById(option.item.id)?.classList.add('focusNode')
-                  }
                   setSelectedVlan('')
                   setSearchValue(value)
+                  removeFocusNodes().then(() => {
+                    if(option.item.id !== undefined){
+                      document.getElementById(option.item.id)?.classList.add('focusNode')
+                    }
+                  })
                 }}
                 allowClear={true}
                 onSearch={
@@ -403,8 +412,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   }
                 }
                 onClear={() => {
-                  document.querySelectorAll('.focusNode').forEach(
-                    item => item.classList.remove('focusNode'))
+                  removeFocusNodes()
                 }}
                 notFoundContent={
                   $t({ defaultMessage: 'No results for "{searchValue}"' }, { searchValue })

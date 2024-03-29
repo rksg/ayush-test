@@ -165,11 +165,8 @@ export const Links: React.FC<LinksProps> = (props) => {
         return (
           <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
-            className={`edgePath 
-              ${linkClass} 
-              ${link.source.data.id} 
-              ${selectedVlanPortList && selectedVlanPortList.includes(
-            'link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
+            // eslint-disable-next-line max-len
+            className={`edgePath ${linkClass ? linkClass : ''} ${link.source.data.id ? link.source.data.id : ''} ${selectedVlanPortList && selectedVlanPortList.includes('link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
             onMouseEnter={(e) => handleMouseEnter(link, e)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}

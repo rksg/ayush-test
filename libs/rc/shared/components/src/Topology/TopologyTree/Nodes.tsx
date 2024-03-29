@@ -91,11 +91,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 fill: color[ancestorName],
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
-              className={`node tree-node
-                ${params?.switchId === node.data.id && 'focusNode'} 
-                ${params?.apId === node.data.id && 'focusNode'} 
-                ${selectedVlanPortList &&
-                  selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
+              // eslint-disable-next-line max-len
+              className={`node tree-node ${params?.switchId === node.data.id ? 'focusNode' : ''} ${params?.apId === node.data.id ? 'focusNode' : ''} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
               }
               id={node.data.id}
             >
