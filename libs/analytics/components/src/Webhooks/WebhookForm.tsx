@@ -265,7 +265,6 @@ function EventTypesInput (props: CheckboxGroupProps) {
   const [value, setValue] = useState([] as string[][])
 
   useEffect(() => {
-    if (!props.value) return
     const filtered = severities
       .filter(({ value }) => value.every(v => props.value?.includes(v)))
       .map(({ value }) => value)
@@ -291,8 +290,6 @@ function EventTypesInput (props: CheckboxGroupProps) {
 function WebhookSwitch (props: { webhook?: Webhook, form: FormInstance<WebhookDto> }) {
   const { $t } = useIntl()
   const [enabled, setEnabled] = useState<boolean | undefined>(props.webhook?.enabled)
-
-  if (!props.webhook) return null
 
   return (<label>
     <Switch
