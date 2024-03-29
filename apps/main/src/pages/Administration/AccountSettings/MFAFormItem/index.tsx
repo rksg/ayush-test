@@ -5,8 +5,9 @@ import styled                                         from 'styled-components/ma
 
 import { Card, showActionModal }                            from '@acx-ui/components'
 import { SpaceWrapper }                                     from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                         from '@acx-ui/rc/services'
+import { administrationApi, useGetTenantDetailsQuery }      from '@acx-ui/rc/services'
 import { useParams }                                        from '@acx-ui/react-router-dom'
+import { store }                                            from '@acx-ui/store'
 import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
@@ -54,6 +55,12 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               enable: isChecked + ''
             }
           }).unwrap()
+          if (isMspEc) {
+            store.dispatch(
+              administrationApi.util.invalidateTags([
+                { type: 'Administration', id: 'DETAIL' }
+              ]))
+          }
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
