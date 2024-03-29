@@ -1,4 +1,4 @@
-import { FirmwareCategory, FirmwareType } from "@acx-ui/rc/utils";
+import { FirmwareCategory, FirmwareType } from '@acx-ui/rc/utils'
 
 export const mockedFirmwareVenuesPerApModel = {
   page: 1,

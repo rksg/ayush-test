@@ -1,8 +1,9 @@
+import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider }         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,10 +16,10 @@ import {
 
 import { preference } from '../../__tests__/fixtures'
 
+import { mockedFirmwareVenuesPerApModel, mockedFirmwareVersionIdList } from './__tests__/fixtures'
+
 import { VenueFirmwareListPerApModel } from '.'
 
-import { mockedFirmwareVenuesPerApModel, mockedFirmwareVersionIdList } from './__tests__/fixtures'
-import userEvent from '@testing-library/user-event'
 
 describe('Firmware Venues Table Per AP Model', () => {
   const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -33,7 +34,7 @@ describe('Firmware Venues Table Per AP Model', () => {
       rest.get(
         FirmwareUrlsInfo.getFirmwareVersionIdList.url,
         (req, res, ctx) => res(ctx.json([ ...mockedFirmwareVersionIdList ]))
-      ),
+      )
     )
   })
 
@@ -64,7 +65,7 @@ describe('Firmware Venues Table Per AP Model', () => {
         <VenueFirmwareListPerApModel />
       </Provider>, {
         route: { params, path }
-    })
+      })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -84,7 +85,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(updateFirmwareByApModelToggle)
 
 
-    expect(await within(confirmDialog).findByRole('checkbox', { name:/Show APs with available firmware only/ })).toBeVisible()
+    expect(await within(confirmDialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })).toBeVisible()
 
     await userEvent.click(within(confirmDialog).getByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(confirmDialog).not.toBeVisible())

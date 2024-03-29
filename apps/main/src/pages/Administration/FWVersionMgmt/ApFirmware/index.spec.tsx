@@ -1,7 +1,7 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { render, screen }         from '@acx-ui/test-utils'
 
 import ApFirmware from '.'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 jest.mock('./VersionBanner', () => () => <div>Version Banner</div>)
 jest.mock('./VenueFirmwareList', () => ({
