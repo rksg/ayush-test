@@ -351,6 +351,10 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Version Management' })
             },
             {
+              uri: '/administration/webhooks',
+              label: $t({ defaultMessage: 'Webhooks' })
+            },
+            {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
             },
