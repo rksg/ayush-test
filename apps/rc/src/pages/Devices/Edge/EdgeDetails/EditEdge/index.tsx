@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                                                              from '@acx-ui/components'
-import { EdgeEditContext, EdgePortTabEnum }                                                      from '@acx-ui/rc/components'
+import { EdgeEditContext }                                                                       from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
 import { isEdgeConfigurable }                                                                    from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -113,7 +113,6 @@ export const EditEdgeTabs = () => {
   }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'ports') activeKey = `${activeKey}/${EdgePortTabEnum.PORTS_GENERAL}`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`

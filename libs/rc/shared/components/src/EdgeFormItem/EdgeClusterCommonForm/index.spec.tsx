@@ -9,7 +9,7 @@ import { mockVenueData } from '../../EdgeSettingForm/__tests__/fixtures'
 
 import { EdgeClusterCommonForm } from '.'
 
-describe('AddClusterDrawer', () => {
+describe('EdgeClusterCommonForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(

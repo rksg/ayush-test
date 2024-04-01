@@ -40,7 +40,7 @@ export const Summary = () => {
       { $t({ defaultMessage: 'Cluster Virtual IP' }) }
     </Subtitle>
     {
-      valideVipConfig.length > 0 &&
+      (valideVipConfig?.length ?? 0) > 0 &&
       <>
         <Form.Item>
           {

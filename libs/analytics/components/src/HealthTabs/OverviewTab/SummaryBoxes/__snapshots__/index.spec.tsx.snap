@@ -42,11 +42,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    <span
-                      class="ant-statistic-content-value-int"
-                    >
-                      5
-                    </span>
+                    X1
                   </span>
                 </div>
               </div>
@@ -69,7 +65,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    10/100
+                    X1/Y1
                   </span>
                 </div>
               </div>
@@ -90,7 +86,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -110,7 +106,11 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    450 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      461
+                    </span>
                   </span>
                 </div>
               </div>
@@ -133,7 +133,11 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    227 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      8
+                    </span>
                   </span>
                 </div>
               </div>
@@ -166,7 +170,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  APs
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -203,7 +207,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Switches
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -344,11 +348,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    <span
-                      class="ant-statistic-content-value-int"
-                    >
-                      5
-                    </span>
+                    X1
                   </span>
                 </div>
               </div>
@@ -371,7 +371,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    10/100
+                    X1/Y1
                   </span>
                 </div>
               </div>
@@ -392,71 +392,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
-            </div>
-            <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
-            >
-              <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 50%;"
-              >
-                <div
-                  class="ant-statistic-title"
-                >
-                  APs
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    450 TB
-                  </span>
-                </div>
-              </div>
-              <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
-                role="separator"
-              />
-              <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
-                style="width: 50%;"
-              >
-                <div
-                  class="ant-statistic-title"
-                >
-                  Switches
-                </div>
-                <div
-                  class="ant-statistic-content"
-                >
-                  <span
-                    class="ant-statistic-content-value"
-                  >
-                    227 TB
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
-          >
-            <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
-            >
-              Total Traffic
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -492,6 +428,70 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   class="ant-statistic-title"
                 >
                   Switches
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Total Traffic
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wireless
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
