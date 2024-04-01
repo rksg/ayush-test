@@ -107,6 +107,10 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
   const edgeResult: Link[] = []
 
   edges.forEach((item: Link) => {
+    if(edges.filter((edgeItem: Link) =>
+      edgeItem.from === item.to && edgeItem.to === item.from).length > 0){
+      return
+    }
     if (!uniqueValues[item.to]) {
       uniqueValues[item.to] = true
       edgeResult.push(item)
