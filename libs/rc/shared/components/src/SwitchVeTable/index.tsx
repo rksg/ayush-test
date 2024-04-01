@@ -10,6 +10,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteVePortsMutation,
   useGetSwitchRoutedListQuery,
@@ -37,6 +38,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const { $t } = useIntl()
   const params = useParams()
   const [cliApplied, setCliApplied] = useState(false)
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
 
   const { data: venueSwitchSetting }
     = useVenueSwitchSettingQuery({ params }, { skip: !isVenueLevel })
@@ -130,7 +132,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
     title: $t({ defaultMessage: 'Egress ACL' }),
     dataIndex: 'egressAclName',
     sorter: true
-  }, {
+  },
+  ...(isSwitchV6AclEnabled ? [{
     key: 'vsixIngressAclName',
     title: $t({ defaultMessage: 'V6 Ingress ACL' }),
     dataIndex: 'vsixIngressAclName',
@@ -140,7 +143,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
     title: $t({ defaultMessage: 'V6 Egress ACL' }),
     dataIndex: 'vsixEgressAclName',
     sorter: true
-  }]
+  }] : [])
+  ]
 
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)

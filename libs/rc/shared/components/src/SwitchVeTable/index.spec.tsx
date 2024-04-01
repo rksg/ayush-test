@@ -2,8 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { Provider, store }                from '@acx-ui/store'
 import {
   render,
   screen,
@@ -37,6 +39,8 @@ describe('Switch VE Table', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.delete(
         SwitchUrlsInfo.deleteVePorts.url,
@@ -84,6 +88,23 @@ describe('Switch VE Table', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/TEST-VE3/i)).toBeVisible()
+    expect(screen.queryByRole('columnheader', { name: 'V6 Ingress ACL' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'V6 Egress ACL' })).toBeNull()
+  })
+
+  it('should render VE table correctly when FF enable', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/:switchId'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/TEST-VE3/i)).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'V6 Ingress ACL' })).toBeVisible()
+    expect(await screen.findByRole('columnheader', { name: 'V6 Egress ACL' })).toBeVisible()
+    expect(await screen.findByText('ipv6-acl-out')).toBeVisible()
   })
 
   it('should Add VE correctly', async () => {
@@ -128,6 +149,7 @@ describe('Switch VE Table', () => {
   })
 
   it('should config VE-1 correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
@@ -138,7 +160,32 @@ describe('Switch VE Table', () => {
     const row = await screen.findByRole('row', { name: /VE-1/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
-    await screen.findByRole('combobox', { name: /VLAN ID/i })
+
+    const drawer = await screen.findByRole('dialog')
+    await within(drawer).findByRole('combobox', { name: /VLAN ID/i })
+    expect(within(drawer).queryByText('V6 Ingress ACL')).toBeNull()
+
+    fireEvent.change(screen.getByLabelText(/ve name/i), { target: { value: 'default' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+  })
+
+  it('should config VE-1 correctly when ff enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/t/:switchId'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /VE-1/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
+
+    const drawer = await screen.findByRole('dialog')
+    await within(drawer).findByRole('combobox', { name: /VLAN ID/i })
+    expect(await within(drawer).findByText('V6 Ingress ACL')).toBeVisible()
+    expect(await within(drawer).findByText('ipv6-acl-in')).toBeVisible()
 
     fireEvent.change(screen.getByLabelText(/ve name/i), { target: { value: 'default' } })
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))

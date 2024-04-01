@@ -68,4 +68,20 @@ describe('Switch Overview ACLs', () => {
     }))
   })
 
+  it('should click ipv6 ACL correctly', async () => {
+    mockServerQuery()
+    render(<Provider><SwitchOverviewACLs /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/acls'
+      }
+    })
+
+    expect(await screen.findByText(/ipv6-acl/i)).toBeVisible()
+    await userEvent.click(screen.getByText(/ipv6-acl/i))
+    expect(await screen.findByText(/View ACL/i)).toBeVisible()
+    await userEvent.click(screen.getByRole('button', {
+      name: /close/i
+    }))
+  })
 })

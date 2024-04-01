@@ -99,14 +99,14 @@ export const AclDetail = (props: { row : Acl }) => {
         children={transformTitleCase(row.aclType)}
       />
 
-      {(row.aclType === AclTypeEnum.STANDARD || row.aclType === AclTypeEnum.V6) && <Table
+      {row.aclType === AclTypeEnum.STANDARD && <Table
         columns={standardColumns}
         type={'form'}
         dataSource={row.aclRules}
         rowKey='id'
       />}
 
-      {row.aclType === AclTypeEnum.EXTENDED && <Table
+      {(row.aclType === AclTypeEnum.EXTENDED || row.aclType === AclTypeEnum.V6) && <Table
         columns={extendedColumns}
         type={'form'}
         dataSource={row.aclRules}

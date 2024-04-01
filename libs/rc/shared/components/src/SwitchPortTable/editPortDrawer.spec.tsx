@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -197,6 +198,9 @@ describe('EditPortDrawer', () => {
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
+
+      expect(screen.queryByLabelText('V6 Ingress ACL')).toBeNull()
+      expect(screen.queryByLabelText('V6 Egress ACL')).toBeNull()
 
       const poeClassCombobox = await screen.findByRole('combobox', { name: /PoE Class/ })
       expect(poeClassCombobox).not.toBeDisabled()
@@ -469,6 +473,34 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
       expect(setDrawerVisible).toBeCalledTimes(1)
     })
+
+    it('should render edit data correctly when FF enable', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      expect(await screen.findByText('V6 Ingress ACL')).toBeVisible()
+      expect(await screen.findByText('V6 Egress ACL')).toBeVisible()
+      expect(await screen.findByText('ipv6-acl-in')).toBeVisible()
+      expect(await screen.findByText('ipv6-acl-out')).toBeVisible()
+    })
   })
 
   describe('multiple edit', () => {
@@ -563,7 +595,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
             port: '5',
             ports: ['5', '1/1/6']
           }
@@ -577,7 +609,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
             port: '1/1/5',
             ports: ['1/1/5']
           }
@@ -1075,7 +1107,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
             port: '5',
             ports: ['5', '1/1/6']
           }
@@ -1088,7 +1120,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
             port: '1/1/5',
             ports: ['1/1/5']
           }

@@ -6,7 +6,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Alert, Button, Drawer } from '@acx-ui/components'
+import { Alert, Button, Drawer }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -42,8 +43,10 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
 
   const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false)
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const { switchId: sid, tenantId, venueId: vid } = useParams()
+
+  const [loading, setLoading] = useState<boolean>(false)
   const [venueId, setVenueId] = useState(vid ?? '')
   const [switchId, setSwitchId] = useState(isVenueLevel ? editData?.switchId : sid)
 
@@ -198,7 +201,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }).unwrap()
       } else {
         let payload = {
-          ...editData,
+          ..._.omit(editData, ['vsixIngressAclName', 'vsixEgressAclName']),
           ...data
         }
 
@@ -458,18 +461,14 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             />
           </Form.Item>
 
-          {isEditMode && <>
+          {isEditMode && isSwitchV6AclEnabled && <>
             <Form.Item
               label={$t({ defaultMessage: 'V6 Ingress ACL' })}
-              name='vsixIngressAcl'
-              initialValue={''}
             >
               { editData?.vsixIngressAclName || noDataDisplay }
             </Form.Item>
             <Form.Item
               label={$t({ defaultMessage: 'V6 Egress ACL' })}
-              name='vsixEgressAcl'
-              initialValue={''}
             >
               { editData?.vsixEgressAclName || noDataDisplay }
             </Form.Item>

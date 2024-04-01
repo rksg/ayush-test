@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
@@ -33,6 +34,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 }) {
   const { $t } = useIntl()
   const { serialNumber, venueId, tenantId, switchId } = useParams()
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -263,7 +265,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
-  }, {
+  },
+  ...(isSwitchV6AclEnabled ? [{
     key: 'vsixIngressAclName',
     title: $t({ defaultMessage: 'V6 Ingress ACL' }),
     dataIndex: 'vsixIngressAclName',
@@ -275,8 +278,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false
-  },
-  {
+  }] : []), {
     key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',
