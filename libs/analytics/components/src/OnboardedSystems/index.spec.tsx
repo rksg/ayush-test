@@ -4,7 +4,7 @@ import { Map }     from 'immutable'
 import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { RolesEnum, Tenant, UserProfile, setUserProfile }                                   from '@acx-ui/analytics/utils'
+import { PERMISSION_MANAGE_MLISA, Tenant, UserProfile, setUserProfile }                     from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
@@ -19,8 +19,8 @@ jest.mock('./services', () => ({
 }))
 
 const tenants = [
-  { id: 'id1', name: 'account1', role: RolesEnum.ADMIN },
-  { id: 'id2', name: 'account2', role: RolesEnum.ADMIN }
+  { id: 'id1', name: 'account1', permissions: { [PERMISSION_MANAGE_MLISA]: true } },
+  { id: 'id2', name: 'account2', permissions: { [PERMISSION_MANAGE_MLISA]: true } }
 ] as unknown as Tenant[]
 
 describe('OnboardedSystems', () => {
@@ -152,7 +152,7 @@ describe('OnboardedSystems', () => {
   it('should query only RolesEnum.ADMIN tenants', () => {
     setUserProfile({ accountId: tenants[0].id, tenants: [
       ...tenants,
-      { id: 'id3', name: 'account3', role: RolesEnum.NETWORK_ADMIN }
+      { id: 'id3', name: 'account3', permissions: { [PERMISSION_MANAGE_MLISA]: false } }
     ] } as UserProfile)
     jest.spyOn(services, 'useFetchSmartZoneListQuery')
     render(<Provider><OnboardedSystems /></Provider>, { route: {} })

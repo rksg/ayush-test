@@ -5,10 +5,10 @@ import { Map }                     from 'immutable'
 import { get, isEmpty, partition } from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
-import { RolesEnum, Tenant, defaultSort, getUserProfile, sortProp }       from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
-import { getIntl }                                                        from '@acx-ui/utils'
+import { PERMISSION_MANAGE_MLISA, Tenant, defaultSort, getUserProfile, sortProp } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showActionModal, showToast, Tooltip }         from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { getIntl }                                                                from '@acx-ui/utils'
 
 import { useFetchSmartZoneListQuery, useDeleteSmartZone, OnboardedSystem } from './services'
 import { Errors }                                                          from './styledComponents'
@@ -205,7 +205,7 @@ export const OnboardedSystems = () => {
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
   const queryResults = useFetchSmartZoneListQuery(tenant.tenants
-    .filter(t => t.role === RolesEnum.ADMIN)
+    .filter(t => Boolean(t.permissions[PERMISSION_MANAGE_MLISA]))
     .map(t => t.id), {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
