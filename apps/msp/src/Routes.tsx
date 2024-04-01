@@ -1,9 +1,11 @@
+import { useContext, useEffect, useReducer, useState } from 'react'
+
 import { Brand360 }                                                  from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                              from '@acx-ui/components'
+import { ConfigProvider, Loader, PageNotFound }                      from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
-import { useGetTenantDetailQuery, useHospitalityVerticalCheck }      from '@acx-ui/msp/services'
+import { checkMspRecsForIntegrator }                                 from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -29,6 +31,8 @@ import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams }
 import { Provider }                                                              from '@acx-ui/store'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
+import HspContext, { HspActionTypes }              from './HspContext'
+import { hspReducer }                              from './HspReducer'
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
 import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
@@ -43,15 +47,17 @@ import { AssignMspLicense }                        from './pages/Subscriptions/A
 import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
+  const {
+    state
+  } = useContext(HspContext)
+
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
-  const { tenantId } = useParams()
-  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
-  const params = useParams()
+
   const { tenantType } = getJwtTokenPayload()
-  const isHospitalityVerticalEnabled =
-  useHospitalityVerticalCheck(data?.mspEc?.parentMspId as string, tenantType as string, params)
+
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
-  const isShowBrand360 = isBrand360Enabled && isHospitalityVerticalEnabled && !isInstaller
+  const isShowBrand360 = isBrand360Enabled && state.isHsp && !isInstaller
+
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
@@ -63,9 +69,53 @@ export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
-  const navigateToDashboard = isHspSupportEnabled
+  const { tenantType } = getJwtTokenPayload()
+
+  const [loadMspRoute, setLoadMspRoute] = useState<boolean>(false)
+  const { tenantId } = useParams()
+
+  const [state, dispatch] = useReducer(hspReducer, {
+    isHsp: false
+  })
+
+  const navigateToDashboard = state.isHsp
     ? '/dashboard/mspRecCustomers'
     : '/dashboard/mspCustomers'
+
+  const isTechPartner =
+  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isTechPartner) {
+          const response = await checkMspRecsForIntegrator(tenantId as string)
+          const integratorListData = await response
+          dispatch({
+            type: HspActionTypes.IS_HSP,
+            payload: {
+              isHsp: !!integratorListData?.data?.length
+            }
+          })
+        } else {
+          dispatch({
+            type: HspActionTypes.IS_HSP,
+            payload: {
+              isHsp: isHspSupportEnabled
+            }
+          })
+        }
+        setLoadMspRoute(true)
+      } catch (error) {
+        setLoadMspRoute(false)
+        // eslint-disable-next-line no-console
+        console.log(error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
@@ -87,9 +137,13 @@ export default function MspRoutes () {
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Loader states={[{ isLoading: !loadMspRoute }]}>
+      <HspContext.Provider value={{ state, dispatch }}>
+        <ConfigProvider>
+          <Provider children={routes} />
+        </ConfigProvider>
+      </HspContext.Provider>
+    </Loader>
   )
 }
 
