@@ -30,6 +30,7 @@ export default function AnalyticsRoutes () {
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!hasAccess()) return <React.Fragment />
 
@@ -48,6 +49,11 @@ export default function AnalyticsRoutes () {
           ? <HealthPage/>
           : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)}
       />
+      <Route path='analytics/health/:activeSubTab'
+        element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />}>
+        <Route path='tab/:categoryTab'
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+      </Route>
       <Route path='analytics/health/tab/:categoryTab'
         element={(!canUseAnltAdv
           ? <HealthPage/>
