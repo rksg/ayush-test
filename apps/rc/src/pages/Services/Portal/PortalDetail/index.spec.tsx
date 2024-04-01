@@ -16,19 +16,35 @@ import { mockList, mockDetailResult, mockDetailChangeResult } from './__tests__/
 
 import PortalServiceDetail from '.'
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('Portal Detail Page', () => {
   const params = {
     tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
     serviceId: '373377b0cb6e46ea8982b1c80aabe1fa' }
   beforeEach(async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockList))
       ),
+      rest.get(
+        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        (req, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'url' }))
+        }
+      ),
+      rest.put('/api/test',
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
       rest.get(
         PortalUrlsInfo.getPortalProfileDetail.url,
         (_, res, ctx) => res(ctx.json(mockDetailResult))
@@ -39,6 +55,10 @@ describe('Portal Detail Page', () => {
             acceptTermsMsg: 'I accept the' }))
         })
     )
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
   })
 
   it('should render detail page', async () => {

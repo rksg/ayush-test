@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { WebhooksTable } from '@acx-ui/analytics/components'
 import { Tabs,
   PageHeader
 } from '@acx-ui/components'
@@ -88,6 +89,10 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
         tab={$t({ defaultMessage: 'Version Management' })}
         key='fwVersionMgmt'
       />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Webhooks' })}
+        key='webhooks'
+      />
       <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
       { isRadiusClientEnabled &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
@@ -104,7 +109,8 @@ const tabPanes = {
   notifications: Notifications,
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
-  localRadiusServer: LocalRadiusServer
+  localRadiusServer: LocalRadiusServer,
+  webhooks: WebhooksTable
 }
 
 export default function Administration () {
