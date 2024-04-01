@@ -59,7 +59,7 @@ const Lag = (props: LagProps) => {
   }
 
   const handleDelete = async (serialNumber: string, id: string) => {
-    deleteEdgeLag({
+    await deleteEdgeLag({
       params: {
         venueId,
         serialNumber: serialNumber,

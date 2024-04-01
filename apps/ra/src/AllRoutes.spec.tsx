@@ -213,4 +213,9 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('AccountManagement')).toBeVisible()
   })
+  it('should render profile correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/profile/settings' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('Profile')).toBeVisible()
+  })
 })
