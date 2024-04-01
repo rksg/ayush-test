@@ -81,7 +81,7 @@ describe('IncidentNotificationDrawer', () => {
     const mockedPref = {
       incident: {}
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -104,7 +104,7 @@ describe('IncidentNotificationDrawer', () => {
         aiOps: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -122,7 +122,7 @@ describe('IncidentNotificationDrawer', () => {
         P1: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
     jest.mocked(useIsSplitOn).mockReturnValue(false)
@@ -144,10 +144,10 @@ describe('IncidentNotificationDrawer', () => {
         aiOps: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: true }
     }, true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -202,10 +202,10 @@ describe('IncidentNotificationDrawer', () => {
         P1: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: false }
     }, true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -257,10 +257,10 @@ describe('IncidentNotificationDrawer', () => {
   })
   it('should handle error notification preference update', async () => {
     const mockedPref = {}
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: false }
     }, true)
 

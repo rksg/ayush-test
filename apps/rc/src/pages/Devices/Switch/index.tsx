@@ -16,6 +16,7 @@ interface SwitchTab {
   key: SwitchTabsEnum,
   url?: string,
   title: string,
+  tabPane: JSX.Element,
   component: JSX.Element,
   headerExtra: JSX.Element[]
 }
@@ -25,42 +26,42 @@ function isElementArray (data: JSX.Element | JSX.Element[]
   return Array.isArray(data)
 }
 
-const useTabs = () : SwitchTab[] => {
+export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
-  const listTab = {
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/')
+
+  const tabs = [{
     key: SwitchTabsEnum.LIST,
+    tabPane: <Tabs.TabPane key={SwitchTabsEnum.LIST} tab={useSwitchesTable().title} />,
     ...useSwitchesTable()
-  }
-  const wiredReportTab = {
+  }, {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
+    tabPane: <Tabs.TabPane key={SwitchTabsEnum.WIRED_REPORT}
+      tab={$t({ defaultMessage: 'Wired Report' })} />,
     component: <EmbeddedReport
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
     headerExtra: usePageHeaderExtra(ReportType.WIRED)
-  }
-  return [listTab, wiredReportTab]
-}
+  }] as SwitchTab[]
 
-export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/')
+  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
-  const tabs = useTabs()
-  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
+
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
-          {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
+          {tabs.map(tab=> tab.tabPane)}
         </Tabs>
       }
       extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}

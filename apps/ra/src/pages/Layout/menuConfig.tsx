@@ -277,13 +277,12 @@ export function useMenuConfig () {
           children: [
             ...(hasManageMlisaPermission ? [
               {
-                uri: legacyLink('/analytics/admin/onboarded', search),
-                label: $t({ defaultMessage: 'Onboarded Systems' }),
-                openNewTab: true
+                uri: '/admin/onboarded',
+                label: $t({ defaultMessage: 'Onboarded Systems' })
               },
               {
                 uri: isNewUserRolesEnabled
-                  ? '/analytics/admin/users'
+                  ? '/admin/users'
                   : legacyLink('/analytics/admin/users', search),
                 label: $t({ defaultMessage: 'Users' }),
                 openNewTab: !isNewUserRolesEnabled
@@ -303,9 +302,8 @@ export function useMenuConfig () {
                 openNewTab: true
               },
               {
-                uri: legacyLink('/analytics/admin/support', search),
-                label: $t({ defaultMessage: 'Support' }),
-                openNewTab: true
+                uri: '/admin/support',
+                label: $t({ defaultMessage: 'Support' })
               },
               {
                 uri: legacyLink('/analytics/admin/license', search),
@@ -320,9 +318,8 @@ export function useMenuConfig () {
             },
             ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
               {
-                uri: legacyLink('/analytics/admin/webhooks', search),
-                label: $t({ defaultMessage: 'Webhooks' }),
-                openNewTab: true
+                uri: '/admin/webhooks',
+                label: $t({ defaultMessage: 'Webhooks' })
               }
             ] : [])
           ]

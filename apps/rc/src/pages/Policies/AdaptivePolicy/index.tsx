@@ -2,6 +2,7 @@ import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader }             from '@acx-ui/components'
 import { getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { goToNotFound }           from '@acx-ui/user'
 
 import AdaptivePolicyTable       from './AdaptivePolicy/AdaptivePolicyTable'
 import AdaptivePolicySetTable    from './AdaptivePolicySet/AdaptivePolicySetTable'
@@ -30,7 +31,7 @@ const tabsName: Record<AdaptivePolicyTabKey, MessageDescriptor> = {
 
 export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKey }) {
   const { $t } = useIntl()
-  const Tab = tabs[props.tabKey]
+  const Tab = tabs[props.tabKey] || goToNotFound
   return <>
     <PageHeader
       breadcrumb={[

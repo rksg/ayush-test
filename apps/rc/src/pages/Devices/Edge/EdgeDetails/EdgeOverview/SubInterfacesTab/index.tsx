@@ -60,7 +60,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   const handleClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/sub-interface`
+      pathname: `${basePath.pathname}/edit/sub-interfaces`
     })
   }
 
