@@ -4,7 +4,7 @@ import { Map }     from 'immutable'
 import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { Tenant, UserProfile, setUserProfile }                                              from '@acx-ui/analytics/utils'
+import { RolesEnum, Tenant, UserProfile, setUserProfile }                                   from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
@@ -13,8 +13,14 @@ import { OnboardedSystem }   from './services'
 
 import { OnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
 
+const services = require('./services')
+jest.mock('./services', () => ({
+  ...jest.requireActual('./services')
+}))
+
 const tenants = [
-  { id: 'id1', name: 'account1' }, { id: 'id2', name: 'account2' }
+  { id: 'id1', name: 'account1', role: RolesEnum.ADMIN },
+  { id: 'id2', name: 'account2', role: RolesEnum.ADMIN }
 ] as unknown as Tenant[]
 
 describe('OnboardedSystems', () => {
@@ -142,6 +148,15 @@ describe('OnboardedSystems', () => {
 
     expect(await screen.findByTestId('toast-content'))
       .toHaveTextContent('Failed to delete sz3')
+  })
+  it('should query only RolesEnum.ADMIN tenants', () => {
+    setUserProfile({ accountId: tenants[0].id, tenants: [
+      ...tenants,
+      { id: 'id3', name: 'account3', role: RolesEnum.NETWORK_ADMIN }
+    ] } as UserProfile)
+    jest.spyOn(services, 'useFetchSmartZoneListQuery')
+    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'], expect.anything())
   })
 })
 
