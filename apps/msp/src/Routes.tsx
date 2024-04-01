@@ -1,7 +1,7 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
 import { Brand360 }                                                  from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                              from '@acx-ui/components'
+import { ConfigProvider, Loader, PageNotFound }                      from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
@@ -137,13 +137,13 @@ export default function MspRoutes () {
     </Route>
   )
   return (
-    loadMspRoute ?
+    <Loader states={[{ isLoading: !loadMspRoute }]}>
       <HspContext.Provider value={{ state, dispatch }}>
         <ConfigProvider>
           <Provider children={routes} />
         </ConfigProvider>
       </HspContext.Provider>
-      : <div>Loading...</div>
+    </Loader>
   )
 }
 
