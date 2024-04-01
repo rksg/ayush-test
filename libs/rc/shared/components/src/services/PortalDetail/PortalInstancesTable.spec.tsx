@@ -79,8 +79,10 @@ describe('Portal Instances Table', () => {
   it('should render detail page - is Template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const targetNetwork = mockedNetworkTemplates.data[0]
+    const tenantId = params.tenantId
+    const networkId = targetNetwork.id
     const networkLink =
-      `/${params.tenantId}/t/networks/wireless/${targetNetwork.id}/network-details/overview`
+      `/${tenantId}/v/configTemplates/networks/wireless/${networkId}/network-details/venues`
 
     render(<Provider>
       <PortalInstancesTable />
