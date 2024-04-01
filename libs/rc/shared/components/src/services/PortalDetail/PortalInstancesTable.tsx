@@ -6,8 +6,10 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader }                                                                                            from '@acx-ui/components'
 import { useGetPortalProfileDetailQuery, useGetEnhancedPortalTemplateListQuery, useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery }                                                    from '@acx-ui/rc/utils'
+import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery, ConfigTemplateType }                                from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                      from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
 export function PortalInstancesTable (){
 
@@ -71,11 +73,13 @@ export function PortalInstancesTable (){
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
-          <TenantLink
-            to={`/networks/wireless/${row.id}/network-details/overview`}>
-            {row.name}</TenantLink>
-        )
+        return isTemplate ?
+          renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name) :
+          (
+            <TenantLink
+              to={`/networks/wireless/${row.id}/network-details/overview`}>
+              {row.name}</TenantLink>
+          )
       }
     },
     {
@@ -95,10 +99,13 @@ export function PortalInstancesTable (){
       align: 'center',
       sorter: true,
       render: function (_, row) {
-        return <TenantLink
-          to={`/networks/wireless/${row.id}/network-details/venues`}
-          children={row.venues?.count ? row.venues?.count : 0}
-        />
+        const value = row.venues?.count ?? 0
+        return isTemplate ?
+          renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, value, 'venues') :
+          <TenantLink
+            to={`/networks/wireless/${row.id}/network-details/venues`}
+            children={value}
+          />
       }
     },
     {
