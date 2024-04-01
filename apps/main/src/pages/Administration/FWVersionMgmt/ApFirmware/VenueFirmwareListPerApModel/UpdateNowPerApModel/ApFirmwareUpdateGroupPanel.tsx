@@ -51,7 +51,7 @@ export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrp
     updateUpdateRequestPayload(targetFirmwaresRef.current)
   }
 
-  return (<Loader states={[{ isLoading }]}>
+  return <Loader states={[{ isLoading }]}>
     {displayData?.map(item => {
       return <UI.Section key={item.apModels.join('')}>
         <ApFirmwareUpdateGroup
@@ -62,7 +62,7 @@ export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrp
         />
       </UI.Section>
     })}
-  </Loader>)
+  </Loader>
 }
 
 function convertToDisplayData (data: ApFirmwareUpdateGroupType[]): DisplayDataType[] {
@@ -125,7 +125,7 @@ function filterByVenues (
   const result: ApFirmwareUpdateGroupType[] = []
   updateGroups.forEach(updateGroup => {
     const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
-    if (intersectionApModels.length !== 0) {
+    if (intersectionApModels.length > 0) {
       result.push({
         ...updateGroup,
         apModels: intersectionApModels

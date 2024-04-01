@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
-import { Tooltip }   from 'antd'
-import _             from 'lodash'
-import { useParams } from 'react-router-dom'
+import { Space, Tooltip } from 'antd'
+import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
 import { useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
 import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       from '@acx-ui/rc/utils'
@@ -104,4 +105,40 @@ export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmware[]):
     }
     return acc
   }, [] as ApFirmwareUpdateGroupType[])
+}
+
+interface ExpandableApModelListProps {
+  apModels: string[]
+  maxLength?: number
+  generateLabelWrapper?: (apModelsForDisplay: string) => JSX.Element
+}
+
+export function ExpandableApModelList (props: ExpandableApModelListProps) {
+  const { $t } = useIntl()
+  const { apModels, maxLength = 3, generateLabelWrapper = generateDefaultLabelWrapper } = props
+  const isMoreDevicesTooltipShown = apModels.length > maxLength
+  const apModelsForDisplay = isMoreDevicesTooltipShown
+    ? apModels.slice(0, maxLength).join(', ') + '...'
+    : apModels.join(', ')
+
+  const label = generateLabelWrapper(apModelsForDisplay)
+  return <Space>
+    {label}
+    {isMoreDevicesTooltipShown &&
+      <Tooltip
+        children={
+          <UI.ShowMoreLink>
+            {$t({ defaultMessage: 'See more devices' })}
+          </UI.ShowMoreLink>
+        }
+        title={
+          <ul>{apModels.map(apModel => <li key={apModel}>{apModel}</li>)}</ul>
+        }
+      />
+    }
+  </Space>
+}
+
+function generateDefaultLabelWrapper (apModelsForDisplay: string): JSX.Element {
+  return <div>{ apModelsForDisplay }</div>
 }

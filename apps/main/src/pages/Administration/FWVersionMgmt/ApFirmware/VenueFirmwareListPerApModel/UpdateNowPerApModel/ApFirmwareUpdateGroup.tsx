@@ -4,9 +4,8 @@ import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
 import { useIntl }                        from 'react-intl'
 
-import { Tooltip, cssStr } from '@acx-ui/components'
-
-import * as UI from '../../VenueFirmwareList/styledComponents'
+import * as UI                   from '../../VenueFirmwareList/styledComponents'
+import { ExpandableApModelList } from '../venueFirmwareListPerApModelUtils'
 
 export interface ApFirmwareUpdateGroupProps {
   apModels: string[]
@@ -26,8 +25,15 @@ export function ApFirmwareUpdateGroup (props: ApFirmwareUpdateGroupProps) {
     update(apModels, e.target.value)
   }
 
+  const generateLabelWrapper = (apModelsForDisplay: string) => {
+    return <UI.TitleActive>
+      {$t({ defaultMessage: 'Available firmware for devices {apModels}' },
+        { apModels: apModelsForDisplay })}
+    </UI.TitleActive>
+  }
+
   return (<>
-    <GroupTitle apModels={apModels} />
+    <ExpandableApModelList apModels={apModels} generateLabelWrapper={generateLabelWrapper} />
     <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectedVersionChange}
@@ -47,32 +53,4 @@ export function ApFirmwareUpdateGroup (props: ApFirmwareUpdateGroupProps) {
       </Radio.Group>
     </UI.ValueContainer>
   </>)
-}
-
-function GroupTitle (props: { apModels: string[] }) {
-  const { $t } = useIntl()
-  const { apModels } = props
-  const isMoreDevicesTooltipShown = apModels.length > 2
-  const apModelsForDisplay = isMoreDevicesTooltipShown
-    ? apModels.slice(0, 2).join(', ') + '...'
-    : apModels.join(', ')
-
-  return <Space>
-    <UI.TitleActive>
-      {$t({ defaultMessage: 'Available firmware for devices {apModels}' },
-        { apModels: apModelsForDisplay })}
-    </UI.TitleActive>
-    {isMoreDevicesTooltipShown &&
-      <Tooltip
-        children={
-          <div style={{ color: cssStr('--acx-accents-blue-50') }}>
-            {$t({ defaultMessage: 'See more devices' })}
-          </div>
-        }
-        title={
-          <ul>{apModels.map(apModel => <li key={apModel}>{apModel}</li>)}</ul>
-        }
-      />
-    }
-  </Space>
 }
