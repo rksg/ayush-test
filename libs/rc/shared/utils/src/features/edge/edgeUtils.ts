@@ -338,7 +338,7 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
 
   if (allPortsLagMember && lagWithGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to form a cluster.' }))
+    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to WAN or core port to form a cluster.' }))
   } else {
     return Promise.resolve()
   }
@@ -359,10 +359,20 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
 
   if (totoalGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to form a cluster.' }))
+    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
   } else if (totoalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   } else {
     return Promise.resolve()
+  }
+}
+export const getEdgePortIpModeEnumValue = (type: string) => {
+  switch (type) {
+    case EdgeIpModeEnum.DHCP:
+      return EdgeIpModeEnum.DHCP
+    case 'Static':
+      return EdgeIpModeEnum.STATIC
+    default:
+      return ''
   }
 }

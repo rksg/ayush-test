@@ -2,10 +2,12 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Card }                                         from '@acx-ui/components'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery }                     from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps, Card }                                                             from '@acx-ui/components'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery }                                         from '@acx-ui/rc/services'
+import { ConfigTemplateType, Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                  from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
 export default function DpskInstancesTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
@@ -36,8 +38,10 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
-        return <TenantLink
-          to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
+          // eslint-disable-next-line max-len
+          : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
       }
     },
     {
@@ -61,11 +65,12 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       dataIndex: ['venues', 'count'],
       sorter: true,
       render: function (_, row) {
-        // eslint-disable-next-line max-len
-        return <TenantLink
-          to={`/networks/wireless/${row.id}/network-details/venues`}
-          children={row.venues?.count ? row.venues?.count : 0}
-        />
+        const value = row.venues?.count ?? 0
+        return isTemplate
+          // eslint-disable-next-line max-len
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, value, 'venues')
+          // eslint-disable-next-line max-len
+          : <TenantLink to={`/networks/wireless/${row.id}/network-details/venues`}>{value}</TenantLink>
       }
     }
   ]

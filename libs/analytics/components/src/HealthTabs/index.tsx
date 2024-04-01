@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { HealthPage }       from '..'
 import { useNetworkFilter } from '../Header'
 
+import { OverviewTab }   from './OverviewTab'
 import { FilterWrapper } from './styledComponents'
 
 export function HealthTabs () {
@@ -35,9 +36,7 @@ export function HealthTabs () {
             shouldQuerySwitch: true
           })}
         </FilterWrapper>
-        <div>
-        Health Overview Page
-        </div>
+        <OverviewTab/>
       </>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>

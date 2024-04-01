@@ -311,7 +311,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       openNewTab: false,
-      uri: '/analytics/admin/users'
+      uri: '/admin/users'
     }
     const match = find(flattenConfig(result.current), target)
     expect(match).toMatchObject(target)

@@ -1,4 +1,4 @@
-import { defineMessage } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
@@ -172,4 +172,14 @@ export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
 
 export const PERMISSION_FRANCHISOR = 'franchisor'
 
-export const roles = ['admin', 'network-admin', 'report-only']
+export enum RolesEnum {
+  ADMIN = 'admin',
+  NETWORK_ADMIN = 'network-admin',
+  REPORT_ONLY = 'report-only'
+}
+
+export const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
+  [RolesEnum.ADMIN]: defineMessage({ defaultMessage: 'Admin' }),
+  [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Admin' }),
+  [RolesEnum.REPORT_ONLY]: defineMessage({ defaultMessage: 'Report Only' })
+}
