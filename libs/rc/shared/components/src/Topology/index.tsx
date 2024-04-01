@@ -100,7 +100,7 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       ...node.untaggedVlan?.split(' ') || []
     ]
 
-    updateVlanPortData(portData, node.id, setVlanPortData)
+    updateVlanPortData(uniq(portData), node.id, setVlanPortData)
   })
 
   let uniqueValues: any = {}
@@ -136,8 +136,8 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       ...edge.correspondingPortUntaggedVlan?.split(' ') || []
     ]
 
-    if(edge.extraEdges && edge.extraEdges.length > 0){
-      edge.extraEdges.forEach((item: LinkConnectionInfo) => {
+    if(edge?.extraEdges && edge?.extraEdges.length > 0){
+      edge?.extraEdges.forEach((item: LinkConnectionInfo) => {
         portData.push(
           ...(item.connectedPortTaggedVlan?.split(' ') || []),
           ...(item.connectedPortUntaggedVlan?.split(' ') || []),

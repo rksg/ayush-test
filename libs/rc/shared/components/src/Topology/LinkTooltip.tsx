@@ -196,10 +196,10 @@ onClose: () => void
               {tooltipTargetNode?.name || tooltipTargetNode?.mac || tooltipTargetNode?.id}
             </Typography.Link>
           } />
-        {!tooltipEdge.extraEdges &&
+        {!tooltipEdge?.extraEdges &&
             edgesInfoComponent(tooltipEdge, tooltipSourceNode, tooltipTargetNode)}
       </Descriptions>
-      {tooltipEdge.extraEdges && tooltipEdge.extraEdges.length > 0 &&
+      {tooltipEdge?.extraEdges && tooltipEdge?.extraEdges.length > 0 &&
         <Tabs type='third' defaultActiveKey={'#1'}>
           <Tabs.TabPane
             tab={$t({ defaultMessage: '#1' })}
