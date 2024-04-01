@@ -5,7 +5,7 @@ import { Map }                     from 'immutable'
 import { get, isEmpty, partition } from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
-import { Tenant, defaultSort, getUserProfile, sortProp }                  from '@acx-ui/analytics/utils'
+import { RolesEnum, Tenant, defaultSort, getUserProfile, sortProp }       from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
 import { getIntl }                                                        from '@acx-ui/utils'
@@ -199,12 +199,14 @@ export const TooltipContent = (value: FormattedOnboardedSystem) =>
 export const OnboardedSystems = () => {
   const { $t } = useIntl()
   const tenant = getUserProfile()
-  const tenantId = tenant.accountId
+  const tenantId = tenant.selectedTenant.id
   const tenantsMap = Map(tenant.tenants.map(t => [get(t, 'id'), t]))
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
-  const queryResults = useFetchSmartZoneListQuery(tenant.tenants.map(t => t.id), {
+  const queryResults = useFetchSmartZoneListQuery(tenant.tenants
+    .filter(t => t.role === RolesEnum.ADMIN)
+    .map(t => t.id), {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
     })

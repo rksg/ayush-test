@@ -48,6 +48,11 @@ describe('OnboardedSystems', () => {
     expect(await screen.findByText('sz1')).toBeVisible()
     expect(await screen.findAllByText('02/16/2019 05:32')).toHaveLength(10)
   })
+  it('should sort by selected account', async () => {
+    setUserProfile({ accountId: tenants[1].id, tenants } as UserProfile)
+    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    expect(await screen.findAllByText('account2')).toHaveLength(2)
+  })
   it('should handle delete submit', async () => {
     mockRestApiQuery(
       `${smartZoneURL}/smartzones/${mockSmartZoneList[2].device_id}/delete`,
