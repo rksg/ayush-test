@@ -39,11 +39,12 @@ export const getStackUnitsMinLimitation = (
   }
 }
 
-export const compareSwitchVersion = (a: string, b: string): number => {
+export const compareSwitchVersion = (compareVersion: string, targetVersion: string): number => {
+  const cleanedCompareVersion = compareVersion.replace('.bin', '')
   // eslint-disable-next-line max-len
   const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_cd(?<candidate>\d+))?(?:_rc(?<rcbuild>\d+))?(?:_b(?<build>\d+))?$/
-  const group1 = a?.match(switchVersionReg)?.groups
-  const group2 = b?.match(switchVersionReg)?.groups
+  const group1 = cleanedCompareVersion?.match(switchVersionReg)?.groups
+  const group2 = targetVersion?.match(switchVersionReg)?.groups
   if (group1 && group2) {
     let res = 0
     const keys = ['major', 'minor', 'candidate', 'rcbuild', 'build']

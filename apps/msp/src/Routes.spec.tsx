@@ -23,7 +23,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   AccessControlForm: () => <div>AccessControlForm</div>,
   NetworkForm: () => <div>NetworkForm</div>,
   DpskForm: () => <div>DpskForm</div>,
-  DHCPForm: () => <div>DHCPForm</div>
+  DHCPForm: () => <div>DHCPForm</div>,
+  PortalForm: () => <div>PortalForm</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -41,7 +42,11 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.PORTAL]: false,
   [ConfigTemplateType.VLAN_POOL]: false,
   [ConfigTemplateType.WIFI_CALLING]: false,
-  [ConfigTemplateType.CLIENT_ISOLATION]: false
+  [ConfigTemplateType.CLIENT_ISOLATION]: false,
+  [ConfigTemplateType.LAYER_2_POLICY]: false,
+  [ConfigTemplateType.LAYER_3_POLICY]: false,
+  [ConfigTemplateType.DEVICE_POLICY]: false,
+  [ConfigTemplateType.APPLICATION_POLICY]: false
 }
 
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
@@ -179,6 +184,6 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
       }
     })
 
-    expect(await screen.findByText('Portal Creation')).toBeVisible()
+    expect(await screen.findByText('PortalForm')).toBeVisible()
   })
 })

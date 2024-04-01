@@ -1,15 +1,18 @@
-import { Brand360 }                                         from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { Brand360 }                                                  from '@acx-ui/analytics/components'
+import { ConfigProvider, PageNotFound }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
+import { useGetTenantDetailQuery, useHospitalityVerticalCheck }      from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
   DHCPForm, DpskForm,
+  PortalForm,
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
-  useConfigTemplateVisibilityMap
+  useConfigTemplateVisibilityMap,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -22,12 +25,13 @@ import {
   getPolicyRoutePath,
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                                                   from '@acx-ui/store'
-import { AccountType, getJwtTokenPayload }                            from '@acx-ui/utils'
+import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Provider }                                                              from '@acx-ui/store'
+import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
+import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
 import { DeviceInventory }                         from './pages/DeviceInventory'
 import { Integrators }                             from './pages/Integrators'
 import Layout, { LayoutWithConfigTemplateContext } from './pages/Layout'
@@ -40,11 +44,14 @@ import { VarCustomers }                            from './pages/VarCustomers'
 
 function Init () {
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const { tenantId } = useParams()
+  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
+  const params = useParams()
   const { tenantType } = getJwtTokenPayload()
-  const isShowBrand360 =
-    isBrand360Enabled &&
-    (tenantType === AccountType.MSP_INTEGRATOR ||
-    tenantType === AccountType.MSP_NON_VAR)
+  const isHospitalityVerticalEnabled =
+  useHospitalityVerticalCheck(data?.mspEc?.parentMspId as string, tenantType as string, params)
+  const isInstaller = tenantType === AccountType.MSP_INSTALLER
+  const isShowBrand360 = isBrand360Enabled && isHospitalityVerticalEnabled && !isInstaller
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
@@ -201,15 +208,38 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.PORTAL] && <>
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
-            element={<div>Portal Creation</div>}
+            element={<PortalForm/>}
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
-            element={<div>Portal Edition</div>}
+            element={<PortalForm editMode={true}/>}
           />
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
-            element={<div>Portal Details</div>}
+            element={<PortalDetail/>}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.CREATE
+            })}
+            element={<WifiCallingForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.EDIT
+            })}
+            element={<WifiCallingConfigureForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.DETAIL
+            })}
+            element={<WifiCallingDetailView />}
           />
         </>}
       </Route>

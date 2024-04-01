@@ -182,12 +182,20 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
     const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
       onClose={jest.fn()}
     /></Provider>, {
-      route: {}
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
@@ -197,12 +205,20 @@ describe('Topology AP Card', () => {
   })
 
   it('should show empty traffic data', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
     const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetailWithNullTraffic as ApViewModel}
       isLoading={false}
       onClose={jest.fn()}
     /></Provider>, {
-      route: {}
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
@@ -210,12 +226,20 @@ describe('Topology AP Card', () => {
   })
 
   it('should render navigation correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
     render(<Provider><APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
       onClose={jest.fn()}
     /></Provider>, {
-      route: {}
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
     })
 
     await userEvent.click(await screen.findByText('R760-181-66'))

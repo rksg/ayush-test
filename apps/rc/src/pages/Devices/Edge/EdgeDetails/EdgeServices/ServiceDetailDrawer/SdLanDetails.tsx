@@ -16,6 +16,7 @@ export const SdLanDetails = (props: SdLanDetailsProps) => {
 
   const { edgeSdLanData, isLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
+      fields: ['tunnelProfileId', 'tunnelProfileName'],
       filters: { id: [serviceData.serviceId] }
     } },
     {

@@ -1,4 +1,5 @@
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
 
 import { OnDemandCliTab } from './onDemandCli'
 import { ProfilesTab }    from './profiles'
@@ -12,7 +13,7 @@ const tabs = {
 
 export default function Wired () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return <>
     <WiredPageHeader />
     { Tab && <Tab /> }

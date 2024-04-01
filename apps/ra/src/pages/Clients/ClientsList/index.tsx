@@ -3,12 +3,19 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { useNetworkClientListQuery, ClientByTraffic }                           from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, QueryParamsForZone, dateSort, getUserProfile  } from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange }                      from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
-import { TenantLink }                                                           from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, useDateFilter }                from '@acx-ui/utils'
+import { useNetworkClientListQuery, ClientByTraffic } from '@acx-ui/analytics/services'
+import {
+  defaultSort,
+  sortProp,
+  QueryParamsForZone,
+  dateSort,
+  getUserProfile,
+  RolesEnum
+} from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
+import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
@@ -44,7 +51,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
   }
 
   const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === 'report-only'
+  const isReportOnly = role === RolesEnum.REPORT_ONLY
 
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {

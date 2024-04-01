@@ -19,7 +19,7 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/portalServiceProfiles/:serviceId',
     newApi: true
   },
-  savePortal: {
+  createPortal: {
     method: 'post',
     url: '/portalServiceProfiles',
     oldUrl: '/api/portalServiceProfiles',

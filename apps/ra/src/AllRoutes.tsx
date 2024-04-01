@@ -14,7 +14,8 @@ import {
   ServiceGuardForm,
   ServiceGuardSpecGuard,
   ServiceGuardTestGuard,
-  ServiceGuardDetails
+  ServiceGuardDetails,
+  Profile
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, PERMISSION_VIEW_ANALYTICS, getUserProfile } from '@acx-ui/analytics/utils'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH }   from '@acx-ui/react-router-dom'
@@ -67,6 +68,9 @@ function AllRoutes () {
     <Route path={MLISA_BASE_PATH} element={<Init />} />
     <Route path={MLISA_BASE_PATH}>
       <Route path='dashboard' element={<Dashboard />} />
+      <Route path='profile'>
+        <Route path=':activeTab' element={<Profile />} />
+      </Route>
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
@@ -143,9 +147,13 @@ function AllRoutes () {
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
+        <Route path='onboarded'
+          element={<AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>} />
         <Route path='users' element={<Users/>} />
         <Route path='support'
           element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />
+        <Route path='webhooks'
+          element={<AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>} />
       </Route>
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
