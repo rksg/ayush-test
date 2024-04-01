@@ -296,7 +296,7 @@ export const api = recommendationApi.injectEndpoints({
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            const detail = codes[getCode]
+            const detail = codes(status)[getCode]
             detail && recommendations.push({
               ...recommendation,
               id: newId,
@@ -337,7 +337,7 @@ export const api = recommendationApi.injectEndpoints({
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            const detail = codes[getCode]
+            const detail = codes(status)[getCode]
             detail && recommendations.push({
               ...recommendation,
               priority: detail.priority,
@@ -399,7 +399,7 @@ export const api = recommendationApi.injectEndpoints({
           const getCode = code === 'unknown'
             ? status as keyof typeof codes
             : code as keyof typeof codes
-          const detail = codes[getCode]
+          const detail = codes(status)[getCode]
           detail && recommendations.push({
             ...recommendation,
             id: newId,
@@ -522,12 +522,12 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
-      query: ({ id, code }) => ({
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code' | 'status'>>({
+      query: ({ id, code, status }) => ({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status ${kpiHelper(code!)}
+              id status ${kpiHelper(code!, status)}
             }
           }
         `,
