@@ -3,7 +3,10 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                from '@acx-ui/components'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { HealthPage } from '..'
+import { HealthPage }       from '..'
+import { useNetworkFilter } from '../Header'
+
+import { FilterWrapper } from './styledComponents'
 
 export function HealthTabs () {
   const { $t } = useIntl()
@@ -25,17 +28,39 @@ export function HealthTabs () {
     type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview'>
-      <div>
+      <>
+        <FilterWrapper>
+          {useNetworkFilter({
+            shouldQueryAp: true,
+            shouldQuerySwitch: true
+          })}
+        </FilterWrapper>
+        <div>
         Health Overview Page
-      </div>
+        </div>
+      </>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
-      <HealthPage path='/health/wireless/tab/'/>
+      <>
+        <FilterWrapper>
+          {useNetworkFilter({
+            shouldQueryAp: true
+          })}
+        </FilterWrapper>
+        <HealthPage />
+      </>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
-      <div>
+      <>
+        <FilterWrapper>
+          {useNetworkFilter({
+            shouldQuerySwitch: true
+          })}
+        </FilterWrapper>
+        <div>
         Health Wired Page
-      </div>
+        </div>
+      </>
     </Tabs.TabPane>
   </Tabs>
 }
