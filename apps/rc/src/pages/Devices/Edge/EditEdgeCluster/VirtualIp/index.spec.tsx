@@ -62,25 +62,8 @@ describe('Edit Edge Cluster - VirtualIp', () => {
       })
     expect(screen.getByText('Please select the node interfaces and assign virtual IPs for seamless failover :')).toBeVisible()
     expect(await screen.findByRole('textbox', { name: 'Virtual IP Address' })).toBeVisible()
-    // expect(await screen.findByRole('button', { name: 'Add another virtual IP' })).toBeVisible()
     expect(screen.getByText('HA Timeout')).toBeVisible()
   })
-
-  // it('should add new VipInfoCard when clicking "Add another virtual IP"', async () => {
-  //   render(
-  //     <Provider>
-  //       <VirtualIp />
-  //     </Provider>
-  //     , {
-  //       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-  //     })
-  //   await userEvent.click(await screen.findByRole('button', { name: 'Add another virtual IP' }))
-  //   await waitFor(
-  //     async () =>
-  //       expect((await screen.findAllByRole('textbox', { name: 'Virtual IP Address' })).length).toBe(2)
-  //   )
-  //   expect(await screen.findByRole('button', { name: 'delete' })).toBeVisible()
-  // })
 
   it('should render correctly when having existed data', async () => {
     render(

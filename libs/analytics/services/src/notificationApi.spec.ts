@@ -29,7 +29,7 @@ describe('Services for notification apis', () => {
           P1: ['email']
         }
       }
-      mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+      mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
         data: mockedPref
       })
       const { status, data, error } = await store.dispatch(
@@ -40,7 +40,7 @@ describe('Services for notification apis', () => {
       expect(error).toBeUndefined()
     })
     it('should return rejected on error', async () => {
-      mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+      mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
         error: new Error('unknown server error')
       })
       const { status, data, error } = await store.dispatch(
@@ -54,7 +54,7 @@ describe('Services for notification apis', () => {
 
   describe('setIncidentNotification', () => {
     it('should return correct value on preferences mutation', async () => {
-      mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+      mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
         data: { success: true }
       }, false, true)
       const data = await store.dispatch(
@@ -81,7 +81,7 @@ describe('Services for notification apis', () => {
       })
     })
     it('should return correctly for undefined preferences', async () => {
-      mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+      mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
         data: { success: true }
       }, false, true)
       const data = await store.dispatch(
