@@ -30,7 +30,7 @@ export function HealthTabs () {
       <OverviewTab/>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
-      <HealthPage path='/health/wireless/tab/'/>
+      <HealthPage path='/analytics/health/wireless/tab/'/>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
       <div>
