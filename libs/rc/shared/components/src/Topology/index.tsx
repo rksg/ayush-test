@@ -87,7 +87,6 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
 
   // Create a mapping of node IDs to their corresponding node objects
   const nodeMap: Record<string, NodeData> = {}
-  const idsToRemove: string[] = []
 
   nodes.forEach((node: NodeData) => {
     nodeMap[node.id] = {
@@ -127,10 +126,6 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
 
     if((fromNode && toNode)){
       fromNode.children.push(toNode)
-      const fromEdges = uniq(edgeResult.map(item => item.from))
-      if(fromEdges.indexOf(edge.to) === -1){
-        idsToRemove.push(edge.to)
-      }
     }
 
     const portData = [
@@ -153,6 +148,25 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
 
     updateVlanPortData(uniq(portData), `link_${edge.from}_${edge.to}`, setVlanPortData)
   })
+
+  const idsToRemove: string[] = []
+  function removeDuplicateItems (node: NodeData, nodeMapData: NodeData[]) {
+
+    for(let i=0; i < nodeMapData.length; i++){
+      const duplicateIndex = nodeMapData[i].children.findIndex(item => item.id === node.id)
+
+      if (duplicateIndex !== -1 && idsToRemove.indexOf(node.id) === -1) {
+        idsToRemove.push(node.id)
+      }
+      removeDuplicateItems(node, nodeMapData[i].children)
+    }
+  }
+
+  const nodeMapData = Object.values(nodeMap)
+
+  nodeMapData.forEach(
+    node => removeDuplicateItems(
+      node, nodeMapData.filter(item => item.id !== node.id )))
 
   const result: NodeData[] = Object.values(nodeMap).filter(item => {
     return !idsToRemove.includes(item.id)
