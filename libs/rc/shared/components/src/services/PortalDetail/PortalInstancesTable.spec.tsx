@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { servicesConfigTemplateApi, serviceApi, networkApi }      from '@acx-ui/rc/services'
-import { ConfigTemplateUrlsInfo, PortalUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                        from '@acx-ui/store'
+import { servicesConfigTemplateApi, serviceApi, networkApi }                                      from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo, ServicesConfigTemplateUrlsInfo, PortalUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -45,6 +45,12 @@ describe('Portal Instances Table', () => {
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the' }))
+        }),
+      rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            content: [{ id: 'test', name: 'test', wifiNetworkIds: ['networkId'] }],
+            paging: { page: 1, pageSize: 10, totalCount: 1 } }))
         })
     )
   })
@@ -73,8 +79,10 @@ describe('Portal Instances Table', () => {
   it('should render detail page - is Template', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const targetNetwork = mockedNetworkTemplates.data[0]
+    const tenantId = params.tenantId
+    const networkId = targetNetwork.id
     const networkLink =
-      `/${params.tenantId}/t/networks/wireless/${targetNetwork.id}/network-details/overview`
+      `/${tenantId}/v/configTemplates/networks/wireless/${networkId}/network-details/venues`
 
     render(<Provider>
       <PortalInstancesTable />

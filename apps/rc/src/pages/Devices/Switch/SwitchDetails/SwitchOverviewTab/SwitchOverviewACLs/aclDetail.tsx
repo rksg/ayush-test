@@ -45,6 +45,7 @@ export const AclDetail = (props: { row : Acl }) => {
     {
       key: 'sequence',
       title: $t({ defaultMessage: 'Sequence#' }),
+      sorter: { compare: sortProp('sequence', defaultSort) },
       dataIndex: 'sequence',
       defaultSortOrder: 'ascend'
     },

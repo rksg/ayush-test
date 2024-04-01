@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls }                 from '@acx-ui/rc/utils'
-import { Path, To }                                                         from '@acx-ui/react-router-dom'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls }      from '@acx-ui/rc/utils'
+import { Path, To }                                              from '@acx-ui/react-router-dom'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockNetworkResult }  from '../__tests__/fixtures'
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { mockNetworkResult, mockWifiCallingDetail, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                                                   from '../WifiCallingFormContext'
 
 import { WifiCallingConfigureForm } from './WifiCallingConfigureForm'
 
@@ -62,22 +62,6 @@ const wifiCallingListResponse = [
   }
 ]
 
-const getWifiCallingResponse = {
-  networkIds: [
-    'c8cd8bbcb8cc42caa33c991437ecb983',
-    '44c5604da90443968e1ee91706244e63'
-  ],
-  qosPriority: 'WIFICALLING_PRI_VOICE',
-  serviceName: 'wifiCSP1',
-  id: 'serviceId1',
-  epdgs: [
-    {
-      ip: '1.2.3.4',
-      domain: 'abc.com'
-    }
-  ]
-}
-
 const initState = {
   serviceName: '',
   ePDG: [],
@@ -128,29 +112,22 @@ jest.mock('antd', () => {
 describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.post(
-        WifiCallingUrls.updateWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))
-      ),
-      rest.get(
-        WifiCallingUrls.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))
-      ),
-      rest.put(
-        WifiCallingUrls.updateWifiCalling.url,
+      rest.post(WifiCallingUrls.updateWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
+      rest.get(WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
+      rest.put(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => {
           mockedUpdateService()
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
-      rest.get(
-        WifiCallingUrls.getWifiCalling.url,
-        (req, res, ctx) => res(ctx.json(getWifiCallingResponse))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkResult))
-      )
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))),
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
     )
   })
 
@@ -178,11 +155,11 @@ describe('WifiCallingConfigureForm', () => {
 
     await screen.findByText('abc.com')
 
-    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
-      { target: { value: 'descriptionTest' } })
+    await userEvent.type(screen.getByRole('textbox', { name: /description/i }),
+      'descriptionTest')
 
-    fireEvent.change(screen.getByRole('textbox', { name: /service name/i }),
-      { target: { value: 'service-name-test' } })
+    await userEvent.type(screen.getByRole('textbox', { name: /service name/i }),
+      'service-name-test')
 
     await userEvent.click(screen.getByText('Scope'))
 
