@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import {
   Select,
   InputNumber,
@@ -39,6 +37,14 @@ export interface ExpirationDateSelectorProps {
     [ExpirationMode.AFTER_TIME]?: boolean
   }
 }
+
+export const ExpirationTypeLimitation = {
+  [ExpirationType.HOURS_AFTER_TIME]: 720, // 30 days
+  [ExpirationType.DAYS_AFTER_TIME]: 365, // 1 year
+  [ExpirationType.WEEKS_AFTER_TIME]: 102, // 2 years
+  [ExpirationType.MONTHS_AFTER_TIME]: 60, // 5 years
+  [ExpirationType.YEARS_AFTER_TIME]: 5
+} as Record<ExpirationType, number>
 
 function ExpirationDatePickerWrapper (props: DatePickerProps) {
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -84,8 +90,6 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
 
   const expirationMode = Form.useWatch<ExpirationMode>([inputName, 'mode'])
 
-  const [offsetValue, setOffsetValue] = useState(1)
-
   const normalizeDate = (value: StoreValue) => {
     return value && value.startOf('day').toISOString()
   }
@@ -101,14 +105,13 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
   const offsetValidator = (value: number) => {
     const type = form.getFieldValue([inputName, 'type'])
     const min = 1
-    const expirationTypeLimitation = {
-      [ExpirationType.HOURS_AFTER_TIME]: 720, // 30 days
-      [ExpirationType.DAYS_AFTER_TIME]: 365, // 1 year
-      [ExpirationType.WEEKS_AFTER_TIME]: 102, // 2 years
-      [ExpirationType.MONTHS_AFTER_TIME]: 60, // 5 years
-      [ExpirationType.YEARS_AFTER_TIME]: 5
-    } as Record<ExpirationType, number>
-    const max = expirationTypeLimitation[type as ExpirationType] || 720
+    const max = ExpirationTypeLimitation[type as ExpirationType]
+
+    if (!max) {
+      return Promise.reject($t({
+        defaultMessage: 'This expiration type does not support validation for maximum values.'
+      }))
+    }
 
     if (value < min || value > max) {
       return Promise.reject($t({
@@ -176,7 +179,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                 </Form.Item>
                 <Form.Item
                   name={[inputName, 'type']}
-                  initialValue={{ key: ExpirationType.HOURS_AFTER_TIME }}
+                  initialValue={ExpirationType.HOURS_AFTER_TIME}
                   rules={[
                     {
                       required: expirationMode === ExpirationMode.AFTER_TIME,
