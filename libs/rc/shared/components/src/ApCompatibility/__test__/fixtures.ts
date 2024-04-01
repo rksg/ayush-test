@@ -173,6 +173,6 @@ export const mockActivityApCompatibilityTable = {
     }
   ],
   page: 1,
-  incompatibleCount: 12,
-  totalCount: 20
+  impactedCount: 20,
+  totalCount: 12
 }

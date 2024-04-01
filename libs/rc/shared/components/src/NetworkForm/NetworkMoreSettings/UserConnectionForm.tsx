@@ -149,15 +149,15 @@ export function UserConnectionForm () {
           let duration = data.guestPortal?.macCredentialsDuration
           let durationUnit = 'minutes'
           switch(true) {
-            case (duration > oneWeek && duration % oneWeek === 0):
+            case (duration >= oneWeek && duration % oneWeek === 0):
               duration = duration / oneWeek
               durationUnit = 'weeks'
               break
-            case (duration > oneDay && duration % oneDay === 0):
+            case (duration >= oneDay && duration % oneDay === 0):
               duration = duration / oneDay
               durationUnit = 'days'
               break
-            case (duration > oneHour && duration % oneHour === 0):
+            case (duration >= oneHour && duration % oneHour === 0):
               duration = duration / oneHour
               durationUnit = 'hours'
               break
@@ -402,8 +402,8 @@ export function UserConnectionForm () {
             </Form.Item>
             <Form.Item noStyle name='macCredentialsDurationUnit' initialValue={'hours'}>
               <Select data-testid='macCredentialsDurationUnit' disabled={!checkDuration}>
-                <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                <Option value={'hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 {
                   isSessionDurationEnable &&
                   <>

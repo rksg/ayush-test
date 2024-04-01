@@ -60,6 +60,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
         nodeName: item.name,
         serialNumber: item.serialNumber,
         interfaceName: currentcClusterInterface?.portName,
+        ipMode: currentcClusterInterface?.ipMode,
         ip: currentcClusterInterface?.ip,
         subnet: currentcClusterInterface?.subnet
       }

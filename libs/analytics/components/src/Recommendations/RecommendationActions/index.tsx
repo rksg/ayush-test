@@ -28,7 +28,7 @@ import * as UI from './styledComponents'
 // eslint-disable-next-line max-len
 const applyFooterMsg = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
 
-const actionTooltip = {
+export const actionTooltip = {
   Apply: {
     text: defineMessage({ defaultMessage: 'Apply' }),
     icon: <CheckMarkCircleOutline />
@@ -53,14 +53,15 @@ function getFutureTime (value: Moment) {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-type RecommendationActionType = Pick<
+export type RecommendationActionType = Pick<
   // eslint-disable-next-line max-len
   RecommendationListItem, 'id' | 'code' | 'statusEnum' | 'metadata' | 'isMuted' | 'statusTrail' | 'preferences'>
 
 type ActionButtonProps = RecommendationActionType & {
   disabled: boolean
   type: keyof typeof actionTooltip
-  initialDate: 'scheduledAt' | 'futureDate'
+  initialDate: 'scheduledAt' | 'futureDate',
+  showTextOnly? : boolean
 }
 
 function ApplyCalendar ({
@@ -69,7 +70,8 @@ function ApplyCalendar ({
   id,
   code,
   metadata,
-  initialDate
+  initialDate,
+  showTextOnly
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
@@ -136,8 +138,10 @@ function ApplyCalendar ({
 
   return <DateTimePicker
     key={`apply-${id}`}
-    title={$t(actionTooltip[type].text)}
-    icon={<UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
+    title={showTextOnly ? undefined : $t(actionTooltip[type].text)}
+    icon={showTextOnly
+      ? <UI.ActionsText>{$t(actionTooltip[type].text)}</UI.ActionsText>
+      : <UI.IconWrapper $disabled={disabled}>{actionTooltip[type].icon}</UI.IconWrapper>}
     disabled={disabled}
     initialDate={initialDateOptions[initialDate]}
     onApply={onApply}
@@ -146,20 +150,26 @@ function ApplyCalendar ({
   />
 }
 
-function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
+function CancelCalendar ({
+  disabled,id,showTextOnly
+}: Omit<ActionButtonProps, 'type' | 'initialDate'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
   return <UI.IconWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
-      : <Tooltip
-        placement='top'
-        arrowPointAtCenter
-        title={$t({ defaultMessage: 'Cancel' })}
-      >
-        <CancelCircleOutlined
-          onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
-      </Tooltip>}
+      : showTextOnly
+        ? <UI.ActionsText onClick={async () => { await cancelRecommendation({ id }).unwrap() }} >
+          {$t({ defaultMessage: 'Cancel' })}
+        </UI.ActionsText>
+        :<Tooltip
+          placement='top'
+          arrowPointAtCenter
+          title={$t({ defaultMessage: 'Cancel' })}
+        >
+          <CancelCircleOutlined
+            onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
+        </Tooltip>}
   </UI.IconWrapper>
 }
 
@@ -176,11 +186,12 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
-const getAvailableActions = (
-  recommendation: RecommendationActionType, isRecommendationRevertEnabled: boolean
-) => {
+export const getAvailableActions = (
+  recommendation: RecommendationActionType,
+  isRecommendationRevertEnabled: boolean,
+  showTextOnly?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
-  const props = { ...recommendation }
+  const props = { ...recommendation, showTextOnly }
   if (isMuted) {
     return [
       {
@@ -222,7 +233,6 @@ const getAvailableActions = (
             ...props, disabled: false, type: 'ApplyScheduled', initialDate: 'scheduledAt'
           })
         },
-        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
             ...props,
@@ -233,7 +243,8 @@ const getAvailableActions = (
             type: 'Revert',
             initialDate: 'futureDate'
           })
-        }
+        },
+        !appliedOnce && { icon: actions.cancel({ ...props, disabled: false }) }
       ].filter(Boolean) as { icon: JSX.Element }[]
     case 'applied':
     case 'applywarning':
@@ -257,12 +268,12 @@ const getAvailableActions = (
             ...props, disabled: true, type: 'Apply', initialDate: 'futureDate'
           })
         },
-        { icon: actions.cancel({ ...props, disabled: false }) },
         {
           icon: actions.schedule({
             ...props, disabled: false, type: 'RevertScheduled', initialDate: 'scheduledAt'
           })
-        }
+        },
+        { icon: actions.cancel({ ...props, disabled: false }) }
       ]
     case 'applyfailed':
       return [
@@ -301,11 +312,20 @@ const getAvailableActions = (
   }
 }
 
-export const RecommendationActions = (props: { recommendation: RecommendationActionType }) => {
-  const { recommendation } = props
+export const RecommendationActions = ({
+  recommendation,
+  showTextOnly = false
+}: {
+  recommendation: RecommendationActionType,
+  showTextOnly?: boolean
+}) => {
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
-  const actionButtons = getAvailableActions(recommendation, isRecommendationRevertEnabled)
+  const actionButtons = getAvailableActions(
+    recommendation,
+    isRecommendationRevertEnabled,
+    showTextOnly
+  )
   return <UI.Actions>
     {actionButtons.map((config, i) => <span key={i}>{config.icon}</span>)}
   </UI.Actions>
