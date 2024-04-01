@@ -104,7 +104,7 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
   })
 
   let uniqueValues: any = {}
-  let edgeResult: Link[] = []
+  const edgeResult: Link[] = []
 
   edges.forEach((item: Link) => {
     if (!uniqueValues[item.to]) {
@@ -123,7 +123,10 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
 
     if((fromNode && toNode)){
       fromNode.children.push(toNode)
-      idsToRemove.push(edge.to)
+      const fromEdges = uniq(edgeResult.map(item => item.from))
+      if(fromEdges.indexOf(edge.to) === -1){
+        idsToRemove.push(edge.to)
+      }
     }
 
     const portData = [
