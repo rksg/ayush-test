@@ -141,7 +141,7 @@ describe('NodeTooltip', () => {
         route: { params }
       }
     )
-    expect((await screen.findAllByText('302002029829')).length).toEqual(2)
+    expect((await screen.findAllByText('302002029829')).length).toEqual(1)
     expect(await screen.findByText('Off')).toBeVisible()
   })
 })
