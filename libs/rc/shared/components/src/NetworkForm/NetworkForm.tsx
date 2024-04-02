@@ -15,7 +15,8 @@ import {
   useAddNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
-  useAddNetworkVenueTemplatesMutation
+  useAddNetworkVenueTemplatesMutation,
+  useActivateCertificateTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -120,6 +121,7 @@ export function NetworkForm (props:{
   )
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const activateCertificateTemplate = useCertificateTemplateActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -456,10 +458,13 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId']))
-      const result = await addNetworkInstance({ params, payload }).unwrap()
-      if (result && result.response && payload.venues) {
+      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+      // eslint-disable-next-line max-len
+      const certResponse = await activateCertificateTemplate(payload.certificateTemplateId, networkResponse?.response?.id)
+      const hasResult = certResponse ?? networkResponse?.response
+      if (hasResult && payload.venues) {
         // @ts-ignore
-        const network: Network = result.response
+        const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
 
@@ -529,6 +534,7 @@ export function NetworkForm (props:{
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload }).unwrap()
+      await activateCertificateTemplate(payload.certificateTemplateId, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -778,4 +784,17 @@ function useGetInstance (isEdit: boolean) {
   const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
 
   return isTemplate ? networkTemplateResult : networkResult
+}
+
+function useCertificateTemplateActivation () {
+  const [activate] = useActivateCertificateTemplateMutation()
+  const activateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await activate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  return activateCertificateTemplate
 }
