@@ -88,9 +88,7 @@ const allMultipleEditableFields = [
   'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
   'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
-  'vsixIngressAcl', 'vsixEgressAcl', //TODO
-  'vsixIngressAclName', 'vsixEgressAclName'
+  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected', 'vsixIngressAcl', 'vsixEgressAcl'
 ]
 
 interface ProfileVlans {
@@ -1376,9 +1374,9 @@ export function EditPortDrawer ({
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             label={$t({ defaultMessage: 'V6 Ingress ACL' })}
-            children={isMultipleEdit && hasMultipleValue.includes('vsixIngressAclName')
+            children={isMultipleEdit && hasMultipleValue.includes('vsixIngressAcl')
               ? <MultipleText />
-              : form.getFieldValue('vsixIngressAclName') || noDataDisplay
+              : form.getFieldValue('vsixIngressAcl') || noDataDisplay
             }
           />,
           'vsixIngressAcl', $t({ defaultMessage: 'V6 Ingress ACL' })
@@ -1387,9 +1385,9 @@ export function EditPortDrawer ({
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             label={$t({ defaultMessage: 'V6 Egress ACL' })}
-            children={isMultipleEdit && hasMultipleValue.includes('vsixEgressAclName')
+            children={isMultipleEdit && hasMultipleValue.includes('vsixEgressAcl')
               ? <MultipleText />
-              : form.getFieldValue('vsixEgressAclName') || noDataDisplay
+              : form.getFieldValue('vsixEgressAcl') || noDataDisplay
             }
           />,
           'vsixEgressAcl', $t({ defaultMessage: 'V6 Egress ACL' })
