@@ -1,5 +1,3 @@
-import userEvent from '@testing-library/user-event'
-
 import { CONFIG_TEMPLATE_PATH_PREFIX } from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
