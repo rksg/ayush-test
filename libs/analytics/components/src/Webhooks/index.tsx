@@ -4,6 +4,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
+import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
@@ -86,18 +87,21 @@ export const WebhooksTable = () => {
     key: 'name',
     dataIndex: 'name',
     searchable: true,
-    title: $t({ defaultMessage: 'Name' })
+    title: $t({ defaultMessage: 'Name' }),
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     key: 'callbackUrl',
     dataIndex: 'callbackUrl',
     searchable: true,
     title: $t({ defaultMessage: 'URL' }),
-    width: 300
+    width: 300,
+    sorter: { compare: sortProp('callbackUrl', defaultSort) }
   }, ...(get('IS_MLISA_SA') ? [{
     key: 'resourceGroup',
     dataIndex: 'resourceGroup',
     searchable: true,
-    title: $t({ defaultMessage: 'Resource Group' })
+    title: $t({ defaultMessage: 'Resource Group' }),
+    sorter: { compare: sortProp('resourceGroup', defaultSort) }
   }] : []), {
     key: 'status',
     dataIndex: 'status',
@@ -106,7 +110,8 @@ export const WebhooksTable = () => {
       { key: 'true', value: $t({ defaultMessage: 'Enabled' }) },
       { key: 'false', value: $t({ defaultMessage: 'Disabled' }) }
     ],
-    title: $t({ defaultMessage: 'Status' })
+    title: $t({ defaultMessage: 'Status' }),
+    sorter: { compare: sortProp('enabled', defaultSort) }
   }]
 
   const rowActions: WebhookTableProps['rowActions'] = [{
