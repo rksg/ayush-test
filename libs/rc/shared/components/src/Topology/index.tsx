@@ -94,6 +94,9 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       children: []
     }
 
+    // eslint-disable-next-line no-console
+    console.log(node.id, node.name, node.isConnectedCloud)
+
     const portData = [
       ...node.taggedVlan?.split(' ') || [],
       ...node.untaggedVlan?.split(' ') || []
@@ -106,6 +109,9 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
   const edgeResult: Link[] = []
 
   edges.forEach((item: Link) => {
+
+    // eslint-disable-next-line no-console
+    console.log(edge.from, edge.to)
     if(edges.filter((edgeItem: Link) =>
       edgeItem.from === item.to && edgeItem.to === item.from).length > 0){
       return
