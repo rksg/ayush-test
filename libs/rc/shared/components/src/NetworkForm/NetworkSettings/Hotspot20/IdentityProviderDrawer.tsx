@@ -7,26 +7,33 @@ import { IdentityProviderForm } from '../../../policies/IdentityProvider'
 
 interface IdentityProviderDrawerProps {
   visible: boolean,
-  handleCancelAndSave: (id?: string) => void
+  setVisible: (v: boolean) => void
+  handleSave: (id?: string) => void
 }
 
 const IdentityProviderDrawer = (props: IdentityProviderDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, handleCancelAndSave } = props
+  const { visible, setVisible, handleSave } = props
 
-  const content = <IdentityProviderForm modalMode={true} modalCallBack={handleCancelAndSave} />
+  const content = <IdentityProviderForm modalMode={true} modalCallBack={handleSave} />
+
+  const handleClose = () => {
+    setVisible(false)
+  }
 
   return (
     <Drawer
       title={$t({ defaultMessage: 'Add Identity Provider' })}
       visible={visible}
       width={1202}
+      push={false}
       children={content}
+      onClose={handleClose}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
-          onCancel={handleCancelAndSave}
-          onSave={async () => handleCancelAndSave()}
+          onCancel={handleClose}
+          onSave={async () => handleSave()}
         />
       }
     />

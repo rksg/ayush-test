@@ -1,5 +1,4 @@
-import { Form, FormInstance } from 'antd'
-import { useIntl }            from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
@@ -7,18 +6,19 @@ import { WifiOperatorForm } from '../../../policies/WifiOperator'
 
 interface WifiOperatorDrawerProps {
     visible: boolean,
-    drawerForm: FormInstance,
-    handleClose: () => void,
-    handleSave: () => void
+    setVisible: (v: boolean) => void,
+    handleSave: (id?: string) => void
 }
 
 const WifiOperatorDrawer = (props: WifiOperatorDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, drawerForm, handleClose, handleSave } = props
+  const { visible, setVisible, handleSave } = props
 
-  const content = <Form layout='vertical' form={drawerForm}>
-    <WifiOperatorForm modalMode={true} editMode={false} />
-  </Form>
+  const content = <WifiOperatorForm modalMode={true} editMode={false} modalCallBack={handleSave} />
+
+  const handleClose = () => {
+    setVisible(false)
+  }
 
   return (
     <Drawer
@@ -26,10 +26,11 @@ const WifiOperatorDrawer = (props: WifiOperatorDrawerProps) => {
       visible={visible}
       width={450}
       children={content}
+      onClose={handleClose}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
-          onCancel={() => { handleClose() }}
+          onCancel={handleClose}
           onSave={async () => handleSave()}
         />
       }
