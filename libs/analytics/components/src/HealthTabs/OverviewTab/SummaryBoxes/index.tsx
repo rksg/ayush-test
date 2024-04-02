@@ -5,7 +5,7 @@ import { formatter }                                           from '@acx-ui/for
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { useTrafficQuery, useIncidentsQuery } from './services'
+import { useIncidentsQuery, useTrafficQuery, useUtilizationQuery } from './services'
 
 export const SummaryBoxes = ({ filters }: {
   filters: AnalyticsFilter,
@@ -16,41 +16,60 @@ export const SummaryBoxes = ({ filters }: {
     end: filters.endDate
   }
   const { data: trafficSummary, ...trafficQueryState } = useTrafficQuery(payload,
-    { selectFromResult: ({ data, ...rest }) => {
-      return {
-        ...rest,
-        data: {
-          apTotalTraffic: data?.network?.hierarchyNode.apTotalTraffic,
-          switchTotalTraffic: data?.network?.hierarchyNode.switchTotalTraffic
+    {
+      selectFromResult: ({ data, ...rest }) => {
+        return {
+          ...rest,
+          data: {
+            apTotalTraffic: data?.network?.hierarchyNode.apTotalTraffic,
+            switchTotalTraffic: data?.network?.hierarchyNode.switchTotalTraffic
+          }
         }
       }
-    }
     })
 
   const { data: incidentsSummary, ...incidentsQueryState } = useIncidentsQuery(payload,
-    { selectFromResult: ({ data, ...rest }) => {
-      return {
-        ...rest,
-        data: {
-          apIncidentCount: data?.network?.hierarchyNode.apIncidentCount,
-          switchIncidentCount: data?.network?.hierarchyNode.switchIncidentCount
+    {
+      selectFromResult: ({ data, ...rest }) => {
+        return {
+          ...rest,
+          data: {
+            apIncidentCount: data?.network?.hierarchyNode.apIncidentCount,
+            switchIncidentCount: data?.network?.hierarchyNode.switchIncidentCount
+          }
         }
       }
-    }
+    })
+
+  const { data: utilizationSummary, ...utilizationQueryState } = useUtilizationQuery(payload,
+    {
+      selectFromResult: ({ data, ...rest }) => {
+        return {
+          ...rest,
+          data: {
+            avgClientCountPerAp: data?.network?.hierarchyNode.avgClientCountPerAp,
+            portCount: data?.network?.hierarchyNode.portCount,
+            totalPortCount: data?.network?.hierarchyNode.totalPortCount
+          }
+        }
+      }
     })
 
   const mapping: StatsCardProps[] = [
     {
-      // TODO: integrate with api
       type: 'green',
       title: defineMessage({ defaultMessage: 'Utilization' }),
       values: [{
         title: defineMessage({ defaultMessage: 'Client/AP' }),
-        value: 'X1'
+        value: utilizationSummary.avgClientCountPerAp ?
+          formatter('countFormat')(utilizationSummary.avgClientCountPerAp) : noDataDisplay
       },
       {
         title: defineMessage({ defaultMessage: 'Switches ports in use' }),
-        value: 'X1/Y1'
+        value: `${utilizationSummary.portCount ?
+          formatter('countFormat')(utilizationSummary.portCount)
+          : noDataDisplay}/${utilizationSummary.totalPortCount ?
+          formatter('countFormat')(utilizationSummary.totalPortCount) : noDataDisplay}`
       }]
     },
     {
@@ -106,10 +125,10 @@ export const SummaryBoxes = ({ filters }: {
   ]
 
   return (
-    <Loader states={[trafficQueryState, incidentsQueryState]}>
+    <Loader states={[trafficQueryState, incidentsQueryState, utilizationQueryState]}>
       <GridRow>
-        {mapping.map((stat)=>
-          <GridCol key={stat.type} col={{ span: 24/mapping.length }}>
+        {mapping.map((stat) =>
+          <GridCol key={stat.type} col={{ span: 24 / mapping.length }}>
             <StatsCard {...stat} />
           </GridCol>
         )}

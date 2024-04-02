@@ -13,6 +13,16 @@ export interface IncidentSummary {
   }
 }
 
+export interface UtilizationSummary {
+  network: {
+    hierarchyNode: {
+      portCount: number
+      totalPortCount: number
+      avgClientCountPerAp: number
+    }
+  }
+}
+
 export interface TrafficSummary {
   network: {
     hierarchyNode: {
@@ -83,8 +93,31 @@ export const api = dataApi.injectEndpoints({
           code: incidentsToggle({})
         }
       })
+    }),
+    utilization: build.query<UtilizationSummary, RequestPayload>({
+      query: payload => ({
+        document: gql`
+          query UtilizationSummary(
+          $path: [HierarchyNodeInput],
+          $start: DateTime,
+          $end: DateTime,
+          $filter: FilterInput
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
+              hierarchyNode(path: $path) {
+                portCount
+                totalPortCount
+                avgClientCountPerAp
+              }
+            }
+          }`,
+        variables: {
+          ...payload,
+          ...getFilterPayload(payload)
+        }
+      })
     })
   })
 })
 
-export const { useTrafficQuery, useIncidentsQuery } = api
+export const { useTrafficQuery, useIncidentsQuery, useUtilizationQuery } = api
