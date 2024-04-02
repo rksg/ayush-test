@@ -111,7 +111,7 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
   edges.forEach((item: Link) => {
 
     // eslint-disable-next-line no-console
-    console.log(item.from, item.to)
+    console.log(item.fromName, item.toName)
     if(edges.filter((edgeItem: Link) =>
       edgeItem.from === item.to && edgeItem.to === item.from).length > 0){
       return
