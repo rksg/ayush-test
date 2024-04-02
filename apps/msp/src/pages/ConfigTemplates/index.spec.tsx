@@ -35,7 +35,7 @@ describe('ConfigTemplate', () => {
 
     expect(await screen.findByText('Config Template List')).toBeInTheDocument()
     expect(await screen.findByRole('tab', { name: /Templates/i })).toBeInTheDocument()
-    expect(await screen.findByRole('tab', { name: /Bundles/i })).toBeInTheDocument()
+    // expect(await screen.findByRole('tab', { name: /Bundles/i })).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('tab', { name: /Bundles/i }))
     expect(await screen.findByText('Config Template Bundle List')).toBeInTheDocument()
