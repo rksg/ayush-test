@@ -16,7 +16,7 @@ import {
   commonQueryFn,
   useCasesToRefreshDhcpTemplateList,
   useCasesToRefreshDpskTemplateList,
-  useCasesToRefreshPortalTemplateList
+  useCasesToRefreshPortalTemplateList, useCasesToRefreshWifiCallingTemplateList
 } from './common'
 
 export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
@@ -223,12 +223,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddWifiCallingServiceProfile',
-            'UpdateWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
-          ], () => {
+          onActivityMessageReceived(msg, useCasesToRefreshWifiCallingTemplateList, () => {
             api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
               { type: 'ConfigTemplate', id: 'LIST' },
               { type: 'WifiCallingTemplate', id: 'LIST' }
@@ -245,12 +240,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddWifiCallingServiceProfile',
-            'UpdateWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
-          ], () => {
+          onActivityMessageReceived(msg, useCasesToRefreshWifiCallingTemplateList, () => {
             api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
               { type: 'ConfigTemplate', id: 'LIST' },
               { type: 'WifiCallingTemplate', id: 'LIST' }
