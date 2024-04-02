@@ -47,6 +47,7 @@ import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
 import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
@@ -71,6 +72,7 @@ export const MLOContext = createContext({} as MLOContextType)
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
     aaa {AAA Settings}
+    hotspot20 {Hotspot 2.0 Settings}
     dpsk {DPSK Settings}
     other {Settings}
     guest {Portal Type}
@@ -581,6 +583,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}
@@ -664,6 +667,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}

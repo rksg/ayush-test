@@ -35,7 +35,7 @@ type IdentityProviderFormProps = {
    modalCallBack?: (id?: string) => void
 }
 
-const IdentityProviderForm = (props: IdentityProviderFormProps) => {
+export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -120,7 +120,7 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       const payload = transformPayload(state)
       const results = await createIdentityProvider({ params, payload }).unwrap()
       const response = results.response as { id: string }
-      modalMode ? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
+      modalMode? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -131,7 +131,7 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       const payload = transformPayload(state)
       await updateIdentityProvider({ params, payload }).unwrap()
 
-      modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+      modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -173,5 +173,3 @@ const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   </>
   )
 }
-
-export default IdentityProviderForm

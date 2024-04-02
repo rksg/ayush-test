@@ -20,7 +20,7 @@ import {
   mockedTenantId
 } from '../__tests__/fixtures'
 
-import IdentityProviderForm from './IdentityProviderForm'
+import { IdentityProviderForm } from './IdentityProviderForm'
 
 
 
@@ -90,7 +90,7 @@ describe('IdentityProviderForm', () => {
         IdentityProviderUrls.addIdentityProvider.url,
         (_, res, ctx) => {
           mockAddFn()
-          return res(ctx.status(202))
+          return res(ctx.json({ id: mockedPolicyId }))
         }
       ),
       rest.put(
