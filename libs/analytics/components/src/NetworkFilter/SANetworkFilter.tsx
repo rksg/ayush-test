@@ -15,7 +15,7 @@ type SANetworkFilterProps = {
   overrideFilters? : AnalyticsFilter | {}
 }
 
-function filterSystemAndDomain (data: NetworkNode): NetworkNode {
+export function filterSystemAndDomain (data: NetworkNode): NetworkNode {
   if (typeof data !== 'object' || data === null) {
     return data
   }
@@ -31,15 +31,6 @@ function filterSystemAndDomain (data: NetworkNode): NetworkNode {
       }))
     }
   }
-
-  if (data.type === 'domain') {
-    return {
-      name: data.name,
-      type: data.type,
-      children: []
-    }
-  }
-
   return {
     name: data.name,
     type: data.type,
@@ -53,6 +44,8 @@ export const SANetworkFilter = ({
   shouldShowOnlyDomains = false,
   overrideFilters = {}
 }: SANetworkFilterProps) => {
+
+  console.log('---> shouldShowOnlyDomains', shouldShowOnlyDomains)
   const { setNetworkPath, filters, pathFilters: { path } } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQueryAp, shouldQuerySwitch, ...overrideFilters }
   const networkHierarchyQuery = useNetworkHierarchyQuery(

@@ -40,9 +40,11 @@ describe('HealthTabs', () => {
       }) as unknown as ReturnType<typeof router.useLocation>
     )
 
-    render(<Provider>
-      <HealthTabs />
-    </Provider>)
+    render(<router.BrowserRouter>
+      <Provider>
+        <HealthTabs />
+      </Provider>
+    </router.BrowserRouter>)
     fireEvent.click(await screen.findByText('Wireless'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/health/wireless'
@@ -59,9 +61,11 @@ describe('HealthTabs', () => {
         state: {}
       }) as unknown as ReturnType<typeof router.useLocation>
     )
-    render(<Provider>
-      <HealthTabs />
-    </Provider>)
+    render(<router.BrowserRouter>
+      <Provider>
+        <HealthTabs />
+      </Provider>
+    </router.BrowserRouter>)
     fireEvent.click(await screen.findByText('Wired'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/health/wired'

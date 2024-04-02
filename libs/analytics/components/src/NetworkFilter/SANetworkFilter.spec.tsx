@@ -4,8 +4,9 @@ import { defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { render, screen }     from '@acx-ui/test-utils'
 import { DateRange }          from '@acx-ui/utils'
 
-import { SANetworkFilter }          from './SANetworkFilter'
-import { useNetworkHierarchyQuery } from './services'
+import { fullHierarchyQueryOuput }                from './__tests__/fixtures'
+import { SANetworkFilter, filterSystemAndDomain } from './SANetworkFilter'
+import { useNetworkHierarchyQuery, NetworkNode }  from './services'
 
 const mockSetNetworkPath = jest.fn()
 const filters = {
@@ -58,5 +59,16 @@ describe('SANetworkFilter', () => {
   it('should render without errors', async () => {
     render(<IntlProvider locale='en'><SANetworkFilter /></IntlProvider>)
     await screen.findByPlaceholderText('Entire Organization')
+  })
+
+  describe('filterSystemAndDomain', () => {
+    it('should filter system and domain', () => {
+      const result = filterSystemAndDomain(fullHierarchyQueryOuput as NetworkNode)
+      expect(result).toMatchSnapshot()
+    })
+    it('should not filter system and domain', () => {
+      const result = filterSystemAndDomain(null as unknown as NetworkNode)
+      expect(result).toBeNull()
+    })
   })
 })
