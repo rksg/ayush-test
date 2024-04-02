@@ -4,6 +4,7 @@ import { Input, Space } from 'antd'
 import {
   Form
 } from 'antd'
+import { DefaultOptionType }         from 'antd/lib/select'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -41,7 +42,19 @@ import WifiOperatorDrawer                      from './Hotspot20/WifiOperatorDra
 const { Option } = Select
 
 export function Hotspot20SettingsForm () {
-  const { editMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if(data && (editMode || cloneMode)){
+
+      form.setFieldsValue({
+        wlan: {
+          wlanSecurity: data.wlan?.wlanSecurity,
+          managementFrameProtection: data.wlan?.managementFrameProtection
+        }
+      })
+    }
+  }, [data])
 
   return (<>
     <GridRow>
@@ -143,9 +156,7 @@ function Hotspot20Form () {
           <Input type='hidden' />
         </Form.Item>
       </div>
-      <div>
-        <Hotspot20Service />
-      </div>
+      <Hotspot20Service />
     </Space>
   )
 
@@ -159,6 +170,7 @@ function Hotspot20Form () {
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
     const [identityProviders, setIdentityProviders] = useState<string[]>([])
     const [operatorForm] = Form.useForm()
+    const form = Form.useFormInstance()
     const defaultPayload = {
       fields: ['name', 'id'],
       pageSize: 100,
@@ -170,8 +182,9 @@ function Hotspot20Form () {
       useGetIdentityProviderListQuery({ payload: defaultPayload })
     const [ createWifiOperator ] = useAddWifiOperatorMutation()
 
-    const handleOperatorChange = (operatorId: string) => {
-      setWifiOperatorId(operatorId)
+    const handleOperatorChange = (option: DefaultOptionType) => {
+      setWifiOperatorId(option.value as string)
+      // form.setFieldValue(['hotspot20Settings', 'wifiOperator'], option)
     }
 
     useEffect(() => {
@@ -191,7 +204,11 @@ function Hotspot20Form () {
 
     const providerSelectOptions =
       providersData?.data.map(item =>
-        ({ label: item.name, value: item.id, disabled: disabledSelectProviders })) ?? []
+        ({
+          label: item.name,
+          value: item.id,
+          disabled: !identityProviders.includes(item.id as string) && disabledSelectProviders
+        })) ?? []
 
     const handleAddOperator = () => {
       setShowOperatorDrawer(true)
@@ -237,58 +254,58 @@ function Hotspot20Form () {
 
     return (
       <>
-        <Form.Item
-          label={$t({ defaultMessage: 'Wi-Fi Operator' })}
-          name='hotspot20Operator'
-          rules={[
-            { required: true,
-              message: $t({ defaultMessage: 'Please select Wi-Fi operator' })
-            }
-          ]}>
-          <Space>
-            <Select
-              style={{ width: '553px' }}
-              onChange={handleOperatorChange}
-              options={operatorSelectOptions} />
-            <Button type='link'
-              disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
-              onClick={handleAddOperator}
-              children={$t({ defaultMessage: 'Add' })}
-              style={{ paddingTop: '10px' }} />
-          </Space>
-        </Form.Item>
+        <div>
+          <Form.Item
+            label={$t({ defaultMessage: 'Wi-Fi Operator' })}
+            name={['hotspot20Settings', 'wifiOperator']}
+            rules={[
+              { required: true,
+                message: $t({ defaultMessage: 'Please select Wi-Fi Operator' })
+              }
+            ]}>
+            <Space>
+              <Select labelInValue
+                onChange={handleOperatorChange}
+                options={operatorSelectOptions} />
+              <Button type='link'
+                disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
+                onClick={handleAddOperator}
+                children={$t({ defaultMessage: 'Add' })}
+                style={{ paddingTop: '10px' }} />
+            </Space>
+          </Form.Item>
+        </div>
 
-        <Form.Item
-          label='Identity Provider'
-          name='hotspot20Identity'
-          rules={[
-            { required: true,
-              message: $t({ defaultMessage: 'Please select identity provider(s)' })
-            }
-          ]}>
-          <Space>
-            <Select
-              style={{ width: '553px' }}
-              mode='multiple'
-              options={providerSelectOptions}
-              showArrow
-              allowClear
-              onChange={(newProviders: string[]) => {
-                if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
-                  setDisabledSelectProviders(true)
-                } else {
-                  setDisabledSelectProviders(false)
-                }
-                setIdentityProviders(newProviders)
-              }}
-            />
-            <Button type='link'
-              disabled={providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT}
-              onClick={handleAddProvider}
-              children={$t({ defaultMessage: 'Add' })}
-              style={{ paddingTop: '10px' }} />
-          </Space>
-        </Form.Item>
+        <div>
+          <Form.Item
+            label='Identity Provider'
+            name={['hotspot20Settings', 'identityProviders']}
+            rules={[
+              { required: true,
+                message: $t({ defaultMessage: 'Please select Identity Provider(s)' })
+              }
+            ]}>
+            <Space>
+              <Select labelInValue
+                mode='multiple'
+                options={providerSelectOptions}
+                onChange={(newProviders: DefaultOptionType[]) => {
+                  if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
+                    setDisabledSelectProviders(true)
+                  } else {
+                    setDisabledSelectProviders(false)
+                  }
+                // form.setFieldValue(['hotspot20Settings', 'identityProviders'], newProviders)
+                }}
+              />
+              <Button type='link'
+                disabled={providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT}
+                onClick={handleAddProvider}
+                children={$t({ defaultMessage: 'Add' })}
+                style={{ paddingTop: '10px' }} />
+            </Space>
+          </Form.Item>
+        </div>
 
         <WifiOperatorDrawer
           visible={showOperatorDrawer}
