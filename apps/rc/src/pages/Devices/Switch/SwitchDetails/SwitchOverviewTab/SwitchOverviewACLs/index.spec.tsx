@@ -8,7 +8,8 @@ import { Provider, store } from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  within
 } from '@acx-ui/test-utils'
 
 import { aclList } from '../__tests__/fixtures'
@@ -45,8 +46,12 @@ describe('Switch Overview ACLs', () => {
 
     expect(await screen.findByText(/extended-acl/i)).toBeVisible()
     await userEvent.click(screen.getByText(/extended-acl/i))
-    expect(await screen.findByText(/View ACL/i)).toBeVisible()
-    await userEvent.click(screen.getByRole('button', {
+
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText(/View ACL/i)).toBeVisible()
+    expect(await within(drawer).findByRole('columnheader', { name: 'Protocol' })).toBeVisible()
+    expect(await within(drawer).findByText('Extended')).toBeVisible()
+    await userEvent.click(within(drawer).getByRole('button', {
       name: /close/i
     }))
   })
@@ -62,8 +67,11 @@ describe('Switch Overview ACLs', () => {
 
     expect(await screen.findByText(/standard-acl/i)).toBeVisible()
     await userEvent.click(screen.getByText(/standard-acl/i))
-    expect(await screen.findByText(/View ACL/i)).toBeVisible()
-    await userEvent.click(screen.getByRole('button', {
+
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText(/View ACL/i)).toBeVisible()
+    expect(within(drawer).queryByRole('columnheader', { name: 'Protocol' })).toBeNull()
+    await userEvent.click(within(drawer).getByRole('button', {
       name: /close/i
     }))
   })
@@ -79,8 +87,12 @@ describe('Switch Overview ACLs', () => {
 
     expect(await screen.findByText(/ipv6-acl/i)).toBeVisible()
     await userEvent.click(screen.getByText(/ipv6-acl/i))
-    expect(await screen.findByText(/View ACL/i)).toBeVisible()
-    await userEvent.click(screen.getByRole('button', {
+
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText(/View ACL/i)).toBeVisible()
+    expect(await within(drawer).findByRole('columnheader', { name: 'Protocol' })).toBeVisible()
+    expect(await within(drawer).findByText('IPV6')).toBeVisible()
+    await userEvent.click(within(drawer).getByRole('button', {
       name: /close/i
     }))
   })

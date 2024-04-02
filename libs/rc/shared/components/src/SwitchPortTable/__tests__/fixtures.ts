@@ -43,7 +43,9 @@ export const selectedPorts = [{
   unitState: 'ONLINE',
   unitStatus: 'Standalone',
   usedInFormingStack: false,
-  vlanIds: '2 1'
+  vlanIds: '2 1',
+  vsixIngressAclName: 'ipv6-acl-in',
+  vsixEgressAclName: 'ipv6-acl-out'
 }, {
   adminStatus: 'Up',
   cloudPort: false,
@@ -408,8 +410,8 @@ export const portSetting = [{
   taggedVlans: ['2'],
   untaggedVlan: '1',
   voiceVlan: 0,
-  vsixIngressAclName: 'ipv6-acl-in',
-  vsixEgressAclName: 'ipv6-acl-out'
+  vsixIngressAcl: 'ipv6-acl-in',
+  vsixEgressAcl: 'ipv6-acl-out'
 }, {
   dhcpSnoopingTrust: false,
   id: 'c0:c5:20:aa:32:79/1/1/6',
@@ -467,8 +469,8 @@ export const portsSetting = {
     taggedVlans: ['2'],
     untaggedVlan: '1',
     voiceVlan: 0,
-    vsixIngressAclName: 'ipv6-acl-in',
-    vsixEgressAclName: 'ipv6-acl-out'
+    vsixIngressAcl: 'ipv6-acl-in',
+    vsixEgressAcl: 'ipv6-acl-out'
   }, {
     dhcpSnoopingTrust: false,
     id: 'c0:c5:20:aa:32:79/1/1/6',

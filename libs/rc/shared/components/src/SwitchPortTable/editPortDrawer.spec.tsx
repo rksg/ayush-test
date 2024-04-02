@@ -595,7 +595,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl',
             port: '5',
             ports: ['5', '1/1/6']
           }
@@ -609,7 +609,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl',
             port: '1/1/5',
             ports: ['1/1/5']
           }
@@ -1107,7 +1107,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl',
             port: '5',
             ports: ['5', '1/1/6']
           }
@@ -1120,7 +1120,7 @@ describe('EditPortDrawer', () => {
             profileName: undefined,
             revert: true,
             // eslint-disable-next-line max-len
-            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl,vsixIngressAclName,vsixEgressAclName',
+            ignoreFields: 'dhcpSnoopingTrust,egressAcl,ingressAcl,ipsg,lldpEnable,name,poeClass,poeEnable,poePriority,portEnable,portSpeed,rstpAdminEdgePort,stpBpduGuard,stpRootGuard,lldpQos,tags,poeBudget,portProtected,vsixIngressAcl,vsixEgressAcl',
             port: '1/1/5',
             ports: ['1/1/5']
           }
