@@ -3,7 +3,8 @@ import { Params } from 'react-router-dom'
 import {
   CommonResult, DHCPSaveData, DpskMutationResult, DpskSaveData,
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
-  onSocketActivityChanged, WifiCallingFormContextType, WifiCallingSetting
+  onSocketActivityChanged, Portal, PortalSaveData, PortalDetail,
+  WifiCallingFormContextType, WifiCallingSetting
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -14,7 +15,8 @@ import { createDpskHttpRequest, transformDhcpResponse } from '../service'
 import {
   commonQueryFn,
   useCasesToRefreshDhcpTemplateList,
-  useCasesToRefreshDpskTemplateList
+  useCasesToRefreshDpskTemplateList,
+  useCasesToRefreshPortalTemplateList
 } from './common'
 
 export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
@@ -129,6 +131,79 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
+    getPortalTemplate: build.query<PortalSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getPortal, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'PortalTemplate', id: 'DETAIL' }]
+    }),
+    createPortalTemplate: build.mutation<PortalSaveData, RequestPayload<Portal>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addPortal, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
+    }),
+    updatePortalTemplate: build.mutation<CommonResult, RequestPayload<Portal>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updatePortal, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
+    }),
+    deletePortalTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.deletePortal, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      // eslint-disable-next-line max-len
+      invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
+    }),
+    getEnhancedPortalTemplateList: build.query<TableResult<PortalDetail>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList, params)
+        const defaultPayload = {
+          page: 1,
+          pageSize: 10,
+          sortField: 'name',
+          sortOrder: 'ASC'
+        }
+        return {
+          ...req,
+          body: JSON.stringify(payload ?? defaultPayload)
+        }
+      },
+      providesTags: [{ type: 'PortalTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshPortalTemplateList, () => {
+            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
+              { type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
     createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling, true),
       invalidatesTags: [
@@ -218,6 +293,13 @@ export const {
   useDeleteDhcpTemplateMutation,
   useGetDhcpTemplateListQuery,
   useLazyGetDhcpTemplateListQuery,
+  useGetPortalTemplateQuery,
+  useLazyGetPortalTemplateQuery,
+  useCreatePortalTemplateMutation,
+  useUpdatePortalTemplateMutation,
+  useDeletePortalTemplateMutation,
+  useGetEnhancedPortalTemplateListQuery,
+  useLazyGetEnhancedPortalTemplateListQuery,
   useCreateWifiCallingServiceTemplateMutation,
   useGetWifiCallingServiceTemplateQuery,
   useGetWifiCallingServiceTemplateListQuery,
@@ -228,10 +310,23 @@ export const {
 } = servicesConfigTemplateApi
 
 
-const dpskTemplateHeaders = {
+const v1TemplateHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
 }
 function createDpskTemplateHttpRequest (apiInfo: ApiInfo, params?: Params<string>) {
-  return createDpskHttpRequest(apiInfo, params, dpskTemplateHeaders)
+  return createDpskHttpRequest(apiInfo, params, v1TemplateHeaders)
+}
+
+const createPortalTemplateHttpRequest = (
+  apiInfo: ApiInfo,
+  params?: Params<string>,
+  customHeaders?: Record<string, unknown>,
+  ignoreDelegation?: boolean) => {
+  return createHttpRequest(
+    apiInfo,
+    params,
+    { ...v1TemplateHeaders, ...customHeaders },
+    ignoreDelegation
+  )
 }

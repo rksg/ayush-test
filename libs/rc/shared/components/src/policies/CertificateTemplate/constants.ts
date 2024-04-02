@@ -1,0 +1,1 @@
+export const MAX_CERTIFICATE_PER_TENANT = 10000
