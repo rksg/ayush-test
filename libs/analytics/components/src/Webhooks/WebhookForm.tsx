@@ -210,6 +210,9 @@ function SendSampleIncident () {
 
   useEffect(() => {
     if (response.isSuccess) {
+      const message = typeof response.data.data === 'string'
+        ? response.data.data
+        : JSON.stringify(response.data.data, null, 2)
       showActionModal({
         type: 'info',
         title: $t({ defaultMessage: 'Sample Incident Sent' }),
@@ -219,8 +222,8 @@ function SendSampleIncident () {
             expanded: true,
             label: $t({ defaultMessage: 'Details' }),
             code: $t(
-              { defaultMessage: 'Status: {status}{newline}Response: {newline}{data}' },
-              { ...response.data, newline: '\n' }
+              { defaultMessage: 'Status: {status}{newline}Response: {newline}{message}' },
+              { ...response.data, message, newline: '\n' }
             )
           }
         }

@@ -26,7 +26,7 @@ export interface UINode {
 	x?: number,
 	y?: number
 }
-export interface Link {
+export interface Link extends LinkConnectionInfo {
 	id?: string;
     source: string;
     target: string;
@@ -34,25 +34,30 @@ export interface Link {
 	fromName?: string;
     to: string;
 	toName?: string;
-    connectionType?: string;
-    connectionStatus?: ConnectionStatus; // this needs to be enum
-    connectionStates?: ConnectionStates; // this needs to be enum
-    poeEnabled?: boolean;
-    linkSpeed?: string;
-    poeUsed?: number;
-    poeTotal?: number;
-    connectedPort?: string;
-    correspondingPort?: string;
 	angle?: number;
-	connectedPortTaggedVlan?: string;
-	connectedPortUntaggedVlan?: string;
-	correspondingPortTaggedVlan?: string;
-	correspondingPortUntaggedVlan?: string;
 	fromMac?: string;
 	toMac?: string;
 	fromSerial?: string;
 	toSerial?: string;
+	extraEdges?: LinkConnectionInfo[]
 }
+
+export interface LinkConnectionInfo {
+    connectedPort?: string;
+    correspondingPort?: string;
+    connectionType?: string;
+    connectionStatus?: ConnectionStatus; // this needs to be enum
+    connectionStates?: ConnectionStates; // this needs to be enum
+	connectedPortTaggedVlan?: string;
+	connectedPortUntaggedVlan?: string;
+	correspondingPortTaggedVlan?: string;
+	correspondingPortUntaggedVlan?: string;
+    poeEnabled?: boolean;
+    linkSpeed?: string;
+    poeUsed?: number;
+    poeTotal?: number;
+}
+
 export interface GraphData {
     type: string;
     categories: Array<Object>;
