@@ -45,12 +45,12 @@ describe('HealthTabs', () => {
     </Provider>)
     fireEvent.click(await screen.findByText('Wireless'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/health/wireless'
+      '/t1/t/analytics/health/wireless'
     )
   })
   it('should handle tab changes', async () => {
     jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ activeSubTab: 'wireless' })
+      () => ({ activeSubTab: 'wireless', tenantId: 't1' })
     )
     jest.spyOn(router, 'useLocation').mockImplementation(
       () => ({
@@ -64,7 +64,7 @@ describe('HealthTabs', () => {
     </Provider>)
     fireEvent.click(await screen.findByText('Wired'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/health/wired'
+      '/t1/t/analytics/health/wired'
     )
   })
 })
