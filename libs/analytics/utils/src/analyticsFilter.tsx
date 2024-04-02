@@ -22,6 +22,7 @@ type NetworkFilter = { path: NetworkPath, raw: object }
 const noSwitchSupportURLs = [
   '/analytics/health',
   '/ai/health',
+  '/ai/health/wireless',
   '/analytics/configChange',
   '/ai/configChange',
   '/ai/reports/aps',
@@ -39,6 +40,7 @@ const noSwitchSupportURLs = [
 ]
 
 const noApSupportURLs = [
+  '/ai/health/wired',
   '/ai/reports/switches',
   '/ai/reports/wired',
   '/ai/devices/switch/reports/wired'

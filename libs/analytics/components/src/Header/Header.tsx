@@ -23,6 +23,7 @@ type UseHeaderExtraProps = {
   showFilter?: boolean,
   shouldQueryAp?: boolean,
   shouldQuerySwitch?: boolean,
+  shouldShowOnlyDomains?: boolean,
   withIncidents?: boolean,
   excludeNetworkFilter?: boolean,
   /** @default 'datepicker' */
@@ -31,14 +32,16 @@ type UseHeaderExtraProps = {
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
 const Filter = (
-  { shouldQueryAp, shouldQuerySwitch, withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
+  { shouldQueryAp, shouldQuerySwitch, shouldShowOnlyDomains,
+    withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {
   return excludeNetworkFilter
     ? null
     : isMLISA
       ? <SANetworkFilter
         shouldQueryAp={Boolean(shouldQueryAp)}
-        shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        shouldShowOnlyDomains={Boolean(shouldShowOnlyDomains)} />
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('network-filter')}
         shouldQueryAp={Boolean(shouldQueryAp)}

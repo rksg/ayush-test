@@ -11,19 +11,46 @@ import { NetworkNode, useNetworkHierarchyQuery } from './services'
 type SANetworkFilterProps = {
   shouldQueryAp?: boolean
   shouldQuerySwitch? : boolean
+  shouldShowOnlyDomains? : boolean
   overrideFilters? : AnalyticsFilter | {}
 }
 
-function stripChildren (node: NetworkNode): NetworkNode {
-  if (!node) return node
-  if (node.type === 'zone' || node.type === 'domain')
-    return { ...node, children: [] }
-  return { ...node, children: node.children?.map(stripChildren) ?? [] }
+function filterSystemAndDomain (data: NetworkNode): NetworkNode {
+  if (typeof data !== 'object' || data === null) {
+    return data
+  }
+
+  if (data.type === 'system') {
+    return {
+      name: data.name,
+      type: data.type,
+      children: data.children?.filter(child => child.type === 'domain').map(child => ({
+        name: child.name,
+        type: child.type,
+        children: []
+      }))
+    }
+  }
+
+  if (data.type === 'domain') {
+    return {
+      name: data.name,
+      type: data.type,
+      children: []
+    }
+  }
+
+  return {
+    name: data.name,
+    type: data.type,
+    children: data.children?.filter(child => child.type === 'system').map(filterSystemAndDomain)
+  }
 }
 
 export const SANetworkFilter = ({
   shouldQueryAp = true,
   shouldQuerySwitch = true,
+  shouldShowOnlyDomains = false,
   overrideFilters = {}
 }: SANetworkFilterProps) => {
   const { setNetworkPath, filters, pathFilters: { path } } = useAnalyticsFilter()
@@ -33,7 +60,7 @@ export const SANetworkFilter = ({
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: stripChildren(data as NetworkNode)
+        data: shouldShowOnlyDomains ? filterSystemAndDomain(data as NetworkNode) : data
       })
     }
   )

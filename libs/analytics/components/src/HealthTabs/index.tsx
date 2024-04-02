@@ -33,7 +33,8 @@ export function HealthTabs () {
         <FilterWrapper>
           {useNetworkFilter({
             shouldQueryAp: true,
-            shouldQuerySwitch: true
+            shouldQuerySwitch: true,
+            shouldShowOnlyDomains: true
           })}
         </FilterWrapper>
         <OverviewTab/>
