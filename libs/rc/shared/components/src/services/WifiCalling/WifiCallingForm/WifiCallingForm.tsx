@@ -7,16 +7,17 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import { useCreateWifiCallingServiceMutation }       from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG,
-  getServiceListRoutePath,
-  getServiceRoutePath,
+  generateServicePageHeaderTitle,
   QosPriorityEnum,
   ServiceOperation,
-  ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+  ServiceType, useConfigTemplate,
+  useServiceListBreadcrumb, useServicePreviousPath
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -28,12 +29,10 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 
 export const WifiCallingForm = () => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING,
-    oper: ServiceOperation.LIST
-  })
-  const linkToServices = useTenantLink(tablePath)
+  // eslint-disable-next-line max-len
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
 
   const serviceName = ''
@@ -59,13 +58,15 @@ export const WifiCallingForm = () => {
 
   const [ createWifiCallingService ] = useCreateWifiCallingServiceMutation()
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
+
   const handleAddWifiCallingService = async () => {
     try {
       await createWifiCallingService({
         params,
         payload: WifiCallingFormValidate(state)
       }).unwrap()
-      navigate(linkToServices, { replace: true })
+      navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -74,19 +75,12 @@ export const WifiCallingForm = () => {
   return (
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Wi-Fi Calling' }),
-            link: tablePath
-          }
-        ]}
+        title={generateServicePageHeaderTitle(false, isTemplate, ServiceType.WIFI_CALLING)}
+        breadcrumb={breadcrumb}
       />
       <StepsForm<CreateNetworkFormFields>
         form={form}
-        onCancel={() => navigate(linkToServices, { replace: true })}
+        onCancel={() => navigate(previousPath, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>

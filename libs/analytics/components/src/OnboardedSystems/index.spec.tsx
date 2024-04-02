@@ -4,7 +4,7 @@ import { Map }     from 'immutable'
 import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { Tenant, UserProfile, setUserProfile }                                              from '@acx-ui/analytics/utils'
+import { PERMISSION_MANAGE_MLISA, Tenant, UserProfile, setUserProfile }                     from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
@@ -13,8 +13,14 @@ import { OnboardedSystem }   from './services'
 
 import { OnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
 
+const services = require('./services')
+jest.mock('./services', () => ({
+  ...jest.requireActual('./services')
+}))
+
 const tenants = [
-  { id: 'id1', name: 'account1' }, { id: 'id2', name: 'account2' }
+  { id: 'id1', name: 'account1', permissions: { [PERMISSION_MANAGE_MLISA]: true } },
+  { id: 'id2', name: 'account2', permissions: { [PERMISSION_MANAGE_MLISA]: true } }
 ] as unknown as Tenant[]
 
 describe('OnboardedSystems', () => {
@@ -48,6 +54,11 @@ describe('OnboardedSystems', () => {
     expect(await screen.findByText('sz1')).toBeVisible()
     expect(await screen.findAllByText('02/16/2019 05:32')).toHaveLength(10)
   })
+  it('should sort by selected account', async () => {
+    setUserProfile({ accountId: tenants[1].id, tenants } as UserProfile)
+    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    expect(await screen.findAllByText('account2')).toHaveLength(2)
+  })
   it('should handle delete submit', async () => {
     mockRestApiQuery(
       `${smartZoneURL}/smartzones/${mockSmartZoneList[2].device_id}/delete`,
@@ -67,6 +78,8 @@ describe('OnboardedSystems', () => {
     await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
+    expect(await screen.findByTestId('toast-content'))
+      .toHaveTextContent('sz3 was deleted')
   })
   it('should handle delete cancel', async () => {
     render(<Provider><OnboardedSystems /></Provider>, { route: {} })
@@ -135,6 +148,15 @@ describe('OnboardedSystems', () => {
 
     expect(await screen.findByTestId('toast-content'))
       .toHaveTextContent('Failed to delete sz3')
+  })
+  it('should query only RolesEnum.ADMIN tenants', () => {
+    setUserProfile({ accountId: tenants[0].id, tenants: [
+      ...tenants,
+      { id: 'id3', name: 'account3', permissions: { [PERMISSION_MANAGE_MLISA]: false } }
+    ] } as UserProfile)
+    jest.spyOn(services, 'useFetchSmartZoneListQuery')
+    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'], expect.anything())
   })
 })
 

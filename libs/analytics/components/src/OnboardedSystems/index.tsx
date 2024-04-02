@@ -5,10 +5,10 @@ import { Map }                     from 'immutable'
 import { get, isEmpty, partition } from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
-import { Tenant, defaultSort, getUserProfile, sortProp }                  from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
-import { getIntl }                                                        from '@acx-ui/utils'
+import { PERMISSION_MANAGE_MLISA, Tenant, defaultSort, getUserProfile, sortProp } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showActionModal, showToast, Tooltip }         from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { getIntl }                                                                from '@acx-ui/utils'
 
 import { useFetchSmartZoneListQuery, useDeleteSmartZone, OnboardedSystem } from './services'
 import { Errors }                                                          from './styledComponents'
@@ -199,12 +199,14 @@ export const TooltipContent = (value: FormattedOnboardedSystem) =>
 export const OnboardedSystems = () => {
   const { $t } = useIntl()
   const tenant = getUserProfile()
-  const tenantId = tenant.accountId
+  const tenantId = tenant.selectedTenant.id
   const tenantsMap = Map(tenant.tenants.map(t => [get(t, 'id'), t]))
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
-  const queryResults = useFetchSmartZoneListQuery(tenant.tenants.map(t => t.id), {
+  const queryResults = useFetchSmartZoneListQuery(tenant.tenants
+    .filter(t => Boolean(t.permissions[PERMISSION_MANAGE_MLISA]))
+    .map(t => t.id), {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
     })
@@ -220,7 +222,7 @@ export const OnboardedSystems = () => {
         <span>
           <Tooltip
             arrowPointAtCenter
-            dottedUnderline={!isEmpty(value.errors)}
+            dottedUnderline
             key={`tooltip-${index}`}
             title={TooltipContent(value)}
             children={<SmartZoneBadge
@@ -282,7 +284,13 @@ export const OnboardedSystems = () => {
             onOk: async () => {
               await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
                 .unwrap()
-                .then(()=> setSelected(undefined))
+                .then(()=> {
+                  showToast({
+                    type: 'success',
+                    content: $t({
+                      defaultMessage: '{name} was deleted' }, { name: selected!.name }) })
+                  setSelected(undefined)
+                })
                 .catch(response => {
                   showToast({ type: 'error', content: formatDeleteError(selected!, response) })
                 })

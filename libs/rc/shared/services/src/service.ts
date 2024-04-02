@@ -409,10 +409,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
-          PortalUrlsInfo.savePortal, params
+          PortalUrlsInfo.createPortal, params
         )
         return {
           ...createPortalReq,
@@ -979,7 +979,7 @@ export const {
   useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
-  useSavePortalMutation,
+  useCreatePortalMutation,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,

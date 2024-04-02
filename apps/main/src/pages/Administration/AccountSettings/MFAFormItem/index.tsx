@@ -5,7 +5,9 @@ import styled                                         from 'styled-components/ma
 
 import { Card, showActionModal }                            from '@acx-ui/components'
 import { SpaceWrapper }                                     from '@acx-ui/rc/components'
+import { administrationApi, useGetTenantDetailsQuery }      from '@acx-ui/rc/services'
 import { useParams }                                        from '@acx-ui/react-router-dom'
+import { store }                                            from '@acx-ui/store'
 import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
@@ -26,6 +28,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { className, mfaTenantDetailsData, isPrimeAdminUser, isMspEc } = props
   const params = useParams()
   const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -52,6 +55,12 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               enable: isChecked + ''
             }
           }).unwrap()
+          if (isMspEc) {
+            store.dispatch(
+              administrationApi.util.invalidateTags([
+                { type: 'Administration', id: 'DETAIL' }
+              ]))
+          }
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -64,9 +73,11 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
     navigator.clipboard.writeText(codes?.join('\n'))
   }
 
-  const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
+  const isMfaEnabled = isMspEc
+    ? tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
+    : mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-  const isDisabled = !isPrimeAdminUser || isUpdating || isMspEc
+  const isDisabled = !isPrimeAdminUser || isUpdating || ( isMspEc && isMfaEnabled )
 
   return (
     <Row gutter={24} className={className}>

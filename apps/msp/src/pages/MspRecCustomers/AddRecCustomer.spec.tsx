@@ -218,7 +218,7 @@ describe('AddRecCustomer', () => {
         route: { params }
       })
 
-    expect(screen.getByText('Add RUCKUS End Customer Account')).toBeVisible()
+    expect(screen.getByText('Add Brand Property Account')).toBeVisible()
 
     expect(screen.getByRole('heading', { name: 'Account Details' })).toBeVisible()
     expect(screen.queryByRole('heading', { name: 'Start service in' })).toBeNull()
@@ -255,7 +255,7 @@ describe('AddRecCustomer', () => {
 
     expect(await screen.findByText('My Customers')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'RUCKUS End Customers'
+      name: 'Brand Properties'
     })).toBeVisible()
   })
 
@@ -337,7 +337,7 @@ describe('AddRecCustomer', () => {
 
     // Select customers
     await userEvent.click(screen.getAllByText('Manage')[0])
-    await screen.findByText('Manage RUCKUS End Customer')
+    await screen.findByText('Manage Brand Property')
     await screen.findByRole('button', { name: 'Save' })
 
     fireEvent.click(screen.getAllByRole('radio')[0])
@@ -346,7 +346,7 @@ describe('AddRecCustomer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('Manage RUCKUS End Customer')).toBeNull()
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
     })
 
     // Select adminstrators
@@ -384,7 +384,7 @@ describe('AddRecCustomer', () => {
 
     // Select customers
     await userEvent.click(screen.getAllByText('Manage')[0])
-    await screen.findByText('Manage RUCKUS End Customer')
+    await screen.findByText('Manage Brand Property')
     await screen.findByRole('button', { name: 'Save' })
 
     fireEvent.click(screen.getAllByRole('radio')[0])
@@ -393,7 +393,7 @@ describe('AddRecCustomer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('Manage RUCKUS End Customer')).toBeNull()
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
     })
 
     // Select integrators
@@ -432,7 +432,7 @@ describe('AddRecCustomer', () => {
 
     // Select customers
     await userEvent.click(screen.getAllByText('Manage')[0])
-    await screen.findByText('Manage RUCKUS End Customer')
+    await screen.findByText('Manage Brand Property')
     await screen.findByRole('button', { name: 'Save' })
 
     fireEvent.click(screen.getAllByRole('radio')[0])
@@ -441,7 +441,7 @@ describe('AddRecCustomer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('Manage RUCKUS End Customer')).toBeNull()
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
     })
 
     // Select installers
@@ -478,7 +478,7 @@ describe('AddRecCustomer', () => {
 
     // Select customers
     await userEvent.click(screen.getAllByText('Manage')[0])
-    await screen.findByText('Manage RUCKUS End Customer')
+    await screen.findByText('Manage Brand Property')
     await screen.findByRole('button', { name: 'Save' })
 
     fireEvent.click(screen.getAllByRole('radio')[0])
@@ -487,7 +487,7 @@ describe('AddRecCustomer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.queryByText('Manage RUCKUS End Customer')).toBeNull()
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
     })
 
     expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()

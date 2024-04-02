@@ -1,4 +1,5 @@
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
 
 import { MacRegistrationListOverviewTab } from './MacRegistrationListOverviewTab'
 import MacRegistrationListPageHeader      from './MacRegistrationListPageHeader'
@@ -11,7 +12,7 @@ const tabs = {
 
 export default function MacRegistrationListDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return <>
     <MacRegistrationListPageHeader />
     { Tab && <Tab /> }
