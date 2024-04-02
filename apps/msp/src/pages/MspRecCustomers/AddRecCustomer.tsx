@@ -13,7 +13,6 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
   useAddRecCustomerMutation,
@@ -65,9 +64,6 @@ export function AddRecCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [addRecCustomer] = useAddRecCustomerMutation()
-
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
@@ -299,8 +295,7 @@ export function AddRecCustomer () {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
         <label>{
-          isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Property' })
-            : intl.$t({ defaultMessage: 'RUCKUS End Customer' })
+          intl.$t({ defaultMessage: 'Brand Property' })
         }</label>
         <Form.Item
           children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
@@ -361,16 +356,13 @@ export function AddRecCustomer () {
     <>
       <PageHeader
         title={!isEditMode ?
-          (isHspSupportEnabled ? intl.$t({ defaultMessage: 'Add Brand Property Account' })
-            : intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' })) :
-          (isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Property Account' })
-            : intl.$t({ defaultMessage: 'RUCKUS End Customer Account' }))
+          intl.$t({ defaultMessage: 'Add Brand Property Account' }) :
+          intl.$t({ defaultMessage: 'Brand Property Account' })
         }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {
-            text: isHspSupportEnabled ? intl.$t({ defaultMessage: 'Brand Properties' })
-              : intl.$t({ defaultMessage: 'RUCKUS End Customers' }),
+            text: intl.$t({ defaultMessage: 'Brand Properties' }),
             link: '/dashboard/mspRecCustomers', tenantType: 'v'
           }
         ]}
