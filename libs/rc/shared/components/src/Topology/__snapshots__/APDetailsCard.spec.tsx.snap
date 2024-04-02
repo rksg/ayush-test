@@ -54,7 +54,7 @@ exports[`Topology AP Card should render correctly 1`] = `
             >
               <a
                 class="sc-breuTD iOAXfV"
-                href="/undefined/t/devices/wifi/B4:79:C8:3E:C8:70/details/overview"
+                href="/undefined/t/devices/wifi/132106000082/details/overview"
               >
                 R760-181-66
               </a>
