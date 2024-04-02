@@ -22,15 +22,15 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useInviteCustomerListQuery }                                       from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                               from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                         from '@acx-ui/rc/services'
-import { useTableQuery }                                                    from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                                        from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                  from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }   from '@acx-ui/utils'
+import { useInviteCustomerListQuery }                                     from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                             from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
+import { useTableQuery }                                                  from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, MspTenantLink }              from '@acx-ui/react-router-dom'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                      from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -78,7 +78,6 @@ function Layout () {
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -115,7 +114,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={indexPath} children={logo} />}
+      logo={logo}
       menuConfig={useMenuConfig()}
       content={
         <>
