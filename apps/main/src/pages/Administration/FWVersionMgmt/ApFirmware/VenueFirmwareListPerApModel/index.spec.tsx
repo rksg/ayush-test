@@ -16,7 +16,7 @@ import {
 
 import { preference } from '../../__tests__/fixtures'
 
-import { mockedFirmwareVenuesPerApModel, mockedFirmwareVersionIdList } from './__tests__/fixtures'
+import { mockedApModelFirmwares, mockedFirmwareVenuesPerApModel, mockedFirmwareVersionIdList } from './__tests__/fixtures'
 
 import { VenueFirmwareListPerApModel } from '.'
 
@@ -29,11 +29,19 @@ describe('Firmware Venues Table Per AP Model', () => {
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
-        (req, res, ctx) => res(ctx.json({ ...preference }))
+        (req, res, ctx) => res(ctx.json(preference))
       ),
       rest.get(
         FirmwareUrlsInfo.getFirmwareVersionIdList.url,
-        (req, res, ctx) => res(ctx.json([ ...mockedFirmwareVersionIdList ]))
+        (req, res, ctx) => res(ctx.json(mockedFirmwareVersionIdList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFirmwares))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
       )
     )
   })
@@ -52,7 +60,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel.data[0]
+    const testingRecord = mockedFirmwareVenuesPerApModel[0]
     const testingRecordStatus = testingRecord.isFirmwareUpToDate ? 'Up to date' : 'Update available'
     const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
 
@@ -69,7 +77,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel.data[0]
+    const testingRecord = mockedFirmwareVenuesPerApModel[0]
     const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
 
     await userEvent.click(within(targetRow).getByRole('checkbox'))

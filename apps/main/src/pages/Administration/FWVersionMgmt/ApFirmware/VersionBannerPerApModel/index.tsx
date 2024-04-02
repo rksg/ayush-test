@@ -1,29 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Col, Divider, Row, Space } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 
 import { VersionLabelType }                                             from '../../FirmwareUtils'
 import * as UI                                                          from '../../styledComponents'
-import { useTestData }                                                  from '../VenueFirmwareListPerApModel/UpdateNowPerApModel/ApFirmwareUpdateGroupPanel'
 import { ExpandableApModelList, convertApModelFirmwaresToUpdateGroups } from '../VenueFirmwareListPerApModel/venueFirmwareListPerApModelUtils'
 
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
-  const { data: apModelFirmwares, isLoading } = useTestData() // useGetAllApModelFirmwareListQuery()
-  const [ updateGroups, setUpdateGroups ] = useState<VersionInfoPerApModelProps[]>([])
+  const { updateGroups } = useGetAllApModelFirmwareListQuery({}, {
+    refetchOnMountOrArgChange: 60,
+    selectFromResult ({ data, isLoading }) {
+      if (!data || isLoading) return { updateGroups: [] }
+
+      const updateGroups = convertApModelFirmwaresToUpdateGroups(data)
+        .map(item => ({ firmware: item.firmwares[0], apModels: item.apModels }))
+
+      return { updateGroups }
+    }
+  })
+
   const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
 
-  useEffect(() => {
-    if (!apModelFirmwares || isLoading) return
-
-    const versionInfoPerApModels = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
-      .map(item => ({ firmware: item.firmwares[0], apModels: item.apModels }))
-
-    setUpdateGroups(versionInfoPerApModels)
-  }, [apModelFirmwares])
+  if (updateGroups.length === 0) return null
 
   return <UI.BannerVersion>
     <Row justify='space-between' gutter={[16, 16]}>
@@ -32,7 +35,7 @@ export function VersionBannerPerApModel () {
           {$t({ defaultMessage: 'Latest Version' })}
         </UI.LatestVersion>
       </Col>
-      { updateGroups?.length > 1 &&
+      { updateGroups.length > 1 &&
         <Col>
           <ShowMoreFirmwaresLink
             shownMoreFirmwaresInBanner={shownMoreFirmwaresInBanner}
@@ -43,7 +46,7 @@ export function VersionBannerPerApModel () {
     </Row>
     <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
       {
-        updateGroups?.filter((_, index) => shownMoreFirmwaresInBanner || index === 0)
+        updateGroups.filter((_, index) => shownMoreFirmwaresInBanner || index === 0)
           .map(item => <VersionPerApModelInfo key={item.firmware.name} {...item} />)
       }
     </Space>

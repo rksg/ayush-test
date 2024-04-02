@@ -7,13 +7,13 @@ import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Loader }                                   from '@acx-ui/components'
+import { useGetAllApModelFirmwareListQuery }        from '@acx-ui/rc/services'
 import { ApModelFirmware, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { getIntl }                                  from '@acx-ui/utils'
 
 import { VersionLabelType, compareVersions, getVersionLabel } from '../../../FirmwareUtils'
 import * as UI                                                from '../../VenueFirmwareList/styledComponents'
 
-import { useTestData }                                                 from './ApFirmwareUpdateGroupPanel'
 import { ApFirmwareUpdateIndividual, ApFirmwareUpdateIndividualProps } from './ApFirmwareUpdateIndividual'
 
 import { ApFirmwareUpdateRequestPayload } from '.'
@@ -28,15 +28,17 @@ interface ApFirmwareUpdateIndividualPanelPrpos {
 export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividualPanelPrpos) {
   const { $t } = useIntl()
   const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
-  const { data, isLoading } = useTestData()
+  const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
+    refetchOnMountOrArgChange: 60
+  })
   const updateRequestPayloadRef = useRef<ApFirmwareUpdateRequestPayload>()
   const [ showAvailableFirmwareOnly, setShowAvailableFirmwareOnly ] = useState(true)
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
 
   useEffect(() => {
-    if (!data) return
+    if (!apModelFirmwares) return
 
-    const updatedDisplayData = convertToDisplayData(data, selectedVenuesFirmwares)
+    const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares)
 
     if (!updateRequestPayloadRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
       updateRequestPayloadRef.current = convertToUpdateRequestPayload(updatedDisplayData)
@@ -44,7 +46,7 @@ export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividu
     }
 
     setDisplayData(updatedDisplayData)
-  }, [data])
+  }, [apModelFirmwares])
 
   const update = (apModel: string, version: string) => {
     // eslint-disable-next-line max-len

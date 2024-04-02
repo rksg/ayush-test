@@ -1,46 +1,44 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi }      from '@acx-ui/rc/services'
 import { FirmwareUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { Provider, store }  from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { mockedApModelFirmwares } from './__tests__/fixtures'
 
 import { VersionBannerPerApModel } from '.'
 
-const mockedUseTestDataFn = jest.fn()
-jest.mock('../VenueFirmwareListPerApModel/UpdateNowPerApModel/ApFirmwareUpdateGroupPanel', () => ({
-  // eslint-disable-next-line max-len
-  ...jest.requireActual('../VenueFirmwareListPerApModel/UpdateNowPerApModel/ApFirmwareUpdateGroupPanel'),
-  useTestData: () => mockedUseTestDataFn()
-}))
+const generateApModelFirmwares = jest.fn()
 
 describe('VersionBannerPerApModel', () => {
   const params: { tenantId: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
+    store.dispatch(firmwareApi.util.resetApiState())
+
+    generateApModelFirmwares.mockReturnValue(mockedApModelFirmwares)
+
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getAllApModelFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(mockedApModelFirmwares))
+        (req, res, ctx) => {
+          const result = generateApModelFirmwares()
+          return res(ctx.json(result))
+        }
       )
     )
   })
 
-  afterEach(() => {
-    mockedUseTestDataFn.mockRestore()
-  })
-
   it('should render the banner with the "Show More" link', async () => {
-    mockedUseTestDataFn.mockReturnValue({ data: mockedApModelFirmwares, isLoading: false })
-
     render(
       <Provider>
         <VersionBannerPerApModel />
@@ -59,7 +57,7 @@ describe('VersionBannerPerApModel', () => {
   })
 
   it('should render the banner without the "Show More" link', async () => {
-    mockedUseTestDataFn.mockReturnValue({ data: [ mockedApModelFirmwares[0] ], isLoading: false })
+    generateApModelFirmwares.mockReturnValue([ mockedApModelFirmwares[0] ])
 
     render(
       <Provider>
@@ -71,6 +69,6 @@ describe('VersionBannerPerApModel', () => {
 
     expect(await screen.findByText('7.0.0.104.1242')).toBeVisible()
     expect(screen.getByText(/For devices/i)).toBeVisible()
-    expect(screen.queryByText('Show more available firmware')).toBeNull()
+    await waitFor(() => expect(screen.queryByText('Show more available firmware')).toBeNull())
   })
 })

@@ -415,10 +415,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
     }),
+    // eslint-disable-next-line max-len
     getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params)
-        return { ...req }
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList)
+        return {
+          ...req,
+          body: covertVenueApModelFirmwareListPayload(payload)
+        }
       },
       transformResponse (result: FirmwareVenuePerApModel[] ) {
         return {
@@ -440,8 +444,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList, params)
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList)
         return { ...req }
       }
     }),
@@ -503,3 +507,24 @@ export const {
   useGetAllApModelFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation
 } = firmwareApi
+
+
+interface VenueApModelFirmwareListPayload {
+  filters?: {
+    currentApFirmwares?: string[]
+  }
+  searchString?: string
+}
+// eslint-disable-next-line max-len
+function covertVenueApModelFirmwareListPayload (originPayload?: unknown): { firmwareVersion?: string, search?: string } {
+  if (!originPayload) return {}
+
+  const payload = originPayload as VenueApModelFirmwareListPayload
+  const targetVersion = payload.filters?.currentApFirmwares?.[0] as string
+  const serachString = payload.searchString
+
+  return {
+    ...(targetVersion ? { firmwareVersion: targetVersion } : {}),
+    ...(serachString ? { search: serachString } : {})
+  }
+}

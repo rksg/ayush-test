@@ -4,6 +4,9 @@ import { render, screen }         from '@acx-ui/test-utils'
 import ApFirmware from '.'
 
 jest.mock('./VersionBanner', () => () => <div>Version Banner</div>)
+jest.mock('./VersionBannerPerApModel', () => ({
+  VersionBannerPerApModel: () => <div>Version Banner Per AP Model</div>
+}))
 jest.mock('./VenueFirmwareList', () => ({
   ...jest.requireActual('./VenueFirmwareList'),
   VenueFirmwareList: () => <div>Venue Firmware List</div>
@@ -29,6 +32,7 @@ describe('AP Firmware', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
     rerender(<ApFirmware />)
 
+    await screen.findByText('Version Banner Per AP Model')
     await screen.findByText('Venue Firmware List Per ApModel')
   })
 })

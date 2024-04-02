@@ -1,66 +1,63 @@
 import { FirmwareCategory, FirmwareType } from '@acx-ui/rc/utils'
 
-export const mockedFirmwareVenuesPerApModel = {
-  page: 1,
-  totalCount: 4,
-  data: [
-    {
-      id: '32127cc0605f416ab8dd070ed8c30b72',
-      name: 'VenueAAA-withFirmwareSchedule',
-      isFirmwareUpToDate: false,
-      currentApFirmwares: [
-        { apModel: 'R770', firmware: '7.0.0.103.1240' },
-        { apModel: 'R750', firmware: '7.0.0.103.1240' },
-        { apModel: 'R550', firmware: '7.0.0.103.1000' },
-        { apModel: 'R720', firmware: '6.2.3.103.800' },
-        { apModel: 'R500', firmware: '6.2.0.103.533' }
-      ],
-      lastScheduleUpdate: '2024-02-26T16:00:00.784-08:00',
-      nextSchedules: [
-        {
-          startDateTime: '2024-03-04T14:00:00-08:00',
-          versionInfo: {
-            version: '7.0.0.104.1220',
-            type: FirmwareType.AP_FIRMWARE_UPGRADE,
-            category: FirmwareCategory.RECOMMENDED
-          }
-        },
-        {
-          startDateTime: '2024-03-04T14:00:00-08:00',
-          versionInfo: {
-            version: '6.2.0.103.554',
-            type: FirmwareType.AP_FIRMWARE_UPGRADE,
-            category: FirmwareCategory.RECOMMENDED
-          }
+export const mockedFirmwareVenuesPerApModel = [
+  {
+    id: '32127cc0605f416ab8dd070ed8c30b72',
+    name: 'VenueAAA-withFirmwareSchedule',
+    isFirmwareUpToDate: false,
+    currentApFirmwares: [
+      { apModel: 'R770', firmware: '7.0.0.103.1240' },
+      { apModel: 'R750', firmware: '7.0.0.103.1240' },
+      { apModel: 'R350', firmware: '7.0.0.103.1240' },
+      { apModel: 'R550', firmware: '7.0.0.103.1000' },
+      { apModel: 'R720', firmware: '6.2.3.103.800' },
+      { apModel: 'R500', firmware: '6.2.0.103.533' }
+    ],
+    lastScheduleUpdate: '2024-02-26T16:00:00.784-08:00',
+    nextSchedules: [
+      {
+        startDateTime: '2024-03-04T14:00:00-08:00',
+        versionInfo: {
+          version: '7.0.0.104.1220',
+          type: FirmwareType.AP_FIRMWARE_UPGRADE,
+          category: FirmwareCategory.RECOMMENDED
         }
-      ]
-    },
-    {
-      id: '90b0b0cd6c3a44a894fe73e210b1a4c1',
-      name: 'venueBBB-upToDate',
-      isFirmwareUpToDate: true,
-      currentApFirmwares: [
-        { apModel: 'R550', firmware: '7.0.0.104.1220' }
-      ],
-      lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00'
-    },
-    {
-      id: '10b0b0cd6c3a44a894fe73e210b12345',
-      name: 'venueCCC-oneApOutdated',
-      isFirmwareUpToDate: false,
-      currentApFirmwares: [
-        { apModel: 'R350', firmware: '7.0.0.104.1220' },
-        { apModel: 'R550', firmware: '6.2.0.103.486' }
-      ],
-      lastScheduleUpdate: '2022-01-12T14:00:01.099-08:00'
-    },
-    {
-      id: '6015f2a175e1429bad3e80f4e45287da',
-      name: 'venueDDD-VenueIsNotInWifiDBOrNoAp',
-      isFirmwareUpToDate: true
-    }
-  ]
-}
+      },
+      {
+        startDateTime: '2024-03-04T14:00:00-08:00',
+        versionInfo: {
+          version: '6.2.0.103.554',
+          type: FirmwareType.AP_FIRMWARE_UPGRADE,
+          category: FirmwareCategory.RECOMMENDED
+        }
+      }
+    ]
+  },
+  {
+    id: '90b0b0cd6c3a44a894fe73e210b1a4c1',
+    name: 'venueBBB-upToDate',
+    isFirmwareUpToDate: true,
+    currentApFirmwares: [
+      { apModel: 'R550', firmware: '7.0.0.104.1220' }
+    ],
+    lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00'
+  },
+  {
+    id: '10b0b0cd6c3a44a894fe73e210b12345',
+    name: 'venueCCC-oneApOutdated',
+    isFirmwareUpToDate: false,
+    currentApFirmwares: [
+      { apModel: 'R350', firmware: '7.0.0.104.1220' },
+      { apModel: 'R550', firmware: '6.2.0.103.486' }
+    ],
+    lastScheduleUpdate: '2022-01-12T14:00:01.099-08:00'
+  },
+  {
+    id: '6015f2a175e1429bad3e80f4e45287da',
+    name: 'venueDDD-VenueIsNotInWifiDBOrNoAp',
+    isFirmwareUpToDate: true
+  }
+]
 
 export const mockedApModelFirmwares = [
   {
