@@ -80,13 +80,14 @@ export function ApManagementVlanForm () {
     setDataToForm({ vlanId: initDataRef.current?.vlanId })
   }
 
-  const onFormDataChanged = () => {
+  const onFormDataChanged = async () => {
+    const isFormValid = await form.validateFields().then(() => true).catch(() => false)
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'advanced',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
       isDirty: true,
-      hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
+      hasError: !isFormValid
     })
 
     setEditAdvancedContextData && setEditAdvancedContextData({
@@ -120,6 +121,7 @@ export function ApManagementVlanForm () {
   }
 
   const handleUpdateApManagementVlan = async () => {
+    const payload = getApManagementVlanDataFromFields()
     showActionModal({
       type: 'confirm',
       width: 450,
@@ -136,7 +138,6 @@ export function ApManagementVlanForm () {
           if(isUseVenueSettingsRef.current) {
             await deleteApManagementVlan({ params: { serialNumber } }).unwrap()
           } else {
-            const payload = getApManagementVlanDataFromFields()
             await updateApManagementVlan({ params: { serialNumber }, payload }).unwrap()
 
             // eslint-disable-next-line no-console
