@@ -12,6 +12,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Button,
+  GridCol,
+  GridRow,
   Modal,
   ModalType,
   StepsFormLegacy,
@@ -201,23 +203,27 @@ function SettingsForm () {
           certTemplateOptions: data?.data.map(d => {return { value: d.id, label: d.name }}) }} })
     return (
       <>
-        <Form.Item
-          label={$t({ defaultMessage: 'Certificate Template' })}
-          name='certificateTemplateId'
-          rules={[{ required: true }]}
-        >
-          <Select
-            placeholder={$t({ defaultMessage: 'Select...' })}
-            options={certTemplateOptions}>
-          </Select>
-        </Form.Item>
-        <Button
-          type='link'
-          style={{ marginBottom: '16px' }}
-          onClick={() => setCertTempModalVisible(true)}
-        >
-          { $t({ defaultMessage: 'Add' }) }
-        </Button>
+        <GridRow>
+          <GridCol col={{ span: 12 }}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Certificate Template' })}
+              name='certificateTemplateId'
+              rules={[{ required: true }]}
+            >
+              <Select
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                options={certTemplateOptions}>
+              </Select>
+            </Form.Item>
+          </GridCol>
+          <Button
+            type='link'
+            style={{ top: '28px' }}
+            onClick={() => setCertTempModalVisible(true)}
+          >
+            { $t({ defaultMessage: 'Add' }) }
+          </Button>
+        </GridRow>
         <Modal
           title={$t({ defaultMessage: 'Add Certificate Template' })}
           visible={certTempModalVisible}
