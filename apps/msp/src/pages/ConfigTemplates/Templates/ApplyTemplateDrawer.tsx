@@ -10,8 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useMspCustomerListQuery }                  from '@acx-ui/msp/services'
+import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import {
   MSPUtils,
   MspEc
@@ -43,9 +42,6 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
   const templateNames = useMemo(() => selectedTemplates.map(t => t.name), [selectedTemplates])
-
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const mspPayload = {
     filters: ecFilters,
@@ -148,8 +144,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={isHspSupportEnabled ? $t({ defaultMessage: 'Apply Templates - Brand Properties' })
-          : $t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
         visible={true}
         onClose={onClose}
         footer={footer}
