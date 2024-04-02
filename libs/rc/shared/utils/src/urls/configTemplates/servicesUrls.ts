@@ -90,7 +90,7 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEnhancedWifiCallingList: {
     method: 'post',
-    url: '/templates/enhancedWifiCallingProfiles/query',
+    url: '/templates/wifiCallingServiceProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedWifiCallingProfiles/query',
     newApi: true
   },
