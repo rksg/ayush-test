@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
@@ -33,6 +33,8 @@ import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }           
 import {
   AccountType, isDelegationMode
 } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -59,8 +61,10 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
