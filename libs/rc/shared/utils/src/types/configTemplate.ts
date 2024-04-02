@@ -2,9 +2,22 @@ export enum ConfigTemplateType {
   NETWORK = 'NETWORK',
   RADIUS = 'RADIUS',
   VENUE = 'VENUE',
-  ACCESS_CONTROL_SET = 'ACCESS_CONTROL_SET',
-  LAYER_2_POLICY = 'LAYER_2_POLICY',
-  LAYER_3_POLICY = 'LAYER_3_POLICY',
+  DPSK = 'DPSK',
+  DHCP = 'DHCP',
+  ACCESS_CONTROL = 'ACCESS_CONTROL',
+  PORTAL = 'PORTAL',
+  VLAN_POOL = 'VLAN_POOL',
+  WIFI_CALLING = 'WIFI_CALLING',
+  CLIENT_ISOLATION = 'CLIENT_ISOLATION',
+  LAYER_2_POLICY = 'L2_ACL',
+  LAYER_3_POLICY = 'L3_ACL',
+  DEVICE_POLICY = 'DEVICE_POLICY',
+  APPLICATION_POLICY = 'APPLICATION_POLICY'
+}
+
+export enum AccessControlPolicyForTemplateCheckType {
+  L2_ACL = 'L2_ACL',
+  L3_ACL = 'L3_ACL',
   DEVICE_POLICY = 'DEVICE_POLICY',
   APPLICATION_POLICY = 'APPLICATION_POLICY'
 }
@@ -14,7 +27,7 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  ecTenants: string[],
+  appliedOnTenants: string[],
   type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number

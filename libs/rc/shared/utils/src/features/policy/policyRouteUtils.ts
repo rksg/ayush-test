@@ -36,6 +36,7 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
+  [PolicyType.WIFI_OPERATOR]: 'wifiOperator',
   [PolicyType.IDENTITY_PROVIDER]: 'identityProvider',
   [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
@@ -50,7 +51,10 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ADAPTIVE_POLICY_SET]: 'adaptivePolicySet',
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
   [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
-  [PolicyType.CONNECTION_METERING]: 'connectionMetering'
+  [PolicyType.CONNECTION_METERING]: 'connectionMetering',
+  [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
+  [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
+  [PolicyType.CERTIFICATE]: 'certificate'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components/macro'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 
 export const TooltipGlobalStyle = createGlobalStyle`
   .ant-tooltip {
@@ -29,6 +29,16 @@ export const TooltipGlobalStyle = createGlobalStyle`
       .ant-spin-dot {
         font-size: 12px;
       }
+    }
+  }
+`
+
+export const TooltipWrapper = styled.span`
+  > span {
+    text-decoration: dotted underline;
+    :after {
+      content: '';
+      display: block;
     }
   }
 `

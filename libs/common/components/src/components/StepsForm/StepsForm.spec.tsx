@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import userEvent              from '@testing-library/user-event'
 import { Form, Input, Radio } from 'antd'
@@ -376,9 +376,9 @@ describe('StepsForm', () => {
 
   it('supports onFinishFailed on individual step', async () => {
     const oldEnv = process.env
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, 'log')
     // eslint-disable-next-line no-console
-    const logError = jest.mocked(console.error).mockImplementation(() => {})
+    const logError = jest.mocked(console.log).mockImplementation(() => {})
 
     const onFinish = jest.fn()
     const onFinish1 = jest.fn().mockRejectedValue(true)
@@ -452,6 +452,72 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('form.ant-form-vertical')).not.toBeNull()
+  })
+
+  it('supports custom submit button', async () => {
+    const onFinish = jest.fn()
+    const onStep1Finish = jest.fn().mockResolvedValue(true)
+    const onStep2Finish = jest.fn().mockResolvedValue(false)
+    const mockedCustomSubmitOnFinish = jest.fn().mockResolvedValue(false)
+    const Component = () => {
+      const [done1, setDone1] = React.useState(false)
+      const [done2, setDone2] = React.useState(false)
+      return <>
+        {done1 ? <h1>Done 1</h1> : null}
+        {done2 ? <h1>Done 2</h1> : null}
+        <StepsForm
+          customSubmit={{
+            label: 'ApplyAndContinue',
+            onCustomFinish: mockedCustomSubmitOnFinish
+          }}
+          onFinish={async () => {
+            onFinish()
+            setDone2(true)
+          }}>
+          <StepsForm.StepForm title='Step 1' onFinish={onStep1Finish}>
+            <StepsForm.Title>Step 1</StepsForm.Title>
+            <Form.Item
+              name='field1'
+              label='Field 1'
+              rules={[{ required: true }]}
+              children={<Input />}
+            />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm
+            title='Step 2'
+            onFinish={async (values) => {
+              await onStep2Finish(values)
+              setDone1(true)
+            }}>
+            <StepsForm.Title>Step 2</StepsForm.Title>
+            <Form.Item
+              name='field2'
+              label='Field 2'
+              rules={[{ required: true }]}
+              children={<Input />}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </>
+    }
+    render(<Component />)
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 1' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+    expect(onStep1Finish).toHaveBeenCalledWith({ field1: 'value' })
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
+    await userEvent.click(screen.getByRole('button', { name: 'ApplyAndContinue' }))
+
+    expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
+    expect(onStep2Finish).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+
+    expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
+    expect(onFinish).not.toBeCalled()
+    expect(mockedCustomSubmitOnFinish).toBeCalled()
   })
 
   // TODO
@@ -537,5 +603,56 @@ describe('StepsForm.FieldSummary', () => {
     />)
 
     expect(container).toHaveTextContent('Custom Content')
+  })
+})
+
+describe('StepsForm alert message bar', () => {
+  const Component = (props: {
+    initVal?: StepsFormProps<Record<string, unknown>>['alert']
+  }) => {
+    return <StepsForm alert={props.initVal}>
+      <StepsForm.StepForm title='Step 1'>
+        <StepsForm.Title>Step 1</StepsForm.Title>
+        <Form.Item
+          name='field1'
+          label='Field 1'
+          rules={[{ required: true }]}
+          children={<Input />}
+        />
+      </StepsForm.StepForm>
+    </StepsForm>
+  }
+
+  it('supports form alert message', async () => {
+    render(<Component initVal={{
+      type: 'error',
+      message: 'Cross validation failed'
+    }} />)
+    const alertDiv = screen.getByTestId('steps-form-alert')
+    expect(alertDiv).toBeInTheDocument()
+    expect(alertDiv).toHaveTextContent(/Cross validation failed/)
+  })
+
+  it('should be nothing with undefined', async () => {
+    render(<Component initVal={undefined}/>)
+    expect(screen.queryByTestId('steps-form-alert')).toBeNull()
+  })
+
+  it('dynamic update alert message', async () => {
+    const WrappedComponent = () => {
+      const [val, setVal] = useState({} as StepsFormProps<Record<string, unknown>>['alert'] )
+      useEffect(() => {
+        setTimeout(() => setVal({
+          type: 'error',
+          message: 'Delayed validation failed'
+        }), 1000)
+      }, [])
+
+      return <Component initVal={val}/>
+    }
+    render(<WrappedComponent />)
+    expect(screen.queryByTestId('steps-form-alert')).toBeNull()
+    const alertDiv = await screen.findByTestId('steps-form-alert')
+    await waitFor(() => expect(alertDiv).toHaveTextContent(/Delayed validation failed/))
   })
 })

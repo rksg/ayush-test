@@ -25,6 +25,7 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetNetworkApGroupsQuery,
+  useGetNetworkApGroupsV2Query,
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -37,7 +38,7 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum
+  WlanSecurityEnum, NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -86,9 +87,10 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const { networkVenue, venueName, network, formName, tenantId } = props
-  const { wlan } = network || {}
+  const { wlan, type } = network || {}
 
   const [form] = Form.useForm()
 
@@ -116,14 +118,23 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       ssids: [wlan?.ssid],
       venueId: networkVenue?.venueId
     }]
-  }, { skip: !networkVenue || !wlan })
+  }, { skip: isUseWifiApiV2 || !networkVenue || !wlan })
+
+  const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+    payload: [{
+      networkId: networkVenue?.networkId,
+      venueId: networkVenue?.venueId
+    }]
+  }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsQuery.data || [])
+    const networkApGroupsData = (isUseWifiApiV2)? networkApGroupsV2Query.data : networkApGroupsQuery.data
+
+    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
       .map(allAg => {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
@@ -137,7 +148,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsQuery.data])
+  }, [networkVenue, networkApGroupsQuery.data, networkApGroupsV2Query.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
@@ -281,6 +292,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   function validateRadioBandForDsaeNetwork (radios: string[]) {
     if (wlan?.wlanSecurity
+         && type === NetworkTypeEnum.DPSK
          && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
          && radios.length
          && radios.length === 1

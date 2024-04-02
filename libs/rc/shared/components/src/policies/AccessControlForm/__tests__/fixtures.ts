@@ -24,76 +24,10 @@ export const aclDetail = {
   }
 }
 
-export const enhancedAccessControlList = {
-  fields: [
-    'clientRateUpLinkLimit',
-    'l3AclPolicyId',
-    'applicationPolicyName',
-    'clientRateDownLinkLimit',
-    'devicePolicyName',
-    'l2AclPolicyId',
-    'networkIds',
-    'name',
-    'applicationPolicyId',
-    'id',
-    'l3AclPolicyName',
-    'l2AclPolicyName',
-    'devicePolicyId'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: '7217d467353744d9aac8493324501be3',
-      name: 'My Access Control 1',
-      l2AclPolicyName: 'layer2-1',
-      l2AclPolicyId: 'e621cd8aa3f84f2faf04635e59a5db7b',
-      l3AclPolicyName: 'layer3-1',
-      l3AclPolicyId: 'c0f516233e9346df8f9f93bf7d799326',
-      devicePolicyName: 'device-1',
-      devicePolicyId: '0ad092ad70854801849b56b9402e8d57',
-      applicationPolicyName: 'application-1',
-      applicationPolicyId: '8139f9da75c64cd48582b40897df1609',
-      clientRateUpLinkLimit: 85,
-      clientRateDownLinkLimit: 26,
-      networkIds: [],
-      networkCount: 0
-    }
-  ]
-}
-
 export const aclList = [aclDetail]
 
 export const aclResponse = {
   requestId: '7305b668-b40b-439f-ba25-05ba6d587333'
-}
-
-export const emptyListResponse = {
-  data: [],
-  fields: ['name', 'id'],
-  totalCount: 0,
-  totalPages: 1,
-  page: 1
-}
-
-export const enhancedLayer2PolicyListResponse = {
-  fields: [
-    'macAddress',
-    'networkIds',
-    'name',
-    'description',
-    'id'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: 'e621cd8aa3f84f2faf04635e59a5db7b',
-      name: 'layer2-1',
-      macAddress: '1',
-      networkIds: []
-    }
-  ]
 }
 
 export const layer2PolicyListResponse = [
@@ -112,30 +46,6 @@ export const layer2Response = {
     '55:55:55:55:55:55'
   ],
   id: '36ec4826b5da48cc8118eda83aa4080f'
-}
-
-export const enhancedLayer3PolicyListResponse = {
-  fields: [
-    'networkIds',
-    'name',
-    'description',
-    'rules',
-    'id'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '4279f73355044b8fa54e0e738188dc5c',
-      name: 'layer3-1',
-      networkIds: []
-    },
-    {
-      id: 'b5b0d53279254885a497191670bd3a4b',
-      name: 'layer3-2',
-      networkIds: []
-    }
-  ]
 }
 
 export const layer3PolicyListResponse = [
@@ -166,72 +76,6 @@ export const layer3Response = {
   id: '233d3182a1aa49ee9f50aeb039347021'
 }
 
-export const enhancedApplicationPolicyListResponse = {
-  fields: [
-    'networkIds',
-    'name',
-    'description',
-    'rules',
-    'id'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: '8097d6206f094410ba09fb1cc81ddf5d',
-      name: 'app5',
-      networkIds: []
-    }
-  ]
-}
-
-export const applicationPolicyListResponse = {
-  data: [
-    {
-      id: '8097d6206f094410ba09fb1cc81ddf5d',
-      name: 'app-policy-1',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
-
-export const enhancedDevicePolicyListResponse = {
-  fields: [
-    'networkIds',
-    'name',
-    'description',
-    'rules',
-    'id'
-  ],
-  totalCount: 3,
-  page: 1,
-  data: [
-    {
-      id: 'dfe9cf68ab734513a46626da3f896574',
-      name: 'dev1',
-      networkIds: []
-    },
-    {
-      id: '02d8e791fad34e54acd36b0adae6f59f',
-      name: 'dev2-block',
-      networkIds: []
-    },
-    {
-      id: '84eb837c59e84761a1c836591d4be331',
-      name: 'device-1',
-      networkIds: []
-    }
-  ]
-}
-
 export const devicePolicyListResponse = [
   {
     id: '84eb837c59e84761a1c836591d4be331',
@@ -240,48 +84,6 @@ export const devicePolicyListResponse = [
     networksCount: 0
   }
 ]
-
-export const networkListResponse = {
-  fields: [
-    'clientRateUpLinkLimit',
-    'l3AclPolicyId',
-    'applicationPolicyName',
-    'clientRateDownLinkLimit',
-    'devicePolicyName',
-    'l2AclPolicyId',
-    'networkIds',
-    'name',
-    'applicationPolicyId',
-    'id',
-    'l3AclPolicyName',
-    'l2AclPolicyName',
-    'devicePolicyId'
-  ],
-  totalCount: 5,
-  page: 1,
-  data: [
-    {
-      name: 'test1',
-      id: '42c47e5505914752a41625b7dafca1c7'
-    },
-    {
-      name: 'test2',
-      id: 'ed345f9b052543bf8eef90e169227668'
-    },
-    {
-      name: 'test3',
-      id: '3cc8f9dc12334e5da69a8f06aef84dc4'
-    },
-    {
-      name: 'test4',
-      id: 'ed4ed15bd6fc42b6bcf9286e1cccd97b'
-    },
-    {
-      name: 'test5',
-      id: 'e38c875409364926a97c44a4882cb8e7'
-    }
-  ]
-}
 
 export const devicePolicyDetailResponse = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',

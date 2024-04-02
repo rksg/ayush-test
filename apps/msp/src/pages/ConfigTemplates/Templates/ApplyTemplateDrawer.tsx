@@ -144,7 +144,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
         visible={true}
         onClose={onClose}
         footer={footer}

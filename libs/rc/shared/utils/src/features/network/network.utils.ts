@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { RadioEnum, RadioTypeEnum }                           from '../../contents'
 import { SchedulerTypeEnum }                                  from '../../models/SchedulerTypeEnum'
 import { Venue, ApVenueStatusEnum, Network, NetworkSaveData } from '../../types'
@@ -44,9 +46,14 @@ export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
 }
 
 export const isOweTransitionNetwork = (data: Network | NetworkSaveData): boolean => {
-  return data.isOweMaster === false && data.owePairNetworkId !== undefined
+  return data.isOweMaster === false && !_.isNil(data.owePairNetworkId)
 }
 
-export const isDsaeOnboardingNetwork = (data: NetworkSaveData): boolean => {
-  return data.isDsaeServiceNetwork === false && data.dsaeNetworkPairId !== undefined
+export const isDsaeOnboardingNetwork = (data: Network | NetworkSaveData): boolean => {
+  if (data.hasOwnProperty('isOnBoarded')) {
+    return !!(data as Network).isOnBoarded
+  } else {
+    const _data = (data as NetworkSaveData)
+    return _data.isDsaeServiceNetwork === false && !_.isNil(_data.dsaeNetworkPairId)
+  }
 }

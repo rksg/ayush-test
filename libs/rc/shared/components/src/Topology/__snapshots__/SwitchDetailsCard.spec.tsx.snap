@@ -3,8 +3,8 @@
 exports[`Topology Switch Card should render orrectly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 eXKnGb"
-    type="no-border"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    type="default"
   >
     <div
       class="ant-card"
@@ -52,21 +52,19 @@ exports[`Topology Switch Card should render orrectly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-evZas fBelZT"
-                style="padding: 0px;"
-                type="button"
+              <a
+                class="sc-breuTD iOAXfV"
+                href="/undefined/t/devices/switch/c0:c5:20:aa:24:7b/FEK3224R08J/details/overview"
               >
-                <span>
-                  test
-                </span>
-              </button>
+                test
+              </a>
             </div>
             <div
               class="ant-space-item"
             >
               <button
                 class="ant-btn ant-btn-link ant-btn-sm ant-btn-icon-only"
+                data-testid="closeNodeTooltip"
                 type="button"
               >
                 <svg
@@ -226,7 +224,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                         <span
                           class="ant-descriptions-item-content"
                         >
-                          1 days, 0:42:16.00
+                          1 days, 00:42:16
                         </span>
                       </div>
                     </td>
@@ -250,29 +248,6 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                           class="ant-descriptions-item-content"
                         >
                           1
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="ant-descriptions-row"
-                  >
-                    <td
-                      class="ant-descriptions-item"
-                      colspan="1"
-                    >
-                      <div
-                        class="ant-descriptions-item-container"
-                      >
-                        <span
-                          class="ant-descriptions-item-label"
-                        >
-                          Last Seen
-                        </span>
-                        <span
-                          class="ant-descriptions-item-content"
-                        >
-                          11/12/2022 00:00
                         </span>
                       </div>
                     </td>

@@ -1,0 +1,59 @@
+import '@testing-library/jest-dom'
+
+import { rest } from 'msw'
+
+import { store, smartZoneURL, Provider }                          from '@acx-ui/store'
+import { act, mockRestApiQuery, mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+
+import { mockSmartZoneList }                from './__tests__/fixtures'
+import { smartZoneApi, useDeleteSmartZone } from './services'
+
+describe('smartzone services', () => {
+  const tenants = ['tenant1', 'tenant2']
+  describe('useFetchSmartZoneListQuery', () => {
+    beforeEach(() => {
+      store.dispatch(smartZoneApi.util.resetApiState())
+    })
+    it('should return smartzone list', async () => {
+      mockServer.use(
+        rest.get(`${smartZoneURL}/smartzones`, (_req, res, ctx) => res(ctx.json(mockSmartZoneList)))
+      )
+      const { status, data, error } = await store.dispatch(
+        smartZoneApi.endpoints.fetchSmartZoneList.initiate(tenants)
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(mockSmartZoneList)
+      expect(error).toBe(undefined)
+    })
+    it('should return error', async () => {
+      mockRestApiQuery(`${smartZoneURL}/smartzones`, 'get', { status: 500 })
+      const { status, data, error } = await store.dispatch(
+        smartZoneApi.endpoints.fetchSmartZoneList.initiate(tenants)
+      )
+      expect(status).toBe('rejected')
+      expect(data).toBeUndefined()
+      expect(error).toBeDefined()
+    })
+  })
+  describe('useDeleteSmartZone', () => {
+    beforeEach(() => {
+      store.dispatch(smartZoneApi.util.resetApiState())
+    })
+    it('should delete smartzone', async () => {
+      mockRestApiQuery(`${smartZoneURL}/smartzones/id/delete`, 'delete', { status: 204 })
+      const { result } = renderHook(useDeleteSmartZone, { wrapper: Provider, route: {} })
+      act(() => { result.current.deleteSmartZone({ id: 'id', tenants: ['tenant1', 'tenant2'] }) })
+      await waitFor(() => expect(result.current.response.status).toBe('fulfilled'))
+      await waitFor(() => expect(result.current.response.data).toStrictEqual({ status: 204 }))
+      await waitFor(() => expect(result.current.response.error).toBe(undefined))
+    })
+    it('should return error', async () => {
+      mockRestApiQuery(`${smartZoneURL}/smartzones/id/delete`, 'delete', { status: 500 })
+      const { result } = renderHook(useDeleteSmartZone, { wrapper: Provider, route: {} })
+      act(() => { result.current.deleteSmartZone({ id: 'id', tenants: ['tenant1', 'tenant2'] }) })
+      await waitFor(() => expect(result.current.response.status).toBe('rejected'))
+      await waitFor(() => expect(result.current.response.data).toBeUndefined())
+      await waitFor(() => expect(result.current.response.error).toBeDefined())
+    })
+  })
+})

@@ -123,9 +123,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        const apGroupListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
-          ...venueListReq,
+          ...apGroupListReq,
           body: payload
         }
       },
@@ -620,10 +620,6 @@ export const apApi = baseApApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
-    resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
-      query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
-      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
-    }),
     getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApAntennaTypeSettings, params)
@@ -1039,7 +1035,6 @@ export const {
   useResetApLedMutation,
   useGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
-  useResetApBandModeSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,
@@ -1052,6 +1047,7 @@ export const {
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
+  useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
   useResetApDirectedMulticastMutation,

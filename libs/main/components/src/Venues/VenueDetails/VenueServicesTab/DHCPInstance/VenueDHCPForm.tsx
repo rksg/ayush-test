@@ -10,17 +10,22 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
-import { GridRow, Button }    from '@acx-ui/components'
-import { DeleteOutlinedIcon } from '@acx-ui/icons'
+import { GridRow, Button }              from '@acx-ui/components'
+import { DeleteOutlinedIcon }           from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,
-  useApListQuery
+  useApListQuery,
+  useGetVenueTemplateDhcpProfileQuery,
+  useGetDhcpTemplateListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 import {
-  useTenantLink
-} from '@acx-ui/react-router-dom'
+  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
+  ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
+  getServiceRoutePath, ServiceOperation, ServiceType,
+  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
+} from '@acx-ui/rc/utils'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
@@ -38,18 +43,26 @@ const VenueDHCPForm = (props: {
   const params = useParams()
   const form = props.form
   const dhcpInfo = useDHCPInfo()
+  const { isTemplate } = useConfigTemplate()
+  const addDhcpPath = usePathBasedOnConfigTemplate(
+    getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
+  )
+  // eslint-disable-next-line max-len
+  const venueServicesTabPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/venue-details/services`)
 
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
-    params
-  })
-  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
+    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
+  )
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
+    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
+  )
   const { data: apList } = useApListQuery({
     params,
     payload: {
       ...defaultAPPayload,
       filters: { venueId: params.venueId ? [params.venueId] : [] }
     }
-  })
+  }, { skip: isTemplate })
 
   const [selectedAPs, setSelectedAPs] = useState<string[]>([])
 
@@ -69,7 +82,7 @@ const VenueDHCPForm = (props: {
     }
   }
   const isMaxNumberReached = ()=>{
-    return dhcpProfileList&&dhcpProfileList.length >= DHCP_LIMIT_NUMBER
+    return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
 
   useEffect(() => {
@@ -292,19 +305,21 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={isMaxNumberReached() ?
-          { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }:
-          { marginLeft: 10 }}
-        onClick={(e)=>{
+        <Link style={isMaxNumberReached()
+          ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
+          : { marginLeft: 10 }}
+        onClick={(e) => {
           if(isMaxNumberReached()){
             e.preventDefault()
             e.stopPropagation()
           }
         }}
-        to={useTenantLink('/services/dhcp/create')}
+        to={addDhcpPath}
         state={{
-          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-          param: { showConfig: true }
+          from: {
+            pathname: venueServicesTabPath,
+            returnParams: { showConfig: true }
+          }
         }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>

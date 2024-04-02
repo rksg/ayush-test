@@ -34,7 +34,7 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
-import AAAInstance                 from '../AAAInstance'
+import { AAAInstance }             from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -187,7 +187,6 @@ function SettingsForm () {
         }
       }
     })
-    disableMLO(false)
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -212,6 +211,15 @@ function SettingsForm () {
       })
     }
   },[data])
+
+  useEffect(() => {
+    if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity])
 
   useEffect(() => {
     if (!editMode && !cloneMode) {

@@ -30,7 +30,7 @@ export enum SecurityOptionsDescription {
 }
 
 export enum WisprSecurityEnum {
-  NONE = 'Select...',
+  NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
 }
@@ -88,6 +88,12 @@ export const SwitchMessages = {
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
     defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+  }),
+  PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab and modify it via CLI'
+  }),
+  PLEASE_CHECK_INVALID_VALUES: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab'
   })
 }
 

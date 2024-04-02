@@ -35,18 +35,13 @@ export interface ExpirationDateSelectorProps {
     [ExpirationMode.NEVER]?: boolean
     [ExpirationMode.BY_DATE]?: boolean
     [ExpirationMode.AFTER_TIME]?: boolean
-  }
+  },
+  disabledDate?: RangePickerProps['disabledDate']
 }
 
 function ExpirationDatePickerWrapper (props: DatePickerProps) {
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    // Can not select days before today
-    return current && current < moment().endOf('day')
-  }
-
   return (
     <DatePicker
-      disabledDate={disabledDate}
       {...props}
       value={props.value ? moment(props.value) : null}
     />
@@ -61,7 +56,8 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
     label,
     isRequired = true,
     inputName = 'expirationDate',
-    initialValue = ExpirationMode.NEVER
+    initialValue = ExpirationMode.NEVER,
+    disabledDate = (current: moment.Moment) => current && current < moment().endOf('day')
   } = props
   const modeLabel = {
     ...{
@@ -125,7 +121,9 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                 ]}
                 normalize={normalizeDate}
               >
-                <ExpirationDatePickerWrapper format={EXPIRATION_DATE_FORMAT} />
+                <ExpirationDatePickerWrapper
+                  disabledDate={disabledDate}
+                  format={EXPIRATION_DATE_FORMAT} />
               </Form.Item>
             }
           </UI.FieldSpace>

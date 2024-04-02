@@ -1,7 +1,7 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card, SummaryCard, Tabs } from '@acx-ui/components'
+import { Card, SummaryCard, Tabs }            from '@acx-ui/components'
+import { SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   getPolicyDetailsLink,
   PolicyType,
@@ -14,7 +14,6 @@ import { noDataDisplay } from '@acx-ui/utils'
 import { NetworkTable }    from './NetworkTable'
 import { SmartEdgesTable } from './SmartEdgesTable'
 import * as UI             from './styledComponents'
-import { TopologyDiagram } from './TopologyDiagram'
 
 export const DmzSdLanDetailContent = (props: {
   data: EdgeSdLanViewDataP2
@@ -33,15 +32,15 @@ export const DmzSdLanDetailContent = (props: {
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
-        {data.edgeName}
+      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+        {data.edgeClusterName}
       </TenantLink>
     )
   }, {
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeId}/details/overview`}>
-        {data.guestEdgeName}
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
+        {data.guestEdgeClusterName}
       </TenantLink>
     )
   }, {
@@ -70,10 +69,13 @@ export const DmzSdLanDetailContent = (props: {
     )
   }]
 
-  return <Space direction='vertical' size={30}>
+  return <SpaceWrapper fullWidth direction='vertical' size={30}>
     <SummaryCard data={sdLanInfo} />
     <Card>
-      <TopologyDiagram isGuestTunnelEnabled={true} />
+      <SdLanTopologyDiagram
+        isGuestTunnelEnabled={true}
+        vertical={false}
+      />
     </Card>
     <Card>
       <UI.InstancesContainer>
@@ -102,5 +104,5 @@ export const DmzSdLanDetailContent = (props: {
         </Tabs.TabPane>
       </Tabs>
     </Card>
-  </Space>
+  </SpaceWrapper>
 }

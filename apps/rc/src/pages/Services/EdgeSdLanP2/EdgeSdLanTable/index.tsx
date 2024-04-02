@@ -11,12 +11,12 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }      from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
-  useGetEdgeListQuery,
   useDeleteEdgeSdLanMutation,
-  useGetEdgeSdLanP2ViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
@@ -28,7 +28,9 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
-  useTableQuery
+  useTableQuery,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -45,11 +47,14 @@ const venueOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const edgeOptionsDefaultPayload = {
-  fields: ['name', 'serialNumber'],
-  pageSize: 10000,
+const clusterOptionsDefaultPayload = {
+  fields: [
+    'name',
+    'clusterId'
+  ],
   sortField: 'name',
-  sortOrder: 'ASC'
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 const EdgeSdLanTable = () => {
@@ -60,7 +65,26 @@ const EdgeSdLanTable = () => {
   const settingsId = 'services-edge-sd-lan-p2-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeSdLanP2ViewDataListQuery,
-    defaultPayload: {},
+    defaultPayload: {
+      fields: [
+        'id',
+        'name',
+        'venueId',
+        'venueName',
+        'tunnelProfileId',
+        'tunnelProfileName',
+        'guestTunnelProfileId',
+        'guestTunnelProfileName',
+        'edgeClusterId',
+        'edgeClusterName',
+        'guestEdgeClusterId',
+        'guestEdgeClusterName',
+        'isGuestTunnelEnabled',
+        'networkIds',
+        'networkInfos',
+        'edgeAlarmSummary'
+      ]
+    },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
@@ -70,6 +94,16 @@ const EdgeSdLanTable = () => {
     },
     pagination: { settingsId }
   })
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.guestEdgeClusterId?.length) {
+      customFilters['isGuestTunnelEnabled'] = [true]
+    } else {
+      delete customFilters['guestEdgeClusterId']
+      delete customFilters['isGuestTunnelEnabled']
+    }
+    tableQuery.handleFilterChange(customFilters,customSearch)
+  }
 
   const [deleteSdLan, { isLoading: isDeleting }] = useDeleteEdgeSdLanMutation()
 
@@ -87,19 +121,19 @@ const EdgeSdLanTable = () => {
     }
   )
 
-  const { edgeOptions } = useGetEdgeListQuery(
-    { payload: edgeOptionsDefaultPayload },
+  const { clusterOptions } = useGetEdgeClusterListQuery(
+    { payload: clusterOptionsDefaultPayload },
     {
-      selectFromResult: ({ data }) => {
+      selectFromResult: ({ data, isLoading }) => {
         return {
-          edgeOptions: data?.data.map((item) => ({
-            value: item.name,
-            key: item.serialNumber
-          }))
+          clusterOptions: data?.data.map(item => ({
+            value: item.name!,
+            key: item.clusterId!
+          })),
+          isLoading
         }
       }
-    }
-  )
+    })
 
   const columns: TableProps<EdgeSdLanViewDataP2>['columns'] = [
     {
@@ -113,7 +147,7 @@ const EdgeSdLanTable = () => {
         return (
           <TenantLink
             to={getServiceDetailsLink({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}
@@ -139,30 +173,32 @@ const EdgeSdLanTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Cluster' }),
-      key: 'edgeId',
-      dataIndex: 'edgeId',
+      key: 'edgeClusterId',
+      dataIndex: 'edgeClusterId',
       sorter: true,
-      filterable: edgeOptions,
+      filterable: clusterOptions,
       render: (__, row) => {
         return <TenantLink
-          to={`/devices/edge/${row.edgeId}/details/overview`}
+          to={`devices/edge/cluster/${row.edgeClusterId}/edit/cluster-details`}
         >
-          {row.edgeName}
+          {row.edgeClusterName}
         </TenantLink>
       }
     },
     {
       title: $t({ defaultMessage: 'DMZ Cluster' }),
-      key: 'guestEdgeId',
-      dataIndex: 'guestEdgeId',
+      key: 'guestEdgeClusterId',
+      dataIndex: 'guestEdgeClusterId',
       sorter: true,
-      filterable: edgeOptions,
+      filterable: clusterOptions,
       render: (__, row) => {
-        return <TenantLink
-          to={`/devices/edge/${row.guestEdgeId}/details/overview`}
-        >
-          {row.guestEdgeName}
-        </TenantLink>
+        return (row.isGuestTunnelEnabled && row.guestEdgeClusterId)
+          ? <TenantLink
+            to={`devices/edge/cluster/${row.guestEdgeClusterId}/edit/cluster-details`}
+          >
+            {row.guestEdgeClusterName}
+          </TenantLink>
+          : ''
       }
     },
     {
@@ -210,15 +246,17 @@ const EdgeSdLanTable = () => {
       dataIndex: 'guestTunnelProfileId',
       sorter: true,
       render: (__, row) => {
-        return <TenantLink
-          to={getPolicyDetailsLink({
-            type: PolicyType.TUNNEL_PROFILE,
-            oper: PolicyOperation.DETAIL,
-            policyId: row.guestTunnelProfileId!
-          })}
-        >
-          {row.guestTunnelProfileName}
-        </TenantLink> }
+        return (row.isGuestTunnelEnabled && row.guestTunnelProfileId)
+          ? <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.TUNNEL_PROFILE,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.guestTunnelProfileId
+            })}
+          >
+            {row.guestTunnelProfileName}
+          </TenantLink>
+          : '' }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
@@ -261,7 +299,7 @@ const EdgeSdLanTable = () => {
           pathname:
             `${basePath.pathname}/` +
             getServiceDetailsLink({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,
               serviceId: selectedRows[0].id!
             })
@@ -305,7 +343,7 @@ const EdgeSdLanTable = () => {
         extra={filterByAccess([
           <TenantLink
             to={getServiceRoutePath({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
             })}
           >
@@ -330,7 +368,7 @@ const EdgeSdLanTable = () => {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           enableApiFilter
         />
       </Loader>

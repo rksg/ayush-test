@@ -1,10 +1,19 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { ApVenueStatusEnum, ApViewModel, CelluarInfo } from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
-import { render }                                      from '@acx-ui/test-utils'
+import { render, screen }                              from '@acx-ui/test-utils'
 
 import { APDetailsCard } from './APDetailsCard'
+
+
+const mockedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  navigate: () => () => mockedNavigate()
+}))
 
 const apDetail = {
   serialNumber: '132106000082',
@@ -101,16 +110,12 @@ const apDetail = {
 const apDetailWithNullTraffic = {
   serialNumber: '132106000082',
   lastSeenTime: '2023-02-07T08:31:52.927Z',
-  name: 'R760-181-66',
-  model: 'R760',
   fwVersion: '6.2.1.103.1610',
   venueId: '1b48f908d285498d98c5a49ce65a8358',
   venueName: 'ThirdRadio',
   deviceStatus: '2_00_Operational',
   deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
-  IP: '192.168.181.66',
   extIp: '134.242.238.1',
-  apMac: 'B4:79:C8:3E:C8:70',
   channel24: {},
   channel50: {},
   channelL50: {},
@@ -163,11 +168,9 @@ const apDetailWithNullTraffic = {
       }
     ]
   },
-  meshRole: 'DISABLED',
   deviceGroupId: '00dd4e142110489b9c21bcb1a2a5e93e',
   deviceGroupName: '',
-  deviceModelType: 'Indoor',
-  downLinkCount: 2
+  deviceModelType: 'Indoor'
 }
 
 const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
@@ -179,11 +182,20 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
     const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
+      onClose={jest.fn()}
     /></Provider>, {
-      route: {}
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
@@ -193,14 +205,43 @@ describe('Topology AP Card', () => {
   })
 
   it('should show empty traffic data', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
     const { asFragment } = render(<Provider><APDetailsCard
       apDetail={apDetailWithNullTraffic as ApViewModel}
       isLoading={false}
+      onClose={jest.fn()}
     /></Provider>, {
-      route: {}
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+  })
+
+  it('should render navigation correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      apId: apDetail?.apMac
+    }
+    render(<Provider><APDetailsCard
+      apDetail={apDetail as ApViewModel}
+      isLoading={false}
+      onClose={jest.fn()}
+    /></Provider>, {
+      route: {
+        params,
+        path: '/undefined/t/devices/wifi/:apId/details/overview'
+      }
+    })
+
+    await userEvent.click(await screen.findByText('R760-181-66'))
   })
 })

@@ -19,7 +19,7 @@ import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
-import { RecommendationActions, isCrrmOptimizationMatched } from './RecommendationActions'
+import { isCrrmOptimizationMatched, getAvailableActions, RecommendationActionType } from './RecommendationActions'
 import {
   useRecommendationListQuery,
   RecommendationListItem,
@@ -34,19 +34,6 @@ type Metadata = { audit?: [{ failure: string }] | undefined }
 
 type RecommendationWithUpdatedMetadata = RecommendationListItem & {
   metadata: Metadata;
-}
-
-const DateLink = ({ value, disabled }: { value: RecommendationListItem, disabled: boolean }) => {
-  const { activeTab } = useParams()
-  const text = formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)
-  return disabled
-    ? <Tooltip
-      title={<FormattedMessage defaultMessage='Not available' />}
-      children={<Typography.Text disabled children={text} />}
-    />
-    : <TenantLink to={`analytics/recommendations/${activeTab}/${value.id}`}>
-      {text}
-    </TenantLink>
 }
 
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> { 'data-row-key': string }
@@ -97,12 +84,41 @@ function RowTooltip (props: RowProps) {
   )
 }
 
-export const UnknownLink = ({ value }: { value: RecommendationWithUpdatedMetadata }) => {
+const Link = (
+  { text, to, disabled }: { text: string, to: string, disabled: boolean }
+) => {
+  return disabled
+    ? <Tooltip
+      title={<FormattedMessage defaultMessage='Not available' />}
+      children={<Typography.Text disabled children={text} />}
+    />
+    : <TenantLink to={to} children={text} />
+}
+
+const DateLink = (
+  { value, disabled }: { value: RecommendationListItem, disabled: boolean }
+) => {
+  const { updatedAt, id } = value
+  const { activeTab } = useParams()
+  const text = formatter(DateFormatEnum.DateTimeFormat)(updatedAt)
+  return <Link
+    disabled={disabled}
+    text={text}
+    to={`analytics/recommendations/${activeTab}/${id}`}
+  />
+}
+
+export const UnknownLink = (
+  { value, disabled }: { value: RecommendationWithUpdatedMetadata, disabled: boolean }
+) => {
   const { metadata, statusEnum, updatedAt, sliceValue } = value
   const paramString = getParamString(metadata, statusEnum, updatedAt, sliceValue)
-  return <TenantLink to={`analytics/recommendations/crrm/unknown?${paramString}`}>
-    {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
-  </TenantLink>
+  const text = formatter(DateFormatEnum.DateTimeFormat)(updatedAt)
+  return <Link
+    disabled={disabled}
+    text={text}
+    to={`analytics/recommendations/crrm/unknown?${paramString}`}
+  />
 }
 
 const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
@@ -135,8 +151,26 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-
+  const selectedMuteDisabled = selectedRecommendation
+    && selectedRecommendation.statusEnum
+    && disableMuteStatus.includes(selectedRecommendation.statusEnum)
+  const isRecommendationRevertEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
+    ...(selectedRecommendation
+      ? getAvailableActions(
+        selectedRecommendation as RecommendationActionType,
+        isRecommendationRevertEnabled,
+        true
+      )
+        .filter(action => !action.icon.props.disabled)
+        .map((action) => {
+          return {
+            label: action.icon as unknown as string,
+            onClick: () => {},
+            disabled: false
+          }
+        }): []),
     {
       label: $t(selectedRecommendation?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
@@ -147,9 +181,14 @@ export function RecommendationTable (
         await muteRecommendation({ id, mute: !isMuted }).unwrap()
         setSelectedRowData([])
       },
-      disabled: selectedRecommendation
-        && selectedRecommendation.statusEnum
-        && disableMuteStatus.includes(selectedRecommendation.statusEnum)
+      disabled: selectedMuteDisabled,
+      tooltip: selectedMuteDisabled
+        ? $t(
+          // eslint-disable-next-line max-len
+          defineMessage({ defaultMessage: 'Cannot {isMuted, select, false {mute} other {unmute}} scheduled recommendation' }),
+          { isMuted: selectedRecommendation?.isMuted }
+        )
+        : undefined
     }
   ]
 
@@ -221,7 +260,10 @@ export function RecommendationTable (
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (_, value) => (value.code === 'unknown')
-        ? <UnknownLink value={value as RecommendationWithUpdatedMetadata} />
+        ? <UnknownLink
+          value={value as RecommendationWithUpdatedMetadata}
+          disabled={value.statusEnum === 'unknown'}
+        />
         : <DateLink
           value={value}
           disabled={!isCrrmOptimizationMatched(value.code, value.metadata, value.preferences)}
@@ -254,7 +296,11 @@ export function RecommendationTable (
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={value.scope}>
+        return <Tooltip
+          placement='top'
+          title={value.scope}
+          dottedUnderline={true}
+        >
           {highlightFn(value.sliceValue)}
         </Tooltip>
       },
@@ -268,21 +314,16 @@ export function RecommendationTable (
       key: 'status',
       render: (_, value: RecommendationListItem ) => {
         const { code, statusEnum, status, statusTooltip } = value
-        return <Tooltip placement='top' title={code === 'unknown' ? '' : statusTooltip}>
+        return <Tooltip
+          placement='top'
+          title={code === 'unknown' ? '' : statusTooltip}
+          dottedUnderline={code !== 'unknown'}
+        >
           <UI.Status $statusEnum={statusEnum}>{status}</UI.Status>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
       filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Actions' }),
-      key: 'id',
-      dataIndex: 'id',
-      width: 100,
-      fixed: 'right',
-      className: 'actions-column',
-      render: (_, value) => <RecommendationActions recommendation={value} />
     },
     ...(showCrrm && isCrrmPartialEnabled ? [{
       title: $t({ defaultMessage: 'Full Optimization' }),
@@ -297,14 +338,14 @@ export function RecommendationTable (
         const tooltipText = !canToggle && !record.isMuted
           ? get('IS_MLISA_SA')
             ? $t({ defaultMessage: `
-              Optimization option cannot be changed while recommendation(s) of the zone
-              is in Applied status. Please revert all to New status before changing the
-              optimization option.
+              Optimization option cannot be modified when RRM recommendations are applied across any
+              of the radios of the same zone. Please revert them in case you still prefer to change
+              the optimization option for current recommendation.
             ` })
             : $t({ defaultMessage: `
-              Optimization option cannot be changed while recommendation(s) of the venue
-              is in Applied status. Please revert all to New status before changing the
-              optimization option.
+              Optimization option cannot be modified when RRM recommendations are applied across any
+              of the radios of the same venue. Please revert them in case you still prefer to change
+              the optimization option for current recommendation.
             ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>
@@ -338,11 +379,7 @@ export function RecommendationTable (
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
-            row && setSelectedRowData([{
-              id: row.id,
-              isMuted: row.isMuted,
-              statusEnum: row.statusEnum
-            }])
+            row && setSelectedRowData([row])
           }
         }}
         rowKey='id'

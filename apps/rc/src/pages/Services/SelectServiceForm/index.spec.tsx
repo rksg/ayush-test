@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -86,5 +86,21 @@ describe('Select Service Form', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
+  })
+
+  it('should not render edge-dhcp with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_HA_TOGGLE
+        || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
+    })
+
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
 })

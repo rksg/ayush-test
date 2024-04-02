@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
@@ -11,7 +11,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   transformVLAN,
   transformAps,
@@ -19,8 +19,11 @@ import {
   transformScheduling,
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
-  useSdLanScopedNetworks,
-  checkSdLanScopedNetworkDeactivateAction, renderConfigTemplateDetailsComponent
+  useSdLanScopedVenueNetworks,
+  checkSdLanScopedNetworkDeactivateAction,
+  renderConfigTemplateDetailsComponent,
+  useGetNetworkTunnelInfo,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -28,7 +31,12 @@ import {
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useVenueNetworkTableV2Query,
+  useVenueNetworkListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -43,7 +51,8 @@ import {
   ApGroupModalState,
   NetworkExtended,
   SchedulerTypeEnum,
-  SchedulingModalState, ConfigTemplateType, useConfigTemplate, getConfigTemplatePath
+  SchedulingModalState, ConfigTemplateType, useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -85,10 +94,15 @@ export function VenueNetworksTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
-    useQuery: isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery,
-    defaultPayload,
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -105,18 +119,20 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useAddNetworkVenueMutation()
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useDeleteNetworkVenueMutation()
-  const sdLanScopedNetworks = useSdLanScopedNetworks(tableQuery.data?.data.map(item => item.id))
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
+  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -144,7 +160,7 @@ export function VenueNetworksTab () {
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
   const linkToAddNetwork = useTenantLink('/networks/wireless/add')
-  const linkToAddNetworkTemplate = useTenantLink(getConfigTemplatePath('networks/wireless/add'), 'v')
+  const linkToAddNetworkTemplate = useConfigTemplateTenantLink('networks/wireless/add')
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
@@ -188,7 +204,6 @@ export function VenueNetworksTab () {
 
   const getTenantLink = (row: Network) => {
     return isTemplate
-      // eslint-disable-next-line max-len
       ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
       // eslint-disable-next-line max-len
       : <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
@@ -244,6 +259,20 @@ export function VenueNetworksTab () {
     //   title: $t({ defaultMessage: 'Health' }),
     //   dataIndex: 'health'
     // },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Network) {
+        if (Boolean(row.activated?.isActivated)) {
+          const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
+            sdlan.networkIds.includes(row.id))
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
@@ -272,7 +301,7 @@ export function VenueNetworksTab () {
             disabled={disabled}
             onClick={(checked, event) => {
               if (!checked) {
-                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks, [row.id], () => {
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks.scopedNetworkIds, [row.id], () => {
                   activateNetwork(checked, row)
                 })
               } else {

@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery }                        from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { UseQueryResult }                                                       from '@acx-ui/types'
-import { hasAccess }                                                            from '@acx-ui/user'
+import { goToNotFound, hasAccess }                                              from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
@@ -69,7 +69,7 @@ export default function SwitchDetails () {
     })
   }, [switchDetailHeader, switchData])
 
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return <SwitchDetailsContext.Provider value={{
     switchDetailsContextData,

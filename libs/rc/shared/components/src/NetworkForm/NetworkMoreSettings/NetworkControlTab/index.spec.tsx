@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
 import { AccessControlUrls, BasicServiceSetPriorityEnum, MtuTypeEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                                        from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                                                                              from '@acx-ui/test-utils'
@@ -139,6 +139,7 @@ describe('Network More settings - Network Control Tab', () => {
 
 
   it('after click Wifi calling', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICES)
 
     render(
       <Provider>
@@ -334,6 +335,6 @@ describe('Network More settings - Network Control Tab', () => {
     const tunnelProfileDropdown = within(tunnelProfileFormItem as HTMLElement).getByRole('combobox')
     expect(tunnelProfileDropdown).toBeDisabled()
     // eslint-disable-next-line max-len
-    await screen.findByText(/All networks under the same Network Segmentation share the same tunnel profile/i)
+    await screen.findByText(/All networks under the same Personal Identity Network share the same tunnel profile/i)
   })
 })

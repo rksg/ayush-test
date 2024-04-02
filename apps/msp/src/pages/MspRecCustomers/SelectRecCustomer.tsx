@@ -109,7 +109,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage RUCKUS End Customer' })}
+      title={$t({ defaultMessage: 'Manage Brand Property' })}
       subTitle={$t({ defaultMessage: 'Properties for {propertyOowner}' },
         { propertyOowner: queryResults?.data?.parent_account_name })}
       visible={visible}

@@ -8,6 +8,8 @@ import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import { fireEvent, render, screen,within }  from '@acx-ui/test-utils'
 
+import NetworkFormContext, { NetworkFormContextType } from '../../../NetworkFormContext'
+
 import WiFi7, {
   disabledUnCheckOption,
   enableAllRadioCheckboxes, getIsOwe,
@@ -328,19 +330,24 @@ describe('CheckboxGroup', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        wlanSecurity: WlanSecurityEnum.WPA3
-      }
-    } as NetworkSaveData
 
     render(
       <Provider>
-        <Form>
-          <WiFi7 wlanData={mockWlanData} />
-        </Form>
+        <NetworkFormContext.Provider value={{
+          editMode: false,
+          cloneMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.WPA3
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <Form>
+            <WiFi7 />
+          </Form>
+        </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       }
@@ -367,19 +374,23 @@ describe('CheckboxGroup', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const mockWlanData = {
-      name: 'test',
-      type: 'open',
-      wlan: {
-        wlanSecurity: WlanSecurityEnum.WPA3
-      }
-    } as NetworkSaveData
-
     render(
       <Provider>
-        <Form>
-          <WiFi7 wlanData={mockWlanData} />
-        </Form>
+        <NetworkFormContext.Provider value={{
+          editMode: false,
+          cloneMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.WPA3
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <Form>
+            <WiFi7 />
+          </Form>
+        </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       }

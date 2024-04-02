@@ -113,11 +113,9 @@ export function GenerateNewPasswordModal (props: {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          // TODO: fix warn
-          // Deprecation warning: moment().add(period, number) is deprecated. Please use moment().add(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }

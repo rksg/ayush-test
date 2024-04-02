@@ -79,7 +79,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...{
         wlan: {
           wlanSecurity: wlanSecurity,
-          managementFrameProtection
+          managementFrameProtection,
+          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
         }
       }
     }

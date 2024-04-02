@@ -3,8 +3,10 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { EXPIRATION_TIME_FORMAT } from '../../pipes/networkPipes'
-import { NewDpskPassphrase }      from '../../types'
+import { EXPIRATION_TIME_FORMAT }                 from '../../pipes/networkPipes'
+import { NewDpskPassphrase, PolicyDefaultAccess } from '../../types'
+
+import { defaultAccessLabelMapping } from './contentsMap'
 
 enum DpskPassphraseStatusEnum {
   REVOKED,
@@ -38,4 +40,13 @@ export function getPassphraseStatus (passphrase: NewDpskPassphrase, isCloudpathE
     return $t(dpskPassphraseStatusTextMapping[DpskPassphraseStatusEnum.EXPIRED])
   }
   return $t(dpskPassphraseStatusTextMapping[DpskPassphraseStatusEnum.ACTIVE])
+}
+
+export function displayDefaultAccess (defaultAccess: boolean | undefined) {
+  const { $t } = getIntl()
+  return $t(defaultAccessLabelMapping[
+    defaultAccess === false
+      ? PolicyDefaultAccess.REJECT
+      : PolicyDefaultAccess.ACCEPT
+  ])
 }
