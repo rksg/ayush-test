@@ -71,6 +71,8 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
         (_req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.rcgAllowedOperations.url,
+        (_req, res, ctx) => res(ctx.json(['some-operation']))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
@@ -78,7 +80,8 @@ describe('UserProfileContext', () => {
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false })))
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
+          'allowed-operations-toggle': false })))
     )
   })
 
@@ -182,7 +185,8 @@ describe('UserProfileContext', () => {
         }))
       ),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true })))
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true,
+          'allowed-operations-toggle': false })))
     )
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
