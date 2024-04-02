@@ -40,8 +40,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
-  // const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
-  //   { skip: !Boolean(profile) })
   const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
   const betaEnabled = (beta?.enabled === 'true')? true : false
@@ -58,7 +56,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       { params: { tenantId }, payload: [abacFF, allowedOperationsFF] }, { skip: !Boolean(profile) }
     )
 
-  const rcgAllowedOperationsEnabled = featureFlagStates?.[abacFF]
+  const rcgAllowedOperationsEnabled = featureFlagStates?.[allowedOperationsFF]
   const { data: allAllowedOperations } = useAllowedOperationsQuery(tenantId!,
     { skip: !Boolean(profile) || rcgAllowedOperationsEnabled !== false })
 
