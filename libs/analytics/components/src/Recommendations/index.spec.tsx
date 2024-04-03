@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { uniqueId } from 'lodash'
 
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
@@ -18,8 +19,13 @@ import {
 } from '@acx-ui/test-utils'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { recommendationListResult }                                     from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation, useSetPreferenceMutation } from './services'
+import { recommendationListResult } from './__tests__/fixtures'
+import {
+  api,
+  useDeleteRecommendationMutation,
+  useMuteRecommendationMutation,
+  useSetPreferenceMutation
+} from './services'
 
 import { RecommendationTabContent } from './index'
 
@@ -37,10 +43,12 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
+const mockedDeleteRecommendation = jest.fn()
 const mockedMuteRecommendation = jest.fn()
 const mockedSetPreference = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
+  useDeleteRecommendationMutation: jest.fn(),
   useMuteRecommendationMutation: jest.fn(),
   useSetPreferenceMutation: jest.fn()
 }))
@@ -71,6 +79,11 @@ describe('RecommendationTabContent', () => {
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
 
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
+
+    jest.mocked(useDeleteRecommendationMutation).mockImplementation(() => [
+      mockedDeleteRecommendation,
+      { reset: jest.fn() }
+    ])
 
     jest.mocked(useMuteRecommendationMutation).mockImplementation(() => [
       mockedMuteRecommendation,
@@ -103,7 +116,9 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -120,7 +135,9 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {
@@ -139,7 +156,9 @@ describe('RecommendationTabContent', () => {
   it('should render aiops table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
@@ -156,7 +175,9 @@ describe('RecommendationTabContent', () => {
 
   it('should render aiops table for RA', async () => {
     const recommendations = [...recommendationListResult.recommendations
-      .filter(r => !r.code.includes('crrm'))]
+      .filter(r => !r.code.includes('crrm'))
+      .map(r => ({ ...r, id: uniqueId() }))
+    ]
     recommendations[1].status = 'applywarning' // coverage for Status styled-component
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
     jest.mocked(get).mockReturnValue('true')
@@ -199,7 +220,9 @@ describe('RecommendationTabContent', () => {
 
   it('switches from aiops to crrm without error', async () => {
     const recommendations = [...recommendationListResult.recommendations
-      .filter(r => !r.code.includes('crrm'))]
+      .filter(r => !r.code.includes('crrm'))
+      .map(r => ({ ...r, id: uniqueId() }))
+    ]
     const crrm = [...recommendationListResult.recommendations
       .filter(r => r.code.includes('crrm'))]
     jest.mocked(get).mockReturnValue('true')
@@ -221,7 +244,9 @@ describe('RecommendationTabContent', () => {
   it('should render muted recommendations & reset correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<Provider><RecommendationTabContent /></Provider>, {
@@ -260,7 +285,9 @@ describe('RecommendationTabContent', () => {
   it('should mute recommendation correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     mockedMuteRecommendation.mockImplementation(() => ({
@@ -291,7 +318,9 @@ describe('RecommendationTabContent', () => {
   it('should handle toggle of full/partial crrm correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -366,5 +395,37 @@ describe('RecommendationTabContent', () => {
       name: /Insufficient Licenses 11\/12\/2023 06:05 No RRM recommendation due to incomplete license compliance 01-Alethea-WiCheck Test Insufficient Licenses/
     })
     expect(row.classList.contains('crrm-optimization-mismatch')).toBeFalsy()
+  })
+
+  it('should delete recommendation correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteBtn).toBeVisible()
+    expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(0)
+    await userEvent.click(deleteBtn)
+    expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(1)
   })
 })

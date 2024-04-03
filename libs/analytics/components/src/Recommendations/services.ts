@@ -112,7 +112,7 @@ interface SchedulePayload extends MutationPayload { type: string, scheduledAt: s
 interface ScheduleResponse { schedule: MutationResponse }
 
 interface DeleteMutationPayload extends MutationPayload { }
-interface DeleteMutationResponse { delete: MutationResponse }
+interface DeleteMutationResponse { setDeleted: MutationResponse }
 
 interface PreferencePayload {
   path: NetworkPath
@@ -508,7 +508,7 @@ export const api = recommendationApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           mutation DeleteRecommendation($id: String) {
-            delete(id: $id) {
+            setDeleted(id: $id) {
               success
               errorMsg
               errorCode
@@ -575,7 +575,7 @@ export const {
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,
+  useDeleteRecommendationMutation,
   useCrrmKpiQuery,
-  useSetPreferenceMutation,
-  useDeleteRecommendationMutation
+  useSetPreferenceMutation
 } = api

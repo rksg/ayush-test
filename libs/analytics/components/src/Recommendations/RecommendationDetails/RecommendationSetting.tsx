@@ -1,72 +1,70 @@
 import React, { useState } from 'react'
 
-import { Switch }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Switch }                 from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { showToast }                              from '@acx-ui/components'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { DetailsActions }         from '../../DetailsActions'
+import { RecommendationActions }  from '../RecommendationActions'
 import {
   RecommendationListItem,
   useDeleteRecommendationMutation,
   useMuteRecommendationMutation
 } from '../services'
-import { getDeleteTooltipText, enabledDeleteStatus } from '../Table'
+import {
+  getDeleteTooltipText,
+  enabledDeleteStatus,
+  toggleMuteFn,
+  clickDeleteFn
+} from '../Table'
 
 import { RecommendationSettingTitle, DeleteOutlinedIcon } from './styledComponents'
 
-import type { RecommendationDetails } from './services'
+import type { EnhancedRecommendation } from './services'
 
-type Props = Pick<RecommendationDetails, 'id' | 'status' | 'trigger' | 'isMuted'> & {
-  link: string
-  type: string
-  actions: React.ReactNode
+export const recommendationTypeMapping = {
+  aiOps: {
+    title: defineMessage({ defaultMessage: 'AI Operations' }),
+    link: 'analytics/recommendations/aiOps'
+  },
+  crrm: {
+    title: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+    link: 'analytics/recommendations/crrm'
+  }
 }
-function RecommendationSetting ({ ...props }: Props) {
-  const { id, status, trigger, link, type, actions } = props
+export function RecommendationSetting (
+  { recommendationDetails }: { recommendationDetails: EnhancedRecommendation }
+) {
+  const { id, status, trigger } = recommendationDetails
+  const { title, link } = recommendationTypeMapping[trigger === 'daily' ? 'crrm' : 'aiOps']
   const { $t } = useIntl()
   const [ muteRecommendation ] = useMuteRecommendationMutation()
-  const [deleteRecommendation] = useDeleteRecommendationMutation()
-  const [ isMuted, setIsMuted ] = useState(props.isMuted)
+  const [ deleteRecommendation ] = useDeleteRecommendationMutation()
+  const [ isMuted, setIsMuted ] = useState( recommendationDetails.isMuted)
 
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
 
-  const toggleCallback = async (checked: boolean) => {
-    const { toggleMute } = await muteRecommendation({ id, mute: checked }).unwrap()
-    if (toggleMute.success) {
-      showToast({
-        type: 'success',
-        content: $t(
-          { defaultMessage: 'Recommendation {state} successfully' },
-          { state: checked ? 'muted' : 'unmuted' }
-        )
-      })
-    } else {
-      showToast({ type: 'error', content: toggleMute.errorMsg })
-    }
-  }
-
   const elements = [
     {
       title: $t({ defaultMessage: 'Actions' }),
-      content: actions
+      content: <RecommendationActions recommendation={{
+        ...recommendationDetails, statusEnum: recommendationDetails.status }} />
     },
     {
       title: $t({ defaultMessage: 'Mute Recommendation' }),
       content: <>
         <Switch
           checked={isMuted}
-          onChange={async checked => {
-            setIsMuted(checked)
-            toggleCallback(checked)
-          }}
+          onChange={async checked => toggleMuteFn(
+            id, checked, muteRecommendation, () => setIsMuted(checked))
+          }
         />
         <p>{$t({ defaultMessage: `While this recommendation is muted, it will be hidden in the UI.
           You can unmute this recommendation via setting icon in the {link}.` },
         { link: <TenantLink to={link}>
-          {$t({ defaultMessage: '{type} table' }, { type })}
+          {$t({ defaultMessage: '{type} table' }, { type: $t(title) })}
         </TenantLink> })
         }</p>
       </>
@@ -74,15 +72,12 @@ function RecommendationSetting ({ ...props }: Props) {
     ...((trigger === 'daily' && enabledDeleteStatus.includes(status))
       ? [{
         title: <RecommendationSettingTitle>
-          <DeleteOutlinedIcon
-            onClick={async () => {
-              await deleteRecommendation({ id }).unwrap()
-              navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}/recommendations/crrm`
-              })
-              // TODO: add toast ?
-            }} />
+          <DeleteOutlinedIcon onClick={()=> clickDeleteFn(id, deleteRecommendation, () => {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/recommendations/crrm`
+            })
+          })} />
           {$t({ defaultMessage: 'Delete Recommendation' })}
         </RecommendationSettingTitle>,
         content: <p>{getDeleteTooltipText({ status } as RecommendationListItem)}</p>
@@ -92,4 +87,3 @@ function RecommendationSetting ({ ...props }: Props) {
 
   return <DetailsActions overlayElements={elements}/>
 }
-export default RecommendationSetting

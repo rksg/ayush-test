@@ -10,12 +10,12 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip }        from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { Loader, TableProps, Tooltip, showToast }            from '@acx-ui/components'
+import { get }                                               from '@acx-ui/config'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                         from '@acx-ui/formatter'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, PathFilter }                from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -140,20 +140,19 @@ export const getDeleteTooltipText = (recommendation: RecommendationListItem) => 
     revertfailed: $t({ defaultMessage: 'revert failed' })
   } as Record<RecommendationListItem['statusEnum'], string>
   const values = {
-    statue: statusMap[recommendation.status as RecommendationListItem['statusEnum']]
+    status: statusMap[recommendation.status as RecommendationListItem['statusEnum']]
   }
 
   return get('IS_MLISA_SA')
     ? $t({ defaultMessage: `
-  Since a previous {statue} has failed, you have the option to delete this,
+  Since a previous {status} has failed, you have the option to delete this,
   in order for RUCKUS AI to re-run the recommendation algorithm for this zone
   in the next 24 hours.` }, values)
     : $t({ defaultMessage: `
-  Since a previous {statue} has failed, you have the option to delete this,
+  Since a previous {status} has failed, you have the option to delete this,
   in order for RUCKUS AI to re-run the recommendation algorithm for this venue
   in the next 24 hours.` }, values)
 }
-
 
 export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
   const stateA = itemA.crrmOptimizedState!
@@ -161,11 +160,50 @@ export const crrmStateSort = (itemA: RecommendationListItem, itemB: Recommendati
   return defaultSort(stateA.order, stateB.order)
 }
 
+export const toggleMuteFn = async (
+  id: string,
+  checked: boolean,
+  muteFn: ReturnType<typeof useMuteRecommendationMutation>[0],
+  callback?: () => void
+) => {
+  const { toggleMute } = await muteFn({ id, mute: checked }).unwrap()
+  callback?.()
+  if (toggleMute.success) {
+    showToast({
+      type: 'success',
+      content: getIntl().$t(
+        { defaultMessage: 'Recommendation {state} successfully' },
+        { state: checked ? 'muted' : 'unmuted' }
+      )
+    })
+  } else {
+    showToast({ type: 'error', content: toggleMute.errorMsg })
+  }
+}
+
+export const clickDeleteFn = async (
+  id: string,
+  deleteFn: ReturnType<typeof useDeleteRecommendationMutation>[0],
+  callback?: () => void
+) => {
+  const { setDeleted } = await deleteFn({ id }).unwrap()
+  callback?.()
+  if (setDeleted.success) {
+    showToast({
+      type: 'success',
+      content: getIntl().$t({ defaultMessage: 'Recommendation was deleted successfully' })
+    })
+  } else {
+    showToast({ type: 'error', content: setDeleted.errorMsg })
+  }
+}
+
 export function RecommendationTable (
   { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
 ) {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics')
 
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
@@ -206,8 +244,7 @@ export function RecommendationTable (
       ),
       onClick: async () => {
         const { id, isMuted } = selectedRecommendation
-        await muteRecommendation({ id, mute: !isMuted }).unwrap()
-        setSelectedRowData([])
+        await toggleMuteFn(id, !isMuted, muteRecommendation, () => setSelectedRowData([]) )
       },
       disabled: selectedMuteDisabled,
       tooltip: selectedMuteDisabled
@@ -219,18 +256,21 @@ export function RecommendationTable (
         : undefined
     },
     {
-      label: $t(defineMessage({ defaultMessage: 'Delete' })),
+      label: $t({ defaultMessage: 'Delete' }),
       onClick: async () => {
-        const { id } = selectedRecommendation
-        await deleteRecommendation({ id }).unwrap()
-        setSelectedRowData([])
+        await clickDeleteFn(selectedRecommendation.id, deleteRecommendation, () => {
+          setSelectedRowData([])
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/recommendations/crrm`
+          })
+        })
       },
       visible: (selectedRows) =>
         ( selectedRows[0] &&
           selectedRows[0].trigger === 'daily' &&
           enabledDeleteStatus.includes(selectedRows[0].statusEnum)
-        )
-          ? true : false,
+        ) ? true : false,
       tooltip: selectedRows => getDeleteTooltipText(selectedRows[0])
     }
   ]

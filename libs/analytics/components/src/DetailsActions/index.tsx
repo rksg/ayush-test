@@ -19,13 +19,13 @@ interface DetailsActionsProps {
 export function DetailsActions ({ overlayElements } : DetailsActionsProps) {
   return <Dropdown
     overlay={<UI.DetailsActions>
-      {overlayElements.map(({ title, content }, index) => (
-        <>
+      {overlayElements.map(({ title, content }, index) =>
+        <span key={`element-${index}`}>
           <Dropdown.OverlayTitle>{title}</Dropdown.OverlayTitle>
           {content}
           {index < overlayElements.length - 1 && <Divider />}
-        </>
-      ))}
+        </span>
+      )}
     </UI.DetailsActions>}
   >
     {() => <Button icon={<ConfigurationOutlined />} />}
