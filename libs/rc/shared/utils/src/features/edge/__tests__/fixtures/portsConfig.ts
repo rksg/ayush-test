@@ -302,7 +302,7 @@ export const mockClusterInterfaceOptionData = {
       serialNumber: 'serialNumber-1',
       portName: 'port3',
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '192.168.14.135',
+      ip: '192.168.14.135/24',
       subnet: '255.255.255.0',
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,

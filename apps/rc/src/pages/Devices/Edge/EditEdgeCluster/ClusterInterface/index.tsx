@@ -11,6 +11,7 @@ import {
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
+  getEdgePortIpFromStatusIp,
   validateClusterInterface,
   validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
@@ -61,7 +62,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
         serialNumber: item.serialNumber,
         interfaceName: currentcClusterInterface?.portName,
         ipMode: currentcClusterInterface?.ipMode,
-        ip: currentcClusterInterface?.ip,
+        ip: getEdgePortIpFromStatusIp(currentcClusterInterface?.ip),
         subnet: currentcClusterInterface?.subnet
       }
     }))
@@ -168,13 +169,13 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       key: 'interfaceName',
       dataIndex: 'interfaceName',
-      render: (data, row) => _.capitalize(row.interfaceName)
+      render: (_data, row) => _.capitalize(row.interfaceName)
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      render: (data, row) => row.ip?.split('/')[0]
+      render: (_data, row) => row.ip
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),

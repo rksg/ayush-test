@@ -10,6 +10,7 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   edgePortIpValidator,
+  getEdgePortIpFromStatusIp,
   optionSorter,
   subnetMaskIpRegExp,
   validateClusterInterface,
@@ -50,7 +51,7 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
 
   const handleInterfaceChange = (value: string) => {
     const currentInterface = interfaceList?.find(item => item.portName === value)
-    form.setFieldValue(rootNamePath.concat('ip'), currentInterface?.ip?.split('/')[0])
+    form.setFieldValue(rootNamePath.concat('ip'), getEdgePortIpFromStatusIp(currentInterface?.ip))
     form.setFieldValue(rootNamePath.concat('subnet'), currentInterface?.subnet)
   }
 
