@@ -10,6 +10,7 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   edgePortIpValidator,
+  getEdgePortIpFromStatusIp,
   optionSorter,
   subnetMaskIpRegExp,
   validateUniqueIp
