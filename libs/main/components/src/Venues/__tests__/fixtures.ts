@@ -85,7 +85,7 @@ export const venueApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -633,7 +633,7 @@ export const venueNetworkApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -661,7 +661,7 @@ export const venuesApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
