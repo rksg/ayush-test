@@ -28,7 +28,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -55,7 +55,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -69,7 +69,16 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    636/14.2K
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      636
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /14.2K
                   </span>
                 </div>
               </div>
@@ -96,7 +105,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -123,7 +132,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -168,7 +177,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -205,7 +214,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -260,7 +269,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jyJJr"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
                 style="width: 50%;"
               >
                 <div
@@ -283,7 +292,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jyJJr"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
                 style="width: 50%;"
               >
                 <div
@@ -338,7 +347,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -361,7 +370,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -375,7 +384,12 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    --/--
+                    --
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /--
                   </span>
                 </div>
               </div>
@@ -402,7 +416,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -425,7 +439,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -466,7 +480,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -489,7 +503,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dfQnAf"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
                 style="width: 50%;"
               >
                 <div
@@ -530,7 +544,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jyJJr"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
                 style="width: 50%;"
               >
                 <div
@@ -553,7 +567,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jyJJr"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
                 style="width: 50%;"
               >
                 <div
