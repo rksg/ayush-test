@@ -44,8 +44,6 @@ export const SANetworkFilter = ({
   shouldShowOnlyDomains = false,
   overrideFilters = {}
 }: SANetworkFilterProps) => {
-
-  console.log('---> shouldShowOnlyDomains', shouldShowOnlyDomains)
   const { setNetworkPath, filters, pathFilters: { path } } = useAnalyticsFilter()
   const networkFilter = { ...filters, shouldQueryAp, shouldQuerySwitch, ...overrideFilters }
   const networkHierarchyQuery = useNetworkHierarchyQuery(
