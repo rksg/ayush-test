@@ -45,7 +45,8 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.DPSK]: 'dpsk',
   [ServiceType.NETWORK_SEGMENTATION]: 'personalIdentityNetwork',
   [ServiceType.WEBAUTH_SWITCH]: 'webAuth',
-  [ServiceType.RESIDENT_PORTAL]: 'residentPortal'
+  [ServiceType.RESIDENT_PORTAL]: 'residentPortal',
+  [ServiceType.WORKFLOW]: 'workflow'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {

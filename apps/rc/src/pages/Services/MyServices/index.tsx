@@ -33,6 +33,7 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isWorkflowEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
@@ -120,6 +121,13 @@ export default function MyServices () {
         skip: !propertyManagementEnabled
       }),
       disabled: !propertyManagementEnabled
+    },
+    {
+      type: ServiceType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
+        skip: !isWorkflowEnabled
+      })
     }
   ]
 

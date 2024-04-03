@@ -336,4 +336,6 @@ export { ReactComponent as UploadDocument } from './icons/UploadDocument.svg'
 export { ReactComponent as UpArrow } from './icons/UpArrow.svg'
 export { ReactComponent as DownArrow } from './icons/DownArrow.svg'
 
+export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
+
 export * from './styledComponents'

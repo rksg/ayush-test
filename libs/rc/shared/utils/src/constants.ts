@@ -123,7 +123,8 @@ export enum ServiceType {
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
   EDGE_SD_LAN = 'SD-LAN',
-  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
+  WORKFLOW = 'Workflow'
 }
 
 export enum ServiceStatus {

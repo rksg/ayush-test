@@ -132,6 +132,8 @@ import SwitchClientList                     from './pages/Users/Switch/ClientLis
 import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import Workflow                             from './pages/Workflow/WorkflowDetails'
+import WorkflowTable                        from './pages/Workflow/WorkflowTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -505,6 +507,16 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT })}
         element={<EditFirewall />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.WORKFLOW, oper: ServiceOperation.DETAIL })}
+        element={<Workflow />}
+      />
+      <Route
+        path={getServiceRoutePath({
+          type: ServiceType.WORKFLOW, oper: ServiceOperation.LIST })}
+        element={<WorkflowTable />}
       />
 
       {isEdgeSdLanEnabled && edgeSdLanRoutes()}

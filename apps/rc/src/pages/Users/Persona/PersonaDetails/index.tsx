@@ -32,6 +32,7 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
+import WorkflowPanel                           from '../../../Workflow/WorkflowPanel'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
@@ -310,6 +311,8 @@ function PersonaDetails () {
             </Col>
           }
         </Row>
+
+        <WorkflowPanel workflowId={''} height={'30vh'}/>
 
 
         <PersonaDevicesTable

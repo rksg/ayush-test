@@ -143,3 +143,16 @@ export const ResidentPortalLink = (props: { id?: string, name?: string }) => {
     </TenantLink>
   )
 }
+
+export const WorkflowLink = (props: { id?: string, name?: string }) => {
+  const { id, name } = props
+  return (
+    <TenantLink to={getServiceDetailsLink({
+      type: ServiceType.WORKFLOW,
+      oper: ServiceOperation.DETAIL,
+      serviceId: id!
+    })}>
+      { name ?? id }
+    </TenantLink>
+  )
+}
