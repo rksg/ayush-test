@@ -194,7 +194,7 @@ function SettingsForm () {
     useGetCertificateTemplatesQuery({ payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 } },
       { selectFromResult: ({ data }) => {
         return {
-          certTemplateOptions: data?.data.map(d => {return { value: d.id, label: d.name }}) }} })
+          certTemplateOptions: data?.data.map(d => ({ value: d.id, label: d.name })) }} })
     return (
       <>
         <GridRow>

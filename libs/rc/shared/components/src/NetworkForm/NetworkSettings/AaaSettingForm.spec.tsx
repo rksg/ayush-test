@@ -4,11 +4,11 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { AaaUrls, CertificateUrls, CommonUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider }                                                              from '@acx-ui/store'
-import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                          from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider }                                                                               from '@acx-ui/store'
+import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                           from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
 import {
@@ -184,7 +184,10 @@ describe('NetworkForm', () => {
     expect(await screen.findByText('Certificate Template')).toBeVisible()
     const addCertTemplateBtn = await screen.findByText('Add')
     await userEvent.click(addCertTemplateBtn)
-    expect(await screen.findByText('Add Certificate Template')).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /Cancel/i }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should render correctly when certificateTemplate disabled', async () => {
