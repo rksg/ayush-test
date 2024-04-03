@@ -595,7 +595,7 @@ export const codes = (status: Recommendation['status']) => ({
   },
   'c-probeflex-6g': {
     category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Enable AirFlexAI 6 GHz' }),
+    summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 6 GHz' }),
     priority: priorities.medium,
     ...probeflexConfig(status)
   }
