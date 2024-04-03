@@ -46,12 +46,6 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const { certificateTemplateId } = useGetCertificateTemplatesQuery(
-    { payload: { pageSize: 1, page: 1, filters: { networkId: [data?.id] } } },
-    {
-      skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
-      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
-    })
 
   useEffect(()=>{
     if(data && (editMode || cloneMode)){
@@ -65,7 +59,7 @@ export function AaaSettingsForm () {
         accountingRadiusId: data.accountingRadiusId,
         authRadiusId: data.authRadiusId,
         useCertificateTemplate: data.useCertificateTemplate,
-        certificateTemplateId: certificateTemplateId,
+        certificateTemplateId: data.certificateTemplateId,
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
@@ -73,7 +67,7 @@ export function AaaSettingsForm () {
         }
       })
     }
-  }, [data, certificateTemplateId])
+  }, [data])
 
   return (<>
     <Row gutter={20}>
@@ -241,7 +235,7 @@ function SettingsForm () {
           width={1200}
           destroyOnClose={true}
         />
-      </>
+      </ >
     )
   }
 

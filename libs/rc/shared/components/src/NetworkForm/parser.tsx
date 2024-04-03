@@ -24,7 +24,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
     authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId,
-    useCertificateTemplate: data.useCertificateTemplate
+    useCertificateTemplate: data.useCertificateTemplate,
+    certificateTemplateId: data.certificateTemplateId
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {

@@ -270,6 +270,10 @@ describe('NetworkForm parser', () => {
       certificateTemplateId: 'testId'
     } as unknown as NetworkSaveData
 
-    expect(tranferSettingsToSave(incomingData, true)).toHaveProperty('useCertificateTemplate')
+    // eslint-disable-next-line max-len
+    expect(tranferSettingsToSave(incomingData, true)).toMatchObject({
+      certificateTemplateId: 'testId',
+      useCertificateTemplate: true
+    })
   })
 })
