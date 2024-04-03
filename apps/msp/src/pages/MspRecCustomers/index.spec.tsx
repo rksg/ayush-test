@@ -248,8 +248,8 @@ describe('MspRecCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+    expect(screen.getByText('Add Property')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -415,7 +415,7 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Property')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
