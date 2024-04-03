@@ -68,7 +68,8 @@ export const SummaryBoxes = ({ filters }: {
         title: defineMessage({ defaultMessage: 'Switches ports in use' }),
         value: `${utilizationSummary.portCount ?
           formatter('countFormat')(utilizationSummary.portCount)
-          : noDataDisplay}/${utilizationSummary.totalPortCount ?
+          : noDataDisplay}`,
+        suffix: `/${utilizationSummary.totalPortCount ?
           formatter('countFormat')(utilizationSummary.totalPortCount) : noDataDisplay}`
       }]
     },
