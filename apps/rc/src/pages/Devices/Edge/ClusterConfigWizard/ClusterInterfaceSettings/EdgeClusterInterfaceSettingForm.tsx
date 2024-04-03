@@ -98,7 +98,10 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select an interface as cluster interface' })
+            }]}
             children={
               <Select
                 onChange={handleInterfaceChange}
