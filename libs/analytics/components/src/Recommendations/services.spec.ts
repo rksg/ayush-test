@@ -408,6 +408,51 @@ describe('Recommendation services', () => {
           text: 'Non-Optimized'
         },
         toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[11],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 2.4 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[12],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 5 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[13],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 6 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
       }
     ]
     expect(error).toBe(undefined)
@@ -475,7 +520,8 @@ describe('Recommendation services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.crrmKpi.initiate({
         ...recommendationPayload,
-        code: 'c-crrm-channel24g-auto'
+        code: 'c-crrm-channel24g-auto',
+        status: 'new'
       })
     )
     expect(status).toBe('fulfilled')

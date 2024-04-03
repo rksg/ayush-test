@@ -9,7 +9,8 @@ import {
   mockedRecommendationFirmware,
   mockRecommendationAutoBackground,
   mockRecommendationNoKPI,
-  mockedRecommendationCRRM
+  mockedRecommendationCRRM,
+  mockRecommendationProbeflexNew
 } from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 import { getRecommendationsText, Values }                  from './Values'
@@ -57,6 +58,14 @@ describe('Recommendation Overview', () => {
     render(<Values details={powerDetails} />, { wrapper: Provider })
     const backgroundScan = await screen.findByText(/"ChannelFly*/i)
     expect(backgroundScan).toBeVisible()
+  })
+
+  it('should render correctly for probeflex', async () => {
+    const probeflexDetails = transformDetailsResponse(
+      mockRecommendationProbeflexNew as unknown as RecommendationDetails)
+    render(<Values details={probeflexDetails} />, { wrapper: Provider })
+    const probeflex = await screen.findByText(/^AirFlexAI$/i)
+    expect(probeflex).toBeVisible()
   })
 
   it('does not show config when null', async () => {

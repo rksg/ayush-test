@@ -15,7 +15,8 @@ import { api, BasicRecommendation, EnhancedRecommendation, RecommendationAp } fr
 
 describe('recommendation services', () => {
   const recommendationPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
+    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
+    status: 'new'
   }
 
   const recommendationApPayload = {
@@ -49,6 +50,7 @@ describe('recommendation services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.recommendationDetails.initiate({
         ...recommendationPayload,
+        isCrrmPartialEnabled: false,
         code: 'c-aclb-enable'
       })
     )
@@ -98,7 +100,10 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate(recommendationPayload)
+      api.endpoints.recommendationDetails.initiate({
+        ...recommendationPayload,
+        isCrrmPartialEnabled: true
+      })
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
