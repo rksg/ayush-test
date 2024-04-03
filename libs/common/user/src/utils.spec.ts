@@ -1,8 +1,10 @@
 import {
   getUserSettingsByPath,
   setDeepUserSettings,
-  getProductKey
+  getProductKey,
+  goToNotFound
 } from './utils'
+
 
 const mockedUserSettings = {
   COMMON: {
@@ -67,6 +69,15 @@ describe('user settings utility', () => {
 
     it('should return origin value when path is using invalid split character', () => {
       expect(getProductKey('INVALID#content')).toEqual('INVALID#content')
+    })
+  })
+
+  describe('goToNotFound', () => {
+    it('should return a TenantNavigate', () => {
+      const result = goToNotFound()
+      expect(result.type.name).toBe('TenantNavigate')
+      expect(result.props.replace).toBeTruthy()
+      expect(result.props.to).toBe('/not-found')
     })
   })
 })

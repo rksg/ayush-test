@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
@@ -40,6 +40,7 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, noDataDisplay }                                             from '@acx-ui/utils'
 
+import HspContext                  from '../../HspContext'
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
 
 export function MspRecCustomers () {
@@ -51,8 +52,7 @@ export function MspRecCustomers () {
 
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
      && isPrimeAdmin
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
@@ -69,6 +69,11 @@ export function MspRecCustomers () {
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -509,8 +514,7 @@ export function MspRecCustomers () {
   return (
     <>
       <PageHeader
-        title={isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
-          : $t({ defaultMessage: 'RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Brand Properties' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [
@@ -520,8 +524,7 @@ export function MspRecCustomers () {
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{ isHspSupportEnabled ? $t({ defaultMessage: 'Add Property' })
-                  : $t({ defaultMessage: 'Add Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add Property' })}</Button>
             </MspTenantLink>
           ]
           : [

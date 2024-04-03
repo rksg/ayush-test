@@ -5,8 +5,11 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm }                                                                                            from '@acx-ui/components'
-import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery }                                     from '@acx-ui/rc/services'
+import { StepsForm }              from '@acx-ui/components'
+import {
+  useGetEnhancedWifiCallingServiceListQuery,
+  useGetWifiCallingServiceQuery
+} from '@acx-ui/rc/services'
 import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
@@ -17,8 +20,21 @@ type WifiCallingSettingFormProps = {
   edit?: boolean
 }
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'qosPriority',
+    'tenantId',
+    'epdgs',
+    'networkIds'
+  ]
+}
+
 const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const { $t } = useIntl()
+  const params = useParams()
   const { edit } = props
 
   const form = Form.useFormInstance()
@@ -26,11 +42,14 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const {
     state, dispatch
   } = useContext(WifiCallingFormContext)
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
-    skip: !useParams().hasOwnProperty('serviceId')
+  const { data } = useGetWifiCallingServiceQuery({ params }, {
+    skip: !params.hasOwnProperty('serviceId')
   })
 
-  const { data: dataList } = useGetWifiCallingServiceListQuery({ params: useParams() })
+  const { data: dataList } = useGetEnhancedWifiCallingServiceListQuery({
+    params,
+    payload: defaultPayload
+  })
 
   const handleServiceName = (serviceName: string) => {
     dispatch({
@@ -118,7 +137,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             { min: 2 },
             { max: 32 },
             { validator: async (rule, value) => {
-              if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
+              if (!edit && value && dataList?.data.length && dataList?.data.findIndex((profile) =>
                 profile.serviceName === value) !== -1
               ) {
                 return Promise.reject(

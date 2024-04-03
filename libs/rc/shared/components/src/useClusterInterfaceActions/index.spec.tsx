@@ -6,7 +6,7 @@ import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfig
 import { Provider, store }                                                                                                 from '@acx-ui/store'
 import { mockServer, renderHook, screen, waitFor, within }                                                                 from '@acx-ui/test-utils'
 
-import { useClusterInterfaceActions } from './useClusterInterfaceActions'
+import { useClusterInterfaceActions } from './'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockClusterInterfaceOptionData, mockEdgePortConfig } = EdgePortConfigFixtures

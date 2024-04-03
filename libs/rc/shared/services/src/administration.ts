@@ -41,7 +41,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {

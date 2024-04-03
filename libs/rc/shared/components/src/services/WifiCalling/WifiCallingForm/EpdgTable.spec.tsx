@@ -7,7 +7,6 @@ import { rest }  from 'msw'
 import { EPDG, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -119,21 +118,19 @@ describe('EpdgTable', () => {
     })
 
     const addButton = screen.getByRole('button', { name: 'Add' })
-    fireEvent.click(addButton)
+    await userEvent.click(addButton)
     expect(screen.getByText('Add ePDG')).toBeInTheDocument()
 
     const domainInput = screen.getByPlaceholderText('Please enter the domain name')
     const ipInput = screen.getByPlaceholderText('Please enter the ip address')
-    fireEvent.change(domainInput,
-      { target: { value: 'aaa.bbb.com' } })
-    fireEvent.change(ipInput,
-      { target: { value: '10.10.10.10' } })
+    await userEvent.type(domainInput, 'aaa.bbb.com')
+    await userEvent.type(ipInput, '10.10.10.10')
     expect(domainInput).toHaveValue('aaa.bbb.com')
     expect(ipInput).toHaveValue('10.10.10.10')
 
     const saveButton = screen.getByRole('button', { name: 'Save' })
     expect(saveButton).toBeInTheDocument()
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton)
 
     await waitFor(() => {
       expect(screen.queryByText('Save')).not.toBeInTheDocument()
@@ -185,15 +182,13 @@ describe('EpdgTable', () => {
     const deleteButton = screen.getByText('Delete')
 
     expect(deleteButton).toBeInTheDocument()
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     await screen.findByText(/delete rule/i)
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete rule/i
     }))
-    await waitFor(() => {
-      expect(screen.queryByText('Delete rule')).not.toBeInTheDocument()
-    })
+    expect(screen.queryByText('Delete rule')).not.toBeInTheDocument()
   })
 })
