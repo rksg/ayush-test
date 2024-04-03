@@ -122,17 +122,22 @@ export function ExpandableApModelList (props: ExpandableApModelListProps) {
     : apModels.join(', ')
 
   const label = generateLabelWrapper(apModelsForDisplay)
+  const chunkApModels = _.chunk([...new Set(apModels)], 10)
+
   return <Space>
     {label}
     {isMoreDevicesTooltipShown &&
       <Tooltip
+        overlayStyle={{ maxWidth: chunkApModels.length > 3 ? '350px' : '250px' }}
         children={
-          <UI.ShowMoreLink>
-            {$t({ defaultMessage: 'See more devices' })}
-          </UI.ShowMoreLink>
+          <UI.ShowMoreLink>{$t({ defaultMessage: 'See more devices' })}</UI.ShowMoreLink>
         }
         title={
-          <ul>{apModels.map(apModel => <li key={apModel}>{apModel}</li>)}</ul>
+          <Space direction='horizontal' align='start' size={10}>
+            {chunkApModels.map((models: string[], index) => {
+              return <ul key={index}>{models.map(model => <li key={model}>{model}</li>)}</ul>
+            })}
+          </Space>
         }
       />
     }
