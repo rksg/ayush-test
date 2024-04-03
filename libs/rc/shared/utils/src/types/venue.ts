@@ -815,7 +815,7 @@ export enum SignalStrengthLevel {
 export interface ApFeatureSet {
   featureName: string,
   requiredFw?: string,
-  requiredModel?: string[]
+  supportedModelFamilies?: string[]
 }
 
 export interface ApCompatibilityFeatureResponse {
