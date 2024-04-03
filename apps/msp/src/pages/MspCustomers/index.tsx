@@ -252,8 +252,7 @@ export function MspCustomers () {
         title: $t({ defaultMessage: 'Address' }),
         dataIndex: 'streetAddress',
         key: 'streetAddress',
-        sorter: true,
-        show: false
+        sorter: true
       },
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
