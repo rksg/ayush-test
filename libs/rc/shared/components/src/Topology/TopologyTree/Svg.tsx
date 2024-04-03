@@ -40,7 +40,7 @@ const Svg: any = (props: any) => {
       const treeContainer = document.querySelector('#treeContainer')
       const containerWidth = treeContainer?.clientWidth || 0
       const containerHeight = treeContainer?.clientHeight || 0
-  
+
       let boundaryDx = translate[0] + dx >= containerWidth ?
         containerWidth : (translate[0] + dx <= 0 ?
           0 : translate[0] + dx)
