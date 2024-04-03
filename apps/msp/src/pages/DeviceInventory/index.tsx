@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { SortOrder }                         from 'antd/lib/table/interface'
 import _                                     from 'lodash'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
@@ -9,7 +11,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -30,6 +31,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 import { AccountType, exportMessageMapping } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -87,8 +90,11 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })

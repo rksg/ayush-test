@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -48,7 +48,8 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
 
-import * as UI from '../Subscriptions/styledComponent'
+import HspContext from '../../HspContext'
+import * as UI    from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
@@ -62,8 +63,11 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
   const isUpgradeMultipleEcEnabled =
     useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
@@ -248,8 +252,7 @@ export function MspCustomers () {
         title: $t({ defaultMessage: 'Address' }),
         dataIndex: 'streetAddress',
         key: 'streetAddress',
-        sorter: true,
-        show: false
+        sorter: true
       },
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
