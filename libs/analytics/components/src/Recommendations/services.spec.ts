@@ -177,6 +177,21 @@ describe('Recommendation services', () => {
     })
   })
 
+  it('returns wlans', async () => {
+    const WLANs = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(recommendationUrl, 'Wlans', { data: { recommendation: { WLANs } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationWlans.initiate({ id: 'id1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(WLANs)
+  })
+
   it('should return recommendation list', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: recommendationListResult
