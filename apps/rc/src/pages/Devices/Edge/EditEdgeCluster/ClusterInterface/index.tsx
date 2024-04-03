@@ -45,16 +45,15 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
-  const clusterData = Form.useWatch('clusterData', form) as ClusterInterfaceTableType[]
   const {
     allInterfaceData,
     isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(currentClusterStatus)
 
   useEffect(() => {
     if(!edgeNodeList || (isInterfaceDataLoading && !allInterfaceData)) return
-    if(clusterData) return
     form.setFieldValue('clusterData', edgeNodeList.map(item => {
       const currentcClusterInterface = getTargetInterfaceConfig(item.serialNumber)
       return {
@@ -91,7 +90,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataLoading, isFetching: isInterfaceDataFetching }]}>
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
