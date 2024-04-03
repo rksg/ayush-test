@@ -220,7 +220,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApModelFirmwareList: {
     method: 'post',
-    url: '/venues/apModelFirmwares/query',
+    url: '/venues/apModelFirmwares/schedules/query',
     newApi: true
   },
   getAllApModelFirmwareList: {
