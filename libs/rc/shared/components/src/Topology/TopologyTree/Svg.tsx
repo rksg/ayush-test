@@ -36,7 +36,19 @@ const Svg: any = (props: any) => {
       const { startX, startY } = event.subject
       const dx = event.sourceEvent.layerX - startX
       const dy = event.sourceEvent.layerY - startY
-      setTranslate([translate[0] + dx, translate[1] + dy])
+
+      const treeContainer = document.querySelector('#treeContainer')
+      const containerWidth = treeContainer?.clientWidth || 0
+      const containerHeight = treeContainer?.clientHeight || 0
+  
+      let boundaryDx = translate[0] + dx >= containerWidth ?
+        containerWidth : (translate[0] + dx <= 0 ?
+          0 : translate[0] + dx)
+      let boundaryDy = translate[1] + dy >= containerHeight ?
+        containerHeight : (translate[1] + dy <= -(containerHeight) ?
+          -(containerHeight) : translate[1] + dy)
+
+      setTranslate([boundaryDx, boundaryDy])
       closeTooltipHandler()
       closeLinkTooltipHandler()
     })
