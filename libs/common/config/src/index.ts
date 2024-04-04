@@ -5,6 +5,7 @@ type commonEnvironment = {
   PENDO_API_KEY: string
   STATIC_ASSETS: string
   SPLIT_PROXY_ENDPOINT: string
+  RETAIN_PERIOD_DAYS: string
 }
 
 /**

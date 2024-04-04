@@ -60,3 +60,6 @@ data:
       - configmap: configmap-acx-ui
         key: mib.files
         name: MIB_FILES
+      - configmap: configmap-acx-ui
+        key: retain.period.days
+        name: RETAIN_PERIOD_DAYS

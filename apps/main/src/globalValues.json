@@ -16,5 +16,6 @@
   "NEW_API_DOMAIN_NAME": "api.dev.ruckus.cloud",
   "STATIC_ASSETS": "",
   "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/",
-  "MIB_FILES": "https://docs.ruckus.cloud/mib/"
+  "MIB_FILES": "https://docs.ruckus.cloud/mib/",
+  "RETAIN_PERIOD_DAYS": "380"
 }
