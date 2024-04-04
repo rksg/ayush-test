@@ -376,3 +376,7 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
       return ''
   }
 }
+
+export const getEdgePortIpFromStatusIp = (statusIp?: string) => {
+  return statusIp?.split('/')[0]
+}
