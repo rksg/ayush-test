@@ -73,7 +73,6 @@ const PendingActivationsTable = () => {
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
 
-
   const columns: TableProps<Entitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'Order Date' }),

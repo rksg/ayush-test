@@ -34,9 +34,8 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import * as UI                from './styledComponent'
-import { SubscriptionHeader } from './SubscriptionHeader'
-import { SubscriptionTabs }   from './SubscriptionsTab'
+import * as UI                    from '../styledComponent'
+import { SubscriptionsTabHeader } from '../SubscriptionsTabHeader'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -78,7 +77,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
-const SubscriptionTable = () => {
+const MySubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
@@ -289,17 +288,13 @@ const SubscriptionTable = () => {
   )
 }
 
-const Subscriptions = () => {
-  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
-
+const MySubscriptions = () => {
   return (
-    isPendingActivationEnabled
-      ? <SubscriptionTabs />
-      : <SpaceWrapper fullWidth size='large' direction='vertical'>
-        <SubscriptionHeader />
-        <SubscriptionTable />
-      </SpaceWrapper>
+    <SpaceWrapper fullWidth size='large' direction='vertical'>
+      <SubscriptionsTabHeader />
+      <MySubscriptionTable />
+    </SpaceWrapper>
   )
 }
 
-export default Subscriptions
+export default MySubscriptions

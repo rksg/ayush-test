@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
 import { Alert, Button, Space } from 'antd'
 import moment                   from 'moment'
-import { IntlShape, useIntl }   from 'react-intl'
+import { useIntl }              from 'react-intl'
 
 import {
   Loader,
@@ -11,12 +11,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { useGetMspProfileQuery }                                  from '@acx-ui/msp/services'
-import { MSPUtils }                                               from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                           from '@acx-ui/rc/components'
+import { get }                             from '@acx-ui/config'
+import { useIsTierAllowed, TierFeatures }  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
+import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -34,61 +34,18 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import * as UI                from './styledComponent'
-import { SubscriptionHeader } from './SubscriptionHeader'
-import { SubscriptionTabs }   from './SubscriptionsTab'
+import * as UI from '../styledComponent'
 
-const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
-  { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
-  {
-    key: EntitlementDeviceType.ANALYTICS,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.ANALYTICS )
-  },
-  {
-    key: EntitlementDeviceType.SWITCH,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.SWITCH )
-  },
-  {
-    key: EntitlementDeviceType.WIFI,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.WIFI )
-  },
-  {
-    key: EntitlementDeviceType.EDGE,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.EDGE )
-  },
-  {
-    key: EntitlementDeviceType.LTE,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.LTE )
-  }
-]
-
-const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
-  { key: '', value: $t({ defaultMessage: 'Show All' }) },
-  {
-    key: 'active',
-    value: $t({ defaultMessage: 'Show Active' })
-  },
-  {
-    key: 'expired',
-    value: $t({ defaultMessage: 'Show Expired' })
-  },
-  {
-    key: 'future',
-    value: $t({ defaultMessage: 'Show Future' })
-  }
-]
-
-const SubscriptionTable = () => {
+const ActivatedPurchasesTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
-  const licenseTypeOpts = subscriptionTypeFilterOpts($t)
+  //   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -96,48 +53,33 @@ const SubscriptionTable = () => {
 
 
   const columns: TableProps<Entitlement>['columns'] = [
-    ...(isDeviceAgnosticEnabled ? [
-      {
-        title: $t({ defaultMessage: 'Part Number' }),
-        dataIndex: 'sku',
-        key: 'sku',
-        sorter: { compare: sortProp('sku', defaultSort) }
-      }
-    ]: [
-      {
-        title: $t({ defaultMessage: 'Subscription' }),
-        dataIndex: 'deviceType',
-        key: 'deviceType',
-        filterMultiple: false,
-        filterValueNullable: true,
-        filterable: licenseTypeOpts.filter(o =>
-          (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
-          || o.key !== EntitlementDeviceType.EDGE
-        ),
-        sorter: { compare: sortProp('deviceType', defaultSort) },
-        render: function (data: React.ReactNode, row: Entitlement) {
-          return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Type' }),
-        dataIndex: 'deviceSubType',
-        key: 'deviceSubType',
-        sorter: { compare: sortProp('deviceSubType', defaultSort) },
-        render: function (data: React.ReactNode, row: Entitlement) {
-          if (row.tempLicense === true) {
-            return EntitlementUtil.tempLicenseToString(true)
-          } else {
-            if (row.deviceType === EntitlementDeviceType.SWITCH)
-              return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-            else
-              return EntitlementUtil.tempLicenseToString(false)
-          }
-        }
-      }
-    ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: $t({ defaultMessage: 'SPA Activation Code' }),
+      dataIndex: 'sku',
+      key: 'sku',
+      filterable: true,
+      sorter: { compare: sortProp('sku', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Part Number Code' }),
+      dataIndex: 'deviceSubType',
+      key: 'deviceSubType',
+      filterable: true,
+      sorter: { compare: sortProp('deviceSubType', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Part Description' }),
+      dataIndex: 'assignedLicense',
+      key: 'assignedLicense',
+      show: isOnboardedMsp,
+      sorter: { compare: sortProp('assignedLicense', defaultSort) },
+      render: function (data: React.ReactNode, row: Entitlement) {
+        return row.assignedLicense
+          ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Paid' })
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Part Number Qty' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
@@ -145,20 +87,8 @@ const SubscriptionTable = () => {
         return row.quantity
       }
     },
-    ...(isOnboardedMsp ? [
-      {
-        title: $t({ defaultMessage: 'Source' }),
-        dataIndex: 'assignedLicense',
-        key: 'assignedLicense',
-        show: isOnboardedMsp,
-        sorter: { compare: sortProp('assignedLicense', defaultSort) },
-        render: function (data: React.ReactNode, row: Entitlement) {
-          return row.assignedLicense
-            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Paid' })
-        }
-      }] : []),
     {
-      title: $t({ defaultMessage: 'Starting Date' }),
+      title: $t({ defaultMessage: 'Start Date' }),
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       sorter: { compare: sortProp('effectiveDate', dateSort) },
@@ -167,7 +97,7 @@ const SubscriptionTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Expiration Date' }),
+      title: $t({ defaultMessage: 'End Date' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: { compare: sortProp('expirationDate', dateSort) },
@@ -191,24 +121,6 @@ const SubscriptionTable = () => {
         return <TimeLeftWrapper>{
           EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      key: 'status',
-      filterMultiple: false,
-      filterValueNullable: true,
-      filterable: statusTypeFilterOpts($t),
-      sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        if (row.status === 'active') {
-          return $t({ defaultMessage: 'Active' })
-        } else if (row.status === 'future') {
-          return $t({ defaultMessage: 'Future' })
-        } else {
-          return $t({ defaultMessage: 'Expired' })
-        }
       }
     }
   ]
@@ -289,17 +201,12 @@ const SubscriptionTable = () => {
   )
 }
 
-const Subscriptions = () => {
-  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
-
+const ActivatedPurchases = () => {
   return (
-    isPendingActivationEnabled
-      ? <SubscriptionTabs />
-      : <SpaceWrapper fullWidth size='large' direction='vertical'>
-        <SubscriptionHeader />
-        <SubscriptionTable />
-      </SpaceWrapper>
+    <SpaceWrapper fullWidth size='large' direction='vertical'>
+      <ActivatedPurchasesTable />
+    </SpaceWrapper>
   )
 }
 
-export default Subscriptions
+export default ActivatedPurchases

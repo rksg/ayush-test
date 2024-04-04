@@ -1,7 +1,8 @@
 import {
   LicenseUrlsInfo,
   Entitlement,
-  EntitlementBanner
+  EntitlementBanner,
+  EntitlementActivations
 } from '@acx-ui/rc/utils'
 import { baseLicenseApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -28,11 +29,23 @@ export const licenseApi = baseLicenseApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'License', id: 'BANNERS' }]
+    }),
+    entitlementActivationss: build.query<EntitlementActivations[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const EntitlementActivationReq =
+          createHttpRequest(LicenseUrlsInfo.getEntitlementsActivations, params)
+        return {
+          ...EntitlementActivationReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
     })
   })
 })
 
 export const {
   useEntitlementListQuery,
-  useEntitlementBannersQuery
+  useEntitlementBannersQuery,
+  useEntitlementActivationssQuery
 } = licenseApi

@@ -26,3 +26,21 @@ export interface EntitlementBanner {
   type: LicenseBannerTypeEnum;
 }
 
+export interface EntitlementActivations {
+  orderId: string,
+  salesOrderId: string,
+  productName: string,
+  productCode: string,
+  productId: string,
+  quantity: 100,
+  registeredQuantity: number,
+  remainingQuantity: number,
+  spaStartDate: string,
+  spaEndDate: string,
+  productCategory: string,
+  productClass: string,
+  orderSoNumber: string,
+  orderCreateDate: string,
+  orderRegistrationCode: string,
+  orderAcxRegistrationCode:string
+}
