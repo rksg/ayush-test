@@ -11,12 +11,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { useGetMspProfileQuery }                                  from '@acx-ui/msp/services'
-import { MSPUtils }                                               from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                           from '@acx-ui/rc/components'
+import { get }                             from '@acx-ui/config'
+import { useIsTierAllowed, TierFeatures }  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
+import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -36,30 +36,6 @@ import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                    from '../styledComponent'
 import { SubscriptionsTabHeader } from '../SubscriptionsTabHeader'
-
-const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
-  { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
-  {
-    key: EntitlementDeviceType.ANALYTICS,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.ANALYTICS )
-  },
-  {
-    key: EntitlementDeviceType.SWITCH,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.SWITCH )
-  },
-  {
-    key: EntitlementDeviceType.WIFI,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.WIFI )
-  },
-  {
-    key: EntitlementDeviceType.EDGE,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.EDGE )
-  },
-  {
-    key: EntitlementDeviceType.LTE,
-    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.LTE )
-  }
-]
 
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
@@ -81,64 +57,28 @@ const MySubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
-  const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
 
-
   const columns: TableProps<Entitlement>['columns'] = [
-    ...(isDeviceAgnosticEnabled ? [
-      {
-        title: $t({ defaultMessage: 'Part Number' }),
-        dataIndex: 'sku',
-        key: 'sku',
-        sorter: { compare: sortProp('sku', defaultSort) }
-      }
-    ]: [
-      {
-        title: $t({ defaultMessage: 'Subscription' }),
-        dataIndex: 'deviceType',
-        key: 'deviceType',
-        filterMultiple: false,
-        filterValueNullable: true,
-        filterable: licenseTypeOpts.filter(o =>
-          (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
-          || o.key !== EntitlementDeviceType.EDGE
-        ),
-        sorter: { compare: sortProp('deviceType', defaultSort) },
-        render: function (data: React.ReactNode, row: Entitlement) {
-          return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Type' }),
-        dataIndex: 'deviceSubType',
-        key: 'deviceSubType',
-        sorter: { compare: sortProp('deviceSubType', defaultSort) },
-        render: function (data: React.ReactNode, row: Entitlement) {
-          if (row.tempLicense === true) {
-            return EntitlementUtil.tempLicenseToString(true)
-          } else {
-            if (row.deviceType === EntitlementDeviceType.SWITCH)
-              return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-            else
-              return EntitlementUtil.tempLicenseToString(false)
-          }
-        }
-      }
-    ]),
+    {
+      title: $t({ defaultMessage: 'Part Number' }),
+      dataIndex: 'sku',
+      key: 'sku',
+      sorter: { compare: sortProp('sku', defaultSort) }
+    },
     {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      align: 'center',
       sorter: { compare: sortProp('quantity', defaultSort) },
       render: function (_, row) {
         return row.quantity
