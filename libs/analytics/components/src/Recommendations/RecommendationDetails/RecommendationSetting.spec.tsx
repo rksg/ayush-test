@@ -153,4 +153,28 @@ describe('RecommendationSetting', () => {
       search: ''
     })
   })
+  it('should handle delete error correctly', async () => {
+    mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: false, errorCode: '1', errorMsg: 'error' } })
+    })])
+    render(
+      <Provider>
+        <RecommendationSetting recommendationDetails={{
+          ...mockedRecommendationCRRM, status: 'applyfailed' } as EnhancedRecommendation}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
+    await userEvent.click(await screen.findByTestId('DeleteOutlined'))
+    expect(showToast).toHaveBeenCalledWith({
+      type: 'error',
+      content: 'error'
+    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/analytics/recommendations/crrm',
+      hash: '',
+      search: ''
+    })
+  })
 })
