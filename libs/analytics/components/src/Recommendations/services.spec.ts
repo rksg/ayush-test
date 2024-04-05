@@ -507,6 +507,27 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
+  it('should schedule with wlans', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useScheduleRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        id: 'test',
+        type: 'Apply',
+        scheduledAt: '7-15-2023',
+        wlans: [{ ssid: 'test', name: 'test' }]
+      })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
   it('should cancel correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })

@@ -501,13 +501,13 @@ export const api = recommendationApi.injectEndpoints({
             $id: String,
             ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
-            $wlans: [WLANInput]
+            ${payload.wlans ? '$wlans: [WLANInput]' : ''}
           ) {
             schedule(
               id: $id,
               ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
-              scheduledAt: $scheduledAt,
-              wlans: $wlans
+              ${payload.wlans ? 'wlans: $wlans,' : ''}
+              scheduledAt: $scheduledAt
             ) {
               success
               errorMsg
