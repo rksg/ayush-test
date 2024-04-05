@@ -178,8 +178,8 @@ function ApplyCalendar ({
         <Select
           mode='multiple'
           maxTagCount='responsive'
-          showSearch
           showArrow
+          showSearch={false}
           style={{ width: '260px', margin: '10px auto' }}
           onChange={wlans.select}
           placeholder={$t({ defaultMessage: 'Select networks' })}
