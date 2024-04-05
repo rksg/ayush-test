@@ -1,11 +1,15 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetUsersQuery } from '@acx-ui/analytics/services'
+import { PageHeader, Tabs } from '@acx-ui/components'
+// import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { OnboardedSystems } from '../OnboardedSystems'
 import { Support }          from '../Support'
+import Users                from '../Users'
 import { WebhooksTable }    from '../Webhooks'
 
 export enum AccountManagementTabEnum {
@@ -29,7 +33,13 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
+  // const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
+  const usersQuery = useGetUsersQuery()
+  const [usersCount, setUsersCount] = useState(0)
+  useEffect(() => {
+    usersQuery.data && setUsersCount(usersQuery.data.length)
+  }, [usersQuery.data])
+
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
     title: $t({ defaultMessage: 'Onboarded Systems' }),
@@ -37,8 +47,11 @@ const useTabs = () : Tab[] => {
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: $t({ defaultMessage: 'Users' }),
-    url: isNewUserRolesEnabled ? undefined : '/analytics/admin/users'
+    title: $t(
+      { defaultMessage: 'Users ({userCount, plural, zero {0} one {1} other {#}})' },
+      { userCount: usersCount || 0 }
+    ),
+    component: <Users />
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,
