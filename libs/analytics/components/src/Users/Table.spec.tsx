@@ -1,6 +1,8 @@
 import '@testing-library/react'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { RolesEnum }                                                from '@acx-ui/analytics/utils'
 import { Provider, rbacApiURL }                                     from '@acx-ui/store'
 import { findTBody, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 import { noDataDisplay }                                            from '@acx-ui/utils'
@@ -18,10 +20,19 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 const toggleDrawer = jest.fn()
 const setSelectedRow = jest.fn()
-const getLatestUserDetails = jest.fn()
+const refreshUserDetails = jest.fn()
 const handleDeleteUser = jest.fn()
 const setDrawerType = jest.fn()
-const setUsersCount = jest.fn()
+const setOpenDrawer = jest.fn()
+const setVisible = jest.fn()
+const selectedRow = null
+const openDrawer = false
+const isUsersPageEnabled = true
+const isEditMode = true
+const deleteUser = {
+  deleteUser: false,
+  showModal: false
+}
 describe('UsersTable', () => {
   beforeEach(() => {
     mockServer.use(
@@ -34,13 +45,20 @@ describe('UsersTable', () => {
   })
   it('should render table correctly', async () => {
     render(<UsersTable
+      data={mockMangedUsers}
       toggleDrawer={toggleDrawer}
+      selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
+      refreshUserDetails={refreshUserDetails}
       handleDeleteUser={handleDeleteUser}
-      setUsersCount={setUsersCount}
       setDrawerType={setDrawerType}
-      data={mockMangedUsers} />,
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
@@ -55,81 +73,137 @@ describe('UsersTable', () => {
     expect(await screen.findByText('userFirst userSecond')).toBeVisible()
     expect(await screen.findByText('userThird userFourth')).toBeVisible()
     expect(await screen.findByText('userRej userRej')).toBeVisible()
-    expect(setUsersCount).toHaveBeenCalledWith(5)
   })
   it('should render undefined data table correctly', async () => {
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={undefined}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType} />,
+      toggleDrawer={toggleDrawer}
+      selectedRow={selectedRow}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
-    expect(setUsersCount).toHaveBeenCalledWith(0)
   })
   it('should handle the edit callback', async () => {
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType}/>,
+      toggleDrawer={toggleDrawer}
+      selectedRow={mockMangedUsers[0]}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('EditOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('EditOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    expect(editButton).toBeVisible()
+    fireEvent.click(editButton)
+
     expect(setDrawerType).toHaveBeenCalledWith('edit')
-    expect(toggleDrawer).toBeCalledTimes(1)
-    expect(setUsersCount).toHaveBeenCalledWith(1)
+    expect(toggleDrawer).toHaveBeenCalledTimes(1)
   })
   it('should handle the delete callback', async () => {
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType}/>,
+      toggleDrawer={toggleDrawer}
+      selectedRow={mockMangedUsers[0]}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('DeleteOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    fireEvent.click(deleteButton)
+
     expect(handleDeleteUser).toBeCalledTimes(1)
-    expect(setUsersCount).toHaveBeenCalledWith(1)
   })
   it('should handle the refresh callback', async () => {
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={[mockMangedUsers[0]]}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType} />,
+      toggleDrawer={toggleDrawer}
+      selectedRow={mockMangedUsers[0]}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
-    expect(await screen.findByTestId('Reload')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('Reload'))
-    expect(getLatestUserDetails).toBeCalledTimes(1)
-    expect(setUsersCount).toHaveBeenCalledWith(1)
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    expect(refreshButton).toBeVisible()
+    fireEvent.click(refreshButton)
+
+    expect(refreshUserDetails).toBeCalledTimes(1)
   })
   it('should disable edit and delete for the same user', async () => {
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={mockMangedUsers}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType} />,
+      toggleDrawer={toggleDrawer}
+      selectedRow={selectedRow}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
-    expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(4)
-    expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(4)
-    expect(setUsersCount).toHaveBeenCalledWith(5)
+
+    const radio = await screen.findAllByRole('radio')
+    await userEvent.click(radio[0])
+
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(editButton).toBeVisible()
+    expect(deleteButton).toBeVisible()
+
+    expect(editButton).toBeDisabled()
+    expect(deleteButton).toBeDisabled()
   })
   it('should disable edit and delete for non host user', async () => {
     jest.mock('@acx-ui/analytics/utils', () => ({
@@ -147,7 +221,7 @@ describe('UsersTable', () => {
       email: 'dog1@ruckuswireless.com.uat',
       accountId: '1234',
       accountName: 'RUCKUS NETWORKS, INC',
-      role: 'admin' as const,
+      role: RolesEnum.ADMIN,
       tenantId: '0015000000GlI7SAAV',
       resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
       resourceGroupName: 'default',
@@ -156,16 +230,31 @@ describe('UsersTable', () => {
       invitation: null
     }
     render(<UsersTable
-      toggleDrawer={toggleDrawer}
-      setSelectedRow={setSelectedRow}
-      getLatestUserDetails={getLatestUserDetails}
-      handleDeleteUser={handleDeleteUser}
       data={[user]}
-      setUsersCount={setUsersCount}
-      setDrawerType={setDrawerType} />,
+      toggleDrawer={toggleDrawer}
+      selectedRow={user}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      deleteUser={deleteUser}
+    />,
     { wrapper: Provider })
-    expect((await screen.findAllByTestId('EditOutlinedDisabledIcon')).length).toEqual(1)
-    expect((await screen.findAllByTestId('DeleteOutlinedDisabledIcon')).length).toEqual(1)
-    expect(setUsersCount).toHaveBeenCalledWith(1)
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(editButton).toBeVisible()
+    expect(deleteButton).toBeVisible()
+
+    expect(editButton).toBeDisabled()
+    expect(deleteButton).toBeDisabled()
   })
 })

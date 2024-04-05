@@ -28,7 +28,7 @@ describe('AccountManagement', () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Onboarded Systems')).toBeVisible()
-    expect(await screen.findByText('Users')).toBeVisible()
+    expect(await screen.findByText('Users (0)')).toBeVisible()
     expect(await screen.findByText('Labels')).toBeVisible()
     expect(await screen.findByText('Resource Groups')).toBeVisible()
     expect(await screen.findByText('Support')).toBeVisible()
@@ -54,7 +54,7 @@ describe('AccountManagement', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    await userEvent.click(await screen.findByText('Users'))
+    await userEvent.click(await screen.findByText('Users (0)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/analytics/admin/users', hash: '', search: ''
     })

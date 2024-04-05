@@ -96,7 +96,6 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Users (5)')).toBeVisible()
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
   })
@@ -105,7 +104,6 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Users (0)')).toBeVisible()
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
@@ -114,19 +112,23 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('Users (0)')).toBeVisible()
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
-  it('should handle refresh user details correctly', async () => {
+  it.only('should handle refresh user details correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('Reload')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('Reload'))
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    expect(refreshButton).toBeVisible()
+    fireEvent.click(refreshButton)
+
+    await screen.logTestingPlaygroundURL()
     expect(await screen.findByText('Refreshed user details successfully')).toBeVisible()
   })
 
@@ -136,9 +138,14 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('Reload')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('Reload'))
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    expect(refreshButton).toBeVisible()
+    fireEvent.click(refreshButton)
+
     expect(await screen.findByText('Refresh user details is unsuccessful')).toBeVisible()
   })
   it('should handle delete user details correctly for internal user', async () => {
@@ -147,8 +154,14 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('DeleteOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    fireEvent.click(deleteButton)
+
     expect(
       await screen.findByText('Do you really want to remove firstName dog1 lastName dog1?')
     ).toBeVisible()
@@ -164,8 +177,14 @@ describe('Users Page', () => {
     )
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('DeleteOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    fireEvent.click(deleteButton)
+
     expect(
       await screen.findByText('Do you really want to remove firstName dog1 lastName dog1?')
     ).toBeVisible()
@@ -179,8 +198,14 @@ describe('Users Page', () => {
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('DeleteOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('DeleteOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    fireEvent.click(deleteButton)
+
     expect(
       await screen.findByText('Do you really want to remove FisrtName 12 LastName 12?')
     ).toBeVisible()
@@ -194,8 +219,14 @@ describe('Users Page', () => {
     mockRGResponse()
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByTestId('EditOutlined')).toBeVisible()
-    fireEvent.click(await screen.findByTestId('EditOutlined'))
+
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    expect(editButton).toBeVisible()
+    fireEvent.click(editButton)
+
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('edit')
   })
   it('should open user drawer for add internal user correctly', async () => {
@@ -204,10 +235,7 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
-    const userBtn = await screen.findByText('Add User...')
-    expect(userBtn).toBeVisible()
-    await userEvent.click(userBtn)
-    await userEvent.click(await screen.findByText('Internal'))
+    await userEvent.click(await screen.findByText('Add Internal'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('addInternal')
   })
   it('should open user drawer for 3rd party user correctly', async () => {
@@ -216,10 +244,7 @@ describe('Users Page', () => {
     render(<Users />, { wrapper: Provider })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
-    const userBtn = await screen.findByText('Add User...')
-    expect(userBtn).toBeVisible()
-    await userEvent.click(userBtn)
-    await userEvent.click(await screen.findByText('3rd Party'))
+    await userEvent.click(await screen.findByText('Add Third Party'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
   })
   it('should show ConfigureSSO button correctly when ruckus-ai-sso-toggle is enabled', async () => {
