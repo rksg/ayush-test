@@ -23,7 +23,7 @@ export type RecommendationKpi = Record<string, {
 
 export type RecommendationDetails = {
   id: string;
-  code: string;
+  code: keyof typeof codes;
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
