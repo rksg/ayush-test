@@ -116,7 +116,7 @@ describe('Recommendation Kpis', () => {
       transformDetailsResponse(mockRecommendationProbeflexNew as unknown as RecommendationDetails)
     render(<Kpis details={probeflexDetails} />)
     expect(await screen.findByText(
-      'Average management traffic per client before the recommendation was applied'
+      'Current average management traffic per client'
     )).toBeVisible()
   })
 

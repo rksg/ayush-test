@@ -32,7 +32,7 @@ export const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     preferences
   } = details
-  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes(status)[code]
+  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
   return {
     status,
     code,
@@ -49,7 +49,7 @@ export const getValues = (details: EnhancedRecommendation) => {
 }
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
-  return codes(recommendation.status)[recommendation.code]
+  return codes[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
@@ -83,8 +83,7 @@ export const getRecommendationsText = (
     currentValue,
     recommendedValue,
     appliedOnce,
-    code,
-    status
+    code
   } = details
 
   const metadata = chain(details.metadata)
@@ -93,7 +92,7 @@ export const getRecommendationsText = (
     .fromPairs()
     .value()
 
-  const recommendationInfo = codes(status)[code]
+  const recommendationInfo = codes[code]
   const {
     appliedReasonText,
     valueFormatter,

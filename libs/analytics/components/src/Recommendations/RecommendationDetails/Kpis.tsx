@@ -8,7 +8,7 @@ import { Card, Tooltip, TrendPill }  from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import { codes } from '../config'
+import { codes, filterKpisByStatus } from '../config'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -25,7 +25,7 @@ import {
 
 const getKpis = (details: EnhancedRecommendation) => {
   const { code, status } = details
-  const configs = codes(status)[code].kpis
+  const configs = filterKpisByStatus(codes[code].kpis, status)
   const kpis = configs.map((config) => {
     const { current, previous } = get(
       details,

@@ -1,13 +1,13 @@
 import { gql }               from 'graphql-request'
-import { get, snakeCase }    from 'lodash'
+import { snakeCase }         from 'lodash'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue }       from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText, Recommendation } from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue, filterKpisByStatus } from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText }                               from '../services'
 
 
 export type BasicRecommendation = {
@@ -23,7 +23,7 @@ export type RecommendationKpi = Record<string, {
 
 export type RecommendationDetails = {
   id: string;
-  code: keyof ReturnType<typeof codes>;
+  code: string;
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
@@ -78,7 +78,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
-  } = codes(status)[code]
+  } = codes[code]
   const appliedPlus24h = moment(appliedTime).add(24, 'hours')
   const monitoring = (
     status === 'applied' &&
@@ -109,10 +109,9 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } as EnhancedRecommendation
 }
 
-export const kpiHelper = (code: string, status: Recommendation['status']) => {
+export const kpiHelper = (code: string, status: EnhancedRecommendation['status']) => {
   if (!code) return ''
-  const data = codes(status)[code]
-  return get(data, ['kpis'])
+  return filterKpisByStatus(codes[code].kpis, status)
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
       return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
@@ -157,7 +156,7 @@ export const api = recommendationApi.injectEndpoints({
               ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(code!, status)}
+              ${kpiHelper(code!, status as EnhancedRecommendation['status'])}
             }
           }
         `,

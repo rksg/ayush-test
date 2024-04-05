@@ -296,7 +296,7 @@ export const api = recommendationApi.injectEndpoints({
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            const detail = codes(status)[getCode]
+            const detail = codes[getCode]
             detail && recommendations.push({
               ...recommendation,
               id: newId,
@@ -337,7 +337,7 @@ export const api = recommendationApi.injectEndpoints({
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            const detail = codes(status)[getCode]
+            const detail = codes[getCode]
             detail && recommendations.push({
               ...recommendation,
               priority: detail.priority,
@@ -399,7 +399,7 @@ export const api = recommendationApi.injectEndpoints({
           const getCode = code === 'unknown'
             ? status as keyof typeof codes
             : code as keyof typeof codes
-          const detail = codes(status)[getCode]
+          const detail = codes[getCode]
           detail && recommendations.push({
             ...recommendation,
             id: newId,

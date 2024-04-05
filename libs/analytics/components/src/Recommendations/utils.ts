@@ -7,6 +7,7 @@ import { getIntl }   from '@acx-ui/utils'
 import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
 
+
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
   | Array<{
     radio: string,
@@ -71,4 +72,3 @@ export const crrmText = (value: CrrmTextType) => {
     })
   }
 }
-
