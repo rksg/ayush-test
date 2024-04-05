@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useGetUsersQuery } from '@acx-ui/analytics/services'
-import { PageHeader, Tabs } from '@acx-ui/components'
-// import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useGetUsersQuery }           from '@acx-ui/analytics/services'
+import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { OnboardedSystems } from '../OnboardedSystems'
@@ -31,11 +30,16 @@ interface Tab {
   headerExtra?: JSX.Element[]
 }
 
+interface CountContextType {
+  usersCount: number,
+  setUsersCount: (count: number) => void
+}
+export const CountContext = createContext({} as CountContextType)
+
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  // const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
   const usersQuery = useGetUsersQuery()
-  const [usersCount, setUsersCount] = useState(0)
+  const [usersCount, setUsersCount] = useState(usersQuery.data?.length || 0)
   useEffect(() => {
     usersQuery.data && setUsersCount(usersQuery.data.length)
   }, [usersQuery.data])
@@ -51,7 +55,9 @@ const useTabs = () : Tab[] => {
       { defaultMessage: 'Users ({userCount, plural, zero {0} one {1} other {#}})' },
       { userCount: usersCount || 0 }
     ),
-    component: <Users />
+    component: <CountContext.Provider value={{ usersCount, setUsersCount }}>
+      <Users />
+    </CountContext.Provider>
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,

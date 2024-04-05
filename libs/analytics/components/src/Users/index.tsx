@@ -76,7 +76,6 @@ const Users = () => {
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<DrawerType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
-  const [retrieveUserDetails, setRetrieveUserDetails] = useState(false)
   const [deleteUser, setDeleteUser] = useState({ deleteUser: false, showModal: false })
   const usersQuery = useGetUsersQuery()
   const [refreshUserDetails] = useRefreshUserDetailsMutation()
@@ -88,23 +87,6 @@ const Users = () => {
   const ssoConfig = getSSOsettings(settingsQuery.data)
   const isEditMode = typeof ssoConfig?.metadata === 'string'
 
-  useEffect(() => {
-    if (retrieveUserDetails && selectedRow) {
-      refreshUserDetails({ userId: selectedRow.id })
-        .then((response) => {
-          usersQuery.refetch()
-            .then( () => {
-              const isSuccess = (response as { data: string })?.data
-              showToast({
-                type: isSuccess ? 'success' : 'error',
-                content: $t(isSuccess ? messages.refreshSuccessful: messages.refreshFailure)
-              })
-            }
-            )
-        }).finally(() => setRetrieveUserDetails(false))
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [retrieveUserDetails])
 
   useEffect(() => {
     if(deleteUser.showModal && selectedRow){
@@ -147,14 +129,14 @@ const Users = () => {
   return (
     <Loader states={[{
       isLoading: false || usersQuery.isLoading,
-      isFetching: retrieveUserDetails || deleteUser.deleteUser || usersQuery.isFetching
+      isFetching: deleteUser.deleteUser || usersQuery.isFetching
     }]}>
       <UsersTable
         data={usersQuery.data}
         toggleDrawer={setOpenDrawer}
         selectedRow={selectedRow}
         setSelectedRow={setSelectedRow}
-        getLatestUserDetails={() => setRetrieveUserDetails(true)}
+        refreshUserDetails={refreshUserDetails}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
         setDrawerType={setDrawerType}
         setOpenDrawer={setOpenDrawer}

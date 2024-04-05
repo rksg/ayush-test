@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
@@ -8,8 +10,10 @@ import {
   sortProp,
   roleStringMap
 } from '@acx-ui/analytics/utils'
-import { Table, TableProps }      from '@acx-ui/components'
-import { noDataDisplay, getIntl } from '@acx-ui/utils'
+import { Table, TableProps, showToast } from '@acx-ui/components'
+import { noDataDisplay, getIntl }       from '@acx-ui/utils'
+
+import { CountContext } from '../AccountManagement'
 
 import { messages } from './'
 
@@ -66,9 +70,8 @@ const transformUsers = (
 }
 const getUserActions = (
   selectedRow: ManagedUser,
-  { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }: {
-    setSelectedRow: CallableFunction,
-    getLatestUserDetails: CallableFunction,
+  { refreshUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }: {
+    refreshUserDetails: CallableFunction,
     toggleDrawer: CallableFunction,
     handleDeleteUser: CallableFunction,
     setDrawerType: CallableFunction
@@ -91,8 +94,11 @@ const getUserActions = (
       label: $t({ defaultMessage: 'Refresh' }),
       tooltip: $t(refreshText, { br: <br/> }) as string,
       onClick: () => {
-        setSelectedRow(selectedRow)
-        getLatestUserDetails()
+        refreshUserDetails({ userId: selectedRow.id })
+        showToast({
+          type: 'success',
+          content: messages.refreshSuccessful
+        })
       }
     },
     {
@@ -100,7 +106,6 @@ const getUserActions = (
       tooltip: isEditDisabled ? $t(disabledEditText) : $t(editText),
       disabled: isEditDisabled,
       onClick: () => {
-        setSelectedRow(selectedRow)
         setDrawerType('edit')
         toggleDrawer(true)
       }
@@ -110,7 +115,6 @@ const getUserActions = (
       tooltip: isDeleteDisbaled ? $t(disabledDeleteText) : $t(deleteText),
       disabled: isDeleteDisbaled,
       onClick: () => {
-        setSelectedRow(selectedRow)
         handleDeleteUser()
       }
     }
@@ -124,7 +128,7 @@ interface UsersTableProps {
   toggleDrawer: CallableFunction
   selectedRow: ManagedUser | null
   setSelectedRow: CallableFunction
-  getLatestUserDetails: CallableFunction
+  refreshUserDetails: CallableFunction
   handleDeleteUser: CallableFunction
   setDrawerType: CallableFunction
   setOpenDrawer: CallableFunction
@@ -143,7 +147,7 @@ export const UsersTable = ({
   toggleDrawer,
   selectedRow,
   setSelectedRow,
-  getLatestUserDetails,
+  refreshUserDetails,
   handleDeleteUser,
   setDrawerType,
   setOpenDrawer,
@@ -156,6 +160,7 @@ export const UsersTable = ({
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const users = transformUsers(data, brand)
+  const { setUsersCount } = useContext(CountContext)
 
   const actions = [
     {
@@ -253,7 +258,7 @@ export const UsersTable = ({
     actions={actions}
     rowActions={getUserActions(
       selectedRow as ManagedUser,
-      { setSelectedRow, getLatestUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }
+      { refreshUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }
     )}
     rowSelection={{
       type: 'radio',
@@ -266,5 +271,6 @@ export const UsersTable = ({
         setSelectedRow(selectedRows[0])
       }
     }}
+    onDisplayRowChange={(dataSource) => setUsersCount?.(dataSource.length)}
   />
 }

@@ -218,7 +218,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           },
           responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
     deleteUserResourceGroup: build.mutation<string, { userId: string }>({
       query: ({ userId }) => {
