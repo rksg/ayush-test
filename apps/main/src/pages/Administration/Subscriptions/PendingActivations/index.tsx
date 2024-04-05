@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import {
+  Button,
   Loader,
   Table,
   TableProps,
@@ -16,9 +17,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdministrationUrlsInfo,
-  sortProp,
-  defaultSort,
-  dateSort,
   EntitlementActivations
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -43,48 +41,49 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Order Date' }),
       dataIndex: 'orderCreateDate',
-      key: 'orderCreateDate',
-      sorter: { compare: sortProp('orderCreateDate', dateSort) }
+      key: 'orderCreateDate'
     },
     {
       title: $t({ defaultMessage: 'SPA Activation Code' }),
       dataIndex: 'orderAcxRegistrationCode',
-      key: 'orderAcxRegistrationCode'
+      key: 'orderAcxRegistrationCode',
+      render: function (_, row) {
+        return <Button
+          type='link'
+          onClick={() => {
+            const urlSupportActivation = 'http://support.ruckuswireless.com/register_code/' +
+              row.orderAcxRegistrationCode
+            window.open(urlSupportActivation, '_blank')
+          }}
+        >{row.orderAcxRegistrationCode}</Button>
+      }
     },
     {
       title: $t({ defaultMessage: 'Part Number' }),
       dataIndex: 'productCode',
       key: 'productCode',
-      filterable: true,
-      sorter: { compare: sortProp('productCode', defaultSort) }
+      filterable: true
     },
     {
       title: $t({ defaultMessage: 'Part Number Description' }),
       dataIndex: 'productName',
-      key: 'productName',
-      sorter: { compare: sortProp('productName', defaultSort) }
+      key: 'productName'
     },
     {
       title: $t({ defaultMessage: 'Quantity' }),
       dataIndex: 'quantity',
       key: 'quantity',
-      align: 'center',
-      sorter: { compare: sortProp('quantity', defaultSort) },
-      render: function (_, row) {
-        return row.quantity
-      }
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Subscription Term' }),
-      dataIndex: 'effectiveDate',
-      key: 'effectiveDate',
-      sorter: { compare: sortProp('effectiveDate', dateSort) }
+      dataIndex: 'subscriptionTerm',
+      key: 'subscriptionTerm'
     },
     {
       title: $t({ defaultMessage: 'Activation Period Ends on' }),
       dataIndex: 'spaEndDate',
       key: 'spaEndDate',
-      sorter: { compare: sortProp('spaEndDate', dateSort) },
       render: function (_, row) {
         return formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
       }
