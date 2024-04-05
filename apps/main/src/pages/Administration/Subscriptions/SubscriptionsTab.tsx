@@ -10,7 +10,6 @@ import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
 import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
-import ActivatedPurchases         from './ActivatedPurchases'
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 import MySubscriptions            from './MySubscriptions'
 import PendingActivations         from './PendingActivations'
@@ -35,11 +34,6 @@ export const SubscriptionTabs = () => {
       mySubscriptions: {
         title: $t({ defaultMessage: 'My Subscriptions' }),
         content: <MySubscriptions />,
-        visible: true
-      },
-      activatedPurchases: {
-        title: $t({ defaultMessage: 'Activated Purchases' }),
-        content: <ActivatedPurchases />,
         visible: true
       },
       pendingActivations: {

@@ -25,3 +25,4 @@ export interface EntitlementBanner {
   multipleLicense: boolean;
   type: LicenseBannerTypeEnum;
 }
+
