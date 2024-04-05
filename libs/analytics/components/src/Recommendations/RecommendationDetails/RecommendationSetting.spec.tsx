@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { showToast }      from '@acx-ui/components'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -35,6 +36,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 describe('RecommendationSetting', () => {
   const params = { recommendationId: 'fake-id', tenantId: 'tenant-id' }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockUseMuteRecommendationMutation.mockImplementation(() =>[mockedMuteRecommendation])
     mockUseDeleteRecommendationMutation.mockImplementation(() => [mockedDeleteRecommendation])
   })
@@ -68,8 +70,8 @@ describe('RecommendationSetting', () => {
   it('should render correctly for crrm', async () => {
     render(
       <Provider>
-        <RecommendationSetting recommendationDetails={{
-          ...mockedRecommendationCRRM, status: 'applyfailed' } as EnhancedRecommendation}/>
+        <RecommendationSetting
+          recommendationDetails={mockedRecommendationCRRM as EnhancedRecommendation}/>
       </Provider>,
       { route: { params } }
     )
@@ -85,8 +87,7 @@ describe('RecommendationSetting', () => {
       .toBeInTheDocument()
     expect(screen.getByText('AI-Driven RRM table'))
       .toBeInTheDocument()
-
-    expect(screen.getByText('Delete Recommendation')).toBeInTheDocument()
+    expect(screen.queryByText('Delete Recommendation')).not.toBeInTheDocument()
   })
   it('should mute and unmute recommendation correctly', async () => {
     mockUseMuteRecommendationMutation.mockImplementation(() => [() => ({
@@ -176,5 +177,21 @@ describe('RecommendationSetting', () => {
       hash: '',
       search: ''
     })
+  })
+  it('should hide delete when Features.RECOMMENDATION_DELETE disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: false, errorCode: '1', errorMsg: 'error' } })
+    })])
+    render(
+      <Provider>
+        <RecommendationSetting recommendationDetails={{
+          ...mockedRecommendationCRRM, status: 'applyfailed' } as EnhancedRecommendation}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
+    expect(screen.queryByText('Delete Recommendation')).not.toBeInTheDocument()
   })
 })

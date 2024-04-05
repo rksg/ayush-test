@@ -222,6 +222,8 @@ export function RecommendationTable (
     && disableMuteStatus.includes(selectedRecommendation.statusEnum)
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
+  const isRecommendationDeleteEnabled = useIsSplitOn(Features.RECOMMENDATION_DELETE)
+
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     ...(selectedRecommendation
       ? getAvailableActions(
@@ -269,7 +271,8 @@ export function RecommendationTable (
       visible: (selectedRows) =>
         ( selectedRows[0] &&
           selectedRows[0].trigger === 'daily' &&
-          enabledDeleteStatus.includes(selectedRows[0].statusEnum)
+          enabledDeleteStatus.includes(selectedRows[0].statusEnum) &&
+          isRecommendationDeleteEnabled
         ) ? true : false,
       tooltip: selectedRows => getDeleteTooltipText(selectedRows[0])
     }

@@ -428,4 +428,93 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(deleteBtn)
     expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(1)
   })
+
+  it('should hide delete recommendation when status is not in enabledDeleteStatus', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'new'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should hide delete recommendations when trigger is once', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1],
+        status: 'revertfailed',
+        trigger: 'once'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should hide delete recommendation when Features.RECOMMENDATION_DELETE disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
 })

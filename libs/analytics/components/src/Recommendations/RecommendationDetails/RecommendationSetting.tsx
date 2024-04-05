@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Switch }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { DetailsActions }         from '../../DetailsActions'
@@ -36,6 +37,8 @@ export const recommendationTypeMapping = {
 export function RecommendationSetting (
   { recommendationDetails }: { recommendationDetails: EnhancedRecommendation }
 ) {
+  const isRecommendationDeleteEnabled = useIsSplitOn(Features.RECOMMENDATION_DELETE)
+
   const { id, status, trigger } = recommendationDetails
   const { title, link } = recommendationTypeMapping[trigger === 'daily' ? 'crrm' : 'aiOps']
   const { $t } = useIntl()
@@ -69,8 +72,10 @@ export function RecommendationSetting (
         }</p>
       </>
     },
-    ...((trigger === 'daily' && enabledDeleteStatus.includes(status))
-      ? [{
+    ...((trigger === 'daily' &&
+    enabledDeleteStatus.includes(status) &&
+    isRecommendationDeleteEnabled
+    ) ? [{
         title: <RecommendationSettingTitle>
           <DeleteOutlinedIcon onClick={()=> clickDeleteFn(id, deleteRecommendation, () => {
             navigate({
