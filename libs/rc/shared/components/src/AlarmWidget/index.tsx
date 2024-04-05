@@ -17,6 +17,8 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useDashboardFilter }                    from '@acx-ui/utils'
 
 import { AlarmList } from './AlarmList'
+import * as UI       from './styledComponents'
+
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -150,27 +152,34 @@ export function AlarmWidgetV2 () {
     })
   })
 
+
+  const onArrowClick = () => {
+    const event = new CustomEvent('showAlarmDrawer',
+      { detail: { data: { name: 'all' } } })
+    window.dispatchEvent(event)
+  }
+
   const { data } = overviewV2Query
   return (
     <Loader states={[overviewV2Query]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}
-        onArrowClick={()=>{
-          const event = new CustomEvent('showAlarmDrawer',
-            { detail: { data: { name: 'all' } } })
-          window.dispatchEvent(event)
-        }}>
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             (data && data.length > 0)
-              ? <DonutChart
-                style={{ width, height }}
-                size={'medium'}
-                onClick={(e)=>{
-                  const event = new CustomEvent('showAlarmDrawer',
-                    { detail: { data: e.data } })
-                  window.dispatchEvent(event)
-                }}
-                data={data}/>
+              ? <UI.Container onClick={onArrowClick}>
+                <DonutChart
+                  style={{ width, height }}
+                  size={'medium'}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onClick={(e: any)=>{
+                    e?.event?.stop()
+                    const customEvent = new CustomEvent('showAlarmDrawer',
+                      { detail: { data: e.data } })
+                    window.dispatchEvent(customEvent)
+                  }}
+                  data={data}/>
+              </UI.Container>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}
         </AutoSizer>
