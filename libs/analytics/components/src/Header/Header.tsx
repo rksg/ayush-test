@@ -31,7 +31,7 @@ type UseHeaderExtraProps = {
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
 const Filter = (
-  { shouldQueryAp, shouldQuerySwitch, shouldShowOnlyDomains,
+  { shouldQueryAp = true, shouldQuerySwitch, shouldShowOnlyDomains,
     withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {
   return excludeNetworkFilter
@@ -71,7 +71,7 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
   ]
 }
 
-export const useNetworkFilter = ({ ...props }) => {
+export const useNetworkFilter = ({ ...props }: UseHeaderExtraProps) => {
   return <Filter
     key={getShowWithoutRbacCheckKey('network-filter')}
     {...props}

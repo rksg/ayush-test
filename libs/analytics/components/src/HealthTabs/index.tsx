@@ -24,6 +24,7 @@ export function HealthTabs () {
   }
   return <Tabs
     onChange={onTabChange}
+    destroyInactiveTabPane
     activeKey={activeSubTab}
     defaultActiveKey='overview'
     type='card'
@@ -32,7 +33,6 @@ export function HealthTabs () {
       <>
         <FilterWrapper>
           {useNetworkFilter({
-            shouldQueryAp: true,
             shouldQuerySwitch: true,
             shouldShowOnlyDomains: true
           })}
@@ -43,9 +43,7 @@ export function HealthTabs () {
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
       <>
         <FilterWrapper>
-          {useNetworkFilter({
-            shouldQueryAp: true
-          })}
+          {useNetworkFilter({})}
         </FilterWrapper>
         <HealthPage />
       </>
@@ -54,6 +52,7 @@ export function HealthTabs () {
       <>
         <FilterWrapper>
           {useNetworkFilter({
+            shouldQueryAp: false,
             shouldQuerySwitch: true
           })}
         </FilterWrapper>

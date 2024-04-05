@@ -175,7 +175,13 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, pathFilters } = useAnalyticsFilter()
+      const { filters, pathFilters } = useAnalyticsFilter({
+        revertToDefaultURLs: [
+          { url: '/analytics/health', type: 'switch' },
+          { url: '/ai/url1', type: 'ap' },
+          { url: '/ai/url2', type: 'both' }
+        ]
+      })
       return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
@@ -202,7 +208,30 @@ describe('useAnalyticsFilter', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/ai/health',
+        pathname: '/ai/health/wireless',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is ' +
+    'health overview and selected node is switch for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/health/overview',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <Component />

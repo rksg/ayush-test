@@ -46,7 +46,7 @@ const useTabs = () : Tab[] => {
     title: $t({ defaultMessage: 'Health' }),
     component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
     headerExtra: useHeaderExtra({
-      shouldQuerySwitch: false, withIncidents: false, excludeNetworkFilter: true
+      shouldQuerySwitch: false, withIncidents: false, excludeNetworkFilter: isSwitchHealthEnabled
     })
   }
 

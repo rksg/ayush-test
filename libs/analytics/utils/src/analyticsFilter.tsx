@@ -20,8 +20,6 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 const noSwitchSupportURLs = [
-  '/analytics/health',
-  '/ai/health',
   '/ai/health/wireless',
   '/analytics/configChange',
   '/ai/configChange',
@@ -46,7 +44,19 @@ const noApSupportURLs = [
   '/ai/devices/switch/reports/wired'
 ]
 
-export function useAnalyticsFilter () {
+// URLs here will only load filter till domains which is common across APs and Switches
+const noApOrSwitchSupportURLs = [
+  '/ai/health/overview'
+]
+
+interface AnalyticsFilterProps {
+  revertToDefaultURLs?: {
+    url: string
+    type: string
+  }[]
+}
+
+export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
@@ -59,12 +69,23 @@ export function useAnalyticsFilter () {
     write({ path, raw: [JSON.stringify(path)] })
   }
 
+  const { revertToDefaultURLs: customURLs } = props || {}
+  if (customURLs) {
+    for (const { url, type } of customURLs) {
+      if (type === 'ap' && !noApSupportURLs.includes(url)) noApSupportURLs.push(url)
+      if (type === 'switch' && !noSwitchSupportURLs.includes(url)) noSwitchSupportURLs.push(url)
+      // eslint-disable-next-line max-len
+      if (type === 'both' && !noApOrSwitchSupportURLs.includes(url)) noApOrSwitchSupportURLs.push(url)
+    }
+  }
+
   return useMemo(() => {
     const isURLPresent = (list: string[]) => Boolean(list.find(url => pathname.includes(url)))
-
     const defaultPath = { raw: [], path: defaultNetworkPath }
     const { raw: rawPath, path: readPath } = read() || defaultPath
-    const revertToDefault = (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
+    const revertToDefault =
+      (isURLPresent(noApOrSwitchSupportURLs) && (isApPath(readPath) || isSwitchPath(readPath))) ||
+      (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
       (isURLPresent(noApSupportURLs) && isApPath(readPath))
     const { raw, path, filter } = revertToDefault
       ? { ...defaultPath, filter: {} }
@@ -75,6 +96,7 @@ export function useAnalyticsFilter () {
       pathFilters: { ...dateFilter, path } as PathFilter,
       setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter, pathname, read, write])
 }
 

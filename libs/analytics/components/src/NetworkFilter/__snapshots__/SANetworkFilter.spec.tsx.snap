@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SANetworkFilter filterSystemAndDomain should filter system and domain 1`] = `
+exports[`filterSystemAndDomain should filter system and domain 1`] = `
 Object {
   "children": Array [
     Object {

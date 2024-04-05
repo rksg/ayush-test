@@ -89,7 +89,10 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByTestId('VideoCallQoe')).toBeNull()
   })
   it('should handle tab click', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn)
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     userEvent.click(await screen.findByText('ServiceGuard'))
