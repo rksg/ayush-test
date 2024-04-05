@@ -60,12 +60,12 @@ export const SummaryBoxes = ({ filters }: {
       type: 'green',
       title: defineMessage({ defaultMessage: 'Utilization' }),
       values: [{
-        title: defineMessage({ defaultMessage: 'Client/AP' }),
+        title: defineMessage({ defaultMessage: 'Clients / AP' }),
         value: utilizationSummary.avgClientCountPerAp ?
           formatter('countFormat')(utilizationSummary.avgClientCountPerAp) : noDataDisplay
       },
       {
-        title: defineMessage({ defaultMessage: 'Switches ports in use' }),
+        title: defineMessage({ defaultMessage: 'Switch ports in use' }),
         value: `${utilizationSummary.portCount ?
           formatter('countFormat')(utilizationSummary.portCount)
           : noDataDisplay}`,
