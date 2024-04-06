@@ -111,6 +111,9 @@ export interface TenantDetails {
   updatedDate: string;
   upgradeGroup: string;
   preferences?: string;
+  tenantMFA?: {
+    mfaStatus: string
+  }
 }
 
 export enum AdministrationDelegationType {

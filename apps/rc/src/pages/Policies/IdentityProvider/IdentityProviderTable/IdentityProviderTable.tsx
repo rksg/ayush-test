@@ -4,10 +4,10 @@ import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/component
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useDeleteIdentityProviderListMutation,
-  useGetEnhancedIdentityProviderListQuery,
-  useNetworkListQuery,
-  useGetVenuesQuery
+  useDeleteIdentityProviderMutation,
+  useGetAAAPolicyViewModelListQuery,
+  useGetIdentityProviderListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -19,7 +19,7 @@ import {
   getPolicyRoutePath,
   IdentityProviderViewModel,
   Network,
-  Venue
+  AAAViewModalType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
@@ -27,21 +27,28 @@ import { filterByAccess, hasAccess }                               from '@acx-ui
 import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
+  fields: ['id', 'name',
+    'naiRealms', 'plmns', 'roamConsortiumOIs',
+    'authRadiusId', 'accountingRadiusId', 'wifiNetworkIds' ],
   searchString: '',
-  filters: {}
+  searchTargetFields: ['name'],
+  filters: {},
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
+
 
 export default function IdentityProviderTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteIdentityProviderListMutation()
+  const [ deleteFn ] = useDeleteIdentityProviderMutation()
 
   const settingsId = 'policies-identity-provider-table'
+
   const tableQuery = useTableQuery<IdentityProviderViewModel>({
-    useQuery: useGetEnhancedIdentityProviderListQuery,
+    useQuery: useGetIdentityProviderListQuery,
     defaultPayload,
     pagination: { settingsId }
   })
@@ -51,8 +58,18 @@ export default function IdentityProviderTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => {
+        const ids = selectedRows.map(row => row.id)
+        for (let i=0; i<ids.length; i++) {
+          const curParams = {
+            ...params,
+            profileId: ids[i]
+          }
+          await deleteFn({ params: curParams })
+        }
+        callback()
+      }
     )
   }
 
@@ -72,7 +89,7 @@ export default function IdentityProviderTable () {
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
             type: PolicyType.IDENTITY_PROVIDER,
             oper: PolicyOperation.EDIT,
-            policyId: id
+            policyId: id!
           })
         })
       }
@@ -101,7 +118,7 @@ export default function IdentityProviderTable () {
           </TenantLink>
         ])}
       />
-      <Loader states={[tableQuery]}>
+      <Loader states={[{ isLoading: false } /*tableQuery*/]}>
         <Table<IdentityProviderViewModel>
           settingsId={settingsId}
           columns={useColumns()}
@@ -140,19 +157,21 @@ function useColumns () {
         : emptyResult
     })
   })
-  const { venueNameMap }: { venueNameMap: KeyValue<string, string>[] } = useGetVenuesQuery({
+
+  // eslint-disable-next-line max-len
+  const { radiusNameMap }: { radiusNameMap: KeyValue<string, string>[] } = useGetAAAPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
       sortOrder: 'ASC',
       page: 1,
-      pageSize: 2048
+      pageSize: 10000
     }
   }, {
-    selectFromResult: ({ data }: { data?: { data: Venue[] } }) => ({
-      venueNameMap: data?.data
-        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+    selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
+      radiusNameMap: data?.data
+        ? data.data.map(radius => ({ key: radius.id!, value: radius.name }))
         : emptyResult
     })
   })
@@ -200,20 +219,56 @@ function useColumns () {
       )
     },
     {
-      key: 'roamingConsortiumOI',
+      key: 'roamConsortiumOI',
       title: $t({ defaultMessage: 'Roaming Consortium OI' }),
-      dataIndex: 'roamingConsortiumOIs',
+      dataIndex: 'roamConsortiumOIs',
       align: 'center',
       sorter: true,
-      render: (_, { roamingConsortiumOIs }) => (
-        roamingConsortiumOIs
+      render: (_, { roamConsortiumOIs }) => (
+        roamConsortiumOIs
           ? <SimpleListTooltip
-            items={roamingConsortiumOIs.map(oi => oi.name + ' (' + oi.organizationId + ')')}
-            displayText={(roamingConsortiumOIs).length}
+            items={roamConsortiumOIs.map(oi => oi.name + ' (' + oi.organizationId + ')')}
+            displayText={(roamConsortiumOIs).length}
             title={$t({ defaultMessage: 'Roaming Consortium OI' })}
           />
           : ''
       )
+    },
+    {
+      key: 'authRadiusId',
+      title: $t({ defaultMessage: 'Auth Service' }),
+      dataIndex: 'authRadiusId',
+      align: 'center',
+      sorter: false,
+      render: (_, { authRadiusId }) => {
+        return (!authRadiusId)
+          ? ''
+          : (
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.AAA,
+              oper: PolicyOperation.DETAIL,
+              policyId: authRadiusId })}>
+              {radiusNameMap.find(radius => radius.key === authRadiusId)?.value || ''}
+            </TenantLink>)
+      }
+    },
+    {
+      key: 'accountingRadiusId',
+      title: $t({ defaultMessage: 'Accounting Service' }),
+      dataIndex: 'accountingRadiusId',
+      align: 'center',
+      sorter: false,
+      render: (_, { accountingRadiusId }) => {
+        return (!accountingRadiusId)
+          ? 'Disabled'
+          : (
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.AAA,
+              oper: PolicyOperation.DETAIL,
+              policyId: accountingRadiusId })}>
+              {radiusNameMap.find(radius => radius.key === accountingRadiusId)?.value || ''}
+            </TenantLink>)
+      }
     },
     {
       key: 'networkCount',
@@ -222,29 +277,13 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: true,
-      render: (_, { networkIds }) => {
-        if (!networkIds || networkIds.length === 0) return 0
+      sorter: false,
+      render: (_, { wifiNetworkIds }) => {
+        if (!wifiNetworkIds || wifiNetworkIds.length === 0) return 0
 
         return <SimpleListTooltip
-          items={networkNameMap.filter(kv => networkIds.includes(kv.key)).map(kv => kv.value)}
-          displayText={networkIds.length} />
-      }
-    },
-    {
-      key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueCount',
-      align: 'center',
-      filterKey: 'venueIds',
-      filterable: venueNameMap,
-      sorter: true,
-      render: (_, { venueIds }) => {
-        if (!venueIds || venueIds.length === 0) return 0
-
-        return <SimpleListTooltip
-          items={venueNameMap.filter(kv => venueIds.includes(kv.key)).map(kv => kv.value)}
-          displayText={venueIds.length} />
+          items={networkNameMap.filter(kv => wifiNetworkIds.includes(kv.key)).map(kv => kv.value)}
+          displayText={wifiNetworkIds.length} />
       }
     }
   ]

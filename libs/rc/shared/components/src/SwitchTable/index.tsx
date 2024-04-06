@@ -46,10 +46,10 @@ import {
   getSwitchModel,
   getAdminPassword
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
-import { RequestPayload }                                           from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, SwitchScopes } from '@acx-ui/user'
-import { exportMessageMapping, getIntl, noDataDisplay }             from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                    from '@acx-ui/types'
+import { filterByAccess, SwitchScopes }                      from '@acx-ui/user'
+import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -382,7 +382,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
-    key: getShowWithoutRbacCheckKey('EnableCliSessionButton'),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
