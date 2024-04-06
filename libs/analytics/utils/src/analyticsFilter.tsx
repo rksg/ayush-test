@@ -21,6 +21,7 @@ type NetworkFilter = { path: NetworkPath, raw: object }
 
 const noSwitchSupportURLs = [
   '/ai/health/wireless',
+  '/analytics/health/wireless',
   '/analytics/configChange',
   '/ai/configChange',
   '/ai/reports/aps',
@@ -39,6 +40,7 @@ const noSwitchSupportURLs = [
 
 const noApSupportURLs = [
   '/ai/health/wired',
+  '/analytics/health/wired',
   '/ai/reports/switches',
   '/ai/reports/wired',
   '/ai/devices/switch/reports/wired'
@@ -46,7 +48,8 @@ const noApSupportURLs = [
 
 // URLs here will only load filter till domains which is common across APs and Switches
 const noApOrSwitchSupportURLs = [
-  '/ai/health/overview'
+  '/ai/health/overview',
+  '/analytics/health/overview'
 ]
 
 interface AnalyticsFilterProps {
@@ -154,9 +157,13 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
 }
 
 export const isSwitchPath = (path: NetworkPath) => {
-  return Boolean(path.find(({ type }) => type === 'switchGroup'))
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'switchGroup'))
+    : Boolean(path.find(({ type }) => type === 'switch'))
 }
 
 export const isApPath = (path: NetworkPath) => {
-  return Boolean(path.find(({ type }) => type === 'zone' || type === 'apGroup'))
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'zone' || type === 'apGroup'))
+    : Boolean(path.find(({ type }) => type === 'AP'))
 }

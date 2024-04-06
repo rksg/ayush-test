@@ -33,6 +33,7 @@ export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
     shouldQuerySwitch: boolean,
     shouldQueryAp: boolean,
+    shouldShowOnlyVenues?: boolean,
     withIncidents?: boolean,
     showRadioBand?: boolean,
     multiple?: boolean,
@@ -97,7 +98,8 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
-  replaceVenueNameWithId: boolean
+  replaceVenueNameWithId: boolean,
+  shouldShowOnlyVenues?: boolean
 ): CascaderOption[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: CascaderOption } = {}
@@ -119,6 +121,10 @@ export const getNetworkFilterData = (
         children: [] as CascaderOption[]
       }
     }
+
+    // Don't show APs and switches in the network filter
+    if (shouldShowOnlyVenues) continue
+
     const venue = venues[name]
     if (aps?.length) {
       venue.children!.push({
@@ -189,6 +195,7 @@ export { ConnectedNetworkFilter as NetworkFilter }
 function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     shouldQueryAp,
+    shouldShowOnlyVenues,
     withIncidents,
     showRadioBand,
     filterFor='analytics',
@@ -223,7 +230,7 @@ function ConnectedNetworkFilter (
     shouldQueryAp
   }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getNetworkFilterData(data, incidents, true) : [],
+      data: data ? getNetworkFilterData(data, incidents, true, shouldShowOnlyVenues) : [],
       ...rest
     })
   })

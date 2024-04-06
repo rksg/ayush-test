@@ -45,6 +45,7 @@ const Filter = (
         key={getShowWithoutRbacCheckKey('network-filter')}
         shouldQueryAp={Boolean(shouldQueryAp)}
         shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        shouldShowOnlyVenues={Boolean(shouldShowOnlyDomains)}
         withIncidents={withIncidents}
       />
 }
