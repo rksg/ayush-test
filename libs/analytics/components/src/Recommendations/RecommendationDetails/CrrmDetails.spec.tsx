@@ -21,27 +21,34 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('CrrmDetails', () => {
-  it('renders correctly', async () => {
+  beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
-      data: {
-        recommendation: pick(mockedRecommendationCRRM, ['id', 'code'])
-      }
+      data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
     })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
-      data: {
-        recommendation: mockedRecommendationCRRM
-      }
+      data: { recommendation: mockedRecommendationCRRM }
     })
+  })
+  it('renders correctly', async () => {
     render(<CrrmDetails />, {
-      route: {
-        path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-      },
+      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
       wrapper: Provider
     })
-
     expect(await screen.findByTestId('Overview')).toBeVisible()
     expect(await screen.findByTestId('CrrmValues')).toBeVisible()
     expect(await screen.findByTestId('CloudRRMGraph')).toBeVisible()
+    expect(await screen.findByTestId('CrrmValuesExtra')).toBeVisible()
+    expect(await screen.findByTestId('StatusTrail')).toBeVisible()
+  })
+  it('should hide CloudRRMGraph when data retention period passed', async () => {
+    jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
+    render(<CrrmDetails />, {
+      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+      wrapper: Provider
+    })
+    expect(await screen.findByTestId('Overview')).toBeVisible()
+    expect(await screen.findByTestId('CrrmValues')).toBeVisible()
+    expect(screen.queryByTestId('CloudRRMGraph')).not.toBeInTheDocument()
     expect(await screen.findByTestId('CrrmValuesExtra')).toBeVisible()
     expect(await screen.findByTestId('StatusTrail')).toBeVisible()
   })

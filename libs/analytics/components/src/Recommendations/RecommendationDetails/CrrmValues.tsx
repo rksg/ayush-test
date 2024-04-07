@@ -5,6 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
+import { isDataRetained } from '../utils'
+
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,
@@ -28,7 +30,9 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Original Configuration' })
         : $t({ defaultMessage: 'Current Configuration' }),
-      value: applied ? original : current
+      value: isDataRetained(details)
+        ? (applied ? original : current)
+        : $t({ defaultMessage: 'Beyond data retention period' })
     },
     {
       label: applied

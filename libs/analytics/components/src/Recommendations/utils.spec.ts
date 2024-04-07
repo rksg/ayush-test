@@ -1,4 +1,8 @@
-import { crrmText } from './utils'
+import { get } from '@acx-ui/config'
+
+import { crrmText, isDataRetained } from './utils'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 describe('crrmText', () => {
   it('should return correct text for current configuration', () => {
@@ -186,3 +190,20 @@ describe('crrmText', () => {
   })
 })
 
+describe('isDataRetained', () => {
+  beforeEach(() => jest.mocked(get).mockReturnValue('380'))
+  it('should return true', () => {
+    expect(isDataRetained({ statusTrail: [
+      { status: 'applied', createdAt: '2023-05-23T00:00:35.308Z' },
+      { status: 'applyscheduleinprogress', createdAt: '2023-05-23T00:00:02.528Z' },
+      { status: 'applyscheduled', createdAt: '2023-05-22T23:30:30.753Z' },
+      { status: 'new', createdAt: '2023-05-17T07:04:11.663Z' }] })).toBeTruthy()
+  })
+  it('should return false', () => {
+    expect(isDataRetained({ statusTrail: [
+      { status: 'applied', createdAt: '2023-05-23T00:00:35.308Z' },
+      { status: 'applyscheduleinprogress', createdAt: '2023-05-23T00:00:02.528Z' },
+      { status: 'applyscheduled', createdAt: '2023-05-22T23:30:30.753Z' },
+      { status: 'new', createdAt: '2021-05-17T07:04:11.663Z' }] })).toBeFalsy()
+  })
+})

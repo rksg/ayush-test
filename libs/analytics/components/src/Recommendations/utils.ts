@@ -1,11 +1,15 @@
 import _                                    from 'lodash'
+import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { getIntl }   from '@acx-ui/utils'
 
 import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
+
+import { EnhancedRecommendation } from './RecommendationDetails/services'
 
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
   | Array<{
@@ -72,3 +76,7 @@ export const crrmText = (value: CrrmTextType) => {
   }
 }
 
+export const isDataRetained = (details: Pick<EnhancedRecommendation, 'statusTrail'>) => {
+  const retainDate = moment().startOf('day').subtract(get('RETAIN_PERIOD_DAYS'), 'days')
+  return moment(details.statusTrail.slice(-1)[0].createdAt).isAfter(retainDate)
+}

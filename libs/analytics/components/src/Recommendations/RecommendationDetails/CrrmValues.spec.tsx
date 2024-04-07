@@ -27,7 +27,7 @@ describe('CrrmValues', () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRMnew,
       metadata: { algorithmData: { isCrrmFullOptimization: true } }
-    } as RecommendationDetails)
+    } as unknown as RecommendationDetails)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Recommended Configuration')).toBeVisible()
     // eslint-disable-next-line max-len
@@ -38,9 +38,15 @@ describe('CrrmValues', () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRMnew,
       metadata: { algorithmData: { isCrrmFullOptimization: false } }
-    } as RecommendationDetails)
+    } as unknown as RecommendationDetails)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Recommended Configuration')).toBeVisible()
     expect(await screen.findByText('AI-Driven RRM for channel plan')).toBeVisible()
+  })
+  it('should render correctly when data retention period passed', async () => {
+    jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
+    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
+    render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Beyond data retention period')).toBeVisible()
   })
 })

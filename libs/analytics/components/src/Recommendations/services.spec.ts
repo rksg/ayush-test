@@ -35,8 +35,12 @@ describe('Recommendations utils', () => {
   })
 
   describe('getCrrmInterferingLinksText', () => {
+    beforeEach(() =>
+      jest.spyOn(require('./utils'), 'isDataRetained')
+        .mockImplementation(() => true)
+    )
     it('returns text when applied', () => {
-      expect(getCrrmInterferingLinksText('applied', {
+      expect(getCrrmInterferingLinksText('applied', [], {
         current: 0,
         previous: 3,
         projected: null
@@ -44,7 +48,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when revertfailed', () => {
-      expect(getCrrmInterferingLinksText('revertfailed', {
+      expect(getCrrmInterferingLinksText('revertfailed', [], {
         current: 0,
         previous: 3,
         projected: null
@@ -52,7 +56,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when reverted', () => {
-      expect(getCrrmInterferingLinksText('reverted', {
+      expect(getCrrmInterferingLinksText('reverted',[], {
         current: 5,
         previous: 5,
         projected: null
@@ -60,7 +64,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when new', () => {
-      expect(getCrrmInterferingLinksText('new', {
+      expect(getCrrmInterferingLinksText('new', [], {
         current: 2,
         previous: null,
         projected: 0
@@ -68,7 +72,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when reverted but no previous (revertedTime < appliedTime+24hours)', () => {
-      expect(getCrrmInterferingLinksText('reverted', {
+      expect(getCrrmInterferingLinksText('reverted', [], {
         current: 2,
         previous: null,
         projected: 0
@@ -76,7 +80,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applied but no previous (maxIngestedTime < appliedTime+24hours)', () => {
-      expect(getCrrmInterferingLinksText('applied', {
+      expect(getCrrmInterferingLinksText('applied', [], {
         current: 2,
         previous: null,
         projected: 0
@@ -84,7 +88,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applyscheduled', () => {
-      expect(getCrrmInterferingLinksText('applyscheduled', {
+      expect(getCrrmInterferingLinksText('applyscheduled', [], {
         current: 2,
         previous: null,
         projected: 0
@@ -92,11 +96,21 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applyfailed', () => {
-      expect(getCrrmInterferingLinksText('applyfailed', {
+      expect(getCrrmInterferingLinksText('applyfailed', [], {
         current: 2,
         previous: null,
         projected: 0
       })).toBe('Failed')
+    })
+
+    it('returns text when data retention period passed', () => {
+      jest.spyOn(require('./utils'), 'isDataRetained')
+        .mockImplementation(() => false)
+      expect(getCrrmInterferingLinksText('reverted', [], {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('Beyond data retention period')
     })
   })
 })
@@ -111,6 +125,8 @@ describe('Recommendation services', () => {
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
+    jest.spyOn(require('./utils'), 'isDataRetained')
+      .mockImplementation(() => true)
   })
 
   it('should return crrm list', async () => {

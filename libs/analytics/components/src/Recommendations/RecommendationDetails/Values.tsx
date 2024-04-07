@@ -5,10 +5,12 @@ import { useIntl }          from 'react-intl'
 
 import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { codes }              from '../config'
 import { extractBeforeAfter } from '../services'
+import { isDataRetained }     from '../utils'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -82,7 +84,8 @@ export const getRecommendationsText = (
     currentValue,
     recommendedValue,
     appliedOnce,
-    code
+    code,
+    status
   } = details
 
   const metadata = chain(details.metadata)
@@ -96,12 +99,16 @@ export const getRecommendationsText = (
     appliedReasonText,
     valueFormatter,
     actionText,
+    appliedActionText,
+    passRetentionPeriodActionText,
     reasonText,
     tradeoffText,
     partialOptimizedActionText,
     partialOptimizationAppliedReasonText,
     partialOptimizedTradeoffText
   } = recommendationInfo
+
+  const isCrrm = code.startsWith('c-crrm')
 
   let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
@@ -110,17 +117,29 @@ export const getRecommendationsText = (
     recommendedValue: valueFormatter(recommendedValue),
     br: <br />
   }
-  if (code.startsWith('c-crrm')) {
+  if (isCrrm) {
     const link = kpiBeforeAfter(details, 'number-of-interfering-links')
     parameters = {
       ...parameters,
-      ...link
+      ...link,
+      scopeType: nodeTypes(sliceType as NodeType),
+      initialTime: formatter(
+        DateFormatEnum.DateTimeFormat)(details.statusTrail.slice(-1)[0].createdAt),
+      ...(status === 'applied' && { appliedTime: formatter(DateFormatEnum.DateTimeFormat)(
+        details.statusTrail.filter(r => r.status === 'applied')[0].createdAt)
+      })
     }
   }
+
   return {
-    actionText: isFullOptimization
-      ? $t(actionText, parameters)
-      : $t(partialOptimizedActionText!, parameters),
+    actionText: isCrrm
+      ? isDataRetained(details)
+        ? status === 'applied'
+          ? $t(appliedActionText!, parameters)
+          : (isFullOptimization
+            ? $t(actionText, parameters) : $t(partialOptimizedActionText!, parameters))
+        : $t(passRetentionPeriodActionText!, parameters)
+      : $t(actionText, parameters),
     reasonText: appliedOnce && appliedReasonText
       ? (isFullOptimization
         ? $t(appliedReasonText, parameters)

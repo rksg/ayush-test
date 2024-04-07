@@ -103,6 +103,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
       crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(
         status,
+        statusTrail,
         kpi_number_of_interfering_links!
       )
     })
