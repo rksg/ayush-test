@@ -12,9 +12,9 @@ import {
   L2AclPolicy,
   L3AclPolicy,
   ApplicationPolicy, TableResult,
-  VLANPoolViewModelType,
   VLANPoolPolicyType,
-  VLANPoolVenues
+  VLANPoolVenues,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -215,9 +215,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
-    // eslint-disable-next-line max-len
-    getVlanPoolPolicyTemplateViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolViewModelList),
+    getVlanPoolPolicyTemplateList: build.query<VlanPool[], RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPools),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -226,8 +225,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
             api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'VlanPoolTemplate', id: 'LIST' }]))
           })
         })
-      },
-      extraOptions: { maxRetries: 5 }
+      }
     }),
     getVlanPoolPolicyTemplateDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy),
@@ -284,7 +282,7 @@ export const {
   useGetAppPolicyTemplateListQuery,
   useUpdateAppPolicyTemplateMutation,
   useDelAppPolicyTemplateMutation,
-  useGetVlanPoolPolicyTemplateViewModelListQuery,
+  useGetVlanPoolPolicyTemplateListQuery,
   useGetVlanPoolPolicyTemplateDetailQuery,
   useAddVlanPoolPolicyTemplateMutation,
   useUpdateVlanPoolPolicyTemplateMutation,

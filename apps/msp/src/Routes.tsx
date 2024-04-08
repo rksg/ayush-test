@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                  from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                      from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                 from '@acx-ui/msp/services'
+import { Brand360 }                                         from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -14,7 +14,8 @@ import {
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
-  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  VLANPoolForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -294,6 +295,29 @@ export function ConfigTemplatesRoutes () {
               oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<VLANPoolForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<VLANPoolForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<div>VLAN Pool Details</div>}
           />
         </>}
       </Route>

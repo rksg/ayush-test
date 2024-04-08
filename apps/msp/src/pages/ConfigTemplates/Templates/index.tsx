@@ -13,7 +13,7 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }               from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -35,7 +35,8 @@ import {
   useDelL3AclPolicyTemplateMutation,
   useDelDevicePolicyTemplateMutation,
   useDeletePortalTemplateMutation,
-  useDeleteWifiCallingServiceMutation
+  useDeleteWifiCallingServiceMutation,
+  useDelVlanPoolPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -293,6 +294,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
   const [ deletePortalTemplate ] = useDeletePortalTemplateMutation()
   const [ deleteWifiCalling ] = useDeleteWifiCallingServiceMutation()
+  const [ deleteVlanPoolTemplate ] = useDelVlanPoolPolicyTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -306,6 +308,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.APPLICATION_POLICY]: deleteApplicationTemplate,
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
     [ConfigTemplateType.PORTAL]: deletePortalTemplate,
-    [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling
+    [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling,
+    [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate
   }
 }
