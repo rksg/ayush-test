@@ -39,6 +39,14 @@ export interface ExpirationDateSelectorProps {
   disabledDate?: RangePickerProps['disabledDate']
 }
 
+export const ExpirationTypeLimitation = {
+  [ExpirationType.HOURS_AFTER_TIME]: 720, // 30 days
+  [ExpirationType.DAYS_AFTER_TIME]: 365, // 1 year
+  [ExpirationType.WEEKS_AFTER_TIME]: 102, // 2 years
+  [ExpirationType.MONTHS_AFTER_TIME]: 60, // 5 years
+  [ExpirationType.YEARS_AFTER_TIME]: 5
+} as Record<ExpirationType, number>
+
 function ExpirationDatePickerWrapper (props: DatePickerProps) {
   return (
     <DatePicker
@@ -90,12 +98,31 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
     }
   }
 
+  const offsetValidator = (value: number) => {
+    const type = form.getFieldValue([inputName, 'type'])
+    const min = 1
+    const max = ExpirationTypeLimitation[type as ExpirationType]
+
+    if (!max) {
+      return Promise.reject($t({
+        defaultMessage: 'This expiration type does not support validation for maximum values.'
+      }))
+    }
+
+    if (value < min || value > max) {
+      return Promise.reject($t({
+        defaultMessage: 'Offset must be between {min} and {max}' }, { min, max }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <Form.Item
       name={[inputName, 'mode']}
       label={label}
       rules={[{ required: isRequired }]}
       initialValue={initialValue}
+      style={{ height: 'auto' }}
     >
       <Radio.Group onChange={onModeChange}>
         { modeAvailability[ExpirationMode.NEVER] &&
@@ -137,17 +164,20 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
               <>
                 <Form.Item
                   name={[inputName, 'offset']}
+                  initialValue={1}
                   rules={[
                     {
                       required: expirationMode === ExpirationMode.AFTER_TIME,
                       message: $t({ defaultMessage: 'Please enter Offset' })
-                    }
+                    },
+                    { validator: (_, value) => offsetValidator(value) }
                   ]}
                 >
-                  <InputNumber min={1} max={64} />
+                  <InputNumber />
                 </Form.Item>
                 <Form.Item
                   name={[inputName, 'type']}
+                  initialValue={ExpirationType.HOURS_AFTER_TIME}
                   rules={[
                     {
                       required: expirationMode === ExpirationMode.AFTER_TIME,
@@ -155,7 +185,9 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                     }
                   ]}
                 >
-                  <Select style={{ width: 120 }}>
+                  <Select
+                    onChange={() => form.validateFields()}
+                    style={{ width: 120 }}>
                     <Option key={ExpirationType.HOURS_AFTER_TIME}>
                       {$t({ defaultMessage: 'Hours' })}
                     </Option>
