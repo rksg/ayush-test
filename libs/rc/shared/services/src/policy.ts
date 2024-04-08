@@ -73,7 +73,9 @@ import {
   CertificateAuthority,
   Certificate,
   downloadFile,
-  CertificateTemplateMutationResult
+  CertificateTemplateMutationResult,
+  AcceptType,
+  downloadCertExtension
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -2369,10 +2371,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as AcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthority.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2384,10 +2387,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === AcceptType.PEM ? '.chain' : '.p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthorityChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2475,10 +2479,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as AcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2490,10 +2495,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === AcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
