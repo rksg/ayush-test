@@ -278,10 +278,9 @@ export const useCasesToRefreshAccessControlTemplateList = [
 export const useCasesToRefreshPortalTemplateList = ['Add Portal Service Profile by Template	', 'Update Portal Service Profile by Template	', 'Delete Portal Service Profile by Template']
 
 export const useCasesToRefreshWifiCallingTemplateList = [
-  'AddWifiCallingServiceProfile',
-  'UpdateWifiCallingServiceProfile',
-  'DeleteWifiCallingServiceProfile',
-  'DeleteWifiCallingServiceProfiles'
+  'AddWifiCallingServiceProfileTemplate',
+  'UpdateWifiCallingServiceProfileTemplate',
+  'DeleteWifiCallingServiceProfileTemplate'
 ]
 
 const useCasesToRefreshTemplateList = [

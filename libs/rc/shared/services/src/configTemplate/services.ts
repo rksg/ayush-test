@@ -261,12 +261,6 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
-    }),
-    deleteWifiCallingServicesTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteWifiCallingList),
-      invalidatesTags: [
-        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
-      ]
     })
   })
 })
@@ -295,8 +289,7 @@ export const {
   useGetWifiCallingServiceTemplateListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery,
   useUpdateWifiCallingServiceTemplateMutation,
-  useDeleteWifiCallingServiceTemplateMutation,
-  useDeleteWifiCallingServicesTemplateMutation
+  useDeleteWifiCallingServiceTemplateMutation
 } = servicesConfigTemplateApi
 
 
