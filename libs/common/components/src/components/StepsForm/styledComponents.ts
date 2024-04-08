@@ -18,8 +18,6 @@ export const Wrapper = styled.section`
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
 
-  --acx-steps-form-actions-vertical-space: 12px;
-
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
 
   ${disableStickyPagination}

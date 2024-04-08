@@ -576,6 +576,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
+  },
+  activateCertificateTemplate: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
 
 }
