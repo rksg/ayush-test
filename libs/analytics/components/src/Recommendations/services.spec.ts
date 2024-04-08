@@ -465,7 +465,7 @@ describe('Recommendation services', () => {
   })
 
   it('should delete correctly', async () => {
-    const resp = { setDeleted: { success: true, errorMsg: '' , errorCode: '' } }
+    const resp = { deleteRecommendation: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'DeleteRecommendation', { data: resp })
     const { result } = renderHook(
       () => useDeleteRecommendationMutation(),{ wrapper: Provider })

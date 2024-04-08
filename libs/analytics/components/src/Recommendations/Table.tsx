@@ -186,15 +186,15 @@ export const clickDeleteFn = async (
   deleteFn: ReturnType<typeof useDeleteRecommendationMutation>[0],
   callback?: () => void
 ) => {
-  const { setDeleted } = await deleteFn({ id }).unwrap()
+  const { deleteRecommendation } = await deleteFn({ id }).unwrap()
   callback?.()
-  if (setDeleted.success) {
+  if (deleteRecommendation.success) {
     showToast({
       type: 'success',
       content: getIntl().$t({ defaultMessage: 'Recommendation was deleted successfully' })
     })
   } else {
-    showToast({ type: 'error', content: setDeleted.errorMsg })
+    showToast({ type: 'error', content: deleteRecommendation.errorMsg })
   }
 }
 

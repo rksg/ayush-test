@@ -133,8 +133,8 @@ describe('RecommendationSetting', () => {
   })
   it('should handle delete recommendation correctly', async () => {
     mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
-      unwrap: () => Promise.resolve({ setDeleted: { success: true, errorCode: '', errorMsg: '' } })
-    })])
+      unwrap: () => Promise.resolve({ deleteRecommendation: {
+        success: true, errorCode: '', errorMsg: '' } }) })])
     render(
       <Provider>
         <RecommendationSetting recommendationDetails={{
@@ -157,7 +157,7 @@ describe('RecommendationSetting', () => {
   it('should handle delete error correctly', async () => {
     mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: false, errorCode: '1', errorMsg: 'error' } })
+        deleteRecommendation: { success: false, errorCode: '1', errorMsg: 'error' } })
     })])
     render(
       <Provider>
@@ -182,7 +182,7 @@ describe('RecommendationSetting', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: false, errorCode: '1', errorMsg: 'error' } })
+        setDeldeleteRecommendationeted: { success: false, errorCode: '1', errorMsg: 'error' } })
     })])
     render(
       <Provider>

@@ -406,7 +406,7 @@ describe('RecommendationTabContent', () => {
     jest.mocked(get).mockReturnValue('true')
     mockedDeleteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
       })
     }))
     render(<Provider><RecommendationTabContent /></Provider>, {
@@ -439,7 +439,7 @@ describe('RecommendationTabContent', () => {
     jest.mocked(get).mockReturnValue('true')
     mockedDeleteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
       })
     }))
     render(<Provider><RecommendationTabContent /></Provider>, {
@@ -470,7 +470,7 @@ describe('RecommendationTabContent', () => {
     jest.mocked(get).mockReturnValue('true')
     mockedDeleteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
       })
     }))
     render(<Provider><RecommendationTabContent /></Provider>, {
@@ -499,7 +499,7 @@ describe('RecommendationTabContent', () => {
     jest.mocked(get).mockReturnValue('true')
     mockedDeleteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
-        setDeleted: { success: true, errorCode: '', errorMsg: '' }
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
       })
     }))
     render(<Provider><RecommendationTabContent /></Provider>, {
