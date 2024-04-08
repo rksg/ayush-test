@@ -1,20 +1,13 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
-
 import tz_lookup from '@photostructure/tz-lookup'
 import moment    from 'moment-timezone'
 
-import { get } from '@acx-ui/config'
-
-import { NetworkVenue }          from '../../models/NetworkVenue'
 import { NetworkVenueScheduler } from '../../models/NetworkVenueScheduler'
-import { SchedulerTypeEnum }     from '../../models/SchedulerTypeEnum'
-import { Network }               from '../../types'
 
 interface ITimeZone {
   dstOffset: number
   rawOffset: number
-  status: string
+  status?: string
   timeZoneId: string
   timeZoneName: string
 }
@@ -56,64 +49,6 @@ export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
     status: 'OK'
   }
 }
-
-export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITimeZone> => {
-  /** Timestamp is shifted to the beginning of the day to involve browser caching.
-   *  Without this parameter every request has unique timestamp and considered as unique
-   *  and it prevents native browser caching.
-   *  Dividing by 1000 required since google api accepts seconds (not ms).
-   **/
-  const timestamp = (new Date()).setHours(0, 0, 0, 0) / 1000
-  const query = [
-    'location=' + lat + ',' + lng,
-    'timestamp=' + timestamp,
-    'key=' + get('GOOGLE_MAPS_KEY')
-  ]
-  const url = 'https://maps.googleapis.com/maps/api/timezone/json?' + query.join('&')
-
-  return fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      return data
-    })
-    .catch(() => { // fallback to geocoding library if google api fails.
-      return getVenueTimeZone(lat, lng)
-    })
-}
-
-type VenueSubset = {
-  deepVenue?: NetworkVenue,
-  id: string,
-  activated?: Network['activated']
-  latitude?: string,
-  longitude?: string
-}
-
-export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?: boolean) => {
-  const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
-
-  useEffect(()=>{
-    const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
-      let timeZone
-      if (Number(venueLatitude) && Number(venueLongitude)) {
-        timeZone = isMapEnabled ?
-          await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude)) :
-          getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
-      }
-      const slotIndex = getCurrentTimeSlotIndex(timeZone)
-      setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
-    }
-
-    tableData.forEach(item => {
-      if (item.activated?.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
-        updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
-      }
-    })
-  }, [isMapEnabled, tableData])
-
-  return scheduleSlotIndexMap
-}
-
 
 const convertTimeFromScheduleIndex = (scheduleTimeIndex: number) => {
   const minute = (scheduleTimeIndex % 4) * 15

@@ -11,7 +11,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { get }                                                              from '@acx-ui/config'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { SearchOutlined }                                                   from '@acx-ui/icons'
 import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
@@ -22,7 +21,8 @@ import {
   useUpdateVenueMutation,
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
-  useLazyGetVenuesTemplateListQuery
+  useLazyGetVenuesTemplateListQuery,
+  useLazyGetTimezoneQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -95,16 +95,17 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
   }
 }
 
-export const addressParser = async (place: google.maps.places.PlaceResult) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const addressParser = async (place: google.maps.places.PlaceResult, getTimezone: any) => {
   const address: Address = {}
   const lat = place.geometry?.location?.lat()
   const lng = place.geometry?.location?.lng()
   address.latitude = lat
   address.longitude = lng
 
-  // eslint-disable-next-line max-len
-  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-    .then(res => res.json())
+  const timezone = await getTimezone({
+    params: { lat: lat?.toString(), lng: lng?.toString() }
+  }).unwrap()
   address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
 
@@ -148,6 +149,7 @@ export function VenuesForm () {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
   const params = useParams()
+  const [getTimezone] = useLazyGetTimezoneQuery()
 
   const linkToVenues = useTenantLink('/venues')
   // eslint-disable-next-line max-len
@@ -280,7 +282,7 @@ export function VenuesForm () {
   }
 
   const addressOnChange = async (place: google.maps.places.PlaceResult) => {
-    const { latlng, address } = await addressParser(place)
+    const { latlng, address } = await addressParser(place, getTimezone)
     formRef.current?.setFieldValue('address',
       action === 'edit' ? { ...address, countryCode } : address) // Keep countryCode for edit mode
     setMarker(latlng)

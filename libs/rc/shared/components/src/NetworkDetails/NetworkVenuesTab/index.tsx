@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -29,7 +29,8 @@ import {
   useGetVenueTemplateCityListQuery,
   useGetVenueCityListQuery,
   useAddNetworkVenueTemplatesMutation,
-  useDeleteNetworkVenuesTemplateMutation
+  useDeleteNetworkVenuesTemplateMutation,
+  useScheduleSlotIndexMap
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -37,7 +38,6 @@ import {
   NetworkVenue,
   Venue,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
