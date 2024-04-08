@@ -79,13 +79,18 @@ export function DataStudio () {
         } else {
           // store user info
           sessionStorage.setItem('user_info', JSON.stringify(user_info))
-          const { tenant_id, is_franchisor, tenant_ids } = user_info
-          // Lets also set the params for the iframe
-          const searchParams = new URLSearchParams()
-          searchParams.append('mlisa_own_tenant_id', tenant_id)
-          searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
-          searchParams.append('is_franchisor', is_franchisor)
 
+          const searchParams = new URLSearchParams()
+          const { cache_key } = user_info
+          /* istanbul ignore else */
+          if (cache_key) {
+            searchParams.append('cache_key', cache_key)
+          } else { // TODO - Added for backward compatibility. Need to remove it
+            const { tenant_id, is_franchisor, tenant_ids } = user_info
+            searchParams.append('mlisa_own_tenant_id', tenant_id)
+            searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
+            searchParams.append('is_franchisor', is_franchisor)
+          }
           setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
         }
       })

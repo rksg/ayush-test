@@ -1,0 +1,577 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SummaryBoxes should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Utilization
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Client/AP
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X1
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Switches ports in use
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X1/Y1
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Incidents
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  APs
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      461
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Switches
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      8
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Total Traffic
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wireless
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                    <span
+                      class="ant-statistic-content-value-decimal"
+                    >
+                      .11
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    GB
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wired
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      2
+                    </span>
+                    <span
+                      class="ant-statistic-content-value-decimal"
+                    >
+                      .23
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    MB
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+            >
+              PoE
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wireless
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X%
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wired
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    Y1
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SummaryBoxes should show - when no data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Utilization
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Client/AP
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X1
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Switches ports in use
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X1/Y1
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Incidents
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  APs
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Switches
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Total Traffic
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wireless
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wired
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+            >
+              PoE
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wireless
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X%
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Wired
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    Y1
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from 'react'
 
+import { useParams } from 'react-router-dom'
+
 import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
 import { Node }                                             from '@acx-ui/rc/utils'
 
@@ -16,13 +18,16 @@ interface NodeProps {
   expColEvent: (nodeId: string) => void;
   onHover: (node: NodeData, event: MouseEvent) => void;
   onClick: (node: NodeData, event: MouseEvent) => void;
+  onMouseLeave: () => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
+  selectedVlanPortList: string[];
 }
 
 const Nodes: React.FC<NodeProps> = (props) => {
+  const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
+  const { nodes, expColEvent, onHover, onClick, nodesCoordinate, selectedVlanPortList } = props
 
   useEffect(() => {
     nodes
@@ -81,13 +86,15 @@ const Nodes: React.FC<NodeProps> = (props) => {
             (node.data._children?.length > 0 ? `(${node.data._children.length})` : '')
           return (
             <g
-              key={node.data.id}
               transform={coordinateTransform(node)}
               style={{
                 fill: color[ancestorName],
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
-              className={'node tree-node'}
+              // eslint-disable-next-line max-len
+              className={`node tree-node ${params?.switchId === node.data.id ? 'focusNode' : ''} ${params?.apId === node.data.id ? 'focusNode' : ''} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
+              }
+              id={node.data.id}
             >
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}
@@ -117,7 +124,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   >
                     {children !== '' && node.data.id !== 'Cloud' ?
                       node.data.name.substring(0,8)+children+'...'
-                      :truncateLabel(node.data.name, 13)}
+                      :truncateLabel(node.data.name || node.data.id, 13)}
                   </text>
                 </g>
               </g>

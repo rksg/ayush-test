@@ -1,18 +1,19 @@
 import { Badge, Button, Space } from 'antd'
+import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
 import { Card, Descriptions, Loader }                                               from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol }                                                              from '@acx-ui/icons'
-import { SwitchStatusEnum, SwitchViewModel }                                        from '@acx-ui/rc/utils'
+import { SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus }             from '@acx-ui/rc/utils'
 import { useLocation }                                                              from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
-import IncidentStackedBar               from './IncidentStackedBar'
-import * as UI                          from './styledComponents'
-import { getDeviceColor, switchStatus } from './utils'
+import IncidentStackedBar from './IncidentStackedBar'
+import * as UI            from './styledComponents'
+import { getDeviceColor } from './utils'
 
 
 export function SwitchDetailsCard (props: {
@@ -41,6 +42,14 @@ export function SwitchDetailsCard (props: {
     }),
     skip: !switchDetail?.switchMac || !switchDetail?.venueId
   })
+
+  const parseTime = (datetime: string) => {
+    const time = datetime.split(', ')
+    if(time[time.length -1]){
+      time[time.length -1] = moment(time[time.length -1], 'HH:mm:ss').format('HH:mm:ss')
+    }
+    return time.join(', ')
+  }
 
   return <Card><Card.Title>
     <Space>
@@ -88,7 +97,7 @@ export function SwitchDetailsCard (props: {
         children={<Badge
           key={switchDetail?.id + 'status'}
           color={getDeviceColor(switchDetail?.deviceStatus as SwitchStatusEnum)}
-          text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
+          text={transformSwitchUnitStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
 
       {/* Incidents */}
       <Descriptions.Item
@@ -111,7 +120,7 @@ export function SwitchDetailsCard (props: {
         switchDetail?.deviceStatus !== SwitchStatusEnum.DISCONNECTED &&
       <Descriptions.Item
         label={$t({ defaultMessage: 'Uptime' })}
-        children={switchDetail?.uptime || noDataDisplay} />
+        children={parseTime(switchDetail?.uptime || '') || noDataDisplay} />
       }
       {/* Clients count  */
         switchDetail?.deviceStatus !== SwitchStatusEnum.DISCONNECTED &&

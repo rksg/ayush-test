@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
@@ -10,10 +10,10 @@ import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdge
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import * as UI                       from './styledComponents'
-import { InterfaceSettingsFormType } from './types'
+import * as UI                                                            from './styledComponents'
+import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
-export const LagForm = () => {
+export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
@@ -32,6 +32,8 @@ export const LagForm = () => {
     name='lagSettings'
     children={<LagSettingView />}
   />
+
+  useEffect(() => onInit?.(), [onInit])
 
   return (
     <TypeForm

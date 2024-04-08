@@ -25,7 +25,7 @@ export const PortsTab = (props: PortsTabProps) => {
   const handleClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/ports-general`
+      pathname: `${basePath.pathname}/edit/ports`
     })
   }
 

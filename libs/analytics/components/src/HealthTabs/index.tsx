@@ -1,21 +1,23 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                from '@acx-ui/components'
-import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { Tabs }                                               from '@acx-ui/components'
+import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { HealthPage } from '..'
+
+import { OverviewTab } from './OverviewTab'
 
 export function HealthTabs () {
   const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
   const { activeSubTab } = useParams()
+  const basePath = useTenantLink('/analytics/health/')
+
   const onTabChange = (tab: string) => {
     navigate({
       ...location,
-      pathname: activeSubTab
-        ? location.pathname.replace(activeSubTab as string, tab)
-        : `${location.pathname}/${tab}`
+      pathname: `${basePath.pathname}/${tab}`
     })
   }
   return <Tabs
@@ -25,12 +27,10 @@ export function HealthTabs () {
     type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview'>
-      <div>
-        Health Overview Page
-      </div>
+      <OverviewTab/>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
-      <HealthPage path='/health/wireless/tab/'/>
+      <HealthPage />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
       <div>

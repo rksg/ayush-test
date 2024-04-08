@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -21,21 +21,19 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { useIntegratorCustomerListQuery }                 from '@acx-ui/msp/services'
 import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType, useParams }                          from '@acx-ui/react-router-dom'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
 
+import HspContext from '../../HspContext'
+
 export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean, parentMspId?: string) {
+  isDogfood?: boolean) {
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
-  const [hideMenuesforHsp, setHideMenuesforHsp] = useState<boolean>(false)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -47,59 +45,11 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
 
-  const integratorPayload = {
-    searchString: '',
-    filters: {
-      mspTenantId: [parentMspId],
-      tenantType: [AccountType.MSP_REC]
-    },
-    fields: [
-      'check-all',
-      'id',
-      'name',
-      'tenantType',
-      'status',
-      'alarmCount',
-      'mspAdminCount',
-      'mspEcAdminCount',
-      'mspInstallerAdminCount',
-      'mspIntegratorAdminCount',
-      'creationDate',
-      'expirationDate',
-      'wifiLicense',
-      'switchLicense',
-      'streetAddress'
-    ],
-    searchTargetFields: [
-      'name'
-    ],
-    page: 1,
-    pageSize: 10,
-    defaultPageSize: 10,
-    total: 0,
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
+  const {
+    state
+  } = useContext(HspContext)
 
-  const params = useParams()
-
-  // for now acx_account_vetical is not available in jwt of LSP tenant so for temp fix
-  // we are having these checks for moe details check ACX-52099
-
-  const { data: integratorListData } = useIntegratorCustomerListQuery({
-    params, payload: integratorPayload },
-  { skip: !isTechPartner })
-  useEffect(() => {
-    // if account is not tech partner (integrator / installer) / LSP
-    // then will have FF check else we will call useIntegratorCustomerListQuery
-    // and will check if data is available and based on that will show and hide
-    // Brand 360 and RUCKUS END Customer menue options
-    if (isTechPartner) {
-      setHideMenuesforHsp(!integratorListData?.data?.length)
-    } else {
-      setHideMenuesforHsp(!isHspSupportEnabled)
-    }
-  }, [isHspSupportEnabled, isTechPartner, integratorListData])
+  const { isHsp: isHspSupportEnabled } = state
 
 
   const mspCustomersMenu = {
@@ -108,11 +58,10 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
     label: $t({ defaultMessage: 'MSP Customers' })
   }
 
-  const recCustomerMenu = (hideMenuesforHsp || isSupport ? [] : [{
+  const recCustomerMenu = (!isHspSupportEnabled || isSupport ? [] : [{
     uri: '/dashboard/mspRecCustomers',
     tenantType: 'v' as TenantType,
-    label: isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
-      : $t({ defaultMessage: 'RUCKUS End Customers' })
+    label: $t({ defaultMessage: 'Brand Properties' })
   }])
 
   const hspMspMenues = (isVar || isDogfood)
@@ -122,7 +71,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       : [ mspCustomersMenu, ...recCustomerMenu])
 
   return [
-    ...(!hideMenuesforHsp && isBrand360 && !isInstaller ? [{
+    ...(isHspSupportEnabled && isBrand360Enabled && !isInstaller ? [{
       uri: '/brand360',
       label: brand,
       tenantType: 'v' as TenantType,

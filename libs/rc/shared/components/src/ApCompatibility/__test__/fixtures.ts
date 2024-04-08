@@ -6,7 +6,7 @@ export const mockApCompatibilitiesVenue: ApCompatibilityResponse = {
     incompatibleFeatures: [ {
       featureName: 'EXAMPLE-FEATURE-1',
       requiredFw: '7.0.0.0.123',
-      requiredModel: ['11be'],
+      supportedModelFamilies: ['Wi-Fi 6'],
       incompatibleDevices: [{
         firmware: '6.2.3.103.233',
         model: 'R550',
@@ -41,7 +41,7 @@ export const mockApCompatibilitiesNetwork: ApCompatibilityResponse = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-3',
         requiredFw: '6.2.3.103.251',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -58,7 +58,7 @@ export const mockApCompatibilitiesNetwork: ApCompatibilityResponse = {
 export const mockFeatureCompatibilities: ApFeatureSet = {
   featureName: 'EXAMPLE-FEATURE-3',
   requiredFw: '6.2.3.103.251',
-  requiredModel: ['11be']
+  supportedModelFamilies: ['Wi-Fi 6']
 }
 
 export const mockVenuelist = {
@@ -173,6 +173,6 @@ export const mockActivityApCompatibilityTable = {
     }
   ],
   page: 1,
-  incompatibleCount: 12,
-  totalCount: 20
+  impactedCount: 20,
+  totalCount: 12
 }

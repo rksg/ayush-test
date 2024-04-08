@@ -1,18 +1,24 @@
-import { Col, Form, FormInstance, Input, Row } from 'antd'
-import _                                       from 'lodash'
-import { useIntl }                             from 'react-intl'
+import { useContext } from 'react'
+
+import { Col, Form, FormInstance, Input, Radio, Row, Space } from 'antd'
+import _                                                     from 'lodash'
+import { useIntl }                                           from 'react-intl'
 
 import { Select, StepsForm, Tooltip } from '@acx-ui/components'
 import {
+  EdgeIpModeEnum,
   EdgePortInfo,
   EdgePortTypeEnum,
   edgePortIpValidator,
+  getEdgePortIpFromStatusIp,
   optionSorter,
   subnetMaskIpRegExp,
   validateClusterInterface,
   validateSubnetIsConsistent,
   validateUniqueIp
 } from '@acx-ui/rc/utils'
+
+import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
 interface EdgeClusterInterfaceSettingFormProps {
   form: FormInstance
@@ -22,15 +28,17 @@ interface EdgeClusterInterfaceSettingFormProps {
 
 export interface EdgeClusterInterfaceSettingFormType {
   interfaceName: string
+  ipMode: EdgeIpModeEnum
   ip: string
   subnet: string
 }
 
 export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSettingFormProps) => {
   const { form, interfaceList, rootNamePath = [] } = props
+  const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const { $t } = useIntl()
 
-  const interfaceOprionts = interfaceList?.filter(item =>
+  const interfaceOptions = interfaceList?.filter(item =>
     !item.portName.includes('.') &&
     !item.isCorePort &&
     !item.isLagMember &&
@@ -43,7 +51,7 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
 
   const handleInterfaceChange = (value: string) => {
     const currentInterface = interfaceList?.find(item => item.portName === value)
-    form.setFieldValue(rootNamePath.concat('ip'), currentInterface?.ip?.split('/')[0])
+    form.setFieldValue(rootNamePath.concat('ip'), getEdgePortIpFromStatusIp(currentInterface?.ip))
     form.setFieldValue(rootNamePath.concat('subnet'), currentInterface?.subnet)
   }
 
@@ -90,56 +98,97 @@ export const EdgeClusterInterfaceSettingForm = (props: EdgeClusterInterfaceSetti
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select an interface as cluster interface' })
+            }]}
             children={
               <Select
                 onChange={handleInterfaceChange}
-                options={interfaceOprionts}
+                options={interfaceOptions}
               />
             }
           />
         </Col>
       </Row>
       <StepsForm.Title children={$t({ defaultMessage: 'IP Settings' })} />
-      <Row>
-        <Col span={16}>
-          <Form.Item
-            name={rootNamePath.concat('ip')}
-            label={$t({ defaultMessage: 'IP Address' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) =>
-                edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
-              },
-              {
-                validator: (_, value) =>
-                  validateSubnetIsConsistent(getAllNodesSubnetInfo(), value),
-                message: $t({ defaultMessage: `The ip setting is not 
-                  in the same subnet as other nodes.` })
-              },
-              {
-                validator: (_, value) =>
-                  validateUniqueIp(getAllNodesIp(), value)
-              }
-            ]}
-            children={<Input />}
-            validateFirst
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={16}>
-          <Form.Item
-            name={rootNamePath.concat('subnet')}
-            label={$t({ defaultMessage: 'Subnet Mask' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(value) }
-            ]}
-            children={<Input />}
-          />
-        </Col>
-      </Row>
+
+      <Form.Item
+        name={rootNamePath.concat('ipMode')}
+        label={$t({ defaultMessage: 'IP Assignment' })}
+        validateFirst
+        rules={[{
+          required: true
+        }]}
+        children={
+          <Radio.Group>
+            <Space direction='vertical'>
+              <Radio value={EdgeIpModeEnum.DHCP}>
+                {$t({ defaultMessage: 'DHCP' })}
+              </Radio>
+              <Radio value={EdgeIpModeEnum.STATIC}>
+                {$t({ defaultMessage: 'Static/Manual' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        }
+      />
+      <Form.Item
+        noStyle
+        shouldUpdate={(prev, current) => {
+          const targetFieldPath = rootNamePath.concat('ipMode')
+          return _.get(prev, targetFieldPath) !== _.get(current, targetFieldPath)
+        }}
+      >
+        {({ getFieldValue }) => {
+          const ipMode = getFieldValue(rootNamePath.concat('ipMode'))
+
+          return ipMode === EdgeIpModeEnum.STATIC
+            ? <><Row>
+              <Col span={16}>
+                <Form.Item
+                  name={rootNamePath.concat('ip')}
+                  label={$t({ defaultMessage: 'IP Address' })}
+                  dependencies={clusterInfo?.edgeList?.map(node =>
+                    [node.serialNumber].concat('subnet'))}
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) =>
+                      edgePortIpValidator(value, getCurrentSubnetInfo().subnetMask)
+                    },
+                    {
+                      validator: (_, value) =>
+                        validateSubnetIsConsistent(getAllNodesSubnetInfo(), value),
+                      message: $t({ defaultMessage: `The ip setting is not 
+                      in the same subnet as other nodes.` })
+                    },
+                    {
+                      validator: (_, value) =>
+                        validateUniqueIp(getAllNodesIp(), value)
+                    }
+                  ]}
+                  children={<Input />}
+                  validateFirst
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={16}>
+                <Form.Item
+                  name={rootNamePath.concat('subnet')}
+                  label={$t({ defaultMessage: 'Subnet Mask' })}
+                  rules={[
+                    { required: true },
+                    { validator: (_, value) => subnetMaskIpRegExp(value) }
+                  ]}
+                  children={<Input />}
+                />
+              </Col>
+            </Row>
+            </>
+            : ''
+        }}
+      </Form.Item>
       <Row>
         <Col span={24}>
           <Form.Item

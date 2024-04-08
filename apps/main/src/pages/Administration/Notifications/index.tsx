@@ -233,7 +233,7 @@ const Notifications = () => {
             type='link'
             size='small'
             onClick={() => { setShowPreference(true) }}>
-            {$t({ defaultMessage: 'Preference' })}
+            {$t({ defaultMessage: 'Preferences' })}
           </Button>}
         </Typography>
 

@@ -85,7 +85,7 @@ export interface ActivityApCompatibility {
 }
 
 export interface ActivityApCompatibilityExtraParams {
-  incompatibleCount: number
+  impactedCount: number
 }
 
 export interface ActivityIncompatibleFeatures {

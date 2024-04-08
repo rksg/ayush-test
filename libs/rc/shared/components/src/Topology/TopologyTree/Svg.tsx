@@ -13,31 +13,47 @@ import { TopologyTreeContext } from './TopologyTreeContext'
 const NODE_SIZE: [number, number] = [45, 150]
 
 const Svg: any = (props: any) => {
-  const { width, height, data, edges, onNodeHover, onNodeClick, onLinkClick } = props
+  const { width, height, data, edges, onNodeHover,
+    onNodeClick, onLinkClick, onNodeMouseLeave, onLinkMouseLeave,
+    closeTooltipHandler, closeLinkTooltipHandler, selectedVlanPortList
+  } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<any>(null)
   const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
   const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
   const [linksInfo, setLinksInfo] = useState<any>({})
-  const { scale, translate, setTranslate } =
+  const { scale, translate, setTranslate, setOnDrag } =
     useContext(TopologyTreeContext)
+
+  const handleDrag = drag()
+    .on('start', (event) => {
+      setOnDrag(true)
+      event.subject.startX = event.sourceEvent.layerX
+      event.subject.startY = event.sourceEvent.layerY
+    })
+    .on('drag', (event) => {
+      setOnDrag(true)
+      const { startX, startY } = event.subject
+      const dx = event.sourceEvent.layerX - startX
+      const dy = event.sourceEvent.layerY - startY
+      setTranslate([translate[0] + dx, translate[1] + dy])
+      closeTooltipHandler()
+      closeLinkTooltipHandler()
+    })
+    .on('end', () => {
+      setOnDrag(false)
+    })
 
   useEffect(() => {
     const svg = select(refSvg.current)
 
     if (width && height) {
-      svg.call(
-        drag()
-          .on('drag', (event: { x: any; y: any }) => {
-            const { offsetX, offsetY } = _.get(event, 'sourceEvent')
-            setTranslate([offsetX, offsetY])
-          })
-      )
+      svg.call(handleDrag)
     }
     if (data) {
       setTreeData(transformData(data))
     }
-  }, [width, height, data])
+  }, [width, height, data, translate])
 
   const { nodes, links } = useMemo(() => {
     if (treeData && edges) {
@@ -121,6 +137,8 @@ const Svg: any = (props: any) => {
               links={links as any}
               linksInfo={linksInfo}
               onClick={onLinkClick}
+              onMouseLeave={onLinkMouseLeave}
+              selectedVlanPortList={selectedVlanPortList}
             />
           }
           {links && (
@@ -129,7 +147,9 @@ const Svg: any = (props: any) => {
               expColEvent={expColEvent}
               onHover={onNodeHover}
               onClick={onNodeClick}
+              onMouseLeave={onNodeMouseLeave}
               nodesCoordinate={nodesCoordinate}
+              selectedVlanPortList={selectedVlanPortList}
             />
           )}
         </g>

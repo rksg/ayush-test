@@ -672,6 +672,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...externalProvidersReq
         }
       }
+    }),
+    activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1073,6 +1082,11 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
 
 const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
   const networkDeepList: NetworkDetail[] = []
+
+  if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
+    return { response: networkDeepList }
+  }
+
   for (let i=0; i<networkIds.length; i++) {
     const networkQuery = await fetchWithBQ(createHttpRequest(
       isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
@@ -1123,7 +1137,8 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
-  useExternalProvidersQuery
+  useExternalProvidersQuery,
+  useActivateCertificateTemplateMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
