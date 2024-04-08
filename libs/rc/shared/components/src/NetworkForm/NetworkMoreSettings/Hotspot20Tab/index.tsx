@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                            from 'lodash'
@@ -25,67 +25,67 @@ const defaultConnectionCapabilities = [
     protocol: 'ICMP',
     protocolNumber: 1,
     port: 0,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'FTP',
     protocolNumber: 6,
     port: 20,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'SSH',
     protocolNumber: 6,
     port: 22,
-    status: Hotspot20ConnectionCapabilityStatusEnum.OPEN
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.OPEN)
   },
   {
     protocol: 'HTTP',
     protocolNumber: 6,
     port: 80,
-    status: Hotspot20ConnectionCapabilityStatusEnum.OPEN
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.OPEN)
   },
   {
     protocol: 'Used by TLS VPN',
     protocolNumber: 6,
     port: 443,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'Used by PPTP VPNs',
     protocolNumber: 6,
     port: 1723,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'VoIP',
     protocolNumber: 6,
     port: 5060,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'VoIP',
     protocolNumber: 17,
     port: 5060,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'Used by IKEv2 (IPsec VPN)',
     protocolNumber: 17,
     port: 500,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'IPsec VPN',
     protocolNumber: 17,
     port: 4500,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   },
   {
     protocol: 'ESP',
     protocolNumber: 50,
     port: 0,
-    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
   }
 ] as Hotspot20ConnectionCapability[]
 
@@ -97,7 +97,7 @@ export function Hotspot20Tab (props: {
   const { data } = useContext(NetworkFormContext)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { wlanData } = props
-  // const form = Form.useFormInstance()
+  const form = Form.useFormInstance()
   const [editMode, setEditMode] = useState(false)
   const [connectionCapabilityDrawerVisible, setConnectionCapabilityDrawerVisible] = useState(false)
   const [connectionCapabilities, setConnectionCapabilities] =
@@ -132,6 +132,10 @@ export function Hotspot20Tab (props: {
   //     form.setFieldValue(['wlan','advancedCustomization','joinRSSIThreshold'], undefined)
   //   }
   // }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
+
+  useEffect(() => {
+    form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
+  }, [connectionCapabilities, form])
 
   const networkTypeOptions = Object.keys(Hotspot20AccessNetworkTypeEnum).map((key => {
     return (
@@ -258,8 +262,8 @@ export function Hotspot20Tab (props: {
   }
 
   const getProtocolNumberDisplay = (protocolNumber: number): string => {
-    return getProtocolName(protocolNumber) ??
-      `${protocolNumber} (${getProtocolName(protocolNumber)})`
+    return getProtocolName(protocolNumber) ?
+      `${protocolNumber} (${getProtocolName(protocolNumber)})` : `${protocolNumber}`
   }
 
   const getProtocolName = (protocolNumber: number): string => {
@@ -358,6 +362,7 @@ export function Hotspot20Tab (props: {
           label={$t({ defaultMessage: 'Connection Capabilities ({number})' }, {
             number: connectionCapabilities.length
           })}
+          name={['hotspot20Settings', 'connectionCapabilities']}
           rules={[
             { validator: () => connectionCapabilityValidator() }
           ]}

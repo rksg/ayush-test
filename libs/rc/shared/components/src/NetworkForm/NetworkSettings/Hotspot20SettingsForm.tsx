@@ -195,7 +195,7 @@ function Hotspot20Form () {
     useEffect(() => {
       if (wifiOperatorId.current !== undefined &&
         operatorSelectOptions.find(op => op.value === wifiOperatorId.current) !== undefined) {
-        form.setFieldValue(['hotspot20Settings', 'wifiOperator'], wifiOperatorId)
+        form.setFieldValue(['hotspot20Settings', 'wifiOperator'], wifiOperatorId.current)
         wifiOperatorId.current = undefined
       }
     }, [operatorSelectOptions, wifiOperatorId])

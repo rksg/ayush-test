@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, List } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
+import { useGetIdentityProviderListQuery, useGetWifiOperatorListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   WifiOperatorViewModel,
@@ -16,6 +16,7 @@ export function Hotspot20SummaryForm (props: {
   const { summaryData } = props
   const { $t } = useIntl()
   const [ selectedOperator, setSelectedOperator ] = useState<WifiOperatorViewModel>()
+  const [ selectedProviders, setSelectedProviders ] = useState<string[]>()
 
   const operatorPayload = {
     searchString: '',
@@ -27,7 +28,18 @@ export function Hotspot20SummaryForm (props: {
     ]
   }
 
+  const providerPayload = {
+    searchString: '',
+    pageSize: 100,
+    filter: summaryData.hotspot20Settings?.identityProviders,
+    fields: [
+      'name',
+      'id'
+    ]
+  }
+
   const { data: operatorList } = useGetWifiOperatorListQuery({ payload: operatorPayload })
+  const { data: providerList } = useGetIdentityProviderListQuery({ payload: providerPayload })
 
   useEffect(() => {
     const wifiOperator = operatorList?.data.find(operator =>
@@ -36,6 +48,14 @@ export function Hotspot20SummaryForm (props: {
       setSelectedOperator(wifiOperator as WifiOperatorViewModel )
     }
   }, [summaryData.hotspot20Settings?.wifiOperator, operatorList])
+
+  useEffect(() => {
+    const providers = providerList?.data.filter(provider =>
+      provider.id !== undefined &&
+      summaryData.hotspot20Settings?.identityProviders !== undefined &&
+      summaryData.hotspot20Settings?.identityProviders.includes(provider.id) ).map(rec => rec.name)
+    setSelectedProviders(providers)
+  }, [summaryData.hotspot20Settings?.identityProviders, providerList])
 
   return (
     <>
@@ -58,7 +78,7 @@ export function Hotspot20SummaryForm (props: {
           <List
             split={false}
             size='small'
-            dataSource={summaryData.hotspot20Settings?.identityProviders}
+            dataSource={selectedProviders ?? ['--']}
             renderItem={(item) =>
               <List.Item
                 style={{ paddingLeft: '0px' }}>
