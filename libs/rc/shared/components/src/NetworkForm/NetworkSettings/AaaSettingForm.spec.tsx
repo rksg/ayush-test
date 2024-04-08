@@ -186,7 +186,7 @@ describe('NetworkForm', () => {
     await userEvent.click(addCertTemplateBtn)
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: /Cancel/i }))
+    await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
