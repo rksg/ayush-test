@@ -45,8 +45,8 @@ const Svg: any = (props: any) => {
         containerWidth : (translate[0] + dx <= 0 ?
           0 : translate[0] + dx)
       let boundaryDy = translate[1] + dy >= containerHeight ?
-        containerHeight : (translate[1] + dy <= -(containerHeight) ?
-          -(containerHeight) : translate[1] + dy)
+        containerHeight : (translate[1] + dy <= -(containerHeight / 2) ?
+          -(containerHeight / 2) : translate[1] + dy)
 
       setTranslate([boundaryDx, boundaryDy])
       closeTooltipHandler()
