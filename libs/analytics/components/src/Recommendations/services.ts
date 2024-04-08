@@ -115,6 +115,7 @@ export interface MutationResponse {
 
 interface SchedulePayload {
   id: string
+  type: string
   scheduledAt: string
 }
 interface ScheduleResponse {
@@ -289,19 +290,21 @@ export const api = recommendationApi.injectEndpoints({
           zoneCount: response.zoneCount,
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
-          recommendations: response.recommendations.map(recommendation => {
+          recommendations: response.recommendations.reduce((recommendations, recommendation) => {
             const { id, code, status } = recommendation
             const newId = id === 'unknown' ? uniqueId() : id
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            return {
+            const detail = codes[getCode]
+            detail && recommendations.push({
               ...recommendation,
               id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              summary: $t(codes[getCode].summary)
-            } as unknown as CrrmListItem
-          })
+              summary: $t(detail.summary)
+            } as unknown as CrrmListItem)
+            return recommendations
+          }, [] as CrrmListItem[])
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
@@ -329,18 +332,21 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         return {
           aiOpsCount: response.aiOpsCount,
-          recommendations: response.recommendations.map(recommendation => {
+          recommendations: response.recommendations.reduce((recommendations, recommendation) => {
             const { code, status } = recommendation
             const getCode = code === 'unknown'
               ? status as keyof typeof codes
               : code as keyof typeof codes
-            return {
+            const detail = codes[getCode]
+            detail && recommendations.push({
               ...recommendation,
-              priority: codes[getCode].priority,
-              category: $t(codes[getCode].category),
-              summary: $t(codes[getCode].summary)
-            } as unknown as AiOpsListItem
-          })
+              priority: detail.priority,
+              category: $t(detail.category),
+              summary: $t(detail.summary)
+
+            } as unknown as AiOpsListItem)
+            return recommendations
+          }, [] as AiOpsListItem[])
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
@@ -383,7 +389,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
-        const items = response.recommendations.map(recommendation => {
+        const items = response.recommendations.reduce((recommendations, recommendation) => {
           const {
             id, path, sliceValue, sliceType, code, status, metadata, updatedAt
           } = recommendation
@@ -393,20 +399,21 @@ export const api = recommendationApi.injectEndpoints({
           const getCode = code === 'unknown'
             ? status as keyof typeof codes
             : code as keyof typeof codes
-          return {
+          const detail = codes[getCode]
+          detail && recommendations.push({
             ...recommendation,
             id: newId,
             pathKey: JSON.stringify(recommendation.idPath),
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             priority: {
-              ...codes[getCode].priority,
-              text: $t(codes[getCode].priority.label)
+              ...detail.priority,
+              text: $t(detail.priority.label)
             },
-            category: $t(codes[getCode].category),
+            category: $t(detail.category),
             summary: isFullOptimization || code === 'unknown'
-              ? $t(codes[getCode].summary)
-              : $t(codes[getCode].partialOptimizedSummary!),
+              ? $t(detail.summary)
+              : $t(detail.partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
@@ -416,8 +423,9 @@ export const api = recommendationApi.injectEndpoints({
                 text: $t(getCrrmOptimizedState(statusEnum).label)
               }
             })
-          }
-        })
+          } as unknown as (RecommendationListItem & { pathKey: string }))
+          return recommendations
+        }, [] as Array<RecommendationListItem & { pathKey: string }>)
 
         // eslint-disable-next-line max-len
         const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
@@ -459,14 +467,20 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
-      query: (payload) => ({
+    scheduleRecommendation: build.mutation<
+      ScheduleResponse, SchedulePayload & { isRecommendationRevertEnabled?: boolean }
+    >({
+      query: ({ isRecommendationRevertEnabled, ...payload }) => ({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
+            ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
           ) {
-            schedule(id: $id, scheduledAt: $scheduledAt) {
+            schedule(
+              id: $id,
+              ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
+              scheduledAt: $scheduledAt) {
               success
               errorMsg
               errorCode
@@ -475,6 +489,7 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           id: payload.id,
+          actionType: payload.type,
           scheduledAt: payload.scheduledAt
         }
       }),

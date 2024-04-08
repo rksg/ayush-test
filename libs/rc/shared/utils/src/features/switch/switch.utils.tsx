@@ -7,6 +7,7 @@ import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
+  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
@@ -68,6 +69,11 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
   ['FMS', 'ICX7550-48F'],
+  ['FNX', 'ICX8100-24'],
+  ['FNY', 'ICX8100-24P'],
+  ['FNZ', 'ICX8100-48'],
+  ['FPA', 'ICX8100-48P'],
+  ['FPB', 'ICX8100-C08PF'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -704,17 +710,58 @@ export const getAdminPassword = (
     )
 }
 
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+  let ranges = []
+
+  for (let i = 0; i < numbers.length; i++) {
+    let start = numbers[i]
+    while (numbers[i + 1] - numbers[i] === 1) {
+      i++
+    }
+    let end = numbers[i]
+    ranges.push(start === end ? `${start}` : `${start}-${end}`)
+  }
+
+  if (ranges.length > maxRangesToShow) {
+    const remainingCount = ranges.length - maxRangesToShow
+    ranges = ranges.slice(0, maxRangesToShow)
+    return `${ranges.join(', ')}, and ${remainingCount} more...`
+  }
+
+  return ranges.join(', ')
+}
+
+export const isFirmwareVersionAbove10 = (
+  firmwareVersion: string
+) => {
+  return firmwareVersion.slice(3,6) === '100'
+}
+
 export const isFirmwareSupportAdminPassword = (
   firmwareVersion: string
 ) => {
-  if (firmwareVersion.includes('09010')) {
-    return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
-  } else if (firmwareVersion.includes('10010')) {
+  if (isFirmwareVersionAbove10(firmwareVersion)) {
     return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
   }
-  return false
+  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
 }
 
 export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
   (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}
+
+export const checkSwitchUpdateFields = function (
+  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+) {
+  const fields = Object.keys(values ?? {})
+  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
+    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
+      return [ ...result, key ]
+    }
+    return result
+  }, [])
 }

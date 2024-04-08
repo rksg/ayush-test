@@ -85,6 +85,7 @@ export interface TableProps <RecordType>
     stickyHeaders?: boolean,
     stickyPagination?: boolean,
     enableResizableColumn?: boolean,
+    enablePagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -146,7 +147,8 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
+  enablePagination = false, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -236,7 +238,7 @@ function Table <RecordType extends Record<string, any>> ({
       : props.columns
 
     return cols.map(column => ({
-      ...column,
+      ..._.omit(column, 'scopeKey'),
       tooltip: null,
       title: column.tooltip
         ? <UI.TitleWithTooltip>
@@ -436,7 +438,7 @@ function Table <RecordType extends Record<string, any>> ({
   }), [props.pagination, settingsId, type])
 
   let pagination: false | TablePaginationConfig = false
-  if (type === 'tall') {
+  if (type === 'tall' || !!enablePagination) {
     pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
     if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
@@ -702,6 +704,10 @@ Table.Highlighter = UI.Highlighter
 Table.SearchInput = UI.SearchInput
 
 export { Table }
+
+export function AsyncColumnLoader () {
+  return <UI.AsyncColumnLoader data-testid='async-column-loader-animation'/>
+}
 
 type ScrollXReducerColumn = {
   key: string

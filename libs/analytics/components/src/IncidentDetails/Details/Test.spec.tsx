@@ -73,6 +73,9 @@ jest.mock('../Charts/PoePdTable', () => ({
 jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
   ImpactedSwitchVLANsTable: () => <div data-testid='impactedSwitchVLANsTable' />
 }))
+jest.mock('../Charts/ImpactedSwitchVLANDetails', () => ({
+  ImpactedSwitchVLANsDetails: () => <div data-testid='impactedSwitchVLANsDetails' />
+}))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
@@ -167,7 +170,7 @@ describe('Test', () => {
         component: SwitchMemoryHigh,
         fakeIncident: fakeIncidentSwitchMemory,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: ['switchDetail']
       },
       {

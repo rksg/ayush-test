@@ -18,6 +18,7 @@ import {
   getSelectPolicyRoutePath,
   Policy,
   PolicyOperation,
+  policyTechnologyLabelMapping,
   PolicyType,
   policyTypeLabelMapping,
   RogueApConstant,
@@ -25,9 +26,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                    from '@acx-ui/user'
-
-import { policyTechnologyLabelMapping } from '../contentsMap'
-
 
 function useColumns () {
   const { $t } = useIntl()
@@ -123,7 +121,7 @@ export default function PoliciesTable () {
     [PolicyType.RADIUS_ATTRIBUTE_GROUP]: [],
     [PolicyType.TUNNEL_PROFILE]: [],
     [PolicyType.CONNECTION_METERING]: []
-  }
+  } as { [key in PolicyType]: unknown }
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -143,6 +141,7 @@ export default function PoliciesTable () {
             entityValue: name
           },
           onOk: async () => {
+            // @ts-ignore
             const [ deleteFn ] = deletePolicyFnMapping[type]
             if (deleteFn) {
               deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)

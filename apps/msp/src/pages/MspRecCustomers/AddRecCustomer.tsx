@@ -294,7 +294,9 @@ export function AddRecCustomer () {
   const MspAdminsForm = () => {
     return <>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'RUCKUS End Customer' })}</label>
+        <label>{
+          intl.$t({ defaultMessage: 'Brand Property' })
+        }</label>
         <Form.Item
           children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
@@ -354,13 +356,13 @@ export function AddRecCustomer () {
     <>
       <PageHeader
         title={!isEditMode ?
-          intl.$t({ defaultMessage: 'Add RUCKUS End Customer Account' }) :
-          intl.$t({ defaultMessage: 'RUCKUS End Customer Account' })
+          intl.$t({ defaultMessage: 'Add Brand Property Account' }) :
+          intl.$t({ defaultMessage: 'Brand Property Account' })
         }
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Customers' }) },
           {
-            text: intl.$t({ defaultMessage: 'RUCKUS End Customers' }),
+            text: intl.$t({ defaultMessage: 'Brand Properties' }),
             link: '/dashboard/mspRecCustomers', tenantType: 'v'
           }
         ]}

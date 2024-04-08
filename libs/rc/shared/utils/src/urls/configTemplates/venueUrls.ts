@@ -185,5 +185,55 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
     newApi: true
+  },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
+    newApi: true
+  },
+  getVenueSwitchSetting: {
+    method: 'get',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true
+  },
+  updateVenueSwitchSetting: {
+    method: 'put',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true
+  },
+  getVenueSwitchAaaSetting: {
+    method: 'get',
+    url: '/templates/venues/:venueId/aaaSettings',
+    newApi: true
+  },
+  updateVenueSwitchAaaSetting: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaSettings/:aaaSettingId',
+    newApi: true
+  },
+  getVenueSwitchAaaServerList: {
+    method: 'post',
+    url: '/templates/venues/aaaServers/query',
+    newApi: true
+  },
+  addVenueSwitchAaaServer: {
+    method: 'post',
+    url: '/templates/venues/:venueId/aaaServers',
+    newApi: true
+  },
+  updateVenueSwitchAaaServer: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaServers/:aaaServerId',
+    newApi: true
+  },
+  deleteVenueSwitchAaaServer: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers/:aaaServerId',
+    newApi: true
+  },
+  bulkDeleteVenueSwitchAaaServer: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers',
+    newApi: true
   }
 }

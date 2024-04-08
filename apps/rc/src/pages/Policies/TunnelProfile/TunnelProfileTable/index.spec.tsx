@@ -242,10 +242,9 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
-        if (flag === Features.EDGES_SD_LAN_TOGGLE) return true
-        return false
-      })
+      jest.mocked(useIsSplitOn).mockImplementation((flag: string) =>
+        flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_SD_LAN_HA_TOGGLE
+      )
 
       mockServer.use(
         rest.post(
@@ -273,10 +272,12 @@ describe('TunnelProfileList', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       await screen.findAllByRole('row', { name: /Default/i })
       await screen.findByRole('columnheader', { name: 'SD-LAN' })
-      const dropdowns = await screen.findAllByTestId('options-selector')
+      const tableFilters = await screen.findAllByTestId('options-selector')
       await waitFor(() => {
-        expect(dropdowns.length).toBe(3)
+        expect(tableFilters.length).toBe(2)
       })
+      expect(tableFilters[0]).toHaveTextContent(/SD-LAN/)
+      expect(tableFilters[1]).toHaveTextContent(/Networks/)
       expect(mockedSdLanReq).toBeCalled()
     })
 

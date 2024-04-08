@@ -51,9 +51,29 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
     newApi: true
   },
-  getEnhancedDhcpList: {
+  getPortal: {
+    method: 'get',
+    url: '/templates/portalServiceProfiles/:serviceId',
+    newApi: true
+  },
+  addPortal: {
     method: 'post',
-    url: '/templates/enhancedDhcpConfigServiceProfiles/query',
+    url: '/templates/portalServiceProfiles',
+    newApi: true
+  },
+  updatePortal: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deletePortal: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:templateId',
+    newApi: true
+  },
+  getEnhancedPortalList: {
+    method: 'post',
+    url: '/templates/portalServiceProfiles/query',
     newApi: true
   }
 }

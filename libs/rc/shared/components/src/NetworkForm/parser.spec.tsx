@@ -238,5 +238,42 @@ describe('NetworkForm parser', () => {
       // eslint-disable-next-line max-len
       expect(tranferSettingsToSave(incomingData, true)).not.toHaveProperty(['wlan', 'vlanId'])
     })
+
+    it('verify AAASetting with macAddressAuthenticationConfiguration in editMode',() => {
+      const incomingData: NetworkSaveData = {
+        type: NetworkTypeEnum.AAA,
+        authRadiusId: '',
+        authRadius: {
+          primary: {
+            ip: '1.1.1.1'
+          }
+        },
+        wlan: {
+          advancedCustomization: {},
+          macAddressAuthenticationConfiguration: {
+            macAddressAuthentication: true,
+            macAuthMacFormat: 'Lower'
+          }
+        },
+        enableAccountingService: false
+      } as unknown as NetworkSaveData
+
+      // eslint-disable-next-line max-len
+      expect(tranferSettingsToSave(incomingData, true)).toHaveProperty(['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat'])
+    })
+  })
+
+  it('verify AAASetting with certificateTemplateId in editMode',() => {
+    const incomingData: NetworkSaveData = {
+      type: NetworkTypeEnum.AAA,
+      useCertificateTemplate: true,
+      certificateTemplateId: 'testId'
+    } as unknown as NetworkSaveData
+
+    // eslint-disable-next-line max-len
+    expect(tranferSettingsToSave(incomingData, true)).toMatchObject({
+      certificateTemplateId: 'testId',
+      useCertificateTemplate: true
+    })
   })
 })

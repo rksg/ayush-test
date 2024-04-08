@@ -311,12 +311,12 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {
       openNewTab: false,
-      uri: '/analytics/admin/users'
+      uri: '/admin/users'
     }
     const match = find(flattenConfig(result.current), target)
     expect(match).toMatchObject(target)
   })
-  it('should open new tab for users page if ruckus-ai-users-toggle is disabled', () => {
+  it('should open new tab for users page if ruckus-ai-users-new-roles-toggle is disabled', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const mockUserProfile = {

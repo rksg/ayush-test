@@ -154,13 +154,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
-                    'certain features in this venue.'
+                    'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '14px',
-                    width: '14px',
-                    marginBottom: '-2px',
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
                     marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
                 /> : []
@@ -323,16 +323,16 @@ export function NetworkTable ({
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
-      const _rows: string[]=[]
+      const _rows: string[] = []
 
-      tableQuery?.data?.data.map((record: Network) => {
-        if (record?.children) _rows.push(record.id)})
+      tableQuery?.data?.data.forEach((record: Network) => {
+        if (record?.children) _rows.push(record.id)
+      })
+
       setShowOnboardNetworkToggle(!!_rows.length)
-      if (expandOnBoaroardingNetworks) {
-        setExpandedRowKeys(_rows)
-      } else {
-        setExpandedRowKeys([])
-      }
+
+      const exRowKeys = expandOnBoaroardingNetworks ? _rows : []
+      setExpandedRowKeys(exRowKeys)
     }
 
   }, [tableQuery?.data?.data, expandOnBoaroardingNetworks])

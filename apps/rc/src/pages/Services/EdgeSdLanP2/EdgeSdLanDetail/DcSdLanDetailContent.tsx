@@ -1,8 +1,7 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card, SummaryCard, Tabs } from '@acx-ui/components'
-import { SdLanTopologyDiagram }    from '@acx-ui/rc/components'
+import { Card, SummaryCard, Tabs }            from '@acx-ui/components'
+import { SdLanTopologyDiagram, SpaceWrapper } from '@acx-ui/rc/components'
 import {
   getPolicyDetailsLink,
   PolicyType,
@@ -35,9 +34,9 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
     {
       title: $t({ defaultMessage: 'Cluster' }),
       content: () =>
-        data?.edgeId ? (
-          <TenantLink to={`/devices/edge/${data.edgeId}/details/overview`}>
-            {data.edgeName}
+        data?.edgeClusterId ? (
+          <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+            {data.edgeClusterName}
           </TenantLink>
         ) : (
           noDataDisplay
@@ -64,7 +63,7 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
   ]
 
   return (
-    <Space direction='vertical' size={30}>
+    <SpaceWrapper fullWidth direction='vertical' size={30}>
       <SummaryCard data={sdLanInfo} />
       <Card>
         <SdLanTopologyDiagram
@@ -89,13 +88,14 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
             <NetworkTable networkIds={data?.networkIds ?? []} />
           </Tabs.TabPane>
           <Tabs.TabPane
-            tab={$t({ defaultMessage: 'SmartEdges({count})' }, { count: data?.edgeId ? 1 : 0 })}
+            tab={$t({ defaultMessage: 'SmartEdges({count})' },
+              { count: data?.edgeClusterId ? 1 : 0 })}
             key='se'
           >
             <SmartEdgesTable sdLanData={data} />
           </Tabs.TabPane>
         </Tabs>
       </Card>
-    </Space>
+    </SpaceWrapper>
   )
 }

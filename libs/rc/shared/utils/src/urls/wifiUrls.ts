@@ -361,6 +361,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
+  resetApBandModeSettings: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
+    newApi: true
+  },
   getApAntennaTypeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
@@ -419,7 +424,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateApDirectedMulticast: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/directedMulticastSettings'
+    url: '/venues/aps/:serialNumber/directedMulticastSettings',
+    newApi: true
   },
   resetApDirectedMulticast: {
     method: 'delete',
@@ -558,7 +564,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApFeatureSets: {
     method: 'get',
-    url: '/wifiFeatureSets/:featureName'
+    url: '/wifiFeatureSets/:featureName',
+    newApi: true
   },
   getApCompatibilitiesVenue: {
     method: 'post',
@@ -569,6 +576,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
+  },
+  activateCertificateTemplate: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
 
 }

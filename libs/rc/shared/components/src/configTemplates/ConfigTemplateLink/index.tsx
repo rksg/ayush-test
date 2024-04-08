@@ -2,30 +2,30 @@ import { ReactNode } from 'react'
 
 import {
   ConfigTemplateType,
-  DpskDetailsTabKey,
   LocationExtended,
   PolicyDetailsLinkProps,
   PolicyOperation,
   PolicyRoutePathProps,
-  PolicyType,
   ServiceDetailsLinkProps,
   ServiceOperation,
   ServiceRoutePathProps,
-  ServiceType,
   getConfigTemplatePath,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   useConfigTemplate,
   useConfigTemplateTenantLink,
   getServiceDetailsLink,
-  getServiceRoutePath
+  getServiceRoutePath,
+  configTemplateServiceTypeMap,
+  configTemplatePolicyTypeMap
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 
-type OptionProps = {
-  [key in ConfigTemplateType]?: {
-    activeTab?: string
-  }
+import { configTemplateDefaultDetailsTab } from './contentMap'
+
+type GeneralConfigTemplateLinkProps<T> = T & {
+  children: ReactNode
+  attachCurrentPathToState?: boolean
 }
 
 interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {
@@ -46,11 +46,8 @@ export function ConfigTemplateLink (props: ConfigTemplateLinkProps) {
   )
 }
 
-interface PolicyConfigTemplateLinkProps extends PolicyRoutePathProps {
-	children: ReactNode
-  attachCurrentPathToState?: boolean
-}
-export function PolicyConfigTemplateLink (props: PolicyConfigTemplateLinkProps) {
+// eslint-disable-next-line max-len
+export function PolicyConfigTemplateLink (props: GeneralConfigTemplateLinkProps<PolicyRoutePathProps>) {
   const { children, attachCurrentPathToState = true, ...rest } = props
   return (
     // eslint-disable-next-line max-len
@@ -60,11 +57,8 @@ export function PolicyConfigTemplateLink (props: PolicyConfigTemplateLinkProps) 
   )
 }
 
-interface PolicyConfigTemplateDetailsLinkProps extends PolicyDetailsLinkProps {
-	children: ReactNode
-  attachCurrentPathToState?: boolean
-}
-export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDetailsLinkProps) {
+// eslint-disable-next-line max-len
+export function PolicyConfigTemplateDetailsLink (props: GeneralConfigTemplateLinkProps<PolicyDetailsLinkProps>) {
   const { children, attachCurrentPathToState = true, ...rest } = props
   return (
     // eslint-disable-next-line max-len
@@ -74,11 +68,22 @@ export function PolicyConfigTemplateDetailsLink (props: PolicyConfigTemplateDeta
   )
 }
 
-interface ServiceConfigTemplateLinkProps extends ServiceRoutePathProps {
-	children: ReactNode
-  attachCurrentPathToState?: boolean
+// eslint-disable-next-line max-len
+export function PolicyConfigTemplateLinkSwitcher (props: React.PropsWithChildren<PolicyDetailsLinkProps>) {
+  const { isTemplate } = useConfigTemplate()
+  const { type, oper, policyId, children } = props
+
+  return isTemplate
+    ? <PolicyConfigTemplateDetailsLink type={type} oper={oper} policyId={policyId}>
+      {children}
+    </PolicyConfigTemplateDetailsLink>
+    : <TenantLink to={getPolicyDetailsLink({ type, oper, policyId })}>
+      {children}
+    </TenantLink>
 }
-export function ServiceConfigTemplateLink (props: ServiceConfigTemplateLinkProps) {
+
+// eslint-disable-next-line max-len
+export function ServiceConfigTemplateLink (props: GeneralConfigTemplateLinkProps<ServiceRoutePathProps>) {
   const { children, attachCurrentPathToState = true, ...rest } = props
   return (
     // eslint-disable-next-line max-len
@@ -88,11 +93,8 @@ export function ServiceConfigTemplateLink (props: ServiceConfigTemplateLinkProps
   )
 }
 
-interface ServiceConfigTemplateDetailsLinkProps extends ServiceDetailsLinkProps {
-	children: ReactNode
-  attachCurrentPathToState?: boolean
-}
-export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDetailsLinkProps) {
+// eslint-disable-next-line max-len
+export function ServiceConfigTemplateDetailsLink (props: GeneralConfigTemplateLinkProps<ServiceDetailsLinkProps>) {
   const { children, attachCurrentPathToState = true, ...rest } = props
   return (
     // eslint-disable-next-line max-len
@@ -102,11 +104,8 @@ export function ServiceConfigTemplateDetailsLink (props: ServiceConfigTemplateDe
   )
 }
 
-interface ServiceConfigTemplateLinkSwitcherProps extends ServiceDetailsLinkProps {
-  children: ReactNode
-}
 // eslint-disable-next-line max-len
-export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateLinkSwitcherProps) {
+export function ServiceConfigTemplateLinkSwitcher (props: React.PropsWithChildren<ServiceDetailsLinkProps>) {
   const { isTemplate } = useConfigTemplate()
   const { type, oper, serviceId, children } = props
 
@@ -120,37 +119,35 @@ export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateL
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string, option: OptionProps = {}) {
-  let activeTab = ''
-  switch (type) {
-    case ConfigTemplateType.RADIUS:
-      // eslint-disable-next-line max-len
-      return <PolicyConfigTemplateDetailsLink type={PolicyType.AAA} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
-    case ConfigTemplateType.DPSK:
-      return <ServiceConfigTemplateDetailsLink
-        type={ServiceType.DPSK}
-        oper={ServiceOperation.DETAIL}
-        activeTab={DpskDetailsTabKey.OVERVIEW}
-        serviceId={id}
-        children={name}
-      />
-    case ConfigTemplateType.DHCP:
-      // eslint-disable-next-line max-len
-      return <ServiceConfigTemplateDetailsLink type={ServiceType.DHCP} oper={ServiceOperation.DETAIL} serviceId={id} children={name} />
-    case ConfigTemplateType.NETWORK:
-      activeTab = option[ConfigTemplateType.NETWORK]?.activeTab || 'venues'
-      // eslint-disable-next-line max-len
-      return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${activeTab}`} children={name} />
-    case ConfigTemplateType.VENUE:
-      activeTab = option[ConfigTemplateType.VENUE]?.activeTab || 'networks'
-      // eslint-disable-next-line max-len
-      return <ConfigTemplateLink to={`venues/${id}/venue-details/${activeTab}`} children={name} />
-    case ConfigTemplateType.ACCESS_CONTROL_SET:
-      // eslint-disable-next-line max-len
-      return <PolicyConfigTemplateDetailsLink type={PolicyType.ACCESS_CONTROL} oper={PolicyOperation.DETAIL} policyId={id} children={name} />
-    default:
-      return
+export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string | number, activeTab?: string) {
+  const targetTab = activeTab ?? configTemplateDefaultDetailsTab[type]
+  const policyType = configTemplatePolicyTypeMap[type]
+  const serviceType = configTemplateServiceTypeMap[type]
+
+  if (policyType) {
+    return <PolicyConfigTemplateDetailsLink
+      type={policyType}
+      oper={PolicyOperation.DETAIL}
+      activeTab={targetTab as PolicyDetailsLinkProps['activeTab']}
+      policyId={id}
+      children={name}
+    />
+  } else if (serviceType) {
+    return <ServiceConfigTemplateDetailsLink
+      type={serviceType}
+      oper={ServiceOperation.DETAIL}
+      activeTab={targetTab as ServiceDetailsLinkProps['activeTab']}
+      serviceId={id}
+      children={name}
+    />
+  } else if (type === ConfigTemplateType.NETWORK) {
+    // eslint-disable-next-line max-len
+    return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${targetTab}`} children={name} />
+  } else if (type === ConfigTemplateType.VENUE) {
+    return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
   }
+
+  return <></>
 }
 
 // eslint-disable-next-line max-len

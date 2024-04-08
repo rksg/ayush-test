@@ -4,11 +4,13 @@ import { Form }    from 'antd'
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput } from '@acx-ui/components'
+import { PasswordInput }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkSaveData
+  NetworkSaveData,
+  macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
@@ -17,6 +19,7 @@ export function AaaSummaryForm (props: {
 }) {
   const { summaryData } = props
   const { $t } = useIntl()
+  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
   return (<>
     {get(summaryData, 'authRadius.primary.ip') !== undefined && <>
       {$t({ defaultMessage: 'Authentication Service' })}
@@ -32,6 +35,24 @@ export function AaaSummaryForm (props: {
         data={summaryData}
       />
     </>}
+    {support8021xMacAuth &&
+      <Form.Item
+        label={$t({ defaultMessage: 'MAC Authentication' })}
+        children={
+          summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication?
+            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
+    }
+    {support8021xMacAuth &&
+     summaryData.wlan?.macAddressAuthenticationConfiguration?.macAddressAuthentication &&
+      <Form.Item
+        label={$t({ defaultMessage: 'MAC Address Format' })}
+        children={
+          macAuthMacFormatOptions[
+            // eslint-disable-next-line max-len
+            summaryData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
+          ]
+        }/>
+    }
   </>)
 }
 function AaaServerFields ({ serverType, data }: {

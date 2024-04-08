@@ -1,7 +1,7 @@
 
 import userEvent from '@testing-library/user-event'
 
-import { EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
 import {
   render,
   screen,
@@ -42,13 +42,15 @@ const mockedAllNodeData = [
     nodeName: 'Smart Edge 1',
     serialNumber: 'serialNumber-1',
     interfaceName: 'lag0',
-    ip: '192.168.11.136',
+    ipMode: EdgeIpModeEnum.STATIC,
+    ip: '192.168.12.135',
     subnet: '255.255.255.0'
   },
   {
     nodeName: 'Smart Edge 2',
     serialNumber: 'serialNumber-2',
     interfaceName: 'lag0',
+    ipMode: EdgeIpModeEnum.STATIC,
     ip: '192.168.12.136',
     subnet: '255.255.255.0'
   }
@@ -69,7 +71,8 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     expect(screen.getByText('Select Cluster Interface: Smart Edge 1')).toBeVisible()
     expect(screen.getByRole('combobox', { name: /Set cluster interface on/i })).toHaveValue('lag0')
-    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.11.136')
+    expect(screen.getByRole('radio', { name: 'Static/Manual' })).toBeChecked()
+    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.12.135')
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toHaveValue('255.255.255.0')
   })
 
@@ -87,7 +90,7 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     expect(screen.getByText('Select Cluster Interface: Smart Edge 1')).toBeVisible()
     expect(screen.getByRole('combobox', { name: /Set cluster interface on/i })).toHaveValue('lag0')
-    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.11.136')
+    expect(screen.getByRole('textbox', { name: 'IP Address' })).toHaveValue('192.168.12.135')
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' })).toHaveValue('255.255.255.0')
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     await waitFor(() => expect(mockedHandleFinishFn).toBeCalledWith(mockedAllNodeData[0]))
@@ -108,5 +111,23 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedSetVisibleFn).toBeCalledWith(false)
+  })
+
+  it('should be blocked by same ip address', async () => {
+    render(
+      <EditClusterInterfaceDrawer
+        visible={true}
+        setVisible={mockedSetVisibleFn}
+        handleFinish={mockedHandleFinishFn}
+        interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+        editData={mockedAllNodeData[0]}
+        allNodeData={mockedAllNodeData}
+      />
+    )
+
+    const ipField = screen.getByRole('textbox', { name: 'IP Address' })
+    await userEvent.clear(ipField)
+    await userEvent.type(ipField, '192.168.12.136')
+    expect(await screen.findByText('IP address cannot be the same as other nodes.')).toBeVisible()
   })
 })
