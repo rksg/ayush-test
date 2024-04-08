@@ -81,6 +81,96 @@ function updateVlanPortData (portNumber: any,
   }
 }
 
+function rearrangedData (data: Link) {
+  return {
+    source: data.target,
+    target: data.source,
+    from: data.to,
+    to: data.from,
+    fromMac: data.toMac,
+    toMac: data.fromMac,
+    fromName: data.toName,
+    toName: data.fromName,
+    connectedPort: data.correspondingPort,
+    correspondingPort: data.connectedPort,
+    fromSerial: data.toSerial,
+    toSerial: data.fromSerial,
+    connectedPortUntaggedVlan: data.correspondingPortUntaggedVlan,
+    correspondingPortUntaggedVlan: data.connectedPortUntaggedVlan,
+    connectedPortTaggedVlan: data.correspondingPortTaggedVlan,
+    correspondingPortTaggedVlan: data.connectedPortTaggedVlan,
+    poeEnabled: data.poeEnabled,
+    linkSpeed: data.linkSpeed,
+    poeUsed: data.poeUsed,
+    poeTotal: data.poeTotal,
+    connectionType: data.connectionType,
+    connectionStatus: data.connectionStatus
+  }
+}
+
+export function validateEdgeDirection (edges: Link[], nodeMap: Record<string, NodeData>) {
+  const rootEdges: Link[] = []
+  const calibrateEdges: Link[] = []
+  const filterEdges: Link[] = []
+  const visitedEdges: Set<string> = new Set() // To avoid processing edges multiple times
+
+  // Function to check if an edge has been visited
+  function isVisited (edge: Link): boolean {
+    return visitedEdges.has(`${edge.from}-${edge.to}`)
+  }
+
+  // Function to mark an edge as visited
+  function markVisited (edge: Link) {
+    visitedEdges.add(`${edge.from}-${edge.to}`)
+  }
+
+  // Helper function to push an edge to calibrateEdges and mark it visited
+  function pushToCalibrate (edge: Link) {
+    calibrateEdges.push(edge)
+  }
+
+  edges.forEach((edge: Link) => {
+    if (nodeMap[edge.from].isConnectedCloud) {
+      rootEdges.push(edge)
+      pushToCalibrate(edge)
+    }else {
+      filterEdges.push(edge)
+    }
+  })
+
+  while (rootEdges.length > 0) {
+    const rootEdge = rootEdges.pop()
+    filterEdges.forEach((edge: Link) => {
+      if (rootEdge && rootEdge.to === edge.from) {
+        if(!isVisited(edge)){
+          markVisited(edge)
+          pushToCalibrate(edge)
+          rootEdges.push(edge)
+        }
+      } else if (rootEdge && rootEdge.to === edge.to) {
+        const rearranged = rearrangedData(edge)
+        if(!isVisited(edge)){
+          markVisited(edge)
+          pushToCalibrate(rearranged)
+          rootEdges.push(rearranged)
+        }
+      }
+    })
+  }
+
+  let uniqueValues: any = {}
+
+  const calibrateEdgesResult: Link[] = []
+  edges.forEach((item: Link) => {
+    if (!uniqueValues[item.to]) {
+      uniqueValues[item.to] = true
+      calibrateEdgesResult.push(item)
+    }
+  })
+
+  return calibrateEdgesResult
+}
+
 export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDataFunction): any {
   const nodes = topologyData.nodes
   const edges = topologyData.edges
@@ -105,7 +195,6 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
     updateVlanPortData(uniq(portData), node.id, setVlanPortData)
   })
 
-  let uniqueValues: any = {}
   const edgeResult: Link[] = []
 
   edges.forEach((item: Link) => {
@@ -116,14 +205,14 @@ export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDa
       edgeItem.from === item.to && edgeItem.to === item.from).length > 0){
       return
     }
-    if (!uniqueValues[item.to]) {
-      uniqueValues[item.to] = true
-      edgeResult.push(item)
-    }
+    edgeResult.push(item)
   })
 
+  // Calibrate the edge direction
+  const edgeCalibrateResult: Link[] = validateEdgeDirection(edgeResult, nodeMap)
+
   // Build the tree structure based on the edges
-  edgeResult.forEach((edge: Link) => {
+  edgeCalibrateResult.forEach((edge: Link) => {
     if(edge.from === edge.to){ //invalid edge with same from, to id
       return
     }
