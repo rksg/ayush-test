@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useIntl, FormattedMessage } from 'react-intl'
 
+import { useLazySwitchListQuery }                             from '@acx-ui/analytics/services'
 import { Tabs, Tooltip }                                      from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
 import { useLazyGetSwitchListQuery }                          from '@acx-ui/rc/services'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useDateFilter }                                      from '@acx-ui/utils'
 
 import { HealthPage }       from '..'
 import { useNetworkFilter } from '../Header'
@@ -25,31 +27,44 @@ export function HealthTabs () {
   const [switchCount, setSwitchCount] = useState(0)
   const { tenantId } = useParams()
   const [getSwitchList] = useLazyGetSwitchListQuery()
+  const [switchList] = useLazySwitchListQuery()
+  const { startDate, endDate } = useDateFilter()
 
   const noSwitchMsg = `Switches have not been on boarded in your SmartZone
     or there is <b>no RUCKUS switch</b> in your network`
 
   const fetchSwitchData = () => {
-    getSwitchList({
-      params: { tenantId },
-      payload: { filters: {} }
-    }).then(result => {
-      if (result.data) {
-        setSwitchCount(result.data.totalCount)
-      }
-    })
+    if(isMlisa) {
+      switchList({
+        start: startDate,
+        end: endDate,
+        limit: 100,
+        query: '',
+        metric: 'totalTraffic'
+      }).then(result => {
+        if (result.data) {
+          setSwitchCount(result.data.switches.length || 0)
+        }
+      })
+    } else {
+      getSwitchList({
+        params: { tenantId },
+        payload: { filters: {} }
+      }).then(result => {
+        if (result.data) {
+          setSwitchCount(result.data.totalCount || 0)
+        }
+      })
+    }
   }
 
   useEffect(() => {
-    if(!isMlisa) {
-      // R1 API Call
-      fetchSwitchData()
-    } else {
-      // TODO: Call MLISA RAI API
-      setSwitchCount(0)
+    fetchSwitchData()
+    if (switchCount === 0 && activeSubTab === 'wired') {
+      onTabChange('overview')
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[switchCount])
+  },[switchCount, startDate, endDate])
 
   const onTabChange = (tab: string) => {
     navigate({
