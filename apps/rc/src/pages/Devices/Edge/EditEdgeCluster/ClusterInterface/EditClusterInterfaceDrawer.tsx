@@ -10,6 +10,7 @@ import {
   EdgePortInfo,
   EdgePortTypeEnum,
   edgePortIpValidator,
+  getEdgePortIpFromStatusIp,
   optionSorter,
   subnetMaskIpRegExp,
   validateUniqueIp
@@ -39,8 +40,7 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
   useEffect(() => {
     if (visible){
       form.setFieldsValue({
-        ...editData,
-        ip: editData?.ip?.split('/')[0]
+        ...editData
       })
     }
   }, [editData])
@@ -58,7 +58,7 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
 
   const handleInterfaceChange = (value: string) => {
     const currentInterface = interfaceList?.find(item => item.portName === value)
-    form.setFieldValue('ip', currentInterface?.ip?.split('/')[0])
+    form.setFieldValue('ip', getEdgePortIpFromStatusIp(currentInterface?.ip))
     form.setFieldValue('subnet', currentInterface?.subnet)
   }
 
@@ -117,7 +117,10 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select an interface as cluster interface' })
+            }]}
             children={
               <Select
                 onChange={handleInterfaceChange}
