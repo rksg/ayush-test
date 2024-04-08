@@ -34,15 +34,15 @@ describe('Edge Detail Services Tab', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+        (_req, res, ctx) => res(ctx.json(mockEdgeServiceList))
       ),
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
-        (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteService.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (_req, res, ctx) => res(ctx.status(202))
       )
     )
   })

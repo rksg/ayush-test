@@ -11,8 +11,8 @@ import {
   TypeForm,
   useClusterInterfaceActions
 } from '@acx-ui/rc/components'
-import { EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                      from '@acx-ui/react-router-dom'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber, getEdgePortIpFromStatusIp } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -33,7 +33,7 @@ export const ClusterInterfaceSettings = () => {
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
   const {
     allInterfaceData,
-    isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(clusterInfo)
 
@@ -49,7 +49,8 @@ export const ClusterInterfaceSettings = () => {
       const currentcClusterInterface = getTargetInterfaceConfig(edgeNode.serialNumber)
       result[edgeNode.serialNumber] = {
         interfaceName: currentcClusterInterface?.portName ?? '',
-        ip: currentcClusterInterface?.ip?.split('/')[0] ?? '',
+        ipMode: currentcClusterInterface?.ipMode ?? EdgeIpModeEnum.STATIC,
+        ip: getEdgePortIpFromStatusIp(currentcClusterInterface?.ip) ?? '',
         subnet: currentcClusterInterface?.subnet ?? ''
       }
       return result
@@ -95,6 +96,7 @@ export const ClusterInterfaceSettings = () => {
           nodeName: nodeInfo?.name ?? '',
           serialNumber: k,
           interfaceName: v.interfaceName,
+          ipMode: v.ipMode,
           ip: v.ip,
           subnet: v.subnet
         }
@@ -124,7 +126,7 @@ export const ClusterInterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataFetching }]}>
       <StepsForm<ClusterInterfaceSettingsFormType>
         form={form}
         onFinish={applyAndFinish}

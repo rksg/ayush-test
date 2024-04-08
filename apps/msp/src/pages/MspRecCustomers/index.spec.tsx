@@ -248,8 +248,8 @@ describe('MspRecCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+    expect(screen.getByText('Add Property')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -290,30 +290,6 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Installed Devices')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
-  })
-  it('should render correctly when feature flag turned off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(await screen.findByText('My Customers')).toBeVisible()
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
-    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
-    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
-    expect(screen.getByText('Switch Licenses')).toBeVisible()
-    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    expect(screen.queryByText('Tenant ID')).toBeNull()
-
-    expect(screen.queryByText('Installed Devices')).toBeNull()
-    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
   })
   it('should delete selected row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -439,7 +415,7 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Property')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!

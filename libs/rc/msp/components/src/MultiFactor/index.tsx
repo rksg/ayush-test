@@ -3,10 +3,12 @@ import { useEffect } from 'react'
 import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Subtitle }             from '@acx-ui/components'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { Subtitle }                 from '@acx-ui/components'
+import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { useParams }                from '@acx-ui/react-router-dom'
 import {
   MFAMethod,
+  MFAStatus,
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
@@ -20,7 +22,10 @@ export const MultiFactor = () => {
   const { tenantId } = useParams()
   const [form] = Form.useForm()
   const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
-  const mfaStatus = data?.enabled
+  const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
+
+  const mfaStatus = data?.enabled &&
+    tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
   const { data: details } = useGetMfaAdminDetailsQuery({
     params: { userId: data?.userId } },
   { skip: !mfaStatus })
@@ -78,7 +83,7 @@ export const MultiFactor = () => {
         <Row gutter={20}>
           <Col span={8}>
             <BackupAuthenticationMethod
-              recoveryCodes={data.recoveryCodes ? data.recoveryCodes : []}
+              recoveryCodes={data?.recoveryCodes ? data.recoveryCodes : []}
             />
           </Col>
         </Row>

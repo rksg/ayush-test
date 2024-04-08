@@ -7,22 +7,9 @@ import { WifiCallingUrls }                 from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import WifiCallingDetailContent from './WifiCallingDetailContent'
+import { mockWifiCallingDetail } from '../__tests__/fixtures'
 
-const wifiCallingDetail = {
-  ePDG: [{
-    domain: 'aaa.bbb.com',
-    ip: '10.10.10.10'
-  }],
-  qosPriority: 'WIFICALLING_PRI_VOICE',
-  description: 'des1',
-  serviceName: 'carrierName1',
-  serviceHealth: [
-    { name: 'network1', value: 75 },
-    { name: 'network2', value: 20 },
-    { name: 'network3', value: 5 }
-  ]
-}
+import WifiCallingDetailContent from './WifiCallingDetailContent'
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
@@ -35,16 +22,14 @@ describe('WifiCallingDetailContent', () => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
+
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail)))
+    )
   })
 
   it('should render wifiCallingDetailContent successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingDetail)
-      )
-    ))
-
     render(
       <WifiCallingDetailContent />
       , {
@@ -55,7 +40,7 @@ describe('WifiCallingDetailContent', () => {
       }
     )
 
-    await screen.findByText('carrierName1')
+    await screen.findByText(mockWifiCallingDetail.serviceName)
 
     expect(screen.getByText(/description/i)).toBeTruthy()
     expect(screen.getByText(/service name/i)).toBeTruthy()

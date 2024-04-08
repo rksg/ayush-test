@@ -9,12 +9,13 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
-  useGetEnhancedIdentityProviderListQuery,
+  useGetIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
   useAdaptivePolicyListQuery,
+  useGetCertificateTemplatesQuery,
   useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -98,6 +99,7 @@ function useCardData (): CardDataProps[] {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return [
     {
@@ -138,8 +140,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetEnhancedIdentityProviderListQuery({
-        params, payload: defaultPayload
+      totalCount: useGetIdentityProviderListQuery({
+        params, payload: { tenantId: params.tenantId }
       }, { skip: !supportHotspot20R1 }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
@@ -217,6 +219,15 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.CERTIFICATE_TEMPLATE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !isCertificateTemplateEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
+      disabled: !isCertificateTemplateEnabled
     }
   ]
 }

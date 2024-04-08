@@ -8,6 +8,7 @@ export function CustomActionModal () {
       <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
       <button onClick={ErrorDetailModal}>Error With Details</button>
       <button onClick={CustomButtonsModal}>Warning With Custom Buttons</button>
+      <button onClick={CodeDetailModal}>Code Details</button>
     </>
   )
 }
@@ -61,6 +62,22 @@ const ErrorDetailModal = () => {
     customContent: {
       action: 'SHOW_ERRORS',
       errorDetails: mockErrorDetails
+    }
+  })
+}
+
+function CodeDetailModal () {
+  showActionModal({
+    type: 'info',
+    title: 'Code Details',
+    content: 'Some code details with option to show code expanded by default or not',
+    customContent: {
+      action: 'CODE',
+      details: {
+        expanded: true,
+        label: 'Code Details',
+        code: '<html>\n  <body>\n    <h1>Code Details</h1>\n  </body>\n</html>'
+      }
     }
   })
 }

@@ -9,14 +9,20 @@ import { usePathBasedOnConfigTemplate }                             from '@acx-u
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
-  useUpdateVenueSwitchSettingMutation } from '@acx-ui/rc/services'
+  useUpdateVenueSwitchSettingMutation,
+  useGetVenueTemplateSwitchSettingQuery,
+  useUpdateVenueTemplateSwitchSettingMutation
+} from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
   ProfileTypeEnum,
   networkWifiIpRegExp,
   VenueSwitchConfiguration,
   VenueMessages,
-  redirectPreviousPage
+  redirectPreviousPage,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                from '@acx-ui/utils'
@@ -57,15 +63,22 @@ const defaultFormData = {
 export function GeneralSettingForm () {
   const { $t } = getIntl()
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
   const { tenantId, venueId, activeSubTab } = useParams()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
-  const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
-  const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
+  const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery
+  )
+
+  // eslint-disable-next-line max-len
+  const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} }, { skip: isTemplate })
   const [updateVenueSwitchSetting, {
-    isLoading: isUpdatingVenueSwitchSetting }] = useUpdateVenueSwitchSettingMutation()
+    isLoading: isUpdatingVenueSwitchSetting }] = useConfigTemplateMutationFnSwitcher(
+    useUpdateVenueSwitchSettingMutation, useUpdateVenueTemplateSwitchSettingMutation
+  )
 
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
@@ -95,14 +108,14 @@ export function GeneralSettingForm () {
         configProfiles: configProfiles.data ?? []
       })
       setFormData({
-        profileId: data.profileId ?? [],
-        dns: data.dns ?? [],
+        profileId: data?.profileId ?? [],
+        dns: data?.dns ?? [],
         syslogEnabled: data?.syslogEnabled ?? false,
         syslogPrimaryServer: data?.syslogPrimaryServer || '',
         syslogSecondaryServer: data?.syslogSecondaryServer || ''
       })
       formRef?.current?.setFieldsValue({
-        dns: data.dns ?? []
+        dns: data?.dns ?? []
       })
     }
   }, [venueSwitchSetting, configProfiles])
@@ -201,6 +214,7 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'Configuration Profile' })}
                 validateFirst
+                hidden={isTemplate}
                 children={
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >

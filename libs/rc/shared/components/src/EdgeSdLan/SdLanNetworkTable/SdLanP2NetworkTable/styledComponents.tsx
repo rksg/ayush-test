@@ -9,16 +9,16 @@ export const DiagramContainer = styled.div`
   text-align: center;
 
   & img {
-    width: 250px;
+    width: 290px;
   }
 `
 
 export const FrameOverDiagram = styled.div`
   position: absolute;
-  top: 33px;
-  left: 24px;
-  width: 150px;
-  height: 190px;
+  top: 42px;
+  left: 22px;
+  width: 170px;
+  height: 210px;
   border-radius: 8px;
   border: 4px solid var(--acx-accents-orange-50);
   z-index: 1;
