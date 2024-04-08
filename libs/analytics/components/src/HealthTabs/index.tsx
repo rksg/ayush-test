@@ -1,6 +1,10 @@
-import { useIntl } from 'react-intl'
+import { useEffect, useState } from 'react'
 
-import { Tabs }                                               from '@acx-ui/components'
+import { useIntl, FormattedMessage } from 'react-intl'
+
+import { Tabs, Tooltip }                                      from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { useLazyGetSwitchListQuery }                          from '@acx-ui/rc/services'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { HealthPage }       from '..'
@@ -15,6 +19,37 @@ export function HealthTabs () {
   const navigate = useNavigate()
   const { activeSubTab } = useParams()
   const basePath = useTenantLink('/analytics/health/')
+
+  const isMlisa = get('IS_MLISA_SA')
+
+  const [switchCount, setSwitchCount] = useState(0)
+  const { tenantId } = useParams()
+  const [getSwitchList] = useLazyGetSwitchListQuery()
+
+  const noSwitchMsg = `Switches have not been on boarded in your SmartZone
+    or there is <b>no RUCKUS switch</b> in your network`
+
+  const fetchSwitchData = () => {
+    getSwitchList({
+      params: { tenantId },
+      payload: { filters: {} }
+    }).then(result => {
+      if (result.data) {
+        setSwitchCount(result.data.totalCount)
+      }
+    })
+  }
+
+  useEffect(() => {
+    if(!isMlisa) {
+      // R1 API Call
+      fetchSwitchData()
+    } else {
+      // TODO: Call MLISA RAI API
+      setSwitchCount(0)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[switchCount])
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -48,7 +83,21 @@ export function HealthTabs () {
         <HealthPage />
       </>
     </Tabs.TabPane>
-    <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
+    <Tabs.TabPane
+      tab={switchCount === 0
+        ? <Tooltip
+          title={<FormattedMessage
+            defaultMessage={noSwitchMsg}
+            values={{
+              b: (content: string) => <b>{content}</b>
+            }}
+          />}
+          placement='bottom'>
+          {$t({ defaultMessage: 'Wired' })}
+        </Tooltip>
+        : $t({ defaultMessage: 'Wired' })}
+      key='wired'
+      disabled={switchCount === 0}>
       <>
         <FilterWrapper>
           {useNetworkFilter({
