@@ -34,7 +34,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Clients / AP
+                  Avg. clients per AP
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -353,7 +353,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Clients / AP
+                  Avg. clients per AP
                 </div>
                 <div
                   class="ant-statistic-content"

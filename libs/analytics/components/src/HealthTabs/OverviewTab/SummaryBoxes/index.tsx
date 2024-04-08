@@ -1,3 +1,4 @@
+import { isNull }        from 'lodash'
 import { defineMessage } from 'react-intl'
 
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
@@ -60,16 +61,16 @@ export const SummaryBoxes = ({ filters }: {
       type: 'green',
       title: defineMessage({ defaultMessage: 'Utilization' }),
       values: [{
-        title: defineMessage({ defaultMessage: 'Clients / AP' }),
-        value: utilizationSummary.avgClientCountPerAp ?
+        title: defineMessage({ defaultMessage: 'Avg. clients per AP' }),
+        value: !isNull(utilizationSummary.avgClientCountPerAp) ?
           formatter('countFormat')(utilizationSummary.avgClientCountPerAp) : noDataDisplay
       },
       {
         title: defineMessage({ defaultMessage: 'Switch ports in use' }),
-        value: `${utilizationSummary.portCount ?
+        value: `${!isNull(utilizationSummary.portCount) ?
           formatter('countFormat')(utilizationSummary.portCount)
           : noDataDisplay}`,
-        suffix: `/${utilizationSummary.totalPortCount ?
+        suffix: `/${!isNull(utilizationSummary.totalPortCount)?
           formatter('countFormat')(utilizationSummary.totalPortCount) : noDataDisplay}`
       }]
     },
@@ -78,17 +79,17 @@ export const SummaryBoxes = ({ filters }: {
       title: defineMessage({ defaultMessage: 'Incidents' }),
       values: [{
         title: defineMessage({ defaultMessage: 'APs' }),
-        value: incidentsSummary.apIncidentCount ?
+        value: !isNull(incidentsSummary.apIncidentCount) ?
           formatter('countFormat')(incidentsSummary.apIncidentCount).split(' ')[0] : noDataDisplay,
-        suffix: incidentsSummary.apIncidentCount ?
+        suffix: !isNull(incidentsSummary.apIncidentCount) ?
           formatter('countFormat')(incidentsSummary.apIncidentCount).split(' ')[1] : undefined
       },
       {
         title: defineMessage({ defaultMessage: 'Switches' }),
-        value: incidentsSummary.switchIncidentCount ?
+        value: !isNull(incidentsSummary.switchIncidentCount) ?
           formatter('countFormat')(incidentsSummary.switchIncidentCount).split(' ')[0]
           : noDataDisplay,
-        suffix: incidentsSummary.switchIncidentCount ?
+        suffix: !isNull(incidentsSummary.switchIncidentCount) ?
           formatter('countFormat')(incidentsSummary.switchIncidentCount).split(' ')[1] : undefined
       }]
     },
