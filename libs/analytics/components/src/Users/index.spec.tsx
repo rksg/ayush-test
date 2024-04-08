@@ -115,7 +115,7 @@ describe('Users Page', () => {
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
-  it.only('should handle refresh user details correctly', async () => {
+  it('should handle refresh user details correctly', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
     mockSSOResponse()
@@ -128,25 +128,7 @@ describe('Users Page', () => {
     expect(refreshButton).toBeVisible()
     fireEvent.click(refreshButton)
 
-    await screen.logTestingPlaygroundURL()
     expect(await screen.findByText('Refreshed user details successfully')).toBeVisible()
-  })
-
-  it('should handle refresh user details failure correctly', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
-    mockRefreshUserResponse()
-    mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
-    const radio = await screen.findByRole('radio')
-    fireEvent.click(radio)
-
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    expect(refreshButton).toBeVisible()
-    fireEvent.click(refreshButton)
-
-    expect(await screen.findByText('Refresh user details is unsuccessful')).toBeVisible()
   })
   it('should handle delete user details correctly for internal user', async () => {
     mockRbacUserResponse([mockMangedUsers[0]])

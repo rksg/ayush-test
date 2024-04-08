@@ -124,7 +124,7 @@ const Users = () => {
     }
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  [selectedRow,deleteUser])
+  [selectedRow, deleteUser])
 
   return (
     <Loader states={[{
@@ -133,13 +133,12 @@ const Users = () => {
     }]}>
       <UsersTable
         data={usersQuery.data}
-        toggleDrawer={setOpenDrawer}
+        setOpenDrawer={setOpenDrawer}
         selectedRow={selectedRow}
         setSelectedRow={setSelectedRow}
         refreshUserDetails={refreshUserDetails}
         handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
         setDrawerType={setDrawerType}
-        setOpenDrawer={setOpenDrawer}
         openDrawer={openDrawer}
         isUsersPageEnabled={isUsersPageEnabled}
         isEditMode={isEditMode}

@@ -127,7 +127,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           },
           body: { resourceGroupId, invitedUserId: userId }
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
     getUsers: build.query<ManagedUser[], void>({
       query: () => ({
@@ -232,7 +235,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           body: { users: [userId] },
           responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
     updatePreferences: build.mutation<string, UpdatePreferencesPayload>({
       query: ({ userId, preferences }) => {

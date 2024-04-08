@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -70,15 +70,19 @@ const transformUsers = (
 }
 const getUserActions = (
   selectedRow: ManagedUser,
-  { refreshUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }: {
+  { setSelectedRow, refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }: {
+    setSelectedRow: CallableFunction,
     refreshUserDetails: CallableFunction,
-    toggleDrawer: CallableFunction,
+    setOpenDrawer: CallableFunction,
     handleDeleteUser: CallableFunction,
     setDrawerType: CallableFunction
   }) => {
   const { $t } = getIntl()
   const user = getUserProfile()
-  const { refreshText, disabledDeleteText, disabledEditText, editText, deleteText } = messages
+  const {
+    refreshText, disabledDeleteText, disabledEditText,
+    editText, deleteText, refreshSuccessful, refreshFailure
+  } = messages
   const { id: tenantId } = user.selectedTenant
   const { accountId } = user
 
@@ -94,11 +98,18 @@ const getUserActions = (
       label: $t({ defaultMessage: 'Refresh' }),
       tooltip: $t(refreshText, { br: <br/> }) as string,
       onClick: () => {
-        refreshUserDetails({ userId: selectedRow.id })
-        showToast({
-          type: 'success',
-          content: messages.refreshSuccessful
-        })
+        if (refreshUserDetails({ userId: selectedRow.id })) {
+          showToast({
+            type: 'success',
+            content: $t(refreshSuccessful)
+          })
+        } else {
+          showToast({
+            type: 'error',
+            content: $t(refreshFailure)
+          })
+        }
+        setSelectedRow(null)
       }
     },
     {
@@ -107,7 +118,7 @@ const getUserActions = (
       disabled: isEditDisabled,
       onClick: () => {
         setDrawerType('edit')
-        toggleDrawer(true)
+        setOpenDrawer(true)
       }
     },
     {
@@ -125,13 +136,12 @@ const getUserActions = (
 
 interface UsersTableProps {
   data?: ManagedUser[]
-  toggleDrawer: CallableFunction
+  setOpenDrawer: CallableFunction
   selectedRow: ManagedUser | null
   setSelectedRow: CallableFunction
   refreshUserDetails: CallableFunction
   handleDeleteUser: CallableFunction
   setDrawerType: CallableFunction
-  setOpenDrawer: CallableFunction
   openDrawer: boolean
   isUsersPageEnabled: boolean
   isEditMode: boolean
@@ -144,24 +154,33 @@ interface UsersTableProps {
 
 export const UsersTable = ({
   data,
-  toggleDrawer,
+  setOpenDrawer,
   selectedRow,
   setSelectedRow,
   refreshUserDetails,
   handleDeleteUser,
   setDrawerType,
-  setOpenDrawer,
   openDrawer,
   isUsersPageEnabled,
   isEditMode,
   setVisible,
   deleteUser
 }: UsersTableProps) => {
+  useEffect(() => {
+    if (deleteUser.showModal === false ) {
+      setSelectedRow(null)
+    }
+  }, [deleteUser.showModal, setSelectedRow])
+  useEffect(() => {
+    if (openDrawer === false) {
+      setSelectedRow(null)
+    }
+  }, [openDrawer, setSelectedRow])
+
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const users = transformUsers(data, brand)
   const { setUsersCount } = useContext(CountContext)
-
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Internal' }),
@@ -258,7 +277,7 @@ export const UsersTable = ({
     actions={actions}
     rowActions={getUserActions(
       selectedRow as ManagedUser,
-      { refreshUserDetails, toggleDrawer, handleDeleteUser, setDrawerType }
+      { setSelectedRow, refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }
     )}
     rowSelection={{
       type: 'radio',
@@ -266,7 +285,7 @@ export const UsersTable = ({
       onChange: (
         _, selectedRows: ManagedUser[]
       ) => {
-        toggleDrawer(false)
+        setOpenDrawer(false)
         deleteUser.showModal = false
         setSelectedRow(selectedRows[0])
       }
@@ -274,3 +293,4 @@ export const UsersTable = ({
     onDisplayRowChange={(dataSource) => setUsersCount?.(dataSource.length)}
   />
 }
+

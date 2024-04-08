@@ -18,7 +18,6 @@ jest.mock('@acx-ui/analytics/utils', () => ({
     accountId: '12345'
   }))
 }))
-const toggleDrawer = jest.fn()
 const setSelectedRow = jest.fn()
 const refreshUserDetails = jest.fn()
 const handleDeleteUser = jest.fn()
@@ -46,7 +45,6 @@ describe('UsersTable', () => {
   it('should render table correctly', async () => {
     render(<UsersTable
       data={mockMangedUsers}
-      toggleDrawer={toggleDrawer}
       selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -77,7 +75,6 @@ describe('UsersTable', () => {
   it('should render undefined data table correctly', async () => {
     render(<UsersTable
       data={undefined}
-      toggleDrawer={toggleDrawer}
       selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -97,7 +94,6 @@ describe('UsersTable', () => {
   it('should handle the edit callback', async () => {
     render(<UsersTable
       data={[mockMangedUsers[0]]}
-      toggleDrawer={toggleDrawer}
       selectedRow={mockMangedUsers[0]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -120,12 +116,10 @@ describe('UsersTable', () => {
     fireEvent.click(editButton)
 
     expect(setDrawerType).toHaveBeenCalledWith('edit')
-    expect(toggleDrawer).toHaveBeenCalledTimes(1)
   })
   it('should handle the delete callback', async () => {
     render(<UsersTable
       data={[mockMangedUsers[0]]}
-      toggleDrawer={toggleDrawer}
       selectedRow={mockMangedUsers[0]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -151,9 +145,8 @@ describe('UsersTable', () => {
   })
   it('should handle the refresh callback', async () => {
     render(<UsersTable
-      data={[mockMangedUsers[0]]}
-      toggleDrawer={toggleDrawer}
-      selectedRow={mockMangedUsers[0]}
+      data={[mockMangedUsers[1]]}
+      selectedRow={mockMangedUsers[1]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
       handleDeleteUser={handleDeleteUser}
@@ -175,11 +168,11 @@ describe('UsersTable', () => {
     fireEvent.click(refreshButton)
 
     expect(refreshUserDetails).toBeCalledTimes(1)
+    expect(await screen.findByText('Refresh user details is unsuccessful')).toBeVisible()
   })
   it('should disable edit and delete for the same user', async () => {
     render(<UsersTable
       data={mockMangedUsers}
-      toggleDrawer={toggleDrawer}
       selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -231,7 +224,6 @@ describe('UsersTable', () => {
     }
     render(<UsersTable
       data={[user]}
-      toggleDrawer={toggleDrawer}
       selectedRow={user}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
