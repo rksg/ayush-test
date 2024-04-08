@@ -160,15 +160,15 @@ export function validateEdgeDirection (edges: Link[], nodeMap: Record<string, No
 
   let uniqueValues: any = {}
 
-  const calibrateEdgesResult: Link[] = []
-  edges.forEach((item: Link) => {
+  const uniqueEdges: Link[] = []
+  calibrateEdges.forEach((item: Link) => {
     if (!uniqueValues[item.to]) {
       uniqueValues[item.to] = true
-      calibrateEdgesResult.push(item)
+      uniqueEdges.push(item)
     }
   })
 
-  return calibrateEdgesResult
+  return uniqueEdges
 }
 
 export function parseTopologyData (topologyData: any, setVlanPortData: SetVlanDataFunction): any {
