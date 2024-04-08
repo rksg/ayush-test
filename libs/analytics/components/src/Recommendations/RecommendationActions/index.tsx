@@ -72,7 +72,7 @@ type ActionButtonProps = RecommendationActionType & {
   showTextOnly? : boolean
 }
 
-type wlanSelection = RecommendationWlan & { id: string, excluded?: boolean }
+type WlanSelection = RecommendationWlan & { id: string, excluded?: boolean }
 
 function useWlansSelection (
   id: string,
@@ -81,7 +81,7 @@ function useWlansSelection (
   isMlisa: boolean,
   needsWlans: boolean
 ) {
-  const [wlans, setWlans] = useState<Array<wlanSelection & { excluded?: boolean }>>([])
+  const [wlans, setWlans] = useState<Array<WlanSelection>>([])
   const selected = wlans.filter(wlan => !wlan.excluded)
   const wlansQuery = useRecommendationWlansQuery({ id }, { skip: !needsWlans || !isMlisa })
   const r1Networks = useVenueNetworkListV2Query({
@@ -96,7 +96,7 @@ function useWlansSelection (
     }
   }, { skip: !needsWlans || isMlisa })
   useEffect(() => {
-    let available: wlanSelection[] | undefined
+    let available: WlanSelection[] | undefined
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
     } else if (!isMlisa && r1Networks.data) {
