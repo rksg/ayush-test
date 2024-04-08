@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
@@ -9,9 +9,9 @@ import { EdgePortsGeneralBase, NodesTabs, TypeForm } from '@acx-ui/rc/components
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { InterfaceSettingsFormType } from './types'
+import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
-export const PortForm = () => {
+export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
@@ -30,6 +30,8 @@ export const PortForm = () => {
   const content = <Form.Item name='portSettings'>
     <PortSettingView />
   </Form.Item>
+
+  useEffect(() => onInit?.(), [])
 
   return (
     <TypeForm

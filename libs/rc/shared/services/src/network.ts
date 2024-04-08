@@ -672,6 +672,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...externalProvidersReq
         }
       }
+    }),
+    activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1128,7 +1137,8 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
-  useExternalProvidersQuery
+  useExternalProvidersQuery,
+  useActivateCertificateTemplateMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
