@@ -13,6 +13,7 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
   useAddRecCustomerMutation,
@@ -67,6 +68,7 @@ export function AddRecCustomer () {
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
+  const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -235,18 +237,24 @@ export function AddRecCustomer () {
   const displayRecCustomer = () => {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
       return noDataDisplay
-    return <>
-      <Form.Item
-        label={intl.$t({ defaultMessage: 'Property Name' })}
-      >
-        <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
-      </Form.Item>
-      <Form.Item style={{ marginTop: '-22px' }}
-        label={intl.$t({ defaultMessage: 'Address' })}
-      >
-        <Paragraph>{mspUtils.transformMspRecAddress(mspRecCustomer[0])}</Paragraph>
-      </Form.Item>
-    </>
+    return mspRecCustomer.length === 1
+      ? <>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Property Name' })}
+        >
+          <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Address' })}
+        >
+          <Paragraph>{mspUtils.transformMspRecAddress(mspRecCustomer[0])}</Paragraph>
+        </Form.Item>
+      </>
+      : mspRecCustomer.map(customer =>
+        <UI.AdminList key={customer.account_id}>
+          {customer.account_name}
+        </UI.AdminList>
+      )
   }
 
   const displayEditRecCustomer = () => {
@@ -394,6 +402,7 @@ export function AddRecCustomer () {
         visible={drawerRecVisible}
         setVisible={setDrawerRecVisible}
         setSelected={selectedRecCustomer}
+        multiSelectionEnabled={multiPropertySelectionEnabled}
         tenantId={mspEcTenantId}
       />}
       {drawerAdminVisible && <ManageAdminsDrawer
