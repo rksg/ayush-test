@@ -43,10 +43,12 @@ export function ConfigTemplate () {
               tab={$t({ defaultMessage: 'Templates' })}
               key={ConfigTemplateTabKey.TEMPLATES}
             />
-            {/*<Tabs.TabPane*/}
-            {/*  tab={$t({ defaultMessage: 'Bundles' })}*/}
-            {/*  key={ConfigTemplateTabKey.BUNDLES}*/}
-            {/*/>*/}
+            {/*
+              <Tabs.TabPane
+                tab={$t({ defaultMessage: 'Bundles' })}
+                key={ConfigTemplateTabKey.BUNDLES}
+              />
+            */}
           </Tabs>
         }
       />
