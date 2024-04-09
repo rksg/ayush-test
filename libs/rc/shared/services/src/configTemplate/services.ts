@@ -11,7 +11,7 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { createDpskHttpRequest, transformDhcpResponse } from '../service'
 
-import { commonQueryFn }                 from './common'
+import { commonQueryFn }                from './common'
 import {
   useCasesToRefreshDhcpTemplateList,
   useCasesToRefreshDpskTemplateList,
