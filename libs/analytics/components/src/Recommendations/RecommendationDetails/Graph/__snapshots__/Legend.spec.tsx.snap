@@ -3,30 +3,30 @@
 exports[`Legend should render properly 1`] = `
 <DocumentFragment>
   <div
-    class="sc-gicCDI gBTiND"
+    class="sc-iIPllB gFjFRm"
   >
     <span>
       <div
-        class="sc-bZkfAO fqEtDm"
+        class="sc-ezWOiH hiYxwv"
       >
         Channel Bandwidth
       </div>
       <div
-        class="sc-ezWOiH bdBith"
+        class="sc-gicCDI eSzauw"
       >
         <span
-          class="sc-ikZpkk gdBZwK"
+          class="sc-kLLXSd wbxZu"
         />
         <div
-          class="sc-kLLXSd haOnxx"
+          class="sc-bZkfAO hhlPmm"
         >
           40 MHz
         </div>
         <span
-          class="sc-ikZpkk djjjny"
+          class="sc-kLLXSd gjzfIO"
         />
         <div
-          class="sc-kLLXSd haOnxx"
+          class="sc-bZkfAO hhlPmm"
         >
           20 MHz
         </div>
@@ -34,34 +34,34 @@ exports[`Legend should render properly 1`] = `
     </span>
     <span>
       <div
-        class="sc-bZkfAO fqEtDm"
+        class="sc-ezWOiH hiYxwv"
       >
         Transmit Power
       </div>
       <div
-        class="sc-ezWOiH bdBith"
+        class="sc-gicCDI eSzauw"
       >
         <span
-          class="sc-jIZahH iForqg"
+          class="sc-ikZpkk fnTkzs"
         />
         <div
-          class="sc-kLLXSd haOnxx"
+          class="sc-bZkfAO hhlPmm"
         >
           No interfering links
         </div>
         <span
-          class="sc-jIZahH cVxgvZ"
+          class="sc-ikZpkk hWDleh"
         />
         <div
-          class="sc-kLLXSd haOnxx"
+          class="sc-bZkfAO hhlPmm"
         >
           Has interfering links
         </div>
         <span
-          class="sc-jIZahH ejlLfo"
+          class="sc-ikZpkk bBFhYA"
         />
         <div
-          class="sc-kLLXSd haOnxx"
+          class="sc-bZkfAO hhlPmm"
         >
           Reduction in transmit power
         </div>

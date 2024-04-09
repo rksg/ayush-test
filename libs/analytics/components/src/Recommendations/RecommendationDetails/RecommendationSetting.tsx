@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Switch }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
+import { Tooltip }                                from '@acx-ui/components'
 import { get }                                    from '@acx-ui/config'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -21,7 +22,7 @@ import {
   clickDeleteFn
 } from '../Table'
 
-import { RecommendationSettingTitle, DeleteOutlinedIcon } from './styledComponents'
+import { DeleteOutlinedIcon } from './styledComponents'
 
 import type { EnhancedRecommendation } from './services'
 
@@ -78,16 +79,21 @@ export function RecommendationSetting (
     enableDeleteStatus.includes(status) &&
     isRecommendationDeleteEnabled
     ) ? [{
-        title: <RecommendationSettingTitle>
-          <DeleteOutlinedIcon onClick={()=> clickDeleteFn(id, deleteRecommendation, () => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/recommendations/crrm`
-            })
-          })} />
-          {$t({ defaultMessage: 'Delete Recommendation' })}
-        </RecommendationSettingTitle>,
-        content: <p>{getDeleteTooltipText({ status } as RecommendationListItem)}</p>
+        title: $t({ defaultMessage: 'Delete Recommendation' }),
+        content: <>
+          <Tooltip
+            placement='top'
+            title={$t({ defaultMessage: 'Delete' })}
+          >
+            <DeleteOutlinedIcon onClick={()=> clickDeleteFn(id, deleteRecommendation, () => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/recommendations/crrm`
+              })
+            })} />
+          </Tooltip>
+          <p>{getDeleteTooltipText({ status } as RecommendationListItem)}</p>
+        </>
       }]
       : [])
   ]

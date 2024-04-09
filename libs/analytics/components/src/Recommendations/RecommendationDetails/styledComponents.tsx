@@ -100,11 +100,8 @@ export const CrrmValuesText = styled.div`
   padding-top: 20px;
 `
 
-export const RecommendationSettingTitle = styled.div`
-  display: flex;
-  align-items: center;
-`
-
 export const DeleteOutlinedIcon = styled(DeleteOutlined)`
+  height: 24px;
+  width: 24px;
   cursor: pointer;
 `
