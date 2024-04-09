@@ -12,52 +12,50 @@ import {
 } from '@acx-ui/analytics/services'
 import type { Settings, ManagedUser }                                        from '@acx-ui/analytics/utils'
 import { PageHeader, Loader, showToast, showActionModal, Dropdown, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 
 import { ImportSSOFileDrawer }    from './ImportSSOFileDrawer'
 import { UsersTable }             from './Table'
 import { UserDrawer, DrawerType } from './UserDrawer'
 
 export const messages = {
-  'title': defineMessage({
+  title: defineMessage({
     defaultMessage: '{usersCount, plural, one {User} other {Users}}'
   }),
-  'editUser': defineMessage({ defaultMessage: 'Edit User' }),
-  'save': defineMessage({ defaultMessage: 'Save' }),
-  'cancel': defineMessage({ defaultMessage: 'Cancel' }),
-  'refreshSuccessful': defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
-  'refreshFailure': defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
-  'deleteSuccessful': defineMessage({ defaultMessage: 'Deleted user details successfully' }),
-  'deleteFailure': defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
-  'editUserSuccess': defineMessage({ defaultMessage: 'Updated user details successfully' }),
-  'editUserFailure': defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
-  'deleteModalContent': defineMessage({
+  editUser: defineMessage({ defaultMessage: 'Edit User' }),
+  save: defineMessage({ defaultMessage: 'Save' }),
+  cancel: defineMessage({ defaultMessage: 'Cancel' }),
+  refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
+  refreshFailure: defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
+  deleteSuccessful: defineMessage({ defaultMessage: 'Deleted user details successfully' }),
+  deleteFailure: defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
+  editUserSuccess: defineMessage({ defaultMessage: 'Updated user details successfully' }),
+  editUserFailure: defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
+  deleteModalContent: defineMessage({
     defaultMessage: 'Do you really want to remove {firstName} {lastName}?'
   }),
-  'deleteModalTitle': defineMessage({ defaultMessage: 'Delete user' }),
-  'admin': defineMessage({ defaultMessage: 'Admin' }),
-  'report-only': defineMessage({ defaultMessage: 'Report Only' }),
-  'network-admin': defineMessage({ defaultMessage: 'Network Admin' }),
-  'disabledDeleteText': defineMessage({
+  deleteModalTitle: defineMessage({ defaultMessage: 'Delete user' }),
+  disabledDeleteText: defineMessage({
     defaultMessage:
       // eslint-disable-next-line max-len
       'You are not allowed to delete yourself. Or, if you are an invited user, you are not allowed to delete users in the host account.'
   }),
-  'disabledEditText': defineMessage({
+  disabledEditText: defineMessage({
     // eslint-disable-next-line max-len
     defaultMessage:
       // eslint-disable-next-line max-len
       'You are not allowed to edit yourself or invited users. If you are an invited user, you are not allowed to edit users in the host account.'
   }),
-  'refreshText': defineMessage({
+  refreshText: defineMessage({
     defaultMessage: 'Retrieve latest email, first name, {br}last name from Ruckus Support Portal.'
   }),
-  'editText': defineMessage({
+  editText: defineMessage({
     defaultMessage: 'Edit'
   }),
-  'deleteText': defineMessage({
+  deleteText: defineMessage({
     defaultMessage: 'Delete'
   }),
-  'ssoDisclaimer': defineMessage({
+  ssoDisclaimer: defineMessage({
     defaultMessage: 'At this time, only Azure AD is officially supported'
   })
 }
@@ -75,6 +73,7 @@ const getSSOsettings = (settings: Partial<Settings> | undefined): SSOValue | nul
 
 const Users = () => {
   const { $t } = useIntl()
+  const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<DrawerType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
@@ -179,6 +178,7 @@ const Users = () => {
           <Loader states={[settingsQuery]}><Tooltip
             title={$t(messages.ssoDisclaimer)}
             placement='left'>
+            { isUsersPageEnabled &&
             <Button
               type={isEditMode ? 'primary' : 'default'}
               onClick={() => setVisible(true)}>
@@ -186,6 +186,7 @@ const Users = () => {
                 ? $t({ defaultMessage: 'Configure SSO' })
                 : $t({ defaultMessage: 'Setup SSO' })}
             </Button>
+            }
           </Tooltip></Loader>,
           <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add User...' }) }</Button>

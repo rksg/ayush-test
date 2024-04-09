@@ -10,9 +10,10 @@ import { NetworkSegmentation } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  NetworkSegmentationServiceInfo: () => <div data-testid='NetworkSegmentationServiceInfo' />,
-  NetworkSegmentationDetailTableGroup: () =>
-    <div data-testid='NetworkSegmentationDetailTableGroup' />
+  PersonalIdentityNetworkServiceInfo: () =>
+    <div data-testid='PersonalIdentityNetworkServiceInfo' />,
+  PersonalIdentityNetworkDetailTableGroup: () =>
+    <div data-testid='PersonalIdentityNetworkDetailTableGroup' />
 }))
 
 describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
@@ -38,7 +39,7 @@ describe('VenueServicesTab - NetworkSegmentation(has data)', () =>{
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/services' }
       })
-    expect(await screen.findByTestId('NetworkSegmentationServiceInfo')).toBeVisible()
-    expect(await screen.findByTestId('NetworkSegmentationDetailTableGroup')).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityNetworkServiceInfo')).toBeVisible()
+    expect(await screen.findByTestId('PersonalIdentityNetworkDetailTableGroup')).toBeVisible()
   })
 })

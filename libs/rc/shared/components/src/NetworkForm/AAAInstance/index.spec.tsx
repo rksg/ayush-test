@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AaaUrls, CommonUrlsInfo, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
+import { AaaUrls, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -20,7 +20,7 @@ import {
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
-import AAAInstance from '.'
+import { AAAInstance } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -34,9 +34,6 @@ describe('AAA Instance Page', () => {
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))
-      ),
-      rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
-        res(ctx.json({}))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,

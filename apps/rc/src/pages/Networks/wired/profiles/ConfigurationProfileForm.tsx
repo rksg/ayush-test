@@ -4,7 +4,6 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -28,7 +27,6 @@ export function ConfigurationProfileForm () {
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
   const [form] = Form.useForm()
-  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -209,7 +207,7 @@ export function ConfigurationProfileForm () {
     if(data.voiceVlanOptions) {
       delete data.voiceVlanOptions
     }
-    if(!isSwitchVoiceVlanEnhanced || (data.voiceVlanConfigs && !data.voiceVlanConfigs.length)) {
+    if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
       delete data.voiceVlanConfigs
     }
     return data
@@ -279,13 +277,13 @@ export function ConfigurationProfileForm () {
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
-            onFinish={updateVlanCurrentData}
+            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanCurrentData(data)}
           >
             <VlanSetting />
           </StepsForm.StepForm>
 
           {
-            (isSwitchVoiceVlanEnhanced && vlansWithTaggedPorts) &&
+            vlansWithTaggedPorts &&
             <StepsForm.StepForm
               title={$t({ defaultMessage: 'Voice VLAN' })}
               onFinish={updateCurrentData}

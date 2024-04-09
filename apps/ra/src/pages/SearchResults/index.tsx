@@ -9,7 +9,14 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath, getUserProfile, encodeFilterPath } from '@acx-ui/analytics/utils'
+import {
+  defaultSort,
+  sortProp,
+  formattedPath,
+  getUserProfile,
+  encodeFilterPath,
+  RolesEnum
+} from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -33,7 +40,7 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
   const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === 'report-only'
+  const isReportOnly = role === RolesEnum.REPORT_ONLY
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
@@ -56,7 +63,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row: AP) => {
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const link = role === 'report-only'
+        const link = role === RolesEnum.REPORT_ONLY
           ? `/reports/aps?${filter}`
           : `/devices/wifi/${row.macAddress}/details/ai`
         return <TenantLink to={link}>{row.apName}</TenantLink>
@@ -119,8 +126,8 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
-          endDate: lastActiveTime,
+          startDate: moment(lastActiveTime).subtract(4, 'hours').format(),
+          endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
         const link = isReportOnly
@@ -220,7 +227,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
           : `/reports/wireless?${filter}`
-        const link = role === 'report-only'
+        const link = role === RolesEnum.REPORT_ONLY
           ? reportOnly
           : defaultPath
         return <TenantLink to={link}>{row.name}</TenantLink>

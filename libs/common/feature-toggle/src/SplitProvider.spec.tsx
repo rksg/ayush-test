@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import { rest }          from 'msw'
+import { BrowserRouter } from 'react-router-dom'
 
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
@@ -9,10 +10,7 @@ import { useIsTierAllowed } from './useIsTierAllowed'
 
 let split = require('@splitsoftware/splitio-react')
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
+const services = require('@acx-ui/user')
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
@@ -91,8 +89,8 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   jest.doMock('@acx-ui/analytics/utils', () => ({
     getUserProfile: jest.fn().mockImplementation(() => ({ accountId: props.tenant }))
   }))
-  jest.doMock('react-router-dom', () => ({
-    useParams: () => ({ tenantId: props.tenant })
+  jest.doMock('@acx-ui/utils', () => ({
+    useTenantId: () => props.tenant
   }))
   jest.doMock('@splitsoftware/splitio-react', () => ({
     SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
@@ -100,7 +98,7 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
   }))
   split = require('@splitsoftware/splitio-react')
   const { SplitProvider } = require('./SplitProvider')
-  return <div>{SplitProvider({ children: 'child1' })}</div>
+  return <BrowserRouter><div>{SplitProvider({ children: 'child1' })}</div></BrowserRouter>
 }
 
 describe('SplitProvider', () => {
@@ -179,13 +177,15 @@ describe('useIsTierAllowed', () => {
 
 describe('useIsSplitOn', () => {
   it('should return true when the treatment is "on"', () => {
-    const { result } = renderHook(() => useIsSplitOn('testSplitName'))
+    const { result } = renderHook(() => useIsSplitOn('testSplitName'),
+      { wrapper: BrowserRouter })
 
     expect(result.current).toBe(true)
   })
 
   it('should return false when the treatment is "off"', () => {
-    const { result } = renderHook(() => useIsSplitOn('anotherSplitName'))
+    const { result } = renderHook(() => useIsSplitOn('anotherSplitName'),
+      { wrapper: BrowserRouter })
 
     expect(result.current).toBe(false)
   })

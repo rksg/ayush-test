@@ -6,14 +6,15 @@ import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
   render,
   screen,
   waitFor,
-  within
+  within,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 
@@ -86,6 +87,8 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByText(templateList?.content[0]?.ruleType)
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'

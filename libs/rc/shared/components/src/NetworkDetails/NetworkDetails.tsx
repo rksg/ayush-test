@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
-import { hasAccess }         from '@acx-ui/user'
+import { useConfigTemplate }       from '@acx-ui/rc/utils'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { goToNotFound, hasAccess } from '@acx-ui/user'
 
 import { NetworkApsTab }       from './NetworkApsTab'
 import { NetworkClientsTab }   from './NetworkClientsTab'
@@ -35,7 +35,7 @@ export function NetworkDetails () {
 
   const tabs = GenTabs()
 
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   const [selectedVenues, setSelectedVenues] = useState<string[]>([])
   return activeTab === 'overview'
     ? <>

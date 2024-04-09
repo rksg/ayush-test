@@ -9,9 +9,9 @@ import {
 } from 'antd'
 import { FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery }                 from '@acx-ui/rc/services'
+import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
+import { useAdaptivePolicySetListQuery, useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -23,7 +23,11 @@ import {
   NEW_MAX_DEVICES_PER_PASSPHRASE,
   OLD_MAX_DEVICES_PER_PASSPHRASE,
   defaultAccessLabelMapping,
-  passphraseFormatDescription
+  passphraseFormatDescription,
+  useConfigTemplateLazyQueryFnSwitcher,
+  DpskSaveData,
+  TableResult,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
@@ -43,11 +47,14 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const [ dpskList ] = useLazyGetDpskListQuery()
-  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const [ getDpskList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<DpskSaveData>>(
+    useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery
+  )
+  const { isTemplate } = useConfigTemplate()
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({}).unwrap()).data
+    const list = (await getDpskList({}).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))
@@ -148,6 +155,7 @@ function CloudpathFormItems () {
   const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const navigate = useNavigate()
   const policySetId = Form.useWatch<string>('policySetId', form)
+  const deviceCountLimit = Form.useWatch<number>('deviceCountLimit', form)
   const adaptivePolicySetsPath = useTenantLink('/policies/adaptivePolicySet/list')
   const dpskDeviceCountLimitToggle =
     useIsSplitOn(Features.DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT)
@@ -185,28 +193,38 @@ function CloudpathFormItems () {
                     {$t({ defaultMessage: 'Limited to...' })}
                   </Radio>
                   {deviceNumberType === DeviceNumberType.LIMITED &&
-                    <Form.Item
-                      name='deviceCountLimit'
-                      initialValue={1}
-                      rules={[
-                        {
-                          required: true,
-                          // eslint-disable-next-line max-len
-                          message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
-                        },
-                        {
-                          type: 'number',
-                          min: 1,
-                          max: MAX_DEVICES_PER_PASSPHRASE,
-                          message: $t(
+                    <Space size={'middle'} direction='horizontal'>
+                      <Form.Item
+                        name='deviceCountLimit'
+                        initialValue={1}
+                        rules={[
+                          {
+                            required: true,
                             // eslint-disable-next-line max-len
-                            { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
-                            { max: MAX_DEVICES_PER_PASSPHRASE }
-                          )
-                        }
-                      ]}
-                      children={<InputNumber />}
-                    />
+                            message: $t({ defaultMessage: 'Please enter Devices allowed per passphrase' })
+                          },
+                          {
+                            type: 'number',
+                            min: 1,
+                            max: MAX_DEVICES_PER_PASSPHRASE,
+                            message: $t(
+                              // eslint-disable-next-line max-len
+                              { defaultMessage: 'Number of Devices allowed per passphrase must be between 1 and {max}' },
+                              { max: MAX_DEVICES_PER_PASSPHRASE }
+                            )
+                          }
+                        ]}
+                        children={<InputNumber min={1} max={MAX_DEVICES_PER_PASSPHRASE} />}
+                      />
+                      <Form.Item
+                        name='deviceCountLimitLabel'
+                        children={<div>{$t(
+                          // eslint-disable-next-line max-len
+                          { defaultMessage: '{deviceCountLimit, plural, one {Device} other {Devices}}' },
+                          { deviceCountLimit: deviceCountLimit })
+                        }</div>}
+                      />
+                    </Space>
                   }
                 </FieldSpace>
               </Space>

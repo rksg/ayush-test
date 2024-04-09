@@ -54,6 +54,7 @@ export function useMenuConfig () {
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -328,10 +329,15 @@ export function useMenuConfig () {
               uri: '/administration/accountSettings',
               label: $t({ defaultMessage: 'Settings' })
             },
-            ...(isAdministratorAccessible ? [{
-              uri: '/administration/administrators',
-              label: $t({ defaultMessage: 'Administrators' })
-            }] : []),
+            ...(isAdministratorAccessible ? [
+              isAbacToggleEnabled ? {
+                uri: '/administration/userPrivileges',
+                label: $t({ defaultMessage: 'Users & Privileges' })
+              } : {
+                uri: '/administration/administrators',
+                label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
             {
               uri: '/administration/notifications',
               label: $t({ defaultMessage: 'Notifications' })
@@ -343,6 +349,10 @@ export function useMenuConfig () {
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
+            },
+            {
+              uri: '/administration/webhooks',
+              label: $t({ defaultMessage: 'Webhooks' })
             },
             {
               uri: '/administration/onpremMigration',

@@ -2,14 +2,17 @@ import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
-import { isEqualCaptivePortal }                                                                   from '@acx-ui/rc/components'
-import { useDisconnectClientMutation, useGetClientOrHistoryDetailQuery, useRevokeClientMutation } from '@acx-ui/rc/services'
-import { Client, ClientStatusEnum }                                                               from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useSearchParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                         from '@acx-ui/user'
-import { DateFilter, DateRange, encodeParameter, useDateFilter }                                  from '@acx-ui/utils'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { isEqualCaptivePortal }                                          from '@acx-ui/rc/components'
+import {
+  useDisconnectClientMutation,
+  useGetClientOrHistoryDetailQuery,
+  useRevokeClientMutation } from '@acx-ui/rc/services'
+import { Client, ClientStatusEnum }                               from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useSearchParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                         from '@acx-ui/user'
+import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/utils'
 
 
 import ClientDetailTabs from './ClientDetailTabs'
@@ -49,13 +52,15 @@ function ClientDetailPageHeader () {
       // case 'download-information':
       //   break
       case 'disconnect-client':
-        const clientData = [{
-          clientMac: clientId,
-          serialNumber: clentDetails?.apSerialNumber
-        }]
-        disconnectClient({ params: { tenantId }, payload: clientData }).then(()=>{
+        disconnectClient({
+          params: {
+            venueId: clentDetails.venueId,
+            serialNumber: clentDetails.apSerialNumber,
+            clientMacAddress: clentDetails.clientMac
+          }
+        }).then(()=>{
           const period = encodeParameter<DateFilter>({
-            startDate: moment().subtract(24, 'hours').format(),
+            startDate: moment().subtract(8, 'hours').format(),
             endDate: moment().format(),
             range: DateRange.custom
           })
@@ -70,11 +75,11 @@ function ClientDetailPageHeader () {
 
       case 'revoke-client':
         revokeClient({
-          params: { tenantId },
-          payload: [{
-            clientMac: clientId,
-            serialNumber: clentDetails?.apSerialNumber
-          }]
+          params: {
+            venueId: clentDetails.venueId,
+            serialNumber: clentDetails.apSerialNumber,
+            clientMacAddress: clentDetails.clientMac
+          }
         }).then(()=> {
           navigate({
             ...basePath,
@@ -103,7 +108,6 @@ function ClientDetailPageHeader () {
       // },
         {
           label: $t({ defaultMessage: 'Disconnect Client' }),
-          disabled: !clentDetails?.apSerialNumber,
           key: 'disconnect-client'
         },
         // eslint-disable-next-line max-len

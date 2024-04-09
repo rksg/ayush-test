@@ -17,24 +17,32 @@ import {
 } from '@acx-ui/components'
 import {
   useAddAppPolicyMutation,
-  useAppPolicyListQuery,
   useAvcAppListQuery,
   useAvcCategoryListQuery,
   useGetAppPolicyQuery,
+  useGetEnhancedApplicationProfileListQuery,
   useUpdateAppPolicyMutation
 } from '@acx-ui/rc/services'
 import {
-  ApplicationAclType,
+  useAddAppPolicyTemplateMutation,
+  useGetAppPolicyTemplateListQuery,
+  useGetAppPolicyTemplateQuery,
+  useUpdateAppPolicyTemplateMutation
+} from '@acx-ui/rc/services'
+import {
+  ApplicationAclType, ApplicationPolicy,
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp
+  sortProp, TableResult,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }          from '../AccessControlForm'
-import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
-import { useScrollLock }                        from '../ScrollLock'
+import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
+import { useScrollLock }                                               from '../ScrollLock'
 
 import {
   genRuleObject,
@@ -59,6 +67,7 @@ export interface ApplicationDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -158,6 +167,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -191,35 +201,21 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
-  const [ createAppPolicy ] = useAddAppPolicyMutation()
+  const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddAppPolicyMutation, useAddAppPolicyTemplateMutation)
 
-  const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
+  const [ updateAppPolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAppPolicyMutation, useUpdateAppPolicyTemplateMutation)
 
-  const { appSelectOptions, appList, appIdList } = useAppPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        appSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        appList: data ? data.map(item => item.name) : [],
-        appIdList: data ? data.map(item => item.id) : []
-      }
-    }
-  })
+  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(editMode.isEdit)
 
-  const { data: appPolicyInfo } = useGetAppPolicyQuery(
-    {
-      params: {
-        ...params,
-        applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
-      }
-    },
-    { skip: skipFetch ||
-        (applicationPolicyId !== undefined
-          && !appIdList.some(appId => appId === applicationPolicyId)) }
+  const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetAppPolicyQuery,
+    useGetAppPolicyTemplateQuery,
+    // eslint-disable-next-line max-len
+    skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
+    {},
+    { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
   )
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -294,6 +290,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(appPolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -306,6 +306,13 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined)
     )
   }, [isOnlyViewMode, applicationPolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -578,6 +585,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         children={<></>}
       />
       {isOnlyViewMode && !editMode.isEdit ? <Table
+        rowKey='ruleName'
         columns={basicColumns}
         dataSource={applicationsRuleList as ApplicationsRule[]}
       /> : <Table
@@ -626,7 +634,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   </>
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -724,3 +732,24 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     </>
   )
 }
+
+const useGetAppAclPolicyListInstance = (isEdit: boolean): {
+  appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>(
+    useGetEnhancedApplicationProfileListQuery,
+    useGetAppPolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
+
+  return {
+    appSelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    appList: data?.data?.map(item => item.name) ?? [],
+    appIdList: data?.data?.map(item => item.id) ?? []
+  }
+}
+

@@ -2,13 +2,15 @@
 import { useEffect } from 'react'
 
 
-import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
-import { FormattedMessage, useIntl }                          from 'react-intl'
+
+import { Form, Slider, InputNumber, Space, Switch, Checkbox, Input } from 'antd'
+import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
+import { FormattedMessage, useIntl }                                 from 'react-intl'
 
 import { cssStr, Tooltip, Button }                         from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { validationMessages }                              from '@acx-ui/utils'
 
 import {
   ApRadioTypeEnum,
@@ -64,6 +66,8 @@ export function RadioSettingsForm (props:{
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
   const enableAfcFieldName = [...radioDataKey, 'enableAfc']
+  const minFloorFieldName = [...radioDataKey, 'venueHeight', 'minFloor']
+  const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -77,13 +81,17 @@ export function RadioSettingsForm (props:{
     enableUploadLimit,
     enableDownloadLimit,
     channelBandwidth,
-    enableAfc
+    enableAfc,
+    minFloor,
+    maxFloor
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
     useWatch<string>(channelBandwidthFieldName),
-    useWatch<boolean>(enableAfcFieldName)
+    useWatch<boolean>(enableAfcFieldName),
+    useWatch<number>(minFloorFieldName),
+    useWatch<number>(maxFloorFieldName)
   ]
 
   useEffect(() => {
@@ -122,7 +130,10 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
-        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : { display: 'flex' }}>
+        <FieldLabel width='180px'
+          // Hide the label when afcEnable is false or ap is outdoor under ap context
+          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
+            { display: 'none' } : { display: 'flex' }}>
           <div style={{ float: 'left' }}>
             <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
           </div>
@@ -160,6 +171,57 @@ export function RadioSettingsForm (props:{
             <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
           </Tooltip>
         </FieldLabel>
+      }
+      { AFC_Featureflag && context === 'venue' && enableAfc &&
+              <FieldLabel width='180px'>
+                <div style={{ float: 'left' }}>
+                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC Venue Height:' })}</p>
+                </div>
+                <Form.Item>
+                  <Input.Group
+                    compact
+                    style={{ width: '1150px' }}>
+                    <Form.Item
+                      name={minFloorFieldName}
+                      dependencies={maxFloorFieldName}
+                      style={{ width: '160px' }}
+                      rules={[
+                        { required: true, message: $t({ defaultMessage: 'Minimum floor can not be empty' }) },
+                        { validator: (_, value) => (value && value > maxFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
+                      ]}>
+                      <InputNumber
+                        style={{ width: '160px' }}
+                        controls={false}
+                        min={0}
+                        precision={0}
+                        onChange={() => {
+                          form.validateFields()
+                        }}
+                        placeholder={$t({ defaultMessage: 'Minimum Floor' })}/>
+                    </Form.Item>
+                    <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor - </p>
+                    <Form.Item
+                      name={maxFloorFieldName}
+                      dependencies={minFloorFieldName}
+                      style={{ width: '160px' }}
+                      rules={[
+                        { required: true , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) },
+                        { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
+                      ]}>
+                      <InputNumber
+                        style={{ width: '160px' }}
+                        controls={false}
+                        min={0}
+                        precision={0}
+                        onChange={() => {
+                          form.validateFields()
+                        }}
+                        placeholder={$t({ defaultMessage: 'Maximum Floor' })}/>
+                    </Form.Item>
+                    <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
+                  </Input.Group>
+                </Form.Item>
+              </FieldLabel>
       }
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}

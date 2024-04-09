@@ -24,7 +24,9 @@ import {
   sortPortFunction,
   isSameModelFamily,
   convertInputToUppercase,
-  isL3FunctionSupported
+  isL3FunctionSupported,
+  isFirmwareVersionAbove10,
+  isFirmwareSupportAdminPassword
 } from '.'
 
 const switchRow ={
@@ -359,6 +361,31 @@ describe('switch.utils', () => {
     })
   })
 
+  describe('Test isFirmwareVersionAbove10 function', () => {
+    it('should render correctly', async () => {
+      expect(isFirmwareVersionAbove10('SPR09010j_cd1')).toBe(false)
+      expect(isFirmwareVersionAbove10('SPR09010j_cd2')).toBe(false)
+      expect(isFirmwareVersionAbove10('SPR09010f')).toBe(false)
+
+      expect(isFirmwareVersionAbove10('SPR10020_rc35')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010c_cd1')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010c_cd2_b4')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010b_rc88')).toBe(true)
+    })
+  })
+
+  describe('Test isFirmwareSupportAdminPassword function', () => {
+    it('should render correctly', async () => {
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd2')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010f')).toBe(false)
+
+      expect(isFirmwareSupportAdminPassword('SPR10020_rc35')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd2_b4')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010b_rc88')).toBe(false)
+    })
+  })
 
   describe('Test convertInputToUppercase function', () => {
     it('should render correctly', async () => {

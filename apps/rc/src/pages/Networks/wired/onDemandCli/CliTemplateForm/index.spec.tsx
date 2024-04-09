@@ -187,7 +187,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'range')
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         ...formValue,
         variables: [{
           name: 'var1',
@@ -221,7 +222,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'address')
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         ...formValue,
         variables: [{
           name: 'var1',
@@ -255,7 +257,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
       await addVariable('var1', 'string')
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         ...formValue,
         variables: [{
           name: 'var1',
@@ -354,7 +357,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       const row = await screen.findByRole('row', { name: /7150stack/i })
       await userEvent.click(await within(row).findByRole('checkbox'))
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith({
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual({
         applySwitch: {
           a98653366d2240b9ae370e48fab3a9a1: [{
             id: '58:fb:96:0e:82:8a',
@@ -426,7 +430,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
       expect(await screen.findByText('Template Name')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      expect(onFinishSpy).toBeCalledWith(values)
+      const call = onFinishSpy.mock.calls[0]
+      expect(call[0]).toStrictEqual(values)
     })
   })
 
@@ -639,6 +644,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
 
     it('should handle error occurred', async () => {
       const spyLog = jest.spyOn(console, 'log')
+      spyLog.mockReset()
       mockServer.use(
         rest.put(SwitchUrlsInfo.updateCliTemplate.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({ errors: [{ code: 'xxxx' }] }))
