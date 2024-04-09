@@ -3,7 +3,7 @@ import { MessageDescriptor, defineMessage, useIntl }      from 'react-intl'
 
 import { Button }                                                                                                                                                                                          from '@acx-ui/components'
 import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery } from '@acx-ui/rc/services'
-import { AcceptType, Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                                          from '@acx-ui/rc/utils'
+import { Certificate, CertificateAcceptType, CertificateAuthority, CertificateCategoryType }                                                                                                               from '@acx-ui/rc/utils'
 
 
 import { deleteDescription }                                         from '../contentsMap'
@@ -34,20 +34,20 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const [deletePrivateKeys] = useDeleteCaPrivateKeyMutation()
   const { Text } = Typography
 
-  const downloadButtonLabel: Record<AcceptType, MessageDescriptor> = {
-    [AcceptType.PEM]: defineMessage({
+  const downloadButtonLabel: Record<CertificateAcceptType, MessageDescriptor> = {
+    [CertificateAcceptType.PEM]: defineMessage({
       defaultMessage: 'Download PEM'
     }),
-    [AcceptType.DER]: defineMessage({
+    [CertificateAcceptType.DER]: defineMessage({
       defaultMessage: 'Download DER'
     }),
-    [AcceptType.PKCS7]: defineMessage({
+    [CertificateAcceptType.PKCS7]: defineMessage({
       defaultMessage: 'Download PKCS7'
     }),
-    [AcceptType.PKCS8]: defineMessage({
+    [CertificateAcceptType.PKCS8]: defineMessage({
       defaultMessage: 'Download'
     }),
-    [AcceptType.PKCS12]: defineMessage({
+    [CertificateAcceptType.PKCS12]: defineMessage({
       defaultMessage: 'Download'
     })
   }
@@ -69,7 +69,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   const handleDownloadClick = (
     downloadType: DownloadType,
-    format: AcceptType
+    format: CertificateAcceptType
   ) => {
     const customHeaders = { Accept: format }
     const isCertificate = CertificateCategoryType.CERTIFICATE === type
@@ -90,7 +90,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
     }
   }
 
-  const renderDownloadButton = (type: AcceptType, onClick: () => void) => (
+  const renderDownloadButton = (type: CertificateAcceptType, onClick: () => void) => (
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
         <Button type='default' onClick={onClick}>
@@ -114,7 +114,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   const renderSection = (
     downloadType: DownloadType,
-    acceptTypes: AcceptType[],
+    acceptTypes: CertificateAcceptType[],
     detailData: string | null | undefined,
     shouldDisplayDetailData = true
   ) => (
@@ -161,8 +161,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
           }
         </Col>
       </Row>
-      {data?.privateKeyBase64 && renderDownloadButton(AcceptType.PKCS8,
-        () => handleDownloadClick(downloadType, AcceptType.PKCS8))}
+      {data?.privateKeyBase64 && renderDownloadButton(CertificateAcceptType.PKCS8,
+        () => handleDownloadClick(downloadType, CertificateAcceptType.PKCS8))}
       {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.privateKeyBase64 &&
         <ButtonWrapper>
           <Button onClick={() => {
@@ -212,11 +212,12 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   return (
     <>
       {renderSection(DownloadType.PUBLIC_KEY,
-        [AcceptType.PEM, AcceptType.DER], data?.publicKeyBase64)}
+        [CertificateAcceptType.PEM, CertificateAcceptType.DER], data?.publicKeyBase64)}
       {renderSection(DownloadType.CHAINS,
-        [AcceptType.PEM, AcceptType.PKCS7], data?.chain)}
+        [CertificateAcceptType.PEM, CertificateAcceptType.PKCS7], data?.chain)}
       {renderPrivateKeySection(DownloadType.PRIVATE_KEY)}
-      {renderSection(DownloadType.P12, [AcceptType.PKCS12], data?.privateKeyBase64, false)}
+      {renderSection(DownloadType.P12, [CertificateAcceptType.PKCS12],
+        data?.privateKeyBase64, false)}
     </>
   )
 }

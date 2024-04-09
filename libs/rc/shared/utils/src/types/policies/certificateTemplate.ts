@@ -215,7 +215,7 @@ export type CertificateTemplateMutationResult = {
   id?: string
 }
 
-export enum AcceptType {
+export enum CertificateAcceptType {
   PEM = 'application/x-pem-file',
   DER = 'application/x-x509-ca-cert',
   PKCS7 = 'application/x-pkcs7-certificates',

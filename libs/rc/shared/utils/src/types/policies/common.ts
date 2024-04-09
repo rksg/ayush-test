@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { AcceptType } from './certificateTemplate'
+import { CertificateAcceptType } from './certificateTemplate'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
@@ -72,10 +72,10 @@ export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescr
   [PolicyTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }
 
-export const downloadCertExtension: Record<AcceptType, String> = {
-  [AcceptType.PEM]: 'pem',
-  [AcceptType.DER]: 'der',
-  [AcceptType.PKCS7]: 'p7b',
-  [AcceptType.PKCS8]: 'key',
-  [AcceptType.PKCS12]: 'p12'
+export const downloadCertExtension: Record<CertificateAcceptType, String> = {
+  [CertificateAcceptType.PEM]: 'pem',
+  [CertificateAcceptType.DER]: 'der',
+  [CertificateAcceptType.PKCS7]: 'p7b',
+  [CertificateAcceptType.PKCS8]: 'key',
+  [CertificateAcceptType.PKCS12]: 'p12'
 }

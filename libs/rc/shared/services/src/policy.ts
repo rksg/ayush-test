@@ -74,8 +74,8 @@ import {
   Certificate,
   downloadFile,
   CertificateTemplateMutationResult,
-  AcceptType,
-  downloadCertExtension
+  downloadCertExtension,
+  CertificateAcceptType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -2372,7 +2372,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
-            let extension = downloadCertExtension[customHeaders?.Accept as AcceptType]
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1] : `CertificateAuthority.${extension}`
@@ -2388,7 +2388,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
-            const extension = customHeaders?.Accept === AcceptType.PEM ? '.chain' : '.p7b'
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1] : `CertificateAuthorityChain.${extension}`
@@ -2482,7 +2482,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
-            let extension = downloadCertExtension[customHeaders?.Accept as AcceptType]
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1] : `Certificate.${extension}`
@@ -2498,7 +2498,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
-            const extension = customHeaders?.Accept === AcceptType.PEM ? 'chain' : 'p7b'
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent ?
               headerContent.split('filename=')[1] : `CertificateChain.${extension}`
