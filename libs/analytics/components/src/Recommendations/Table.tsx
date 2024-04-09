@@ -129,7 +129,7 @@ const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
   'revertscheduleinprogress'
 ]
 
-export const enabledDeleteStatus: Array<RecommendationListItem['statusEnum']> = [
+export const enableDeleteStatus: Array<RecommendationListItem['statusEnum']> = [
   'applyfailed', 'revertfailed'
 ]
 
@@ -272,7 +272,7 @@ export function RecommendationTable (
       visible: (selectedRows) =>
         ( selectedRows[0] &&
           selectedRows[0].trigger === 'daily' &&
-          enabledDeleteStatus.includes(selectedRows[0].statusEnum) &&
+          enableDeleteStatus.includes(selectedRows[0].statusEnum) &&
           isRecommendationDeleteEnabled
         ) ? true : false,
       tooltip: selectedRows => getDeleteTooltipText(selectedRows[0])

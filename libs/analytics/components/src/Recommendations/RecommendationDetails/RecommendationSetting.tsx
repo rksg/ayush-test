@@ -16,7 +16,7 @@ import {
 } from '../services'
 import {
   getDeleteTooltipText,
-  enabledDeleteStatus,
+  enableDeleteStatus,
   toggleMuteFn,
   clickDeleteFn
 } from '../Table'
@@ -75,7 +75,7 @@ export function RecommendationSetting (
       </>
     },
     ...((trigger === 'daily' &&
-    enabledDeleteStatus.includes(status) &&
+    enableDeleteStatus.includes(status) &&
     isRecommendationDeleteEnabled
     ) ? [{
         title: <RecommendationSettingTitle>

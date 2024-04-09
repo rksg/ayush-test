@@ -429,7 +429,7 @@ describe('RecommendationTabContent', () => {
     expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(1)
   })
 
-  it('should hide delete recommendation when status is not in enabledDeleteStatus', async () => {
+  it('should hide delete recommendation when status is not in enableDeleteStatus', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: [ {
