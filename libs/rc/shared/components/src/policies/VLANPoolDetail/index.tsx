@@ -17,7 +17,7 @@ import { filterByAccess } from '@acx-ui/user'
 import VLANPoolInstancesTable from './VLANPoolInstancesTable'
 import VLANPoolOverview       from './VLANPoolOverview'
 
-export default function VLANPoolDetail () {
+export function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const queryResults = useGetVLANPoolPolicyDetailQuery({ params })
