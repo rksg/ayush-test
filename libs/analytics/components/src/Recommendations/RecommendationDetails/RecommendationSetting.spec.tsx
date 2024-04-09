@@ -150,6 +150,7 @@ describe('RecommendationSetting', () => {
     )
     await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
     await userEvent.click(await screen.findByTestId('DeleteOutlined'))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     expect(showToast).toHaveBeenCalledWith({
       type: 'success',
       content: 'Recommendation was deleted successfully'
@@ -174,6 +175,7 @@ describe('RecommendationSetting', () => {
     )
     await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
     await userEvent.click(await screen.findByTestId('DeleteOutlined'))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     expect(showToast).toHaveBeenCalledWith({
       type: 'error',
       content: 'error'

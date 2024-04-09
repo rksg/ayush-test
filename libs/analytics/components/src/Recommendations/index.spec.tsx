@@ -426,6 +426,7 @@ describe('RecommendationTabContent', () => {
     expect(deleteBtn).toBeVisible()
     expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(0)
     await userEvent.click(deleteBtn)
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
     expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(1)
   })
 

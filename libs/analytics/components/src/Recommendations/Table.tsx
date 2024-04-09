@@ -10,12 +10,18 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip, showToast }            from '@acx-ui/components'
-import { get }                                               from '@acx-ui/config'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                         from '@acx-ui/formatter'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay, PathFilter }                from '@acx-ui/utils'
+import {
+  Loader,
+  TableProps,
+  Tooltip,
+  showToast,
+  showActionModal
+} from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -188,25 +194,30 @@ export const clickDeleteFn = async (
   deleteFn: ReturnType<typeof useDeleteRecommendationMutation>[0],
   callback?: () => void
 ) => {
-  const { deleteRecommendation } = await deleteFn({ id }).unwrap()
-  callback?.()
-  if (deleteRecommendation.success) {
-    showToast({
-      type: 'success',
-      content: getIntl().$t({ defaultMessage: 'Recommendation was deleted successfully' })
-    })
-  } else {
-    showToast({ type: 'error', content: deleteRecommendation.errorMsg })
-  }
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'confirm',
+    title: $t({ defaultMessage: 'Delete recommendation' }),
+    content: $t({ defaultMessage: 'Are you sure you want to delete this recommendation?' }),
+    onOk: async () => {
+      const { deleteRecommendation } = await deleteFn({ id }).unwrap()
+      callback?.()
+      if (deleteRecommendation.success) {
+        showToast({
+          type: 'success',
+          content: getIntl().$t({ defaultMessage: 'Recommendation was deleted successfully' })
+        })
+      } else {
+        showToast({ type: 'error', content: deleteRecommendation.errorMsg })
+      }
+    }
+  })
 }
 
 export function RecommendationTable (
   { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
 ) {
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics')
-
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
   const [setPreference] = useSetPreferenceMutation()
@@ -265,10 +276,6 @@ export function RecommendationTable (
       onClick: async () => {
         await clickDeleteFn(selectedRecommendation.id, deleteRecommendation, () => {
           setSelectedRowData([])
-          navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/recommendations/crrm`
-          })
         })
       },
       visible: (selectedRows) =>
