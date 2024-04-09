@@ -222,7 +222,8 @@ export function RecommendationTable (
     && disableMuteStatus.includes(selectedRecommendation.statusEnum)
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
-  const isRecommendationDeleteEnabled = useIsSplitOn(Features.RECOMMENDATION_DELETE)
+  const isRecommendationDeleteEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_DELETE) || Boolean(get('IS_MLISA_SA'))
 
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     ...(selectedRecommendation

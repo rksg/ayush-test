@@ -496,7 +496,6 @@ describe('RecommendationTabContent', () => {
         ...recommendationListResult.recommendations[1], status: 'revertfailed'
       } ] }
     })
-    jest.mocked(get).mockReturnValue('true')
     mockedDeleteRecommendation.mockImplementation(() => ({
       unwrap: () => Promise.resolve({
         deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
@@ -516,5 +515,35 @@ describe('RecommendationTabContent', () => {
     )
     await userEvent.click(selectRecommendation[0])
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should show delete recommendation when IS_MLISA_SA', async () => {
+    jest.mocked(get).mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
   })
 })

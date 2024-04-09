@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { showToast }      from '@acx-ui/components'
+import { get }            from '@acx-ui/config'
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -33,9 +34,14 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('RecommendationSetting', () => {
   const params = { recommendationId: 'fake-id', tenantId: 'tenant-id' }
   beforeEach(() => {
+    jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA') = false
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockUseMuteRecommendationMutation.mockImplementation(() =>[mockedMuteRecommendation])
     mockUseDeleteRecommendationMutation.mockImplementation(() => [mockedDeleteRecommendation])
@@ -193,5 +199,22 @@ describe('RecommendationSetting', () => {
     )
     await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
     expect(screen.queryByText('Delete Recommendation')).not.toBeInTheDocument()
+  })
+  it('should show delete when IS_MLISA_SA', async () => {
+    jest.mocked(get).mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockUseDeleteRecommendationMutation.mockImplementation(() => [() => ({
+      unwrap: () => Promise.resolve({
+        setDeldeleteRecommendationeted: { success: false, errorCode: '1', errorMsg: 'error' } })
+    })])
+    render(
+      <Provider>
+        <RecommendationSetting recommendationDetails={{
+          ...mockedRecommendationCRRM, status: 'applyfailed' } as EnhancedRecommendation}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click(screen.getByTestId('ConfigurationOutlined'))
+    expect(screen.getByText('Delete Recommendation')).toBeInTheDocument()
   })
 })

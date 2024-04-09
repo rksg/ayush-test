@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Switch }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
+import { get }                                    from '@acx-ui/config'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -37,7 +38,8 @@ export const recommendationTypeMapping = {
 export function RecommendationSetting (
   { recommendationDetails }: { recommendationDetails: EnhancedRecommendation }
 ) {
-  const isRecommendationDeleteEnabled = useIsSplitOn(Features.RECOMMENDATION_DELETE)
+  const isRecommendationDeleteEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_DELETE) || Boolean(get('IS_MLISA_SA'))
 
   const { id, status, trigger } = recommendationDetails
   const { title, link } = recommendationTypeMapping[trigger === 'daily' ? 'crrm' : 'aiOps']
