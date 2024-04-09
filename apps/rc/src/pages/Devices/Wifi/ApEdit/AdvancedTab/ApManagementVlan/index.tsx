@@ -83,7 +83,7 @@ export function ApManagementVlanForm () {
 
   const onFormDataChanged = async () => {
     const { vlanId } = form.getFieldsValue()
-    const invalidVlanId = vlanId < VLAN_ID_MIN || vlanId > VLAN_ID_MAX
+    const invalidVlanId = vlanId === null || vlanId < VLAN_ID_MIN || vlanId > VLAN_ID_MAX
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'advanced',
