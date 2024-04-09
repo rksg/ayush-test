@@ -34,7 +34,8 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -484,8 +485,20 @@ function checkCurrentVersions (version: string,
   filterVersions.forEach((v: FirmwareVersion) => {
     if (v.id === version || v.id === rodanVersion) {
       v = { ...v, inUse: true }
+    } else if (isDowngradeVersion(v.id, version, rodanVersion)) {
+      v = {...v, isDowngradeVersion: true}
     }
     inUseVersions.push(v)
   })
   return inUseVersions
+}
+
+function isDowngradeVersion(inUseVersion: string, version: string, rodanVersion: string) {
+
+  if(inUseVersion.includes('090')){
+    return compareSwitchVersion(version, inUseVersion) > 0 
+  } else if (inUseVersion.includes('100')){
+    return compareSwitchVersion(rodanVersion, inUseVersion) > 0
+  }
+  return false
 }
