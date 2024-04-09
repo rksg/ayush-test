@@ -187,7 +187,8 @@ const MySubscriptionTable = () => {
 
   const GetStatus = (effectiveDate: string, expirationDate: string) => {
     const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
-    const isFuture = moment(new Date()).isBefore(effectiveDate)
+    const isFuture = moment(new Date())
+      .isBefore(moment(effectiveDate, 'ddd MMM DD HH:mm:ss zz YYYY'))
     return remainingDays < 0 ? 'expired' : isFuture ? 'future' : 'active'
   }
 

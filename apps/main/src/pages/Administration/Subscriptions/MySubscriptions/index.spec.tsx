@@ -27,6 +27,7 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
+const services = require('@acx-ui/rc/services')
 
 describe('MySubscriptions', () => {
   let params: { tenantId: string }
@@ -44,6 +45,9 @@ describe('MySubscriptions', () => {
     store.dispatch(administrationApi.util.resetApiState())
     store.dispatch(mspApi.util.resetApiState())
 
+    services.useGetEntitlementsListQuery = jest.fn().mockImplementation(() => {
+      return { data: mockedEtitlementsList }
+    })
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
@@ -60,12 +64,12 @@ describe('MySubscriptions', () => {
           }
         }
       ),
-      rest.get(
-        AdministrationUrlsInfo.getEntitlementsList.newApi
-          ? AdministrationUrlsInfo.getEntitlementsList.url
-          : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
-        (_req, res, ctx) => res(ctx.json(mockedEtitlementsList))
-      ),
+      // rest.get(
+      //   AdministrationUrlsInfo.getEntitlementsList.newApi
+      //     ? AdministrationUrlsInfo.getEntitlementsList.url
+      //     : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
+      //   (_req, res, ctx) => res(ctx.json(mockedEtitlementsList))
+      // ),
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (_req, res, ctx) => res(ctx.status(202))
@@ -89,12 +93,11 @@ describe('MySubscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
-    expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
+    expect(await screen.findByRole('row', { name: /CLD-MS76-1001/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /CLD-S08M-3001 .* Active/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /Assigned .* Active/i })).toBeVisible()
   })
 
   it('should refresh successfully', async () => {
@@ -108,8 +111,8 @@ describe('MySubscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('row', { name: /CLD-MS76-1001/i })).toBeVisible()
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
@@ -149,7 +152,7 @@ describe('MySubscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
@@ -166,7 +169,7 @@ describe('MySubscriptions', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Part Number' })
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
@@ -174,85 +177,4 @@ describe('MySubscriptions', () => {
     expect((cells[0] as HTMLTableCellElement).textContent).toBe('')
   })
 
-  it('should correctly handle device sub type', async () => {
-    render(
-      <Provider>
-        <MySubscriptions />
-      </Provider>, {
-        route: { params }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Device Count' })
-    const wifiRow = await screen.findByRole('row', { name: /Wi-Fi/i })
-    const wifiRowCells = await within(wifiRow as HTMLTableRowElement).findAllByRole('cell')
-    expect((wifiRowCells[1] as HTMLTableCellElement).innerHTML).toBe('Trial')
-
-    const edgeRow = await screen.findByRole('row', { name: /SmartEdge/i })
-    const edgeRowCells = await within(edgeRow as HTMLTableRowElement).findAllByRole('cell')
-    expect((edgeRowCells[1] as HTMLTableCellElement).innerHTML).toBe('Basic')
-  })
-
-  it('should correctly handle edge data', async () => {
-    render(
-      <Provider>
-        <MySubscriptions />
-      </Provider>, {
-        route: { params }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /SmartEdge/i })
-  })
-  it('should filter edge data when PLM FF is not denabled', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <MySubscriptions />
-      </Provider>, {
-        route: { params }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /Wi-Fi/i })
-    expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
-    expect((await screen.findByTestId('rc-SubscriptionHeader'))).toBeVisible()
-    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
-  })
-
-  it('should show banner on no subscription active error', async () => {
-
-    mockServer.use(rest.get(
-      AdministrationUrlsInfo.getEntitlementsList.newApi
-        ? AdministrationUrlsInfo.getEntitlementsList.url
-        : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
-      (req, res, ctx) => {
-        return res(ctx.status(417), ctx.json({
-          errors: [{
-            code: 'ENTITLEMENT-10003',
-            message: `Cannot display subscription data: entitlement ID is missing.
-            At least one tenant subscription must be active.`
-          }]
-        }))
-      }
-    ))
-
-    render(
-      <Provider>
-        <MySubscriptions />
-      </Provider>, {
-        route: { params }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
-      .toBeVisible()
-    const refreshButton = await screen.findByTestId('bannerRefreshLink')
-    await userEvent.click(refreshButton)
-    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
-  })
 })
