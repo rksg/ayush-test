@@ -2184,7 +2184,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'DELETE_TEMPLATE',
             'ADD_TEMPLATE',
-            'UPDATE_TEMPLATE'
+            'UPDATE_TEMPLATE',
+            'DELETE_CA'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'CertificateTemplate', id: 'LIST' }
@@ -2414,7 +2415,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UPDATE_CERT',
-            'GENERATE_CERT'
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Certificate', id: 'LIST' }

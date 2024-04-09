@@ -218,7 +218,7 @@ export const certificateTemplateList = {
         titlePattern: null,
         keyUsageList: null,
         certificateType: 'CLIENT',
-        certificateAuthorityId: '8a3e945a0f83446f98025579b7b570a5',
+        certificateAuthorityId: '109df36cd9464586b7d37271a1bc3cc5',
         certificateAuthorityName: 'subcaupdated1111'
       },
       microsoftCa: null,
@@ -299,7 +299,7 @@ export const certificateTemplateList = {
         titlePattern: '',
         keyUsageList: null,
         certificateType: 'CLIENT',
-        certificateAuthorityId: 'cff3a51429fa4e6bb0c5258d07098db9',
+        certificateAuthorityId: 'ca7b5078b323448f9d6e5179c0178f65',
         certificateAuthorityName: 'subCa1'
       },
       microsoftCa: null,
