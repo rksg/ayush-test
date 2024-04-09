@@ -32,5 +32,10 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/hotspot20IdentityProviders/query',
     newApi: true
+  },
+  activateIdentityProviderOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:wifiNetworkId/hotspot20IdentityProviders/:providerId',
+    newApi: true
   }
 }

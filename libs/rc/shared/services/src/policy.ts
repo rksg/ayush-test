@@ -1253,6 +1253,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.activateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -1311,6 +1320,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+    }),
+    activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
     }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
@@ -2575,11 +2593,13 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  // HS2.0 Wi-Fi Operator
   useAddWifiOperatorMutation,
   useUpdateWifiOperatorMutation,
   useDeleteWifiOperatorMutation,
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,
@@ -2587,6 +2607,7 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

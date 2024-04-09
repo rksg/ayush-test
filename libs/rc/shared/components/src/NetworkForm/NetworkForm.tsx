@@ -15,7 +15,9 @@ import {
   useAddNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
-  useAddNetworkVenueTemplatesMutation
+  useAddNetworkVenueTemplatesMutation,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -31,7 +33,9 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  CommonResult,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -122,6 +126,8 @@ export function NetworkForm (props:{
   )
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [activateHotspot20NetworkOperator] = useActivateWifiOperatorOnWifiNetworkMutation()
+  const [activateHotspot20NetworkProvider] = useActivateIdentityProviderOnWifiNetworkMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -460,7 +466,23 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.identityProviders']))
-      const result = await addNetworkInstance({ params, payload }).unwrap()
+      const result = await addNetworkInstance({ params, payload,
+        callback: async (res: CommonResult) => {
+          if (saveState.type === NetworkTypeEnum.HOTSPOT20) {
+            await activateHotspot20NetworkOperator(
+              { params: {
+                wifiNetworkId: res.response?.id,
+                providerId: saveState.hotspot20Settings?.wifiOperator } }).unwrap()
+            saveState.hotspot20Settings?.identityProviders?.forEach(async (id) => {
+              await activateHotspot20NetworkProvider(
+                { params: {
+                  wifiNetworkId: res.response?.id,
+                  providerId: id
+                } }
+              ).unwrap()
+            })
+          }
+        } }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = result.response
