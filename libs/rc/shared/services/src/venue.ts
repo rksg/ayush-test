@@ -1,10 +1,8 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
-
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { cloneDeep, uniq }     from 'lodash'
 
-import { DateFormatEnum, formatter }                                                                                                     from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -75,7 +73,7 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
-  NetworkApGroup, ConfigTemplateUrlsInfo, getVenueTimeZone, getCurrentTimeSlotIndex, SchedulerTypeEnum, ISlotIndex, Network, ITimeZone
+  NetworkApGroup, ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -188,14 +186,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
-    }),
-    getTimezone: build.query<ITimeZone, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getTimezone, params)
-        return{
-          ...req
-        }
-      }
     }),
     getVenue: build.query<VenueExtended, RequestPayload>({
       query: ({ params }) => {
@@ -1492,7 +1482,6 @@ export const {
   useLazyVenuesListQuery,
   useVenuesTableQuery,
   useAddVenueMutation,
-  useLazyGetTimezoneQuery,
   useGetVenueQuery,
   useLazyGetVenueQuery,
   useGetVenuesQuery,
@@ -1625,38 +1614,4 @@ export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>
     ...venueList,
     data
   }
-}
-
-type VenueSubset = {
-  deepVenue?: NetworkVenue,
-  id: string,
-  activated?: Network['activated']
-  latitude?: string,
-  longitude?: string
-}
-
-export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?: boolean) => {
-  const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
-  const [getTimezone] = useLazyGetTimezoneQuery()
-
-  useEffect(()=>{
-    const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
-      let timeZone
-      if (Number(venueLatitude) && Number(venueLongitude)) {
-        timeZone = isMapEnabled ?
-          await getTimezone({ params: { lat: venueLatitude, lng: venueLongitude } }).unwrap() :
-          getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
-      }
-      const slotIndex = getCurrentTimeSlotIndex(timeZone)
-      setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
-    }
-
-    tableData.forEach(item => {
-      if (item.activated?.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
-        updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
-      }
-    })
-  }, [isMapEnabled, tableData])
-
-  return scheduleSlotIndexMap
 }
