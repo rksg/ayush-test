@@ -29,7 +29,9 @@ import {
 } from './services'
 import * as UI from './styledComponents'
 
+import type { StateType }           from './config'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
 
 type Metadata = { audit?: [{ failure: string }] | undefined }
 
@@ -133,14 +135,14 @@ export const enableDeleteStatus: Array<RecommendationListItem['statusEnum']> = [
   'applyfailed', 'revertfailed'
 ]
 
-export const getDeleteTooltipText = (recommendation: RecommendationListItem) => {
+export const getDeleteTooltipText = (state: StateType) => {
   const { $t } = getIntl()
   const statusMap = {
-    applyfailed: $t({ defaultMessage: 'apply failed' }),
-    revertfailed: $t({ defaultMessage: 'revert failed' })
-  } as Record<RecommendationListItem['statusEnum'], string>
+    applyfailed: $t({ defaultMessage: 'apply' }),
+    revertfailed: $t({ defaultMessage: 'revert' })
+  } as Record<StateType, string>
   const values = {
-    status: statusMap[recommendation.status as RecommendationListItem['statusEnum']]
+    status: statusMap[state]
   }
 
   return get('IS_MLISA_SA')
@@ -275,8 +277,7 @@ export function RecommendationTable (
           enableDeleteStatus.includes(selectedRows[0].statusEnum) &&
           isRecommendationDeleteEnabled
         ) ? true : false,
-      tooltip: selectedRows => getDeleteTooltipText(selectedRows[0])
-    }
+      tooltip: selectedRows => getDeleteTooltipText(selectedRows[0].statusEnum) }
   ]
 
   const optimizationTooltipText = get('IS_MLISA_SA')

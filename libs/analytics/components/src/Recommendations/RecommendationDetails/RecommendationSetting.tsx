@@ -11,7 +11,6 @@ import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom
 import { DetailsActions }         from '../../DetailsActions'
 import { RecommendationActions }  from '../RecommendationActions'
 import {
-  RecommendationListItem,
   useDeleteRecommendationMutation,
   useMuteRecommendationMutation
 } from '../services'
@@ -92,7 +91,7 @@ export function RecommendationSetting (
               })
             })} />
           </Tooltip>
-          <p>{getDeleteTooltipText({ status } as RecommendationListItem)}</p>
+          <p>{getDeleteTooltipText(status)}</p>
         </>
       }]
       : [])
