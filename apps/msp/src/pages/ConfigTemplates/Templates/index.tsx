@@ -13,7 +13,7 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }               from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
