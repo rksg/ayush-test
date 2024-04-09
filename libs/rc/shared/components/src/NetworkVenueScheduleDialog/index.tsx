@@ -34,7 +34,8 @@ import {
   NetworkVenueScheduler,
   NetworkSaveData,
   getVenueTimeZone,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  ITimeZone
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -51,14 +52,6 @@ interface SchedulingModalProps extends AntdModalProps {
   }
   network?: { name: string } | null | NetworkSaveData
   formName: string
-}
-
-interface Timezone {
-  dstOffset: number,
-  rawOffset: number,
-  status?: string,
-  timeZoneId: string,
-  timeZoneName: string
 }
 
 interface schedule {
@@ -91,10 +84,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const [checkAll, setCheckAll] = useState<boolean[]>([])
   const [timeTicks, setTimeTicks] = useState<string[]>([])
   const [disabled, setDisabled] = useState<boolean>(true)
-  const [timezone, setTimezone] = useState<Timezone>({
+  const [timezone, setTimezone] = useState<ITimeZone>({
     dstOffset: 0,
     rawOffset: 0,
-    status: '',
     timeZoneId: '',
     timeZoneName: ''
   })

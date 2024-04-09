@@ -4,10 +4,9 @@ import moment    from 'moment-timezone'
 
 import { NetworkVenueScheduler } from '../../models/NetworkVenueScheduler'
 
-interface ITimeZone {
+export interface ITimeZone {
   dstOffset: number
   rawOffset: number
-  status?: string
   timeZoneId: string
   timeZoneName: string
 }
@@ -45,8 +44,7 @@ export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
   const rawOffset = moment.utc().tz(timeZoneId).utcOffset()*60
   return {
     timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
-    rawOffset, dstOffset: 0,
-    status: 'OK'
+    rawOffset, dstOffset: 0
   }
 }
 

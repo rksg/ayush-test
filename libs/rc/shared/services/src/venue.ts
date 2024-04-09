@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { cloneDeep, uniq }     from 'lodash'
 
-import { DateFormatEnum, formatter }                                                                                          from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }                                                                                                     from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -75,7 +75,7 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
-  NetworkApGroup, ConfigTemplateUrlsInfo, getVenueTimeZone, getCurrentTimeSlotIndex, SchedulerTypeEnum, ISlotIndex, Network
+  NetworkApGroup, ConfigTemplateUrlsInfo, getVenueTimeZone, getCurrentTimeSlotIndex, SchedulerTypeEnum, ISlotIndex, Network, ITimeZone
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -189,12 +189,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    getTimezone: build.query<{
-      dstOffset: number,
-      rawOffset: number,
-      timeZoneId: string,
-      timeZoneName: string
-    }, RequestPayload>({
+    getTimezone: build.query<ITimeZone, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTimezone, params)
         return{
