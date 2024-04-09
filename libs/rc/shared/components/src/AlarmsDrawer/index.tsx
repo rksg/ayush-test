@@ -122,9 +122,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     }
 
     if(venueId){
-      if(venueId !== ''){
-        filters = { ...filters, ...{ venueId: [venueId] } }
-      }
+      filters = { ...filters, ...{ venueId: [venueId] } }
       tableQuery.setPayload({
         ...payload,
         filters

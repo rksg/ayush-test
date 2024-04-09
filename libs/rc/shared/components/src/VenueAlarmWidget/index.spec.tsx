@@ -52,6 +52,18 @@ const alarmListMeta = {
   ]
 }
 
+const data = {
+  summary: {
+    alarms: {
+      summary: {
+        critical: 1,
+        major: 1
+      },
+      totalCount: 2
+    }
+  }
+}
+
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('Venue Overview Alarm Widget', () => {
@@ -65,7 +77,9 @@ describe('Venue Overview Alarm Widget', () => {
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
         (_, res, ctx) => res(ctx.json(alarmListMeta))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+        (req, res, ctx) => res(ctx.json(data)))
     )
 
     const { asFragment } = render(
@@ -89,7 +103,9 @@ describe('Venue Overview Alarm Widget', () => {
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getDashboardV2Overview.url,
+        (req, res, ctx) => res(ctx.json(data)))
     )
 
     const { asFragment } = render(
