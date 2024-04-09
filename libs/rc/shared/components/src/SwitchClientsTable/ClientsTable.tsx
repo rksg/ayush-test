@@ -56,6 +56,7 @@ export function ClientsTable (props: {
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const portLinkToggle = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
