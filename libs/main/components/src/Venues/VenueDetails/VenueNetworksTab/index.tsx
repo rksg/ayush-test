@@ -37,7 +37,8 @@ import {
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useGetVLANPoolPolicyViewModelListQuery
+  useGetVLANPoolPolicyViewModelListQuery,
+  useScheduleSlotIndexMap
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -45,7 +46,6 @@ import {
   NetworkTypeEnum,
   RadioTypeEnum,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
   IsNetworkSupport6g,
