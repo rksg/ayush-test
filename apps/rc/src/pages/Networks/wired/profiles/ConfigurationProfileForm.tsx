@@ -277,7 +277,7 @@ export function ConfigurationProfileForm () {
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
-            onFinish={updateVlanCurrentData}
+            onFinish={(data:Partial<SwitchConfigurationProfile>) => updateVlanCurrentData(data)}
           >
             <VlanSetting />
           </StepsForm.StepForm>
