@@ -36,7 +36,8 @@ import {
   useVenueNetworkListV2Query,
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation
+  useDeleteNetworkVenueTemplateMutation,
+  useScheduleSlotIndexMap
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -44,7 +45,6 @@ import {
   NetworkTypeEnum,
   RadioTypeEnum,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
   IsNetworkSupport6g,
