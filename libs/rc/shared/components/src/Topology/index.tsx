@@ -317,12 +317,12 @@ export function TopologyGraphComponent (props:{ venueId?: string,
           children: schema1Equivalent }] })
 
       d3.select('#graph-zoom-in').on('click', function () {
-        newScale.current *= 1.2
+        newScale.current = newScale.current * 1.2 >= 5 ? 5 : newScale.current * 1.2
         setScale(newScale.current)
       })
 
       d3.select('#graph-zoom-out').on('click', function () {
-        newScale.current *= 0.8
+        newScale.current = newScale.current * 0.8 <= 1 ? 1 : newScale.current * 0.8
         setScale(newScale.current)
       })
 
