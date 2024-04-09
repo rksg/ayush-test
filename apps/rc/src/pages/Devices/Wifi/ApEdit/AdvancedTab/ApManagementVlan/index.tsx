@@ -13,7 +13,7 @@ import {
   useDeleteApManagementVlanMutation,
   useLazyGetVenueApManagementVlanQuery
 } from '@acx-ui/rc/services'
-import { ApManagementVlan, VenueExtended, validateVlanId } from '@acx-ui/rc/utils'
+import { ApManagementVlan, VenueExtended } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -22,7 +22,8 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 export function ApManagementVlanForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-
+  const VLAN_ID_MIN = 1
+  const VLAN_ID_MAX = 4096
   const form = Form.useFormInstance()
   const vlanIdFieldName = 'vlanId'
 
@@ -81,13 +82,14 @@ export function ApManagementVlanForm () {
   }
 
   const onFormDataChanged = async () => {
-    const isFormValid = await form.validateFields().then(() => true).catch(() => false)
+    const { vlanId } = form.getFieldsValue()
+    const invalidVlanId = vlanId < VLAN_ID_MIN || vlanId > VLAN_ID_MAX
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'advanced',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
       isDirty: true,
-      hasError: !isFormValid
+      hasError: invalidVlanId
     })
 
     setEditAdvancedContextData && setEditAdvancedContextData({
@@ -187,15 +189,13 @@ export function ApManagementVlanForm () {
                     name={vlanIdFieldName}
                     style={{ color: 'black' }}
                     rules={[
-                      { required: true },
-                      { validator: (_, value) => {
-                        if (value) return validateVlanId(value)
-                        return Promise.resolve()
-                      } }
+                      { required: true }
                     ]}
                     children={
                       <InputNumber
                         onChange={onApMgmtVlanChange}
+                        min={VLAN_ID_MIN}
+                        max={VLAN_ID_MAX}
                         style={{ width: '86px' }} />
                     }
                   />
