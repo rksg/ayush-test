@@ -14,6 +14,12 @@ import type { InternalStepFormProps, StepsFormGotoStepFn }      from './types'
 import type { AlertProps, FormInstance, FormProps, StepsProps } from 'antd'
 import type { UseStepsFormConfig }                              from 'sunflower-antd'
 
+export const enum StepsFormActionButtonEnum {
+  PRE = 'pre',
+  NEXT = 'next',
+  SUBMIT = 'submit'
+}
+
 function isPromise <T> (value: unknown): value is Promise<T> {
   return Boolean((value as Promise<unknown>).then)
 }
@@ -107,11 +113,15 @@ export function useStepsForm <T> ({
     onCancel?.(values)
   }
 
-  function onCurrentStepFinish (values: T, callback: () => void) {
+  function onCurrentStepFinish (
+    values: T,
+    callback: () => void,
+    event?: React.MouseEvent
+  ) {
     let promise: Promise<boolean | void> = Promise.resolve(true)
 
     if (currentStep?.props.onFinish) {
-      promise = handleAsyncSubmit(currentStep?.props.onFinish?.(values))
+      promise = handleAsyncSubmit(currentStep?.props.onFinish?.(values, event))
     }
     promise.then(ok => {
       if (typeof ok === 'boolean' && !ok) return
@@ -119,14 +129,14 @@ export function useStepsForm <T> ({
     })
   }
 
-  function gotoStep (n: number) {
+  function gotoStep (n: number, event?: React.MouseEvent) {
     const values = form.getFieldsValue(true)
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
         const result = formConfig.gotoStep(n)
         if (isPromise(result)) result.catch(() => { /* mute validation error */ }).finally(done)
         else done()
-      })
+      }, event)
     })
   }
 
@@ -212,7 +222,8 @@ export function useStepsForm <T> ({
       children={labels.cancel}
     />,
     pre: <Button
-      onClick={() => newConfig.gotoStep(formConfig.current - 1)}
+      value={StepsFormActionButtonEnum.PRE}
+      onClick={(e) => newConfig.gotoStep(formConfig.current - 1, e)}
       children={labels.pre}
       hidden={formConfig.current === 0}
     />,
@@ -220,6 +231,7 @@ export function useStepsForm <T> ({
     // - handle disable when validation not passed
     apply: <Button
       type='primary'
+      value={StepsFormActionButtonEnum.SUBMIT}
       loading={loading}
       disabled={customSubmitLoading}
       onClick={() => submit()}
@@ -228,12 +240,14 @@ export function useStepsForm <T> ({
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
         type='primary'
+        value={StepsFormActionButtonEnum.NEXT}
         loading={loading}
-        onClick={() => newConfig.gotoStep(formConfig.current + 1)}
+        onClick={(e) => newConfig.gotoStep(formConfig.current + 1, e)}
         children={labels.next}
       />
       : <Button
         type='primary'
+        value={StepsFormActionButtonEnum.SUBMIT}
         loading={loading}
         disabled={customSubmitLoading}
         onClick={() => submit()}
@@ -242,6 +256,7 @@ export function useStepsForm <T> ({
     customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
       ? <Button
         type='primary'
+        value={StepsFormActionButtonEnum.SUBMIT}
         loading={customSubmitLoading}
         disabled={loading}
         onClick={() => customSubmitHandler()}
