@@ -155,6 +155,13 @@ export const ConnectedClientsTable = (props: {
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
+  // Backend API will send Client Mac by uppercase, that will make Ant Table
+  // treats same UE as two different UE and cause sending duplicate mac in
+  // disconnect/revoke request. The API should be fixed in near future.
+  const lowerCaseMacConvertedTableData = tableQuery.data?.data.map((ap) => {
+    return { ...ap, clientMac: ap.clientMac.toLocaleLowerCase() }
+  })
+
   useEffect(() => {
     if (tableQuery.data?.data && setConnectedClientCount) {
       setConnectedClientCount(tableQuery.data?.totalCount)
@@ -182,7 +189,7 @@ export const ConnectedClientsTable = (props: {
         selectRows: newSelectRows
       })
     }
-  }, [tableQuery.data?.data, tableQuery.data?.totalCount])
+  }, [tableQuery.data?.data, tableQuery.data?.totalCount, lowerCaseMacConvertedTableData])
 
   useEffect(() => {
     if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
@@ -708,7 +715,7 @@ export const ConnectedClientsTable = (props: {
           rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
-          dataSource={tableQuery.data?.data}
+          dataSource={lowerCaseMacConvertedTableData}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
