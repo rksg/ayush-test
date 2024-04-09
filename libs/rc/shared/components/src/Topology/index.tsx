@@ -148,9 +148,9 @@ export function validateEdgeDirection (edges: Link[], nodeMap: Record<string, No
           rootEdges.push(edge)
         }
       } else if (rootEdge && rootEdge.to === edge.to) {
-        const rearranged = rearrangedData(edge)
         if(!isVisited(edge)){
           markVisited(edge)
+          const rearranged = rearrangedData(edge)
           pushToCalibrate(rearranged)
           rootEdges.push(rearranged)
         }
