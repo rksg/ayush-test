@@ -103,9 +103,9 @@ export const addressParser = async (place: google.maps.places.PlaceResult, getTi
   address.latitude = lat
   address.longitude = lng
 
-  const timezone = await getTimezone({
+  const { data: timezone } = await getTimezone({
     params: { lat: lat?.toString(), lng: lng?.toString() }
-  }).unwrap()
+  })
   address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
 
