@@ -8,10 +8,10 @@ import {
 } from '@acx-ui/test-utils'
 
 import { SchedulerTypeEnum } from '../../models/SchedulerTypeEnum'
-import { CommonUrlsInfo }    from '../../urls'
 
 import {
   getSchedulingCustomTooltip,
+  fetchVenueTimeZone,
   getCurrentTimeSlotIndex,
   getVenueTimeZone
 } from './schedule.utils'
@@ -43,7 +43,10 @@ describe('Test schedule.utils', () => {
     jest.runOnlyPendingTimers()
   })
 
-  it('getCurrentTimeSlotIndex', async () => {
+  it('fetchVenueTimeZone and getCurrentTimeSlotIndex', async () => {
+
+    const callBackSpy = jest.fn()
+
     const timezoneRes = { // location=-37.8145092,144.9704868
       dstOffset: 0,
       rawOffset: 36000,
@@ -54,9 +57,12 @@ describe('Test schedule.utils', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getTimezone.url,
+        'https://maps.googleapis.com/maps/api/timezone/json',
         (req, res, ctx) => res(ctx.json(timezoneRes))
-      )
+      ),
+      rest.get('/globalValues.json', (_, r, c) => r(c.json({
+        GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
+      })))
     )
 
     await config.initialize()
@@ -65,10 +71,16 @@ describe('Test schedule.utils', () => {
 
     // Australian Eastern Standard Time
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
+    const latitude = '-37.8145092'
+    const longitude = '144.9704868'
 
-    const slotIndex = getCurrentTimeSlotIndex(timezoneRes)
+    fetchVenueTimeZone(Number(latitude), Number(longitude))
+      .then(timeZone => {
+        const slotIndex = getCurrentTimeSlotIndex(timeZone)
+        callBackSpy(slotIndex)
+      })
 
-    await waitFor(() => expect(slotIndex).toEqual({
+    await waitFor(() => expect(callBackSpy).toHaveBeenCalledWith({
       day: 'Thu',
       timeIndex: 5
     }))
