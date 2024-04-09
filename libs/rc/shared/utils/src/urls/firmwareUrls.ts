@@ -213,5 +213,20 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apFirmwares?status=scheduled',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
     newApi: true
+  },
+  getVenueApModelFirmwareList: {
+    method: 'post',
+    url: '/venues/apModelFirmwares/schedules/query',
+    newApi: true
+  },
+  getAllApModelFirmwareList: {
+    method: 'get',
+    url: '/apModelFirmwares',
+    newApi: true
+  },
+  patchVenueApModelFirmwares: {
+    method: 'PATCH',
+    url: '/venues/:venueId/apModelFirmwares',
+    newApi: true
   }
 }
