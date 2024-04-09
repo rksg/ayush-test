@@ -11,6 +11,7 @@ import {
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
+  getEdgePortIpFromStatusIp,
   validateClusterInterface,
   validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
@@ -44,16 +45,15 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
-  const clusterData = Form.useWatch('clusterData', form) as ClusterInterfaceTableType[]
   const {
     allInterfaceData,
     isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(currentClusterStatus)
 
   useEffect(() => {
     if(!edgeNodeList || (isInterfaceDataLoading && !allInterfaceData)) return
-    if(clusterData) return
     form.setFieldValue('clusterData', edgeNodeList.map(item => {
       const currentcClusterInterface = getTargetInterfaceConfig(item.serialNumber)
       return {
@@ -61,7 +61,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
         serialNumber: item.serialNumber,
         interfaceName: currentcClusterInterface?.portName,
         ipMode: currentcClusterInterface?.ipMode,
-        ip: currentcClusterInterface?.ip,
+        ip: getEdgePortIpFromStatusIp(currentcClusterInterface?.ip),
         subnet: currentcClusterInterface?.subnet
       }
     }))
@@ -90,7 +90,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataLoading, isFetching: isInterfaceDataFetching }]}>
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
@@ -168,13 +168,13 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       key: 'interfaceName',
       dataIndex: 'interfaceName',
-      render: (data, row) => _.capitalize(row.interfaceName)
+      render: (_data, row) => _.capitalize(row.interfaceName)
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      render: (data, row) => row.ip?.split('/')[0]
+      render: (_data, row) => row.ip
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
