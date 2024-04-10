@@ -814,7 +814,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...aaaDetailReq
         }

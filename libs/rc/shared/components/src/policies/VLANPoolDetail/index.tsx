@@ -1,18 +1,18 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { useGetVLANPoolPolicyDetailQuery }              from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol }                             from '@acx-ui/components'
+import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
-  getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  getPolicyRoutePath,
-  getPolicyListRoutePath
+  useConfigTemplateQueryFnSwitcher,
+  usePolicyListBreadcrumb
 }   from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
 
 import VLANPoolInstancesTable from './VLANPoolInstancesTable'
 import VLANPoolOverview       from './VLANPoolOverview'
@@ -20,30 +20,26 @@ import VLANPoolOverview       from './VLANPoolOverview'
 export function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useGetVLANPoolPolicyDetailQuery({ params })
-  const tablePath = getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
+  const queryResults = useConfigTemplateQueryFnSwitcher<VLANPoolPolicyType>(
+    useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery)
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
 
   return (
     <>
       <PageHeader
         title={queryResults.data?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.VLAN_POOL,
-            oper: PolicyOperation.EDIT,
-            policyId: queryResults.data?.id||''
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button></TenantLink>
+          <PolicyConfigTemplateLinkSwitcher
+            type={PolicyType.VLAN_POOL}
+            oper={PolicyOperation.EDIT}
+            policyId={params.policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ])}
       />
       <GridRow>

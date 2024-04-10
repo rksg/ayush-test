@@ -15,7 +15,8 @@ import {
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  VLANPoolForm
+  VLANPoolForm,
+  VLANPoolDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -317,7 +318,7 @@ export function ConfigTemplatesRoutes () {
               type: PolicyType.VLAN_POOL,
               oper: PolicyOperation.DETAIL
             })}
-            element={<div>VLAN Pool Details</div>}
+            element={<VLANPoolDetail />}
           />
         </>}
       </Route>
