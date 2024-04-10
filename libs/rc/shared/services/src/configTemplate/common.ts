@@ -277,6 +277,12 @@ export const useCasesToRefreshAccessControlTemplateList = [
 
 export const useCasesToRefreshPortalTemplateList = ['Add Portal Service Profile by Template	', 'Update Portal Service Profile by Template	', 'Delete Portal Service Profile by Template']
 
+export const useCasesToRefreshWifiCallingTemplateList = [
+  'AddWifiCallingServiceProfileTemplate',
+  'UpdateWifiCallingServiceProfileTemplate',
+  'DeleteWifiCallingServiceProfileTemplate'
+]
+
 const useCasesToRefreshTemplateList = [
   'AddRadiusServerProfileTemplateRecord',
   'UpdateRadiusServerProfileTemplateRecord',
@@ -291,5 +297,6 @@ const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshDpskTemplateList,
   ...useCasesToRefreshDhcpTemplateList,
   ...useCasesToRefreshAccessControlTemplateList,
-  ...useCasesToRefreshPortalTemplateList
+  ...useCasesToRefreshPortalTemplateList,
+  ...useCasesToRefreshWifiCallingTemplateList
 ]
