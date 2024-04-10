@@ -7,14 +7,14 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useCreateWifiCallingServiceMutation }       from '@acx-ui/rc/services'
+import { useCreateWifiCallingServiceMutation, useCreateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG,
   generateServicePageHeaderTitle,
   QosPriorityEnum,
   ServiceOperation,
-  ServiceType, useConfigTemplate,
+  ServiceType, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -56,7 +56,10 @@ export const WifiCallingForm = () => {
     epdgs
   })
 
-  const [ createWifiCallingService ] = useCreateWifiCallingServiceMutation()
+  const [ createWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
+    useCreateWifiCallingServiceMutation,
+    useCreateWifiCallingServiceTemplateMutation
+  )
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
 
