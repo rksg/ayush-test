@@ -68,13 +68,13 @@ const PortSettingView = (props: PortSettingViewProps) => {
         content={
           (serialNumber) => {
             const portsConfigs = _.get(portSettings, [serialNumber])
-            const lagData = _.find(nodesLagData, { serialNumber })?.lags ?? []
+            const lagData = _.find(nodesLagData, { serialNumber })?.lags
 
             // only display when portConfig has data
             return portsConfigs
               ? <EdgePortsGeneralBase
                 lagData={lagData}
-                statusData={portsStatus?.[serialNumber] ?? []}
+                statusData={portsStatus?.[serialNumber]}
                 isEdgeSdLanRun={!!edgeSdLanData}
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
