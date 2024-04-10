@@ -60,7 +60,7 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
                   class="ant-space-item"
                 >
                   <div
-                    _echarts_instance_="ec_1712724278706"
+                    _echarts_instance_="ec_1712740945474"
                     class="echarts-for-react "
                     size-sensor-id="4"
                     style="height: 800px; width: 1280px; position: relative;"

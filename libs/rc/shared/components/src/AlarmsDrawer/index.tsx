@@ -66,7 +66,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-  const { visible, setVisible, serialNumber } = props
+  const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
@@ -77,10 +77,17 @@ export function AlarmsDrawer (props: AlarmsType) {
     }else{
       setVenueId('')
     }
+
+    if(e.detail.data.serialNumber){
+      setSerialNumber(e.detail.data.serialNumber)
+    }else{
+      setSerialNumber('')
+    }
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
   const [venueId, setVenueId] = useState('')
+  const [serialNumber, setSerialNumber] = useState('')
 
   const [
     clearAlarm,
