@@ -295,7 +295,6 @@ export const autocompleteResult = {
 export const timezoneResult = {
   dstOffset: 3600,
   rawOffset: -28800,
-  status: 'OK',
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
@@ -937,6 +936,10 @@ export const venueRogueAp = {
   enabled: true,
   reportThreshold: 0,
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueApTlsEnhancedKey = {
+  tlsEnhancedKeyEnabled: true
 }
 
 export const venueRoguePolicy = [

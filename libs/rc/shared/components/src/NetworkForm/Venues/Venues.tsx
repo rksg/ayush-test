@@ -12,15 +12,14 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useNetworkVenueListQuery, useNetworkVenueListV2Query } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { useNetworkVenueListQuery, useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
   NetworkVenue,
   useTableQuery,
   Venue,
-  useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
   SchedulingModalState,
   RadioTypeEnum,

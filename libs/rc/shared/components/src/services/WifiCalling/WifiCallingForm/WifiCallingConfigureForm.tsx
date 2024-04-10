@@ -7,12 +7,12 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useUpdateWifiCallingServiceMutation }       from '@acx-ui/rc/services'
+import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG, generateServicePageHeaderTitle,
   QosPriorityEnum, ServiceOperation, ServiceType,
-  useConfigTemplate,
+  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -32,7 +32,9 @@ export const WifiCallingConfigureForm = () => {
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
 
-  const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
+  const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation
+  )
 
   const initServiceName = ''
   const initDescription = ''

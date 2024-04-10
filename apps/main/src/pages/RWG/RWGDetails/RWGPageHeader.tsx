@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                    from '@acx-ui/components'
-import { useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
-import { RWG }                                   from '@acx-ui/rc/utils'
+import { Button, PageHeader } from '@acx-ui/components'
+import { useGetRwgQuery }     from '@acx-ui/rc/services'
+import { RWG }                from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -22,19 +22,13 @@ import RWGTabs from './RWGTabs'
 function RWGPageHeader () {
   const { $t } = useIntl()
   const [gatewayStatus, setGatewayStatus] = useState<string>()
-  const [DNSRecordCount, setDNSRecordCount] = useState<number>()
   const { tenantId, gatewayId } = useParams()
 
   const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
-  const { data: dnsRecordsData } = useGetDNSRecordsQuery({ params: { tenantId, gatewayId } })
 
   useEffect(() => {
     if (gatewayData) {
       setGatewayStatus(gatewayData?.status)
-    }
-
-    if (dnsRecordsData) {
-      setDNSRecordCount(dnsRecordsData.totalCount)
     }
   })
 
@@ -89,7 +83,7 @@ function RWGPageHeader () {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>])
       ]}
-      footer={<RWGTabs gatewayDetail={gatewayData as RWG} dnsRecordsCount={DNSRecordCount || 0} />}
+      footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />
   )
 }

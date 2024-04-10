@@ -34,8 +34,8 @@ import {
   useDelAppPolicyTemplateMutation,
   useDelL3AclPolicyTemplateMutation,
   useDelDevicePolicyTemplateMutation,
+  useDeleteWifiCallingServiceTemplateMutation,
   useDeletePortalTemplateMutation,
-  useDeleteWifiCallingServiceMutation,
   useDelVlanPoolPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -293,7 +293,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deleteApplicationTemplate ] = useDelAppPolicyTemplateMutation()
   const [ deleteDhcpTemplate ] = useDeleteDhcpTemplateMutation()
   const [ deletePortalTemplate ] = useDeletePortalTemplateMutation()
-  const [ deleteWifiCalling ] = useDeleteWifiCallingServiceMutation()
+  const [ deleteWifiCalling ] = useDeleteWifiCallingServiceTemplateMutation()
   const [ deleteVlanPoolTemplate ] = useDelVlanPoolPolicyTemplateMutation()
 
   return {

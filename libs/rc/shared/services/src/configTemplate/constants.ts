@@ -81,6 +81,12 @@ export const useCasesToRefreshRadiusServerTemplateList = [
   'DeleteRadiusServerProfileTemplateRecord'
 ]
 
+export const useCasesToRefreshWifiCallingTemplateList = [
+  'AddWifiCallingServiceProfileTemplate',
+  'UpdateWifiCallingServiceProfileTemplate',
+  'DeleteWifiCallingServiceProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   ...useCasesToRefreshNetworkTemplateList,
@@ -90,5 +96,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshAccessControlTemplateList,
   ...useCasesToRefreshPortalTemplateList,
   ...useCasesToRefreshVlanPoolTemplateList,
-  ...useCasesToRefreshRadiusServerTemplateList
+  ...useCasesToRefreshRadiusServerTemplateList,
+  ...useCasesToRefreshWifiCallingTemplateList
 ]

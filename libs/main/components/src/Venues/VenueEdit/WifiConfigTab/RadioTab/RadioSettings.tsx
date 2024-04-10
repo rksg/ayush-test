@@ -588,12 +588,18 @@ export function RadioSettings () {
   }
 
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    update5gData(data)
+    const validationResult = await validationFields() as any
+    if (validationResult?.errorFields) return
 
+    update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
