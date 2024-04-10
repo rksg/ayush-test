@@ -1,0 +1,61 @@
+import { gql } from 'graphql-request'
+
+import { getFilterPayload, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                from '@acx-ui/store'
+import type { AnalyticsFilter }                   from '@acx-ui/utils'
+
+export type ConnectedClientsOverTimeData = {
+  wirelessClientsCount: number[]
+  wiredClientsCount: number[]
+  time: string[]
+}
+
+interface Response <TimeSeriesData> {
+  network: {
+    hierarchyNode: {
+      timeSeries: TimeSeriesData
+    }
+  }
+}
+
+export const api = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    connectedApWiredClientsOverTime: build.query<
+    ConnectedClientsOverTimeData,
+    AnalyticsFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+        query ConnectedClientsOverTimeWidget(
+          $path: [HierarchyNodeInput]
+          $start: DateTime
+          $end: DateTime
+          $granularity: String
+          $filter: FilterInput
+        ) {
+          network(start: $start, end: $end,filter : $filter) {
+            hierarchyNode(path: $path) {
+              timeSeries(granularity: $granularity) {
+                time
+                wirelessClientsCount: connectedClientCount
+                wiredClientsCount: switchConnectedClientCount
+              }
+            }
+          }
+        }
+      `,
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate,
+          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
+          ...getFilterPayload(payload)
+        }
+      }),
+      providesTags: [{ type: 'Monitoring', id: 'CONNECTED_CLIENTS_OVER_TIME' }],
+      transformResponse: (response: Response<ConnectedClientsOverTimeData>) =>
+        response.network.hierarchyNode.timeSeries
+    })
+  })
+})
+
+export const { useConnectedApWiredClientsOverTimeQuery } = api
