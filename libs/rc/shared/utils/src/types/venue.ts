@@ -743,6 +743,10 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
+export interface ApEnhancedKey {
+	tlsEnhancedKeyEnabled: boolean
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
@@ -815,7 +819,7 @@ export enum SignalStrengthLevel {
 export interface ApFeatureSet {
   featureName: string,
   requiredFw?: string,
-  requiredModel?: string[]
+  supportedModelFamilies?: string[]
 }
 
 export interface ApCompatibilityFeatureResponse {
