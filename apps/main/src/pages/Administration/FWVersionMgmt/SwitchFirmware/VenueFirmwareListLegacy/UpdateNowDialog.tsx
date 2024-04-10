@@ -8,6 +8,7 @@ import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
+  compareSwitchVersion,
   FirmwareSwitchVenue,
   FirmwareVersion,
   UpdateScheduleRequest
@@ -41,10 +42,12 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
 
-  // eslint-disable-next-line max-len
-  const firmware10AvailableVersions = availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
-  // eslint-disable-next-line max-len
-  const firmware90AvailableVersions = availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+  const firmware10AvailableVersions =
+    availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
+      .sort((a, b) => compareSwitchVersion(a.id, b.id))
+  const firmware90AvailableVersions = 
+    availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+    .sort((a, b) => compareSwitchVersion(a.id, b.id))
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {

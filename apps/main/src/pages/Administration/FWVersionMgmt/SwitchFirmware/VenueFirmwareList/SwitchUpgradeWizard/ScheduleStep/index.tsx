@@ -9,6 +9,7 @@ import { Subtitle, useStepFormContext } from '@acx-ui/components'
 import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
+  compareSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -105,6 +106,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
         } as FirmwareVersion)
       }
     }
+
+    if (_.isArray(firmwareAvailableVersions)) {
+      firmwareAvailableVersions = firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+    }
+    
     return firmwareAvailableVersions
   }
 

@@ -12,6 +12,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
+  compareSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -118,6 +119,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           category: FirmwareCategory.REGULAR } as FirmwareVersion)
       }
     }
+
+    if (_.isArray(firmwareAvailableVersions)) {
+      firmwareAvailableVersions = firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+    }
+    
     return firmwareAvailableVersions
   }
 

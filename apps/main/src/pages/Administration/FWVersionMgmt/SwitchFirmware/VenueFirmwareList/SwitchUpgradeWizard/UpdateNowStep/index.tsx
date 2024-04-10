@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
+  compareSwitchVersion,
   FirmwareVersion
 } from '@acx-ui/rc/utils'
 
@@ -42,8 +43,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const firmware10AvailableVersions =
     availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
+    .sort((a, b) => compareSwitchVersion(a.id, b.id))
   const firmware90AvailableVersions =
     availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+    .sort((a, b) => compareSwitchVersion(a.id, b.id))
 
   useEffect(()=>{
     setShowSubTitle(false)
