@@ -40,7 +40,7 @@ export const utilizationSummaryFixture = {
     hierarchyNode: {
       portCount: 636,
       totalPortCount: 14229,
-      avgClientCountPerAp: 643
+      avgPerAPClientCount: 643
     }
   }
 }
@@ -50,7 +50,7 @@ export const utilizationSummaryNoDataFixture = {
     hierarchyNode: {
       portCount: null,
       totalPortCount: null,
-      avgClientCountPerAp: null
+      avgPerAPClientCount: null
     }
   }
 }

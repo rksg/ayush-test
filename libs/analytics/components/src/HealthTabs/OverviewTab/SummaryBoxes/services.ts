@@ -18,7 +18,7 @@ export interface UtilizationSummary {
     hierarchyNode: {
       portCount: number
       totalPortCount: number
-      avgClientCountPerAp: number
+      avgPerAPClientCount: number
     }
   }
 }
@@ -107,7 +107,7 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 portCount
                 totalPortCount
-                avgClientCountPerAp
+                avgPerAPClientCount
               }
             }
           }`,

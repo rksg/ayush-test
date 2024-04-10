@@ -48,7 +48,7 @@ export const SummaryBoxes = ({ filters }: {
         return {
           ...rest,
           data: {
-            avgClientCountPerAp: data?.network?.hierarchyNode.avgClientCountPerAp,
+            avgPerAPClientCount: data?.network?.hierarchyNode.avgPerAPClientCount,
             portCount: data?.network?.hierarchyNode.portCount,
             totalPortCount: data?.network?.hierarchyNode.totalPortCount
           }
@@ -62,8 +62,8 @@ export const SummaryBoxes = ({ filters }: {
       title: defineMessage({ defaultMessage: 'Utilization' }),
       values: [{
         title: defineMessage({ defaultMessage: 'Avg. clients per AP' }),
-        value: !isNull(utilizationSummary.avgClientCountPerAp) ?
-          formatter('countFormat')(utilizationSummary.avgClientCountPerAp) : noDataDisplay
+        value: !isNull(utilizationSummary.avgPerAPClientCount) ?
+          formatter('countFormat')(utilizationSummary.avgPerAPClientCount) : noDataDisplay
       },
       {
         title: defineMessage({ defaultMessage: 'Switch ports in use' }),
