@@ -149,7 +149,8 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <>
                       {getSwitchVersionLabel(intl, v)}
-                      {v.isDowngradeVersion && <DowngradeTag>Downgrade</DowngradeTag>}
+                      {v.isDowngradeVersion && !v.inUse &&
+                        <DowngradeTag>Downgrade</DowngradeTag>}
                     </>
                   </Radio>)}
                 <Radio value='' key='0'>
