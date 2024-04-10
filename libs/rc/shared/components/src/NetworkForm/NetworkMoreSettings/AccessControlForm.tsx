@@ -732,9 +732,9 @@ const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileTyp
   const accessControlProfile = selectedAccessControlProfile as AccessControlProfile
 
   return <>
-    <span>{!(!(!selectedAccessControlProfile
+    <span>{(!selectedAccessControlProfile
       || !accessControlProfile.rateLimiting
-      || accessControlProfile.rateLimiting?.enabled !== false)) && '--'}</span>
+      || accessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
     {(selectedAccessControlProfile &&
         accessControlProfile.rateLimiting?.enabled) &&
       <div>
