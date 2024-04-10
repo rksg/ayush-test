@@ -9,11 +9,11 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
+import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   ServiceOperation,
-  ServiceType, useServiceListBreadcrumb,
+  ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
@@ -28,9 +28,9 @@ export const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [networkIds, setNetworkIds] = useState([] as string[])
-  const { data } = useGetWifiCallingServiceQuery({
-    params: params
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
+  )
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
 
