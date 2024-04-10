@@ -4,6 +4,7 @@ import { Input, Space } from 'antd'
 import {
   Form
 } from 'antd'
+import { cloneDeep }                 from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -171,26 +172,19 @@ function Hotspot20Form () {
       sortOrder: 'ASC'
     }
 
-    const { data: providersData } =
-      useGetIdentityProviderListQuery({ payload: defaultPayload })
+    const { providerSelectOptions } = useGetIdentityProviderListQuery({ payload: defaultPayload }, {
+      selectFromResult: ({ data }) => {
+        const providerOptions = data?.data.map(item => ({ label: item.name, value: item.id })) ?? []
+        return { providerSelectOptions: providerOptions }
+      }
+    })
 
-    const { operatorSelectOptions = [] } = useGetWifiOperatorListQuery(
-      {
-        payload: defaultPayload
-      }, {
-        selectFromResult: ({ data }) => {
-          return {
-            operatorSelectOptions: data?.data.map(item => ({ label: item.name, value: item.id }))
-          }
-        }
-      })
-
-    const providerSelectOptions =
-      providersData?.data.map(item =>
-        ({
-          label: item.name,
-          value: item.id
-        })) ?? []
+    const { operatorSelectOptions } = useGetWifiOperatorListQuery({ payload: defaultPayload }, {
+      selectFromResult: ({ data }) => {
+        const operatorOptions = data?.data.map(item => ({ label: item.name, value: item.id })) ?? []
+        return { operatorSelectOptions: operatorOptions }
+      }
+    })
 
     useEffect(() => {
       if (wifiOperatorId.current !== undefined &&
@@ -209,17 +203,18 @@ function Hotspot20Form () {
     }
 
     const handleSaveWifiOperator = (id?: string) => {
-      if (id !== undefined) {
+      if (id) {
         wifiOperatorId.current = id
       }
       setShowOperatorDrawer(false)
     }
 
     const handleSaveIdentityProvider = (id?: string) => {
-      const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders'])
-      if (id !== undefined && !identityProviders.includes(id)) {
-        identityProviders.push(id)
-        form.setFieldValue(['hotspot20Settings', 'identityProviders'], identityProviders)
+      const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
+      if (id && !identityProviders.includes(id)) {
+        const newIdentityProviders = cloneDeep(identityProviders)
+        newIdentityProviders.push(id)
+        form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
       }
       setShowProviderDrawer(false)
     }

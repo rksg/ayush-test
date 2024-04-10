@@ -29,13 +29,7 @@ const IdentityProviderDrawer = (props: IdentityProviderDrawerProps) => {
       push={false}
       children={content}
       onClose={handleClose}
-      footer={
-        <Drawer.FormFooter
-          showAddAnother={false}
-          onCancel={handleClose}
-          onSave={async () => handleSave()}
-        />
-      }
+      destroyOnClose={true}
     />
   )
 }

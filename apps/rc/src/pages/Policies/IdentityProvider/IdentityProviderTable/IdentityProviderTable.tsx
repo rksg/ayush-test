@@ -249,7 +249,7 @@ function useColumns () {
       sorter: false,
       render: (_, { accountingRadiusId }) => {
         return (!accountingRadiusId)
-          ? 'Disabled'
+          ? ''
           : (
             <TenantLink to={getPolicyDetailsLink({
               type: PolicyType.AAA,

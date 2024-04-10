@@ -83,7 +83,7 @@ describe('WifiOperatorForm', () => {
     })
 
     //step 1 setting form
-    await userEvent.type(await screen.findByLabelText('Policy Name'), 'test1')
+    await userEvent.type(await screen.findByLabelText('Profile Name'), 'test1')
     await userEvent.type(await screen.findByLabelText('Domain'), 'rks.com')
     const combobox = await screen.findByRole('combobox', { name: 'Language' })
     await userEvent.click(combobox)
@@ -131,7 +131,7 @@ describe('WifiOperatorForm', () => {
       route: { params }
     })
 
-    await userEvent.type(screen.getByLabelText('Policy Name'), 'test2')
+    await userEvent.type(screen.getByLabelText('Profile Name'), 'test2')
 
     await userEvent.type(await screen.findByLabelText('Domain'), '\nrks.rks.com')
     const dropdown = await screen.findByTestId('select_language_0')
@@ -165,7 +165,9 @@ describe('WifiOperatorForm', () => {
     await userEvent.click(await screen.findByText('Cancel'))
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      hash: '', pathname: '/tenant-id/t/policies/wifiOperator/list', search: '' }
-    )
+      hash: '',
+      pathname: '/tenant-id/t/policies/wifiOperator/list',
+      search: ''
+    }, { replace: true })
   })
 })

@@ -27,13 +27,7 @@ const WifiOperatorDrawer = (props: WifiOperatorDrawerProps) => {
       width={450}
       children={content}
       onClose={handleClose}
-      footer={
-        <Drawer.FormFooter
-          showAddAnother={false}
-          onCancel={handleClose}
-          onSave={async () => handleSave()}
-        />
-      }
+      destroyOnClose={true}
     />
   )
 }

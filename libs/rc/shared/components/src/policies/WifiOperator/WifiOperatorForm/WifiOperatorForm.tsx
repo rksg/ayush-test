@@ -87,42 +87,36 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
     }
   }
 
-  return (
-    <>
-      {!modalMode &&
+  return (<>
+    {!modalMode &&
       <PageHeader
         title={pageTitle}
         breadcrumb={breadcrumb}
       />
-      }
-      <StepsFormLegacy<WifiOperatorContext>
-        formRef={formRef}
-        editMode={editMode}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
-        onFinish={async (data) => {
-          return handleWifiOperator(data)
-        }}
-      >
-        <StepsFormLegacy.StepForm>
-          <GridRow>
-            {!modalMode?
-              <>
-                <GridCol col={{ span: 10 }}>
-                  <StepsFormLegacy.Title>
-                    {$t({ defaultMessage: 'Settings' })}
-                  </StepsFormLegacy.Title>
-                  <WifiOperatorSettingForm edit={editMode}/>
-                </GridCol>
-                <GridCol col={{ span: 14 }}>
-                </GridCol>
-              </> :
-              <GridCol col={{ span: 10 }}>
-                <WifiOperatorSettingForm edit={editMode}/>
-              </GridCol>
-            }
-          </GridRow>
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
-    </>
-  )
+    }
+    <StepsFormLegacy<WifiOperatorContext>
+      formRef={formRef}
+      editMode={editMode}
+      onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
+      onFinish={async (data) => {
+        return handleWifiOperator(data)
+      }}
+    >
+      <StepsFormLegacy.StepForm>
+        <GridRow>
+          {!modalMode?
+            <GridCol col={{ span: 10 }}>
+              <StepsFormLegacy.Title>
+                {$t({ defaultMessage: 'Settings' })}
+              </StepsFormLegacy.Title>
+              <WifiOperatorSettingForm edit={editMode}/>
+            </GridCol>
+            : <GridCol col={{ span: 24 }}>
+              <WifiOperatorSettingForm edit={editMode}/>
+            </GridCol>
+          }
+        </GridRow>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
+  </>)
 }
