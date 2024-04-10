@@ -1,8 +1,8 @@
 import { Col, Divider, Form, Input, Row, Select } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { MAX_CERTIFICATE_PER_TENANT }      from '@acx-ui/rc/components'
-import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { MAX_CERTIFICATE_PER_TENANT }                                         from '@acx-ui/rc/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 
 import { certificateDescription } from '../contentsMap'
 import { Description }            from '../styledComponents'
@@ -11,20 +11,31 @@ export default function CertificateSettings ({ specificTemplate = false }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const csrType = Form.useWatch('csrType', form)
+
+  const { caList } = useGetCertificateAuthoritiesQuery(
+    { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
+    {
+      skip: specificTemplate,
+      selectFromResult: ({ data }) =>
+        ({
+          caList: data?.data?.filter((item) => item.privateKeyBase64)
+            .map((item) => item.id)
+        })
+    })
+
   const {
     isCertificateTemplateOptionsLoading, certificateTemplateOptions
   } = useGetCertificateTemplatesQuery({
     payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
   }, {
-    selectFromResult: ({ data, isLoading }) => {
-      return {
+    skip: specificTemplate || !caList,
+    selectFromResult: ({ data, isLoading }) =>
+      ({
         isCertificateTemplateOptionsLoading: isLoading,
-        certificateTemplateOptions: data?.data?.map((item) => ({
-          label: item.name,
-          value: item.id
-        }))
-      }
-    }
+        certificateTemplateOptions: data?.data?.filter((item) =>
+          caList?.includes(item.onboard?.certificateAuthorityId!))
+          .map((item) => ({ label: item.name, value: item.id }))
+      })
   })
 
   const csrSourceOptions = [

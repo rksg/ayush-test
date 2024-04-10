@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { Key, useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
@@ -47,6 +47,7 @@ export function AclSetting () {
   const [ drawerFormRule, setDrawerFormRule ] = useState<Acl>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const [selectedRows, setSelectedRows] = useState<Key[]>([])
 
   useEffect(() => {
     if(currentData.acls){
@@ -101,20 +102,17 @@ export function AclSetting () {
     }
   ]
 
-  const handleSetRule = (data: Acl) => {
-    const isExist = aclsTable.filter((item: { name:string }) => item.name === data.name)
+  const handleSetRule = (oldData: Acl, newData: Acl) => {
+    const isExist = aclsTable.filter((item: { name:string }) => item.name === oldData.name)
     if(drawerEditMode && isExist.length > 0){
-      const acl = aclsTable.map((item: { name:string }) => {
-        if(item.name === data.name){
-          return { ...data }
-        }
-        return item
-      })
-      setAclsTable(acl as Acl[])
-      form.setFieldValue('acls', acl)
+      const acl = aclsTable.filter((item: { name:string }) => item.name !== oldData.name)
+      newData.id = ''
+      setAclsTable([...acl, newData] as Acl[])
+      form.setFieldValue('acls', [...acl, newData] as Acl[])
+      setSelectedRows([])
     }else{
-      setAclsTable([...aclsTable, data])
-      form.setFieldValue('acls', [...aclsTable, data])
+      setAclsTable([...aclsTable, newData])
+      form.setFieldValue('acls', [...aclsTable, newData])
     }
     return true
   }
@@ -144,6 +142,7 @@ export function AclSetting () {
             }])}
             rowSelection={hasAccess() && {
               type: 'radio',
+              selectedRowKeys: selectedRows,
               onChange: () => {
                 setDrawerVisible(false)
               }
