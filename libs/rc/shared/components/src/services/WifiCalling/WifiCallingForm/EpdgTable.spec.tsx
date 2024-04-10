@@ -4,8 +4,8 @@ import { useReducer } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EPDG, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
+import { EPDG, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -89,17 +89,16 @@ const wifiCallingServiceResponse = {
 
 describe('EpdgTable', () => {
   beforeEach(() => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingResponse)
-      )
-    ),rest.put(
-      WifiCallingUrls.updateWifiCalling.url,
-      (req, res, ctx) => res(
-        ctx.json(wifiCallingServiceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingResponse))),
+      rest.put(WifiCallingUrls.updateWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingResponse))),
+      rest.put(ServicesConfigTemplateUrlsInfo.updateWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse)))
+    )
   })
   it('should render drawer successfully after clicking the Add button', async () => {
     const { result } = renderHook(() => useReducer(mainReducer, initState_withoutEpdg))

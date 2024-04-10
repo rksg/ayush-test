@@ -1,16 +1,18 @@
 import React, { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
 
-import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
-import _                                                   from 'lodash'
-import { FormattedMessage, useIntl }                       from 'react-intl'
+import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
+import _                                                           from 'lodash'
+import { FormattedMessage, useIntl }                               from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
-import { RogueApModal, usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
+import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { RogueApModal, usePathBasedOnConfigTemplate }                                                   from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery,
+  useGetVenueApEnhancedKeyQuery, useUpdateVenueApEnhancedKeyMutation,
   useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation
 } from '@acx-ui/rc/services'
 import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
@@ -28,7 +30,8 @@ export interface SecuritySetting {
   failThreshold: number,
   rogueApEnabled: boolean,
   reportThreshold: number,
-  roguePolicyId: string
+  roguePolicyId: string,
+  tlsEnhancedKeyEnabled: boolean
 }
 
 export interface SecuritySettingContext {
@@ -44,6 +47,7 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
 
   const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
   const DEFAULT_PROFILE_NAME = 'Default profile'
@@ -77,10 +81,17 @@ export function SecurityTab () {
 
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params }, { skip: isTemplate })
 
+  const [updateVenueApEnhancedKey, {
+    isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
+  // eslint-disable-next-line max-len
+  const { data: venueApEnhancedKeyData } = useGetVenueApEnhancedKeyQuery({ params }, { skip: isTemplate || !supportTlsKeyEnhance })
+
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
   const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
   const [triggerRogueAPDetection, setTriggerRogueAPDetection] = useState(false)
   const [rogueDrawerVisible, setRogueDrawerVisible] = useState(false)
+  const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
+  const [triggerTlsEnhancedKey, setTriggerTlsEnhancedKey] = useState(false)
 
   const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
     selectFromResult ({ data }) {
@@ -137,6 +148,14 @@ export function SecurityTab () {
     }
   }, [venueRogueApData])
 
+  useEffect(() => {
+    if (!venueApEnhancedKeyData) return
+
+    formRef?.current?.setFieldsValue({
+      tlsEnhancedKeyEnabled: venueApEnhancedKeyData.tlsEnhancedKeyEnabled
+    })
+  }, [venueApEnhancedKeyData])
+
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
       if(triggerDoSProtection){
@@ -158,6 +177,10 @@ export function SecurityTab () {
         }
         await updateVenueRogueAp({ params, payload: rogueApPayload })
         setTriggerRogueAPDetection(false)
+      }
+
+      if(triggerTlsEnhancedKey){
+        handleUpdateApEnhancedKey(data?.tlsEnhancedKeyEnabled)
       }
 
       setEditContextData({
@@ -187,10 +210,43 @@ export function SecurityTab () {
     setRoguePolicyIdValue(id)
   }
 
+  const setTlsEnhancedKey = (checked: boolean) => {
+    formRef.current?.setFieldValue('tlsEnhancedKeyEnabled', checked)
+    setTriggerTlsEnhancedKey(true)
+    setTlsEnhancedKeyEnabled(checked)
+  }
+
+  const handleUpdateApEnhancedKey = async (enabled: boolean | undefined) => {
+
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'TLS Key Boost' }),
+      content:
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage:
+          `Boosting TLS key will prompt a reboot of all AP devices within
+          this venue. Are you sure you want to continue?` }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          const tlsEnhancedKeyEnabledPayload = {
+            tlsEnhancedKeyEnabled: enabled
+          }
+          await updateVenueApEnhancedKey({ params, payload: tlsEnhancedKeyEnabledPayload }).unwrap()
+          setTriggerTlsEnhancedKey(false)
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+      }
+    })
+  }
+
   return (
     <Loader states={[{
       isLoading: false,
-      isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp
+      // eslint-disable-next-line max-len
+      isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp || isUpdatingVenueApEnhancedKey
     }]}>
       <StepsFormLegacy
         formRef={formRef}
@@ -339,6 +395,35 @@ export function SecurityTab () {
                 policyId={roguePolicyIdValue} /> }
             </Form.Item>
           </FieldsetItem>
+          { !isTemplate && supportTlsKeyEnhance && <Space align='start'>
+            <StepsFormLegacy.FieldLabel
+              width='max-content'
+              style={{ height: '32px', display: 'flex', alignItems: 'center', paddingLeft: '8px' }}
+            >
+              <span>{$t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' })}</span>
+              <Tooltip.Question
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'Boosting TLS can enhance the TLS connection strength between APs and R1. Note that toggling the switch will prompt a reboot of all AP devices within this venue.' })}
+                placement='bottom'
+              />
+              <div style={{ margin: '2px' }}></div>
+              <Form.Item
+                valuePropName='checked'
+                initialValue={tlsEnhancedKeyEnabled}
+                name='tlsEnhancedKeyEnabled'
+                children={
+                  <Switch
+                    data-testid='tls-enhanced-key'
+                    checked={tlsEnhancedKeyEnabled}
+                    onClick={(checked) => {
+                      setTlsEnhancedKey(checked)
+                    }}
+                    style={{ marginLeft: '20px', marginTop: '16px' }}
+                  />
+                }
+              />
+            </StepsFormLegacy.FieldLabel>
+          </Space> }
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </Loader>

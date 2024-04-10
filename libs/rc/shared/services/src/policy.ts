@@ -73,7 +73,9 @@ import {
   CertificateAuthority,
   Certificate,
   downloadFile,
-  CertificateTemplateMutationResult
+  CertificateTemplateMutationResult,
+  downloadCertExtension,
+  CertificateAcceptType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -2188,7 +2190,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'DELETE_TEMPLATE',
             'ADD_TEMPLATE',
-            'UPDATE_TEMPLATE'
+            'UPDATE_TEMPLATE',
+            'DELETE_CA'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'CertificateTemplate', id: 'LIST' }
@@ -2375,10 +2378,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthority.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2390,10 +2394,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthorityChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2416,7 +2421,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UPDATE_CERT',
-            'GENERATE_CERT'
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Certificate', id: 'LIST' }
@@ -2481,10 +2488,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2496,10 +2504,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }

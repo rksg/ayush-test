@@ -59,6 +59,7 @@ export interface Network extends BaseNetwork{
   isOweMaster?: boolean
   owePairNetworkId?: string,
   incompatible?: number
+  certificateTemplateId?: string
 }
 
 export interface WifiNetwork extends Network{
@@ -154,6 +155,8 @@ export interface NetworkSaveData {
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
   hotspot20Settings?: NetworkHotspot20Settings
+  useCertificateTemplate?: boolean
+  certificateTemplateId?: string
 }
 
 export enum MaxRateEnum {

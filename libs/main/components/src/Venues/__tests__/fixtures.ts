@@ -85,7 +85,7 @@ export const venueApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -633,7 +633,7 @@ export const venueNetworkApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -661,7 +661,7 @@ export const venuesApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -937,6 +937,10 @@ export const venueRogueAp = {
   enabled: true,
   reportThreshold: 0,
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueApTlsEnhancedKey = {
+  tlsEnhancedKeyEnabled: true
 }
 
 export const venueRoguePolicy = [
