@@ -70,6 +70,7 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
+  ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
@@ -1435,6 +1436,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApEnhancedKey: build.query<ApEnhancedKey, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApEnhancedKey, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApEnhancedKey: build.mutation<ApEnhancedKey, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueApEnhancedKey, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     bulkUpdateUnitProfile: build.mutation<PropertyUnit, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -1597,6 +1615,8 @@ export const {
   useBulkUpdateUnitProfileMutation,
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
+  useGetVenueApEnhancedKeyQuery,
+  useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
   useUpdateVenueAntennaTypeMutation
