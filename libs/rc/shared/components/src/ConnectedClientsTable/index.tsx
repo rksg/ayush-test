@@ -163,11 +163,8 @@ export const ConnectedClientsTable = (props: {
   })
 
   useEffect(() => {
-    if (tableQuery.data?.data && setConnectedClientCount) {
-      setConnectedClientCount(tableQuery.data?.totalCount)
-    }
     // Remove selection when UE is disconnected.
-    const connectedClientList = tableQuery.data?.data
+    const connectedClientList = lowerCaseMacConvertedTableData
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -176,12 +173,15 @@ export const ConnectedClientsTable = (props: {
       })
     }
     else {
+      if (setConnectedClientCount) {
+        setConnectedClientCount(tableQuery.data?.totalCount ?? 0)
+      }
       const clonedSelection = _.cloneDeep(tableSelected)
       const newSelectRows = clonedSelection.selectRows.filter((row) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === row.clientMac.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === row.clientMac)
       })
       const newSelectRowkeys = clonedSelection.selectedRowKeys.filter((key) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === key.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === key)
       })
       setTableSelected({
         ...tableSelected,
