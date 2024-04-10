@@ -30,7 +30,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
-  AccessControlProfile,
+  AccessControlProfile, AccessControlProfileTemplate,
   AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
@@ -74,7 +74,17 @@ const QUERY_DEFAULT_PAYLOAD = {
   searchString: '',
   fields: [
     'id',
-    'name'
+    'name',
+    'l2AclPolicyId',
+    'l2AclPolicyName',
+    'l3AclPolicyId',
+    'l3AclPolicyName',
+    'devicePolicyId',
+    'devicePolicyName',
+    'applicationPolicyId',
+    'applicationPolicyName',
+    'clientRateUpLinkLimit',
+    'clientRateDownLinkLimit'
   ],
   page: 1,
   pageSize: 10000,
@@ -311,8 +321,27 @@ function getAccessControlProfile <
   if (!accessControlProfile) return transformDisplayText()
   let name
   const policy = accessControlProfile[policyKey]
-  if (policy && policy.enabled && policies) {
+  if (policy?.enabled && policies) {
     name = policies.find(item => item.id === policy.id)?.name
+  }
+  return transformDisplayText(name)
+}
+
+function getAccessControlProfileTemplate <
+  // eslint-disable-next-line max-len
+  Key extends keyof Omit<AccessControlProfileTemplate, 'name' | 'id' | 'clientRateUpLinkLimit' | 'clientRateDownLinkLimit'>,
+  Policies extends Array<{ id: string, name: string }>
+> (
+  policies: Policies | undefined,
+  accessControlProfile: AccessControlProfileTemplate | undefined,
+  policyKey: Key
+) {
+  if (!accessControlProfile) return transformDisplayText()
+  let name
+  const policy = accessControlProfile[policyKey] as string
+  const nameKey = policyKey.replace('Id', 'Name') as keyof AccessControlProfileTemplate
+  if (policy) {
+    name = accessControlProfile[nameKey] as string
   }
   return transformDisplayText(name)
 }
@@ -334,8 +363,25 @@ function GetLinkLimitByAccessControlPorfile (props: {
   return <div>{limit}</div>
 }
 
+function GetLinkLimitByAccessControlProfileTemplate (props: {
+  accessControlProfile: AccessControlProfileTemplate | undefined,
+  type: string
+}) {
+  const { $t } = useIntl()
+  const { accessControlProfile, type } = props
+
+  let limit = $t({ defaultMessage: 'Unlimited' })
+  // eslint-disable-next-line max-len
+  if (accessControlProfile && accessControlProfile[type as keyof AccessControlProfileTemplate] !== 0) {
+    limit = $t({ defaultMessage: '{rateLimiting} Mbps' }, {
+      rateLimiting: accessControlProfile[type as keyof AccessControlProfileTemplate]
+    })
+  }
+  return <div>{limit}</div>
+}
+
 export type SelectedAccessControlProfileType = {
-  selectedAccessControlProfile: AccessControlProfile | undefined
+  selectedAccessControlProfile: AccessControlProfile | AccessControlProfileTemplate | undefined
 }
 
 export function SelectAccessProfileProfile (props: {
@@ -483,25 +529,9 @@ export function SelectAccessProfileProfile (props: {
 
     <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
-      <span>{(!state.selectedAccessControlProfile ||
-        state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
-      {(state.selectedAccessControlProfile &&
-          state.selectedAccessControlProfile.rateLimiting?.enabled) &&
-          <div>
-            <UI.RateLimitBlock>
-              <label>{$t({ defaultMessage: 'Up:' })}</label>
-              <GetLinkLimitByAccessControlPorfile
-                accessControlProfile={state.selectedAccessControlProfile}
-                type={'uplinkLimit'} />
-            </UI.RateLimitBlock>
-            <UI.RateLimitBlock>
-              <label>{$t({ defaultMessage: 'Down:' })}</label>
-              <GetLinkLimitByAccessControlPorfile
-                accessControlProfile={state.selectedAccessControlProfile}
-                type={'downlinkLimit'} />
-            </UI.RateLimitBlock>
-          </div>
-      }
+      <GetClientRateLimitFromNwInstance
+        selectedAccessControlProfile={state.selectedAccessControlProfile}
+      />
     </UI.FieldLabel>
   </>)
 }
@@ -518,10 +548,10 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedLayer2: getAccessControlProfile(
+        selectedLayer2: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'l2AclPolicy'
+          'l2AclPolicyId'
         )
       }
     },
@@ -559,10 +589,10 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   {
     selectFromResult ({ data }) {
       return {
-        selectedLayer3: getAccessControlProfile(
+        selectedLayer3: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'l3AclPolicy'
+          'l3AclPolicyId'
         )
       }
     },
@@ -599,10 +629,10 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedDevicePolicy: getAccessControlProfile(
+        selectedDevicePolicy: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'devicePolicy'
+          'devicePolicyId'
         )
       }
     },
@@ -639,10 +669,10 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedApplicationPolicy: getAccessControlProfile(
+        selectedApplicationPolicy: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'applicationPolicy'
+          'applicationPolicyId'
         )
       }
     },
@@ -665,6 +695,64 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
   })
 
   return isTemplate ? useAppPolicyTemplateList : useAppPolicyList
+}
+
+const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileType) => {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
+  const { selectedAccessControlProfile } = props
+
+  if (isTemplate) {
+    const accessControlProfile = selectedAccessControlProfile as AccessControlProfileTemplate
+    return <>
+      <span>{(!selectedAccessControlProfile ||
+        // eslint-disable-next-line max-len
+        !(accessControlProfile.clientRateUpLinkLimit && accessControlProfile.clientRateDownLinkLimit)) && '--'}</span>
+      {(selectedAccessControlProfile &&
+        // eslint-disable-next-line max-len
+        (accessControlProfile.clientRateUpLinkLimit || accessControlProfile.clientRateDownLinkLimit)) ?
+        <div>
+          <UI.RateLimitBlock>
+            <label>{$t({ defaultMessage: 'Up:' })}</label>
+            <GetLinkLimitByAccessControlProfileTemplate
+              accessControlProfile={selectedAccessControlProfile}
+              type={'clientRateUpLinkLimit'} />
+          </UI.RateLimitBlock>
+          <UI.RateLimitBlock>
+            <label>{$t({ defaultMessage: 'Down:' })}</label>
+            <GetLinkLimitByAccessControlProfileTemplate
+              accessControlProfile={selectedAccessControlProfile}
+              type={'clientRateDownLinkLimit'} />
+          </UI.RateLimitBlock>
+        </div> : null
+      }
+    </>
+  }
+
+  const accessControlProfile = selectedAccessControlProfile as AccessControlProfile
+
+  return <>
+    <span>{!(!(!selectedAccessControlProfile
+      || !accessControlProfile.rateLimiting
+      || accessControlProfile.rateLimiting?.enabled !== false)) && '--'}</span>
+    {(selectedAccessControlProfile &&
+        accessControlProfile.rateLimiting?.enabled) &&
+      <div>
+        <UI.RateLimitBlock>
+          <label>{$t({ defaultMessage: 'Up:' })}</label>
+          <GetLinkLimitByAccessControlPorfile
+            accessControlProfile={selectedAccessControlProfile}
+            type={'uplinkLimit'} />
+        </UI.RateLimitBlock>
+        <UI.RateLimitBlock>
+          <label>{$t({ defaultMessage: 'Down:' })}</label>
+          <GetLinkLimitByAccessControlPorfile
+            accessControlProfile={selectedAccessControlProfile}
+            type={'downlinkLimit'} />
+        </UI.RateLimitBlock>
+      </div>
+    }
+  </>
 }
 
 const GetAclPolicyListFromNwInstance = () => {
