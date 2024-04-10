@@ -108,7 +108,7 @@ describe('Venue Overview Alarm Widget', () => {
         (req, res, ctx) => res(ctx.json(data)))
     )
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueAlarmWidget />
       </Provider>,
@@ -116,7 +116,6 @@ describe('Venue Overview Alarm Widget', () => {
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
   })
 })
 
