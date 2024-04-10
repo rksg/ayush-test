@@ -938,6 +938,10 @@ export const venueRogueAp = {
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
 }
 
+export const venueApTlsEnhancedKey = {
+  tlsEnhancedKeyEnabled: true
+}
+
 export const venueRoguePolicy = [
   {
     venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894', name: 'My-Venue' }],
