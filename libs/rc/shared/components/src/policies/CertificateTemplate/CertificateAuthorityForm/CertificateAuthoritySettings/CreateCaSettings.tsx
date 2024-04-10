@@ -99,7 +99,8 @@ export default function CreateCaSettings ({ rootCaMode = true }) {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 32 }
+                { max: 32 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
               ]}
               children={<Input />}
             />

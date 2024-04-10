@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls }      from '@acx-ui/rc/utils'
-import { Path, To }                                              from '@acx-ui/react-router-dom'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                                                         from '@acx-ui/react-router-dom'
+import { Provider }                                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                            from '@acx-ui/test-utils'
 
 import { mockNetworkResult, mockWifiCallingDetail, mockWifiCallingTableResult } from '../__tests__/fixtures'
 import WifiCallingFormContext                                                   from '../WifiCallingFormContext'
@@ -114,7 +114,11 @@ describe('WifiCallingConfigureForm', () => {
     mockServer.use(
       rest.post(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
+      rest.post(ServicesConfigTemplateUrlsInfo.updateWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
       rest.get(WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.put(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => {
@@ -122,11 +126,21 @@ describe('WifiCallingConfigureForm', () => {
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
+      rest.put(ServicesConfigTemplateUrlsInfo.updateWifiCalling.url,
+        (req, res, ctx) => {
+          mockedUpdateService()
+          return res(ctx.json(wifiCallingServiceResponse))
+        }
+      ),
       rest.get(WifiCallingUrls.getWifiCalling.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
     )
   })
