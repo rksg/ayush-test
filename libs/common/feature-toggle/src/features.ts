@@ -6,6 +6,7 @@ export enum Features {
   ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
+  ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   ALLOW_INDOOR_CHANNEL_TOGGLE = 'wifi-consumer-allow-indoor-channel-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
   AP_AFC_TOGGLE = 'ap-afc-toggle',
