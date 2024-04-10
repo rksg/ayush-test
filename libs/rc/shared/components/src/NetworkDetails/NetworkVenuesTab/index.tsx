@@ -30,7 +30,8 @@ import {
   useGetVenueCityListQuery,
   useAddNetworkVenueTemplatesMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useScheduleSlotIndexMap
+  useScheduleSlotIndexMap,
+  useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -43,7 +44,8 @@ import {
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  KeyValue, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }  from '@acx-ui/user'
@@ -155,6 +157,25 @@ export function NetworkVenuesTab () {
   const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
@@ -433,7 +454,12 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformVLAN(
+          getCurrentVenue(row),
+          networkQuery.data as NetworkSaveData,
+          vlanPoolingNameMap,
+          (e) => handleClickApGroups(row, e),
+          systemNetwork)
       }
     },
     {
