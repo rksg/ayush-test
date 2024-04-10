@@ -4,9 +4,7 @@ import { Form, Radio, RadioChangeEvent, Space } from 'antd'
 import { useForm }                              from 'antd/lib/form/Form'
 import { useIntl }                              from 'react-intl'
 
-import {
-  Modal, Subtitle
-} from '@acx-ui/components'
+import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
@@ -14,6 +12,8 @@ import {
   FirmwareVersion,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
+
+import { DowngradeTag } from '../styledComponents'
 
 import * as UI from './styledComponents'
 
@@ -147,7 +147,11 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
               <Space direction={'vertical'}>
                 {firmware10AvailableVersions?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    {getSwitchVersionLabel(intl, v)}</Radio>)}
+                    <>
+                      {getSwitchVersionLabel(intl, v)}
+                      {v.isDowngradeVersion && <DowngradeTag>Downgrade</DowngradeTag>}
+                    </>
+                  </Radio>)}
                 <Radio value='' key='0'>
                   {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -166,7 +170,12 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
                 <Space direction={'vertical'}>
                   {firmware90AvailableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>

@@ -2,11 +2,12 @@
 import { useEffect, useState } from 'react'
 
 
-import { Form, Radio, RadioChangeEvent, Space } from 'antd'
-import _                                        from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space, Tag } from 'antd'
+import _                                             from 'lodash'
+import { useIntl }                                   from 'react-intl'
 
 import {
+  Button,
   Subtitle, useStepFormContext
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
@@ -14,7 +15,8 @@ import {
   FirmwareVersion
 } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import { DowngradeTag } from '../../../styledComponents'
+import * as UI          from '../../styledComponents'
 
 export interface UpdateNowStepProps {
   visible: boolean,
@@ -106,7 +108,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               {firmware10AvailableVersions?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  {getSwitchVersionLabel(intl, v)}</Radio>)}
+                  <span style={{ lineHeight: '22px' }}>
+                    {getSwitchVersionLabel(intl, v)}
+                    {v.isDowngradeVersion && !v.inUse &&
+                      <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                  </span>
+                </Radio>)}
               <Radio value='' key='0'>
                 {$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>
@@ -127,7 +134,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 <Space direction={'vertical'}>
                   {firmware90AvailableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>

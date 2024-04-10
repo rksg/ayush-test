@@ -38,9 +38,6 @@ export function useSwitchFirmwareUtils () {
     if(version.inUse){
       // eslint-disable-next-line max-len
       displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
-    } else if (version.isDowngradeVersion) {
-      displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Downgrade' })}`
-      // displayVersion =`${versionName} (${versionType} - ${intl.$t({ defaultMessage: 'Downgrade'})})`
     }
     return displayVersion
   }
@@ -135,7 +132,7 @@ export function useSwitchFirmwareUtils () {
         getParseVersion(v.id) === getParseVersion(rodanVersion)) {
         v = { ...v, inUse: true }
       } else if (isDowngradeVersion(v.id, version, rodanVersion)) {
-        v = {...v, isDowngradeVersion: true}
+        v = { ...v, isDowngradeVersion: true }
       }
       inUseVersions.push(v)
     })
@@ -143,7 +140,7 @@ export function useSwitchFirmwareUtils () {
     return inUseVersions
   }
 
-  function isDowngradeVersion(inUseVersion: string, version: string, rodanVersion: string) {
+  function isDowngradeVersion (inUseVersion: string, version: string, rodanVersion: string) {
     if (inUseVersion.includes('090')) {
       return compareSwitchVersion(version, inUseVersion) > 0
     } else if (inUseVersion.includes('100')) {
@@ -160,6 +157,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp,
-    checkCurrentVersions
+    checkCurrentVersions,
+    isDowngradeVersion
   }
 }

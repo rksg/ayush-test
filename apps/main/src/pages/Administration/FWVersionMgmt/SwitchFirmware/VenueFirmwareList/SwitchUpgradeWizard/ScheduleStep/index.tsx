@@ -16,7 +16,8 @@ import {
   switchSchedule
 } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import { DowngradeTag } from '../../../styledComponents'
+import * as UI          from '../../styledComponents'
 
 import { PreDownload } from './PreDownload'
 
@@ -185,7 +186,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 { // eslint-disable-next-line max-len
                   getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                 <Radio value='' key='0'>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -210,7 +216,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   { // eslint-disable-next-line max-len
                     getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        {getSwitchVersionLabel(intl, v)}</Radio>)}
+                        <span style={{ lineHeight: '22px' }}>
+                          {getSwitchVersionLabel(intl, v)}
+                          {v.isDowngradeVersion && !v.inUse &&
+                            <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                        </span>
+                      </Radio>)}
                   <Radio value='' key='0'>
                     {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>

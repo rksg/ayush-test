@@ -19,7 +19,8 @@ import {
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
-import { PreDownload } from '../../PreDownload'
+import { PreDownload }  from '../../PreDownload'
+import { DowngradeTag } from '../styledComponents'
 
 import * as UI from './styledComponents'
 
@@ -263,7 +264,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                 <Space direction={'vertical'}>
                   {availableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                 </Space>
               </Radio.Group>
             </>}
@@ -282,7 +288,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   { // eslint-disable-next-line max-len
                     getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        {getSwitchVersionLabel(intl, v)}</Radio>)}
+                        <span style={{ lineHeight: '22px' }}>
+                          {getSwitchVersionLabel(intl, v)}
+                          {v.isDowngradeVersion && !v.inUse &&
+                            <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                        </span>
+                      </Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
@@ -302,7 +313,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                     { // eslint-disable-next-line max-len
                       getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                         <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                          {getSwitchVersionLabel(intl, v)}</Radio>)}
+                          <span style={{ lineHeight: '22px' }}>
+                            {getSwitchVersionLabel(intl, v)}
+                            {v.isDowngradeVersion && !v.inUse &&
+                              <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                          </span>
+                        </Radio>)}
                     <Radio value='' key='0'>
                       {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                     </Radio>
