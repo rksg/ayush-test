@@ -77,6 +77,11 @@ export const getCertificateDetails =
           },
           {
             type: RenderType.CONTENT,
+            title: $t({ defaultMessage: 'Organization Unit' }),
+            content: certificateData?.organizationUnit
+          },
+          {
+            type: RenderType.CONTENT,
             title: $t({ defaultMessage: 'Locality' }),
             content: certificateData?.locality
           },
@@ -94,6 +99,11 @@ export const getCertificateDetails =
             type: RenderType.CONTENT,
             title: $t({ defaultMessage: 'Serial Number' }),
             content: certificateData?.serialNumber
+          },
+          {
+            type: RenderType.CONTENT,
+            title: $t({ defaultMessage: 'Key Length' }),
+            content: certificateData?.keyLength
           },
           {
             type: RenderType.CONTENT,
