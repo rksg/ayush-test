@@ -190,7 +190,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
       serialNumber
     }
   }, {
-    skip: !serialNumber || !clusterInfo
+    skip: !serialNumber || !clusterInfo?.venueId || !clusterInfo?.clusterId
   })
 
   const {
@@ -204,7 +204,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
       serialNumber
     }
   }, {
-    skip: !serialNumber || !clusterInfo
+    skip: !serialNumber || !clusterInfo?.venueId || !clusterInfo?.clusterId
   })
 
   const isCluster = !!clusterInfo?.edgeList &&
