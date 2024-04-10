@@ -398,8 +398,7 @@ export function ApForm () {
       } else if (supportApMgmtVlan) {
         const apMgmtVlan = (await getApMgmtVlan(
           { params: { serialNumber } })).data
-        setChangeMgmtVlan(apMgmtVlan?.useVenueSettings === true &&
-          apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId ? true : false)
+        setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId ? true : false)
       } else {
         const currentMgmtVlan = (await getCurrentApMgmtVlan(
           { params, payload: apViewModelPayload })).data
