@@ -3,7 +3,7 @@ import { MessageDescriptor, defineMessage, useIntl }      from 'react-intl'
 
 import { Button }                                                                                                                                                                                          from '@acx-ui/components'
 import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                                                      from '@acx-ui/rc/utils'
+import { Certificate, CertificateAcceptType, CertificateAuthority, CertificateCategoryType }                                                                                                               from '@acx-ui/rc/utils'
 
 
 import { deleteDescription }                                         from '../contentsMap'
@@ -18,61 +18,45 @@ interface DownloadDrawerProps {
 }
 
 export enum DownloadType {
-  AUTHORITY,
-  AUTHORITY_CHAINS,
-  CERTIFICATE,
-  CERTIFICATE_CHAINS,
+  PUBLIC_KEY,
+  CHAINS,
   PRIVATE_KEY,
   P12
-}
-
-export enum AcceptType {
-  PEM = 'application/x-pem-file',
-  DER = 'application/x-x509-ca-cert',
-  PKCS7 = 'application/x-pkcs7-certificates',
-  PKCS8 = 'application/pkcs8',
-  PKCS12 = 'application/x-pkcs12'
 }
 
 export default function DownloadSection (props: DownloadDrawerProps) {
   const { type, data, setRawInfoDrawer, setUploadDrawerOpen } = props
   const { $t } = useIntl()
-  const [downloadCertificateAuthority] = useLazyDownloadCertificateAuthorityQuery()
-  const [downloadCertificateAuthorityChains] = useLazyDownloadCertificateAuthorityChainsQuery()
+  const [downloadCA] = useLazyDownloadCertificateAuthorityQuery()
+  const [downloadCAChains] = useLazyDownloadCertificateAuthorityChainsQuery()
   const [downloadCertificate] = useLazyDownloadCertificateQuery()
   const [downloadCertificateChains] = useLazyDownloadCertificateChainsQuery()
   const [deletePrivateKeys] = useDeleteCaPrivateKeyMutation()
   const { Text } = Typography
 
-  const downloadButtonLabel: Record<AcceptType, MessageDescriptor> = {
-    [AcceptType.PEM]: defineMessage({
+  const downloadButtonLabel: Record<CertificateAcceptType, MessageDescriptor> = {
+    [CertificateAcceptType.PEM]: defineMessage({
       defaultMessage: 'Download PEM'
     }),
-    [AcceptType.DER]: defineMessage({
+    [CertificateAcceptType.DER]: defineMessage({
       defaultMessage: 'Download DER'
     }),
-    [AcceptType.PKCS7]: defineMessage({
+    [CertificateAcceptType.PKCS7]: defineMessage({
       defaultMessage: 'Download PKCS7'
     }),
-    [AcceptType.PKCS8]: defineMessage({
+    [CertificateAcceptType.PKCS8]: defineMessage({
       defaultMessage: 'Download'
     }),
-    [AcceptType.PKCS12]: defineMessage({
+    [CertificateAcceptType.PKCS12]: defineMessage({
       defaultMessage: 'Download'
     })
   }
 
   const titleLabel: Record<DownloadType, MessageDescriptor> = {
-    [DownloadType.AUTHORITY]: defineMessage({
+    [DownloadType.PUBLIC_KEY]: defineMessage({
       defaultMessage: 'Public Key'
     }),
-    [DownloadType.AUTHORITY_CHAINS]: defineMessage({
-      defaultMessage: 'Chain'
-    }),
-    [DownloadType.CERTIFICATE]: defineMessage({
-      defaultMessage: 'Public Key'
-    }),
-    [DownloadType.CERTIFICATE_CHAINS]: defineMessage({
+    [DownloadType.CHAINS]: defineMessage({
       defaultMessage: 'Chain'
     }),
     [DownloadType.PRIVATE_KEY]: defineMessage({
@@ -85,39 +69,28 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   const handleDownloadClick = (
     downloadType: DownloadType,
-    format: AcceptType
+    format: CertificateAcceptType
   ) => {
     const customHeaders = { Accept: format }
+    const isCertificate = CertificateCategoryType.CERTIFICATE === type
+    const downloadAction = isCertificate ? downloadCertificate : downloadCA
+    const downloadChainsAction = isCertificate ? downloadCertificateChains : downloadCAChains
+    const downloadTypes = [DownloadType.PUBLIC_KEY, DownloadType.PRIVATE_KEY, DownloadType.P12]
+    const params = isCertificate ? {
+      certificateId: data?.id,
+      templateId: (data as Certificate).certificateTemplateId
+    } : {
+      caId: data?.id
+    }
 
-    switch (downloadType) {
-      case DownloadType.AUTHORITY:
-      case DownloadType.PRIVATE_KEY:
-      case DownloadType.P12:
-        downloadCertificateAuthority({ params: { caId: data?.id }, customHeaders })
-        break
-      case DownloadType.AUTHORITY_CHAINS:
-        downloadCertificateAuthorityChains({ params: { caId: data?.id }, customHeaders })
-        break
-      case DownloadType.CERTIFICATE:
-        downloadCertificate({
-          params: {
-            certificateId: data?.id,
-            templateId: (data as Certificate).certificateTemplateId
-          }, customHeaders
-        })
-        break
-      case DownloadType.CERTIFICATE_CHAINS:
-        downloadCertificateChains({
-          params: {
-            certificateId: data?.id,
-            templateId: (data as Certificate).certificateTemplateId
-          }, customHeaders
-        })
-        break
+    if (downloadTypes.includes(downloadType)) {
+      downloadAction({ params, customHeaders })
+    } else if (downloadType === DownloadType.CHAINS) {
+      downloadChainsAction({ params, customHeaders })
     }
   }
 
-  const renderDownloadButton = (type: AcceptType, onClick: () => void) => (
+  const renderDownloadButton = (type: CertificateAcceptType, onClick: () => void) => (
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
         <Button type='default' onClick={onClick}>
@@ -141,7 +114,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   const renderSection = (
     downloadType: DownloadType,
-    acceptTypes: AcceptType[],
+    acceptTypes: CertificateAcceptType[],
     detailData: string | null | undefined,
     shouldDisplayDetailData = true
   ) => (
@@ -161,6 +134,41 @@ export default function DownloadSection (props: DownloadDrawerProps) {
         renderDownloadButton(acceptType, () => handleDownloadClick(downloadType, acceptType))
       )}
       {!detailData && <Description>{$t({ defaultMessage: 'N/A' })}</Description>}
+    </DescriptionRow>
+  )
+
+  const renderPrivateKeySection = (
+    downloadType: DownloadType) => (
+    <DescriptionRow>
+      <Row>
+        <Col span={12}>
+          <Description>{$t(titleLabel[downloadType])}</Description>
+        </Col>
+        <Col span={12}>
+          {data?.privateKeyBase64 &&
+            <Row justify='end'>
+              {renderViewButton($t(titleLabel[downloadType]),
+                data?.privateKeyBase64)}
+              {type === CertificateCategoryType.CERTIFICATE_AUTHORITY &&
+                <><Divider type='vertical' />
+                  <Button type='link'
+                    size='small'
+                    onClick={() => { showDeleteModal() }}
+                  >
+                    {$t({ defaultMessage: 'Delete' })}
+                  </Button></>}
+            </Row>
+          }
+        </Col>
+      </Row>
+      {data?.privateKeyBase64 && renderDownloadButton(CertificateAcceptType.PKCS8,
+        () => handleDownloadClick(downloadType, CertificateAcceptType.PKCS8))}
+      {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.privateKeyBase64 &&
+        <ButtonWrapper>
+          <Button onClick={() => {
+            setUploadDrawerOpen(true)
+          }}>{$t({ defaultMessage: 'Upload' })}</Button>
+        </ButtonWrapper>}
     </DescriptionRow>
   )
 
@@ -203,55 +211,13 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   return (
     <>
-      {type === CertificateCategoryType.CERTIFICATE_AUTHORITY &&
-        <>
-          {renderSection(DownloadType.AUTHORITY,
-            [AcceptType.PEM, AcceptType.DER], data?.publicKeyBase64)}
-          {renderSection(DownloadType.AUTHORITY_CHAINS,
-            [AcceptType.PEM, AcceptType.PKCS7], data?.chain)}
-          {
-            <DescriptionRow>
-              <Row>
-                <Col span={12}>
-                  <Description>{$t(titleLabel[DownloadType.PRIVATE_KEY])}</Description>
-                </Col>
-                <Col span={12}>
-                  {data?.privateKeyBase64 &&
-                    <Row justify='end'>
-                      {renderViewButton($t(titleLabel[DownloadType.PRIVATE_KEY]),
-                        data?.privateKeyBase64)}
-                      <Divider type='vertical' />
-                      <Button type='link'
-                        size='small'
-                        onClick={() => { showDeleteModal() }}
-                      >
-                        {$t({ defaultMessage: 'Delete' })}
-                      </Button>
-                    </Row>
-                  }
-                </Col>
-              </Row>
-              {data?.privateKeyBase64 && renderDownloadButton(AcceptType.PKCS8,
-                () => handleDownloadClick(DownloadType.PRIVATE_KEY, AcceptType.PKCS8))}
-              {!data?.privateKeyBase64 &&
-                <ButtonWrapper>
-                  <Button onClick={() => {
-                    setUploadDrawerOpen(true)
-                  }}>{$t({ defaultMessage: 'Upload' })}</Button>
-                </ButtonWrapper>}
-            </DescriptionRow>
-          }
-          {renderSection(DownloadType.P12, [AcceptType.PKCS12], data?.privateKeyBase64, false)}
-        </>
-      }
-      {type === CertificateCategoryType.CERTIFICATE &&
-        <>
-          {renderSection(DownloadType.CERTIFICATE,
-            [AcceptType.PEM, AcceptType.DER], data?.publicKeyBase64)}
-          {renderSection(DownloadType.CERTIFICATE_CHAINS,
-            [AcceptType.PEM, AcceptType.PKCS7], data?.chain)}
-        </>
-      }
+      {renderSection(DownloadType.PUBLIC_KEY,
+        [CertificateAcceptType.PEM, CertificateAcceptType.DER], data?.publicKeyBase64)}
+      {renderSection(DownloadType.CHAINS,
+        [CertificateAcceptType.PEM, CertificateAcceptType.PKCS7], data?.chain)}
+      {renderPrivateKeySection(DownloadType.PRIVATE_KEY)}
+      {renderSection(DownloadType.P12, [CertificateAcceptType.PKCS12],
+        data?.privateKeyBase64, false)}
     </>
   )
 }

@@ -205,7 +205,9 @@ describe('NetworkForm', () => {
         res(ctx.json([]))
       ),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
-        (_, res, ctx) => res(ctx.json(externalProviders)))
+        (_, res, ctx) => res(ctx.json(externalProviders))),
+      rest.get('https://maps.googleapis.com/maps/api/timezone/json',
+        (_, res, ctx) => res(ctx.json({})))
 
     )
   })

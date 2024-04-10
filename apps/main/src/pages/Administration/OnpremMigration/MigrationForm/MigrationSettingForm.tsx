@@ -19,6 +19,7 @@ import {
   GoogleMapMarker,
   StepsFormLegacy
 } from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
 import {
@@ -27,8 +28,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useLazyVenuesListQuery,
-  useGetVenueQuery,
-  useLazyGetTimezoneQuery
+  useGetVenueQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -83,17 +83,16 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const addressParser = async (place: google.maps.places.PlaceResult, getTimezone: any) => {
+export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
   const lat = place.geometry?.location?.lat()
   const lng = place.geometry?.location?.lng()
   address.latitude = lat
   address.longitude = lng
 
-  const { data: timezone } = await getTimezone({
-    params: { lat: lat?.toString(), lng: lng?.toString() }
-  })
+  // eslint-disable-next-line max-len
+  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
+    .then(res => res.json())
   address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
 
@@ -157,7 +156,6 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
 
   const { tenantId, venueId } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
-  const [getTimezone] = useLazyGetTimezoneQuery()
 
   useEffect(() => {
     const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
@@ -193,7 +191,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   }
 
   const addressOnChange = async (place: google.maps.places.PlaceResult) => {
-    const { latlng, address } = await addressParser(place, getTimezone)
+    const { latlng, address } = await addressParser(place)
 
     form.setFieldValue(['address', 'addressLine'], place.formatted_address)
 
