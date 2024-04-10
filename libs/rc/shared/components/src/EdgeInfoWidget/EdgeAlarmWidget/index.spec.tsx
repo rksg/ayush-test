@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                              from '@acx-ui/rc/utils'
-import { Provider  }                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Provider  }                           from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { AlarmsDrawer }             from '../../AlarmsDrawer'
 import { alarmList, alarmListMeta } from '../__tests__/fixtures'
 
 import { EdgeAlarmWidget, getAlarmChartData } from '.'
-import { AlarmsDrawer } from '../../AlarmsDrawer'
 
 jest.mock('./EdgeOverviewDonutWidget', () => ({
   EdgeOverviewDonutWidget: (props: { onClick: () => void }) =>
