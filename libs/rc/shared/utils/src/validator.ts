@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { DefaultOptionType }                from 'antd/lib/select'
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import {
   isEqual,
@@ -11,7 +12,6 @@ import {
 
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
@@ -371,7 +371,7 @@ export function checkVlanMember (value: string) {
       const nums = item.split('-').map((x: string) => Number(x))
       return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
     }
-    return num > 0 && num < 4095
+    return Number(num) > 0 && Number(num) < 4095
   }).filter((x:boolean) => !x).length === 0
 
   if (isValid) {
@@ -942,33 +942,18 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   return Promise.resolve()
 }
 
-export function checkAclName (aclName: string, aclType: string) {
+export function checkAclName (aclName: string) {
   const { $t } = getIntl()
-  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
-    try {
-      const iName = parseInt(aclName, 10)
-      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
-        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
-      }
-      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
-        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
-      }
-      return Promise.resolve()
-    } catch (e) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-  } else {
-    if (!aclName.match(/^[a-zA-Z_].*/)) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-    if (aclName.match(/.*[\"]/)) {
-      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
-    }
-    if (aclName === 'test') {
-      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
-    }
-    return Promise.resolve()
+  if (!/^[a-zA-Z]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
   }
+  if (/["]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+  }
+  if (aclName.toLowerCase() === 'test') {
+    return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+  }
+  return Promise.resolve()
 }
 
 export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {
@@ -982,6 +967,16 @@ export function validateAclRuleSequence (sequence: number, currrentRecords: AclE
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.value === aclName)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
   } else {
