@@ -1,8 +1,18 @@
 import { createContext } from 'react'
 
-import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                                     from '@acx-ui/feature-toggle'
-import { useGetDnsServersQuery, useGetEdgeClusterListQuery, useGetEdgeLagListQuery, useGetEdgeLagsStatusListQuery, useGetEdgeListQuery, useGetEdgeQuery, useGetEdgesPortStatusQuery, useGetPortConfigQuery, useGetStaticRoutesQuery } from '@acx-ui/rc/services'
+import { Loader }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useGetDnsServersQuery,
+  useGetEdgeClusterListQuery,
+  useGetEdgeLagListQuery,
+  useGetEdgeLagsStatusListQuery,
+  useGetEdgeListQuery,
+  useGetEdgeQuery,
+  useGetEdgesPortStatusQuery,
+  useGetPortConfigQuery,
+  useGetStaticRoutesQuery
+} from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
   EdgeDnsServers,
@@ -175,10 +185,12 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     isFetching: isDnsServersDataFetching
   } = useGetDnsServersQuery({
     params: {
+      venueId: clusterInfo?.venueId,
+      edgeClusterId: clusterInfo?.clusterId,
       serialNumber
     }
   }, {
-    skip: !serialNumber
+    skip: !serialNumber || !clusterInfo
   })
 
   const {
@@ -187,10 +199,12 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     isFetching: isStaticRouteDataFetching
   }= useGetStaticRoutesQuery({
     params: {
+      venueId: clusterInfo?.venueId,
+      edgeClusterId: clusterInfo?.clusterId,
       serialNumber
     }
   }, {
-    skip: !serialNumber
+    skip: !serialNumber || !clusterInfo
   })
 
   const isCluster = !!clusterInfo?.edgeList &&
