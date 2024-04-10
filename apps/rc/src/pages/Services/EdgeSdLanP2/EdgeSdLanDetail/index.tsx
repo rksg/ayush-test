@@ -23,6 +23,7 @@ const EdgeSdLanDetail = () => {
       filters: { id: [params.serviceId] }
     } },
     {
+      pollingInterval: 5 * 60 * 1000,
       selectFromResult: ({ data, isLoading, isFetching, isUninitialized }) => ({
         edgeSdLanData: data?.data?.[0],
         isLoading: isUninitialized || isLoading,
@@ -43,14 +44,14 @@ const EdgeSdLanDetail = () => {
           {
             text: $t({ defaultMessage: 'SD-LAN' }),
             link: getServiceRoutePath({
-              type: ServiceType.EDGE_SD_LAN_P2,
+              type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.LIST
             })
           }
         ]}
         extra={filterByAccess([
           <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.EDGE_SD_LAN_P2,
+            type: ServiceType.EDGE_SD_LAN,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}>

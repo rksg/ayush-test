@@ -197,4 +197,17 @@ describe('RBAC API', () => {
     ) as { data: string }
     expect(data).toEqual(null)
   })
+
+  it('update account', async () => {
+    mockServer.use(
+      rest.put(`${rbacApiURL}/accounts/test-account`, (_req, res, ctx) => res(ctx.text('Updated')))
+    )
+    const { data } = await store.dispatch(
+      rbacApi.endpoints.updateAccount.initiate({
+        account: 'test-account',
+        support: true
+      })
+    ) as { data: string }
+    expect(data).toEqual('Updated')
+  })
 })

@@ -44,14 +44,15 @@ describe('Edge Cluster Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     store.dispatch(edgeApi.util.resetApiState())
+    mockedUsedNavigate.mockReset()
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeClusterList))
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -68,7 +69,7 @@ describe('Edge Cluster Table', () => {
     expect(rows.length).toBe(5)
 
     await userEvent.click(within(rows[0]).getByRole('button'))
-    const subRows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    const subRows = screen.getAllByRole('row', { name: /Smart Edge/i })
     expect(subRows.length).toBe(2)
 
     expect((await screen.findAllByText('Single Node')).length).toBe(1)
@@ -78,7 +79,7 @@ describe('Edge Cluster Table', () => {
     expect((await screen.findAllByText('Cluster Setup Required')).length).toBe(1)
   })
 
-  it.skip('should delete selected items successfully', async () => {
+  it('should delete selected items successfully', async () => {
     render(
       <Provider>
         <EdgeClusterTable />
@@ -88,11 +89,9 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row1 = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row1).getByRole('button'))
-    const subRow = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    const row2 = await screen.findByRole('row', { name: /Edge Cluster 5/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     expect(mockedDeleteFn).toBeCalled()
   })
 
@@ -106,9 +105,9 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row).getByRole('button'))
-    const subRow = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Reboot' }))
     expect(mockedRebootFn).toBeCalled()
   })
 
@@ -122,9 +121,9 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row).getByRole('button'))
-    const subRow = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     await userEvent.click(within(subRow).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toBeCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/${mockEdgeClusterList.data[0].edgeList[0].serialNumber}/edit/general-settings`,
       hash: '',
@@ -142,7 +141,7 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toBeCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/cluster/${mockEdgeClusterList.data[0].clusterId}/edit/cluster-details`,
       hash: '',
@@ -160,10 +159,44 @@ describe('Edge Cluster Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
     await userEvent.click(within(row).getByRole('button'))
-    const subRow = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
     const edgeNodeLink = (within(subRow).getByRole('link', { name: 'Smart Edge 1' }) as HTMLAnchorElement).href
     const venueLink = (within(subRow).getByRole('link', { name: 'Venue 1' }) as HTMLAnchorElement).href
     expect(edgeNodeLink).toContain(`/${params.tenantId}/t/devices/edge/${mockEdgeClusterList.data[0].edgeList[0].serialNumber}/details/overview`)
     expect(venueLink).toContain(`/${params.tenantId}/t/venues/${mockEdgeClusterList.data[0].edgeList[0].venueId}/venue-details/overview`)
+  })
+
+  it('should navigate to configuration wizard when clicking cluster', async () => {
+    render(
+      <Provider>
+        <EdgeClusterTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    const configWizardBtn = screen.getByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })
+    expect(configWizardBtn).not.toBeDisabled()
+    await userEvent.click(configWizardBtn)
+    expect(mockedUsedNavigate).toBeCalledWith({
+      pathname: `/${params.tenantId}/t/devices/edge/cluster/${mockEdgeClusterList.data[0].clusterId}/configure`,
+      hash: '',
+      search: ''
+    })
+  })
+  it('should grey out configure wizard while clicking node', async () => {
+    render(
+      <Provider>
+        <EdgeClusterTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
+    await userEvent.click(within(row).getByRole('button'))
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
+    await userEvent.click(within(subRow).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Run Cluster & SmartEdge configuration wizard' })).toBeNull()
   })
 })

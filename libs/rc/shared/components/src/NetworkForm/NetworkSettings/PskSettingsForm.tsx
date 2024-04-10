@@ -34,7 +34,7 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
-import AAAInstance                 from '../AAAInstance'
+import { AAAInstance }             from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'

@@ -27,8 +27,8 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { filterByAccess, SwitchScopes } from '@acx-ui/user'
+import { useDateFilter }                from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -281,6 +281,7 @@ function SwitchPageHeader () {
             }</Dropdown>,
             <Button
               type='primary'
+              scopeKey={[SwitchScopes.UPDATE]}
               onClick={() =>
                 navigate({
                   ...basePath,

@@ -41,8 +41,10 @@ import {
   redirectPreviousPage,
   LocationExtended,
   VenueMessages,
+  checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
-  convertInputToUppercase
+  convertInputToUppercase,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -115,6 +117,7 @@ export function SwitchForm () {
   const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const switchListPayload = {
     searchString: '',
@@ -176,9 +179,11 @@ export function SwitchForm () {
 
   useEffect(() => {
     if (!venuesList.isLoading) {
-      setVenueOption(venuesList?.data?.data?.map(item => ({
+      const venues = venuesList?.data?.data?.map(item => ({
         label: item.name, value: item.id
-      })) ?? [])
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
     }
   }, [venuesList])
 
@@ -254,14 +259,6 @@ export function SwitchForm () {
   }
 
   const handleEditSwitch = async (values: Switch) => {
-    if(readOnly){
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
-    }
-
     try {
       let payload = {
         ...values,
@@ -284,7 +281,7 @@ export function SwitchForm () {
       await updateSwitch({ params: { tenantId, switchId } , payload })
         .unwrap()
         .then(() => {
-          const updatedFields = checkUpdateFields(values)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
           const noChange = updatedFields.length === 0
           // TODO: should disable apply button while no changes
           const onlyChangeDescription
@@ -318,19 +315,6 @@ export function SwitchForm () {
     }
   }
 
-  const checkUpdateFields = function (values: Switch) {
-    const fields = Object.keys(values ?? {})
-    const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
-    const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
-
-    return Object.keys(originalValues ?? {}).reduce((result: string[], key) => {
-      if ((originalValues[key as keyof Switch]) !== currentValues[key as keyof Switch]) {
-        return [ ...result, key ]
-      }
-      return result
-    }, [])
-  }
-
   const setFirmwareType = function (value: string) {
     const isRodan = getSwitchModel(value)?.includes('8200')
     if (isRodan) {
@@ -344,7 +328,8 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupport8100 ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) :
+      new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -396,13 +381,31 @@ export function SwitchForm () {
         redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
       }
       buttonLabel={{
-        submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-          editMode ?
-            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-        cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+        submit: editMode ?
+          $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+        cancel: $t({ defaultMessage: 'Cancel' })
       }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsFormLegacy.StepForm
+        onFinishFailed={({ errorFields })=> {
+          const detailsFields = ['venueId', 'serialNumber', 'name', 'description']
+          const hasErrorFields = !!errorFields.length
+          const isSettingsTabActive = currentTab === 'settings'
+          const isDetailsFieldsError = errorFields.filter(field =>
+            detailsFields.includes(field.name[0] as string)
+          ).length > 0
+
+          if (deviceOnline && hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
+            setCurrentTab('settings')
+            showToast({
+              type: 'error',
+              content: readOnly
+                ? $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI)
+                : $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES)
+            })
+          }
+        }}
+      >
         <Loader states={[{
           isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
         }]}>
@@ -419,8 +422,6 @@ export function SwitchForm () {
                 }
               </Tabs>
               <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                {readOnly &&
-                  <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                 <Form.Item
                   name='venueId'
                   label={<>
@@ -535,7 +536,7 @@ export function SwitchForm () {
                       { min: 1, transform: (value) => value.trim() },
                       { max: 255, transform: (value) => value.trim() }
                     ]}
-                    children={<Input disabled={readOnly} />}
+                    children={<Input />}
                   />
 
                   <Form.Item
@@ -549,7 +550,7 @@ export function SwitchForm () {
                     children={<Input.TextArea
                       rows={4}
                       maxLength={180}
-                      disabled={readOnly}/>}
+                    />}
                   />
 
                   <Form.Item
@@ -608,9 +609,11 @@ export function SwitchForm () {
               <Form.Item name='enableStack' initialValue={false} hidden={true}><Input /></Form.Item>
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                  {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <SwitchStackSetting
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}
+                    deviceOnline={deviceOnline}
                     disableIpSetting={disableIpSetting}
                   />
                 </div>

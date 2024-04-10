@@ -12,7 +12,7 @@ import { Subtitle, Tooltip }          from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { GuestNetworkTypeEnum }       from '@acx-ui/rc/utils'
 
-import AAAInstance        from '../AAAInstance'
+import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
 
 export function AuthAccServerSetting () {

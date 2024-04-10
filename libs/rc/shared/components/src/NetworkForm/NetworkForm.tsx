@@ -14,7 +14,10 @@ import {
   useUpdateNetworkVenuesMutation,
   useAddNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
-  useUpdateNetworkTemplateMutation
+  useUpdateNetworkTemplateMutation,
+  useAddNetworkVenueTemplatesMutation,
+  useActivateCertificateTemplateMutation,
+  useGetCertificateTemplatesQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -30,7 +33,7 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum
+  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -87,7 +90,8 @@ const onboardingTitle = defineMessage({
 const minutesMapping: { [key:string]:number }={
   hours: 60,
   days: 1440,
-  minutes: 1
+  minutes: 1,
+  weeks: 10080
 }
 interface GuestMore {
   guestPortal?: GuestPortal,
@@ -113,9 +117,12 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
+  )
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const activateCertificateTemplate = useCertificateTemplateActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -153,6 +160,12 @@ export function NetworkForm (props:{
 
   const { data } = useGetInstance(editMode)
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
+  const { certificateTemplateId } = useGetCertificateTemplatesQuery(
+    { payload: { pageSize: 1, page: 1, filters: { networkId: [data?.id] } } },
+    {
+      skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
+      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
+    })
 
   // Config Template related states
   const { isTemplate } = useConfigTemplate()
@@ -193,9 +206,9 @@ export function NetworkForm (props:{
       }
       updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
         enableAccountingService: (data.accountingRadius||
-          data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+          data.guestPortal?.wisprPage?.accountingRadius)?true:false, certificateTemplateId })
     }
-  }, [data])
+  }, [data, certificateTemplateId])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -451,11 +464,15 @@ export function NetworkForm (props:{
             'enableOwe',
             'pskProtocol',
             'isOweMaster',
-            'owePairNetworkId']))
-      const result = await addNetworkInstance({ params, payload }).unwrap()
-      if (result && result.response && payload.venues) {
+            'owePairNetworkId',
+            'certificateTemplateId']))
+      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+      // eslint-disable-next-line max-len
+      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
+      const hasResult = certResponse ?? networkResponse?.response
+      if (hasResult && payload.venues) {
         // @ts-ignore
-        const network: Network = result.response
+        const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
 
@@ -503,7 +520,8 @@ export function NetworkForm (props:{
             'networkSecurity',
             'pskProtocol',
             'isOweMaster',
-            'owePairNetworkId'
+            'owePairNetworkId',
+            'certificateTemplateId'
           ]
         )
       }else{
@@ -513,7 +531,8 @@ export function NetworkForm (props:{
             'networkSecurity',
             'pskProtocol',
             'isOweMaster',
-            'owePairNetworkId'
+            'owePairNetworkId',
+            'certificateTemplateId'
           ]
         )
       }
@@ -525,6 +544,7 @@ export function NetworkForm (props:{
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload }).unwrap()
+      await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -774,4 +794,17 @@ function useGetInstance (isEdit: boolean) {
   const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
 
   return isTemplate ? networkTemplateResult : networkResult
+}
+
+function useCertificateTemplateActivation () {
+  const [activate] = useActivateCertificateTemplateMutation()
+  const activateCertificateTemplate =
+    async (certificateTemplateId?: string, networkId?: string) => {
+      if (certificateTemplateId && networkId) {
+        return await activate({ params: { networkId, certificateTemplateId } }).unwrap()
+      }
+      return null
+    }
+
+  return activateCertificateTemplate
 }

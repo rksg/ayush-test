@@ -3,16 +3,16 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useSdLanScopedNetworks } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksData,
   aggregatedVenueNetworksDataV2,
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
+import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                          from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -33,8 +33,12 @@ import {
 
 import { VenueNetworksTab } from './index'
 
+const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+
 // isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.EDGES_SD_LAN_TOGGLE)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
+  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
+  && ff !== Features.EDGES_SD_LAN_TOGGLE)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -53,7 +57,10 @@ jest.mock('@acx-ui/rc/components', () => ({
       <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
       <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
     </div>,
-  useSdLanScopedNetworks: jest.fn().mockReturnValue([]),
+  useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
+    sdLans: [],
+    scopedNetworkIds: []
+  }),
   transformVLAN: jest.fn().mockReturnValue('VLAN-1 (Default)')
 }))
 
@@ -116,7 +123,7 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
-        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenueNetworkTemplateList.url,
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
@@ -134,6 +141,10 @@ describe('VenueNetworksTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json({ venue: venueData }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -294,18 +305,59 @@ describe('VenueNetworksTab', () => {
     expect(icon).toBeVisible()
   })
 
-  it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-    jest.mocked(useSdLanScopedNetworks).mockReturnValue(['d556bb683e4248b7a911fdb40c307aa5'])
+  describe('Edge and SD-LAN FF is on', () => {
+    beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP)
+    })
+    const mockedSdLanScopeData = {
+      sdLans: [{
+        ...mockedSdLanDataListP2[0],
+        networkIds: ['d556bb683e4248b7a911fdb40c307aa5']
+      }],
+      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5']
+    }
 
-    render(<Provider><VenueNetworksTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      await userEvent.click(await within(activatedRow).findByRole('switch'))
+      const popup = await screen.findByRole('dialog')
+      await screen.findByText(/This network is running the SD-LAN service on this venue/i)
+      await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(popup).not.toBeVisible())
     })
 
-    const activatedRow = await screen.findByRole('row', { name: /test_1/i })
-    await userEvent.click(await within(activatedRow).findByRole('switch'))
-    const popup = await screen.findByRole('dialog')
-    await screen.findByText(/This network is running the SD-LAN service on this venue/i)
-    await userEvent.click( await within(popup).findByRole('button', { name: 'Cancel' }))
-    await waitFor(() => expect(popup).not.toBeVisible())
+    it('should correctly display tunnel column when SD-LAN is running on it', async () => {
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedSdLanScopeData)
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 0)')
+    })
+
+    it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
+        sdLans: [],
+        scopedNetworkIds: []
+      })
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      expect(activatedRow).toHaveTextContent('Local breakout')
+    })
   })
 })

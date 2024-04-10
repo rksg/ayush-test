@@ -20,7 +20,8 @@ import {
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useSetPreferenceMutation
+  useSetPreferenceMutation,
+  useDeleteRecommendationMutation
 } from './services'
 
 describe('Recommendations utils', () => {
@@ -440,7 +441,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ id: 'test', scheduledAt: '7-15-2023' })
+      result.current[0]({ id: 'test', type: 'Apply', scheduledAt: '7-15-2023' })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
@@ -461,6 +462,16 @@ describe('Recommendation services', () => {
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
       .toEqual(resp)
+  })
+
+  it('should delete correctly', async () => {
+    const resp = { deleteRecommendation: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'DeleteRecommendation', { data: resp })
+    const { result } = renderHook(
+      () => useDeleteRecommendationMutation(),{ wrapper: Provider })
+    act(() => { result.current[0]({ id: 'test' }) })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data).toEqual(resp)
   })
 
   it('should return crrmKpi', async () => {

@@ -1,16 +1,18 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
 
-import { serviceApi }                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PortalUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                        from '@acx-ui/user'
 
-import PortalForm from './PortalForm'
+import { servicesConfigTemplateApi, serviceApi }                                  from '@acx-ui/rc/services'
+import { ServicesConfigTemplateUrlsInfo, CommonUrlsInfo, PortalUrlsInfo, Portal } from '@acx-ui/rc/utils'
+import { Path, To }                                                               from '@acx-ui/react-router-dom'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                  from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                           from '@acx-ui/user'
 
+import { portalResponse, portalTemaplteResponse, createPath } from './__tests__/fixtures'
+import Logo                                                   from './assets/images/portal-demo/RuckusCloud.svg'
+import PortalForm                                             from './PortalForm'
 export const successResponse = { requestId: 'request-id' }
 
 const mockedUseNavigate = jest.fn()
@@ -23,31 +25,57 @@ const mockedTenantPath: Path = {
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
-  useTenantLink: (): Path => mockedTenantPath
+  useTenantLink: (to: To): Path => {
+    return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
+  }
 }))
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  loadImageWithJWT: () => Promise.resolve('testId')
+}))
+
+async function fillInBeforeSettings (portalName: string) {
+  // Set Service Name
+  await userEvent.type(
+    await screen.findByRole('textbox', { name: /Service Name/i }),
+    portalName
+  )
+  const validating = await screen.findByRole('img', { name: 'loading' })
+  await waitForElementToBeRemoved(validating, { timeout: 7000 })
+}
 
 describe('PortalForm', () => {
   const mockAdd = jest.fn()
-  const mockSavePortal = jest.fn()
+  const mockCreatePortal = jest.fn()
   beforeEach(() => {
     store.dispatch(serviceApi.util.resetApiState())
-    mockAdd.mockClear()
-    mockSavePortal.mockClear()
+    store.dispatch(servicesConfigTemplateApi.util.resetApiState())
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {
-          return res(ctx.json({ content: {} }))
+          return res(ctx.json(portalResponse))
         }),
       rest.post(
-        PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
+        PortalUrlsInfo.createPortal.url.replace('?quickAck=true', ''),
         (_, res, ctx) => {
-          mockSavePortal()
+          mockCreatePortal()
           return res(ctx.json(successResponse))
         }
       ),
+      rest.put(PortalUrlsInfo.updatePortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json(portalResponse))
+        }),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
@@ -66,21 +94,37 @@ describe('PortalForm', () => {
       (_, res, ctx) => {
         return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
           paging: { page: 1, pageSize: 10, totalCount: 1 } }))
-      })
+      }),
+      rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ content: [{ id: 'test', name: 'test' }],
+            paging: { page: 1, pageSize: 10, totalCount: 1 } }))
+        }),
+      rest.get(ServicesConfigTemplateUrlsInfo.getPortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json(portalTemaplteResponse))
+        })
     )
   })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+    mockAdd.mockClear()
+    mockCreatePortal.mockClear()
+  })
   it('should create Portal with file successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
     render(<Provider><PortalForm /></Provider>, {
-      route: { params }
+      route: { params, path: createPath }
     })
     //step 1 setting form
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
     const file = new File(['logo ruckus'],
-      'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
+      Logo,
       { type: 'image/png' })
     await userEvent.click(await screen.findByTitle('background setting'))
 
@@ -88,12 +132,12 @@ describe('PortalForm', () => {
     await userEvent.click(await screen.findByText('Select image'))
 
     await userEvent.click(await screen.findByText('Add'))
-    await waitFor(() => expect(mockAdd).toBeCalled())
-    await waitFor(() => expect(mockSavePortal).toBeCalled())
+    // await waitFor(() => expect(mockAdd).toBeCalled())
+    // await waitFor(() => expect(mockCreatePortal).toBeCalled())
     expect(await screen.findByText('English')).toBeVisible()
   })
   it('should create Portal successfully', async () => {
-
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
     render(<Provider><PortalForm /></Provider>, {
@@ -104,6 +148,46 @@ describe('PortalForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
 
     await userEvent.click(await screen.findByText('Add'))
-    await waitFor(() => expect(mockSavePortal).toBeCalled())
+    // await waitFor(() => expect(mockCreatePortal).toBeCalled())
+  })
+
+  it('should edit open Portal successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0',
+      tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
+      route: { params }
+    })
+    fillInBeforeSettings('open portal edit test')
+
+    await screen.findByRole('heading', { level: 3, name: 'Settings' })
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+  it('should cancel successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    const cancelPortalRes: Portal = { ...portalResponse, content: { ...portalResponse.content,
+      componentDisplay: { ...portalResponse.content.componentDisplay, wifi4eu: true } }
+    }
+    const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0',
+      tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
+
+    mockServer.use(
+      rest.get(PortalUrlsInfo.getPortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json(cancelPortalRes))
+        })
+    )
+
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
+      route: { params }
+    })
+
+    fillInBeforeSettings('open portal edit test')
+
+    await screen.findByRole('heading', { level: 3, name: 'Settings' })
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 })

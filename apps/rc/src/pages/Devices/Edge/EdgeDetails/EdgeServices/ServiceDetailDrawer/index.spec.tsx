@@ -1,6 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { edgeSdLanApi } from '@acx-ui/rc/services'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
@@ -15,7 +17,7 @@ import {
   PersonaUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -50,13 +52,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />
 }))
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useSearchParams: () => [{
-    get: mockedUseSearchParams
-  }]
-}))
-
 describe('Edge Detail Services Tab - Service Detail Drawer', () => {
   let params: { tenantId: string, serialNumber: string, activeTab: string } =
   // eslint-disable-next-line max-len
@@ -66,6 +61,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     mockedSetVisible.mockReset()
     mockedUseSearchParams.mockReset()
     mockedUseSearchParams.mockReturnValue(null)
+
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -207,7 +204,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
 
   describe('SD-LAN Phase2', () => {
     beforeEach(() => {
-      mockedUseSearchParams.mockReturnValue('')
+      // mock SDLAN HA(i,e p2) enabled
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     it('should render DMZ scenario detail successfully', async () => {

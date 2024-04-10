@@ -122,6 +122,15 @@ export function domainsNameRegExp (value: string[], required: boolean) {
 
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
+export function domainNameWildcardRegExp (value: string[]) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$)/)
+  const isValid = value?.every?.(domain => {
+    return re.test(domain)
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainWildcard))
+}
 
 export function domainNameDuplicationValidation (domainArray: string[]) {
   const { $t } = getIntl()

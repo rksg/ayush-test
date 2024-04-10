@@ -1,15 +1,14 @@
 import {
-  CapabilitiesApModel, CommonResult, ExternalAntenna, TableResult, TriBandSettings,
-  Venue,
-  VenueBssColoring,
+  AAASetting,
+  CapabilitiesApModel, CommonResult, ExternalAntenna,
+  LocalUser, RadiusServer, TableResult, TacacsServer,
+  TriBandSettings, Venue, VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
-  VenueDHCPPoolInst,
-  VenueDHCPProfile,
+  VenueDHCPPoolInst, VenueDHCPProfile,
   VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
   VenueDosProtection, VenueExtended, VenueLanPorts, VenueLoadBalancing,
-  VenueMdnsFencingPolicy,
-  VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
-  onActivityMessageReceived, onSocketActivityChanged
+  VenueMdnsFencingPolicy, VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
+  VenueSwitchConfiguration, onActivityMessageReceived, onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -269,6 +268,64 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
+    }),
+    getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueCityList),
+      transformResponse: (result: { cityList: { name: string }[] }) => {
+        return result.cityList
+      }
+    }),
+    getVenueTemplateSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchSetting)
+    }),
+    updateVenueTemplateSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchSetting)
+    }),
+    getVenueTemplateSwitchAaaSetting: build.query<AAASetting, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaSetting),
+      providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddVenueTemplateAaaServer',
+            'UpdateVenueTemplateAaaServer',
+            'DeleteVenueTemplateAaaServer'
+          ], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateVenueTemplateSwitchAAASetting: build.mutation<AAASetting, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaSetting),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }]
+    }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateSwitchAAAServerList: build.query<TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaServerList),
+      providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    // eslint-disable-next-line max-len
+    deleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    bulkDeleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.bulkDeleteVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    addVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.addVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     })
   })
 })
@@ -311,5 +368,15 @@ export const {
   useGetVenueTemplateDhcpPoolsQuery,
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
-  useUpdateVenueTemplateDhcpProfileMutation
+  useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueTemplateSwitchSettingQuery,
+  useUpdateVenueTemplateSwitchSettingMutation,
+  useGetVenueTemplateSwitchAaaSettingQuery,
+  useUpdateVenueTemplateSwitchAAASettingMutation,
+  useGetVenueTemplateSwitchAAAServerListQuery,
+  useDeleteVenueTemplateSwitchAAAServerMutation,
+  useBulkDeleteVenueTemplateSwitchAAAServerMutation,
+  useAddVenueTemplateSwitchAAAServerMutation,
+  useUpdateVenueTemplateSwitchAAAServerMutation
 } = venueConfigTemplateApi

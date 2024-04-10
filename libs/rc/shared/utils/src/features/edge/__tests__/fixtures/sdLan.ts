@@ -64,11 +64,24 @@ export const mockedSdLanService = {
 }
 
 export const mockedSdLanServiceP2 = {
-  ...mockedSdLanService,
+  id: mockedSdLanService.id,
+  name: mockedSdLanService.name,
+  venueId: mockedSdLanService.venueId,
+  venueName: mockedSdLanService.venueName,
+  edgeClusterId: mockedSdLanService.edgeId,
+  networkIds: mockedSdLanService.networkIds,
+  tunnelProfileId: mockedSdLanService.tunnelProfileId,
   isGuestTunnelEnabled: false,
-  guestEdgeId: '',
+  guestEdgeClusterId: '',
   guestTunnelProfileId: '',
   guestNetworkIds: []
+}
+
+export const mockedSdLanServiceP2Dmz = {
+  id: 'mocked-sd-lan-1',
+  name: 'Mocked_SDLAN_1',
+  edgeClusterId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843'
 }
 
 export const mockedSdLanDataListP2 = [{
@@ -77,10 +90,10 @@ export const mockedSdLanDataListP2 = [{
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a307d7077410456f8f1a4fc41d861567',
   venueName: 'Mocked-Venue-1',
-  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
-  edgeName: 'vSE-b490',
-  guestEdgeId: '0000000003',
-  guestEdgeName: 'Smart Edge 3',
+  edgeClusterId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+  edgeClusterName: 'SE_Cluster 0',
+  guestEdgeClusterId: 'c0000000003',
+  guestEdgeClusterName: 'SE_Cluster 3',
   tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
   tunnelProfileName: 'Mocked_tunnel-1',
   guestTunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b845',
@@ -99,7 +112,6 @@ export const mockedSdLanDataListP2 = [{
     networkId: 'network_4',
     networkName: 'Mocked_network_4'
   }],
-  corePortMac: 'p0',
   edgeAlarmSummary: {
     edgeId: 'mocked-edge-1',
     severitySummary: {
@@ -109,17 +121,21 @@ export const mockedSdLanDataListP2 = [{
   },
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 12,
-  vlanNum: 37
+  vlanNum: 37,
+  guestVlanNum: 20,
+  guestVxlanTunnelNum: 10,
+  vlans: ['2-9', '20', '22', '62-63'],
+  guestVlans: ['11-15', '30', '32', '51-53']
 }, {
   id: 'mocked-sd-lan-2',
   name: 'Mocked_SDLAN_2',
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a307d7077410456f8f1a4fc41d861560',
   venueName: 'Mocked-Venue-2',
-  edgeId: '96B968BD2C76ED11EEA8E4B2E81F537A93',
-  edgeName: 'vSE-b491',
-  guestEdgeId: '',
-  guestEdgeName: '',
+  edgeClusterId: '96B968BD2C76ED11EEA8E4B2E81F537A93',
+  edgeClusterName: 'SE_Cluster 1',
+  guestEdgeClusterId: '',
+  guestEdgeClusterName: '',
   tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b842',
   tunnelProfileName: 'Mocked_tunnel-2',
   guestTunnelProfileId: '',
@@ -132,7 +148,6 @@ export const mockedSdLanDataListP2 = [{
   }],
   guestNetworkIds: [],
   guestNetworkInfos: [],
-  corePortMac: 'p1',
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 20,
@@ -143,10 +158,10 @@ export const mockedSdLanDataListP2 = [{
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a8def420bd6c4f3e8b28114d6c78f231',
   venueName: 'Mocked-Venue-3',
-  edgeId: '96BD19BB3B5CE111EE80500E35957BEDC3',
-  edgeName: 'vSE-b466',
-  guestEdgeId: '',
-  guestEdgeName: '',
+  edgeClusterId: '96BD19BB3B5CE111EE80500E35957BEDC3',
+  edgeClusterName: 'SE_Cluster 2',
+  guestEdgeClusterId: '',
+  guestEdgeClusterName: '',
   tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
   tunnelProfileName: 'Mocked_tunnel-1',
   guestTunnelProfileId: '',
@@ -156,7 +171,6 @@ export const mockedSdLanDataListP2 = [{
   networkInfos: [],
   guestNetworkIds: [],
   guestNetworkInfos: [],
-  corePortMac: 'p0',
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 0,

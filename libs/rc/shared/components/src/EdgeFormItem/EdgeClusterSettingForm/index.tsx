@@ -1,19 +1,25 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-import { Col, Divider, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
-import TextArea                                                                               from 'antd/lib/input/TextArea'
-import { useIntl }                                                                            from 'react-intl'
-import { useParams }                                                                          from 'react-router-dom'
+import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
+import TextArea                                                                      from 'antd/lib/input/TextArea'
+import { useIntl }                                                                   from 'react-intl'
+import { useParams }                                                                 from 'react-router-dom'
 
-import { Alert, Button, Select, Subtitle, useStepFormContext }                                            from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                             from '@acx-ui/icons'
-import { useVenuesListQuery }                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatusEnum, PRODUCT_CODE_VIRTUAL_EDGE, edgeSerialNumberValidator } from '@acx-ui/rc/utils'
+import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
+import { useVenuesListQuery }                                  from '@acx-ui/rc/services'
+import {
+  EdgeClusterStatus,
+  EdgeStatusEnum,
+  PRODUCT_CODE_VIRTUAL_EDGE,
+  deriveEdgeModel,
+  edgeSerialNumberValidator
+} from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
 
 interface EdgeClusterSettingFormProps {
-  editData?: EdgeClusterTableDataType
+  editData?: EdgeClusterStatus
 }
 
 export interface EdgeClusterSettingFormType {
@@ -61,7 +67,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         smartEdges: editData.edgeList?.map(item => ({
           name: item.name,
           serialNumber: item.serialNumber,
-          model: item.type,
+          model: deriveEdgeModel(item.serialNumber),
           isEdit: true
         }))
       })
@@ -151,12 +157,6 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                 onClick={() => formListRef.current?.add()}
                 disabled={(smartEdges?.length ?? 0) >= maxNodeCount}
               />
-              <Divider type='vertical' />
-              <Button
-                type='link'
-                children={$t({ defaultMessage: 'Import from file' })}
-                disabled={true}
-              />
             </Col>
             {
               showClusterWarning &&
@@ -221,9 +221,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
     }
   }), [operations])
 
+  const onSerialChanged = (index: number, serial: string) => {
+    let { smartEdges } = form.getFieldsValue()
+    if (smartEdges[index]) {
+      smartEdges[index].model = deriveEdgeModel(serial)
+      form.setFieldsValue({ smartEdges })
+    }
+  }
+
   return <>
     {
-      fields.map(field =>
+      fields.map((field, idx) =>
         <Row key={field.key} align='middle' gutter={20}>
           <Col span={7}>
             <Form.Item
@@ -244,14 +252,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
                 { required: true },
                 { validator: (_, value) => edgeSerialNumberValidator(value) }
               ]}
-              children={<Input disabled={smartEdges?.[field.name]?.isEdit} />}
+              children={<Input disabled={smartEdges?.[field.name]?.isEdit}
+                onChange={
+                  (e) => onSerialChanged(idx, e.target.value)
+                } />}
               validateFirst
             />
           </Col>
           <Col span={3}>
             <Form.Item
               label={$t({ defaultMessage: 'Model' })}
-              children={smartEdges?.[field.name]?.model ??'-'}
+              children={smartEdges?.[field.name]?.model ?? '-'}
             />
           </Col>
           <Col span={4}>

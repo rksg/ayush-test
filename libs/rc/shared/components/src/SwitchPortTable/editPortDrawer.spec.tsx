@@ -61,7 +61,7 @@ const editPortVlans = async (
   }
 
   if (inputUntagged) {
-    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLAN' }))
     const untaggedTabPanel = await within(dialog).findByRole('tabpanel', { hidden: false })
     const untaggedInput = await within(untaggedTabPanel).findByTestId('untagged-input')
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
@@ -543,7 +543,7 @@ describe('EditPortDrawer', () => {
       const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
-      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLANs' }))
+      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLAN' }))
       const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
 

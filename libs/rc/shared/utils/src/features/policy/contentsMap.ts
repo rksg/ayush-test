@@ -13,6 +13,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'RADIUS Server' }),
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
+  [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Wi-Fi Operator' }),
   [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Identity Provider' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog Server' }),
@@ -27,5 +28,8 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Tunnel Profile' }),
-  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' })
+  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' }),
+  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template' }),
+  [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
+  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
 }

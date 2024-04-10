@@ -4,10 +4,15 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps }                                  from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps } from '@acx-ui/components'
 import {
-  Network, NetworkTypeEnum, networkTypes,
+  useGetNetworkTemplateListQuery,
+  useGetWifiCallingServiceQuery,
+  useGetWifiCallingServiceTemplateQuery,
+  useNetworkListQuery
+} from '@acx-ui/rc/services'
+import {
+  Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery,
   WifiCallingActionPayload,
   WifiCallingActionTypes
@@ -28,12 +33,15 @@ const defaultPayload = {
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
-    skip: !useParams().hasOwnProperty('serviceId')
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetWifiCallingServiceQuery,
+    useGetWifiCallingServiceTemplateQuery,
+    !useParams().hasOwnProperty('serviceId')
+  )
 
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -80,7 +88,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
     defaultPayload
   })
 

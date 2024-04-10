@@ -195,3 +195,8 @@ jest.mock('react-xarrows', () => {
     useXarrow: () => null
   }
 })
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  goToNotFound: () => <div/>
+}))

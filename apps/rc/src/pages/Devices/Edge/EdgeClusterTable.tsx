@@ -1,13 +1,28 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }                                                                                                                         from '@acx-ui/components'
-import { EdgeStatusLight, useEdgeClusterActions }                                                                                                                     from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery, useVenuesListQuery }                                                                                                     from '@acx-ui/rc/services'
-import { ClusterNodeStatusEnum, ClusterStatusEnum, CommonOperation, Device, EdgeClusterTableDataType, activeTab, allowRebootForStatus, getUrl, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                             from '@acx-ui/user'
-import { getIntl }                                                                                                                                                    from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip }                     from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeClusterActions }                 from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import {
+  ClusterNodeStatusEnum,
+  ClusterStatusEnum,
+  CommonOperation,
+  Device,
+  EdgeClusterTableDataType,
+  activeTab,
+  allowRebootForStatus,
+  allowSendOtpForStatus,
+  allowSendFactoryResetStatus,
+  getUrl,
+  usePollingTableQuery,
+  genUrl,
+  CommonCategory,
+  EdgeStatusEnum
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
 
@@ -29,7 +44,12 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot } = useEdgeClusterActions()
+  const {
+    deleteNodeAndCluster,
+    reboot,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
+  } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
@@ -101,7 +121,7 @@ export const EdgeClusterTable = () => {
       align: 'center',
       render: (_, row) => {
         return (
-          row.haStatus &&
+          !row.isFirstLevel &&
           <HaStatusBadge
             haStatus={row.haStatus}
           />
@@ -153,6 +173,13 @@ export const EdgeClusterTable = () => {
           </TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
@@ -202,6 +229,26 @@ export const EdgeClusterTable = () => {
     {
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendEdgeOnboardOtp(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => {
+            return !allowSendFactoryResetStatus(row?.deviceStatus)
+          }).length === 0),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendFactoryReset(selectedRows, clearSelection)
+      }
+    },
+    {
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (selectedRows, clearSelection) => {
@@ -209,19 +256,38 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Switchover' }),
-      onClick: () => {},
-      disabled: true
-    },{
-      label: $t({ defaultMessage: 'Run Cluster HA setup wizard' }),
-      onClick: () => {},
-      disabled: true
+      visible: (selectedRows) =>
+        (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
+      label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
+      onClick: (selectedRows) => {
+        if(selectedRows[0].isFirstLevel) {
+          navigate({
+            ...basePath,
+            pathname:
+              `${basePath.pathname}${genUrl([
+                CommonCategory.Device,
+                Device.EdgeCluster,
+                selectedRows[0].clusterId!,
+                'configure'
+              ])}`
+          })
+        } else {
+          // do nothing
+        }
+      },
+      disabled: (selectedRows) => {
+        const nodeList = selectedRows[0]?.edgeList ?? []
+        return !nodeList.length ||
+        nodeList.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 0
+      }
     }
   ]
 
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
         rowSelection={{ type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
@@ -240,16 +306,16 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
   const { $t } = getIntl()
   const defaultMessage = $t({ defaultMessage: 'Cluster Setup Required' })
   if((data.edgeList?.length ?? 0) < 2){
-    return <Row align='middle' justify='center' gutter={[2, 0]}>
+    return <Row align='middle' gutter={[2, 0]}>
       <Col>
         {$t({ defaultMessage: 'Single Node' })}
       </Col>
       <Col>
         <Tooltip.Question
-          title={$t({ defaultMessage: `The cluster function requires 
+          title={$t({ defaultMessage: `The cluster function requires
         at least two nodes to operate` })}
           placement='bottom'
-          iconStyle={{ width: 16, marginTop: 5 }}
+          iconStyle={{ width: 13, height: 13, marginTop: 3 }}
         />
       </Col>
     </Row>
