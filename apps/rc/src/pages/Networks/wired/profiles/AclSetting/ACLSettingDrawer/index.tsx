@@ -265,11 +265,12 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
+          validateFirst
           rules={[
             { required: true },
             { validator: (_, value) => checkAclName(value) },
             { validator: (_, value) => editMode ?
-              validateDuplicateAclName(value, aclsTable.filter(item => item.aclRules === value)) :
+              validateDuplicateAclName(value, aclsTable.filter(item => item.name !== rule?.name)) :
               validateDuplicateAclName(value, aclsTable) }
           ]}
           children={<Input style={{ width: '400px' }} />}
