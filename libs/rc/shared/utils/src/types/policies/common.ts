@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { CertificateAcceptType } from './certificateTemplate'
+
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pools',
@@ -68,4 +70,12 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
   [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
   [PolicyTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
+}
+
+export const downloadCertExtension: Record<CertificateAcceptType, String> = {
+  [CertificateAcceptType.PEM]: 'pem',
+  [CertificateAcceptType.DER]: 'der',
+  [CertificateAcceptType.PKCS7]: 'p7b',
+  [CertificateAcceptType.PKCS8]: 'key',
+  [CertificateAcceptType.PKCS12]: 'p12'
 }

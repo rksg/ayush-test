@@ -16,7 +16,6 @@ interface SwitchTab {
   key: SwitchTabsEnum,
   url?: string,
   title: string,
-  tabPane: JSX.Element,
   component: JSX.Element,
   headerExtra: JSX.Element[]
 }
@@ -33,13 +32,10 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
 
   const tabs = [{
     key: SwitchTabsEnum.LIST,
-    tabPane: <Tabs.TabPane key={SwitchTabsEnum.LIST} tab={useSwitchesTable().title} />,
     ...useSwitchesTable()
   }, {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
-    tabPane: <Tabs.TabPane key={SwitchTabsEnum.WIRED_REPORT}
-      tab={$t({ defaultMessage: 'Wired Report' })} />,
     component: <EmbeddedReport
       reportName={ReportType.WIRED}
       hideHeader={false}
@@ -61,7 +57,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
-          {tabs.map(tab=> tab.tabPane)}
+          {tabs.map(({ title, key }) => <Tabs.TabPane key={key} tab={title} />)}
         </Tabs>
       }
       extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}

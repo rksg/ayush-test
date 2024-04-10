@@ -4,12 +4,15 @@ import {
   useState
 } from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Button, Modal, Transfer }                   from '@acx-ui/components'
-import { useGetEnhancedWifiCallingServiceListQuery } from '@acx-ui/rc/services'
+import { Button, Modal, Transfer }                    from '@acx-ui/components'
+import {
+  useGetEnhancedWifiCallingServiceListQuery,
+  useGetEnhancedWifiCallingServiceTemplateListQuery
+} from '@acx-ui/rc/services'
+import { useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 import { WifiCallingSettingContext } from './NetworkControlTab'
 
@@ -28,12 +31,13 @@ const defaultPayload = {
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
-  const params = useParams()
   const { wifiCallingSettingList, setWifiCallingSettingList }= useContext(WifiCallingSettingContext)
-  const { data } = useGetEnhancedWifiCallingServiceListQuery({
-    params,
-    payload: defaultPayload
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetEnhancedWifiCallingServiceListQuery,
+    useGetEnhancedWifiCallingServiceTemplateListQuery,
+    false,
+    defaultPayload
+  )
 
   const [visible, setVisible] = useState(false)
   const [targetKeys, setTargetKeys] = useState<string[]>(
