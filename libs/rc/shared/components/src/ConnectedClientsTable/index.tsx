@@ -34,6 +34,32 @@ import { ClientHealthIcon } from '../ClientHealthIcon'
 
 import * as UI from './styledComponents'
 
+function ConvertMacToLowercase (tableQuery:
+  TableQuery<ClientList,
+  RequestPayload<unknown>,
+  unknown> |
+  TableQuery<ClientList,
+  {
+    searchString: string;
+    searchTargetFields: string[];
+    filters: {};
+    fields: string[];
+  },
+  unknown>
+):
+  TableQuery<ClientList, {
+    searchString: string;
+    searchTargetFields: string[];
+    filters: {};
+    fields: string[];
+}, unknown> {
+  const clonedTableQuery = JSON.parse(JSON.stringify(tableQuery))
+  clonedTableQuery.data?.data.forEach((client: ClientList, index: number) => {
+    _.set(clonedTableQuery, `data.data[${index}].clientMac`,client.clientMac.toLocaleLowerCase())
+  })
+  return clonedTableQuery
+}
+
 function GetVenueFilterOptions (tenantId: string|undefined) {
   const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
     fields: ['name', 'country', 'latitude', 'longitude', 'id'],
@@ -153,18 +179,16 @@ export const ConnectedClientsTable = (props: {
     option: { skip: !!props.tableQuery },
     pagination: { settingsId }
   })
-  const tableQuery = props.tableQuery || inlineTableQuery
 
   // Backend API will send Client Mac by uppercase, that will make Ant Table
   // treats same UE as two different UE and cause sending duplicate mac in
   // disconnect/revoke request. The API should be fixed in near future.
-  const lowerCaseMacConvertedTableData = tableQuery.data?.data.map((ap) => {
-    return { ...ap, clientMac: ap.clientMac.toLocaleLowerCase() }
-  })
-
+  const tableQueryNotConverted = props.tableQuery || inlineTableQuery
+  const tableQuery = ConvertMacToLowercase(tableQueryNotConverted)
   useEffect(() => {
     // Remove selection when UE is disconnected.
-    const connectedClientList = lowerCaseMacConvertedTableData
+    const connectedClientList = tableQuery.data?.data
+
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -189,7 +213,7 @@ export const ConnectedClientsTable = (props: {
         selectRows: newSelectRows
       })
     }
-  }, [tableQuery.data?.data, tableQuery.data?.totalCount, lowerCaseMacConvertedTableData])
+  }, [tableQueryNotConverted.data?.data, tableQueryNotConverted.data?.totalCount])
 
   useEffect(() => {
     if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
@@ -715,7 +739,7 @@ export const ConnectedClientsTable = (props: {
           rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
-          dataSource={lowerCaseMacConvertedTableData}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
