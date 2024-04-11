@@ -193,3 +193,54 @@ describe('Test useSwitchFirmwareUtils', () => {
     })
   })
 })
+
+describe('isDowngradeVersion function', () => {
+  it('should return false if inUseVersion includes "090" and version is equal', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('09010h', '09010h', '10010a_b36')).toBe(false)
+  })
+
+  it('should return true if inUseVersion includes "090" and version is less', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('09010h', '09010h_cd1', '10010a_b36')).toBe(true)
+  })
+
+  it('should return false if inUseVersion includes "090" and version is greater', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('09010i', '09010h', '10010a_b36')).toBe(false)
+  })
+
+  it('should return false if inUseVersion includes "100" and version is equal', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('10010a_b36', '09010h', '10010a_b36')).toBe(false)
+  })
+
+  it('should return true if inUseVersion includes "100" and version is less', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('10010h', '09010h_cd1', '10010i')).toBe(true)
+  })
+
+  it('should return false if inUseVersion includes "100" and version is greater', () => {
+    const { result } = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { isDowngradeVersion } = result.current
+    expect(isDowngradeVersion('10010i', '09010h_cd1', '10010h')).toBe(false)
+  })
+
+})

@@ -1,16 +1,19 @@
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Loader, SummaryCard }                                 from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery }                       from '@acx-ui/rc/services'
-import { QosPriorityEnum, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
+import { Loader, SummaryCard }                                                  from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
+import {
+  QosPriorityEnum,
+  useConfigTemplateQueryFnSwitcher,
+  wifiCallingQosPriorityLabelMapping
+} from '@acx-ui/rc/utils'
 
 const WifiCallingDetailContent = () => {
-  const params = useParams()
   const { $t } = useIntl()
-
-  const { data, isLoading } = useGetWifiCallingServiceQuery({ params: params })
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
+    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
+  )
 
   const wifiCallingInfo = [
     {

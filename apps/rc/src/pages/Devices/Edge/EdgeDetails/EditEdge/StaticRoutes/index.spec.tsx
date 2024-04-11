@@ -14,7 +14,7 @@ import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataPro
 
 import StaticRoutes from '.'
 
-const { mockStaticRoutes } = EdgeGeneralFixtures
+const { mockStaticRoutes, mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -51,6 +51,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             staticRouteData: mockStaticRoutes,
             isStaticRouteDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -69,6 +70,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             staticRouteData: mockStaticRoutes,
             isStaticRouteDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -88,6 +90,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             staticRouteData: mockStaticRoutes,
             isStaticRouteDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -132,6 +135,7 @@ describe('EditEdge static routes api fail', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             staticRouteData: mockStaticRoutes,
             isStaticRouteDataFetching: false
           } as unknown as EditEdgeDataContextType}
