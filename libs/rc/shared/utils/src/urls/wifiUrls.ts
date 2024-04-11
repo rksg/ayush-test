@@ -562,16 +562,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
-  getVenueApEnhancedKey: {
-    method: 'get',
-    url: '/venues/:venueId/apTlsKeyEnhanceModeSettings',
-    newApi: true
-  },
-  updateVenueApEnhancedKey: {
-    method: 'put',
-    url: '/venues/:venueId/apTlsKeyEnhanceModeSettings',
-    newApi: true
-  },
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',
