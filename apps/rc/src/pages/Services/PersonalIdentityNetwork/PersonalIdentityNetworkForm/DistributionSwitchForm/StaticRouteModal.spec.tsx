@@ -17,8 +17,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const requestSpy = jest.fn()
 
-// TODO:
-describe.skip('StaticRouteModal', () => {
+describe('StaticRouteModal', () => {
   beforeEach(() => {
     store.dispatch(edgeApi.util.resetApiState())
 
