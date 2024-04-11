@@ -4,6 +4,7 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { venueApi }                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
 import { Provider, store }             from '@acx-ui/store'
@@ -13,6 +14,7 @@ import { VenueEditContext }        from '../..'
 import {
   venueData,
   venueRogueAp,
+  venueApTlsEnhancedKey,
   venueDosProtection,
   venueRoguePolicy,
   venueRoguePolicyList,
@@ -67,6 +69,12 @@ describe('SecurityTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueRogueAp.url,
         (_, res, ctx) => res(ctx.json(venueRogueAp))),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey))),
+      rest.put(
+        CommonUrlsInfo.updateVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json({}))),
@@ -189,4 +197,32 @@ describe('SecurityTab', () => {
 
     expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
   })
+
+  it('should render correctly with TlsEnhancedKey settings then cancel', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey)))
+    )
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await screen.findByText('TLS Enhanced Key: RSA 3072/ECDSA P-256')
+
+    const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
+
+    await userEvent.click(cancelButton[1])
+
+    expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
+  })
+
 })

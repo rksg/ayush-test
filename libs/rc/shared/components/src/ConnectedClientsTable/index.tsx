@@ -155,12 +155,16 @@ export const ConnectedClientsTable = (props: {
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
+  // Backend API will send Client Mac by uppercase, that will make Ant Table
+  // treats same UE as two different UE and cause sending duplicate mac in
+  // disconnect/revoke request. The API should be fixed in near future.
+  const lowerCaseMacConvertedTableData = tableQuery.data?.data.map((ap) => {
+    return { ...ap, clientMac: ap.clientMac.toLocaleLowerCase() }
+  })
+
   useEffect(() => {
-    if (tableQuery.data?.data && setConnectedClientCount) {
-      setConnectedClientCount(tableQuery.data?.totalCount)
-    }
     // Remove selection when UE is disconnected.
-    const connectedClientList = tableQuery.data?.data
+    const connectedClientList = lowerCaseMacConvertedTableData
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -169,12 +173,15 @@ export const ConnectedClientsTable = (props: {
       })
     }
     else {
+      if (setConnectedClientCount) {
+        setConnectedClientCount(tableQuery.data?.totalCount ?? 0)
+      }
       const clonedSelection = _.cloneDeep(tableSelected)
       const newSelectRows = clonedSelection.selectRows.filter((row) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === row.clientMac.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === row.clientMac)
       })
       const newSelectRowkeys = clonedSelection.selectedRowKeys.filter((key) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === key.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === key)
       })
       setTableSelected({
         ...tableSelected,
@@ -182,7 +189,7 @@ export const ConnectedClientsTable = (props: {
         selectRows: newSelectRows
       })
     }
-  }, [tableQuery.data?.data, tableQuery.data?.totalCount])
+  }, [tableQuery.data?.data, tableQuery.data?.totalCount, lowerCaseMacConvertedTableData])
 
   useEffect(() => {
     if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
@@ -708,7 +715,7 @@ export const ConnectedClientsTable = (props: {
           rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
-          dataSource={tableQuery.data?.data}
+          dataSource={lowerCaseMacConvertedTableData}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}

@@ -385,7 +385,8 @@ export const mockedRecommendationCRRM = {
     current: 2,
     previous: null,
     projected: 0
-  }
+  },
+  trigger: 'daily'
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
@@ -628,7 +629,9 @@ export const mockedRecommendationFirmware = {
     ],
     previous: null,
     projected: null
-  }
+  },
+  preferences: { crrmFullOptimization: true },
+  trigger: 'once'
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationClientLoad = {
@@ -692,7 +695,6 @@ export const mockedRecommendationApFirmware = [
     version: 'Unknown'
   }
 ]
-
 
 export const mockRecommendationAutoBackground = {
   id: 'c5218138-d14c-4cec-9ee4-3164cdd15f15',
