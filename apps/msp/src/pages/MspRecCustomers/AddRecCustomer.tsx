@@ -16,6 +16,7 @@ import {
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
+  useAddBrandCustomersMutation,
   useAddRecCustomerMutation,
   useDisableMspEcSupportMutation,
   useEnableMspEcSupportMutation,
@@ -31,6 +32,7 @@ import {
   MspEc,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
+  MspMultiRecData,
   MspRecCustomer,
   MspRecData
 } from '@acx-ui/msp/utils'
@@ -65,10 +67,11 @@ export function AddRecCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [addRecCustomer] = useAddRecCustomerMutation()
+  const [addBrandCustomers] = useAddBrandCustomersMutation()
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
-  const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -200,17 +203,32 @@ export function AddRecCustomer () {
           })
         })
       }
-      const customer: MspRecData = {
+      const recCustomers=[] as MspRecData[]
+      if (mspRecCustomer.length > 0) {
+        mspRecCustomer.forEach((cus: MspRecCustomer) => {
+          recCustomers.push({
+            account_id: cus.account_id,
+            name: cus.account_name,
+            admin_delegations: delegations
+          })
+        })
+      }
+
+      const customerMulti: MspMultiRecData = { data: recCustomers }
+      const customer1: MspRecData =
+      {
         account_id: mspRecCustomer[0].account_id,
         admin_delegations: delegations
       }
 
+      const customer = multiPropertySelectionEnabled ? customerMulti : customer1
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
 
-      const result =
-    await addRecCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      const result = multiPropertySelectionEnabled
+        ? await addBrandCustomers({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+        : await addRecCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
         // const ecTenantId = result.tenant_id
       }

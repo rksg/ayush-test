@@ -422,8 +422,14 @@ export interface UpgradeFirmwareVer {
 
 export interface MspRecData {
   account_id?: string;
+  name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface MspMultiRecData {
+  data: MspRecData[]
+  delegations?: MspIntegratorDelegated[];
 }
 
 export interface AvailableMspRecCustomers {
