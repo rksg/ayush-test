@@ -1,9 +1,14 @@
 import { rest } from 'msw'
 
-import { serviceApi }                                                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                               from '@acx-ui/store'
-import { act, mockServer, render, screen }                               from '@acx-ui/test-utils'
+import { serviceApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ServicesConfigTemplateUrlsInfo,
+  WifiCallingDetailContextType,
+  WifiCallingUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockWifiCallingDetail } from '../__tests__/fixtures'
 
@@ -18,6 +23,8 @@ describe('WifiCallingDetailView', () => {
     })
     mockServer.use(
       rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) =>

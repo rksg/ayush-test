@@ -3,8 +3,8 @@ import { useContext, useState } from 'react'
 import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useIntl }                                              from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
-import { formatter }          from '@acx-ui/formatter'
+import { Button, PageHeader, StepsForm } from '@acx-ui/components'
+import { formatter }                     from '@acx-ui/formatter'
 import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon
@@ -153,20 +153,21 @@ export const SelectType = () => {
         </Row>
       }
     </SpaceWrapper>
-    <UI.ActionsContainer>
-      <Button
-        onClick={handleCacnel}
-        children={$t({ defaultMessage: 'Cancel' })}
-        style={{ marginRight: 'calc(50% - 70px - 35px)' }}
-      />
+    <StepsForm.ActionsContainer>
       <Space align='center' size={12}>
         <Button
-          type='primary'
-          onClick={handleNext}
-          disabled={!isHardwareCompatible || !Boolean(selected)}
-          children={$t({ defaultMessage: 'Next' })}
+          onClick={handleCacnel}
+          children={$t({ defaultMessage: 'Cancel' })}
         />
+        <Space align='center' size={12}>
+          <Button
+            type='primary'
+            onClick={handleNext}
+            disabled={!isHardwareCompatible || !Boolean(selected)}
+            children={$t({ defaultMessage: 'Next' })}
+          />
+        </Space>
       </Space>
-    </UI.ActionsContainer>
+    </StepsForm.ActionsContainer>
   </>
 }

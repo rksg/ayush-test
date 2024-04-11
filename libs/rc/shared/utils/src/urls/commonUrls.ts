@@ -571,26 +571,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/rwgs/:gatewayId/details',
     newApi: true
   },
-  getDNSRecords: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dnsrecords',
-    newApi: true
-  },
-  getDNSRecord: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
-    newApi: true
-  },
-  deleteDnsRecords: {
-    method: 'delete',
-    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
-    newApi: true
-  },
-  addUpdateDnsRecord: {
-    method: 'post',
-    url: '/rwgs/:gatewayId/dnsrecords',
-    newApi: true
-  },
   addExportSchedules: {
     method: 'post',
     url: '/reports/exportSchedules',
@@ -604,6 +584,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getExportSchedules: {
     method: 'get',
     url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getTimezone: {
+    method: 'get',
+    url: '/timezones?location=:lat,:lng',
     newApi: true
   }
 }
