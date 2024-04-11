@@ -76,7 +76,7 @@ describe('ClusterInterfaceSettings', () => {
         serialNumber: item.serialNumber,
         interfaceName: item.portName,
         ipMode: item.ipMode,
-        ip: item.ip,
+        ip: item.ip.split('/')[0],
         subnet: item.subnet
       }))
 
@@ -104,7 +104,7 @@ describe('ClusterInterfaceSettings', () => {
         serialNumber: item.serialNumber,
         interfaceName: item.portName,
         ipMode: item.ipMode,
-        ip: item.ip,
+        ip: item.ip.split('/')[0],
         subnet: item.subnet
       }))
 

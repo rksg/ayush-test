@@ -75,5 +75,35 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/portalServiceProfiles/query',
     newApi: true
+  },
+  getWifiCalling: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
+  },
+  getWifiCallingList: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles',
+    newApi: true
+  },
+  getEnhancedWifiCallingList: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles/query',
+    newApi: true
+  },
+  addWifiCalling: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles',
+    newApi: true
+  },
+  updateWifiCalling: {
+    method: 'put',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deleteWifiCalling: {
+    method: 'delete',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
   }
 }

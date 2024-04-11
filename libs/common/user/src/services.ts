@@ -96,6 +96,11 @@ export const UserUrlsInfo = {
     oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
     newApi: true
   },
+  rcgAllowedOperations: {
+    method: 'get',
+    url: '/rcg/api/allowedOperations',
+    newApi: true
+  },
   getMfaTenantDetails: {
     method: 'get',
     url: '/mfa/tenant/:tenantId'
@@ -151,6 +156,7 @@ export const UserUrlsInfo = {
 
 export const {
   useAllowedOperationsQuery,
+  useRcgAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
@@ -242,6 +248,16 @@ export const {
           createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params)
+        ].map(query))
+
+        return { data: responses.flatMap(response => (response.data as string[])) }
+      }
+    }),
+    rcgAllowedOperations: build.query<string[], string>({
+      async queryFn (tenantId, _api, _extraOptions, query) {
+        const params = { tenantId }
+        const responses = await Promise.all([
+          createHttpRequest(UserUrlsInfo.rcgAllowedOperations, params)
         ].map(query))
 
         return { data: responses.flatMap(response => (response.data as string[])) }
