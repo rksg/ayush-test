@@ -20,7 +20,7 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    connectedApWiredClientsOverTime: build.query<
+    connectedClientsOverTime: build.query<
     ConnectedClientsOverTimeData,
     AnalyticsFilter
     >({
@@ -58,4 +58,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useConnectedApWiredClientsOverTimeQuery } = api
+export const { useConnectedClientsOverTimeQuery } = api

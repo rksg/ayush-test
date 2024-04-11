@@ -13,7 +13,7 @@ import {
   cssStr } from '@acx-ui/components'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { ConnectedClientsOverTimeData, useConnectedApWiredClientsOverTimeQuery } from './services'
+import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
 type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
@@ -33,11 +33,15 @@ export function ConnectedClientsOverTime ({
     if (!data) return data
     return {
       ...data,
-      connectedClients: data.wirelessClientsCount.map((w, i) => w + data.wiredClientsCount[i])
+      connectedClients: data.wirelessClientsCount
+        .map((w, i) => {
+          if(w === null && data.wiredClientsCount[i] === null) return null
+          return w + data.wiredClientsCount[i]
+        })
     }
   }
 
-  const queryResults = useConnectedApWiredClientsOverTimeQuery(filters, {
+  const queryResults = useConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: getSeriesData(massageData(data!), seriesMapping)
