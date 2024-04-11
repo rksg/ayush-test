@@ -1,3 +1,4 @@
+import { isNull }        from 'lodash'
 import { defineMessage } from 'react-intl'
 
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
@@ -18,29 +19,34 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   }
 
   const { data: summaryData, ...summaryQueryState } = useSummaryDataQuery(payload)
+  const formatValue = (value: number | undefined) => {
+    if (value == null) return noDataDisplay
+    return formatter('countFormat')(value)
+  }
+
 
   const utilization : StatsCardProps['values'] = [{
     title: defineMessage({ defaultMessage: 'Avg. clients per AP' }),
-    value: formatter('countFormat')(summaryData?.avgPerAPClientCount)
+    value: formatValue(summaryData?.avgPerAPClientCount)
   }]
 
   !wirelessOnly && utilization.push(
     {
       title: defineMessage({ defaultMessage: 'Switch ports in use' }),
-      value: formatter('countFormat')(summaryData?.portCount),
-      suffix: `/${formatter('countFormat')(summaryData?.totalPortCount)}`
+      value: formatValue(summaryData?.portCount),
+      suffix: `/${formatValue(summaryData?.totalPortCount)}`
     }
   )
 
   const incidents : StatsCardProps['values'] = [{
     title: defineMessage({ defaultMessage: 'APs' }),
-    value: formatter('countFormat')(summaryData?.apIncidentCount)
+    value: formatValue(summaryData?.apIncidentCount)
   }]
 
   !wirelessOnly && incidents.push(
     {
       title: defineMessage({ defaultMessage: 'Switches' }),
-      value: formatter('countFormat')(summaryData?.switchIncidentCount)
+      value: formatValue(summaryData?.switchIncidentCount)
     }
   )
   const traffic = [{
