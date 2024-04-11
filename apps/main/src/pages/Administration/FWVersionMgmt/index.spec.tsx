@@ -12,7 +12,8 @@ import {
 import {
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
@@ -20,7 +21,8 @@ import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 import {
   availableVersions, versionLatest,
   switchLatest, switchVenue,
-  venue, version, preference, mockedApModelFamilies
+  venue, version, preference, mockedApModelFamilies,
+  mockedFirmwareVenuesPerApModel
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
@@ -41,7 +43,14 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./ApFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-ApFirmware-table'></div>
 }))
-
+jest.mock('./ApFirmware/VenueFirmwareListPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VenueFirmwareListPerApModel'),
+  VenueFirmwareListPerApModel: () => <div>VenueFirmwareListPerApModel</div>
+}))
+jest.mock('./ApFirmware/VersionBannerPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VersionBannerPerApModel'),
+  VersionBannerPerApModel: () => <div>VersionBannerPerApModel</div>
+}))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
@@ -50,7 +59,12 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Firmware Version Management', () => {
-  let params: { tenantId: string, activeTab: string, activeSubTab: string }
+  const params: { tenantId: string, activeTab: string, activeSubTab: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    activeTab: 'fwVersionMgmt',
+    activeSubTab: 'apFirmware'
+  }
+
   beforeEach(async () => {
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
@@ -91,11 +105,6 @@ describe('Firmware Version Management', () => {
         (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      activeTab: 'fwVersionMgmt',
-      activeSubTab: 'apFirmware'
-    }
   })
 
   it('should render correctly', async () => {
@@ -117,5 +126,28 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render upgradable hint correctly when the FF "ap-fw-mgmt-upgrade-by-model" is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      )
+    )
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+          <FWVersionMgmt />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+      })
+
+    const apFirmwareTab = await screen.findByRole('tab', { name: /AP Firmware/ })
+    expect(await within(apFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
   })
 })
