@@ -15,3 +15,42 @@ export const trafficSummaryNoDataFixture = {
     }
   }
 }
+
+
+export const incidentSummaryFixture = {
+  network: {
+    hierarchyNode: {
+      apIncidentCount: 461,
+      switchIncidentCount: 8
+    }
+  }
+}
+
+export const incidentSummaryNoDataFixture = {
+  network: {
+    hierarchyNode: {
+      apIncidentCount: null,
+      switchIncidentCount: null
+    }
+  }
+}
+
+export const utilizationSummaryFixture = {
+  network: {
+    hierarchyNode: {
+      portCount: 636,
+      totalPortCount: 14229,
+      avgPerAPClientCount: 643
+    }
+  }
+}
+
+export const utilizationSummaryNoDataFixture = {
+  network: {
+    hierarchyNode: {
+      portCount: null,
+      totalPortCount: null,
+      avgPerAPClientCount: null
+    }
+  }
+}

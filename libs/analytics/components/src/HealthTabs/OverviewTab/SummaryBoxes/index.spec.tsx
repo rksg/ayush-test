@@ -5,8 +5,14 @@ import type { AnalyticsFilter }                                        from '@ac
 import { DateRange }                                                   from '@acx-ui/utils'
 
 
-import { trafficSummaryFixture, trafficSummaryNoDataFixture } from './__tests__/fixtures'
-import { api }                                                from './services'
+import {
+  incidentSummaryFixture,
+  incidentSummaryNoDataFixture,
+  trafficSummaryFixture,
+  trafficSummaryNoDataFixture,
+  utilizationSummaryFixture,
+  utilizationSummaryNoDataFixture } from './__tests__/fixtures'
+import { api } from './services'
 
 import { SummaryBoxes } from '.'
 
@@ -23,6 +29,9 @@ describe('SummaryBoxes', () => {
   })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficSummary', { data: trafficSummaryFixture })
+    mockGraphqlQuery(dataApiURL, 'IncidentSummary', { data: incidentSummaryFixture })
+    mockGraphqlQuery(dataApiURL, 'UtilizationSummary', { data: utilizationSummaryFixture })
+
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
         filters={filters}
@@ -33,6 +42,8 @@ describe('SummaryBoxes', () => {
   })
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficSummary', { data: trafficSummaryNoDataFixture })
+    mockGraphqlQuery(dataApiURL, 'IncidentSummary', { data: incidentSummaryNoDataFixture })
+    mockGraphqlQuery(dataApiURL, 'UtilizationSummary', { data: utilizationSummaryNoDataFixture })
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
       /></Provider></Router>

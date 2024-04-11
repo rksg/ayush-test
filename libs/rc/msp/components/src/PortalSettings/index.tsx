@@ -947,14 +947,14 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <UI.ImagePreviewLight width='355px' height='80px'>
+                    <UI.ImagePreviewDark width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || loginLogoUrl) &&
                         <img alt='customer login logo'
                           src={selectedLogo === 'defaultLogo' ? defaultLoginLogo : loginLogoUrl}
                           style={{ margin: 'auto', maxHeight: '80px', maxWidth: '320px' }}
                         />
                       }
-                    </UI.ImagePreviewLight>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card

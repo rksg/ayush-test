@@ -174,23 +174,41 @@ const getCompatibleCheckResult = (
   countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>
 ): CompatibilityCheckResult => {
   let results = _.values(countResult)
+  const targetData = results[0]
+
   const portsCheck = _.every(results,
-    (result) => _.isEqual(result.errors.ports.value, results[0].errors.ports.value))
+    (result) => _.isEqual(result.errors.ports.value, targetData.errors.ports.value))
   const corePortsCheck = _.every(results,
-    (result) => _.isEqual(result.errors.corePorts.value, results[0].errors.corePorts.value))
+    (result) => _.isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
 
   // append 'isError' data
-  results.forEach((r) => {
-    r.errors.ports.isError = !portsCheck
-    r.errors.corePorts.isError = !corePortsCheck
+  results.forEach((givenData) => {
+    givenData.errors.ports.isError = !portsCheck
+    givenData.errors.corePorts.isError = !corePortsCheck
 
-    Object.keys(r.errors.portTypes).forEach(pt => {
-      const portTypeData = r.errors.portTypes[pt]
-      if (!portTypeData) r.errors.portTypes[pt] = { value: 0 }
-
-      const res = _.isEqual(portTypeData?.value, results[0].errors.portTypes[pt]?.value)
-      if (!res) r.errors.portTypes[pt].isError = true
+    // compare the given with target data
+    const givenPortTypes = Object.keys(givenData.errors.portTypes)
+    givenPortTypes.forEach(pt => {
+      // ignore UNCONFIGURED
+      if (pt === EdgePortTypeEnum.UNCONFIGURED) return
+      const givenPortType = givenData.errors.portTypes[pt]
+      const res = _.isEqual(givenPortType?.value, targetData.errors.portTypes[pt]?.value)
+      if (!res) {
+        givenPortType.isError = true
+        // when counting not equal, both side should display in error
+        if (targetData.errors.portTypes[pt]) targetData.errors.portTypes[pt].isError = true
+      }
     })
+
+    // reverse check to find port type only configure on target data
+    const diffPortTypes = _.difference(Object.keys(targetData.errors.portTypes), givenPortTypes)
+    if (diffPortTypes.length) {
+      diffPortTypes.forEach(diffPortType => {
+        // ignore UNCONFIGURED
+        if (diffPortType === EdgePortTypeEnum.UNCONFIGURED) return
+        targetData.errors.portTypes[diffPortType].isError = true
+      })
+    }
   })
   const portTypesCheck = _.every(results, (res) => {
     // cehck no error
@@ -246,8 +264,7 @@ export const interfaceCompatibilityCheck = (
           isError: false, value: 1
         }
       } else {
-        // eslint-disable-next-line max-len
-        result.errors.portTypes[port.portType].value = result.errors.portTypes[port.portType].value++
+        result.errors.portTypes[port.portType].value++
       }
     })
 
@@ -286,8 +303,7 @@ export const lagSettingsCompatibleCheck = (
           isError: false, value: 1
         }
       } else {
-        // eslint-disable-next-line max-len
-        result.errors.portTypes[lag.portType].value = result.errors.portTypes[lag.portType].value++
+        result.errors.portTypes[lag.portType].value++
       }
     })
 

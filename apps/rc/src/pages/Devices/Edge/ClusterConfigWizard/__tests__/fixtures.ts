@@ -37,3 +37,16 @@ export const defaultCxtData = {
   isLoading: false,
   isFetching: false
 }
+
+export const getTargetInterfaceFromInterfaceSettingsFormData = (
+  serialNumber: string, portName: string,
+  lagSettings: InterfaceSettingsFormType['lagSettings'],
+  portSettings: InterfaceSettingsFormType['portSettings']
+) => {
+  if(portName.startsWith('l')) {
+    return lagSettings.find(item => item.serialNumber === serialNumber)
+      ?.lags.find(item => item.id.toString() === portName.charAt(3))
+  } else {
+    return portSettings[serialNumber]?.[portName]?.[0]
+  }
+}

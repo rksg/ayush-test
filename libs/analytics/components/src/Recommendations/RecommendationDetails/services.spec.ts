@@ -48,9 +48,7 @@ describe('recommendation services', () => {
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.recommendationDetails.initiate({
-        ...recommendationPayload,
-        code: 'c-aclb-enable'
-      })
+        ...recommendationPayload, code: 'c-aclb-enable', isCrrmPartialEnabled: true })
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
@@ -87,7 +85,9 @@ describe('recommendation services', () => {
       statusTrail: [{
         createdAt: '2023-06-12T07:05:14.106Z',
         status: 'new'
-      }]
+      }],
+      preferences: { crrmFullOptimization: true },
+      trigger: 'once'
     } as unknown as EnhancedRecommendation)
   })
 
@@ -98,7 +98,8 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate(recommendationPayload)
+      api.endpoints.recommendationDetails.initiate({
+        ...recommendationPayload, isCrrmPartialEnabled: true })
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
@@ -136,7 +137,8 @@ describe('recommendation services', () => {
       },
       statusTrail: mockedRecommendationCRRM.statusTrail,
       crrmOptimizedState: crrmStates.optimized,
-      crrmInterferingLinksText: 'From 2 to 0 interfering links'
+      crrmInterferingLinksText: 'From 2 to 0 interfering links',
+      trigger: 'daily'
     } as unknown as EnhancedRecommendation)
   })
 

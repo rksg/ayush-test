@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { networkApi } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo, ConfigTemplateUrlsInfo,
+  CommonUrlsInfo, ConfigTemplateUrlsInfo, ServicesConfigTemplateUrlsInfo,
   WifiCallingDetailContextType,
   WifiCallingUrls
 } from '@acx-ui/rc/utils'
@@ -42,6 +42,8 @@ describe('WifiCallingNetworksDetail', () => {
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingNetworksDetail))),
       rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
       rest.post(ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingNetworksDetail)))

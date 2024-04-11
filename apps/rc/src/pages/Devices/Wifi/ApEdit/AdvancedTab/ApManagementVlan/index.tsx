@@ -13,7 +13,7 @@ import {
   useDeleteApManagementVlanMutation,
   useLazyGetVenueApManagementVlanQuery
 } from '@acx-ui/rc/services'
-import { ApManagementVlan, VenueExtended, validateVlanId } from '@acx-ui/rc/utils'
+import { ApManagementVlan, VenueExtended } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -22,7 +22,8 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 export function ApManagementVlanForm () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-
+  const VLAN_ID_MIN = 1
+  const VLAN_ID_MAX = 4096
   const form = Form.useFormInstance()
   const vlanIdFieldName = 'vlanId'
 
@@ -80,13 +81,15 @@ export function ApManagementVlanForm () {
     setDataToForm({ vlanId: initDataRef.current?.vlanId })
   }
 
-  const onFormDataChanged = () => {
+  const onFormDataChanged = async () => {
+    const { vlanId } = form.getFieldsValue()
+    const invalidVlanId = vlanId === null || vlanId < VLAN_ID_MIN || vlanId > VLAN_ID_MAX
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'advanced',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
       isDirty: true,
-      hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
+      hasError: invalidVlanId
     })
 
     setEditAdvancedContextData && setEditAdvancedContextData({
@@ -120,6 +123,7 @@ export function ApManagementVlanForm () {
   }
 
   const handleUpdateApManagementVlan = async () => {
+    const payload = getApManagementVlanDataFromFields()
     showActionModal({
       type: 'confirm',
       width: 450,
@@ -136,7 +140,6 @@ export function ApManagementVlanForm () {
           if(isUseVenueSettingsRef.current) {
             await deleteApManagementVlan({ params: { serialNumber } }).unwrap()
           } else {
-            const payload = getApManagementVlanDataFromFields()
             await updateApManagementVlan({ params: { serialNumber }, payload }).unwrap()
 
             // eslint-disable-next-line no-console
@@ -186,15 +189,13 @@ export function ApManagementVlanForm () {
                     name={vlanIdFieldName}
                     style={{ color: 'black' }}
                     rules={[
-                      { required: true },
-                      { validator: (_, value) => {
-                        if (value) return validateVlanId(value)
-                        return Promise.resolve()
-                      } }
+                      { required: true }
                     ]}
                     children={
                       <InputNumber
                         onChange={onApMgmtVlanChange}
+                        min={VLAN_ID_MIN}
+                        max={VLAN_ID_MAX}
                         style={{ width: '86px' }} />
                     }
                   />
