@@ -33,6 +33,8 @@ export function HealthTabs () {
   }
 
   const { data } = useSwitchCountQuery(payload)
+
+  // eslint-disable-next-line no-console
   console.log('#### switchCount:', data?.switchCount)
 
   const wirelessOnly = data?.switchCount === 0
