@@ -16,6 +16,7 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                     from '../styledComponents'
 
 import { CloudpathServerForm }      from './CloudpathServerForm'
 import MacRegistrationListComponent from './MacRegistrationListComponent'
@@ -66,6 +67,7 @@ export function OpenSettingsForm () {
 }
 
 function SettingsForm () {
+  const labelWidth = '250px'
   const form = Form.useFormInstance()
   const { Option } = Select
   const [
@@ -93,6 +95,7 @@ function SettingsForm () {
       }
     })
   }
+
   const onMacAuthTypeChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -104,6 +107,7 @@ function SettingsForm () {
       }
     })
   }
+
   const onOweChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -113,6 +117,7 @@ function SettingsForm () {
       }
     })
   }
+
   const onOweTransitionChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -122,6 +127,7 @@ function SettingsForm () {
       }
     })
   }
+
   useEffect(()=> {
     if (enableOwe === true && enableOweTransition === false) {
       disableMLO(false)
@@ -129,7 +135,8 @@ function SettingsForm () {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
-  },[enableOwe,enableOweTransition])
+  }, [enableOwe,enableOweTransition])
+
   useEffect(()=>{
     if (data && 'enableOwe' in data) {
       delete data['enableOwe']
@@ -163,52 +170,58 @@ function SettingsForm () {
       <StepsFormLegacy.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsFormLegacy.Title>
       <div>
         <Form.Item>
-          {supportOweEncryption && <Form.Item>
-            <Form.Item noStyle
+          {supportOweEncryption &&
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              {$t({ defaultMessage: 'OWE encryption' })}
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
+                placement='bottom'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item
               name='enableOwe'
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                onChange={onOweChange} />}
+              children={<Switch onChange={onOweChange} />}
             />
-            <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>
-            <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
-              placement='bottom'
-            />
-          </Form.Item>}
-          {enableOwe && supportOweTransition && <Form.Item>
-            <Form.Item noStyle
-              name='enableOweTransition'
+          </UI.FieldLabel>}
+          {enableOwe && supportOweTransition &&
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              {$t({ defaultMessage: 'OWE Transition mode' })}
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_OWE_TRANSITION_TOOLTIP)}
+                placement='bottom'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item name='enableOweTransition'
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                onChange={onOweTransitionChange} />}
+              children={<Switch onChange={onOweTransitionChange} />}
             />
-            <span>{$t({ defaultMessage: 'Enable OWE Transition mode' })}</span>
-            <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_OWE_TRANSITION_TOOLTIP)}
-              placement='bottom'
-            />
-          </Form.Item>}
-          <Form.Item >
-            <Form.Item noStyle
-              name={['wlan', 'macAddressAuthentication']}
+          </UI.FieldLabel>}
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              {$t({ defaultMessage: 'MAC Authentication' })}
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+                placement='bottom'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'
-            >
-              <Switch id={'macAuthSwitch'}
+              children={<Switch id={'macAuthSwitch'}
                 onChange={onMacAuthChange}
-                disabled={editMode || disablePolicies}/>
-            </Form.Item>
-            <label htmlFor={'macAuthSwitch'}>{$t({ defaultMessage: 'MAC Authentication' })}</label>
-            <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='bottom'
+                disabled={editMode || disablePolicies}
+              />}
             />
-          </Form.Item>
+          </UI.FieldLabel>
         </Form.Item>
         {macAddressAuthentication && <>
-
           <Form.Item
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!isMacRegistrationList}
@@ -217,12 +230,13 @@ function SettingsForm () {
               disabled={editMode}
               onChange={e => onMacAuthTypeChange(e.target.value)}>
               <Space direction='vertical'>
-                <Radio value={true} disabled={!isCloudpathBetaEnabled}>
-                  { $t({ defaultMessage: 'MAC Registration List' }) }
-                </Radio>
-                <Radio value={false} >
-                  { $t({ defaultMessage: 'External MAC Auth' }) }
-                </Radio>
+                <Radio value={true}
+                  disabled={!isCloudpathBetaEnabled}
+                  children={$t({ defaultMessage: 'MAC Registration List' })}
+                />
+                <Radio value={false}
+                  children={$t({ defaultMessage: 'External MAC Auth' })}
+                />
               </Space>
             </Radio.Group>
           </Form.Item>
@@ -234,14 +248,10 @@ function SettingsForm () {
                 label={$t({ defaultMessage: 'MAC Address Format' })}
                 name={['wlan', 'macAuthMacFormat']}
                 initialValue={MacAuthMacFormatEnum.UpperDash}
-              >
-                <Select>
-                  {macAuthOptions}
-                </Select>
-              </Form.Item>
+                children={<Select children={macAuthOptions} />}
+              />
               <CloudpathServerForm />
             </>}
-
         </>}
       </div>
     </>
