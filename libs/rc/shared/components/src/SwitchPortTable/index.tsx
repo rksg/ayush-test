@@ -255,26 +255,26 @@ export function SwitchPortTable ({ isVenueLevel }: {
     show: false
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true,
     show: false
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
   },
   ...(isSwitchV6AclEnabled ? [{
     key: 'vsixIngressAclName',
-    title: $t({ defaultMessage: 'V6 Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
     dataIndex: 'vsixIngressAclName',
     sorter: true,
     show: false
   }, {
     key: 'vsixEgressAclName',
-    title: $t({ defaultMessage: 'V6 Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
     dataIndex: 'vsixEgressAclName',
     sorter: true,
     show: false

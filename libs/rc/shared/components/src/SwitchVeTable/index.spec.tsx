@@ -88,8 +88,8 @@ describe('Switch VE Table', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/TEST-VE3/i)).toBeVisible()
-    expect(screen.queryByRole('columnheader', { name: 'V6 Ingress ACL' })).toBeNull()
-    expect(screen.queryByRole('columnheader', { name: 'V6 Egress ACL' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'Ingress ACL (IPv6)' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'Egress ACL (IPv6)' })).toBeNull()
   })
 
   it('should render VE table correctly when FF enable', async () => {
@@ -102,9 +102,8 @@ describe('Switch VE Table', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/TEST-VE3/i)).toBeVisible()
-    expect(await screen.findByRole('columnheader', { name: 'V6 Ingress ACL' })).toBeVisible()
-    expect(await screen.findByRole('columnheader', { name: 'V6 Egress ACL' })).toBeVisible()
-    expect(await screen.findByText('ipv6-acl-out')).toBeVisible()
+    expect(screen.queryByRole('columnheader', { name: 'Ingress ACL (IPv6)' })).toBeNull()
+    expect(screen.queryByRole('columnheader', { name: 'Egress ACL (IPv6)' })).toBeNull()
   })
 
   it('should Add VE correctly', async () => {

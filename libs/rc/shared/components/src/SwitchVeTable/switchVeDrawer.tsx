@@ -425,7 +425,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
           <Form.Item
-            label={$t({ defaultMessage: 'Ingress ACL' })}
+            label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
             name='ingressAcl'
             initialValue={''}
           >
@@ -442,7 +442,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
           <Form.Item
-            label={$t({ defaultMessage: 'Egress ACL' })}
+            label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
             name='egressAcl'
             initialValue={''}
           >

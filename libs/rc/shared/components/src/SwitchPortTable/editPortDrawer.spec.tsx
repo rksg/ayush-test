@@ -469,7 +469,6 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
       expect(setDrawerVisible).toBeCalledTimes(1)
     })
-
   })
 
   describe('multiple edit', () => {
