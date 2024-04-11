@@ -163,29 +163,6 @@ describe('Switch VE Table', () => {
 
     const drawer = await screen.findByRole('dialog')
     await within(drawer).findByRole('combobox', { name: /VLAN ID/i })
-    expect(within(drawer).queryByText('V6 Ingress ACL')).toBeNull()
-
-    fireEvent.change(screen.getByLabelText(/ve name/i), { target: { value: 'default' } })
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-  })
-
-  it('should config VE-1 correctly when ff enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
-      route: {
-        params,
-        path: '/:tenantId/t/:switchId'
-      }
-    })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /VE-1/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
-
-    const drawer = await screen.findByRole('dialog')
-    await within(drawer).findByRole('combobox', { name: /VLAN ID/i })
-    expect(await within(drawer).findByText('V6 Ingress ACL')).toBeVisible()
-    expect(await within(drawer).findByText('ipv6-acl-in')).toBeVisible()
 
     fireEvent.change(screen.getByLabelText(/ve name/i), { target: { value: 'default' } })
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))

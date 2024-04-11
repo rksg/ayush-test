@@ -6,8 +6,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Alert, Button, Drawer }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Alert, Button, Drawer } from '@acx-ui/components'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -26,8 +25,8 @@ import {
   VlanVePort,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay, validationMessages } from '@acx-ui/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 interface SwitchVeProps {
   visible: boolean
@@ -43,7 +42,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
 
   const [form] = Form.useForm()
-  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const { switchId: sid, tenantId, venueId: vid } = useParams()
 
   const [loading, setLoading] = useState<boolean>(false)
@@ -201,7 +199,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }).unwrap()
       } else {
         let payload = {
-          ..._.omit(editData, ['vsixIngressAclName', 'vsixEgressAclName']),
+          ...editData,
           ...data
         }
 
@@ -443,7 +441,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             />
           </Form.Item>
 
-
           <Form.Item
             label={$t({ defaultMessage: 'Egress ACL' })}
             name='egressAcl'
@@ -460,19 +457,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               ]}
             />
           </Form.Item>
-
-          {isEditMode && isSwitchV6AclEnabled && <>
-            <Form.Item
-              label={$t({ defaultMessage: 'V6 Ingress ACL' })}
-            >
-              { editData?.vsixIngressAclName || noDataDisplay }
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'V6 Egress ACL' })}
-            >
-              { editData?.vsixEgressAclName || noDataDisplay }
-            </Form.Item>
-          </>}
 
         </Form>
       </>}

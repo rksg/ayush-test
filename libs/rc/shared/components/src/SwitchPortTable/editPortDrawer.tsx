@@ -13,7 +13,6 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -41,9 +40,9 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams }              from '@acx-ui/react-router-dom'
-import { store }                  from '@acx-ui/store'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { store }     from '@acx-ui/store'
+import { getIntl }   from '@acx-ui/utils'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'
@@ -88,7 +87,7 @@ const allMultipleEditableFields = [
   'dhcpSnoopingTrust', 'egressAcl', 'ingressAcl', 'ipsg', 'lldpEnable',
   'name', 'poeClass', 'poeEnable', 'poePriority', 'portEnable', 'portSpeed',
   'rstpAdminEdgePort', 'stpBpduGuard', 'stpRootGuard', 'taggedVlans', 'voiceVlan',
-  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected', 'vsixIngressAcl', 'vsixEgressAcl'
+  'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected'
 ]
 
 interface ProfileVlans {
@@ -147,7 +146,6 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
-  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const [loading, setLoading] = useState<boolean>(true)
 
   const defaultVlanName = 'DEFAULT-VLAN'
@@ -455,9 +453,6 @@ export function EditPortDrawer ({
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
       case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
-      case 'vsixIngressAcl':
-      case 'vsixEgressAcl':
-        return true
       default: return false
     }
   }
@@ -1368,29 +1363,6 @@ export function EditPortDrawer ({
             </Tooltip>}
           </>,
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
-        )}
-
-        { isSwitchV6AclEnabled && getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            label={$t({ defaultMessage: 'V6 Ingress ACL' })}
-            children={isMultipleEdit && hasMultipleValue.includes('vsixIngressAcl')
-              ? <MultipleText />
-              : form.getFieldValue('vsixIngressAcl') || noDataDisplay
-            }
-          />,
-          'vsixIngressAcl', $t({ defaultMessage: 'V6 Ingress ACL' })
-        )}
-        { isSwitchV6AclEnabled && getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            label={$t({ defaultMessage: 'V6 Egress ACL' })}
-            children={isMultipleEdit && hasMultipleValue.includes('vsixEgressAcl')
-              ? <MultipleText />
-              : form.getFieldValue('vsixEgressAcl') || noDataDisplay
-            }
-          />,
-          'vsixEgressAcl', $t({ defaultMessage: 'V6 Egress ACL' })
         )}
 
         {getFieldTemplate(

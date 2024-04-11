@@ -24,8 +24,6 @@ export class PortSettingModel {
   voiceVlan: number | string
   egressAcl?: string
   ingressAcl?: string
-  vsixIngressAcl?: string
-  vsixEgressAcl?: string
   switchSerialNumber: string
   status?: string // ignore
 

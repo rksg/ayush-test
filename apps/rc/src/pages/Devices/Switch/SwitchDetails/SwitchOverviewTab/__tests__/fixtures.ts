@@ -54,7 +54,7 @@ export const aclList = {
     {
       id: 'c73f27644c024add9b88186a93e58db0',
       name: 'ipv6-acl',
-      aclType: 'v6',
+      aclType: 'IPv6',
       aclRules: [
         {
           id: '2ef95518fd304b1f882a40d97733504d',
