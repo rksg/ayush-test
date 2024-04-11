@@ -221,7 +221,7 @@ export function SecurityTab () {
     showActionModal({
       type: 'confirm',
       width: 450,
-      title: $t({ defaultMessage: 'TLS Key Boost' }),
+      title: $t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' }),
       content:
         // eslint-disable-next-line max-len
         $t({ defaultMessage:
