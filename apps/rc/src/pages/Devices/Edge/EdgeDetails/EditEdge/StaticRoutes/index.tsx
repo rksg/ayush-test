@@ -23,6 +23,7 @@ const StaticRoutes = () => {
   const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const {
+    clusterInfo,
     staticRouteData,
     isStaticRouteDataFetching
   } = useContext(EditEdgeDataContext)
@@ -41,7 +42,15 @@ const StaticRoutes = () => {
 
   const handleFinish = async (value: StaticRoutesFormType) => {
     try {
-      await updateStaticRoutes({ params: params, payload: value }).unwrap()
+      const requestPayload = {
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          ...params
+        },
+        payload: value
+      }
+      await updateStaticRoutes(requestPayload).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
