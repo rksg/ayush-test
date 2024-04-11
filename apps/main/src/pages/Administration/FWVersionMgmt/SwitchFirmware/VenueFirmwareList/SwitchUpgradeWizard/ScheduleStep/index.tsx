@@ -108,9 +108,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
     }
 
     if (_.isArray(firmwareAvailableVersions)) {
-      firmwareAvailableVersions = firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+      firmwareAvailableVersions =
+        firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
     }
-    
+
     return firmwareAvailableVersions
   }
 
