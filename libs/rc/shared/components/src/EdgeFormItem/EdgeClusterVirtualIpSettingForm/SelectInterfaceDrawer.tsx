@@ -6,8 +6,16 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Drawer, Select }                                                                                       from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortInfo, EdgeStatus, getIpWithBitMask, optionSorter, validateSubnetIsConsistent } from '@acx-ui/rc/utils'
+import { Drawer, Select }      from '@acx-ui/components'
+import {
+  EdgeIpModeEnum,
+  EdgePortInfo,
+  EdgeStatus,
+  VirtualIpSetting,
+  getIpWithBitMask,
+  optionSorter,
+  validateSubnetIsConsistent
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -16,14 +24,14 @@ import { VirtualIpFormType } from '.'
 interface SelectInterfaceDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  handleFinish: (data: { [key: string]: EdgePortInfo | undefined }) => void
+  handleFinish: (data: VirtualIpSetting['ports']) => void
   currentVipIndex?: number
   nodeList?: EdgeStatus[]
   lanInterfaces?: {
     [key: string]: EdgePortInfo[]
   }
   selectedInterfaces?: VirtualIpFormType['vipConfig']
-  editData?: { [key: string]: EdgePortInfo | undefined }
+  editData?: VirtualIpSetting['ports']
 }
 
 interface SelectInterfaceDrawerFormType {
@@ -61,8 +69,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       form.resetFields()
       if(editData) {
         const tmp = {} as SelectInterfaceDrawerFormType
-        for(let [k, v] of Object.entries(editData)) {
-          tmp[k] = { port: v?.portName ?? '' }
+        for(let vipConfig of editData) {
+          tmp[vipConfig.serialNumber] = { port: vipConfig?.portName ?? '' }
         }
         form.setFieldsValue(tmp)
       }
@@ -78,9 +86,12 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   }
 
   const handleFinish = async (data: SelectInterfaceDrawerFormType) => {
-    const result = {} as { [key: string]: EdgePortInfo | undefined }
+    const result = []
     for(let [k, v] of Object.entries(data)) {
-      result[k] = lanInterfaces?.[k].find(lanInterface => lanInterface.portName === v.port)
+      result.push({
+        serialNumber: k,
+        portName: v.port
+      })
     }
     handleOk(result)
     handleClose()
@@ -93,8 +104,9 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
     const selctedPortNames = Object.values(selectedInterfaces).map(item =>
-      item?.interfaces?.[targetSerialNumber]?.portName).filter(item => item !== undefined)
-    const editPortName = editData?.[targetSerialNumber]?.portName
+      item?.interfaces?.find(item => item.serialNumber === targetSerialNumber)?.portName)
+      .filter(item => item !== undefined)
+    const editPortName = editData?.find(item => item.serialNumber === targetSerialNumber)?.portName
     return options.filter(option =>
       !selctedPortNames.includes(option.value + '') || editPortName === option.value)
   }

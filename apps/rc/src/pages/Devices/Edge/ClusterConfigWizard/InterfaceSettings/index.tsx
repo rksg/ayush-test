@@ -63,7 +63,7 @@ export const InterfaceSettings = () => {
   },{
     skip: !Boolean(clusterInfo),
     selectFromResult: ({ data, isFetching }) => ({
-      clusterNetworkSettings: transformFromApiToFormData(data, clusterInfo),
+      clusterNetworkSettings: transformFromApiToFormData(data),
       isFetching
     })
   })

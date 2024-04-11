@@ -8,6 +8,7 @@ import {
   EdgePortInfo,
   EdgeStatus,
   IpInSubnetPool,
+  VirtualIpSetting,
   getSuggestedIpRange,
   networkWifiIpRegExp,
   validateSubnetIsConsistent
@@ -16,17 +17,14 @@ import { getIntl } from '@acx-ui/utils'
 
 import { InterfaceTable } from './InterfaceTable'
 
+import { VipConfigType } from '.'
+
 interface VipCardProps {
   field: FormListFieldData
   index: number
   remove: (index: number | number[]) => void
   vipConfig: {
-    [key: number]: {
-      interfaces: {
-        [key: string]: EdgePortInfo
-      }
-      vip: string
-    }
+    [key: number]: VipConfigType
   }
   rootNamePath?: string[],
   nodeList?: EdgeStatus[]
@@ -84,7 +82,12 @@ export const VipCard = (props: VipCardProps) => {
                   message: $t({ defaultMessage: 'Please select interfaces' })
                 }] : []
               ),
-              { validator: (_, value) => validateInterfaces(value, nodeList) }
+              {
+                validator: (_, value) => validateInterfaces(
+                  getInterfacesInfoByVipConfig(lanInterfaces, value),
+                  nodeList
+                )
+              }
             ]}
             label={$t({ defaultMessage: 'Interfaces ' })}
             validateFirst
@@ -113,13 +116,22 @@ export const VipCard = (props: VipCardProps) => {
               {
                 validator: (_, value) => validateIpInSubnetPool(
                   value,
-                  vipConfig?.[index]?.interfaces
+                  getInterfacesInfoByVipConfig(lanInterfaces, vipConfig?.[index]?.interfaces)
                 )
               },
-              { validator: (_, value) => validateVip(value, vipConfig?.[index]?.interfaces) }
+              {
+                validator: (_, value) => validateVip(
+                  value,
+                  getInterfacesInfoByVipConfig(lanInterfaces, vipConfig?.[index]?.interfaces)
+                )
+              }
             ]}
             extra={
-              <SuggestedRange portInfo={Object.values(vipConfig?.[index]?.interfaces ?? {})} />
+              <SuggestedRange
+                portInfo={
+                  getInterfacesInfoByVipConfig(lanInterfaces, vipConfig?.[index]?.interfaces)
+                }
+              />
             }
             children={<Input />}
             validateFirst
@@ -130,15 +142,31 @@ export const VipCard = (props: VipCardProps) => {
   )
 }
 
+const getInterfacesInfoByVipConfig = (
+  lanInterfaces?: {
+    [key: string]: EdgePortInfo[]
+  },
+  vipSetting?: VirtualIpSetting['ports']
+) => {
+  if(!lanInterfaces || !vipSetting || vipSetting.length === 0) return []
+  const result = []
+  for(let settingInfo of vipSetting) {
+    const targetLanInterfaces = lanInterfaces[settingInfo.serialNumber]
+    const targetSetting = targetLanInterfaces.find(item => item.portName === settingInfo.portName)
+    if(targetSetting) result.push(targetSetting)
+  }
+  return result
+}
+
 const validateInterfaces = async (
-  interfaces?: { [key: string]: EdgePortInfo },
+  interfaces?: EdgePortInfo[],
   nodeList?: EdgeStatus[]
 ) => {
   const { $t } = getIntl()
-  const interfacesArr = interfaces ? Object.values(interfaces).filter(item => item.portName) : []
+  const validInterfaces = interfaces?.filter(item => item.portName) ?? []
   const nodeLength = nodeList?.length ?? 0
 
-  if(nodeLength > 1 && interfacesArr.length !== nodeLength) {
+  if(nodeLength > 1 && validInterfaces.length !== nodeLength) {
     return Promise.reject(
       // eslint-disable-next-line max-len
       $t({ defaultMessage: 'Please make sure you select an interface and configure the IP subnet for the SmartEdge(s).' })
@@ -146,7 +174,7 @@ const validateInterfaces = async (
   }
 
   try {
-    for(let interfaceInfo of interfacesArr) {
+    for(let interfaceInfo of validInterfaces) {
       await networkWifiIpRegExp(interfaceInfo.ip?.split('/')[0])
     }
   } catch (error) {
@@ -154,7 +182,7 @@ const validateInterfaces = async (
   }
 
   try {
-    const interfacesToValidate = interfacesArr.filter(
+    const interfacesToValidate = validInterfaces.filter(
       item => item.ipMode !== EdgeIpModeEnum.DHCP
     ).map(item => ({
       ip: item.ip?.split('/')[0],
@@ -172,10 +200,9 @@ const validateInterfaces = async (
 
 const validateIpInSubnetPool = (
   value: string,
-  interfaces?: { [key: string]: EdgePortInfo }
+  interfaces?: EdgePortInfo[]
 ) => {
-  const nonDhcpInterfaces = interfaces && Object.values(interfaces)
-    .filter(item => item.ipMode !== EdgeIpModeEnum.DHCP)
+  const nonDhcpInterfaces = interfaces?.filter(item => item.ipMode !== EdgeIpModeEnum.DHCP)
   if(
     !value ||
     !interfaces ||
@@ -191,12 +218,12 @@ const validateIpInSubnetPool = (
 
 const validateVip = (
   value: string,
-  interfaces?: { [key: string]: EdgePortInfo }
+  interfaces?: EdgePortInfo[]
 ) => {
   if(!interfaces) return Promise.resolve()
-  const validInterfaces = Object.values(interfaces)
-    .filter(item => item.ip && item.ipMode !== EdgeIpModeEnum.DHCP)
-    .map(item => item.ip.split('/')[0])
+  const validInterfaces = interfaces?.filter(item =>
+    item.ip && item.ipMode !== EdgeIpModeEnum.DHCP)
+    .map(item => item.ip.split('/')[0]) ?? []
   const { $t } = getIntl()
 
   if (validInterfaces.includes(value)) {

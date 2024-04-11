@@ -4,19 +4,14 @@ import { Col, Form, Row } from 'antd'
 import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 
-import { Fieldset }     from '@acx-ui/components'
-import { EdgePortInfo } from '@acx-ui/rc/utils'
+import { Fieldset }      from '@acx-ui/components'
+import { VipConfigType } from '@acx-ui/rc/components'
 
 import { ClusterConfigWizardContext } from '../../ClusterConfigWizardDataProvider'
 
 interface VipCardProps {
   index: number
-  data: {
-    interfaces: {
-      [key: string]: EdgePortInfo
-    }
-    vip: string
-  }
+  data: VipConfigType
 }
 
 export const VipCard = (props: VipCardProps) => {
@@ -42,11 +37,11 @@ export const VipCard = (props: VipCardProps) => {
             <Row>
               {
                 data.interfaces &&
-                Object.entries(data.interfaces).map(([k, v]) => {
+                data.interfaces.map(interfaceInfo => {
                   const targetNode = clusterInfo?.edgeList?.find(item =>
-                    item.serialNumber === k)
-                  return <Col span={24} key={k}>
-                    {`${targetNode?.name ?? ''} - ${_.capitalize(v.portName)}`}
+                    item.serialNumber === interfaceInfo.serialNumber)
+                  return <Col span={24} key={interfaceInfo.serialNumber}>
+                    {`${targetNode?.name ?? ''} - ${_.capitalize(interfaceInfo.portName)}`}
                   </Col>
                 })
               }

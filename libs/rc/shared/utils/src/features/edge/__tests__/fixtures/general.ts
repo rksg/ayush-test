@@ -507,7 +507,7 @@ export const mockedHaNetworkSettings = {
       portName: 'port2'
     }, {
       serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
-      portName: 'lag1'
+      portName: 'lag0'
     }],
     timeoutSeconds: 6
   }]
