@@ -3,10 +3,9 @@ import { Fragment } from 'react'
 import { chain, snakeCase } from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
+import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Tooltip }       from '@acx-ui/components'
+import { NodeType, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { codes }              from '../config'
 import { extractBeforeAfter } from '../services'
@@ -32,7 +31,7 @@ export const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     preferences
   } = details
-  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes(status)[code]
+  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
   return {
     status,
     code,
@@ -49,7 +48,7 @@ export const getValues = (details: EnhancedRecommendation) => {
 }
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
-  return codes(recommendation.status)[recommendation.code]
+  return codes[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
@@ -83,8 +82,7 @@ export const getRecommendationsText = (
     currentValue,
     recommendedValue,
     appliedOnce,
-    code,
-    status
+    code
   } = details
 
   const metadata = chain(details.metadata)
@@ -93,7 +91,7 @@ export const getRecommendationsText = (
     .fromPairs()
     .value()
 
-  const recommendationInfo = codes(status)[code]
+  const recommendationInfo = codes[code]
   const {
     appliedReasonText,
     valueFormatter,
@@ -106,14 +104,12 @@ export const getRecommendationsText = (
   } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
+    ...productNames,
     ...metadata,
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
     currentValue: appliedOnce ? valueFormatter(originalValue) : valueFormatter(currentValue),
     recommendedValue: valueFormatter(recommendedValue),
-    br: <br />,
-    product: get('IS_MLISA_SA')
-      ? $t({ defaultMessage: 'SmartZone' })
-      : $t({ defaultMessage: 'RUCKUS ONE' })
+    br: <br />
   }
   if (code.startsWith('c-crrm')) {
     const link = kpiBeforeAfter(details, 'number-of-interfering-links')

@@ -5,9 +5,8 @@ import { compareVersion } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
 import { formatter }      from '@acx-ui/formatter'
 
-import { Recommendation } from './services'
-import { CRRMStates }     from './states'
-import { crrmText }       from './utils'
+import { CRRMStates } from './states'
+import { crrmText }   from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
@@ -52,6 +51,7 @@ type RecommendationKPIConfig = {
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: ReturnType<typeof formatter>;
   showAps?: boolean;
+  onlyForStatuses?: StateType[]
 }
 
 type RecommendationConfig = {
@@ -61,7 +61,7 @@ type RecommendationConfig = {
   reasonText: MessageDescriptor;
   tradeoffText: MessageDescriptor;
   appliedReasonText?: MessageDescriptor;
-  kpis: RecommendationKPIConfig[]
+  kpis: RecommendationKPIConfig[],
   recommendedValueTooltipContent?:
     string |
     ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
@@ -182,39 +182,31 @@ export const states = {
 
 export type StateType = keyof typeof states
 
-const probeflexConfig = (status: Recommendation['status']): RecommendationConfig => ({
+const probeflexConfig: RecommendationConfig = {
   valueFormatter: formatter('enabledFormat'),
   valueText: defineMessage({ defaultMessage: 'AirFlexAI' }),
-  actionText: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {product}. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
+  actionText: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {smartZone}. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
   reasonText: defineMessage({ defaultMessage: 'AirFlexAI suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
   tradeoffText: defineMessage({ defaultMessage: 'This feature may cause a slight increase (~1 secs) in time to connect for a very small percentage of clients since probes are being suppressed.' }),
   recommendedValueTooltipContent: () => defineMessage({ defaultMessage: 'Enabling AI probe suppression will disable Airtime Decongestion' }),
-  kpis: status === 'applied'
-    ? [
-      {
-        key: 'curr-avg-mgmt-traffic-per-client',
-        label: defineMessage({ defaultMessage: 'Current average management traffic per client' }),
-        format: formatter('bytesFormat'),
-        deltaSign: 'none'
-      },
-      {
-        key: 'prev-avg-mgmt-traffic-per-client',
-        label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
-        format: formatter('bytesFormat'),
-        deltaSign: 'none'
-      }
-    ]
-    : [
-      {
-        key: 'curr-avg-mgmt-traffic-per-client',
-        label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
-        format: formatter('bytesFormat'),
-        deltaSign: 'none'
-      }
-    ]
-})
+  kpis: [
+    {
+      key: 'curr-avg-mgmt-traffic-per-client',
+      label: defineMessage({ defaultMessage: 'Current average management traffic per client' }),
+      format: formatter('bytesFormat'),
+      deltaSign: 'none'
+    },
+    {
+      key: 'prev-avg-mgmt-traffic-per-client',
+      label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
+      format: formatter('bytesFormat'),
+      deltaSign: 'none',
+      onlyForStatuses: ['applied']
+    }
+  ]
+}
 
-export const codes = (status: Recommendation['status']) => ({
+export const codes = {
   'c-bgscan24g-enable': {
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Auto channel selection mode and background scan on 2.4 GHz radio' }),
@@ -585,23 +577,28 @@ export const codes = (status: Recommendation['status']) => ({
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 2.4 GHz' }),
     priority: priorities.medium,
-    ...probeflexConfig(status)
+    ...probeflexConfig
   },
   'c-probeflex-5g': {
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 5 GHz' }),
     priority: priorities.medium,
-    ...probeflexConfig(status)
+    ...probeflexConfig
   },
   'c-probeflex-6g': {
     category: categories['Wi-Fi Client Experience'],
     summary: defineMessage({ defaultMessage: 'Enable AirFlexAI for 6 GHz' }),
     priority: priorities.medium,
-    ...probeflexConfig(status)
+    ...probeflexConfig
   }
-} as unknown as Record<string, RecommendationConfig & CodeInfo>)
+} as unknown as Record<string, RecommendationConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
   acc[key as StateType] = val.text
   return acc
 }, {} as Record<StateType, MessageDescriptor>)
+
+export const filterKpisByStatus = (kpis: RecommendationKPIConfig[], status: StateType) => {
+  return kpis.filter(kpi => typeof kpi.onlyForStatuses === 'undefined'
+    || kpi.onlyForStatuses.includes(status))
+}
