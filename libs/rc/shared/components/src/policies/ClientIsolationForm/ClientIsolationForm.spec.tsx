@@ -235,7 +235,7 @@ describe('ClientIsolationForm', () => {
 
     // Select the client
     // eslint-disable-next-line max-len
-    const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.clientMac) })
+    const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.clientMac.toLocaleLowerCase()) })
     await userEvent.click(await within(targetRow).findByRole('checkbox'))
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
 
