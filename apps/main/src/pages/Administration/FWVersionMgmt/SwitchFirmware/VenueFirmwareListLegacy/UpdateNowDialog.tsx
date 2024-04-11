@@ -150,11 +150,11 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
               <Space direction={'vertical'}>
                 {firmware10AvailableVersions?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    <>
+                    <span style={{ lineHeight: '22px' }}>
                       {getSwitchVersionLabel(intl, v)}
                       {v.isDowngradeVersion && !v.inUse &&
-                        <DowngradeTag>Downgrade</DowngradeTag>}
-                    </>
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                    </span>
                   </Radio>)}
                 <Radio value='' key='0'>
                   {$t({ defaultMessage: 'Do not update firmware on these switches' })}
