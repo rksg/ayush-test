@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 
-import { Divider }                from 'antd'
+import { Divider, Form }          from 'antd'
 import _                          from 'lodash'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
@@ -174,36 +174,41 @@ function ApplyCalendar ({
   } else if (needsWlans && ['Apply', 'ApplyScheduled'].includes(type)) {
     footer = <>
       <Divider />
-      <Loader states={wlans.states} style={{ height: '52px' }}>
-        <Select
-          mode='multiple'
-          maxTagCount='responsive'
-          showArrow
-          showSearch={false}
-          style={{ width: '260px', margin: '10px auto' }}
-          onChange={wlans.select}
-          placeholder={$t({ defaultMessage: 'Select networks' })}
-          value={wlans.selected.map(wlan => wlan.id)}
-          maxTagPlaceholder={() =>
-            <div title={wlans.selected.map(wlan => wlan.name).join(', ')}>
-              {$t({
-                defaultMessage: `{count} {count, plural,
-                  one {{singular}}
-                  other {{plural}}
-                } selected`
-              }, {
-                count: wlans.selected.length,
-                singular: $t(defineMessage({ defaultMessage: 'network' })),
-                plural: $t(defineMessage({ defaultMessage: 'networks' }))
-              })}
-            </div>
-          }
-          children={wlans.available
-            .map(({ id, name }: { id: string, name: string }) =>
-              <Select.Option key={id} value={id} children={name} />
-            )
-          }
-        />
+      <Loader states={wlans.states} style={{ height: '72px' }}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Networks' })}
+          style={{ margin: '0 0 0 10px' }}
+        >
+          <Select
+            mode='multiple'
+            maxTagCount='responsive'
+            showArrow
+            showSearch={false}
+            style={{ width: '260px', margin: '0 auto 10px auto' }}
+            onChange={wlans.select}
+            placeholder={$t({ defaultMessage: 'Select networks' })}
+            value={wlans.selected.map(wlan => wlan.id)}
+            maxTagPlaceholder={() =>
+              <div title={wlans.selected.map(wlan => wlan.name).join(', ')}>
+                {$t({
+                  defaultMessage: `{count} {count, plural,
+                    one {{singular}}
+                    other {{plural}}
+                  } selected`
+                }, {
+                  count: wlans.selected.length,
+                  singular: $t(defineMessage({ defaultMessage: 'network' })),
+                  plural: $t(defineMessage({ defaultMessage: 'networks' }))
+                })}
+              </div>
+            }
+            children={wlans.available
+              .map(({ id, name }: { id: string, name: string }) =>
+                <Select.Option key={id} value={id} children={name} />
+              )
+            }
+          />
+        </Form.Item>
       </Loader>
     </>
   }
