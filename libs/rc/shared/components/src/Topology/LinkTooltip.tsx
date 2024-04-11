@@ -200,7 +200,7 @@ onClose: () => void
             edgesInfoComponent(tooltipEdge, tooltipSourceNode, tooltipTargetNode)}
       </Descriptions>
       {tooltipEdge?.extraEdges && tooltipEdge?.extraEdges.length > 0 &&
-        <Tabs type='third' defaultActiveKey={'#1'}>
+        <Tabs type='third' defaultActiveKey={'#1'} centered>
           <Tabs.TabPane
             tab={$t({ defaultMessage: '#1' })}
             key='#1'>

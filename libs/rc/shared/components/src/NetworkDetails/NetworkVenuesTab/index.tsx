@@ -30,6 +30,7 @@ import {
   useGetVenueCityListQuery,
   useAddNetworkVenueTemplatesMutation,
   useDeleteNetworkVenuesTemplateMutation,
+  useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -38,7 +39,6 @@ import {
   NetworkVenue,
   Venue,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
