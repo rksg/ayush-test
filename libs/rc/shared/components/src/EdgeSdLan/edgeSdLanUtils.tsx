@@ -14,15 +14,11 @@ export const useGetNetworkTunnelInfo = () => {
 
     const clusterNames = sdLansInfo?.map(sdlan => {
       const linkToDetail = isEdgeSdLanHaReady
-        ? `devices/edge/cluster/${sdlan.isGuestTunnelEnabled
-          ? sdlan.guestEdgeClusterId
-          : sdlan.edgeClusterId}/edit/cluster-details`
+        ? `devices/edge/cluster/${sdlan.edgeClusterId}/edit/cluster-details`
         : `/devices/edge/${sdlan.edgeId}/details/overview`
 
       return <TenantLink to={linkToDetail} key={sdlan.id}>
-        {isEdgeSdLanHaReady
-          ? (sdlan.isGuestTunnelEnabled ? sdlan.edgeClusterName : sdlan.guestEdgeClusterName)
-          : sdlan.edgeName}
+        {isEdgeSdLanHaReady ? sdlan.edgeClusterName : sdlan.edgeName}
       </TenantLink>
     })
 
