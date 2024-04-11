@@ -588,6 +588,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTimezone: {
     method: 'get',
-    url: '/timezones?location=:lat,:lng'
+    url: '/timezones?location=:lat,:lng',
+    newApi: true
   }
 }
