@@ -743,6 +743,10 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
+export interface ApEnhancedKey {
+	tlsEnhancedKeyEnabled: boolean
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number

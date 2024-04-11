@@ -120,6 +120,7 @@ export interface FirmwareVersion {
   onboardDate?: string;
   releaseDate?: string;
   inUse?: boolean;
+  isDowngradeVersion?: boolean;
 }
 
 export interface ABFVersion {
