@@ -1,7 +1,8 @@
-import { Provider }             from '@acx-ui/store'
-import { render, screen }       from '@acx-ui/test-utils'
-import type { AnalyticsFilter } from '@acx-ui/utils'
-import { DateRange }            from '@acx-ui/utils'
+import { Provider }                         from '@acx-ui/store'
+import { dataApiURL }                       from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { IncidentBySeverity } from '.'
 
@@ -20,6 +21,23 @@ describe('IncidentBySeverity', () => {
     filter: {}
   }
 
+  beforeEach(() => {
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          P1: 1,
+          P2: 2,
+          P3: 3,
+          P4: 4
+        }
+      }
+    }
+
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+      data: expectedResult
+    })
+  })
+
   it('renders type=bar', async () => {
     render(<Provider><IncidentBySeverity type='bar' filters={filters} /></Provider>)
 
@@ -27,6 +45,15 @@ describe('IncidentBySeverity', () => {
   })
   it('renders type=donut', async () => {
     render(<Provider><IncidentBySeverity type='donut' filters={filters} /></Provider>)
+
+    expect(await screen.findByTestId('IncidentBySeverityDonutChart')).toBeVisible()
+  })
+  it('renders type=donut, return callback setState', async () => {
+    render(<Provider><IncidentBySeverity
+      type='donut'
+      filters={filters}
+      setIncidentCount={jest.fn()}
+    /></Provider>)
 
     expect(await screen.findByTestId('IncidentBySeverityDonutChart')).toBeVisible()
   })
