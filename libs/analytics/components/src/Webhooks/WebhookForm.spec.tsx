@@ -331,6 +331,29 @@ describe('WebhookForm', () => {
       expect(dialog).toBeVisible()
       expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
     })
+    it('send sample and render details (object)', async () => {
+      const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
+
+      render(<WebhookForm {...{ onClose, webhook }} />, { wrapper: Provider })
+
+      const status = 200
+      const data = { abc: 1, message: 'message' }
+
+      mockServer.use(
+        rest.post(webhooksUrl('send-sample-incident'), (req, res, ctx) => {
+          payloadSpy(req.body)
+          return res(ctx.json({ status, data, success: true }))
+        })
+      )
+
+      await click(await screen.findByRole('button', { name }))
+
+      const dialog = await screen.findByRole('dialog', {
+        name: (_, el) => el.textContent!.includes('Sample Incident Sent')
+      })
+      expect(dialog).toBeVisible()
+      expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+    })
     it('handle RTKQuery error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
 

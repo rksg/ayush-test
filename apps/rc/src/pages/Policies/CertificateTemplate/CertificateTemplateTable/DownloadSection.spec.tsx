@@ -59,25 +59,6 @@ describe('DownloadDrawer', () => {
     )
   })
 
-  test('renders correctly', () => {
-    render(
-      <Provider>
-        <DownloadSection
-          setRawInfoDrawer={() => { }}
-          setUploadDrawerOpen={() => { }}
-          type={CertificateCategoryType.CERTIFICATE}
-          data={certificate}
-        />
-      </Provider>
-    )
-
-    expect(screen.getByText('View Public Key')).toBeInTheDocument()
-    expect(screen.getByText('View Chain')).toBeInTheDocument()
-    expect(screen.getAllByText('Download PEM')).toHaveLength(2)
-    expect(screen.getByText('Download DER')).toBeInTheDocument()
-    expect(screen.getByText('Download PKCS7')).toBeInTheDocument()
-  })
-
   test('handles certificate download button click', async () => {
     render(
       <Provider>
@@ -90,18 +71,24 @@ describe('DownloadDrawer', () => {
       </Provider>
     )
 
-    const downloadPublicKeyPem = screen.getAllByText('Download PEM')[0]
+    expect(screen.queryByText('Delete')).toBeNull()
+    const downloadPublicKeyPem = screen.getAllByRole('button', { name: 'Download PEM' })[0]
     await userEvent.click(downloadPublicKeyPem)
-    const downloadPublicKeyDer = screen.getByText('Download DER')
+    const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
     await userEvent.click(downloadPublicKeyDer)
     await waitFor(() => expect(mockDownloadCertificate).toHaveBeenCalled())
 
-    const downloadChain = screen.getAllByText('Download PEM')[1]
+    const downloadChain = screen.getAllByRole('button', { name: 'Download PEM' })[1]
     await userEvent.click(downloadChain)
-    const downloadChainPkcs7 = screen.getByText('Download PKCS7')
+    const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
     await userEvent.click(downloadChainPkcs7)
     await waitFor(() => expect(mockDownloadCertificateChain).toHaveBeenCalled())
 
+    const downloadPrivate = screen.getAllByRole('button', { name: 'Download' })[0]
+    await userEvent.click(downloadPrivate)
+    const downloadP12 = screen.getAllByRole('button', { name: 'Download' })[1]
+    await userEvent.click(downloadP12)
+    await waitFor(() => expect(mockDownloadCertificate).toBeCalledTimes(4))
   })
 
   it('should handle certificate authority download button click', async () => {
@@ -116,23 +103,23 @@ describe('DownloadDrawer', () => {
       </Provider>
     )
 
-    const downloadPublicKeyPem = screen.getAllByText('Download PEM')[0]
+    expect(screen.queryByText('Delete')).toBeVisible()
+    const downloadPublicKeyPem = screen.getAllByRole('button', { name: 'Download PEM' })[0]
     await userEvent.click(downloadPublicKeyPem)
-    const downloadPublicKeyDer = screen.getByText('Download DER')
+    const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
     await userEvent.click(downloadPublicKeyDer)
     await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(2))
 
-    const downloadChain = screen.getAllByText('Download PEM')[1]
+    const downloadChain = screen.getAllByRole('button', { name: 'Download PEM' })[1]
     await userEvent.click(downloadChain)
-    const downloadChainPkcs7 = screen.getByText('Download PKCS7')
+    const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
     await userEvent.click(downloadChainPkcs7)
     await waitFor(() => expect(mockDownloadCAChain).toHaveBeenCalled())
 
-    jest.resetAllMocks()
     const downloadPrivate = screen.getAllByRole('button', { name: 'Download' })[0]
     await userEvent.click(downloadPrivate)
     const downloadP12 = screen.getAllByRole('button', { name: 'Download' })[1]
     await userEvent.click(downloadP12)
-    await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(2))
+    await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(4))
   })
 })

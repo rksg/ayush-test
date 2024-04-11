@@ -96,8 +96,9 @@ describe('EdgeClusterInterfaceSettingForm', () => {
       mockClusterInterfaceOptionData['serialNumber-1'][0].portName
     )
     await userEvent.click(screen.getByRole('radio', { name: 'Static/Manual' }))
-    expect(await screen.findByRole('textbox', { name: 'IP Address' }))
-      .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip)
+    const ip = await screen.findByRole('textbox', { name: 'IP Address' })
+    expect(ip).not.toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip)
+    expect(ip).toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip.split('/')[0])
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' }))
       .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].subnet)
   })

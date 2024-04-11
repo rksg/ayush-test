@@ -26,15 +26,16 @@ import {
   Modal,
   showActionModal
 } from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
+import { useLazyGetTimezoneQuery } from '@acx-ui/rc/services'
 import {
   NetworkVenue,
   transformTimezoneDifference,
   NetworkVenueScheduler,
   NetworkSaveData,
   getVenueTimeZone,
-  fetchVenueTimeZone,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  ITimeZone
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -51,14 +52,6 @@ interface SchedulingModalProps extends AntdModalProps {
   }
   network?: { name: string } | null | NetworkSaveData
   formName: string
-}
-
-interface Timezone {
-  dstOffset: number,
-  rawOffset: number,
-  status: string,
-  timeZoneId: string,
-  timeZoneName: string
 }
 
 interface schedule {
@@ -91,13 +84,13 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const [checkAll, setCheckAll] = useState<boolean[]>([])
   const [timeTicks, setTimeTicks] = useState<string[]>([])
   const [disabled, setDisabled] = useState<boolean>(true)
-  const [timezone, setTimezone] = useState<Timezone>({
+  const [timezone, setTimezone] = useState<ITimeZone>({
     dstOffset: 0,
     rawOffset: 0,
-    status: '',
     timeZoneId: '',
     timeZoneName: ''
   })
+  const [getTimezone] = useLazyGetTimezoneQuery()
 
   const { networkVenue, venue, network, formName } = props
 
@@ -163,7 +156,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   useEffect(() => {
     const getTimeZone = async (venueLatitude: string, venueLongitude: string) => {
       const timeZone = isMapEnabled ?
-        await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude)) :
+        await getTimezone({ params: { lat: venueLatitude, lng: venueLongitude } }).unwrap() :
         getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
       setTimezone(timeZone)
     }

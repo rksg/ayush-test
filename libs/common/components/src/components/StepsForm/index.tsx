@@ -5,3 +5,5 @@ export type {
   StepFormProps,
   StepsFormGotoStepFn
 } from './types'
+
+export * from './utils'

@@ -43,11 +43,12 @@ export default function useCertificateAuthorityForm () {
       }).unwrap()
       return res.id
     } else {
-      const { caId, expireDateMoment, startDateMoment, generation, ...rest } = formData
+      const { caId, expireDateMoment, startDateMoment, generation, email, ...rest } = formData
       const payload = {
         ...rest,
         expireDate: expireDateMoment.startOf('day').toDate(),
-        startDate: startDateMoment.startOf('day').toDate()
+        startDate: startDateMoment.startOf('day').toDate(),
+        email: email ? email : undefined
       }
       if (generation === GenerationCaType.NEW) {
         const res = await addCertificateAuthority({ payload }).unwrap()

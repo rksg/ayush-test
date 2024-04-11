@@ -57,7 +57,8 @@ export type StepFormProps <T> = Omit<
 > & {
   children: React.ReactNode
 
-  onFinish?: (values: T) => Promise<boolean | void>
+  // eslint-disable-next-line max-len
+  onFinish?: (values: T, event?: React.MouseEvent) => Promise<boolean | void>
 }
 
 export type InternalStepFormProps <T> = StepFormProps<T> & { step: number, name: string }
