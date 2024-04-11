@@ -185,7 +185,7 @@ describe('ClientIsolationForm', () => {
       name: 'Client Isolation testing',
       description: 'Here is the description',
       allowlist: [{
-        mac: clientToAdd.clientMac,
+        mac: clientToAdd.clientMac.toLocaleLowerCase(),
         ipAddress: clientToAdd.ipAddress
       }]
     }
@@ -241,7 +241,7 @@ describe('ClientIsolationForm', () => {
 
     // Verify the client has been added to the allow list
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.clientMac) })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.clientMac.toLocaleLowerCase()) })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
