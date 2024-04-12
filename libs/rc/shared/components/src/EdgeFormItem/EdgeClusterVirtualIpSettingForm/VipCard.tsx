@@ -72,7 +72,7 @@ export const VipCard = (props: VipCardProps) => {
             />
           </Col>
         }
-        <Col span={18}>
+        <Col span={22}>
           <Form.Item
             name={[index, 'interfaces']}
             rules={[
