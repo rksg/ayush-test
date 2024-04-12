@@ -43,7 +43,9 @@ export const selectedPorts = [{
   unitState: 'ONLINE',
   unitStatus: 'Standalone',
   usedInFormingStack: false,
-  vlanIds: '2 1'
+  vlanIds: '2 1',
+  vsixIngressAclName: 'ipv6-acl-in',
+  vsixEgressAclName: 'ipv6-acl-out'
 }, {
   adminStatus: 'Up',
   cloudPort: false,

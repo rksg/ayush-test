@@ -37,9 +37,9 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
   const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
   const apGroupVlanPool = apGroupVlanType === VlanType.Pool
-    ? apgroup.vlanPoolName
+    ? apgroup.vlanPoolId
       ? {
-        name: apgroup.vlanPoolName || '',
+        name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
         id: apgroup.vlanPoolId || '',
         vlanMembers: []
       }

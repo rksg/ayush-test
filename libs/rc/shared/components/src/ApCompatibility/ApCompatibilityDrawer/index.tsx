@@ -191,14 +191,14 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
             {itemDetail?.requiredFw}
           </Form.Item>
         }
-        {itemDetail?.requiredModel &&
+        {itemDetail?.supportedModelFamilies &&
           <Form.Item
             key={`model_${index}`}
             label={$t({ defaultMessage: 'Supported AP Model Family' })}
             style={detailStyle}
             className='ApCompatibilityDrawerFormItem'
           >
-            {itemDetail?.requiredModel?.join(',')}
+            {itemDetail?.supportedModelFamilies?.join(', ')}
           </Form.Item>
         }
         {!apName && type !== ApCompatibilityType.ALONE &&

@@ -504,7 +504,8 @@ export const recommendationListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
       ],
-      preferences: { crrmFullOptimization: true }
+      preferences: { crrmFullOptimization: true },
+      trigger: 'daily'
     },
     {
       id: '12',
@@ -539,7 +540,8 @@ export const recommendationListResult = {
         { status: 'applied' },
         { status: 'revertscheduled' }
       ],
-      preferences: null
+      preferences: null,
+      trigger: 'daily'
     },
     {
       id: '13',
@@ -566,7 +568,8 @@ export const recommendationListResult = {
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
       ] as NetworkPath,
-      preferences: null
+      preferences: null,
+      trigger: 'once'
     },
     {
       id: '14',
@@ -597,7 +600,8 @@ export const recommendationListResult = {
       statusTrail: [
         { status: 'new' }
       ],
-      preferences: null
+      preferences: null,
+      trigger: 'once'
     },
     insufficientLicenses,
     verificationError,
@@ -625,7 +629,8 @@ export const recommendationListResult = {
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: { crrmFullOptimization: true }
+      preferences: { crrmFullOptimization: true },
+      trigger: 'daily'
     }
   ]
 }

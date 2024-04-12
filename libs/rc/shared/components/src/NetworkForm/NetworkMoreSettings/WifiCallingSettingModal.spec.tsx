@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { serviceApi }                             from '@acx-ui/rc/services'
-import { WifiCallingSetting, WifiCallingUrls }    from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
-import { act, mockServer, render, screen,within } from '@acx-ui/test-utils'
+import { serviceApi }                                                          from '@acx-ui/rc/services'
+import { ServicesConfigTemplateUrlsInfo, WifiCallingSetting, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                     from '@acx-ui/store'
+import { act, mockServer, render, screen,within }                              from '@acx-ui/test-utils'
 
 
 import { mockWifiCallingTableResult } from '../../services/WifiCalling/__tests__/fixtures'
@@ -22,11 +22,14 @@ describe('WifiCallingSettingModal', () => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
-
     mockServer.use(
       rest.get(WifiCallingUrls.getWifiCallingList.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
     )
   })
