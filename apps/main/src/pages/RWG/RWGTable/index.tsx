@@ -5,6 +5,7 @@ import { Button, ColumnType, Loader, PageHeader, Table, TableProps }            
 import { useGetVenuesQuery, useRwgListQuery }                                              from '@acx-ui/rc/services'
 import { defaultSort, FILTER, RWG, SEARCH, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                                              from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                    from '@acx-ui/types'
 import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
 
 import { useRwgActions } from '../useRwgActions'
@@ -168,7 +169,7 @@ export function RWGTable () {
       <PageHeader
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
         extra={filterByAccess([
-          <TenantLink to='/ruckus-wan-gateway/add'>
+          <TenantLink to='/ruckus-wan-gateway/add' scopeKey={[SwitchScopes.READ]}>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
         ])}

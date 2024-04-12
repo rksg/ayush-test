@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+
 import { TenantType, useTenantLink  } from './useTenantLink'
 
 import type { LinkProps } from 'react-router-dom'
@@ -10,7 +12,7 @@ import type { LinkProps } from 'react-router-dom'
 export function TenantLink ({
   tenantType,
   ...props
-}: LinkProps & { tenantType?: TenantType }) {
+}: LinkProps & { tenantType?: TenantType, scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[], }) {
   const to = useTenantLink(props.to, tenantType)
 
   return <Link {...props} to={to} />

@@ -28,7 +28,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/user'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
 
