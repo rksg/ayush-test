@@ -113,14 +113,6 @@ export type RecommendationListItem = Recommendation & {
 type MutationPayload = { id: string }
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
-interface ScheduleResponse {
-  schedule: {
-    errorCode: string;
-    errorMsg: string;
-    success: boolean;
-  }
-}
-
 export interface MuteMutationPayload extends MutationPayload { mute: boolean }
 export interface MuteMutationResponse { toggleMute: MutationResponse }
 

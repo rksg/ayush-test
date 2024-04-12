@@ -32,7 +32,6 @@ import type {
   RecommendationWlan
 } from '../services'
 
-
 // eslint-disable-next-line max-len
 const applyFooterMsg = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
 
