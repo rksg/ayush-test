@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import * as d3 from 'd3'
 
 import { ConnectionStatus } from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from '../utils'
+
+import { TopologyTreeContext } from './TopologyTreeContext'
 
 export interface Edge {
   source: {
@@ -35,13 +37,13 @@ interface LinksProps {
   targetNode?: string;
   onClick: (node: Edge, event: MouseEvent) => void;
   onMouseLeave: () => void;
-  selectedVlanPortList: string[];
 }
 
 // eslint-disable-next-line max-len
 
 export const Links: React.FC<LinksProps> = (props) => {
-  const { links, linksInfo, onClick, selectedVlanPortList } = props
+  const { links, linksInfo, onClick } = props
+  const { selectedVlanPortList } = useContext(TopologyTreeContext)
   let delayHandler: NodeJS.Timeout
 
   const linkColor: { [key in ConnectionStatus]: string } = {
@@ -172,7 +174,7 @@ export const Links: React.FC<LinksProps> = (props) => {
           <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
             // eslint-disable-next-line max-len
-            className={`edgePath ${linkClass ? linkClass : ''} ${link.source.data.id ? link.source.data.id : ''} ${selectedVlanPortList && selectedVlanPortList.includes('link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
+            className={`edgePath ${linkClass} ${link.source.data.id} ${selectedVlanPortList && selectedVlanPortList.includes('link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
             onMouseEnter={(e) => handleMouseEnter(link, e as unknown as MouseEvent)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}

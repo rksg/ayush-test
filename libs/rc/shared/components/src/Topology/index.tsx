@@ -298,13 +298,14 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const [filterNodes, setFilterNodes] = useState<OptionType[]>()
   const [scale, setScale] = useState<number>(1.5)
   const [translate, setTranslate] = useState<number[]>([0,0])
-  let newScale = useRef(1.5)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
   const [onDrag, setOnDrag] = useState<boolean>(false)
   const [vlansOption, setVlansOption] = useState([] as DefaultOptionType[])
+  const [selectedNode, setSelectedNode] = useState<string>('')
   const [selectedVlan, setSelectedVlan] = useState<string>()
   const [searchValue, setSearchValue] = useState('')
   const [vlanPortData, setVlanPortData] = useState<VlanPortData>({})
+  let newScale = useRef(1.5)
 
   useEffect(() => {
     if(topologyData) {
@@ -450,6 +451,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
   const handleVlanChange = (value: string) => {
     setSelectedVlan(value)
     setSearchValue('')
+    setSelectedNode('')
     removeFocusNodes().then(() => {
       if(Array.isArray(vlanPortData[value])){
         vlanPortData[value].forEach(
@@ -506,6 +508,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   setSearchValue(value)
                   removeFocusNodes().then(() => {
                     if(option.item.id !== undefined){
+                      setSelectedNode(option.item.id)
                       document.getElementById(option.item.id)?.classList.add('focusNode')
                     }
                   })
@@ -516,6 +519,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                     setSelectedVlan('')
                     setSearchValue(inputValue)
                     if (inputValue === '') {
+                      setSearchValue('')
+                      removeFocusNodes()
                       return false
                     }
                     return
@@ -531,6 +536,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 <Input
                   prefix={<SearchOutlined />}
                   placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}
+                  onKeyUp={() => removeFocusNodes()}
                   title={$t({ defaultMessage: 'Search by device name or MAC address' })}
                 />
               </AutoComplete>
@@ -546,7 +552,15 @@ export function TopologyGraphComponent (props:{ venueId?: string,
           }
           <UI.Topology>
             <TopologyTreeContext.Provider
-              value={{ scale, translate, setTranslate, onDrag, setOnDrag }}>
+              value={{
+                scale,
+                translate,
+                setTranslate,
+                onDrag,
+                setOnDrag,
+                selectedNode,
+                selectedVlanPortList: selectedVlan ? vlanPortData[selectedVlan] : []
+              }}>
               <TopologyTree
                 ref={graphRef}
                 data={treeData}
@@ -558,7 +572,6 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                 onLinkMouseLeave={closeLinkTooltipHandler}
                 closeTooltipHandler={closeTooltipHandler}
                 closeLinkTooltipHandler={closeLinkTooltipHandler}
-                selectedVlanPortList={selectedVlan && vlanPortData[selectedVlan]}
               />
             </TopologyTreeContext.Provider>
           </UI.Topology>

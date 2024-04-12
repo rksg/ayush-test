@@ -27,7 +27,6 @@ interface TopologyProps {
   onLinkMouseLeave: () => void
   closeTooltipHandler: () => void
   closeLinkTooltipHandler: () => void
-  selectedVlanPortList: string[]
   width: number
   height: number
 }
@@ -42,15 +41,14 @@ interface linkCoordinateProps {
 const Svg = (props: TopologyProps) => {
   const { width, height, data, edges, onNodeHover,
     onNodeClick, onLinkClick, onNodeMouseLeave, onLinkMouseLeave,
-    closeTooltipHandler, closeLinkTooltipHandler, selectedVlanPortList
+    closeTooltipHandler, closeLinkTooltipHandler
   } = props
   const refSvg = useRef<any>(null)
   const refMain = useRef<SVGGElement>(null)
   const [treeData, setTreeData] = useState<d3.HierarchyNode<TreeData> | null>(null)
   const [nodesCoordinate, setNodesCoordinate] = useState<nodeCoordinateProps>({})
   const [linksInfo, setLinksInfo] = useState<linkCoordinateProps>({})
-  const { scale, translate, setTranslate, setOnDrag } =
-    useContext(TopologyTreeContext)
+  const { scale, translate, setTranslate, setOnDrag } = useContext(TopologyTreeContext)
 
   const handleDrag = drag()
     .on('start', (event) => {
@@ -177,7 +175,6 @@ const Svg = (props: TopologyProps) => {
               linksInfo={linksInfo}
               onClick={onLinkClick}
               onMouseLeave={onLinkMouseLeave}
-              selectedVlanPortList={selectedVlanPortList}
             />
           }
           {links && (
@@ -188,7 +185,6 @@ const Svg = (props: TopologyProps) => {
               onClick={onNodeClick}
               onMouseLeave={onNodeMouseLeave}
               nodesCoordinate={nodesCoordinate}
-              selectedVlanPortList={selectedVlanPortList}
             />
           )}
         </g>

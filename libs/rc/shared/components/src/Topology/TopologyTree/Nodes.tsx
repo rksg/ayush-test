@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEvent } from 'react'
+import React, { useState, useEffect, MouseEvent, useContext } from 'react'
 
 import { HierarchyPointNode } from 'd3'
 import { useParams }          from 'react-router-dom'
@@ -8,6 +8,8 @@ import { DeviceTypes, NodeData, TopologyDeviceStatus }      from '@acx-ui/rc/uti
 
 import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
+import { TopologyTreeContext } from './TopologyTreeContext'
+
 interface NodeProps {
   nodes: HierarchyPointNode<NodeData>[];
   expColEvent: (nodeId: string) => void;
@@ -15,14 +17,14 @@ interface NodeProps {
   onClick: (node: NodeData, event: MouseEvent) => void;
   onMouseLeave: () => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
-  selectedVlanPortList: string[];
 }
 
 const Nodes: React.FC<NodeProps> = (props) => {
   const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onHover, onClick, nodesCoordinate, selectedVlanPortList } = props
+  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
+  const { selectedNode, selectedVlanPortList } = useContext(TopologyTreeContext)
 
   useEffect(() => {
     nodes
@@ -86,7 +88,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
               // eslint-disable-next-line max-len
-              className={`node tree-node ${params?.switchId === node.data.id ? 'focusNode' : ''} ${params?.apId === node.data.id ? 'focusNode' : ''} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
+              className={`node tree-node ${(params?.switchId === node.data.id || params?.apId === node.data.id || selectedNode === node.data.id) && 'focusNode'} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
               }
               id={node.data.id}
             >
