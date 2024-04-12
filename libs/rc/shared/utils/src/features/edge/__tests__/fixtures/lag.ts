@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
 
 export const mockedEdgeLagList = {
@@ -23,7 +25,7 @@ export const mockedEdgeLagList = {
       ip: '',
       subnet: '',
       gateway: '',
-      corePortEnabled: true,
+      corePortEnabled: false,
       natEnabled: true,
       lagEnabled: true
     },
@@ -50,6 +52,11 @@ export const mockedEdgeLagList = {
     totalCount: 2
   }
 }
+
+export const mockedEdgeLagListCorePortEnabled = _.cloneDeep(mockedEdgeLagList)
+mockedEdgeLagListCorePortEnabled.content[0].portType = EdgePortTypeEnum.LAN
+mockedEdgeLagListCorePortEnabled.content[0].corePortEnabled = true
+mockedEdgeLagListCorePortEnabled.content[0].natEnabled = false
 
 export const mockEdgeLagStatusList = {
   totalCount: 2,

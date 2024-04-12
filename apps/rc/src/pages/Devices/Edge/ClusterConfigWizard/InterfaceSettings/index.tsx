@@ -129,7 +129,7 @@ export const InterfaceSettings = () => {
     let changedField
     let changedValue
     let targetSn: EdgeSerialNumber = ''
-    let targetPortIfNaem: string = ''
+    let targetPortIfName: string = ''
     let field: EdgePort
     for (let sn in settings) {
       for (let portIfName in settings[sn]) {
@@ -137,7 +137,7 @@ export const InterfaceSettings = () => {
         for (let fieldKey in field) {
           if (!changedField) {
             targetSn = sn
-            targetPortIfNaem = portIfName
+            targetPortIfName = portIfName
             changedField = fieldKey
             changedValue = field[fieldKey as keyof typeof field]
             break
@@ -147,15 +147,14 @@ export const InterfaceSettings = () => {
     }
 
     if (changedField === 'portType' || changedField === 'corePortEnabled') {
-      const targetNamePath = ['portSettings', targetSn, targetPortIfNaem, 0]
+      const targetNamePath = ['portSettings', targetSn, targetPortIfName, 0]
 
       if (changedField === 'corePortEnabled' && changedValue === false) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
-      } else if (changedField === 'portType'
-        && (changedValue === EdgePortTypeEnum.LAN)) {
+      } else if (changedField === 'portType' && (changedValue === EdgePortTypeEnum.LAN)) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType' && changedValue === EdgePortTypeEnum.WAN) {
-        const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfNaem][0]
+        const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfName][0]
         if (initialPortData?.portType !== EdgePortTypeEnum.WAN) {
           configWizardForm.setFieldValue(targetNamePath.concat(['natEnabled']), true)
         }
