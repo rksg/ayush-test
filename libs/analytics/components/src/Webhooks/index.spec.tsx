@@ -4,6 +4,8 @@ import { rest }  from 'msw'
 import { get }                                                                      from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
 import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                           from '@acx-ui/user'
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
@@ -152,6 +154,25 @@ describe('WebhooksTable', () => {
         await click(await within(dialog).findByRole('button', { name: 'OK' }))
 
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
+      })
+    })
+
+    describe('when role = READ_ONLY', () => {
+      beforeEach(() => {
+        const profile = getUserProfile()
+        setUserProfile({ ...profile, profile: {
+          ...profile.profile, roles: [RolesEnum.READ_ONLY]
+        } })
+      })
+      it('should hide actions', async () => {
+        render(<WebhooksTable />, { wrapper: Provider })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
+      })
+      it('should hide row actions', async () => {
+        render(<WebhooksTable />, { wrapper: Provider })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
       })
     })
   })

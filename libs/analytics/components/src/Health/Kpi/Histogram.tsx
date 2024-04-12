@@ -56,7 +56,8 @@ function Histogram ({
   setKpiThreshold,
   thresholds,
   mutationAllowed,
-  isNetwork
+  isNetwork,
+  disabled
 }: {
   filters: AnalyticsFilter;
   kpi: keyof typeof kpiConfig;
@@ -65,6 +66,7 @@ function Histogram ({
   thresholds: KpiThresholdType;
   mutationAllowed: boolean;
   isNetwork: boolean;
+  disabled?: boolean;
 }) {
   const { $t } = useIntl()
   const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -198,6 +200,7 @@ function Histogram ({
                     onSliderChange={onSliderChange}
                     sliderValue={splitsAfterIsReverseCheck.indexOf(thresholdValue) + 1}
                     shortXFormat={histogram?.shortXFormat}
+                    disabled={disabled}
                   />
                 </>
               ) : (
@@ -216,6 +219,7 @@ function Histogram ({
             onApply={onButtonApply}
             canSave={mutationAllowed}
             isNetwork={isNetwork}
+            disabled={disabled}
           />
         </GridCol>
       </GridRow>
