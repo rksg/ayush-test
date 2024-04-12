@@ -178,6 +178,21 @@ describe('Recommendation services', () => {
     })
   })
 
+  it('returns wlans', async () => {
+    const WLANs = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(recommendationUrl, 'Wlans', { data: { recommendation: { WLANs } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationWlans.initiate({ id: 'id1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(WLANs)
+  })
+
   it('should return recommendation list', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: recommendationListResult
@@ -487,6 +502,27 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({ id: 'test', type: 'Apply', scheduledAt: '7-15-2023' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should schedule with wlans', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useScheduleRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        id: 'test',
+        type: 'Apply',
+        scheduledAt: '7-15-2023',
+        wlans: [{ ssid: 'test', name: 'test' }]
+      })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
