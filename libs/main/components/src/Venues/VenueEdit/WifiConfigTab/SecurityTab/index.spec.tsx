@@ -4,11 +4,11 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { venueApi }                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RogueApUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                           from '@acx-ui/store'
-import { mockServer, render, screen }                from '@acx-ui/test-utils'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { venueApi }                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider, store }             from '@acx-ui/store'
+import { mockServer, render, screen }  from '@acx-ui/test-utils'
 
 import { VenueEditContext }        from '../..'
 import {
@@ -70,10 +70,10 @@ describe('SecurityTab', () => {
         CommonUrlsInfo.getVenueRogueAp.url,
         (_, res, ctx) => res(ctx.json(venueRogueAp))),
       rest.get(
-        WifiUrlsInfo.getVenueApEnhancedKey.url,
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey))),
       rest.put(
-        WifiUrlsInfo.updateVenueApEnhancedKey.url,
+        CommonUrlsInfo.updateVenueApEnhancedKey.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
@@ -202,7 +202,7 @@ describe('SecurityTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueApEnhancedKey.url,
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey)))
     )
 

@@ -70,6 +70,7 @@ export enum Features {
   LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
   LOAD_BALANCING = 'wifi-consumer-load-balancing-toggle',
   MDNS_FENCING = 'wifi-consumer-bonjour-fencing-toggle',
+  LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
