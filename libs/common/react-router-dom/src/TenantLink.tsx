@@ -11,6 +11,7 @@ import type { LinkProps } from 'react-router-dom'
  */
 export function TenantLink ({
   tenantType,
+  scopeKey,
   ...props
 }: LinkProps & { tenantType?: TenantType, scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[], }) {
   const to = useTenantLink(props.to, tenantType)

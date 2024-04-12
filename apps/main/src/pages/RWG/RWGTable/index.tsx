@@ -169,7 +169,7 @@ export function RWGTable () {
       <PageHeader
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
         extra={filterByAccess([
-          <TenantLink to='/ruckus-wan-gateway/add' scopeKey={[SwitchScopes.READ]}>
+          <TenantLink to='/ruckus-wan-gateway/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
         ])}
