@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 
 import { Filter }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
@@ -10,7 +9,6 @@ import { SwitchClientContext } from './context'
 
 function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean, filters?: Filter) {
   const { tenantId, venueId } = useParams()
-  const portLinkToggle = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const filterable: { [k: string]: boolean | { key: string; value: string }[] } = {}
 
   const venueQueryTable = useVenuesListQuery({

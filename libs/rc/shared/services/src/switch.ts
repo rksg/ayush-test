@@ -1291,8 +1291,8 @@ const aggregatedSwitchClientData = (
 ) => {
   const data:SwitchClient[] = clients.data.map(item => {
     const target = switches.data.find(s => s.id === item.switchId)
-    const portStatus = switchPortsQuery.data.find(p => p.portId === item.switchPortId)
-    return { ...item, switchId: target ? item.switchId : '', portStatus } // use switchId to mark non-exist switch
+    const switchPortStatus = switchPortsQuery.data.find(p => p.portId === item.switchPortId)
+    return { ...item, switchId: target ? item.switchId : '', switchPortStatus } // use switchId to mark non-exist switch
   })
   return {
     ...clients,

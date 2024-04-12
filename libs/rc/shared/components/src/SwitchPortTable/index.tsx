@@ -383,13 +383,13 @@ export function isLAGMemberPort (port: SwitchPortViewModel): boolean {
   return !!port.lagId && port.lagId.trim() !== '0' && port.lagId.trim() !== '-1'
 }
 
-function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
+export function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
   return port && port.deviceStatus
     ? isOperationalSwitch(port.deviceStatus, port.syncedSwitchConfig)
     : false
 }
 
-function isStackPort (port: SwitchPortViewModel): boolean {
+export function isStackPort (port: SwitchPortViewModel): boolean {
   const slot = port.portIdentifier.split('/')?.[1]
   if (isICX7650Port(getSwitchModel(port.switchUnitId)) && (slot === '3' || slot === '4')) {
     return true

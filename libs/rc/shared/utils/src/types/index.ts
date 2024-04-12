@@ -9,10 +9,10 @@ import { EdgeStatusSeverityEnum } from '../models'
 import { NetworkVenue }           from '../models/NetworkVenue'
 import { TrustedCAChain }         from '../models/TrustedCAChain'
 
-import { ApModel }                     from './ap'
-import { EdgeStatusSeverityStatistic } from './edge'
-import { EPDG }                        from './services'
-import { SwitchStatusEnum }            from './switch'
+import { ApModel }                               from './ap'
+import { EdgeStatusSeverityStatistic }           from './edge'
+import { EPDG }                                  from './services'
+import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
@@ -568,6 +568,7 @@ export interface SwitchClient {
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
   dhcpClientHostName?: string
+  switchPortStatus?: SwitchPortViewModel
 }
 
 export interface QosMapRule {

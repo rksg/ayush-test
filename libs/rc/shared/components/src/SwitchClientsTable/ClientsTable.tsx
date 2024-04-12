@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,13 +14,24 @@ import {
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
-  TableQuery
+  TableQuery,
+  Lag,
+  SwitchPortStatus
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
 
+import {
+  getInactiveTooltip,
+  isLAGMemberPort,
+  isOperationalSwitchPort,
+  isStackPort
+} from '../SwitchPortTable'
+
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
+import { SwitchLagModal } from '../SwitchLagDrawer/SwitchLagModal'
+import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 
 type TableQueryPayload = React.SetStateAction<{
   searchString: string;
@@ -60,7 +71,15 @@ export function ClientsTable (props: {
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const portLinkToggle = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+
+  const [editLagModalVisible, setEditLagModalVisible] = useState(false)
+  const [editLag, setEditLag] = useState([] as Lag[])
+  const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const [breakoutPorts, setBreakoutPorts] = useState([] as SwitchPortStatus[])
+  const [breakoutPortDrawerVisible, setBreakoutPortDrawerVisible] = useState(false)
+  const [editBreakoutPortDrawerVisible, setEditBreakoutPortDrawerVisible] = useState(false)
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -189,7 +208,37 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Port' }),
       dataIndex: 'switchPortFormatted',
       sorter: true,
-      render: (_, row) => row['switchPort']
+      render: (_, row) => {
+        if (!portLinkEnabled) { // FF: off
+          return row['switchPort']
+        }
+
+        const { switchPortStatus } = row || {}
+        const disableLink = !switchPortStatus ||
+        !isOperationalSwitchPort(switchPortStatus) || isStackPort(switchPortStatus)
+        const tooltip = switchPortStatus ? getInactiveTooltip(switchPortStatus) :
+          intl.$t({
+            defaultMessage:
+              'The port cannot be edited since it is on a switch that is not operational'
+          })
+
+        if (disableLink) {
+          return (<Tooltip title={tooltip}>
+            {row['switchPort']}
+          </Tooltip>)
+        } else if (isLAGMemberPort(switchPortStatus)) {
+          return row['switchPort'] + 'LLAAGG'
+          // onEditLag = async () => {
+          //   const { data: lagList } = await getLagList({ params })
+          //   const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
+          //   setEditLagModalVisible(true)
+          //   setEditLag([lagData])
+          // }
+        } else {
+          return row['switchPort'] + 'LINK'
+        }
+      }
+
     }, {
       key: 'vlanName',
       title: intl.$t({ defaultMessage: 'VLAN' }),
@@ -269,6 +318,45 @@ export function ClientsTable (props: {
           enableApiFilter={true}
           rowKey='id'
         />
+        {editLagModalVisible && <SwitchLagModal
+          isEditMode={true}
+          editData={editLag}
+          visible={editLagModalVisible}
+          setVisible={setEditLagModalVisible}
+          type='drawer'
+        />}
+        {editPortDrawerVisible && <EditPortDrawer
+          key='edit-port'
+          visible={editPortDrawerVisible}
+          setDrawerVisible={setEditPortDrawerVisible}
+          isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+          isMultipleEdit={selectedPorts?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts}
+        />
+        }
+        {
+          breakoutPorts && <FrontViewBreakoutPortDrawer
+            portNumber={breakoutPorts[0]?.portIdentifier.split(':')[0]}
+            setDrawerVisible={setBreakoutPortDrawerVisible}
+            drawerVisible={breakoutPortDrawerVisible}
+            breakoutPorts={breakoutPorts}
+          />
+        }
+        {editBreakoutPortDrawerVisible && <EditPortDrawer
+          key='edit-breakout-port'
+          visible={editBreakoutPortDrawerVisible}
+          setDrawerVisible={setEditBreakoutPortDrawerVisible}
+          isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+          isMultipleEdit={selectedPorts?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts}
+          onBackClick={() => {
+            setBreakoutPortDrawerVisible(true)
+            setSelectedPorts([])
+          }}
+        />
+        }
       </Loader>
     </div>
   )
