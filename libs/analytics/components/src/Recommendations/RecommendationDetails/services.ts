@@ -39,7 +39,8 @@ export type RecommendationDetails = {
   dataEndTime: string;
   preferences?: {
     crrmFullOptimization: boolean;
-  }
+  },
+  trigger: string
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -157,6 +158,7 @@ export const api = recommendationApi.injectEndpoints({
               path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(code!, status as EnhancedRecommendation['status'])}
+              trigger
             }
           }
         `,

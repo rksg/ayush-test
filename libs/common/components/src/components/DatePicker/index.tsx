@@ -209,7 +209,7 @@ export const DateTimePicker = ({
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
   useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
-  return <Tooltip placement='right' title={title}>
+  return <Tooltip placement='top' title={title}>
     <UI.HiddenDateInputGlobalOverride />
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker

@@ -46,7 +46,7 @@ export default function AccessControlOverview (props: { data: AccessControlInfoT
       title: $t({ defaultMessage: 'Layer 2' }),
       content: data && data.l2AclPolicy?.enabled
         ? <SubPolicyDetail
-          policyType={PolicyType.LAYER_3_POLICY}
+          policyType={PolicyType.LAYER_2_POLICY}
           policyId={data.l2AclPolicy.id}
         />
         : EnabledStatus.OFF

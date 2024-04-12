@@ -276,7 +276,6 @@ function CancelCalendar ({
         </UI.ActionsText>
         :<Tooltip
           placement='top'
-          arrowPointAtCenter
           title={$t({ defaultMessage: 'Cancel' })}
         >
           <CancelCircleOutlined
