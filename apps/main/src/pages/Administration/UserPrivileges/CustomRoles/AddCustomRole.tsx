@@ -28,6 +28,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }                            from '@acx-ui/types'
 import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
@@ -35,7 +36,8 @@ import * as UI from '../styledComponents'
 interface CustomRoleData {
   name?: string,
   description?: string,
-  scopes?: string[]
+  scopes?: string[],
+  preDefinedRole?: string
 }
 
 export function AddCustomRole () {
@@ -52,6 +54,8 @@ export function AddCustomRole () {
 
   const isEditMode = action === 'edit'
   const isClone = action === 'clone'
+  const clonePreDefinedRole = isClone && location?.name &&
+      Object.values(RolesEnum).includes(location?.name) ? location?.name : undefined
 
   const wifiScopes = [
     WifiScopes.READ, WifiScopes.CREATE,
@@ -80,7 +84,8 @@ export function AddCustomRole () {
       const roleData: CustomRoleData = {
         name: name,
         description: description,
-        scopes: checkedScopes
+        scopes: checkedScopes,
+        preDefinedRole: clonePreDefinedRole
       }
       if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },
@@ -97,7 +102,7 @@ export function AddCustomRole () {
 
   useEffect(() => {
     if (location && (isEditMode || isClone)) {
-      form.setFieldValue('name', location?.name)
+      form.setFieldValue('name', isClone ? ('Clone-' + location?.name) : location?.name)
       form.setFieldValue('description', location?.description)
     }
   }, [form, location])

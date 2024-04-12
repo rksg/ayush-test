@@ -273,7 +273,8 @@ export interface CustomRole {
   frameworkRO?: boolean,
   createdDate?: string,
   updatedDate?: string,
-  scopes?: string[]
+  scopes?: string[],
+  preDefinedRole?: string
 }
 
 export interface AdminGroupLastLogins {
