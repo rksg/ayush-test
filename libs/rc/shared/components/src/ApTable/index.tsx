@@ -215,10 +215,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
-        if (apCompatibilities.length > 0) {
+        if (apCompatibilities?.length > 0) {
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            if (apIncompatible) {
+              apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            }
           })
           if (hasGroupBy) {
             tableQuery.data.data?.forEach(item => {

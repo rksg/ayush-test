@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { cloneDeep, uniq }     from 'lodash'
+import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
+import { cloneDeep, omit, uniq } from 'lodash'
 
 import { DateFormatEnum, formatter }                                                                                                     from '@acx-ui/formatter'
 import {
@@ -72,6 +72,7 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
+  ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
@@ -417,24 +418,38 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
         networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
 
-        const aggregatedList = networkVenuesApGroupList.data.map(networkVenue => {
-          const { venueId, apGroups=[] } = networkVenue
-          const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+        let aggregatedList: NetworkVenue[] | undefined
 
-          const newApgroups = cloneDeep(apGroups)
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList.data?.[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
 
-          currentApGroupsDefaultValue?.forEach(apGroup => {
-            const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
-            if (!customApGroup) {
-              newApgroups.push(cloneDeep(apGroup))
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.data?.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+            const newApgroups = cloneDeep(apGroups)
+
+            currentApGroupsDefaultValue?.forEach(apGroup => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroup))
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
             }
           })
-
-          return {
-            ...networkVenue,
-            apGroups: newApgroups
-          }
-        })
+        }
 
         return networkVenuesApGroupQuery.data
           ? { data: aggregatedList }
@@ -1445,6 +1460,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApEnhancedKey: build.query<ApEnhancedKey, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApEnhancedKey, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApEnhancedKey: build.mutation<ApEnhancedKey, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueApEnhancedKey, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     bulkUpdateUnitProfile: build.mutation<PropertyUnit, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -1608,6 +1640,8 @@ export const {
   useBulkUpdateUnitProfileMutation,
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
+  useGetVenueApEnhancedKeyQuery,
+  useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
   useUpdateVenueAntennaTypeMutation
