@@ -1,14 +1,33 @@
-import _ from 'lodash'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
-import { EdgeGeneralFixtures, EdgeIpModeEnum, EdgeLag, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { CompatibilityStatusBar, CompatibilityStatusEnum } from '@acx-ui/rc/components'
+import {
+  EdgeGeneralFixtures,
+  EdgeIpModeEnum,
+  EdgeLag,
+  EdgeLagLacpModeEnum,
+  EdgeLagTimeoutEnum,
+  EdgeLagTypeEnum,
+  EdgePortTypeEnum,
+  EdgeStatus
+} from '@acx-ui/rc/utils'
+import { render, screen, within } from '@acx-ui/test-utils'
 
-import { getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData } from '../__tests__/fixtures'
+import {
+  getTargetInterfaceFromInterfaceSettingsFormData,
+  mockClusterConfigWizardData
+} from '../__tests__/fixtures'
 
-import { InterfaceSettingsFormType }                               from './types'
-import { interfaceCompatibilityCheck, lagSettingsCompatibleCheck } from './utils'
+import { CompatibilityCheckResult, InterfaceSettingsFormType } from './types'
+import {
+  getLagFormCompatibilityFields,
+  getPortFormCompatibilityFields,
+  interfaceCompatibilityCheck,
+  lagSettingsCompatibleCheck } from './utils'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const nodeList = mockEdgeClusterList.data[0].edgeList
+const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 const node1SN = nodeList[0].serialNumber
 const node2SN = nodeList[1].serialNumber
 const mockNoLagData = _.cloneDeep(mockClusterConfigWizardData)
@@ -17,7 +36,46 @@ mockNoLagData.lagSettings = nodeList.map(item => ({
   lags: [] as EdgeLag[]
 })) as InterfaceSettingsFormType['lagSettings']
 
-describe('interface Compatibility Check', () => {
+jest.mock('antd', () => {
+  const antdCompoents =jest.requireActual('antd')
+  antdCompoents.Typography.Text = ({ children, type }
+    : React.PropsWithChildren<{ type: string }>) => (<span data-testid='rc-text'>
+    <div data-testid='rc-text-type'>{type}</div>
+    {children}
+  </span>
+  )
+  return { ...antdCompoents }
+})
+
+describe('Interface Compatibility Check', () => {
+  it('when node is missing in port setting', async () => {
+    const mockData = _.cloneDeep(mockNoLagData)
+    const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+    n1p1!.portType = EdgePortTypeEnum.LAN
+    n1p1!.corePortEnabled = true
+    const n1p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[0].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings)
+    n1p2!.portType = EdgePortTypeEnum.CLUSTER
+    const n2p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+    n2p1!.portType = EdgePortTypeEnum.CLUSTER
+    n2p1!.ipMode = EdgeIpModeEnum.DHCP
+    const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+    n2p2!.ipMode = EdgeIpModeEnum.DHCP
+    n2p2!.corePortEnabled = true
+
+    const result = interfaceCompatibilityCheck(
+      mockData.portSettings, mockData.lagSettings, nodeList)
+
+    expect(result.isError).toBe(false)
+    expect(result.portTypes).toBe(true)
+    expect(result.corePorts).toBe(true)
+    expect(result.ports).toBe(true)
+
+  })
+
   describe('success case', () => {
     it('when core LAN + cluster port', async () => {
       const mockData = _.cloneDeep(mockNoLagData)
@@ -64,6 +122,32 @@ describe('interface Compatibility Check', () => {
   })
 
   describe('failed case', () => {
+    it('when is LAG member', async () => {
+      // node2 port1 is lag member
+      const mockData = _.cloneDeep(mockClusterConfigWizardData)
+
+      const result = interfaceCompatibilityCheck(
+        mockData.portSettings, mockData.lagSettings, nodeList)
+
+      expect(result.isError).toBe(true)
+      expect(result.portTypes).toBe(false)
+      expect(result.corePorts).toBe(true)
+      expect(result.ports).toBe(false)
+
+      const node1ErrResult = result.results.find(item => item.nodeId === node1SN)?.errors
+      expect(node1ErrResult?.corePorts.isError).toBe(false)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.WAN].isError).toBe(true)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.WAN].value).toBe(1)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(1)
+
+      const node2ErrResult = result.results.find(item => item.nodeId === node2SN)?.errors
+      expect(node2ErrResult?.corePorts.isError).toBe(false)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN]).toBe(undefined)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(1)
+    })
+
     it('when only first node has cluster port', async () => {
       const mockData = _.cloneDeep(mockNoLagData)
       const target = getTargetInterfaceFromInterfaceSettingsFormData(
@@ -158,6 +242,42 @@ describe('interface Compatibility Check', () => {
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN]?.value).toBe(1)
     })
 
+    it('when only first node has unconfigured', async () => {
+      const mockData = _.cloneDeep(mockNoLagData)
+      const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n1p1!.portType = EdgePortTypeEnum.UNCONFIGURED
+      n1p1!.ip = ''
+      n1p1!.subnet = ''
+      n1p1!.gateway = ''
+      const n2p1 = getTargetInterfaceFromInterfaceSettingsFormData(
+        nodeList[1].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
+      n2p1!.portType = EdgePortTypeEnum.LAN
+      n2p1!.ip = '5.5.5.5'
+      n2p1!.subnet = '255.255.255.0'
+
+      const result = interfaceCompatibilityCheck(
+        mockData.portSettings, mockData.lagSettings, nodeList)
+
+      expect(result.isError).toBe(true)
+      expect(result.portTypes).toBe(false)
+      expect(result.corePorts).toBe(true)
+      expect(result.ports).toBe(true)
+
+      const node1ErrResult = result.results.find(item => item.nodeId === node1SN)?.errors
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.UNCONFIGURED]?.isError).toBe(false)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.UNCONFIGURED]?.value).toBe(1)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN]?.isError).toBe(true)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN]?.value).toBe(1)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.WAN]).toBe(undefined)
+
+      const node2ErrResult = result.results.find(item => item.nodeId === node2SN)?.errors
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.UNCONFIGURED]).toBe(undefined)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(true)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN]?.value).toBe(2)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN]).toBe(undefined)
+    })
+
     it('when first node Cluster + LAN, second node WAN + LAN', async () => {
       const mockData = _.cloneDeep(mockNoLagData)
       const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
@@ -192,12 +312,12 @@ describe('interface Compatibility Check', () => {
 })
 
 describe('LAG Settings Compatibility Check', () => {
-  const nodeList = mockEdgeClusterList.data[0].edgeList
+  const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
   const node1SN = nodeList[0].serialNumber
   const node2SN = nodeList[1].serialNumber
 
   describe('success case', () => {
-    it('when both node no lAG', async () => {
+    it('when both node no LAG', async () => {
       const result = lagSettingsCompatibleCheck(mockNoLagData.lagSettings, nodeList)
 
       expect(result.isError).toBe(false)
@@ -222,6 +342,46 @@ describe('LAG Settings Compatibility Check', () => {
       const node2ErrResult = result.results.find(item => item.nodeId === node2SN)?.errors
       expect(node2ErrResult?.corePorts.isError).toBe(false)
       expect(node2ErrResult?.corePorts.value).toBe(1)
+    })
+
+    it('when core LAG + LAN LAG', async () => {
+      const mockData = _.cloneDeep(mockClusterConfigWizardData.lagSettings)
+      const lanLag = {
+        id: 2,
+        description: 'test',
+        lagType: EdgeLagTypeEnum.LACP,
+        lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+        lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+        lagMembers: [],
+        portType: EdgePortTypeEnum.LAN,
+        ipMode: EdgeIpModeEnum.STATIC,
+        ip: '2.2.2.2',
+        subnet: '255.255.255.0',
+        gateway: '',
+        corePortEnabled: false,
+        natEnabled: false,
+        lagEnabled: true
+      }
+      mockData[0].lags.push(lanLag)
+      mockData[1].lags.push(lanLag)
+      const result = lagSettingsCompatibleCheck(mockData, nodeList)
+
+      expect(result.isError).toBe(false)
+      expect(result.portTypes).toBe(true)
+      expect(result.corePorts).toBe(true)
+      expect(result.ports).toBe(true)
+
+      const node1ErrResult = result.results.find(item => item.nodeId === node1SN)?.errors
+      expect(node1ErrResult?.corePorts.isError).toBe(false)
+      expect(node1ErrResult?.corePorts.value).toBe(1)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
+      expect(node1ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(2)
+
+      const node2ErrResult = result.results.find(item => item.nodeId === node2SN)?.errors
+      expect(node2ErrResult?.corePorts.isError).toBe(false)
+      expect(node2ErrResult?.corePorts.value).toBe(1)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].isError).toBe(false)
+      expect(node2ErrResult?.portTypes[EdgePortTypeEnum.LAN].value).toBe(2)
     })
   })
 
@@ -249,6 +409,118 @@ describe('LAG Settings Compatibility Check', () => {
       expect(node2ErrResult?.corePorts.value).toBe(0)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN].isError).toBe(true)
       expect(node2ErrResult?.portTypes[EdgePortTypeEnum.WAN].value).toBe(1)
+    })
+  })
+})
+
+describe('Compatibility status result rendering', () => {
+  describe('LAG', () => {
+    const lagCompatibilityFields = getLagFormCompatibilityFields()
+
+    it('should correctly display compatible error details', async () => {
+      const checkResult = {
+        isError: true,
+        ports: true,
+        corePorts: false,
+        portTypes: true,
+        results: [{
+          nodeId: 'serialNumber-1',
+          nodeName: 'SE-1',
+          errors: {
+            ports: { isError: false, value: 2 },
+            corePorts: { isError: true, value: 1 },
+            portTypes: {
+              [EdgePortTypeEnum.WAN]: { isError: true, value: 0 },
+              [EdgePortTypeEnum.CLUSTER]: { isError: true, value: 1 }
+            }
+          }
+        }, {
+          nodeId: 'serialNumber-2',
+          nodeName: 'SE-2',
+          errors: {
+            ports: { isError: false, value: 2 },
+            corePorts: { isError: false, value: 0 },
+            portTypes: {
+              [EdgePortTypeEnum.WAN]: { isError: true, value: 1 },
+              [EdgePortTypeEnum.CLUSTER]: { isError: true, value: 0 }
+            }
+          }
+        }]
+      } as CompatibilityCheckResult
+
+      render(<CompatibilityStatusBar
+        type={CompatibilityStatusEnum.FAIL}
+        fields={lagCompatibilityFields}
+        errors={checkResult.results}
+      />)
+
+      await userEvent.click(screen.getByRole('button', { name: 'See details' }))
+      const drawer = await screen.findByRole('dialog')
+
+      // eslint-disable-next-line testing-library/no-node-access
+      const node1 = within(drawer).getByText('SE-1').closest('div.ant-card') as HTMLElement
+      // eslint-disable-next-line testing-library/no-node-access
+      const node2 = within(drawer).getByText('SE-2').closest('div.ant-card') as HTMLElement
+      expect(within(node1).queryByRole('cell', { name: 'Number of LAGs 2' })).toBeValid()
+      // eslint-disable-next-line max-len
+      expect(within(node1).queryByRole('cell', { name: 'Number of Core Ports danger 1' })).toBeValid()
+      expect(within(node1).queryByRole('cell', { name: 'Port Types danger CLUSTER' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Number of LAGs 2' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Number of Core Ports 0' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Port Types danger WAN' })).toBeValid()
+    })
+  })
+  describe('Port', () => {
+    const portCompatibilityFields = getPortFormCompatibilityFields()
+
+    it('should correctly display compatible error details', async () => {
+      const checkResult = {
+        isError: true,
+        ports: true,
+        corePorts: false,
+        portTypes: true,
+        results: [{
+          nodeId: 'serialNumber-1',
+          nodeName: 'SE-1',
+          errors: {
+            ports: { isError: true, value: 1 },
+            corePorts: { isError: false, value: 0 },
+            portTypes: {
+              [EdgePortTypeEnum.LAN]: { isError: true, value: 0 }
+            }
+          }
+        }, {
+          nodeId: 'serialNumber-2',
+          nodeName: 'SE-2',
+          errors: {
+            ports: { isError: true, value: 2 },
+            corePorts: { isError: false, value: 0 },
+            portTypes: {
+              [EdgePortTypeEnum.LAN]: { isError: true, value: 1 }
+            }
+          }
+        }]
+      } as CompatibilityCheckResult
+
+      render(<CompatibilityStatusBar
+        type={CompatibilityStatusEnum.FAIL}
+        fields={portCompatibilityFields}
+        errors={checkResult.results}
+      />)
+
+      await userEvent.click(screen.getByRole('button', { name: 'See details' }))
+      const drawer = await screen.findByRole('dialog')
+
+      // eslint-disable-next-line testing-library/no-node-access
+      const node1 = within(drawer).getByText('SE-1').closest('div.ant-card') as HTMLElement
+      // eslint-disable-next-line testing-library/no-node-access
+      const node2 = within(drawer).getByText('SE-2').closest('div.ant-card') as HTMLElement
+      expect(within(node1).queryByRole('cell', { name: 'Number of Ports danger 1' })).toBeValid()
+      expect(within(node1).queryByRole('cell', { name: 'Number of Core Ports 0' })).toBeValid()
+      expect(within(node1).queryByRole('cell', { name: 'Port Types' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Number of Ports danger 2' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Number of Core Ports 0' })).toBeValid()
+      expect(within(node2).queryByRole('cell', { name: 'Port Types danger LAN' })).toBeValid()
     })
   })
 })
