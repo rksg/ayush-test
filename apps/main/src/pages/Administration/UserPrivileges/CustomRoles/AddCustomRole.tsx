@@ -51,6 +51,7 @@ export function AddCustomRole () {
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
   const isEditMode = action === 'edit'
+  const isClone = action === 'clone'
 
   const wifiScopes = [
     WifiScopes.READ, WifiScopes.CREATE,
@@ -95,7 +96,7 @@ export function AddCustomRole () {
   }
 
   useEffect(() => {
-    if (location && (isEditMode || action === 'clone')) {
+    if (location && (isEditMode || isClone)) {
       form.setFieldValue('name', location?.name)
       form.setFieldValue('description', location?.description)
     }
@@ -177,7 +178,7 @@ export function AddCustomRole () {
       useState(form.getFieldValue(EdgeScopes.READ) ?? false)
 
     useEffect(() => {
-      if (location && location?.scopes && (isEditMode || action === 'clone')) {
+      if (location && location?.scopes && (isEditMode || isClone)) {
         const scopes = location.scopes
         scopes.map(s => form.setFieldValue(s, true))
         setWifiAttribute(scopes.find(a =>a.includes('wifi')) ? true : false )
@@ -559,7 +560,8 @@ export function AddCustomRole () {
     <PageHeader
       title={isEditMode
         ? intl.$t({ defaultMessage: 'Edit Admin Role' })
-        : intl.$t({ defaultMessage: 'Add Admin Role' })
+        : isClone ? intl.$t({ defaultMessage: 'Clone Admin Role' })
+          : intl.$t({ defaultMessage: 'Add Admin Role' })
       }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },

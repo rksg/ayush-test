@@ -512,7 +512,9 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Administrators' })}
+      title={isClone ? intl.$t({ defaultMessage: 'Clone Privilege Group' })
+        : intl.$t({ defaultMessage: 'Edit Privilege Group' })
+      }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },
         { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },
