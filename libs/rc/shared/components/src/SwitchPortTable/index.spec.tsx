@@ -98,7 +98,9 @@ const portlistData_7650 = {
     unitState: 'ONLINE',
     unitStatus: 'Standalone',
     usedInFormingStack: false,
-    vlanIds: ''
+    vlanIds: '',
+    vsixIngressAclName: 'ipv6-acl-in',
+    vsixEgressAclName: 'ipv6-acl-out'
   }, {
     adminStatus: 'Up',
     broadcastIn: '0',

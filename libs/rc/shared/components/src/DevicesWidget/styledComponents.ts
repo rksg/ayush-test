@@ -10,3 +10,9 @@ export const LinkContainer = styled.div`
   display: flex;
   align-items: center;
 `
+
+export const NavigationContainer = styled.div`
+  svg {
+    cursor: pointer
+  }
+`

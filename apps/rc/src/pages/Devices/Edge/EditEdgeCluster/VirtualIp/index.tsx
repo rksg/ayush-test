@@ -35,7 +35,7 @@ export interface VirtualIpFormType {
   vipConfig: VirtualIpConfigFormType[]
 }
 
-export const defaultHaTimeoutValue = 3
+export const defaultHaTimeoutValue = 6
 const defaultVirtualIpFormValues = {
   timeout: defaultHaTimeoutValue,
   vipConfig: [{}]
