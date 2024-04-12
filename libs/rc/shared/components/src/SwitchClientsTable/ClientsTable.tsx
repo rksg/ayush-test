@@ -35,11 +35,15 @@ export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
     'venueName', 'switchName', 'clientVlan', 'switchPort'],
-  fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName', 'vni',
-    'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
-    'dhcpClientOsVendorName', 'dhcpClientHostName',
-    'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+  fields: [
+    'clientDesc', 'clientIpv4Addr', 'clientIpv6Addr', 'clientMac',
+    'clientName', 'clientType', 'clientVlan', 'cog',
+    'deviceType', 'dhcpClientDeviceTypeName', 'dhcpClientHostName',
+    'dhcpClientModelName', 'dhcpClientOsVendorName', 'id',
+    'switchId', 'switchName', 'switchPort', 'switchPortFormatted',
+    'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
+    'vlanName', 'vni'
+  ],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}

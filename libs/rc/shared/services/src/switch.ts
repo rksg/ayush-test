@@ -55,7 +55,8 @@ import {
   SwitchVlan,
   downloadFile,
   SEARCH,
-  SORTER
+  SORTER,
+  SwitchPortViewModelQueryFields
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -835,14 +836,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
           body: {
             fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
-            filters: { id: _.uniq(list.data.map(c=>c.switchId)) },
+            filters: { portId: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
           }
         }
         const switchesQuery = await fetchWithBQ(switchesInfo)
         const switches = switchesQuery.data as TableResult<SwitchRow>
 
-        const aggregatedList = aggregatedSwitchClientData(list, switches)
+
+        const switchPortsInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchPortlist, arg.params),
+          body: {
+            fields: SwitchPortViewModelQueryFields,
+            filters: { portId: _.uniq(list.data.map(c=>c.switchPortId)) },
+            pageSize: 10000
+          }
+        }
+        const switchPortsQuery = await fetchWithBQ(switchPortsInfo)
+        const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
+
+        const aggregatedList = aggregatedSwitchClientData(list, switches, switchPorts)
 
         return listQuery.data
           ? { data: aggregatedList }
@@ -1273,11 +1286,13 @@ const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
 
 const aggregatedSwitchClientData = (
   clients: TableResult<SwitchClient>,
-  switches: TableResult<SwitchRow>
+  switches: TableResult<SwitchRow>,
+  switchPortsQuery: TableResult<SwitchPortViewModel>
 ) => {
   const data:SwitchClient[] = clients.data.map(item => {
     const target = switches.data.find(s => s.id === item.switchId)
-    return { ...item, switchId: target ? item.switchId : '' } // use switchId to mark non-exist switch
+    const portStatus = switchPortsQuery.data.find(p => p.portId === item.switchPortId)
+    return { ...item, switchId: target ? item.switchId : '', portStatus } // use switchId to mark non-exist switch
   })
   return {
     ...clients,

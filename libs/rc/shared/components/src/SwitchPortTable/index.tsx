@@ -15,6 +15,7 @@ import {
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
+  SwitchPortViewModelQueryFields,
   SwitchVlan,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
@@ -69,16 +70,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
 
-  const queryFields = ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-    'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-    'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-    'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-    'lagId', 'syncedSwitchConfig', 'usedInFormingStack',
-    'ingressAclName', 'egressAclName', 'vsixIngressAclName', 'vsixEgressAclName',
-    'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-    'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-    'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
-  ]
+  const queryFields = SwitchPortViewModelQueryFields
 
   const settingsId = 'switch-port-table'
   const tableQuery = usePollingTableQuery({

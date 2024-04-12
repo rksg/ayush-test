@@ -556,6 +556,7 @@ export interface SwitchClient {
   switchId: string
   switchName: string
   switchPort: string
+  switchPortId?: string
   switchSerialNumber: string
   clientVlan: string
   vlanName: string
