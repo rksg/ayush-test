@@ -1,4 +1,3 @@
-import { isNull }        from 'lodash'
 import { defineMessage } from 'react-intl'
 
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
