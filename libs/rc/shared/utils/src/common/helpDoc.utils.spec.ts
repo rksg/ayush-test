@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, useHelpPageLink } from './redirect.utils'
+import { DOCS_HOME_URL, getDocsMappingURL, getDocsURL, useHelpPageLink } from './helpDoc.utils'
 
 const mockedUrlMappingData = {
   'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
