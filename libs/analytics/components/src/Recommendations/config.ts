@@ -201,7 +201,17 @@ const probeflexConfig: RecommendationConfig = {
       label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
       format: formatter('bytesFormat'),
       deltaSign: 'none',
-      onlyForStatuses: ['applied']
+      onlyForStatuses: [
+        'applied',
+        'applyfailed',
+        'beforeapplyinterrupted',
+        'afterapplyinterrupted',
+        'applywarning',
+        'revertscheduled',
+        'revertscheduleinprogress',
+        'revertfailed',
+        'reverted'
+      ]
     }
   ]
 }
