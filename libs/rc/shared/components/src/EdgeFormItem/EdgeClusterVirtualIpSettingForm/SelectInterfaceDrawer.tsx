@@ -70,7 +70,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       if(editData) {
         const tmp = {} as SelectInterfaceDrawerFormType
         for(let vipConfig of editData) {
-          tmp[vipConfig.serialNumber] = { port: vipConfig?.portName ?? '' }
+          tmp[vipConfig.serialNumber] = { port: vipConfig.portName }
         }
         form.setFieldsValue(tmp)
       }
@@ -103,12 +103,12 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
   ) => {
     if(!options || options.length === 0) return
     if(!selectedInterfaces) return options
-    const selctedPortNames = Object.values(selectedInterfaces).map(item =>
+    const selectedPortNames = Object.values(selectedInterfaces).map(item =>
       item?.interfaces?.find(item => item.serialNumber === targetSerialNumber)?.portName)
       .filter(item => item !== undefined)
     const editPortName = editData?.find(item => item.serialNumber === targetSerialNumber)?.portName
     return options.filter(option =>
-      !selctedPortNames.includes(option.value + '') || editPortName === option.value)
+      !selectedPortNames.includes(option.value + '') || editPortName === option.value)
   }
 
   const getAllIpForValidation = () => {

@@ -27,7 +27,6 @@ export const VipCard = (props: VipCardProps) => {
       }
       switchStyle={{ display: 'none' }}
       checked={true}
-      style={{}}
     >
       <Row>
         <Col span={12}>
