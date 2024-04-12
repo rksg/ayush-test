@@ -97,7 +97,6 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
             style={{ width: '240px' }}
             min={3}
             max={15}
-            defaultValue={6}
             marks={{
               3: $t({ defaultMessage: '3 seconds' }),
               15: $t({ defaultMessage: '15 seconds' })
