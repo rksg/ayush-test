@@ -1,51 +1,101 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Switch }                 from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { showToast }  from '@acx-ui/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { Tooltip }                                from '@acx-ui/components'
+import { get }                                    from '@acx-ui/config'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import DetailsActions                    from '../../DetailsActions'
-import { useMuteRecommendationMutation } from '../services'
+import { DetailsActions }         from '../../DetailsActions'
+import { RecommendationActions }  from '../RecommendationActions'
+import {
+  useDeleteRecommendationMutation,
+  useMuteRecommendationMutation
+} from '../services'
+import {
+  getDeleteTooltipText,
+  enableDeleteStatus,
+  toggleMuteFn,
+  clickDeleteFn
+} from '../Table'
 
-import type { RecommendationDetails } from './services'
+import { DeleteOutlinedIcon } from './styledComponents'
 
-type Props = Pick<RecommendationDetails, 'id' | 'isMuted'> & {
-  link: string
-  type: string
-  actions: React.ReactNode
+import type { EnhancedRecommendation } from './services'
+
+export const recommendationTypeMapping = {
+  aiOps: {
+    title: defineMessage({ defaultMessage: 'AI Operations' }),
+    link: 'analytics/recommendations/aiOps'
+  },
+  crrm: {
+    title: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+    link: 'analytics/recommendations/crrm'
+  }
 }
-function RecommendationSetting ({ ...props }: Props) {
-  const { id, isMuted, link, type, actions } = props
+export function RecommendationSetting (
+  { recommendationDetails }: { recommendationDetails: EnhancedRecommendation }
+) {
+  const isRecommendationDeleteEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_DELETE) || Boolean(get('IS_MLISA_SA'))
+
+  const { id, status, trigger } = recommendationDetails
+  const { title, link } = recommendationTypeMapping[trigger === 'daily' ? 'crrm' : 'aiOps']
   const { $t } = useIntl()
   const [ muteRecommendation ] = useMuteRecommendationMutation()
+  const [ deleteRecommendation ] = useDeleteRecommendationMutation()
+  const [ isMuted, setIsMuted ] = useState( recommendationDetails.isMuted)
 
-  return <DetailsActions
-    toggleCallback={async (checked: boolean) => {
-      const { toggleMute } = await muteRecommendation({ id, mute: checked }).unwrap()
-      if (toggleMute.success) {
-        showToast({
-          type: 'success',
-          content: $t(
-            { defaultMessage: 'Recommendation {state} successfully' },
-            { state: checked ? 'muted' : 'unmuted' }
-          )
-        })
-      } else {
-        showToast({ type: 'error', content: toggleMute.errorMsg })
-      }
-    }}
-    muted={isMuted}
-    /* eslint-disable max-len */
-    overlay={{
-      title: $t({ defaultMessage: 'Mute Recommendation' }),
-      content: $t({ defaultMessage: 'While this recommendation is muted, it will be hidden in the UI. You can unmute this recommendation via setting icon in the {link}.' }, { link: <TenantLink to={link}>{$t({ defaultMessage: '{type} table' }, { type })}</TenantLink> }) as string
-    }}
-    /* eslint-enable max-len */
-    extraOverlay={{
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics')
+
+  const elements = [
+    {
       title: $t({ defaultMessage: 'Actions' }),
-      content: actions
-    }}
-  />
+      content: <RecommendationActions recommendation={{
+        ...recommendationDetails, statusEnum: recommendationDetails.status }} />
+    },
+    {
+      title: $t({ defaultMessage: 'Mute Recommendation' }),
+      content: <>
+        <Switch
+          checked={isMuted}
+          onChange={async checked => toggleMuteFn(
+            id, checked, muteRecommendation, () => setIsMuted(checked))
+          }
+        />
+        <p>{$t({ defaultMessage: `While this recommendation is muted, it will be hidden in the UI.
+          You can unmute this recommendation via setting icon in the {link}.` },
+        { link: <TenantLink to={link}>
+          {$t({ defaultMessage: '{type} table' }, { type: $t(title) })}
+        </TenantLink> })
+        }</p>
+      </>
+    },
+    ...((trigger === 'daily' &&
+    enableDeleteStatus.includes(status) &&
+    isRecommendationDeleteEnabled
+    ) ? [{
+        title: $t({ defaultMessage: 'Delete Recommendation' }),
+        content: <>
+          <Tooltip
+            placement='top'
+            title={$t({ defaultMessage: 'Delete' })}
+          >
+            <DeleteOutlinedIcon onClick={()=> clickDeleteFn(id, deleteRecommendation, () => {
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/recommendations/crrm`
+              })
+            })} />
+          </Tooltip>
+          <p>{getDeleteTooltipText(status)}</p>
+        </>
+      }]
+      : [])
+  ]
+
+  return <DetailsActions overlayElements={elements}/>
 }
-export default RecommendationSetting

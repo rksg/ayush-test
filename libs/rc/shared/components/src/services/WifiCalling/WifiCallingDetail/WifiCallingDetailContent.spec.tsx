@@ -2,10 +2,10 @@ import React from 'react'
 
 import { rest } from 'msw'
 
-import { serviceApi }                      from '@acx-ui/rc/services'
-import { WifiCallingUrls }                 from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { serviceApi }                                      from '@acx-ui/rc/services'
+import { ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
+import { act, mockServer, render, screen }                 from '@acx-ui/test-utils'
 
 import { mockWifiCallingDetail } from '../__tests__/fixtures'
 
@@ -25,6 +25,8 @@ describe('WifiCallingDetailContent', () => {
 
     mockServer.use(
       rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingDetail)))
     )
   })
