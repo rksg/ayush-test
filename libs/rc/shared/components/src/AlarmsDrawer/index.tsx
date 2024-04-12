@@ -38,7 +38,8 @@ const defaultPayload: {
     fields: string[]
     filters?: {
       severity?: string[],
-      serialNumber?: string[]
+      serialNumber?: string[],
+      venueId?: string[]
     }
   } = {
     url: CommonUrlsInfo.getAlarmsList.url,
@@ -65,14 +66,28 @@ export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-  const { visible, setVisible, serialNumber } = props
+  const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+
+    if(e.detail.data.venueId){
+      setVenueId(e.detail.data.venueId)
+    }else{
+      setVenueId('')
+    }
+
+    if(e.detail.data.serialNumber){
+      setSerialNumber(e.detail.data.serialNumber)
+    }else{
+      setSerialNumber('')
+    }
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
+  const [venueId, setVenueId] = useState('')
+  const [serialNumber, setSerialNumber] = useState('')
 
   const [
     clearAlarm,
@@ -113,8 +128,15 @@ export function AlarmsDrawer (props: AlarmsType) {
       })
     }
 
+    if(venueId){
+      filters = { ...filters, ...{ venueId: [venueId] } }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, severity, data, serialNumber])
+  }, [tableQuery.data, severity, data, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -269,6 +291,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     visible={visible}
     onClose={() => {
       setVisible(false)
+      setVenueId('')
     }}
     children={alarmList}
   />

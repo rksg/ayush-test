@@ -117,9 +117,9 @@ export function updateJwtCache (newJwt: string) {
   }
 }
 
-export async function loadImageWithJWT (imageId: string) {
+export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
   const headers = { mode: 'no-cors', ...getJwtHeaders() }
-  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
+  const url = requestUrl || `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const response = await fetch(url, { headers })
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
