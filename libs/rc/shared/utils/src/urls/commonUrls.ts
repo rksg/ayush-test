@@ -392,6 +392,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
     newApi: true
   },
+  getVenueApEnhancedKey: {
+    method: 'get',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    newApi: true
+  },
+  updateVenueApEnhancedKey: {
+    method: 'put',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    newApi: true
+  },
   getRoguePolicies: {
     method: 'get',
     url: '/roguePolicies',
@@ -588,6 +598,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTimezone: {
     method: 'get',
-    url: '/timezones?location=:lat,:lng'
+    url: '/timezones?location=:lat,:lng',
+    newApi: true
   }
 }
