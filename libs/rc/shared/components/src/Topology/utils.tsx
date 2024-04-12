@@ -27,14 +27,21 @@ import {
   TopologySwitchOperational,
   TopologyUnknown
 } from '@acx-ui/icons'
-import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, TopologyDeviceStatus, SwitchStatusEnum, DeviceTypes } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                               from '@acx-ui/utils'
+import {
+  ApDeviceStatusEnum,
+  APMeshRole,
+  ConnectionStatus,
+  TopologyDeviceStatus,
+  SwitchStatusEnum,
+  DeviceTypes
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+import { TreeData } from '.'
 
 
 
-export function getDeviceColor (deviceStatus: TopologyDeviceStatus
-  | SwitchStatusEnum
-  | ApDeviceStatusEnum) {
+export function getDeviceColor (deviceStatus: string) {
   switch(deviceStatus) {
     case TopologyDeviceStatus.Operational:
     case SwitchStatusEnum.OPERATIONAL:
@@ -64,9 +71,7 @@ export function getDeviceColor (deviceStatus: TopologyDeviceStatus
 }
 
 
-export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: TopologyDeviceStatus
-  | SwitchStatusEnum
-  | ApDeviceStatusEnum) {
+export function getDeviceIcon (deviceType: DeviceTypes, deviceStatus: string) {
   switch(deviceType) {
     case DeviceTypes.Ap:
       switch(deviceStatus) {
@@ -227,8 +232,7 @@ export function getMeshRole (meshRole: APMeshRole) {
 
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const transformData = (data: { data: any }) => {
+export const transformData = (data: TreeData) => {
   const root = get(data, 'data[0]', null)
   if (root !== null) {
     return hierarchy(root, (d) => d.children)
