@@ -11,7 +11,8 @@ import {
 import {
   render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 
@@ -245,6 +246,20 @@ describe('EditEdge ports - ports general', () => {
         <EdgePortsGeneralBase {...mockedProps} />
       </Form>)
       expect(screen.queryAllByRole('tab').length).toBe(0)
+    })
+
+    it('should show IP is N/A and MAC empty when port status data is undefined', async () => {
+      render(<Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+        <EdgePortsGeneralBase {...mockedProps} statusData={undefined} />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>)
+
+      for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
+        await userEvent.click(await screen.findByRole('tab',
+          { name: getEdgePortDisplayName(mockEdgePortConfig.ports[i]) }))
+        const activePane = screen.getByRole('tabpanel', { hidden: false })
+        await within(activePane).findByText('IP Address: N/A | MAC Address:')
+      }
     })
 
     it('cannot set LAN core port while a valid WAN port exist', async () => {

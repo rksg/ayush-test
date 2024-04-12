@@ -141,6 +141,10 @@ describe('VenueNetworksTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json({ venue: venueData }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -353,7 +357,7 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Local breakout')
+      expect(activatedRow).toHaveTextContent('Local Breakout')
     })
   })
 })

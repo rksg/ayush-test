@@ -31,7 +31,9 @@ import {
   params,
   networkVenue_allAps,
   networkVenue_apgroup,
-  networkVenueApCompatibilities, mockNetworkSaveData
+  networkVenueApCompatibilities,
+  mockNetworkSaveData,
+  vlanPoolList
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -39,7 +41,8 @@ import { NetworkVenuesTab } from './index'
 // isMapEnabled = false && SD-LAN not enabled
 jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
   && ff !== Features.EDGES_SD_LAN_TOGGLE
-  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
+  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
+)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -84,15 +87,15 @@ describe('NetworkVenuesTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (_, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (_, res, ctx) => res(ctx.json(list))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
+        (_, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.post(
         CommonUrlsInfo.networkActivations.url,
@@ -100,7 +103,7 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
+        (_, res, ctx) => res(ctx.json(network))
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
@@ -116,25 +119,29 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
-        (req, res, ctx) => res(ctx.json([]))
+        (_, res, ctx) => res(ctx.json([]))
       ),
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           mockedApplyFn()
           return res(ctx.json({}))
         }
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
         }
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
+        (_, res, ctx) => res(ctx.json({ response: [network] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       )
     )
   })
@@ -183,6 +190,10 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, newApGroup2] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       )
     )
 
@@ -445,6 +456,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
         }
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       )
     )
   })
