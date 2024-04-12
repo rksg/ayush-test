@@ -320,6 +320,11 @@ describe('RecommendationActions', () => {
       } as unknown as RecommendationListItem} />,
       { wrapper: Provider }
     )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).not.toHaveBeenCalled()
   })
   it('should handle non-same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }

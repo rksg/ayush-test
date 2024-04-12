@@ -150,9 +150,20 @@ function ApplyCalendar ({
         isRecommendationRevertEnabled
       }
       if (needsWlans) {
-        schedule.wlans = wlans.selected.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
+        if (wlans.selected.length) {
+          scheduleRecommendation({
+            ...schedule,
+            wlans: wlans.selected.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
+          })
+        } else {
+          showToast({
+            type: 'error',
+            content: $t({ defaultMessage: 'Please select at least one network' })
+          })
+        }
+      } else {
+        scheduleRecommendation(schedule)
       }
-      scheduleRecommendation(schedule)
     } else {
       showToast({
         type: 'error',
