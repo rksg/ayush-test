@@ -22,6 +22,7 @@ import {
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
+  useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,
   useGetVenuesQuery,
   useUpdatePrivilegeGroupMutation
@@ -127,8 +128,10 @@ export function EditPrivilegeGroup () {
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
   const isOnboardedMsp = location ?? false
+  const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
@@ -208,8 +211,9 @@ export function EditPrivilegeGroup () {
           ? policyEntities : undefined
       }
 
-      await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
-        payload: privilegeGroupData }).unwrap()
+      isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
+        : await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
+          payload: privilegeGroupData }).unwrap()
 
       navigate(linkToPrivilegeGroups)
     } catch (error) {
