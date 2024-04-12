@@ -238,6 +238,10 @@ describe('EditEdge ports - ports general', () => {
     expect(mockedCancelFn).toBeCalled()
   })
 
+  it.todo('tab change')
+  it.todo('no data to display')
+  it.todo('default submit label')
+
   describe('api fail', () => {
     const consoleLogFn = jest.fn()
     jest.spyOn(console, 'log').mockImplementationOnce(consoleLogFn)

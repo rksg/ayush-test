@@ -426,7 +426,7 @@ export const mockedHaNetworkSettings = {
       lacpMode: EdgeLagLacpModeEnum.ACTIVE,
       lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [{
-        portId: 'port1',
+        portId: 'port_id_0',
         portEnabled: true
       }],
       portType: EdgePortTypeEnum.LAN,
