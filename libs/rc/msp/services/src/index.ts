@@ -870,9 +870,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    updateEcTier: build.mutation<CommonResult, RequestPayload>({
+    patchCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateEcTier, params)
+        const req = createHttpRequest(MspUrlsInfo.patchCustomer, params)
         return {
           ...req,
           body: payload
@@ -987,7 +987,7 @@ export const {
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
-  useUpdateEcTierMutation
+  usePatchCustomerMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

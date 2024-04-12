@@ -338,7 +338,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/mspCustomers/mspRecs',
     newApi: true
   },
-  updateEcTier: {
+  patchCustomer: {
     method: 'PATCH',
     url: '/tenants/:tenantId',
     newApi: true

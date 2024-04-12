@@ -40,7 +40,7 @@ import {
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  useUpdateEcTierMutation
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -53,7 +53,8 @@ import {
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
   AssignActionEnum,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -205,7 +206,7 @@ export function ManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
-  const [patchCustomer] = useUpdateEcTierMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -620,11 +621,11 @@ export function ManageCustomer () {
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
 
       if (originalTier !== ecFormData.tier) {
-        const patchTier = {
+        const patchTier: MspEcTierPayload = {
           type: 'serviceTierStatus',
           serviceTierStatus: ecFormData.tier
         }
-        await patchCustomer({ params: { tenantId: tenantId }, payload: patchTier }).unwrap()
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
       }
       navigate(linkToCustomers, { replace: true })
       return true
