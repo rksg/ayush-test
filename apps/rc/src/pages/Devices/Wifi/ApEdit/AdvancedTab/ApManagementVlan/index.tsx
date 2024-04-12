@@ -10,7 +10,6 @@ import {
   useLazyGetVenueQuery,
   useGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation,
   useLazyGetVenueApManagementVlanQuery
 } from '@acx-ui/rc/services'
 import { ApManagementVlan, VenueExtended } from '@acx-ui/rc/utils'
@@ -41,15 +40,16 @@ export function ApManagementVlanForm () {
   const [venue, setVenue] = useState({} as VenueExtended)
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
+  const venueId = apDetails?.venueId
 
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueApManagementVlan] = useLazyGetVenueApManagementVlanQuery()
-  const getApManagementVlan = useGetApManagementVlanQuery({ params: { serialNumber } })
+  const getApManagementVlan = useGetApManagementVlanQuery({ params: { venueId, serialNumber } })
   const [updateApManagementVlan, { isLoading: isUpdatingVenueManagementVlan }] =
     useUpdateApManagementVlanMutation()
   const [deleteApManagementVlan, { isLoading: isDeletingVenueManagementVlan }] =
-    useDeleteApManagementVlanMutation()
+    useUpdateApManagementVlanMutation()
 
   useEffect(() => {
     const apMgmtVlanData = getApManagementVlan?.data
@@ -124,6 +124,7 @@ export function ApManagementVlanForm () {
 
   const handleUpdateApManagementVlan = async () => {
     const payload = getApManagementVlanDataFromFields()
+    const deletePayload = getDeleteApManagementVlanDataFromFields()
     showActionModal({
       type: 'confirm',
       width: 450,
@@ -138,9 +139,12 @@ export function ApManagementVlanForm () {
       onOk: async () => {
         try {
           if(isUseVenueSettingsRef.current) {
-            await deleteApManagementVlan({ params: { serialNumber } }).unwrap()
+            await deleteApManagementVlan({ params: { venueId, serialNumber }, deletePayload }).unwrap()
+
+            // eslint-disable-next-line no-console
+            console.log(payload)
           } else {
-            await updateApManagementVlan({ params: { serialNumber }, payload }).unwrap()
+            await updateApManagementVlan({ params: { venueId, serialNumber }, payload }).unwrap()
 
             // eslint-disable-next-line no-console
             console.log(payload)
@@ -159,6 +163,14 @@ export function ApManagementVlanForm () {
       vlanOverrideEnabled: true,
       vlanId,
       useVenueSettings: isUseVenueSettingsRef.current
+    }
+  }
+
+  const getDeleteApManagementVlanDataFromFields = () => {
+    const { vlanId } = form.getFieldsValue()
+
+    return {
+      useVenueSettings: true
     }
   }
 
