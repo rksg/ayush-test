@@ -294,7 +294,7 @@ export interface PrivilegeGroup {
   role?: CustomRole,
   roleName?: string,
   scope?: string,
-  members?: number,
+  memberCount?: number,
   allCustomers?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
