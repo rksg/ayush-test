@@ -65,6 +65,7 @@ interface JwtToken {
   acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
+  isAlphaFlag?: boolean
 }
 
 const cache = new Map<string, JwtToken>()
