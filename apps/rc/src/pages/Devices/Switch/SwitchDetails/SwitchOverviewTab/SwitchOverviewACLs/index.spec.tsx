@@ -91,7 +91,7 @@ describe('Switch Overview ACLs', () => {
     const drawer = await screen.findByRole('dialog')
     expect(await within(drawer).findByText(/View ACL/i)).toBeVisible()
     expect(await within(drawer).findByRole('columnheader', { name: 'Protocol' })).toBeVisible()
-    expect(await within(drawer).findByText('IPV6')).toBeVisible()
+    expect(await within(drawer).findAllByText('IPv6')).toHaveLength(2)
     await userEvent.click(within(drawer).getByRole('button', {
       name: /close/i
     }))

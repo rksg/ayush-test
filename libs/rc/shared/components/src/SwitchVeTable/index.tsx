@@ -124,25 +124,27 @@ export function SwitchVeTable ( { isVenueLevel } : {
     sorter: true
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true
   },
   ...(isSwitchV6AclEnabled ? [{
     key: 'vsixIngressAclName',
-    title: $t({ defaultMessage: 'V6 Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
     dataIndex: 'vsixIngressAclName',
-    sorter: true
+    sorter: true,
+    show: false
   }, {
     key: 'vsixEgressAclName',
-    title: $t({ defaultMessage: 'V6 Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
     dataIndex: 'vsixEgressAclName',
-    sorter: true
+    sorter: true,
+    show: false
   }] : [])
   ]
 
@@ -218,6 +220,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId='switch-ve-table'
       columns={isVenueLevel ? columns: columns.filter(item => item.key !== 'switchName')}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}

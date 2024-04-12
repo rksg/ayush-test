@@ -409,9 +409,7 @@ export const portSetting = [{
   switchMac: 'c0:c5:20:aa:32:79',
   taggedVlans: ['2'],
   untaggedVlan: '1',
-  voiceVlan: 0,
-  vsixIngressAcl: 'ipv6-acl-in',
-  vsixEgressAcl: 'ipv6-acl-out'
+  voiceVlan: 0
 }, {
   dhcpSnoopingTrust: false,
   id: 'c0:c5:20:aa:32:79/1/1/6',
@@ -468,9 +466,7 @@ export const portsSetting = {
     switchMac: 'c0:c5:20:aa:32:79',
     taggedVlans: ['2'],
     untaggedVlan: '1',
-    voiceVlan: 0,
-    vsixIngressAcl: 'ipv6-acl-in',
-    vsixEgressAcl: 'ipv6-acl-out'
+    voiceVlan: 0
   }, {
     dhcpSnoopingTrust: false,
     id: 'c0:c5:20:aa:32:79/1/1/6',
