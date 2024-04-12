@@ -139,6 +139,7 @@ export function ApManagementVlanForm () {
       onOk: async () => {
         try {
           if(isUseVenueSettingsRef.current) {
+            // eslint-disable-next-line max-len
             await deleteApManagementVlan({ params: { venueId, serialNumber }, deletePayload }).unwrap()
 
             // eslint-disable-next-line no-console
@@ -167,8 +168,6 @@ export function ApManagementVlanForm () {
   }
 
   const getDeleteApManagementVlanDataFromFields = () => {
-    const { vlanId } = form.getFieldsValue()
-
     return {
       useVenueSettings: true
     }
