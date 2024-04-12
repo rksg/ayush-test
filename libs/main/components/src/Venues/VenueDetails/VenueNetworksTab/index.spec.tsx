@@ -357,7 +357,7 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Local breakout')
+      expect(activatedRow).toHaveTextContent('Local Breakout')
     })
   })
 })

@@ -42,8 +42,9 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
 
   const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false)
   const { switchId: sid, tenantId, venueId: vid } = useParams()
+
+  const [loading, setLoading] = useState<boolean>(false)
   const [venueId, setVenueId] = useState(vid ?? '')
   const [switchId, setSwitchId] = useState(isVenueLevel ? editData?.switchId : sid)
 
@@ -424,7 +425,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
           <Form.Item
-            label={$t({ defaultMessage: 'Ingress ACL' })}
+            label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
             name='ingressAcl'
             initialValue={''}
           >
@@ -440,9 +441,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             />
           </Form.Item>
 
-
           <Form.Item
-            label={$t({ defaultMessage: 'Egress ACL' })}
+            label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
             name='egressAcl'
             initialValue={''}
           >
