@@ -16,16 +16,11 @@ import * as UI                                                from '../../VenueF
 
 import { ApFirmwareUpdateIndividual, ApFirmwareUpdateIndividualProps } from './ApFirmwareUpdateIndividual'
 
-import { ApFirmwareUpdateRequestPayload } from '.'
+import { ApFirmwareUpdateRequestPayload, UpdateFirmwarePerApModelPanelProps } from '.'
 
 type DisplayDataType = Omit<ApFirmwareUpdateIndividualProps, 'update'>
 
-interface ApFirmwareUpdateIndividualPanelPrpos {
-  updateUpdateRequestPayload: (targetFirmwares: ApFirmwareUpdateRequestPayload) => void,
-  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
-}
-
-export function ApFirmwareUpdateIndividualPanel (props: ApFirmwareUpdateIndividualPanelPrpos) {
+export function ApFirmwareUpdateIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
   const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {

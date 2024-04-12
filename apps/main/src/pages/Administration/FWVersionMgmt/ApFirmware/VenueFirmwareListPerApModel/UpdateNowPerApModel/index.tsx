@@ -16,22 +16,16 @@ import { ApFirmwareUpdateIndividualPanel } from './ApFirmwareUpdateIndividualPan
 
 export type ApFirmwareUpdateRequestPayload = VenueApModelFirmwaresUpdatePayload['targetFirmwares']
 
-enum UpdateMode {
-  GROUP,
-  INDIVIDUAL
-}
-
-export interface UpdateNowPerApModelProps {
+export interface UpdateNowPerApModelDialogProps {
   onCancel: () => void
   afterSubmit: () => void
   selectedVenuesFirmwares: FirmwareVenuePerApModel[]
 }
 
-export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
+export function UpdateNowPerApModelDialog (props: UpdateNowPerApModelDialogProps) {
   const { $t } = useIntl()
   const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
   const [ disableSave, setDisableSave ] = useState(false)
-  const [ updateMode, setUpdateMode ] = useState<UpdateMode>(UpdateMode.GROUP)
   // eslint-disable-next-line max-len
   const [ updateRequestPayload, setUpdateRequestPayload ] = useState<ApFirmwareUpdateRequestPayload>([])
   const [ updateVenueApModelFirmwares ] = usePatchVenueApModelFirmwaresMutation()
@@ -59,22 +53,11 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
     onCancel()
   }
 
-  const onUpdateModeChange = (checked: boolean) => {
-    setUpdateMode(checked ? UpdateMode.INDIVIDUAL : UpdateMode.GROUP)
-  }
-
   const updateUpdateRequestPayload = (targetFirmwares: ApFirmwareUpdateRequestPayload = []) => {
     const compactedTargetFirmwares = targetFirmwares.filter(fw => fw.firmware)
     setUpdateRequestPayload(compactedTargetFirmwares)
     setDisableSave(compactedTargetFirmwares.length === 0)
   }
-
-  const panelMap: Record<UpdateMode, Function> = {
-    [UpdateMode.GROUP]: ApFirmwareUpdateGroupPanel,
-    [UpdateMode.INDIVIDUAL]: ApFirmwareUpdateIndividualPanel
-  }
-
-  const ActivePanel = panelMap[updateMode]
 
   return (
     <Modal
@@ -87,16 +70,9 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      <Space style={{ marginBottom: 24 }}>
-        <Switch
-          checked={updateMode === UpdateMode.INDIVIDUAL}
-          onClick={onUpdateModeChange}
-        />
-        <span>{$t({ defaultMessage: 'Update firmware by AP model' })}</span>
-      </Space>
-      <ActivePanel
-        updateUpdateRequestPayload={updateUpdateRequestPayload}
+      <UpdateFirmwarePerApModelPanel
         selectedVenuesFirmwares={selectedVenuesFirmwares}
+        updateUpdateRequestPayload={updateUpdateRequestPayload}
       />
       <UI.Section>
         <UI.Ul>
@@ -106,4 +82,44 @@ export function UpdateNowPerApModel (props: UpdateNowPerApModelProps) {
       </UI.Section>
     </Modal>
   )
+}
+
+enum UpdateMode {
+  GROUP,
+  INDIVIDUAL
+}
+const panelMap: Record<UpdateMode, Function> = {
+  [UpdateMode.GROUP]: ApFirmwareUpdateGroupPanel,
+  [UpdateMode.INDIVIDUAL]: ApFirmwareUpdateIndividualPanel
+}
+export interface UpdateFirmwarePerApModelPanelProps {
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
+  updateUpdateRequestPayload: (targetFirmwares: ApFirmwareUpdateRequestPayload) => void
+  initialUpdateRequestPayload?: ApFirmwareUpdateRequestPayload
+}
+export function UpdateFirmwarePerApModelPanel (props: UpdateFirmwarePerApModelPanelProps) {
+  const { $t } = useIntl()
+  const { selectedVenuesFirmwares, updateUpdateRequestPayload, initialUpdateRequestPayload } = props
+  const [ updateMode, setUpdateMode ] = useState<UpdateMode>(UpdateMode.GROUP)
+
+  const ActivePanel = panelMap[updateMode]
+
+  const onUpdateModeChange = (checked: boolean) => {
+    setUpdateMode(checked ? UpdateMode.INDIVIDUAL : UpdateMode.GROUP)
+  }
+
+  return (<>
+    <Space style={{ marginBottom: 24 }}>
+      <Switch
+        checked={updateMode === UpdateMode.INDIVIDUAL}
+        onClick={onUpdateModeChange}
+      />
+      <span>{$t({ defaultMessage: 'Update firmware by AP model' })}</span>
+    </Space>
+    <ActivePanel
+      selectedVenuesFirmwares={selectedVenuesFirmwares}
+      updateUpdateRequestPayload={updateUpdateRequestPayload}
+      initialUpdateRequestPayload={initialUpdateRequestPayload}
+    />
+  </>)
 }

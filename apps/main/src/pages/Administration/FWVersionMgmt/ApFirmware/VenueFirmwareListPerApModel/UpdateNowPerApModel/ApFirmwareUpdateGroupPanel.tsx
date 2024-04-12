@@ -1,7 +1,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import _ from 'lodash'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 
 import { Loader }                            from '@acx-ui/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
@@ -15,18 +16,17 @@ import {
   convertApModelFirmwaresToUpdateGroups
 } from '../venueFirmwareListPerApModelUtils'
 
-import { ApFirmwareUpdateGroup, ApFirmwareUpdateGroupProps } from './ApFirmwareUpdateGroup'
+import { ApFirmwareUpdateGroup } from './ApFirmwareUpdateGroup'
 
-import { ApFirmwareUpdateRequestPayload } from '.'
+import { ApFirmwareUpdateRequestPayload, UpdateFirmwarePerApModelPanelProps } from '.'
 
-type DisplayDataType = Omit<ApFirmwareUpdateGroupProps, 'update'>
-
-interface ApFirmwareUpdateGroupPanelPrpos {
-  updateUpdateRequestPayload: (targetFirmwares: ApFirmwareUpdateRequestPayload) => void
-  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
+type DisplayDataType = {
+  apModels: string[]
+  versionOptions: DefaultOptionType[]
+  defaultVersion: string
 }
 
-export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrpos) {
+export function ApFirmwareUpdateGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60
@@ -39,13 +39,14 @@ export function ApFirmwareUpdateGroupPanel (props: ApFirmwareUpdateGroupPanelPrp
 
     const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
+    const displayData = convertToDisplayData(venuesBasedUpdateGrps)
 
     if (!targetFirmwaresRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
-      targetFirmwaresRef.current = convertToUpdateRequestPayload(venuesBasedUpdateGrps)
+      targetFirmwaresRef.current = convertToUpdateRequestPayload(displayData)
       updateUpdateRequestPayload(targetFirmwaresRef.current)
     }
 
-    setDisplayData(convertToDisplayData(venuesBasedUpdateGrps))
+    setDisplayData(displayData)
   }, [apModelFirmwares])
 
   const update = (apModels: string[], version: string | undefined) => {
@@ -81,20 +82,14 @@ function convertToDisplayData (data: ApFirmwareUpdateGroupType[]): DisplayDataTy
   }))
 }
 
-// eslint-disable-next-line max-len
-function convertToUpdateRequestPayload (data: ApFirmwareUpdateGroupType[]): ApFirmwareUpdateRequestPayload {
-  return data.map(getDefaultFirmwareForApModel).flat()
-}
-
 function getDefaultValueFromFirmwares (firmwares: ApFirmwareUpdateGroupType['firmwares']): string {
   return firmwares[0].name
 }
 
-// eslint-disable-next-line max-len
-function getDefaultFirmwareForApModel (data: ApFirmwareUpdateGroupType): ApFirmwareUpdateRequestPayload {
-  return data.apModels.map(apModel => {
-    return { apModel, firmware: getDefaultValueFromFirmwares(data.firmwares) }
-  })
+function convertToUpdateRequestPayload (data: DisplayDataType[]): ApFirmwareUpdateRequestPayload {
+  return data.map((displayData: DisplayDataType) => {
+    return displayData.apModels.map(apModel => ({ apModel, firmware: displayData.defaultVersion }))
+  }).flat()
 }
 
 function patchUpdateRequestPayload (

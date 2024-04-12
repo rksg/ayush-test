@@ -14,7 +14,7 @@ import { getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDa
 import { PreferencesDialog }                                                         from '../../PreferencesDialog'
 import * as UI                                                                       from '../../styledComponents'
 
-import { UpdateNowPerApModel }                                                         from './UpdateNowPerApModel'
+import { UpdateNowPerApModelDialog }                                                   from './UpdateNowPerApModel'
 import { renderCurrentFirmwaresColumn, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
@@ -68,7 +68,7 @@ export function VenueFirmwareListPerApModel () {
         }])}
       />
     </Loader>
-    {updateNowVisible && selectedRows && <UpdateNowPerApModel
+    {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
       onCancel={handleUpdateModalCancel}
       afterSubmit={afterUpdateModalSubmit}
       selectedVenuesFirmwares={selectedRows}
