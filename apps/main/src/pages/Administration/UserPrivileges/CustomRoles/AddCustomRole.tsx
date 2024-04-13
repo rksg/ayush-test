@@ -127,7 +127,7 @@ export function AddCustomRole () {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 64 },
+            { max: 128 },
             { validator: (_, value) => systemDefinedNameValidator(value) }
           ]}
           validateFirst
