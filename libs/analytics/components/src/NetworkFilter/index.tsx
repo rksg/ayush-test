@@ -29,6 +29,9 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;
   severity: { [key: string]: number };
 }
+
+type RawValPath = { name: string, type: string }
+
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
     shouldQuerySwitch: boolean,
@@ -234,20 +237,57 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
+
   const isReports = filterFor === 'reports'
-  let rawVal:string[][] = isReports ? reportsRaw : raw
-  // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
-  if(!shouldQueryAp){
-    selectedBands=[]
-    rawVal=rawVal.filter(value=>{
-      return !value[0].includes('zone')
-    })
+  let rawVal:string[] = isReports ? reportsRaw : raw
+
+  if(isReports){
+    // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
+    if(!shouldQueryAp){
+      selectedBands=[]
+      rawVal=rawVal.filter(value=>{
+        return !value[0].includes('zone')
+      })
+    }
+    if(!shouldQuerySwitch){
+      rawVal=rawVal.filter(value=>{
+        return !value[0].includes('switchGroup')
+      })
+    }
+  } else {
+    const dataText = queryResults.data
+      .filter(Boolean)
+      .map(({ value }) => value)
+      .join(',')
+
+    const modifyRawVal = (rawVal:string[], type: string, replaceTxt: string) => {
+      const newRawVal = rawVal.map(value => {
+        if (value.startsWith('[') && value.endsWith(']')) {
+          return JSON.parse(value)
+            .map((item: RawValPath) =>
+              item.type === type && dataText.includes(item.name)
+                ? { ...item, type: replaceTxt } : item)
+        }
+        return value
+      }).map(item => {
+        if (Array.isArray(item)) {
+          return JSON.stringify(item)
+        } else {
+          return item
+        }
+      })
+      return newRawVal.some(value => value.includes(replaceTxt))
+        ? newRawVal
+        : []
+    }
+
+    if(!shouldQueryAp && shouldQuerySwitch){
+      rawVal = modifyRawVal(rawVal, 'zone', 'switchGroup')
+    } else if(shouldQueryAp){
+      rawVal = modifyRawVal(rawVal, 'switchGroup', 'zone')
+    }
   }
-  if(!shouldQuerySwitch){
-    rawVal=rawVal.filter(value=>{
-      return !value[0].includes('switchGroup')
-    })
-  }
+
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>

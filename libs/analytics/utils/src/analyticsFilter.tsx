@@ -86,6 +86,7 @@ export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
     const isURLPresent = (list: string[]) => Boolean(list.find(url => pathname.includes(url)))
     const defaultPath = { raw: [], path: defaultNetworkPath }
     const { raw: rawPath, path: readPath } = read() || defaultPath
+
     const revertToDefault =
       (isURLPresent(noApOrSwitchSupportURLs) && (isApPath(readPath) || isSwitchPath(readPath))) ||
       (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
