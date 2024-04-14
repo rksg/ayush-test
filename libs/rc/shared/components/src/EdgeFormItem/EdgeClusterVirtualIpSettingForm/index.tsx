@@ -2,19 +2,19 @@
 import { Col, Form, Row, Slider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Button, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { EdgeClusterStatus, EdgePortInfo }                from '@acx-ui/rc/utils'
+import { Button, StepsForm, Tooltip, useStepFormContext }    from '@acx-ui/components'
+import { EdgeClusterStatus, EdgePortInfo, VirtualIpSetting } from '@acx-ui/rc/utils'
 
 import { VipCard } from './VipCard'
 
 export interface VirtualIpFormType {
   timeout: number
-  vipConfig: {
-    interfaces: {
-      [key: string]: EdgePortInfo
-    }
-    vip: string
-  }[]
+  vipConfig: VipConfigType[]
+}
+
+export interface VipConfigType {
+  interfaces: VirtualIpSetting['ports']
+  vip: string
 }
 
 interface EdgeClusterVirtualIpSettingFormProps {

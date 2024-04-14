@@ -387,7 +387,8 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
       healthClass: getClientHealthClass(client.healthCheckStatus),
       totalTraffic: transformByte(client.totalTraffic),
       trafficToClient: transformByte(client.trafficToClient),
-      trafficFromClient: transformByte(client.trafficFromClient)
+      trafficFromClient: transformByte(client.trafficFromClient),
+      clientMac: client.clientMac.toLowerCase()
     }
     if (tmp.sessStartTime && tmp.sessStartTime > 0 && !tmp.sessStartTimeParssed) {
       tmp.sessStartTimeString =
