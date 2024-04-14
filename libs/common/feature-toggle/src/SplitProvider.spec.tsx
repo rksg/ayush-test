@@ -29,7 +29,7 @@ jest.mock('@acx-ui/analytics/utils', () => (
 jest.mock('@splitsoftware/splitio-react', () => (
   {
     ...jest.requireActual('@splitsoftware/splitio-react'),
-    useTreatments: jest.fn()
+    useSplitTreatments: jest.fn()
   }))
 
 jest.mock('@acx-ui/user', () => ({
@@ -51,12 +51,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 jest.mock('@splitsoftware/splitio-react', () => ({
-  useTreatments: jest.fn()
+  useSplitTreatments: jest.fn()
 }))
 
 const splitProxyEndpoint = 'https://splitproxy.dev.ruckus.cloud/api'
 jest.mock('@splitsoftware/splitio-react', () => ({
-  useTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
+  useSplitTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
     const treatments: Record<string, Object> = {}
     if (attributes) {
       splitNames.forEach((splitName) => {
