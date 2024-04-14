@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader, ColumnType } from '@acx-ui/components'
+import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/services'
+import { useGetSwitchClientListQuery, useLazyGetLagListQuery }                    from '@acx-ui/rc/services'
 import {
   FILTER,
   getOsTypeIcon,
@@ -77,9 +77,8 @@ export function ClientsTable (props: {
   const [editLag, setEditLag] = useState([] as Lag[])
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
-  const [breakoutPorts, setBreakoutPorts] = useState([] as SwitchPortStatus[])
-  const [breakoutPortDrawerVisible, setBreakoutPortDrawerVisible] = useState(false)
-  const [editBreakoutPortDrawerVisible, setEditBreakoutPortDrawerVisible] = useState(false)
+  const [ getLagList ] = useLazyGetLagListQuery()
+
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -117,6 +116,9 @@ export function ClientsTable (props: {
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
+
+  
+
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -227,15 +229,25 @@ export function ClientsTable (props: {
             {row['switchPort']}
           </Tooltip>)
         } else if (isLAGMemberPort(switchPortStatus)) {
-          return row['switchPort'] + 'LLAAGG'
-          // onEditLag = async () => {
-          //   const { data: lagList } = await getLagList({ params })
-          //   const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
-          //   setEditLagModalVisible(true)
-          //   setEditLag([lagData])
-          // }
+          const onEditLag = async () => {
+            const { data: lagList } = await getLagList({ params, ...{ switchId: switchPortStatus.switchId } })
+            const lagData = lagList?.find(item => item.lagId?.toString() === switchPortStatus.lagId) as Lag
+            setEditPortDrawerVisible(false)
+            setEditLagModalVisible(true)
+            setEditLag([lagData])
+          }
+          return <Button type='link' onClick={onEditLag}>
+            {row['switchPort'] + 'LLAAGG'}
+          </Button>
         } else {
-          return row['switchPort'] + 'LINK'
+          const onPortClick = () => {
+            setEditLagModalVisible(false)
+            setSelectedPorts([switchPortStatus])
+            setEditPortDrawerVisible(true)
+          }
+          return <Button type='link' onClick={onPortClick}>
+            {row['switchPort'] + 'LINK'}
+          </Button>
         }
       }
 
@@ -333,28 +345,6 @@ export function ClientsTable (props: {
           isMultipleEdit={selectedPorts?.length > 1}
           isVenueLevel={false}
           selectedPorts={selectedPorts}
-        />
-        }
-        {
-          breakoutPorts && <FrontViewBreakoutPortDrawer
-            portNumber={breakoutPorts[0]?.portIdentifier.split(':')[0]}
-            setDrawerVisible={setBreakoutPortDrawerVisible}
-            drawerVisible={breakoutPortDrawerVisible}
-            breakoutPorts={breakoutPorts}
-          />
-        }
-        {editBreakoutPortDrawerVisible && <EditPortDrawer
-          key='edit-breakout-port'
-          visible={editBreakoutPortDrawerVisible}
-          setDrawerVisible={setEditBreakoutPortDrawerVisible}
-          isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
-          isMultipleEdit={selectedPorts?.length > 1}
-          isVenueLevel={false}
-          selectedPorts={selectedPorts}
-          onBackClick={() => {
-            setBreakoutPortDrawerVisible(true)
-            setSelectedPorts([])
-          }}
         />
         }
       </Loader>

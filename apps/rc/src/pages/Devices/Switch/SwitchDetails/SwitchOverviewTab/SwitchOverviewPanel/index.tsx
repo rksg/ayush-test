@@ -2,13 +2,14 @@
 import { SwitchesTrafficByVolume }                                                                     from '@acx-ui/analytics/components'
 import { SwitchStatusByTime }                                                                          from '@acx-ui/analytics/components'
 import { GridCol, GridRow }                                                                            from '@acx-ui/components'
-import { TopologyFloorPlanWidget, SwitchFrontRearView }                                                                     from '@acx-ui/rc/components'
+import { TopologyFloorPlanWidget }                                                                     from '@acx-ui/rc/components'
 import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                           from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                        from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { TopPorts }            from './TopPorts'
+import { SwitchFrontRearView } from './SwitchFrontRearView'
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
