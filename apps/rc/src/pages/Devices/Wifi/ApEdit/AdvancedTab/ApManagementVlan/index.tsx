@@ -135,15 +135,15 @@ export function ApManagementVlanForm () {
       onOk: async () => {
         try {
           const payload = isUseVenueSettingsRef.current
-          ? { useVenueSettings: true }
-          : getApManagementVlanDataFromFields()  
-           
-           await updateApManagementVlan({ params: { venueId, serialNumber }, payload
-           }).unwrap()
-      
-           // eslint-disable-next-line no-console
-           console.log(payload)
-     } catch (error) {
+            ? { useVenueSettings: true }
+            : getApManagementVlanDataFromFields()
+
+          await updateApManagementVlan({ params: { venueId, serialNumber }, payload
+          }).unwrap()
+
+          // eslint-disable-next-line no-console
+          console.log(payload)
+        } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
       }
