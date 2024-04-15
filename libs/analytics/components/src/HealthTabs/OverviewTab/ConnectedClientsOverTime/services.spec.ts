@@ -36,22 +36,22 @@ describe('connectedClientsOverTimeApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.connectedClientsOverTime.initiate(props)
+      api.endpoints.healthConnectedClientsOverTime.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.connectedClientsOverTime.initiate(props)
+      api.endpoints.healthConnectedClientsOverTime.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

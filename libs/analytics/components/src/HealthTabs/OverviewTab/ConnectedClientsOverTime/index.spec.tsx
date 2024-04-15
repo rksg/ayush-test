@@ -40,20 +40,20 @@ const sampleNoData = {
   wiredClientsCount: [null]
 }
 
-describe('ConnectedClientsOverTimeWidget', () => {
+describe('HealthConnectedClientsOverTimeWidget', () => {
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     render(<Provider> <ConnectedClientsOverTime filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } = render(
@@ -66,7 +66,7 @@ describe('ConnectedClientsOverTimeWidget', () => {
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       error: new Error('something went wrong!')
     })
     render(<Provider><ConnectedClientsOverTime filters={filters}/></Provider>)
@@ -75,7 +75,7 @@ describe('ConnectedClientsOverTimeWidget', () => {
   })
   it('should render "No data to display" when data is empty', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+    mockGraphqlQuery(dataApiURL, 'HealthConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
     })
     render(<Provider><ConnectedClientsOverTime filters={filters}/></Provider>)

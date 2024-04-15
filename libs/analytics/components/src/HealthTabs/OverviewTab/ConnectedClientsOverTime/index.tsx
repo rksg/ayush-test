@@ -13,7 +13,7 @@ import {
   cssStr } from '@acx-ui/components'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
+import { ConnectedClientsOverTimeData, useHealthConnectedClientsOverTimeQuery } from './services'
 
 type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
@@ -41,7 +41,7 @@ export function ConnectedClientsOverTime ({
     }
   }
 
-  const queryResults = useConnectedClientsOverTimeQuery(filters, {
+  const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: getSeriesData(massageData(data!), seriesMapping)

@@ -20,13 +20,13 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    connectedClientsOverTime: build.query<
+    healthConnectedClientsOverTime: build.query<
     ConnectedClientsOverTimeData,
     AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query ConnectedClientsOverTimeWidget(
+        query HealthConnectedClientsOverTimeWidget(
           $path: [HierarchyNodeInput]
           $start: DateTime
           $end: DateTime
@@ -58,4 +58,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useConnectedClientsOverTimeQuery } = api
+export const { useHealthConnectedClientsOverTimeQuery } = api
