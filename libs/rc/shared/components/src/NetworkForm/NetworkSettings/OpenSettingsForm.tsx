@@ -214,7 +214,8 @@ function SettingsForm () {
             </Space>
             <Form.Item name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'
-              children={<Switch id={'macAuthSwitch'}
+              children={<Switch
+                data-testid='mac-auth-switch'
                 onChange={onMacAuthChange}
                 disabled={editMode || disablePolicies}
               />}

@@ -77,6 +77,7 @@ export function CloudpathServerForm () {
             valuePropName='checked'
             initialValue={false}
             children={<Switch
+              data-testid='enable-auth-proxy'
               disabled={disableDPSKProxyService}
               onChange={(value) => onProxyChange(value,'enableAuthProxy')}
             />}
@@ -114,7 +115,10 @@ export function CloudpathServerForm () {
               name='enableAccountingProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
+              children={<Switch
+                data-testid='enable-accounting-proxy'
+                onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}
+              />}
             />
           </UI.FieldLabel>}
         </>}
