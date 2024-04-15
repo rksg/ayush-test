@@ -64,13 +64,15 @@ const MspCustomerSelector = () => {
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload: {
       filters: {},
       fields: [
         'id',
         'name'
       ],
-      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
     }
