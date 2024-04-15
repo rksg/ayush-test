@@ -9,16 +9,17 @@ import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
 import { getIntl }                           from '@acx-ui/utils'
 
-import { getVersionLabel }                from '../../../FirmwareUtils'
-import * as UI                            from '../../VenueFirmwareList/styledComponents'
+import { getVersionLabel }                 from '../../../FirmwareUtils'
+import * as UI                             from '../../VenueFirmwareList/styledComponents'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups
 } from '../venueFirmwareListPerApModelUtils'
 
-import { ApFirmwareUpdateGroup } from './ApFirmwareUpdateGroup'
+import { UpdateFirmwarePerApModelGroup }      from './UpdateFirmwarePerApModelGroup'
+import { UpdateFirmwarePerApModelPanelProps } from './UpdateFirmwarePerApModelPanel'
 
-import { ApFirmwareUpdateRequestPayload, UpdateFirmwarePerApModelPanelProps } from '.'
+import { UpdateFirmwarePerApModelFirmware } from '.'
 
 type DisplayDataType = {
   apModels: string[]
@@ -26,24 +27,24 @@ type DisplayDataType = {
   defaultVersion: string
 }
 
-export function ApFirmwareUpdateGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
-  const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
+export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
+  const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60
   })
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
-  const targetFirmwaresRef = useRef<ApFirmwareUpdateRequestPayload>()
+  const targetFirmwaresRef = useRef<UpdateFirmwarePerApModelFirmware>()
 
   useEffect(() => {
     if (!apModelFirmwares) return
 
     const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
-    const displayData = convertToDisplayData(venuesBasedUpdateGrps)
+    const displayData = convertToDisplayData(venuesBasedUpdateGrps, initialPayload)
 
-    if (!targetFirmwaresRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
-      targetFirmwaresRef.current = convertToUpdateRequestPayload(displayData)
-      updateUpdateRequestPayload(targetFirmwaresRef.current)
+    if (!targetFirmwaresRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
+      targetFirmwaresRef.current = convertToPayload(displayData)
+      updatePayload(targetFirmwaresRef.current)
     }
 
     setDisplayData(displayData)
@@ -51,14 +52,14 @@ export function ApFirmwareUpdateGroupPanel (props: UpdateFirmwarePerApModelPanel
 
   const update = (apModels: string[], version: string | undefined) => {
     // eslint-disable-next-line max-len
-    targetFirmwaresRef.current = patchUpdateRequestPayload(targetFirmwaresRef.current!, apModels, version)
-    updateUpdateRequestPayload(targetFirmwaresRef.current)
+    targetFirmwaresRef.current = patchPayload(targetFirmwaresRef.current!, apModels, version)
+    updatePayload(targetFirmwaresRef.current)
   }
 
   return <Loader states={[{ isLoading }]}>
     {displayData?.map(item => {
       return <UI.Section key={item.apModels.join('')}>
-        <ApFirmwareUpdateGroup
+        <UpdateFirmwarePerApModelGroup
           apModels={item.apModels}
           versionOptions={item.versionOptions}
           update={update}
@@ -69,32 +70,46 @@ export function ApFirmwareUpdateGroupPanel (props: UpdateFirmwarePerApModelPanel
   </Loader>
 }
 
-function convertToDisplayData (data: ApFirmwareUpdateGroupType[]): DisplayDataType[] {
+// eslint-disable-next-line max-len
+function convertToDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload?: UpdateFirmwarePerApModelFirmware): DisplayDataType[] {
   const intl = getIntl()
 
-  return data.map(item => ({
+  return data.map((item: ApFirmwareUpdateGroupType) => ({
     apModels: item.apModels,
     versionOptions: item.firmwares.map(firmware => ({
       value: firmware.name,
       label: getVersionLabel(intl, firmware)
     })),
-    defaultVersion: getDefaultValueFromFirmwares(item.firmwares)
+    defaultVersion: getInitialFirmwareValue(item, initialPayload)
   }))
 }
 
-function getDefaultValueFromFirmwares (firmwares: ApFirmwareUpdateGroupType['firmwares']): string {
-  return firmwares[0].name
+// Returns the firmware if all AP models in the initialValues have the same firmware version.
+// If not, it returns the first firmware in the update group.
+// eslint-disable-next-line max-len
+function getInitialFirmwareValue (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
+  if (!initialValues || initialValues.length === 0) return updateGroup.firmwares[0].name
+
+  const targetFirmwares = initialValues.filter(fw => updateGroup.apModels.includes(fw.apModel))
+  if (targetFirmwares.length === 0) {
+    return ''
+  } else if (targetFirmwares.length === updateGroup.apModels.length
+    && new Set([...targetFirmwares.map(tf => tf.firmware)]).size === 1) {
+    return targetFirmwares[0].firmware
+  }
+
+  return updateGroup.firmwares[0].name
 }
 
-function convertToUpdateRequestPayload (data: DisplayDataType[]): ApFirmwareUpdateRequestPayload {
+function convertToPayload (data: DisplayDataType[]): UpdateFirmwarePerApModelFirmware {
   return data.map((displayData: DisplayDataType) => {
     return displayData.apModels.map(apModel => ({ apModel, firmware: displayData.defaultVersion }))
   }).flat()
 }
 
-function patchUpdateRequestPayload (
-  targetFirmwares: ApFirmwareUpdateRequestPayload, apModels: string[], version: string | undefined
-): ApFirmwareUpdateRequestPayload {
+function patchPayload (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModels: string[], version: string | undefined
+): UpdateFirmwarePerApModelFirmware {
 
   const result = [...targetFirmwares]
 

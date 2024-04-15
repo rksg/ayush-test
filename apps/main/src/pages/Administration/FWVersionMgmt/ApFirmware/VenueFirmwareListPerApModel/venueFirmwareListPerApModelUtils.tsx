@@ -13,14 +13,27 @@ import * as UI              from '../../styledComponents'
 
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)
-  const handleUpdateModalCancel = () => {
+  const handleUpdateNowCancel = () => {
     setUpdateNowVisible(false)
   }
 
   return {
     updateNowVisible,
     setUpdateNowVisible,
-    handleUpdateModalCancel
+    handleUpdateNowCancel
+  }
+}
+
+export function useChangeScheduleVisiblePerApModel () {
+  const [ changeScheduleVisible, setChangeScheduleVisible ] = useState(false)
+  const handleChangeScheduleCancel = () => {
+    setChangeScheduleVisible(false)
+  }
+
+  return {
+    changeScheduleVisible,
+    setChangeScheduleVisible,
+    handleChangeScheduleCancel
   }
 }
 

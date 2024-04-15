@@ -14,8 +14,9 @@ import { getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDa
 import { PreferencesDialog }                                                         from '../../PreferencesDialog'
 import * as UI                                                                       from '../../styledComponents'
 
-import { UpdateNowPerApModelDialog }                                                   from './UpdateNowPerApModel'
-import { renderCurrentFirmwaresColumn, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
+import { ChangeSchedulePerApModelDialog }                                                                                  from './ChangeScheduleDialog'
+import { UpdateNowPerApModelDialog }                                                                                       from './UpdateNowDialog'
+import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
@@ -25,8 +26,9 @@ export function VenueFirmwareListPerApModel () {
   })
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
+  const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
   // eslint-disable-next-line max-len
-  const { updateNowVisible, setUpdateNowVisible, handleUpdateModalCancel } = useUpdateNowPerApModel()
+  const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
   const {
     preferencesModalVisible, setPreferencesModalVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
@@ -47,6 +49,14 @@ export function VenueFirmwareListPerApModel () {
       onClick: (rows) => {
         setSelectedRows(rows)
         setUpdateNowVisible(true)
+      }
+    },
+    {
+      visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
+      label: $t({ defaultMessage: 'Change Update Schedule' }),
+      onClick: (rows) => {
+        setSelectedRows(rows)
+        setChangeScheduleVisible(true)
       }
     }
   ]
@@ -69,7 +79,12 @@ export function VenueFirmwareListPerApModel () {
       />
     </Loader>
     {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
-      onCancel={handleUpdateModalCancel}
+      onCancel={handleUpdateNowCancel}
+      afterSubmit={afterUpdateModalSubmit}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {changeScheduleVisible && selectedRows && <ChangeSchedulePerApModelDialog
+      onCancel={handleChangeScheduleCancel}
       afterSubmit={afterUpdateModalSubmit}
       selectedVenuesFirmwares={selectedRows}
     />}

@@ -14,19 +14,25 @@ import { getIntl }                                  from '@acx-ui/utils'
 import { VersionLabelType, compareVersions, getVersionLabel } from '../../../FirmwareUtils'
 import * as UI                                                from '../../VenueFirmwareList/styledComponents'
 
-import { ApFirmwareUpdateIndividual, ApFirmwareUpdateIndividualProps } from './ApFirmwareUpdateIndividual'
+import { UpdateFirmwarePerApModelIndividual } from './UpdateFirmwarePerApModelIndividual'
+import { UpdateFirmwarePerApModelPanelProps } from './UpdateFirmwarePerApModelPanel'
 
-import { ApFirmwareUpdateRequestPayload, UpdateFirmwarePerApModelPanelProps } from '.'
+import { UpdateFirmwarePerApModelFirmware } from '.'
 
-type DisplayDataType = Omit<ApFirmwareUpdateIndividualProps, 'update'>
+type DisplayDataType = {
+  apModel: string
+  versionOptions: { key: string, label: string }[]
+  defaultVersion: string
+}
 
-export function ApFirmwareUpdateIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
+// eslint-disable-next-line max-len
+export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
-  const { selectedVenuesFirmwares, updateUpdateRequestPayload } = props
+  const { selectedVenuesFirmwares, updatePayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60
   })
-  const updateRequestPayloadRef = useRef<ApFirmwareUpdateRequestPayload>()
+  const updatePayloadRef = useRef<UpdateFirmwarePerApModelFirmware>()
   const [ showAvailableFirmwareOnly, setShowAvailableFirmwareOnly ] = useState(true)
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
 
@@ -35,9 +41,9 @@ export function ApFirmwareUpdateIndividualPanel (props: UpdateFirmwarePerApModel
 
     const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares)
 
-    if (!updateRequestPayloadRef.current) { // Ensure that 'updateUpdateRequestPayload' only call once when the componnent intializes
-      updateRequestPayloadRef.current = convertToUpdateRequestPayload(updatedDisplayData)
-      updateUpdateRequestPayload(updateRequestPayloadRef.current)
+    if (!updatePayloadRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
+      updatePayloadRef.current = convertToPayload(updatedDisplayData)
+      updatePayload(updatePayloadRef.current)
     }
 
     setDisplayData(updatedDisplayData)
@@ -45,8 +51,8 @@ export function ApFirmwareUpdateIndividualPanel (props: UpdateFirmwarePerApModel
 
   const update = (apModel: string, version: string) => {
     // eslint-disable-next-line max-len
-    updateRequestPayloadRef.current = patchUpdateRequestPayload(updateRequestPayloadRef.current!, apModel, version)
-    updateUpdateRequestPayload(updateRequestPayloadRef.current)
+    updatePayloadRef.current = patchPayload(updatePayloadRef.current!, apModel, version)
+    updatePayload(updatePayloadRef.current)
   }
 
   const handleShowAvailableFirmwareOnlyChange = (e: CheckboxChangeEvent) => {
@@ -66,7 +72,7 @@ export function ApFirmwareUpdateIndividualPanel (props: UpdateFirmwarePerApModel
           if (showAvailableFirmwareOnly && item.versionOptions.length === 0) return null
 
           return <div key={item.apModel}>
-            <ApFirmwareUpdateIndividual
+            <UpdateFirmwarePerApModelIndividual
               apModel={item.apModel}
               versionOptions={item.versionOptions}
               update={update}
@@ -86,6 +92,8 @@ function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: Firmwar
   const apModelMaxFirmwareFromVenues = findApModelMaxFirmwareFromVenues(venuesFirmwares)
 
   data.forEach((apModelFirmware: ApModelFirmware) => {
+    if (!apModelFirmware.supportedApModels) return
+
     const option = {
       key: apModelFirmware.id,
       label: getVersionLabel(intl, apModelFirmware as VersionLabelType)
@@ -111,7 +119,7 @@ function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: Firmwar
   }))
 }
 
-function convertToUpdateRequestPayload (data: DisplayDataType[]): ApFirmwareUpdateRequestPayload {
+function convertToPayload (data: DisplayDataType[]): UpdateFirmwarePerApModelFirmware {
   return data.map((displayDataItem: DisplayDataType) => ({
     apModel: displayDataItem.apModel,
     firmware: displayDataItem.defaultVersion
@@ -122,11 +130,11 @@ function getDefaultValueFromFirmwares (versionOptions: DisplayDataType['versionO
   return versionOptions.length === 0 ? '' : versionOptions[0].key
 }
 
-function patchUpdateRequestPayload (
-  targetFirmwares: ApFirmwareUpdateRequestPayload, apModel: string, version: string
-): ApFirmwareUpdateRequestPayload {
+function patchPayload (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModel: string, version: string
+): UpdateFirmwarePerApModelFirmware {
 
-  const result: Array<ApFirmwareUpdateRequestPayload[number] | null> = [...targetFirmwares]
+  const result: Array<UpdateFirmwarePerApModelFirmware[number] | null> = [...targetFirmwares]
 
   const targetFirmware = version ? { apModel, firmware: version } : null
   const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
