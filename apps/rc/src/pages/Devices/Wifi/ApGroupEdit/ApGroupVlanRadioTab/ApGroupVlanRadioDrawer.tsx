@@ -151,7 +151,6 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
           } />
       ) : (
         <Form.Item
-          //name='vlanPool'
           name='vlanPoolId'
           label={$t({ defaultMessage: 'VLAN Pool' })}
           rules={[{ required: true }]}
