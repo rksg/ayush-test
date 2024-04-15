@@ -7,7 +7,9 @@ import {
   mockedRecommendationPower,
   mockedRecommendationFirmware,
   mockedRecommendationClientLoad,
-  mockedRecommendationPowerMonitoring
+  mockedRecommendationPowerMonitoring,
+  mockRecommendationProbeflexNew,
+  mockRecommendationProbeflexApplied
 } from './__tests__/fixtures'
 import { Kpis }                                            from './Kpis'
 import { RecommendationDetails, transformDetailsResponse } from './services'
@@ -108,4 +110,27 @@ describe('Recommendation Kpis', () => {
     render(<Kpis details={noKpiDetails} />)
     expect(await screen.findByText('No performance indicators')).toBeVisible()
   })
+
+  it('should render correctly for new probeflex', async () => {
+    const probeflexDetails =
+      transformDetailsResponse(mockRecommendationProbeflexNew as unknown as RecommendationDetails)
+    render(<Kpis details={probeflexDetails} />)
+    expect(await screen.findByText(
+      'Current average management traffic per client'
+    )).toBeVisible()
+  })
+
+  it('should render correctly for applied probeflex', async () => {
+    const probeflexDetails =
+      transformDetailsResponse(
+        mockRecommendationProbeflexApplied as unknown as RecommendationDetails)
+    render(<Kpis details={probeflexDetails} />)
+    expect(await screen.findByText(
+      'Current average management traffic per client'
+    )).toBeVisible()
+    expect(await screen.findByText(
+      'Average management traffic per client before the recommendation was applied'
+    )).toBeVisible()
+  })
+
 })
