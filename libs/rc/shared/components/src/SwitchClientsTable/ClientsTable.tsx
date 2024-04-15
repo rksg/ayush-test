@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListQuery, useLazyGetLagListQuery }                    from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
   FILTER,
   getOsTypeIcon,
@@ -21,17 +21,17 @@ import {
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
 
+import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
   getInactiveTooltip,
   isLAGMemberPort,
   isOperationalSwitchPort,
   isStackPort
 } from '../SwitchPortTable'
+import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
-import { SwitchLagModal } from '../SwitchLagDrawer/SwitchLagModal'
-import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 
 type TableQueryPayload = React.SetStateAction<{
   searchString: string;
@@ -77,6 +77,7 @@ export function ClientsTable (props: {
   const [editLag, setEditLag] = useState([] as Lag[])
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
   const [ getLagList ] = useLazyGetLagListQuery()
 
 
@@ -117,7 +118,7 @@ export function ClientsTable (props: {
   function getCols (intl: ReturnType<typeof useIntl>) {
     const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
 
-  
+
 
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
@@ -211,7 +212,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled) { // FF: off
+        if (!portLinkEnabled) { // FF
           return row['switchPort']
         }
 
@@ -230,11 +231,17 @@ export function ClientsTable (props: {
           </Tooltip>)
         } else if (isLAGMemberPort(switchPortStatus)) {
           const onEditLag = async () => {
-            const { data: lagList } = await getLagList({ params, ...{ switchId: switchPortStatus.switchId } })
-            const lagData = lagList?.find(item => item.lagId?.toString() === switchPortStatus.lagId) as Lag
+            const { data: lagList } =
+              await getLagList({ params: { ...params, switchId: switchPortStatus.switchMac } })
+            const lagData =
+              lagList?.find(item => item.lagId?.toString() === switchPortStatus.lagId) as Lag
+            setLagDrawerParams({
+              switchMac: switchPortStatus.switchMac,
+              serialNumber: switchPortStatus.switchSerial
+            })
+            setEditLag([lagData])
             setEditPortDrawerVisible(false)
             setEditLagModalVisible(true)
-            setEditLag([lagData])
           }
           return <Button type='link' onClick={onEditLag}>
             {row['switchPort'] + 'LLAAGG'}
@@ -335,6 +342,7 @@ export function ClientsTable (props: {
           editData={editLag}
           visible={editLagModalVisible}
           setVisible={setEditLagModalVisible}
+          params={lagDrawerParams}
           type='drawer'
         />}
         {editPortDrawerVisible && <EditPortDrawer

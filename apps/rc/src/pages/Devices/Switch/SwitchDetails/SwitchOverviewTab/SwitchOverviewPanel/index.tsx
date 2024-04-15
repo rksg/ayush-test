@@ -8,8 +8,8 @@ import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    
 import type { AnalyticsFilter }                                                                        from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
-import { TopPorts }            from './TopPorts'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
+import { TopPorts }            from './TopPorts'
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
