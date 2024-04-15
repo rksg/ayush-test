@@ -1323,6 +1323,45 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
+    getRadiusServers: build.query<TableResult<AAAViewModalType>,RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(IdentityProviderUrls.getRadiusServers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }/*,
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+      */
+    }),
+
+    activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
     activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -2616,6 +2655,9 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetRadiusServersQuery,
+  useActivateIdentityProviderRadiusMutation,
+  useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,

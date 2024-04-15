@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 
 import { Form }                   from 'antd'
 import { cloneDeep }              from 'lodash'
@@ -7,7 +7,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm }      from '@acx-ui/components'
 import {
+  useActivateIdentityProviderRadiusMutation,
   useAddIdentityProviderMutation,
+  useDeactivateIdentityProviderRadiusMutation,
   useGetIdentityProviderQuery,
   useUpdateIdentityProviderMutation
 } from '@acx-ui/rc/services'
@@ -45,12 +47,18 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   })
   const linkToPolicies = useTenantLink(tablePath)
 
+  const origAuthId = useRef<string>()
+  const origAccountingId = useRef<string | undefined>()
+
   const { editMode = false, modalMode, modalCallBack } = props
 
 
   const { data } = useGetIdentityProviderQuery({ params }, { skip: !editMode })
   const [ createIdentityProvider ] = useAddIdentityProviderMutation()
   const [ updateIdentityProvider ] = useUpdateIdentityProviderMutation()
+
+  const [ activateRadius ] = useActivateIdentityProviderRadiusMutation()
+  const [ deactivateRadius ] = useDeactivateIdentityProviderRadiusMutation()
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.IDENTITY_PROVIDER)
   const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.IDENTITY_PROVIDER)
@@ -80,6 +88,9 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
             }
           }
         })
+
+        origAuthId.current = state.authRadiusId
+        origAccountingId.current = state.accountingRadiusId
       }
 
       if (form) {
@@ -117,10 +128,24 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
 
   const handleAddIdentityProvider = async () => {
     try {
+      const { authRadiusId, accountingRadiusEnabled, accountingRadiusId } = state
       const payload = transformPayload(state)
       const results = await createIdentityProvider({ params, payload }).unwrap()
       const response = results.response as { id: string }
-      modalMode? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
+      const providerId = response.id
+
+      // activate radius
+      if (authRadiusId) {
+        const authParams = { providerId: providerId, radiusId: authRadiusId }
+        await activateRadius({ params: authParams }).unwrap()
+      }
+
+      if (accountingRadiusEnabled && accountingRadiusId) {
+        const accountingParams = { providerId: providerId, radiusId: accountingRadiusId }
+        await activateRadius({ params: accountingParams }).unwrap()
+      }
+
+      modalMode? modalCallBack?.(providerId) : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -128,8 +153,26 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
 
   const handleEditIdentityProvider = async () => {
     try {
+      const { authRadiusId, accountingRadiusEnabled, accountingRadiusId } = state
       const payload = transformPayload(state)
       await updateIdentityProvider({ params, payload }).unwrap()
+
+      // activate radius
+      const providerId = params.policyId
+      if (authRadiusId !== origAuthId.current) {
+        const authParams = { providerId: providerId, radiusId: authRadiusId }
+        await activateRadius({ params: authParams }).unwrap()
+      }
+
+      if (!accountingRadiusEnabled) {
+        if (!!origAccountingId.current) {
+          const accountingParams = { providerId: providerId, radiusId: origAccountingId.current }
+          await deactivateRadius({ params: accountingParams }).unwrap()
+        }
+      } else if (accountingRadiusId !== origAccountingId.current) {
+        const accountingParams = { providerId: providerId, radiusId: accountingRadiusId }
+        await activateRadius({ params: accountingParams }).unwrap()
+      }
 
       modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
     } catch (error) {
