@@ -539,12 +539,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApManagementVlan: {
     method: 'get',
-    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    url: '/venues/:venueId/apManagementTrafficVlanSettings',
     newApi: true
   },
   updateVenueApManagementVlan: {
     method: 'put',
-    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    url: '/venues/:venueId/apManagementTrafficVlanSettings',
     newApi: true
   },
   getApManagementVlan: {
@@ -560,16 +560,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteApManagementVlan: {
     method: 'delete',
     url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  getVenueApEnhancedKey: {
-    method: 'get',
-    url: '/venues/:venueId/apTlsKeyEnhanceModeSettings',
-    newApi: true
-  },
-  updateVenueApEnhancedKey: {
-    method: 'put',
-    url: '/venues/:venueId/apTlsKeyEnhanceModeSettings',
     newApi: true
   },
   getApFeatureSets: {
