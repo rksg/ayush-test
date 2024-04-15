@@ -48,8 +48,6 @@ export function ApManagementVlanForm () {
   const getApManagementVlan = useGetApManagementVlanQuery({ params: { venueId, serialNumber } })
   const [updateApManagementVlan, { isLoading: isUpdatingVenueManagementVlan }] =
     useUpdateApManagementVlanMutation()
-  const [deleteApManagementVlan, { isLoading: isDeletingVenueManagementVlan }] =
-    useUpdateApManagementVlanMutation()
 
   useEffect(() => {
     const apMgmtVlanData = getApManagementVlan?.data
@@ -138,16 +136,16 @@ export function ApManagementVlanForm () {
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
-          if(isUseVenueSettingsRef.current) {
-            // eslint-disable-next-line max-len
-            await deleteApManagementVlan({ params: { venueId, serialNumber }, deletePayload }).unwrap()
-          } else {
-            await updateApManagementVlan({ params: { venueId, serialNumber }, payload }).unwrap()
-
-            // eslint-disable-next-line no-console
-            console.log(payload)
-          }
-        } catch (error) {
+          const payload = isUseVenueSettingsRef.current
+          ? { useVenueSettings: true }
+          : getApManagementVlanDataFromFields()  
+           
+           await updateApManagementVlan({ params: { venueId, serialNumber }, payload
+           }).unwrap()
+      
+           // eslint-disable-next-line no-console
+           console.log(payload)
+     } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
       }
@@ -161,12 +159,6 @@ export function ApManagementVlanForm () {
       vlanOverrideEnabled: true,
       vlanId,
       useVenueSettings: isUseVenueSettingsRef.current
-    }
-  }
-
-  const getDeleteApManagementVlanDataFromFields = () => {
-    return {
-      useVenueSettings: true
     }
   }
 
