@@ -83,6 +83,28 @@ onClose: () => void
       <Descriptions.Item
         label={$t({ defaultMessage: 'Link Speed' })}
         children={tooltipEdge?.linkSpeed || noDataDisplay} />
+      {
+        /* TODO: Do we still need to apply PoE usage if PoE is disabled?
+        How do we calculate it and set the unit for PoE?*/
+      }
+      <Descriptions.Item
+        label={tooltipEdge?.correspondingPort ?
+          $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
+        children={tooltipEdge?.connectedPort || noDataDisplay} />
+
+      {tooltipEdge?.correspondingPort &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'To Port' })}
+            children={tooltipEdge?.correspondingPort || noDataDisplay} />
+      }
+
+      { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'PoE' })}
+            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
+            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
+              : $t({ defaultMessage: 'Off' })} />
+      }
 
       {(tooltipSourceNode?.type === DeviceTypes.Switch ||
         tooltipSourceNode?.type === DeviceTypes.SwitchStack)
@@ -112,27 +134,6 @@ onClose: () => void
               </Card>}
           />
         </>
-      }
-      {
-        /* TODO: does we get PoE usage if poe disabled?
-          How to calculate and set unit for PoE? */
-      }
-      <Descriptions.Item
-        label={tooltipEdge?.correspondingPort ?
-          $t({ defaultMessage: 'From Port' }) : $t({ defaultMessage: 'Port' })}
-        children={tooltipEdge?.connectedPort || noDataDisplay} />
-
-      {tooltipEdge?.correspondingPort &&
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'To Port' })}
-            children={tooltipEdge?.correspondingPort || noDataDisplay} />
-      }
-      { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
-          <Descriptions.Item
-            label={$t({ defaultMessage: 'PoE' })}
-            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
-            +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
-              : $t({ defaultMessage: 'Off' })} />
       }
     </>
   }
@@ -200,7 +201,7 @@ onClose: () => void
             edgesInfoComponent(tooltipEdge, tooltipSourceNode, tooltipTargetNode)}
       </Descriptions>
       {tooltipEdge?.extraEdges && tooltipEdge?.extraEdges.length > 0 &&
-        <Tabs type='third' defaultActiveKey={'#1'}>
+        <Tabs type='third' defaultActiveKey={'#1'} centered>
           <Tabs.TabPane
             tab={$t({ defaultMessage: '#1' })}
             key='#1'>

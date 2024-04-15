@@ -40,7 +40,7 @@ export const Summary = () => {
       { $t({ defaultMessage: 'Cluster Virtual IP' }) }
     </Subtitle>
     {
-      (valideVipConfig?.length ?? 0) > 0 &&
+      valideVipConfig?.length &&
       <>
         <Form.Item>
           {
@@ -48,7 +48,11 @@ export const Summary = () => {
               <Col span={12}>
                 {
                   valideVipConfig?.map((item, index) => (
-                    <VipCard key={item.vip} index={index + 1} data={item} />
+                    <VipCard
+                      key={item.vip}
+                      index={index + 1}
+                      data={item}
+                    />
                   ))
                 }
               </Col>

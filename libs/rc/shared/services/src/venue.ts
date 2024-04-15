@@ -511,9 +511,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
+        const request = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
         return {
-          ...floorPlansReq,
+          ...request,
           body: payload
         }
       }
@@ -1462,7 +1462,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueApEnhancedKey: build.query<ApEnhancedKey, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueApEnhancedKey, params)
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApEnhancedKey, params)
         return{
           ...req
         }
@@ -1470,7 +1470,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueApEnhancedKey: build.mutation<ApEnhancedKey, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueApEnhancedKey, params)
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueApEnhancedKey, params)
         return{
           ...req,
           body: payload

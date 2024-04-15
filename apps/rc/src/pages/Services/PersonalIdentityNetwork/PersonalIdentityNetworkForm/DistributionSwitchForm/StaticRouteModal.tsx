@@ -12,6 +12,7 @@ interface StaticRouteModalFormType {
   routes: EdgeStaticRoute[]
 }
 
+// TODO: need to add the clusterInfo for getting/updaying StaticRoutes when PIN support HA
 export const StaticRouteModal = (props: { edgeId: string, edgeName: string }) => {
   const { edgeId, edgeName } = props
   const { $t } = useIntl()

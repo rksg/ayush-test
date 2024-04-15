@@ -13,9 +13,11 @@ import { ApGroupVlanRadioContext } from '.'
 
 export function ApGroupVlanRadioTable () {
   const { $t } = useIntl()
-  const { apGroupId, venueId, tableData,
+  const { apGroupId, venueId,
+    tableData, vlanPoolingNameMap,
     drawerStatus, setDrawerStatus } = useContext(ApGroupVlanRadioContext)
-  const columns = useApGroupNetworkColumns(apGroupId, venueId, true)
+
+  const columns = useApGroupNetworkColumns(apGroupId, venueId, vlanPoolingNameMap, true)
 
   const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),

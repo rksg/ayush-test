@@ -40,6 +40,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const linkToAdministrators = useTenantLink('/administration/administrators')
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
+  const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -175,6 +176,16 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
               }}>
               {$t({ defaultMessage: 'View XML code' })}
             </Button></div>
+            {loginSsoSignatureEnabled && <div>
+              <Form.Item
+                colon={false}
+                label={$t({ defaultMessage: 'Require SAML requests to be signed' })} />
+              <h3 style={{ marginTop: '-15px' }}>
+                {authenticationData?.samlSignatureEnabled
+                  ? $t({ defaultMessage: 'YES' })
+                  : $t({ defaultMessage: 'NO' })}
+              </h3>
+            </div>}
             <div style={{ marginTop: '5px' }}><Button type='link'
               key='manageusers'
               onClick={() => {
