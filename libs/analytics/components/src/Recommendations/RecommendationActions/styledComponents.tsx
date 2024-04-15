@@ -32,3 +32,10 @@ export const RevertIcon = styled(Reload)`
   height: 24px;
   width: 24px;
 `
+
+export const ApplyMsgWrapper = styled.div`
+  padding: 5px 12px;
+  white-space: normal;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+`
