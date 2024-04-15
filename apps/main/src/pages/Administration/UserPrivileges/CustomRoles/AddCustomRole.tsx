@@ -19,7 +19,8 @@ import {
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
 import {
-  CustomRole
+  CustomRole,
+  systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -118,7 +119,10 @@ export function AddCustomRole () {
           label={intl.$t({ defaultMessage: 'Role Name' })}
           style={{ width: '300px' }}
           rules={[
-            { required: true }
+            { required: true },
+            { min: 2 },
+            { max: 64 },
+            { validator: (_, value) => systemDefinedNameValidator(value) }
           ]}
           validateFirst
           hasFeedback

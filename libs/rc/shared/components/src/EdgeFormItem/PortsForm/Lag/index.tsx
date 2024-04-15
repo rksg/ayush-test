@@ -5,7 +5,6 @@ import { Loader }                                                               
 import { useAddEdgeLagMutation, useDeleteEdgeLagMutation, useGetEdgeListQuery, useUpdateEdgeLagMutation } from '@acx-ui/rc/services'
 import { EdgeLag, EdgeLagStatus }                                                                         from '@acx-ui/rc/utils'
 
-
 import { EdgeLagTable }         from '../../../EdgeLagTable'
 import { EdgePortsDataContext } from '../PortDataProvider'
 
