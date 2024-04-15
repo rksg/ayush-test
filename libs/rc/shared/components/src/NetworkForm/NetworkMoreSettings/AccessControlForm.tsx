@@ -338,10 +338,9 @@ function getAccessControlProfileTemplate <
 ) {
   if (!accessControlProfile) return transformDisplayText()
   let name
-  const policy = accessControlProfile[policyKey] as string
-  const nameKey = policyKey.replace('Id', 'Name') as keyof AccessControlProfileTemplate
+  const policy = accessControlProfile[policyKey] as keyof AccessControlProfileTemplate
   if (policy) {
-    name = accessControlProfile[nameKey] as string
+    name = policy
   }
   return transformDisplayText(name)
 }
@@ -551,7 +550,7 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
         selectedLayer2: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'l2AclPolicyId'
+          'l2AclPolicyName'
         )
       }
     },
@@ -592,7 +591,7 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
         selectedLayer3: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'l3AclPolicyId'
+          'l3AclPolicyName'
         )
       }
     },
@@ -632,7 +631,7 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
         selectedDevicePolicy: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'devicePolicyId'
+          'devicePolicyName'
         )
       }
     },
@@ -672,7 +671,7 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
         selectedApplicationPolicy: getAccessControlProfileTemplate(
           data?.data ?? [],
           state.selectedAccessControlProfile,
-          'applicationPolicyId'
+          'applicationPolicyName'
         )
       }
     },
