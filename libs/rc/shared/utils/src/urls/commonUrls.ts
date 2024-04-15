@@ -251,6 +251,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
   },
+  getVenueSpecificUploadURL: {
+    method: 'post',
+    url: '/venues/:venueId/signurls/uploadurls',
+    newApi: true
+  },
   getAllDevices: {
     method: 'post',
     url: '/venues/:venueId/devices',
@@ -390,6 +395,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/rogueApSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    newApi: true
+  },
+  getVenueApEnhancedKey: {
+    method: 'get',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    newApi: true
+  },
+  updateVenueApEnhancedKey: {
+    method: 'put',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
     newApi: true
   },
   getRoguePolicies: {
@@ -588,6 +603,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTimezone: {
     method: 'get',
-    url: '/timezones?location=:lat,:lng'
+    url: '/timezones?location=:lat,:lng',
+    newApi: true
   }
 }

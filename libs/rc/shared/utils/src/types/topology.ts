@@ -17,6 +17,15 @@ export interface Node {
 	ipAddress?: string;
 }
 
+export interface NodeData extends Node {
+	id: string
+	name: string
+	untaggedVlan?: string
+	taggedVlan?: string
+	children: NodeData[]
+	_children?: NodeData[]
+}
+
 export interface UINode {
 	id: string,
     label?: string,
@@ -39,7 +48,7 @@ export interface Link extends LinkConnectionInfo {
 	toMac?: string;
 	fromSerial?: string;
 	toSerial?: string;
-	extraEdges?: LinkConnectionInfo[]
+	extraEdges?: LinkConnectionInfo[];
 }
 
 export interface LinkConnectionInfo {
@@ -66,7 +75,7 @@ export interface GraphData {
 }
 
 export interface TopologyData {
-	nodes: Array<Node>;
+	nodes: Array<NodeData>;
     edges: Array<Link>;
 }
 

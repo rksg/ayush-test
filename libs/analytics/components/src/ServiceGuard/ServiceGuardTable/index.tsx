@@ -100,7 +100,10 @@ export function ServiceGuardTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
-        navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
+        navigate({
+          ...serviceGuardPath,
+          pathname: `${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`
+        })
       },
       disabled: ([selectedRow]) => {
         const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
