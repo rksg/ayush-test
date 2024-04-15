@@ -60,6 +60,7 @@ describe('recommendation services', () => {
     ])
     expect(removedMsgs).toStrictEqual<EnhancedRecommendation>({
       appliedOnce: false,
+      firstAppliedAt: undefined,
       appliedTime: null,
       code: 'i-zonefirmware-upgrade',
       currentValue: '6.1.1.0.1274',
@@ -111,7 +112,9 @@ describe('recommendation services', () => {
     ])
     expect(removedMsgs).toStrictEqual<EnhancedRecommendation>({
       appliedOnce: true,
+      firstAppliedAt: '2023-05-23T00:00:35.308Z',
       appliedTime: '2023-06-25T00:00:25.772Z',
+      dataEndTime: '2023-06-26T00:00:25.772Z',
       code: 'c-crrm-channel24g-auto',
       currentValue: 'crrm',
       id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',

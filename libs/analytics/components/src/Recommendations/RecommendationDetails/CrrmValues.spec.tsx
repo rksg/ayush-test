@@ -44,9 +44,10 @@ describe('CrrmValues', () => {
     expect(await screen.findByText('AI-Driven RRM for channel plan')).toBeVisible()
   })
   it('should render correctly when data retention period passed', async () => {
-    jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
+    const spy = jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
+    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Beyond data retention period')).toBeVisible()
+    expect(spy).toBeCalledWith(crrmDetails.firstAppliedAt)
   })
 })

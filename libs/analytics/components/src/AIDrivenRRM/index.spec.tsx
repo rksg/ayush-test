@@ -30,7 +30,7 @@ describe('AIDrivenRRM dashboard', () => {
   it('renders recommendation', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: { recommendation: { ...crrmListResult.recommendations[0], statusTrail: [] } }
+      data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: '' } }
     })
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
@@ -48,7 +48,7 @@ describe('AIDrivenRRM dashboard', () => {
   it('renders recommendation with second crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: { recommendation: { ...crrmListResult.recommendations[1], statusTrail: [] } }
+      data: { recommendation: { ...crrmListResult.recommendations[1], dataEndTime: '' } }
     })
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
@@ -58,7 +58,7 @@ describe('AIDrivenRRM dashboard', () => {
   it('renders recommendation with third crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: { recommendation: { ...crrmListResult.recommendations[2], statusTrail: [] } }
+      data: { recommendation: { ...crrmListResult.recommendations[2], dataEndTime: '' } }
     })
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
@@ -68,7 +68,7 @@ describe('AIDrivenRRM dashboard', () => {
   it('renders unknown recommendations', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmUnknownListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: { recommendation: { ...crrmUnknownListResult.recommendations[0], statusTrail: [] } }
+      data: { recommendation: { ...crrmUnknownListResult.recommendations[0], dataEndTime: '' } }
     })
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
@@ -90,7 +90,7 @@ describe('AIDrivenRRM dashboard', () => {
   it('renders unknown recommendations with second crrmKpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmUnknownListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: { recommendation: { ...crrmUnknownListResult.recommendations[1], statusTrail: [] } }
+      data: { recommendation: { ...crrmUnknownListResult.recommendations[1], dataEndTime: '' } }
     })
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
@@ -174,5 +174,16 @@ describe('AIDrivenRRM dashboard', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Update My Licenses')).toBeVisible()
+  })
+  it('should handle when data retention period passed', async () => {
+    const spy = jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+      .mockImplementation(() => false)
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: 'dataEndTime' } }
+    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+    expect(await screen.findByText('Beyond data retention period')).toBeInTheDocument()
+    expect(spy).toBeCalledWith('dataEndTime')
   })
 })

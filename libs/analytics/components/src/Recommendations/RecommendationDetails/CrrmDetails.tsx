@@ -56,7 +56,7 @@ export const CrrmDetails = () => {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
-        { details && isDataRetained(details) && <CloudRRMGraph details={details}/>}
+        { details && isDataRetained(details.dataEndTime) && <CloudRRMGraph details={details}/>}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <CrrmValuesExtra details={details}/>

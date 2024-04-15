@@ -1,7 +1,7 @@
-import { gql }               from 'graphql-request'
-import { get, snakeCase }    from 'lodash'
-import moment                from 'moment-timezone'
-import { MessageDescriptor } from 'react-intl'
+import { gql }                      from 'graphql-request'
+import { get, snakeCase, findLast } from 'lodash'
+import moment                       from 'moment-timezone'
+import { MessageDescriptor }        from 'react-intl'
 
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
@@ -49,6 +49,7 @@ export type EnhancedRecommendation = RecommendationDetails & {
   category: MessageDescriptor;
   pathTooltip: string;
   appliedOnce: boolean;
+  firstAppliedAt: string;
   monitoring: null | { until: string };
   tooltipContent: string | MessageDescriptor;
   crrmOptimizedState?: IconValue;
@@ -73,6 +74,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     statusTrail,
     status,
     appliedTime,
+    dataEndTime,
     currentValue,
     recommendedValue,
     kpi_number_of_interfering_links
@@ -92,6 +94,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
     : recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
+  const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
   return {
     ...details,
     monitoring,
@@ -100,11 +103,12 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     category,
     summary,
     appliedOnce,
+    firstAppliedAt,
     ...(code.includes('crrm') && {
       crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(
         status,
-        statusTrail,
+        dataEndTime,
         kpi_number_of_interfering_links!
       )
     })

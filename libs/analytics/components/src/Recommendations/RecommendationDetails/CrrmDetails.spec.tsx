@@ -41,7 +41,7 @@ describe('CrrmDetails', () => {
     expect(await screen.findByTestId('StatusTrail')).toBeVisible()
   })
   it('should hide CloudRRMGraph when data retention period passed', async () => {
-    jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
+    const spy = jest.spyOn(require('../utils'), 'isDataRetained').mockImplementation(() => false)
     render(<CrrmDetails />, {
       route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
       wrapper: Provider
@@ -51,5 +51,6 @@ describe('CrrmDetails', () => {
     expect(screen.queryByTestId('CloudRRMGraph')).not.toBeInTheDocument()
     expect(await screen.findByTestId('CrrmValuesExtra')).toBeVisible()
     expect(await screen.findByTestId('StatusTrail')).toBeVisible()
+    expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
   })
 })

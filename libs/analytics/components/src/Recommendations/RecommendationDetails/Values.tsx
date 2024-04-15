@@ -31,6 +31,7 @@ export const getValues = (details: EnhancedRecommendation) => {
     recommendedValue,
     code,
     appliedOnce,
+    firstAppliedAt,
     preferences
   } = details
   const { valueFormatter, recommendedValueTooltipContent } = codes[code]
@@ -38,6 +39,7 @@ export const getValues = (details: EnhancedRecommendation) => {
     status,
     code,
     appliedOnce,
+    firstAppliedAt,
     preferences,
     heading: codes[code].valueText,
     original: valueFormatter(originalValue),
@@ -85,7 +87,8 @@ export const getRecommendationsText = (
     recommendedValue,
     appliedOnce,
     code,
-    status
+    status,
+    firstAppliedAt
   } = details
 
   const metadata = chain(details.metadata)
@@ -133,7 +136,7 @@ export const getRecommendationsText = (
 
   return {
     actionText: isCrrm
-      ? isDataRetained(details)
+      ? isDataRetained(firstAppliedAt)
         ? status === 'applied'
           ? $t(appliedActionText!, parameters)
           : (isFullOptimization

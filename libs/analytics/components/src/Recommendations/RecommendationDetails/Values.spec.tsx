@@ -1,4 +1,5 @@
 import userEvent       from '@testing-library/user-event'
+import _               from 'lodash'
 import { MomentInput } from 'moment-timezone'
 
 import { get }                     from '@acx-ui/config'
@@ -130,16 +131,19 @@ describe('getRecommendationsText', () => {
     expect(result.tradeoffText).toEqual('AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.')
   })
   it('should return correct values when data retention period passed', () => {
+    const firstApply = _.findLastIndex(mockedRecommendationCRRM
+      .statusTrail, ({ status }) => status === 'applied')
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRM,
       statusTrail: [
-        ...mockedRecommendationCRRM.statusTrail.slice(0, -1),
-        { status: 'new', createdAt: '2021-05-17T07:04:11.663Z' }
+        ...mockedRecommendationCRRM.statusTrail.slice(0, firstApply),
+        { status: 'applied', createdAt: '2021-05-17T07:04:11.663Z' },
+        ...mockedRecommendationCRRM.statusTrail.slice(firstApply + 1)
       ]
     } as RecommendationDetails)
     const result = getRecommendationsText(crrmDetails)
     // eslint-disable-next-line max-len
-    expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2021 07:04. The initial optimization graph is no longer available below since the Venue recommendation details has crossed the standard RUCKUS data retention policy. However your Venue configuration continues to be monitored and adjusted for further optimization.')
+    expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2023 07:04. The initial optimization graph is no longer available below since the Venue recommendation details has crossed the standard RUCKUS data retention policy. However your Venue configuration continues to be monitored and adjusted for further optimization.')
   })
   it('should return correct values when status is applied', () => {
     const crrmDetails = transformDetailsResponse({

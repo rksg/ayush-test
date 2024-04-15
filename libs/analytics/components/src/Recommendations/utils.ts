@@ -9,8 +9,6 @@ import { getIntl }   from '@acx-ui/utils'
 import { enumMap }     from '../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../ConfigChange/Table/util'
 
-import { EnhancedRecommendation } from './RecommendationDetails/services'
-
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
   | Array<{
     radio: string,
@@ -76,7 +74,7 @@ export const crrmText = (value: CrrmTextType) => {
   }
 }
 
-export const isDataRetained = (details: Pick<EnhancedRecommendation, 'statusTrail'>) => {
+export const isDataRetained = (time?: string) => {
   const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
-  return moment(details.statusTrail.slice(-1)[0].createdAt).isAfter(retainDate)
+  return moment(time).isAfter(retainDate)
 }
