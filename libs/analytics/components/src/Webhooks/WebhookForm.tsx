@@ -136,9 +136,13 @@ export function WebhookForm (props: {
     <Loader states={[rg]}>
       <Form {...formProps}>
         <Form.Item
+          validateFirst
           name='name'
           label={$t({ defaultMessage: 'Name' })}
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            { max: 255 }
+          ]}
           children={<Input />}
         />
         <Form.Item
