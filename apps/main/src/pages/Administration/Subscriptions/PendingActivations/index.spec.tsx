@@ -1,18 +1,18 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
-import { mspApi }                                                                  from '@acx-ui/msp/services'
-import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
-import { administrationApi }                                                       from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                                                  from '@acx-ui/rc/utils'
-import { Provider, store }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within  } from '@acx-ui/test-utils'
+import { showToast }                                from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { mspApi }                                   from '@acx-ui/msp/services'
+import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
+import { administrationApi }                        from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor  }     from '@acx-ui/test-utils'
 
 import { mockedEtitlementsList, mockedSummary } from '../__tests__/fixtures'
 
-import MySubscriptions from '.'
+import PendingActivations from '.'
 
 const mockedWindowOpen = jest.fn()
 const mockedRefreshFn = jest.fn()
@@ -28,8 +28,19 @@ jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 const services = require('@acx-ui/rc/services')
+const activations = {
+  data: [{
+    orderId: '123',
+    productName: 'test',
+    productCode: 'aaa',
+    quantity: 100,
+    spaEndDate: '2024-12-01',
+    orderCreateDate: '2024-03-03',
+    orderAcxRegistrationCode: 'ABC123'
+  }]
+}
 
-describe('MySubscriptions', () => {
+describe('PendingActivations', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
@@ -64,12 +75,6 @@ describe('MySubscriptions', () => {
           }
         }
       ),
-      // rest.get(
-      //   AdministrationUrlsInfo.getEntitlementsList.newApi
-      //     ? AdministrationUrlsInfo.getEntitlementsList.url
-      //     : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
-      //   (_req, res, ctx) => res(ctx.json(mockedEtitlementsList))
-      // ),
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (_req, res, ctx) => res(ctx.status(202))
@@ -81,6 +86,10 @@ describe('MySubscriptions', () => {
           msp_label: '',
           msp_tenant_name: ''
         }))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.getEntitlementsActivations.url,
+        (req, res, ctx) => res(ctx.json(activations))
       )
     )
   })
@@ -88,16 +97,16 @@ describe('MySubscriptions', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <MySubscriptions />
+        <PendingActivations />
       </Provider>, {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Device Count' })
-    expect(await screen.findByRole('row', { name: /CLD-MS76-1001/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /CLD-S08M-3001 .* Active/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: /Assigned .* Active/i })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Manage Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeVisible()
+    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
+    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /aaa/i })).toBeVisible()
   })
 
   it('should refresh successfully', async () => {
@@ -106,16 +115,15 @@ describe('MySubscriptions', () => {
 
     render(
       <Provider>
-        <MySubscriptions />
+        <PendingActivations />
       </Provider>, {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByRole('row', { name: /CLD-MS76-1001/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
 
     const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subsciptions' })
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
     await userEvent.click(licenseManagementButton)
     expect(mockedWindowOpen).toBeCalled()
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
@@ -147,64 +155,27 @@ describe('MySubscriptions', () => {
 
     render(
       <Provider>
-        <MySubscriptions />
+        <PendingActivations />
       </Provider>, {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Device Count' })
+    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
     // FIXME: might need to fix when general error handler behavior changed.
     await waitFor(() => expect(spyConsole).toBeCalled())
   })
 
-  it('should display empty string when subscription type is not mapped', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
+  it('should open window correctly when activation code clicked', async () => {
     render(
       <Provider>
-        <MySubscriptions />
-      </Provider>, {
-        route: { params }
-      })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    await screen.findByRole('columnheader', { name: 'Part Number' })
-    const data = await screen.findAllByRole('row')
-    // because it is default sorted by "timeleft" in descending order
-    const cells = await within(data[data.length - 2] as HTMLTableRowElement).findAllByRole('cell')
-    expect((cells[0] as HTMLTableCellElement).textContent).toBe('')
-  })
-
-  it('should show banner on no subscription active error', async () => {
-    services.useGetEntitlementsListQuery = jest.fn().mockImplementation(() => {
-      return {
-        data: [],
-        error: {
-          status: 417,
-          data: {
-            code: 'ENTITLEMENT-10003',
-            message: `Cannot display subscription data: entitlement ID is missing.
-            At least one tenant subscription must be active.`
-          }
-        }
-      }
-    })
-
-    render(
-      <Provider>
-        <MySubscriptions />
+        <PendingActivations />
       </Provider>, {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
-      .toBeVisible()
-    const refreshButton = await screen.findByTestId('bannerRefreshLink')
-    await userEvent.click(refreshButton)
-    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
+    await userEvent.click(await screen.findByRole('button', { name: /ABC123/i }))
+    expect(mockedWindowOpen).toBeCalled()
   })
 })

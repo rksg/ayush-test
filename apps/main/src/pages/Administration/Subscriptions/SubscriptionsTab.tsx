@@ -27,8 +27,8 @@ export const SubscriptionTabs = () => {
     const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
-    const subscriptionVal = ( tier === AccountTier.GOLD? SubscriptionTierType.Gold
-      : SubscriptionTierType.Platinum )
+    const subscriptionVal = tier === AccountTier.GOLD ? SubscriptionTierType.Gold
+      : SubscriptionTierType.Platinum
 
     const tabs = {
       mySubscriptions: {
