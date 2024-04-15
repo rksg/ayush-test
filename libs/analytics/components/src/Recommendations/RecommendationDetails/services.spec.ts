@@ -15,7 +15,8 @@ import { api, BasicRecommendation, EnhancedRecommendation, RecommendationAp } fr
 
 describe('recommendation services', () => {
   const recommendationPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
+    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
+    status: 'new'
   }
 
   const recommendationApPayload = {

@@ -3,10 +3,10 @@ import { Fragment } from 'react'
 import { chain, snakeCase } from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
+import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Tooltip }       from '@acx-ui/components'
+import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
+import { NodeType, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { codes }              from '../config'
 import { extractBeforeAfter } from '../services'
@@ -34,14 +34,14 @@ export const getValues = (details: EnhancedRecommendation) => {
     firstAppliedAt,
     preferences
   } = details
-  const { valueFormatter, recommendedValueTooltipContent } = codes[code]
+  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
   return {
     status,
     code,
     appliedOnce,
     firstAppliedAt,
     preferences,
-    heading: codes[code].valueText,
+    heading: valueText,
     original: valueFormatter(originalValue),
     current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
@@ -114,6 +114,7 @@ export const getRecommendationsText = (
   const isCrrm = code.startsWith('c-crrm')
 
   let parameters: Record<string, string | JSX.Element> = {
+    ...productNames,
     ...metadata,
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
     currentValue: appliedOnce ? valueFormatter(originalValue) : valueFormatter(currentValue),

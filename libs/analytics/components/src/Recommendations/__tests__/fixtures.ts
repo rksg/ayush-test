@@ -629,6 +629,58 @@ export const recommendationListResult = {
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
+      preferences: { crrmFullOptimization: true }
+    },
+    {
+      id: '16',
+      code: 'c-probeflex-24g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
+      id: '17',
+      code: 'c-probeflex-5g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
+      id: '18',
+      code: 'c-probeflex-6g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
       preferences: { crrmFullOptimization: true },
       trigger: 'daily'
     }
