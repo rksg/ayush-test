@@ -141,7 +141,8 @@ export function WebhookForm (props: {
           label={$t({ defaultMessage: 'Name' })}
           rules={[
             { required: true },
-            { max: 255 }
+            { max: 255 },
+            { whitespace: true }
           ]}
           children={<Input />}
         />
