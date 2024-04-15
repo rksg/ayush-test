@@ -251,11 +251,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
   },
-  getVenueSpecificUploadURL: {
-    method: 'post',
-    url: '/venues/:venueId/signurls/uploadurls',
-    newApi: true
-  },
   getAllDevices: {
     method: 'post',
     url: '/venues/:venueId/devices',
