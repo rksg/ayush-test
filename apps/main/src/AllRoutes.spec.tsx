@@ -240,7 +240,7 @@ describe('AllRoutes', () => {
     await screen.findByTestId('timeline')
   })
 
-  test('should not see anayltics & service validation if not admin', async () => {
+  test('should not see anayltics & service validation if not admin or read only', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const { rerender } = render(<AllRoutes />, {
@@ -249,25 +249,19 @@ describe('AllRoutes', () => {
         path: '/tenantId/t/dashboard'
       }
     })
-
-    const menuItem = await screen.findByRole('menuitem', { name: 'AI Assurance' })
-    expect(menuItem).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
     setUserProfile({
       allowedOperations: [],
       profile: {
         ...getUserProfile().profile,
-        roles: [RolesEnum.READ_ONLY]
+        roles: [RolesEnum.GUEST_MANAGER]
       },
       accountTier: 'Gold',
       betaEnabled: false
     })
-
     rerender(<AllRoutes />)
-
-    await screen.findAllByRole('menuitem')
-
-    expect(menuItem).not.toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
   })
 
   test('should navigate to ruckus-wan-gateway/*', async () => {
