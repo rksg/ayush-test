@@ -2,19 +2,19 @@
 import { Col, Form, Row, Slider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Button, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { EdgeClusterStatus, EdgePortInfo }                from '@acx-ui/rc/utils'
+import { Button, StepsForm, Tooltip, useStepFormContext }    from '@acx-ui/components'
+import { EdgeClusterStatus, EdgePortInfo, VirtualIpSetting } from '@acx-ui/rc/utils'
 
 import { VipCard } from './VipCard'
 
 export interface VirtualIpFormType {
   timeout: number
-  vipConfig: {
-    interfaces: {
-      [key: string]: EdgePortInfo
-    }
-    vip: string
-  }[]
+  vipConfig: VipConfigType[]
+}
+
+export interface VipConfigType {
+  interfaces: VirtualIpSetting['ports']
+  vip: string
 }
 
 interface EdgeClusterVirtualIpSettingFormProps {
@@ -80,10 +80,14 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
               <Tooltip.Question
                 title={
                   $t({ defaultMessage: `
-                    HA timeout refers to the duration within which if a node
-                    does not receive a periodic heartbeat from the active node.
-                    This triggers the process of selecting the next active node
-                    to maintain system functionality
+                    The VRRP timer of 6 seconds or above is recommended
+                    for SmartEdge usecases. A timer lesser than this is
+                    too aggressive and could potentially cause VRRP issues
+                    in some networks. HA timeout refers to the duration
+                    within which if a node does not receive a periodic
+                    heartbeat from the active node. This triggers the
+                    process of selecting the next active node to maintain
+                    system functionality
                   ` })
                 }
                 placement='right'
