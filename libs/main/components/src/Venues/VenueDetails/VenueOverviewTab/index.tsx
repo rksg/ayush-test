@@ -27,6 +27,7 @@ import {
 import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
 import { useNavigateToPath }                                             from '@acx-ui/react-router-dom'
+import { hasPermission, SwitchScopes }                                   from '@acx-ui/user'
 import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
 import type { AnalyticsFilter }                                          from '@acx-ui/utils'
 
@@ -46,11 +47,11 @@ export function VenueOverviewTab () {
       value: 'ap',
       children: <ApWidgets filters={venueFilter}/>
     },
-    {
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets filters={venueFilter}/>
-    }
+    }] : [])
   ]
   return (<>
     <CommonDashboardWidgets filters={venueFilter}/>

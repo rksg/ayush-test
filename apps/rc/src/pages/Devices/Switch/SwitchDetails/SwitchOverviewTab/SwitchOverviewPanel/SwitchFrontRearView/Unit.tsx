@@ -22,6 +22,7 @@ import { getPoeUsage,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { hasPermission, SwitchScopes }       from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
@@ -425,7 +426,7 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember &&
+          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
           <Button
             type='link'
             size='small'

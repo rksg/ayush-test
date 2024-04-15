@@ -11,8 +11,9 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { SwitchScopes, hasPermission } from '@acx-ui/user'
+import { getIntl }                     from '@acx-ui/utils'
 
 import { VlanSettingDrawer } from '../VlanSettingDrawer'
 
@@ -223,7 +224,7 @@ export function SelectVlanModal (props: {
       onCancel={onCancel}
       footer={[
         <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
-          <Tooltip
+          { hasPermission({ scopes: [SwitchScopes.CREATE] }) ? <Tooltip
             placement='top'
             key='disable-add-vlan-tooltip'
             title={!hasSwitchProfile ? vlanDisabledTooltip : ''}
@@ -240,7 +241,7 @@ export function SelectVlanModal (props: {
                 {$t({ defaultMessage: 'Add VLAN' })}
               </Button>
             </Space>
-          </Tooltip>
+          </Tooltip> : <Space> </Space>}
           <Space>
             <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
             <Tooltip

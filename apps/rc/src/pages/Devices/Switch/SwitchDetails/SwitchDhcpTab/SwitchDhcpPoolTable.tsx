@@ -15,8 +15,12 @@ import {
   isOperationalSwitch,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams } from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  SwitchScopes,
+  hasPermission
+} from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '..'
 
@@ -46,6 +50,10 @@ export function SwitchDhcpPoolTable () {
 
   const isOperational = switchDetail?.deviceStatus ?
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
+
+  const isSelectionVisible = !switchDetail?.cliApplied && hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
 
   const handleSavePool = async (values: SwitchDhcp) => {
     try {
@@ -104,6 +112,7 @@ export function SwitchDhcpPoolTable () {
 
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [SwitchScopes.UPDATE],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       setSelected(selectedRows[0].id)
@@ -111,6 +120,7 @@ export function SwitchDhcpPoolTable () {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     onClick: (selectedRows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -136,6 +146,7 @@ export function SwitchDhcpPoolTable () {
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
+          scopeKey: [SwitchScopes.CREATE],
           disabled: !isOperational || !!switchDetail?.cliApplied,
           tooltip: !!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
           onClick: () => {
@@ -145,9 +156,10 @@ export function SwitchDhcpPoolTable () {
         }])}
         rowKey='id'
         rowActions={!!switchDetail?.cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={!!switchDetail?.cliApplied || !hasAccess()
-          ? undefined
-          : { type: 'checkbox' }}
+        rowSelection={isSelectionVisible
+          ? { type: 'checkbox' }
+          : undefined
+        }
       />
       <AddPoolDrawer
         visible={drawerVisible}
