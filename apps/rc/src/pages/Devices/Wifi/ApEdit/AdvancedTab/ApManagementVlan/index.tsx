@@ -163,7 +163,7 @@ export function ApManagementVlanForm () {
   return (
     <Loader states={[{
       isLoading: getApManagementVlan.isLoading,
-      isFetching: isUpdatingVenueManagementVlan || isDeletingVenueManagementVlan
+      isFetching: isUpdatingVenueManagementVlan
     }]}>
       <VenueSettingsHeader venue={venue}
         isUseVenueSettings={isUseVenueSettings}
