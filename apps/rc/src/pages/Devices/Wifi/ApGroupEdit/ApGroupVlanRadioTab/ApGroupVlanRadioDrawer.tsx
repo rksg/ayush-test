@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Form, InputNumber } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
+import { cloneDeep }         from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { Drawer, Select }                                       from '@acx-ui/components'
@@ -22,12 +22,7 @@ export type ApGroupVlanRadioDrawerState = {
 type EditApGroup = {
   vlanType: VlanType
   vlanId?: number
-  vlanPool?: {
-    label: string,
-    vlaue: string
-  }
   vlanPoolId?: string
-  vlanPoolName?: string
   radioTypes?: RadioTypeEnum[]
 }
 
@@ -48,48 +43,34 @@ const getCurrentAPGroup = (editData: Network, venueId: string, apGroupId: string
   return undefined
 }
 
+// eslint-disable-next-line max-len
 const getApGroupData = (editData: Network, venueId: string, apGroupId: string) => {
 
   const wlan = editData?.deepNetwork?.wlan
 
   const findApGroup = getCurrentAPGroup(editData, venueId, apGroupId)
   if (findApGroup) {
-    //console.log('editData: ', editData)
-    //console.log('findApGroup: ', findApGroup)
     const {
       vlanId: apGroupVlanId,
       vlanPoolId: apGroupVlanPoolId,
-      vlanPoolName: apGroupVlanPoolName,
       radioTypes=[] } = findApGroup
 
     const wlanVlanId = wlan?.vlanId || 1
     const {
-      id: wlanVlanPoolId,
-      name: wlanVlanPoolName } = wlan?.advancedCustomization?.vlanPool || {}
+      id: wlanVlanPoolId
+    } = wlan?.advancedCustomization?.vlanPool || {}
 
     const vlanId = apGroupVlanId || wlanVlanId
+    const vlanPoolId = apGroupVlanPoolId || wlanVlanPoolId || ''
 
-    let vlanPool: { value: string, label: string } | undefined = undefined
-    if (apGroupVlanPoolId) {
-      vlanPool = {
-        label: apGroupVlanPoolName || '',
-        value: apGroupVlanPoolId
-      }
-    } else if (wlanVlanPoolId) {
-      vlanPool = {
-        label: wlanVlanPoolName || '',
-        value: wlanVlanPoolId
-      }
-    }
-    const vlanType = (!vlanPool)? VlanType.VLAN : VlanType.Pool
+    const vlanType = (!vlanPoolId)? VlanType.VLAN : VlanType.Pool
 
     return {
       vlanType,
       vlanId,
-      vlanPool,
+      vlanPoolId,
       radioTypes } as EditApGroup
   }
-
 
   return defaultEditApGroup
 }
@@ -108,7 +89,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const { venueId, apGroupId,
-    drawerStatus, setDrawerStatus, vlanPoolOptions } = useContext(ApGroupVlanRadioContext)
+    drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupVlanRadioContext)
   const { visible, editData } = drawerStatus || {}
 
   const [form] = Form.useForm()
@@ -124,7 +105,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
 
   useEffect(() => {
     if (visible && editData) {
-      const data = _.cloneDeep(editData)
+      const data = cloneDeep(editData)
       const initApGroupData = getApGroupData(data, venueId, apGroupId)
       setEditingAgGroup(initApGroupData)
       setIsSupport6G(IsSupport6g(data))
@@ -133,6 +114,8 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
       })
     }
   }, [visible, editData])
+
+  const vlanPoolOptions = vlanPoolingNameMap?.map(vp => ({ label: vp.value, value: vp.key })) ?? []
 
   const formContent = (
     <Form form={form} layout='vertical'>
@@ -168,14 +151,11 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
           } />
       ) : (
         <Form.Item
-          name='vlanPool'
+          name='vlanPoolId'
           label={$t({ defaultMessage: 'VLAN Pool' })}
-          rules={[
-            { required: true }
-          ]}
+          rules={[{ required: true }]}
           children={
-            <Select labelInValue
-              fieldNames={{ label: 'name', value: 'id' }}
+            <Select
               placeholder={$t({ defaultMessage: 'Select profile...' })}
               options={vlanPoolOptions as unknown as DefaultOptionType[]}
               style={{ width: '250px' }} />
@@ -224,22 +204,18 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
   const onSubmit = async () => {
     try {
       await form.validateFields()
+      const { vlanType, vlanId, vlanPoolId, radioTypes } = form.getFieldsValue()
 
-      const { vlanType, vlanId, vlanPool, radioTypes } = form.getFieldsValue()
-      //console.log('formData: ', form.getFieldsValue())
       // update AP group Data
-      const newData = _.cloneDeep(editData)
-      //const venues = newData?.deepNetwork?.venues
+      const newData = cloneDeep(editData)
+
       const newApGroup = getCurrentAPGroup(newData, venueId, apGroupId)
       if (newApGroup) {
         if (vlanType === VlanType.VLAN) {
           newApGroup.vlanId = vlanId
           delete newApGroup.vlanPoolId
-          delete newApGroup.vlanPoolName
         } else { // vlanPool
-          const { label, value } = vlanPool
-          newApGroup.vlanPoolId = value
-          newApGroup.vlanPoolName = label
+          newApGroup.vlanPoolId = vlanPoolId
           delete newApGroup.vlanId
         }
         newApGroup.radioTypes = radioTypes

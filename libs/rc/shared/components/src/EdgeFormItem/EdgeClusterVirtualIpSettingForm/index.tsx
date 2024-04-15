@@ -80,10 +80,14 @@ export const EdgeClusterVirtualIpSettingForm = (props: EdgeClusterVirtualIpSetti
               <Tooltip.Question
                 title={
                   $t({ defaultMessage: `
-                    HA timeout refers to the duration within which if a node
-                    does not receive a periodic heartbeat from the active node.
-                    This triggers the process of selecting the next active node
-                    to maintain system functionality
+                    The VRRP timer of 6 seconds or above is recommended
+                    for SmartEdge usecases. A timer lesser than this is
+                    too aggressive and could potentially cause VRRP issues
+                    in some networks. HA timeout refers to the duration
+                    within which if a node does not receive a periodic
+                    heartbeat from the active node. This triggers the
+                    process of selecting the next active node to maintain
+                    system functionality
                   ` })
                 }
                 placement='right'

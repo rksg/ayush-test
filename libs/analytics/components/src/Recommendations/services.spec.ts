@@ -178,6 +178,21 @@ describe('Recommendation services', () => {
     })
   })
 
+  it('returns wlans', async () => {
+    const WLANs = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(recommendationUrl, 'Wlans', { data: { recommendation: { WLANs } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationWlans.initiate({ id: 'id1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(WLANs)
+  })
+
   it('should return recommendation list', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: recommendationListResult
@@ -409,6 +424,51 @@ describe('Recommendation services', () => {
           text: 'Non-Optimized'
         },
         toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[11],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 2.4 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[12],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 5 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[13],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 6 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
       }
     ]
     expect(error).toBe(undefined)
@@ -442,6 +502,27 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({ id: 'test', type: 'Apply', scheduledAt: '7-15-2023' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should schedule with wlans', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useScheduleRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        id: 'test',
+        type: 'Apply',
+        scheduledAt: '7-15-2023',
+        wlans: [{ ssid: 'test', name: 'test' }]
+      })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
@@ -486,7 +567,8 @@ describe('Recommendation services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.crrmKpi.initiate({
         ...recommendationPayload,
-        code: 'c-crrm-channel24g-auto'
+        code: 'c-crrm-channel24g-auto',
+        status: 'new'
       })
     )
     expect(status).toBe('fulfilled')
