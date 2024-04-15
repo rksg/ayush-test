@@ -132,8 +132,11 @@ describe('Service Validation Table', () => {
 
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    expect(mockedNavigate)
-      .toBeCalledWith('/tenant-id/t/analytics/serviceValidation/spec-id/edit')
+    expect(mockedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/analytics/serviceValidation/spec-id/edit',
+      search: ''
+    })
 
     await userEvent.click(radio[1])
     expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()
