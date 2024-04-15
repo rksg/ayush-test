@@ -6,12 +6,11 @@ import { useIntl }        from 'react-intl'
 import { useNavigate }    from 'react-router-dom'
 
 import { Loader, StepsForm, showActionModal }                          from '@acx-ui/components'
-import { EdgeClusterVirtualIpSettingForm }                             from '@acx-ui/rc/components'
+import { EdgeClusterVirtualIpSettingForm, VipConfigType }              from '@acx-ui/rc/components'
 import { useGetAllInterfacesByTypeQuery, usePatchEdgeClusterMutation } from '@acx-ui/rc/services'
 import {
   EdgeCluster,
   EdgeClusterStatus,
-  EdgePortInfo,
   EdgePortTypeEnum,
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
@@ -24,15 +23,9 @@ interface VirtualIpProps {
   currentVipConfig?: EdgeCluster['virtualIpSettings']
 }
 
-export interface VirtualIpConfigFormType {
-    interfaces: {
-      [key: string]: EdgePortInfo
-    }
-    vip: string
-}
 export interface VirtualIpFormType {
   timeout: number
-  vipConfig: VirtualIpConfigFormType[]
+  vipConfig: VipConfigType[]
 }
 
 export const defaultHaTimeoutValue = 6
@@ -63,26 +56,14 @@ export const VirtualIp = (props: VirtualIpProps) => {
   useEffect(() => {
     if(currentVipConfig) {
       const timeout = currentVipConfig.virtualIps?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
-      const editVipConfig = [] as VirtualIpFormType['vipConfig']
-      if(lanInterfaces) {
-        for(let i=0; i<currentVipConfig.virtualIps.length; i++) {
-          const currentConfig = currentVipConfig.virtualIps[i]
-          const interfaces = {} as { [key: string]: EdgePortInfo }
-          for(let config of currentConfig.ports) {
-            const tmp = lanInterfaces?.[config.serialNumber].find(item =>
-              _.toLower(item.portName) === _.toLower(config.portName))
-            interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
-          }
-          editVipConfig.push({
-            vip: currentConfig.virtualIp,
-            interfaces
-          })
-        }
-      }
+      const vipConfig = currentVipConfig.virtualIps?.map(item => ({
+        vip: item.virtualIp,
+        interfaces: item.ports
+      })) ?? [{}]
 
       form.setFieldsValue({
         timeout,
-        vipConfig: editVipConfig
+        vipConfig
       })
     } else {
       form.setFieldsValue(defaultVirtualIpFormValues)
@@ -99,16 +80,10 @@ export const VirtualIp = (props: VirtualIpProps) => {
       }
       const vipSettings = values.vipConfig.map(item => {
         if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
-        const ports = Object.entries(item.interfaces).map(([, v2]) => {
-          return {
-            serialNumber: v2.serialNumber,
-            portName: v2.portName
-          }
-        })
         return {
           virtualIp: item.vip,
           timeoutSeconds: values.timeout,
-          ports
+          ports: item.interfaces
         }
       }).filter(item => Boolean(item)) as VirtualIpSetting[]
       const payload = {
