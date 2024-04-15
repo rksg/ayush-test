@@ -185,10 +185,10 @@ export type StateType = keyof typeof states
 const probeflexConfig: RecommendationConfig = {
   valueFormatter: formatter('enabledFormat'),
   valueText: defineMessage({ defaultMessage: 'AirFlexAI' }),
-  actionText: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {smartZone}. It is recommended to enable AI probe suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
+  actionText: defineMessage({ defaultMessage: 'AirFlexAI for this {scope} is currently not enabled. This is a RF feature that is only available via RUCKUS AI, and it performs better than the default Airtime Decongestion (ATD) feature in {smartZone}. It is recommended to enable AirFlexAI suppression in all WLANs. It is possible to deselect specific WLANs when applying this recommendation.' }),
   reasonText: defineMessage({ defaultMessage: 'AirFlexAI suppresses unnecessary probe responses from APs to reduce the management traffic overhead and steer clients to connect to APs with better RSS. This will free up airtime, especially in high density deployments, and increase the connection RSS, thus improving the overall network performance.' }),
   tradeoffText: defineMessage({ defaultMessage: 'This feature may cause a slight increase (~1 secs) in time to connect for a very small percentage of clients since probes are being suppressed.' }),
-  recommendedValueTooltipContent: () => defineMessage({ defaultMessage: 'Enabling AI probe suppression will disable Airtime Decongestion' }),
+  recommendedValueTooltipContent: () => defineMessage({ defaultMessage: 'Enabling AirFlexAI suppression will disable Airtime Decongestion' }),
   kpis: [
     {
       key: 'curr-avg-mgmt-traffic-per-client',
