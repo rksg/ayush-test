@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                            from 'lodash'
 import { useIntl }                                  from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
-// import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
-// import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
+import { Tooltip }                                from '@acx-ui/components'
 import { Table, TableProps }                      from '@acx-ui/components'
 import {
   Hotspot20AccessNetworkTypeEnum,
@@ -25,67 +23,67 @@ const defaultConnectionCapabilities = [
     protocol: 'ICMP',
     protocolNumber: 1,
     port: 0,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'FTP',
     protocolNumber: 6,
     port: 20,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'SSH',
     protocolNumber: 6,
     port: 22,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.OPEN)
+    status: Hotspot20ConnectionCapabilityStatusEnum.OPEN
   },
   {
     protocol: 'HTTP',
     protocolNumber: 6,
     port: 80,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.OPEN)
+    status: Hotspot20ConnectionCapabilityStatusEnum.OPEN
   },
   {
     protocol: 'Used by TLS VPN',
     protocolNumber: 6,
     port: 443,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'Used by PPTP VPNs',
     protocolNumber: 6,
     port: 1723,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'VoIP',
     protocolNumber: 6,
     port: 5060,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'VoIP',
     protocolNumber: 17,
     port: 5060,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'Used by IKEv2 (IPsec VPN)',
     protocolNumber: 17,
     port: 500,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'IPsec VPN',
     protocolNumber: 17,
     port: 4500,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   },
   {
     protocol: 'ESP',
     protocolNumber: 50,
     port: 0,
-    status: _.toUpper(Hotspot20ConnectionCapabilityStatusEnum.CLOSED)
+    status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
   }
 ] as Hotspot20ConnectionCapability[]
 
@@ -112,30 +110,7 @@ export function Hotspot20Tab (props: {
   const enableRfc5580Tooltip = $t({ defaultMessage:
     'Enabling RFC 5580 allows the RADIUS server to use user location data.' })
 
-  // const [
-  //   enableFastRoaming,
-  //   enableAirtimeDecongestion,
-  //   enableJoinRSSIThreshold,
-  //   enableTransientClientManagement,
-  //   enableOce
-  // ] = [
-  //   useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
-  //   useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
-  //   useWatch<boolean>(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold']),
-  //   useWatch<boolean>(['wlan', 'advancedCustomization', 'enableTransientClientManagement']),
-  //   useWatch<boolean>(['wlan', 'advancedCustomization',
-  //     'enableOptimizedConnectivityExperience'])
-  // ]
-  // useEffect(() => {
-  //   if(enableAirtimeDecongestion === true) {
-  //     form.setFieldValue(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold'], false)
-  //     form.setFieldValue(['wlan','advancedCustomization','joinRSSIThreshold'], undefined)
-  //   }
-  // }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
-
-  useEffect(() => {
-    form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
-  }, [connectionCapabilities, form])
+  form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
 
   const networkTypeOptions = Object.keys(Hotspot20AccessNetworkTypeEnum).map((key => {
     return (
@@ -252,7 +227,7 @@ export function Hotspot20Tab (props: {
       key: 'status',
       width: 80,
       render: (_data, row) => {
-        return row.status && `${_.startCase(row.status)}`
+        return row.status && `${_.startCase(_.toLower(row.status))}`
       }
     }
   ]
@@ -335,7 +310,7 @@ export function Hotspot20Tab (props: {
         label={$t({ defaultMessage: 'Access Network Type' })}
         name={['hotspot20Settings', 'accessNetworkType']}
         rules={[{ required: true } ]}
-        initialValue={Hotspot20AccessNetworkTypeEnum.PRIVATE}
+        initialValue={'PRIVATE'}
         children={
           <Select
             style={{ width: '280px', height: '30px', fontSize: '11px' }}
@@ -348,7 +323,7 @@ export function Hotspot20Tab (props: {
         label={$t({ defaultMessage: 'IPv4 Address' })}
         name={['hotspot20Settings', 'ipv4AddressType']}
         rules={[{ required: true } ]}
-        initialValue={Hotspot20Ipv4AddressTypeEnum.SINGLE_NATED_PRIVATE}
+        initialValue={'SINGLE_NATED_PRIVATE'}
         children={
           <Select
             style={{ width: '280px', height: '30px', fontSize: '11px' }}

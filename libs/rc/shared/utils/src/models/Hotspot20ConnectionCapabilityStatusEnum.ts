@@ -1,5 +1,5 @@
 export enum Hotspot20ConnectionCapabilityStatusEnum {
-    CLOSED = 'Closed',
-    OPEN = 'Open',
-    UNKNOWN = 'Unknown'
+    CLOSED = 'CLOSED',
+    OPEN = 'OPEN',
+    UNKNOWN = 'UNKNOWN'
 }
