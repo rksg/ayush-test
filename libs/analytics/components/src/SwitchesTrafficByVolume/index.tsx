@@ -52,9 +52,11 @@ export function SwitchesTrafficByVolume ({
           enableSelectPort &&
           <UI.SelectPort>
             <Select
+              defaultValue={null}
               showSearch
               options={portOptions}
               onChange={onPortChange}
+              dropdownMatchSelectWidth={false}
             />
           </UI.SelectPort>
         }

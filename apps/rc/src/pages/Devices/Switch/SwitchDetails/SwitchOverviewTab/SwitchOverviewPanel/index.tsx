@@ -1,18 +1,20 @@
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { SwitchesTrafficByVolume }                                                                                       from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                                                                                            from '@acx-ui/analytics/components'
-import { GridCol, GridRow }                                                                                              from '@acx-ui/components'
-import { TopologyFloorPlanWidget }                                                                                       from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery }                                                                                        from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel, sortPortFunction } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                             from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                                          from '@acx-ui/utils'
+import { SwitchesTrafficByVolume }                                                                                                            from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                                                                                                                 from '@acx-ui/analytics/components'
+import { GridCol, GridRow }                                                                                                                   from '@acx-ui/components'
+import { TopologyFloorPlanWidget, isLAGMemberPort }                                                                                           from '@acx-ui/rc/components'
+import { useSwitchPortlistQuery }                                                                                                             from '@acx-ui/rc/services'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                  from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                                                               from '@acx-ui/utils'
+
+import { SwitchDetailsContext } from '../..'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
@@ -26,6 +28,8 @@ export function SwitchOverviewPanel (props:{
   stackMember: StackMember[]
 }) {
   const { filters, switchDetail, currentSwitchDevice, stackMember } = props
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader } = switchDetailsContextData
   return <><GridRow>
     <GridCol col={{ span: 24 }}>
       <SwitchFrontRearView stackMember={stackMember} />
@@ -42,17 +46,18 @@ export function SwitchOverviewPanel (props:{
     </GridCol>
   </GridRow>
   <GridRow>
-    { filters && <SwitchWidgets filters={{ ...filters }}/> }
+    { filters && <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetailHeader}/> }
   </GridRow>
   </>
 }
 
-function SwitchWidgets (props: { filters: AnalyticsFilter }) {
-  const filters = props.filters
+function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: SwitchViewModel }) {
+  const { filters, switchDetailHeader } = props
+
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
   const portPayload = {
-    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
+    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack', 'lagId'],
     page: 1,
     pageSize: 10000,
     filters: { switchId: [switchId] },
@@ -63,19 +68,34 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
 
+  const getPortLabel = (port: SwitchPortViewModel) => {
+    const id = port.portIdentifier
+    let suffix = ''
+    if((switchDetailHeader.isStack || switchDetailHeader.formStacking) && port.usedInFormingStack) {
+      suffix = '(S)'
+    }
+    if(isLAGMemberPort(port)) {
+      suffix = '(L)'
+    }
+    return id + ' ' + suffix
+  }
+
   useEffect(() => {
-    if (!portList.isLoading) {
+    if (!portList.isLoading && switchDetailHeader) {
       setPortOptions([
-        { label: $t({ defaultMessage: 'Select...' }), value: null },
-        ...(portList?.data?.data?.map(port => ({ id: port.portIdentifier }))
+        { label: $t({ defaultMessage: 'All Ports' }), value: null },
+        ...(portList?.data?.data?.map(port => ({
+          id: port.portIdentifier,
+          label: getPortLabel(port)
+        }))
           .sort(sortPortFunction)
           .map(item => ({
-            label: item.id, value: item.id
+            label: item.label, value: item.id
           }))
       ?? [])
       ])
     }
-  }, [portList])
+  }, [portList, switchDetailHeader])
 
   const onPortChange = (value: string) =>{
     // eslint-disable-next-line no-console
