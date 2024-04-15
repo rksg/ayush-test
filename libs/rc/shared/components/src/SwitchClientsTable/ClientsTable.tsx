@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader, ColumnType, Button }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { useGetSwitchClientListWithPortStatusQuery, useLazyGetLagListQuery } from '@acx-ui/rc/services'
 import {
+
   FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
@@ -87,7 +88,7 @@ export function ClientsTable (props: {
 
 
   const inlineTableQuery = usePollingTableQuery({
-    useQuery: useGetSwitchClientListQuery,
+    useQuery: useGetSwitchClientListWithPortStatusQuery,
     defaultPayload: {
       ...defaultSwitchClientPayload
     },

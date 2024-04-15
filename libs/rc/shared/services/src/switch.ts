@@ -823,7 +823,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+    getSwitchClientListWithPortStatus: build.query<TableResult<SwitchClient>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const listInfo = {
           ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
@@ -836,7 +836,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
           body: {
             fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
-            filters: { portId: _.uniq(list.data.map(c => c.switchId)) },
+            filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
           }
         }
@@ -856,6 +856,36 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
 
         const aggregatedList = aggregatedSwitchClientData(list, switches, switchPorts)
+
+        return listQuery.data
+          ? { data: aggregatedList }
+          : { error: listQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
+          body: arg.payload
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<SwitchClient>
+
+        const switchesInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          body: {
+            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
+            filters: { id: _.uniq(list.data.map(c => c.switchId)) },
+            pageSize: 10000
+          }
+        }
+        const switchesQuery = await fetchWithBQ(switchesInfo)
+        const switches = switchesQuery.data as TableResult<SwitchRow>
+
+        const aggregatedList = aggregatedSwitchClientData(list, switches)
 
         return listQuery.data
           ? { data: aggregatedList }
@@ -1287,12 +1317,13 @@ const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
 const aggregatedSwitchClientData = (
   clients: TableResult<SwitchClient>,
   switches: TableResult<SwitchRow>,
-  switchPortsQuery: TableResult<SwitchPortViewModel>
+  switchPortsQuery?: TableResult<SwitchPortViewModel>
 ) => {
   const data:SwitchClient[] = clients.data.map(item => {
     const target = switches.data.find(s => s.id === item.switchId)
-    const switchPortStatus = switchPortsQuery.data.find(p => p.portId === item.switchPortId)
-    return { ...item, switchId: target ? item.switchId : '', switchPortStatus } // use switchId to mark non-exist switch
+    const switchPortStatus = switchPortsQuery?.data.find(p => p.portId === item.switchPortId)
+    const switchId = target ? item.switchId : ''
+    return switchPortsQuery ? { ...item, switchId, switchPortStatus } : { ...item, switchId } // use switchId to mark non-exist switch
   })
   return {
     ...clients,
@@ -1375,6 +1406,7 @@ export const {
   useLazyGetJwtTokenQuery,
   useGetJwtTokenQuery,
   useGetSwitchClientListQuery,
+  useGetSwitchClientListWithPortStatusQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
   usePingMutation,
