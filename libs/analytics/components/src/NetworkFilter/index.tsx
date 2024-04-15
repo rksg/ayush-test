@@ -269,13 +269,8 @@ function ConnectedNetworkFilter (
                 ? { ...item, type: replaceTxt } : item)
         }
         return value
-      }).map(item => {
-        if (Array.isArray(item)) {
-          return JSON.stringify(item)
-        } else {
-          return item
-        }
-      })
+      }).map(item => Array.isArray(item) ? JSON.stringify(item) : item)
+
       return newRawVal.some(value => value.includes(replaceTxt))
         ? newRawVal
         : []
