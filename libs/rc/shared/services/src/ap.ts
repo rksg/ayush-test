@@ -945,8 +945,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateApManagementVlanSettings',
-            'ResetApManagementVlanSettings'
+            'UpdateApManagementVlanSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ApManagementVlan' }]))
@@ -960,15 +959,6 @@ export const apApi = baseApApi.injectEndpoints({
         return{
           ...req,
           body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
-    }),
-    deleteApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApManagementVlan, params)
-        return {
-          ...req
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
@@ -1074,7 +1064,6 @@ export const {
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery
 } = apApi
 
