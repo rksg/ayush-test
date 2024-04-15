@@ -77,6 +77,6 @@ export const crrmText = (value: CrrmTextType) => {
 }
 
 export const isDataRetained = (details: Pick<EnhancedRecommendation, 'statusTrail'>) => {
-  const retainDate = moment().startOf('day').subtract(get('RETAIN_PERIOD_DAYS'), 'days')
+  const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
   return moment(details.statusTrail.slice(-1)[0].createdAt).isAfter(retainDate)
 }

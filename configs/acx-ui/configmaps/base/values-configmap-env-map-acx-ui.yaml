@@ -61,5 +61,5 @@ data:
         key: mib.files
         name: MIB_FILES
       - configmap: configmap-acx-ui
-        key: retain.period.days
-        name: RETAIN_PERIOD_DAYS
+        key: druid.retain.period.days
+        name: DRUID_RETAIN_PERIOD_DAYS

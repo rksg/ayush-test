@@ -111,7 +111,7 @@ describe('Recommendation Overview', () => {
 describe('getRecommendationsText', () => {
   beforeEach(() => jest.mocked(get).mockImplementation((name: string) => ({
     IS_MLISA_SA: '',
-    RETAIN_PERIOD_DAYS: '380'
+    DRUID_RETAIN_PERIOD_DAYS: '380'
   })[name] as string))
   it('should return correct values when optimized is false', () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
