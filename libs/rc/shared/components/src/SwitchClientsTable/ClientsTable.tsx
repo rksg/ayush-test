@@ -118,8 +118,6 @@ export function ClientsTable (props: {
   function getCols (intl: ReturnType<typeof useIntl>) {
     const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
 
-
-
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -217,45 +215,45 @@ export function ClientsTable (props: {
         }
 
         const { switchPortStatus } = row || {}
-        const disableLink = !switchPortStatus ||
+        const port = row['switchPort']
+        const disablePortEdit = !switchPortStatus ||
         !isOperationalSwitchPort(switchPortStatus) || isStackPort(switchPortStatus)
-        const tooltip = switchPortStatus ? getInactiveTooltip(switchPortStatus) :
-          intl.$t({
-            defaultMessage:
-              'The port cannot be edited since it is on a switch that is not operational'
-          })
 
-        if (disableLink) {
-          return (<Tooltip title={tooltip}>
-            {row['switchPort']}
-          </Tooltip>)
-        } else if (isLAGMemberPort(switchPortStatus)) {
-          const onEditLag = async () => {
-            const { data: lagList } =
-              await getLagList({ params: { ...params, switchId: switchPortStatus.switchMac } })
-            const lagData =
-              lagList?.find(item => item.lagId?.toString() === switchPortStatus.lagId) as Lag
-            setLagDrawerParams({
-              switchMac: switchPortStatus.switchMac,
-              serialNumber: switchPortStatus.switchSerial
+        if (disablePortEdit) {
+          const tooltip = switchPortStatus ? getInactiveTooltip(switchPortStatus) :
+            intl.$t({
+              defaultMessage:
+                'The port cannot be edited since it is on a switch that is not operational'
             })
-            setEditLag([lagData])
-            setEditPortDrawerVisible(false)
-            setEditLagModalVisible(true)
-          }
-          return <Button type='link' onClick={onEditLag}>
-            {row['switchPort'] + 'LLAAGG'}
-          </Button>
-        } else {
-          const onPortClick = () => {
-            setEditLagModalVisible(false)
-            setSelectedPorts([switchPortStatus])
-            setEditPortDrawerVisible(true)
-          }
-          return <Button type='link' onClick={onPortClick}>
-            {row['switchPort'] + 'LINK'}
-          </Button>
+
+          return (<Tooltip title={tooltip}> {port} </Tooltip>)
         }
+
+        const onEditLag = async () => {
+          const { data: lagList } = await getLagList({
+            params: { ...params, switchId: switchPortStatus.switchMac }
+          })
+          const lagData = lagList?.find((item: Lag) =>
+            item.lagId?.toString() === switchPortStatus.lagId) as Lag
+
+          setLagDrawerParams({
+            switchMac: switchPortStatus.switchMac,
+            serialNumber: switchPortStatus.switchSerial
+          })
+          setEditLag([lagData])
+          setEditPortDrawerVisible(false)
+          setEditLagModalVisible(true)
+        }
+
+        const onEditPort = () => {
+          setSelectedPorts([switchPortStatus])
+          setEditLagModalVisible(false)
+          setEditPortDrawerVisible(true)
+        }
+
+        const onClickHandler = isLAGMemberPort(switchPortStatus) ? onEditLag : onEditPort
+
+        return <Button type='link' onClick={onClickHandler}> {port} </Button>
       }
 
     }, {
