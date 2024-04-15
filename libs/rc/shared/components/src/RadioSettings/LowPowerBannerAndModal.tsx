@@ -6,6 +6,9 @@ import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 import styled              from 'styled-components/macro'
 
+import { useNavigate, useLocation, useParams } from '@acx-ui/react-router-dom'
+import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
+
 import { Button, cssStr, Alert } from '@acx-ui/components'
 import { Android, Apple }        from '@acx-ui/icons'
 import { AFCStatus, AFCInfo }    from '@acx-ui/rc/utils'
@@ -17,37 +20,51 @@ const StyledAlert = styled(Alert)`
 
 export function LowPowerBannerAndModal (props: {
     afcInfo?: AFCInfo
+    from: string
 }) {
 
-  const { afcInfo } = props
+  const { afcInfo, from } = props
 
   const { $t } = useIntl()
+  const { venueId } = useParams()
 
   const [displayLowPowerModeModal, setDisplayLowPowerModeModal] = useState(false)
   const [bannerText, setBannerText] = useState('')
 
+  const navigate = useNavigate()
+  const location = useLocation()
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
 
   useEffect(()=> {
 
-    let APWarningMessage = $t({ defaultMessage: '6 GHz radio operating in low power mode' })
+    let modalMessage = ''
 
-    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.PASSED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AP is working on LPI channel)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(AFC Server failure)' })
+    if (from === 'ap') {
+
+      modalMessage = $t({ defaultMessage: '6 GHz radio operating in low power mode' })
+
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
+        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(AP is working on LPI channel)' })
+      }
+      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(AFC Server failure)' })
+      }
     }
 
-    setBannerText(APWarningMessage)
+    if (from === 'venue') {
+      modalMessage = $t({ defaultMessage: 'AFC in the 6 GHz band requires a venue height to be set for standard power operation.' })
+    }
+
+    setBannerText(modalMessage)
   }, [])
 
   return (<>
@@ -66,18 +83,36 @@ export function LowPowerBannerAndModal (props: {
           style={{ verticalAlign: 'middle' }}
           message={<>
             {bannerText}
-            <Button type='link'
-              data-testid='how-to-fix-this-button'
-              onClick={() => {
-                setDisplayLowPowerModeModal(true)
-              }}>
-              <span style={{
-                marginLeft: '50px',
-                fontSize: '12px'
-              }}>
-                {$t({ defaultMessage: 'More information' })}
-              </span>
-            </Button>
+            { from === 'ap' ?
+              <Button type='link'
+                data-testid='how-to-fix-this-button'
+                onClick={() => {
+                  setDisplayLowPowerModeModal(true)
+                }}>
+                <span style={{
+                  marginLeft: '50px',
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'More information' })}
+                </span>
+              </Button>
+              :
+              <Button type='link'
+                data-testid='set-it-up-button'
+                onClick={() => {
+                  navigate(detailsPath, {
+                    state: {
+                      from: location
+                    }
+                  })
+                }}>
+                <span style={{
+                  marginLeft: '50px',
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'Set it up now' })}
+                </span>
+              </Button>}
           </>} />
       </Col>
     </Row>

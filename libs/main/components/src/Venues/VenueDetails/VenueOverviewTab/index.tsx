@@ -25,6 +25,8 @@ import {
   ContentSwitcher
 } from '@acx-ui/components'
 import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
+import { LowPowerBannerAndModal }                                        from '@acx-ui/rc/components'
+import { useGetVenueRadioCustomizationQuery }                            from '@acx-ui/rc/services'
 import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
 import { useNavigateToPath }                                             from '@acx-ui/react-router-dom'
 import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
@@ -40,6 +42,9 @@ export function VenueOverviewTab () {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+
+  console.log(venueRadio)
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -53,6 +58,7 @@ export function VenueOverviewTab () {
     }
   ]
   return (<>
+    <LowPowerBannerAndModal from={'venue'} />
     <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' />
   </>)
