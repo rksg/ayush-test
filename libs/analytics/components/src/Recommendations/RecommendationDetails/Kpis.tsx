@@ -8,7 +8,7 @@ import { Card, Tooltip, TrendPill }  from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import { codes } from '../config'
+import { codes, filterKpisByStatus } from '../config'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -24,8 +24,8 @@ import {
 } from './styledComponents'
 
 const getKpis = (details: EnhancedRecommendation) => {
-  const { code } = details
-  const configs = codes[code].kpis
+  const { code, status } = details
+  const configs = filterKpisByStatus(codes[code].kpis, status)
   const kpis = configs.map((config) => {
     const { current, previous } = get(
       details,
@@ -95,8 +95,7 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 
 export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const { kpis } = getKpis(details)
-  const { monitoring } = details
+  const { kpis, monitoring } = getKpis(details)
 
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>
