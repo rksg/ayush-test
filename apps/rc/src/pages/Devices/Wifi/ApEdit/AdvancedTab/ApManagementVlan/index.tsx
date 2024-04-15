@@ -121,8 +121,6 @@ export function ApManagementVlanForm () {
   }
 
   const handleUpdateApManagementVlan = async () => {
-    const payload = getApManagementVlanDataFromFields()
-    const deletePayload = getDeleteApManagementVlanDataFromFields()
     showActionModal({
       type: 'confirm',
       width: 450,
