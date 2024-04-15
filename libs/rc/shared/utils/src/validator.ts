@@ -10,6 +10,7 @@ import {
   uniq
 }                from 'lodash'
 
+import { RolesEnum }                                from '@acx-ui/types'
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }             from './ipUtilsService'
@@ -1147,6 +1148,17 @@ export function validateByteLength (value: string, maxLength: number) {
       { max: maxLength } ))
   }
 
+  return Promise.resolve()
+}
+
+export function systemDefinedNameValidator (value: string) {
+  const { $t } = getIntl()
+  const rolesList = Object.values(RolesEnum)
+  if(rolesList.includes(value as RolesEnum)) {
+    return Promise.reject(
+      $t({ defaultMessage: 'Name can not be same as system defined name' })
+    )
+  }
   return Promise.resolve()
 }
 

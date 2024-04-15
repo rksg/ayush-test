@@ -9,7 +9,8 @@ import {
   SortResult,
   SwitchFirmware,
   convertSwitchVersionFormat,
-  firmwareTypeTrans
+  firmwareTypeTrans,
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -130,11 +131,22 @@ export function useSwitchFirmwareUtils () {
       if (getParseVersion(v.id) === getParseVersion(version) ||
         getParseVersion(v.id) === getParseVersion(rodanVersion)) {
         v = { ...v, inUse: true }
+      } else if (isDowngradeVersion(v.id, version, rodanVersion)) {
+        v = { ...v, isDowngradeVersion: true }
       }
       inUseVersions.push(v)
     })
 
     return inUseVersions
+  }
+
+  function isDowngradeVersion (inUseVersion: string, version: string, rodanVersion: string) {
+    if (inUseVersion.includes('090')) {
+      return compareSwitchVersion(version, inUseVersion) > 0
+    } else if (inUseVersion.includes('100')) {
+      return compareSwitchVersion(rodanVersion, inUseVersion) > 0
+    }
+    return false
   }
 
   return {
@@ -145,6 +157,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp,
-    checkCurrentVersions
+    checkCurrentVersions,
+    isDowngradeVersion
   }
 }

@@ -179,7 +179,8 @@ export enum AclRuleProtocolEnum {
 
 export enum AclTypeEnum {
   STANDARD = 'standard',
-  EXTENDED = 'extended'
+  EXTENDED = 'extended',
+  IPv6 = 'IPv6'
 }
 
 export enum AclRuleActionEnum {
