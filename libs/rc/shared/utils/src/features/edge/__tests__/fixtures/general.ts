@@ -426,7 +426,7 @@ export const mockedHaNetworkSettings = {
       lacpMode: EdgeLagLacpModeEnum.ACTIVE,
       lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [{
-        portId: 'port1',
+        portId: 'port_id_0',
         portEnabled: true
       }],
       portType: EdgePortTypeEnum.LAN,
@@ -507,7 +507,7 @@ export const mockedHaNetworkSettings = {
       portName: 'port2'
     }, {
       serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
-      portName: 'lag1'
+      portName: 'lag0'
     }],
     timeoutSeconds: 6
   }]

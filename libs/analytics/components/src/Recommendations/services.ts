@@ -89,6 +89,7 @@ export type Recommendation = {
   }
   statusTrail: StatusTrail
   toggles?: { crrmFullOptimization: boolean }
+  trigger: string
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -103,30 +104,17 @@ export type RecommendationListItem = Recommendation & {
   crrmOptimizedState?: IconValue
 }
 
-export interface MutationPayload {
-  id: string
-  mute: boolean
-}
-export interface MutationResponse {
-  toggleMute: {
-    success: boolean
-    errorMsg: string
-    errorCode: string
-  }
-}
+type MutationPayload = { id: string }
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
-interface SchedulePayload {
-  id: string
-  type: string
-  scheduledAt: string
-}
-interface ScheduleResponse {
-  schedule: {
-    errorCode: string;
-    errorMsg: string;
-    success: boolean;
-  }
-}
+export interface MuteMutationPayload extends MutationPayload { mute: boolean }
+export interface MuteMutationResponse { toggleMute: MutationResponse }
+
+interface SchedulePayload extends MutationPayload { type: string, scheduledAt: string }
+interface ScheduleResponse { schedule: MutationResponse }
+
+interface DeleteMutationPayload extends MutationPayload { }
+interface DeleteMutationResponse { deleteRecommendation: MutationResponse }
 
 interface PreferencePayload {
   path: NetworkPath
@@ -134,14 +122,7 @@ interface PreferencePayload {
     crrmFullOptimization: boolean
   }
 }
-
-interface PreferenceResponse {
-  setPreference: {
-    errorCode: string
-    errorMsg: string
-    success: boolean
-  }
-}
+interface PreferenceResponse { setPreference: MutationResponse }
 
 type Metadata = {
   error?: {
@@ -387,6 +368,7 @@ export const api = recommendationApi.injectEndpoints({
               name
             }
             statusTrail { status }
+            trigger
           }
         }
         `,
@@ -450,7 +432,7 @@ export const api = recommendationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
-    muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
+    muteRecommendation: build.mutation<MuteMutationResponse, MuteMutationPayload>({
       query: (payload) => ({
         document: gql`
           mutation MuteRecommendation($id: String, $mute: Boolean) {
@@ -527,6 +509,25 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
+    deleteRecommendation: build.mutation<DeleteMutationResponse, DeleteMutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation DeleteRecommendation($id: String) {
+            deleteRecommendation(id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: { id: payload.id }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    }),
     crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
       query: ({ id, code }) => ({
         document: gql`
@@ -580,6 +581,7 @@ export const {
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,
+  useDeleteRecommendationMutation,
   useCrrmKpiQuery,
   useSetPreferenceMutation
 } = api

@@ -1,24 +1,30 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 
-import { StepsForm }                                                        from '@acx-ui/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                                       from '@acx-ui/test-utils'
+import { StepsForm }                                                                                                              from '@acx-ui/components'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeLag, EdgeLagFixtures, edgePhysicalPortInitialConfigs, EdgePort, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }                                                                                             from '@acx-ui/test-utils'
 
-import { mockClusterConfigWizardData } from '../__tests__/fixtures'
-import { ClusterConfigWizardContext }  from '../ClusterConfigWizardDataProvider'
+import { getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }                                                   from '../ClusterConfigWizardDataProvider'
 
 import { LagForm }                   from './LagForm'
 import { InterfaceSettingsFormType } from './types'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
+const mockedClusterInfo = mockEdgeClusterList.data[0] as EdgeClusterStatus
+const nodeList = mockedClusterInfo.edgeList as EdgeStatus[]
 
 const mockExpectedEditResult = {
   ...mockedEdgeLagList.content[1],
   lagMembers: [
     {
-      portId: 'portId-1',
+      portId: 'port_id_0',
+      portEnabled: true
+    }, {
+      portId: 'port_id_1',
       portEnabled: true
     }
   ]
@@ -57,7 +63,7 @@ describe('InterfaceSettings - LagForm', () => {
   it('should correctly render', async () => {
     render(
       <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+        clusterInfo: mockedClusterInfo,
         isLoading: false,
         isFetching: false
       }}>
@@ -76,13 +82,11 @@ describe('InterfaceSettings - LagForm', () => {
   })
 
   it('should add successfully', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
+    const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+
     render(
       <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+        clusterInfo: mockedClusterInfo,
         isLoading: false,
         isFetching: false
       }}>
@@ -106,18 +110,16 @@ describe('InterfaceSettings - LagForm', () => {
     expect(lagSettings[0].lags[0]).toBe(mockedEdgeLagList.content[0])
   })
 
-  it('should edit successfully', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
+  it('should add another successfully', async () => {
+    const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+
     render(
       <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+        clusterInfo: mockedClusterInfo,
         isLoading: false,
         isFetching: false
       }}>
-        <StepsForm form={formRef.current}>
+        <StepsForm form={formRef.current} initialValues={mockClusterConfigWizardData}>
           <StepsForm.StepForm>
             <LagForm />
           </StepsForm.StepForm>
@@ -127,36 +129,65 @@ describe('InterfaceSettings - LagForm', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
       })
 
-    formRef.current.setFieldValue('lagSettings', [
+    expect(await screen.findByTestId('lag-table')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'TestAdd' }))
+    // eslint-disable-next-line max-len
+    const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+    expect(lagSettings.length).toBe(2)
+    expect(lagSettings[0].serialNumber).toBe('serialNumber-2')
+    expect(lagSettings[1].serialNumber).toBe('serialNumber-1')
+    // lag0, lag1, the new one is lag1
+    expect(lagSettings[1].lags.length).toBe(2)
+    const expectedNewAdd = mockedEdgeLagList.content[0]
+    expect(lagSettings[1].lags.find(item => item.id === expectedNewAdd.id ))
+      .toBe(expectedNewAdd)
+  })
+
+  it('should edit successfully', async () => {
+    const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+    const mockData = _.cloneDeep(mockClusterConfigWizardData)
+    const n1lag0 = getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[0].serialNumber, 'lag0', mockData.lagSettings, mockData.portSettings)
+    n1lag0!.id = 2
+
+    render(
+      <ClusterConfigWizardContext.Provider value={{
+        clusterInfo: mockedClusterInfo,
+        isLoading: false,
+        isFetching: false
+      }}>
+        <StepsForm form={formRef.current} initialValues={mockData}>
+          <StepsForm.StepForm>
+            <LagForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
       {
-        serialNumber: 'serialNumber-1',
-        lags: [mockedEdgeLagList.content[1]]
-      }
-    ])
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
 
     expect(await screen.findByTestId('lag-table')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'TestEdit' }))
     // eslint-disable-next-line max-len
     const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
-    expect(lagSettings.length).toBe(1)
-    expect(lagSettings[0].serialNumber).toBe('serialNumber-1')
-    expect(lagSettings[0].lags.length).toBe(1)
-    expect(lagSettings[0].lags[0]).toBe(mockExpectedEditResult)
+    expect(lagSettings.length).toBe(2)
+    expect(lagSettings[0].serialNumber).toBe('serialNumber-2')
+    expect(lagSettings[1].serialNumber).toBe('serialNumber-1')
+    expect(lagSettings[1].lags.length).toBe(1)
+    expect(lagSettings[1].lags.find(item => item.id === mockExpectedEditResult.id ))
+      .toBe(mockExpectedEditResult)
   })
 
   it('should delete successfully', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldsValue(mockClusterConfigWizardData)
-      return form
-    })
+    const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+
     render(
       <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+        clusterInfo: mockedClusterInfo,
         isLoading: false,
         isFetching: false
       }}>
-        <StepsForm form={formRef.current}>
+        <StepsForm form={formRef.current} initialValues={mockClusterConfigWizardData}>
           <StepsForm.StepForm>
             <LagForm />
           </StepsForm.StepForm>
@@ -172,5 +203,126 @@ describe('InterfaceSettings - LagForm', () => {
     const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
     expect(lagSettings.length).toBe(2)
     expect(lagSettings.find(item => item.serialNumber === 'serialNumber-1')?.lags.length).toBe(0)
+  })
+
+  it('should reset LAG members port config into UNCONFIGURED', async () => {
+    const mockFormSetFieldValue = jest.fn()
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue = mockFormSetFieldValue
+      return form
+    })
+    render(
+      <ClusterConfigWizardContext.Provider value={{
+        clusterInfo: mockedClusterInfo,
+        isLoading: false,
+        isFetching: false
+      }}>
+        <StepsForm form={formRef.current} initialValues={mockClusterConfigWizardData}>
+          <StepsForm.StepForm>
+            <LagForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    expect(await screen.findByTestId('lag-table')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'TestEdit' }))
+    expect(mockFormSetFieldValue).toBeCalledTimes(2)
+
+    const port1FieldPath = ['portSettings', 'serialNumber-1', 'port1']
+    let expectedPort1Result = _.cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[0].serialNumber,
+      'port1',
+      mockClusterConfigWizardData.lagSettings,
+      mockClusterConfigWizardData.portSettings
+    )) as EdgePort
+    expectedPort1Result = {
+      ...expectedPort1Result,
+      ...edgePhysicalPortInitialConfigs
+    }
+    expect(mockFormSetFieldValue).toBeCalledWith(port1FieldPath, [expectedPort1Result])
+
+    const port2FieldPath = ['portSettings', 'serialNumber-1', 'port2']
+    let expectedPort2Result = _.cloneDeep(getTargetInterfaceFromInterfaceSettingsFormData(
+      nodeList[0].serialNumber,
+      'port2',
+      mockClusterConfigWizardData.lagSettings,
+      mockClusterConfigWizardData.portSettings
+    )) as EdgePort
+    expectedPort2Result = {
+      ...expectedPort2Result,
+      ...edgePhysicalPortInitialConfigs
+    }
+    expect(mockFormSetFieldValue).toBeCalledWith(port2FieldPath, [expectedPort2Result])
+  })
+
+  describe('when no node configured LAG', () => {
+    const mockedOneNodeConfigured = _.cloneDeep(mockClusterConfigWizardData)
+    mockedOneNodeConfigured.lagSettings = undefined
+
+    it('should edit successfully', async () => {
+      const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedClusterInfo,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <StepsForm form={formRef.current} initialValues={mockedOneNodeConfigured}>
+            <StepsForm.StepForm>
+              <LagForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType'
+          }
+        })
+
+      expect(await screen.findByTestId('lag-table')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'TestEdit' }))
+      // eslint-disable-next-line max-len
+      const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+      expect(lagSettings.length).toBe(1)
+      expect(lagSettings[0].serialNumber).toBe('serialNumber-1')
+      expect(lagSettings[0].lags.length).toBe(1)
+      expect(lagSettings[0].lags[0]).toBe(mockExpectedEditResult)
+    })
+
+    it('should delete successfully', async () => {
+      const { result: formRef } = renderHook(() => Form.useForm<InterfaceSettingsFormType>()[0])
+
+      render(
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedClusterInfo,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <StepsForm form={formRef.current} initialValues={mockedOneNodeConfigured}>
+            <StepsForm.StepForm>
+              <LagForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </ClusterConfigWizardContext.Provider>,
+        {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType'
+          }
+        })
+
+      expect(await screen.findByTestId('lag-table')).toBeVisible()
+      await userEvent.click(screen.getByRole('button', { name: 'TestDelete' }))
+      // eslint-disable-next-line max-len
+      const lagSettings = formRef.current.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+      expect(lagSettings.length).toBe(1)
+      expect(lagSettings.find(item => item.serialNumber === 'serialNumber-1')?.lags).toBe(undefined)
+    })
   })
 })

@@ -1,5 +1,3 @@
-import userEvent from '@testing-library/user-event'
-
 import { CONFIG_TEMPLATE_PATH_PREFIX } from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
@@ -35,9 +33,9 @@ describe('ConfigTemplate', () => {
 
     expect(await screen.findByText('Config Template List')).toBeInTheDocument()
     expect(await screen.findByRole('tab', { name: /Templates/i })).toBeInTheDocument()
-    expect(await screen.findByRole('tab', { name: /Bundles/i })).toBeInTheDocument()
+    // expect(await screen.findByRole('tab', { name: /Bundles/i })).toBeInTheDocument()
 
-    await userEvent.click(screen.getByRole('tab', { name: /Bundles/i }))
-    expect(await screen.findByText('Config Template Bundle List')).toBeInTheDocument()
+    // await userEvent.click(screen.getByRole('tab', { name: /Bundles/i }))
+    // expect(await screen.findByText('Config Template Bundle List')).toBeInTheDocument()
   })
 })

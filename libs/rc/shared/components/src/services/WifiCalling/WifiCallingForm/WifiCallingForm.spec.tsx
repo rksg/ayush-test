@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
-import { mockServer, render, screen }                       from '@acx-ui/test-utils'
+import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                         from '@acx-ui/store'
+import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
 
 import { mockNetworkResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
 import WifiCallingFormContext                            from '../WifiCallingFormContext'
@@ -126,11 +126,24 @@ describe('WifiCallingForm', () => {
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
+      rest.post(
+        ServicesConfigTemplateUrlsInfo.addWifiCalling.url,
+        (req, res, ctx) => {
+          mockedAddService()
+          return res(ctx.json(wifiCallingServiceResponse))
+        }
+      ),
       rest.get(WifiCallingUrls.getWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingResponse))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
         (_, res, ctx) => res(ctx.json(wifiCallingResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult)))

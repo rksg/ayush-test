@@ -35,3 +35,22 @@ export const incidentSummaryNoDataFixture = {
   }
 }
 
+export const utilizationSummaryFixture = {
+  network: {
+    hierarchyNode: {
+      portCount: 636,
+      totalPortCount: 14229,
+      avgPerAPClientCount: 643
+    }
+  }
+}
+
+export const utilizationSummaryNoDataFixture = {
+  network: {
+    hierarchyNode: {
+      portCount: null,
+      totalPortCount: null,
+      avgPerAPClientCount: null
+    }
+  }
+}
