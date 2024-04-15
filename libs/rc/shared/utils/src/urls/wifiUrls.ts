@@ -549,17 +549,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApManagementVlan: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
   updateApManagementVlan: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  deleteApManagementVlan: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
   getApFeatureSets: {
