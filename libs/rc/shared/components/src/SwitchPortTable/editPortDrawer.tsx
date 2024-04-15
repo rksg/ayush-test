@@ -188,8 +188,7 @@ export function EditPortDrawer ({
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
-
-  const [ drawerAclVisible, setDrawerAclVisible ] = useState(false)
+  const [drawerAclVisible, setDrawerAclVisible] = useState(false)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -1306,7 +1305,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='ingressAcl'
-              label={$t({ defaultMessage: 'Ingress ACL' })}
+              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
@@ -1331,7 +1330,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'ingressAcl', $t({ defaultMessage: 'Ingress ACL' })
+          'ingressAcl', $t({ defaultMessage: 'Ingress ACL (IPv4)' })
         )}
 
         { getFieldTemplate(
@@ -1339,7 +1338,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='egressAcl'
-              label={$t({ defaultMessage: 'Egress ACL' })}
+              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
@@ -1363,7 +1362,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+          'egressAcl', $t({ defaultMessage: 'Egress ACL (IPv4)' })
         )}
 
         {getFieldTemplate(

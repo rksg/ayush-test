@@ -188,8 +188,9 @@ describe('Edge DHCP', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
-    const settingIcon = screen.getByTestId('setting-icon')
-    await waitFor(() => expect(settingIcon).not.toBeDisabled())
+    // switch button for `DHCP Service state`
+    const enabledSwitchBtn = screen.getByRole('switch')
+    await waitFor(() => expect(enabledSwitchBtn).toBeChecked())
     await user.click(screen.getByTestId('setting-icon'))
     await screen.findByText('Manage DHCP for SmartEdge Service')
     await user.click(screen.getByRole('combobox'))

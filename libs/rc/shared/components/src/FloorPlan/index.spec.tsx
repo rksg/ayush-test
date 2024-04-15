@@ -163,7 +163,7 @@ describe('Floor Plans', () => {
         (req, res, ctx) => res(ctx.json(venueRogueAp))
       ),
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))

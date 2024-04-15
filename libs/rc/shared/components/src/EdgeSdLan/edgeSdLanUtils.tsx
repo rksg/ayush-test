@@ -27,6 +27,6 @@ export const useGetNetworkTunnelInfo = () => {
         { clusterNames: <Space size={5}>
           {clusterNames}
         </Space> })
-      : $t({ defaultMessage: 'Local breakout' })
+      : $t({ defaultMessage: 'Local Breakout' })
   }
 }

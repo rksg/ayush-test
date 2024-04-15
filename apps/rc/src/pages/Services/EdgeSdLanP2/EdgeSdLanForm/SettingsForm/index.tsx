@@ -14,7 +14,8 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  useHelpPageLink
 } from '@acx-ui/rc/utils'
 
 import { EdgeSdLanFormModelP2 } from '..'
@@ -28,6 +29,7 @@ export const SettingsForm = () => {
   const { form, editMode, initialValues } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const helpUrl = useHelpPageLink()
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
@@ -119,7 +121,7 @@ export const SettingsForm = () => {
       return Promise.reject(<UI.ClusterSelectorHelper>
         <InformationSolid />
         {$t(messageMappings.setting_cluster_helper, {
-          infoLink: <a href='/'>
+          infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
             {$t({ defaultMessage: 'See more information' })}
           </a>
         })}
