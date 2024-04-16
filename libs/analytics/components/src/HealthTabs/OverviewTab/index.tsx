@@ -3,7 +3,8 @@ import { useAnalyticsFilter }   from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }     from '@acx-ui/components'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { SummaryBoxes } from './SummaryBoxes'
+import { ConnectedClientsOverTime } from './ConnectedClientsOverTime'
+import { SummaryBoxes }             from './SummaryBoxes'
 
 const OverviewTab = (props: { filters? : AnalyticsFilter, wirelessOnly?: boolean }) => {
   const { filters: widgetFilters, wirelessOnly = false } = props
@@ -16,6 +17,9 @@ const OverviewTab = (props: { filters? : AnalyticsFilter, wirelessOnly?: boolean
           filters={healthPageFilters}
           wirelessOnly={wirelessOnly}
         />
+      </GridCol>
+      <GridCol col={{ span: 24 }} style={{ minHeight: '320px' }}>
+        <ConnectedClientsOverTime filters={healthPageFilters} />
       </GridCol>
     </GridRow>
   )
