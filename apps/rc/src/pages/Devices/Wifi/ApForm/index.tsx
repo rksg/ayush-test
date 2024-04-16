@@ -296,11 +296,15 @@ export function ApForm () {
           }}/>),
         okText: $t({ defaultMessage: 'Continue' }),
         onOk: async () => {
-          processUpdateAp(values)
+          handleUpdateTlsKey(values)
         }
       })
-      return
+    } else {
+      handleUpdateTlsKey(values)
     }
+  }
+
+  const handleUpdateTlsKey = async (values: ApDeep) => {
     if (supportTlsKeyEnhance && changeTlsEnhancedKey) {
       showActionModal({
         type: 'confirm',
@@ -321,7 +325,8 @@ export function ApForm () {
           processUpdateAp(values)
         }
       })
-      return
+    } else {
+      processUpdateAp(values)
     }
     processUpdateAp(values)
   }
