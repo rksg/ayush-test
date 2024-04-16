@@ -6,8 +6,10 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import {
+  EdgeIpModeEnum,
   EdgeLag,
   EdgeLagFixtures,
+  EdgePort,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgePortTypeEnum,
@@ -23,9 +25,9 @@ import {
   screen,
   waitFor } from '@acx-ui/test-utils'
 
-import { EdgePortTabEnum }                                     from '..'
-import { EditContext as EdgeEditContext, EditEdgeContextType } from '../../EdgeEditContext'
-import { EdgePortsDataContext, EdgePortsDataContextType }      from '../PortDataProvider'
+import { EdgePortTabEnum }                                                              from '..'
+import { EditContext as EdgeEditContext, EditEdgeContextType, EditEdgeFormControlType } from '../../EdgeEditContext'
+import { EdgePortsDataContext, EdgePortsDataContextType }                               from '../PortDataProvider'
 
 import PortsGeneral from './'
 
@@ -44,14 +46,25 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 
-
-const MockedPortsForm = () => {
+interface MockedPortsFormProps {
+  activeTab?: string
+}
+const MockedPortsForm = (props: MockedPortsFormProps) => {
   return <div data-testid='rc-EdgePortsGeneralBase'>
+    <span>activeTab:{props.activeTab}</span>
     <Form.List name={'port1'}>
       {(fields) => fields.map(
-        ({ key }) => <Form.Item key={key} name='name' label='Mocked Description'>
-          <input type='text' />
-        </Form.Item>
+        ({ key }) => <React.Fragment key={key}>
+          <Form.Item name={[0, 'name']}
+            label='Mocked Description'
+            rules={[{ required: true, message: 'Please input the description' }]}
+          >
+            <input type='text' />
+          </Form.Item>
+          <Form.Item name={[0, 'portType']} label='Mocked Port Type'>
+            <input type='text' />
+          </Form.Item>
+        </React.Fragment>
       )}
     </Form.List>
   </div>
@@ -59,8 +72,8 @@ const MockedPortsForm = () => {
 
 jest.mock('../../EdgePortsGeneralBase', () => ({
   ...jest.requireActual('../../EdgePortsGeneralBase'),
-  EdgePortsGeneralBase: () => {
-    return <MockedPortsForm />
+  EdgePortsGeneralBase: (props: MockedPortsFormProps) => {
+    return <MockedPortsForm {...props} />
   }
 }))
 
@@ -81,7 +94,7 @@ const defaultContextData = {
   setFormControl: mockedSetFormControl
 }
 const defaultPortsContextdata = {
-  portData: mockEdgePortConfig.ports,
+  portData: mockEdgePortConfig.ports as EdgePort[],
   portStatus: mockPortInfo as EdgePortInfo[],
   lagData: mockedEdgeLagList.content as EdgeLag[],
   isLoading: false,
@@ -93,13 +106,17 @@ describe('EditEdge ports - ports general', () => {
   const mockedEdgeID = 'mocked_edge_id'
 
   const mockedUpdateReq = jest.fn()
-  const mockedGetSdLanReq = jest.fn()
   const mockedCancelFn = jest.fn()
-  const mockedSubmitFn = jest.fn()
-  const mockedOnValueChange = jest.fn()
 
   const MockedComponent = (props:
-    { cxtData?: EditEdgeContextType, portsContextdata?: EdgePortsDataContextType }) => {
+    {
+      cxtData?: EditEdgeContextType,
+      portsContextdata?: EdgePortsDataContextType,
+      buttonLabel?: {
+        submit?: string;
+        cancel?: string;
+      }
+    }) => {
     return <Provider>
       <EdgeEditContext.Provider
         value={props.cxtData ?? defaultContextData}
@@ -109,12 +126,7 @@ describe('EditEdge ports - ports general', () => {
             clusterId='mock-cluster'
             serialNumber={mockedEdgeID}
             onCancel={mockedCancelFn}
-            onFinish={mockedSubmitFn}
-            onValuesChange={mockedOnValueChange}
-            buttonLabel={{
-              submit: 'Submit',
-              cancel: 'Cancel'
-            }}
+            buttonLabel={props.buttonLabel}
           />
         </EdgePortsDataContext.Provider>
       </EdgeEditContext.Provider>
@@ -133,15 +145,8 @@ describe('EditEdge ports - ports general', () => {
     mockedSetFormControl.mockClear()
     mockedUpdateReq.mockClear()
     mockedCancelFn.mockClear()
-    mockedSubmitFn.mockClear()
-    mockedGetSdLanReq.mockClear()
-    mockedOnValueChange.mockClear()
 
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.patch(
         EdgeUrlsInfo.updatePortConfig.url,
         (req, res, ctx) => {
@@ -151,38 +156,70 @@ describe('EditEdge ports - ports general', () => {
       ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_req, res, ctx) => {
-          mockedGetSdLanReq()
-          return res(ctx.status(202))
-        }
+        (_req, res, ctx) => res(ctx.status(202))
       )
     )
   })
 
-  it('should gateway still being to its origin data', async () => {
-    mockedOnValueChange.mockReturnValue({ port1: [{ portType: EdgePortTypeEnum.LAN }] })
-    render(<MockedComponent />, {
+  it('should change ip mode into STATIC when choose LAN port', async () => {
+    const mockData = _.cloneDeep(mockEdgePortConfig)
+    mockData.ports[0].ipMode = EdgeIpModeEnum.DHCP
+
+    const portCtxData = _.cloneDeep(defaultPortsContextdata)
+    portCtxData.portData = mockData.ports
+
+    render(<MockedComponent portsContextdata={portCtxData} />, {
       route: {
         params,
         path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
       }
     })
 
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Mocked Description' }), 'test')
-    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+    const portType = await screen.findByRole('textbox', { name: 'Mocked Port Type' })
+    await userEvent.clear(portType)
+    await userEvent.type(portType, EdgePortTypeEnum.LAN)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply Ports General' }))
     const expectResult = _.cloneDeep(mockEdgePortConfig)
+    expectResult.ports[0].portType = EdgePortTypeEnum.LAN
+    expectResult.ports[0].ipMode = EdgeIpModeEnum.STATIC
+    expectResult.ports[0].gateway = ''
     expectResult.ports[4].natEnabled = false
     await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(expectResult))
   })
 
-  it.skip('value change should handle with edit form context', async () => {
+  it('should change natEnabled when choose WAN port', async () => {
+    const mockLanData = _.cloneDeep(mockEdgePortConfig)
+    mockLanData.ports[0].portType = EdgePortTypeEnum.LAN
+
+    const portCtxData = _.cloneDeep(defaultPortsContextdata)
+    portCtxData.portData = mockLanData.ports
+
+    render(<MockedComponent portsContextdata={portCtxData} />, {
+      route: {
+        params,
+        path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+      }
+    })
+
+    const portType = await screen.findByRole('textbox', { name: 'Mocked Port Type' })
+    await userEvent.clear(portType)
+    await userEvent.type(portType, EdgePortTypeEnum.WAN)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply Ports General' }))
+    const expectResult = _.cloneDeep(mockEdgePortConfig)
+    expectResult.ports[0].portType = EdgePortTypeEnum.WAN
+    expectResult.ports[0].natEnabled = true
+    expectResult.ports[4].natEnabled = false
+    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith(expectResult))
+  })
+
+  it('value change should handle with edit form context', async () => {
     const { result: formControlRef } = renderHook(() => {
       const [data, setData] = React.useState({
         isDirty: false,
         hasError: false,
         discardFn: jest.fn(),
         applyFn: jest.fn()
-      })
+      } as EditEdgeFormControlType)
       return { data, setData }
     })
 
@@ -200,11 +237,13 @@ describe('EditEdge ports - ports general', () => {
     })
 
     await screen.findByTestId('rc-EdgePortsGeneralBase')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Mocked Description' }), 'test')
-    expect(mockedContextSetActiveSubTab).toHaveBeenCalledTimes(1)
+    const descriptionInput = await screen.findByRole('textbox', { name: 'Mocked Description' })
+    await waitFor(() => expect(descriptionInput).toHaveValue('port0'))
+    await userEvent.type(descriptionInput, 'test')
+    expect(mockedContextSetActiveSubTab).toHaveBeenCalled()
     act(() => {
-      formControlRef.current.data.applyFn()
-      formControlRef.current.data.discardFn()
+      formControlRef.current.data.applyFn?.()
+      formControlRef.current.data.discardFn?.()
     })
     await waitFor(() => {
       expect(mockedUpdateReq).toHaveBeenCalledTimes(1)
@@ -220,9 +259,31 @@ describe('EditEdge ports - ports general', () => {
     })
 
     await screen.findByTestId('rc-EdgePortsGeneralBase')
-    await userEvent.click(await screen.findByRole('button', { name: 'Submit' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     await waitFor(() => expect(mockedUpdateReq).toBeCalled())
     await waitFor(() => expect(mockedSetFormControl).toHaveBeenCalledTimes(1))
+  })
+
+  it('should activate the validation failed tab', async () => {
+    const mockData = _.cloneDeep(mockEdgePortConfig)
+    mockData.ports[0].portType = EdgePortTypeEnum.LAN
+    mockData.ports[0].name = ''
+
+    const portCtxData = _.cloneDeep(defaultPortsContextdata)
+    portCtxData.portData = mockData.ports
+
+    render(<MockedComponent portsContextdata={portCtxData} />, {
+      route: {
+        params,
+        path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+      }
+    })
+
+    await screen.findByTestId('rc-EdgePortsGeneralBase')
+    const descriptionInput = await screen.findByRole('textbox', { name: 'Mocked Description' })
+    await waitFor(() => expect(descriptionInput).toHaveValue(''))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    await screen.findByText('activeTab:port1')
   })
 
   it('cancel and go back to edge list', async () => {
@@ -238,9 +299,19 @@ describe('EditEdge ports - ports general', () => {
     expect(mockedCancelFn).toBeCalled()
   })
 
-  it.todo('tab change')
-  it.todo('no data to display')
-  it.todo('default submit label')
+  it('no data to display', async () => {
+    const portCtxData = _.cloneDeep(defaultPortsContextdata)
+    portCtxData.portData = [] as EdgePort[]
+    render(<MockedComponent portsContextdata={portCtxData} />, {
+      route: {
+        params,
+        path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+      }
+    })
+
+    expect(screen.queryByTestId('rc-EdgePortsGeneralBase')).toBeNull()
+    screen.getByText('No data to display')
+  })
 
   describe('api fail', () => {
     const consoleLogFn = jest.fn()
@@ -263,7 +334,10 @@ describe('EditEdge ports - ports general', () => {
     })
 
     it('should update failed', async () => {
-      render(<MockedComponent />, {
+      render(<MockedComponent buttonLabel={{
+        submit: 'Submit',
+        cancel: 'Cancel'
+      }}/>, {
         route: {
           params,
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
