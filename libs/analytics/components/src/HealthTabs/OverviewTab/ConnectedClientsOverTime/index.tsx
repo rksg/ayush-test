@@ -9,8 +9,7 @@ import {
   Loader,
   NoData,
   MultiLineTimeSeriesChart,
-  qualitativeColorSet,
-  cssStr } from '@acx-ui/components'
+  qualitativeColorSet } from '@acx-ui/components'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useHealthConnectedClientsOverTimeQuery } from './services'
@@ -24,27 +23,14 @@ export function ConnectedClientsOverTime ({
   const chartColors = qualitativeColorSet()
 
   const seriesMapping = [
-    { key: 'connectedClients', name: $t({ defaultMessage: 'Connected Clients' }) },
     { key: 'wirelessClientsCount', name: $t({ defaultMessage: 'Wireless Clients' }) },
     { key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) }
   ] as unknown as Array<{ key: Key, name: string }>
 
-  const massageData = (data: ConnectedClientsOverTimeData) => {
-    if (!data) return data
-    return {
-      ...data,
-      connectedClients: data.wirelessClientsCount
-        .map((w, i) => {
-          if(w === null && data.wiredClientsCount[i] === null) return null
-          return w + data.wiredClientsCount[i]
-        })
-    }
-  }
-
   const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
-      data: getSeriesData(massageData(data!), seriesMapping)
+      data: getSeriesData(data!, seriesMapping)
     })
   })
 
@@ -57,11 +43,6 @@ export function ConnectedClientsOverTime ({
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults.data}
-                lineColors={[
-                  cssStr('--acx-neutrals-30'),
-                  chartColors[0],
-                  chartColors[1]
-                ]}
                 grid={{
                   left: 40,
                   right: 40
@@ -77,8 +58,8 @@ export function ConnectedClientsOverTime ({
                   showLabel: true,
                   color: chartColors[1]
                 }]}
-                seriesYAxisIndexes={[0, 0, 1]}
-                seriesChartTypes={['area', 'line', 'line']}
+                seriesYAxisIndexes={[0, 1]}
+                seriesChartTypes={['line', 'line']}
               />
               : <NoData/>
           )}
