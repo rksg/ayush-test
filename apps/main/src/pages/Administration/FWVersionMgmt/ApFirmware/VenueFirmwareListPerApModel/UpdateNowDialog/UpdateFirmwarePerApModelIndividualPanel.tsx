@@ -28,7 +28,7 @@ type DisplayDataType = {
 // eslint-disable-next-line max-len
 export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
-  const { selectedVenuesFirmwares, updatePayload } = props
+  const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60
   })
@@ -39,7 +39,8 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
   useEffect(() => {
     if (!apModelFirmwares) return
 
-    const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares)
+    // eslint-disable-next-line max-len
+    const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares, initialPayload)
 
     if (!updatePayloadRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
       updatePayloadRef.current = convertToPayload(updatedDisplayData)
@@ -85,8 +86,11 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
   </UI.Section></Loader>)
 }
 
-// eslint-disable-next-line max-len
-function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: FirmwareVenuePerApModel[]): DisplayDataType[] {
+function convertToDisplayData (
+  data: ApModelFirmware[],
+  venuesFirmwares: FirmwareVenuePerApModel[],
+  initialPayload?: UpdateFirmwarePerApModelFirmware
+): DisplayDataType[] {
   const intl = getIntl()
   const result: { [apModel in string]: DisplayDataType['versionOptions'] } = {}
   const apModelMaxFirmwareFromVenues = findApModelMaxFirmwareFromVenues(venuesFirmwares)
@@ -100,9 +104,8 @@ function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: Firmwar
     }
 
     apModelFirmware.supportedApModels.forEach(apModel => {
-      if (!apModelMaxFirmwareFromVenues[apModel] ||
-        compareVersions(apModelMaxFirmwareFromVenues[apModel], apModelFirmware.id) > 0
-      ) return
+      const apModelMaxFirmware = apModelMaxFirmwareFromVenues[apModel]
+      if (!apModelMaxFirmware || compareVersions(apModelMaxFirmware, apModelFirmware.id) > 0) return
 
       if (result[apModel]) {
         result[apModel].push(option)
@@ -115,7 +118,7 @@ function convertToDisplayData (data: ApModelFirmware[], venuesFirmwares: Firmwar
   return Object.entries(result).map(([ apModel, versionOptions ]) => ({
     apModel,
     versionOptions,
-    defaultVersion: getDefaultValueFromFirmwares(versionOptions)
+    defaultVersion: getDefaultValueFromFirmwares(apModel, versionOptions, initialPayload)
   }))
 }
 
@@ -126,7 +129,16 @@ function convertToPayload (data: DisplayDataType[]): UpdateFirmwarePerApModelFir
   }))
 }
 
-function getDefaultValueFromFirmwares (versionOptions: DisplayDataType['versionOptions']): string {
+function getDefaultValueFromFirmwares (
+  apModel: string,
+  versionOptions: DisplayDataType['versionOptions'],
+  initialPayload?: UpdateFirmwarePerApModelFirmware
+): string {
+  if (initialPayload) {
+    const targetApModelFirmwares = initialPayload.find(fw => fw.apModel === apModel)
+    return targetApModelFirmwares?.firmware ?? ''
+  }
+
   return versionOptions.length === 0 ? '' : versionOptions[0].key
 }
 

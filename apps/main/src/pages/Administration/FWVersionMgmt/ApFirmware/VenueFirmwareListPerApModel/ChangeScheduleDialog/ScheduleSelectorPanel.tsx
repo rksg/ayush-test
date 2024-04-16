@@ -53,7 +53,7 @@ export default function ScheduleSelectorPanel (props: ScheduleSelectorPanelProps
     <UI.DateContainer>
       <label>{$t({ defaultMessage: 'Update date:' })}</label>
       <DatePicker
-        value={moment(initialDate)}
+        value={initialDate ? moment(initialDate) : null}
         showToday={false}
         disabledDate={disabledDate}
         onChange={onDateChange}

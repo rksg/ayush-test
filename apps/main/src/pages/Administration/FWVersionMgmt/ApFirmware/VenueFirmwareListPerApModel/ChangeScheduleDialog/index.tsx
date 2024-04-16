@@ -56,11 +56,15 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
   }
 
   const createRequestPayload = (): UpdateFirmwareSchedulePerApModelPayload => {
-    return { date: selectedDate!, time: selectedTime!, targetFirmwares: payload! }
+    return {
+      date: selectedDate!,
+      time: selectedTime!,
+      targetFirmwares: payload!.filter(fw => fw.firmware)
+    }
   }
 
   const updatePayload = (targetFirmwares: UpdateFirmwarePerApModelFirmware = []) => {
-    setPayload(targetFirmwares.filter(fw => fw.firmware))
+    setPayload(targetFirmwares)
   }
 
   const updateDate = (date: string) => {
@@ -92,7 +96,7 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
           key='next'
           type='primary'
           onClick={onNext}
-          disabled={!payload || payload.length === 0}
+          disabled={!payload || payload.filter(p => p.firmware).length === 0}
         >
           {$t({ defaultMessage: 'Next' })}
         </Button>,
