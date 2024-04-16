@@ -1,5 +1,4 @@
 import userEvent       from '@testing-library/user-event'
-import _               from 'lodash'
 import { MomentInput } from 'moment-timezone'
 
 import { get }                     from '@acx-ui/config'
@@ -138,15 +137,8 @@ describe('getRecommendationsText', () => {
     expect(result.reasonText).toEqual('AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.')
   })
   it('should return correct values when data retention period passed', () => {
-    const firstApply = _.findLastIndex(mockedRecommendationCRRM
-      .statusTrail, ({ status }) => status === 'applied')
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
-      statusTrail: [
-        ...mockedRecommendationCRRM.statusTrail.slice(0, firstApply),
-        { status: 'applied', createdAt: '2021-05-17T07:04:11.663Z' },
-        ...mockedRecommendationCRRM.statusTrail.slice(firstApply + 1)
-      ]
+      ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z'
     } as RecommendationDetails)
     const result = getRecommendationsText(crrmDetails)
     // eslint-disable-next-line max-len

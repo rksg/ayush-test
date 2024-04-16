@@ -88,7 +88,7 @@ export const getRecommendationsText = (
     appliedOnce,
     code,
     status,
-    firstAppliedAt
+    dataEndTime
   } = details
 
   const metadata = chain(details.metadata)
@@ -137,7 +137,7 @@ export const getRecommendationsText = (
 
   return {
     actionText: isCrrm
-      ? isDataRetained(firstAppliedAt)
+      ? isDataRetained(dataEndTime)
         ? status === 'applied'
           ? $t(appliedActionText!, parameters)
           : (isFullOptimization
