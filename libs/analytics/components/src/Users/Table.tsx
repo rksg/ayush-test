@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
 import {
@@ -10,18 +10,58 @@ import {
   sortProp,
   roleStringMap
 } from '@acx-ui/analytics/utils'
-import { Table, TableProps, showToast } from '@acx-ui/components'
-import { noDataDisplay, getIntl }       from '@acx-ui/utils'
+import { Table, TableProps }      from '@acx-ui/components'
+import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
 import { CountContext } from '../AccountManagement'
-
-import { messages } from './'
 
 type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
   displayRole: string
   displayType: string
+}
+
+export const messages = {
+  title: defineMessage({
+    defaultMessage: '{usersCount, plural, one {User} other {Users}}'
+  }),
+  editUser: defineMessage({ defaultMessage: 'Edit User' }),
+  save: defineMessage({ defaultMessage: 'Save' }),
+  cancel: defineMessage({ defaultMessage: 'Cancel' }),
+  refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
+  refreshFailure: defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
+  deleteSuccessful: defineMessage({ defaultMessage: 'Deleted user details successfully' }),
+  deleteFailure: defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
+  editUserSuccess: defineMessage({ defaultMessage: 'Updated user details successfully' }),
+  editUserFailure: defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
+  deleteModalContent: defineMessage({
+    defaultMessage: 'Do you really want to remove {firstName} {lastName}?'
+  }),
+  deleteModalTitle: defineMessage({ defaultMessage: 'Delete user' }),
+  disabledDeleteText: defineMessage({
+    defaultMessage:
+      // eslint-disable-next-line max-len
+      'You are not allowed to delete yourself. Or, if you are an invited user, you are not allowed to delete users in the host account.'
+  }),
+  disabledEditText: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage:
+      // eslint-disable-next-line max-len
+      'You are not allowed to edit yourself or invited users. If you are an invited user, you are not allowed to edit users in the host account.'
+  }),
+  refreshText: defineMessage({
+    defaultMessage: 'Retrieve latest email, first name, {br}last name from Ruckus Support Portal.'
+  }),
+  editText: defineMessage({
+    defaultMessage: 'Edit'
+  }),
+  deleteText: defineMessage({
+    defaultMessage: 'Delete'
+  }),
+  ssoDisclaimer: defineMessage({
+    defaultMessage: 'At this time, only Azure AD is officially supported'
+  })
 }
 
 const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
