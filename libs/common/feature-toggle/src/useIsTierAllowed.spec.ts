@@ -1,5 +1,5 @@
-import { useSplitClient } from '@splitsoftware/splitio-react'
-import _                  from 'lodash'
+import { useSplitTreatments } from '@splitsoftware/splitio-react'
+import _                      from 'lodash'
 
 import { renderHook }                   from '@acx-ui/test-utils'
 import { AccountType, AccountVertical } from '@acx-ui/utils'
@@ -20,9 +20,10 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@splitsoftware/splitio-react', () => ({
   ...jest.requireActual('@splitsoftware/splitio-react'),
-  useSplitClient: jest.fn().mockReturnValue({ client: {
-    getTreatmentsWithConfig: jest.fn().mockReturnValue({ treatment: 'control', config: '' })
-  } })
+  useSplitTreatments: jest.fn().mockReturnValue({ treatments: {
+    'TEST-PLM-FF': { treatment: 'control', config: '' }
+  }
+  })
 }))
 
 const user = require('@acx-ui/user')
@@ -118,17 +119,19 @@ describe('Test useIsTierAllowed function', () => {
       ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
     expect(accountVertical).toBe('MSP')
 
-    const { client } = useSplitClient()
+    const { result: res1 } = renderHook(() => useSplitTreatments({ names: ['TEST-PLM-FF'],
+      attributes: {
+        tier: 'Gold',
+        vertical: accountVertical,
+        tenantType: tenantType,
+        tenantId: '233444',
+        isBetaFlag: true
+      } }))
 
-    const { result: res1 } = renderHook(() => client?.getTreatmentsWithConfig(['TEST-PLM-FF'], {
-      tier: 'Gold',
-      vertical: accountVertical,
-      tenantType: tenantType,
-      tenantId: '233444',
-      isBetaFlag: true
-    }))
-    expect((res1.current as SplitIO.TreatmentsWithConfig).treatment).toBe('control')
-    expect((res1.current as SplitIO.TreatmentsWithConfig).config).toBe('')
+    const { treatment, config } = res1.current.treatments['TEST-PLM-FF']
+
+    expect(treatment).toBe('control')
+    expect(config).toBe('')
   })
 
   it('should return default vertical feature Ids also when non-default vertical', () => {

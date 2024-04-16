@@ -1,7 +1,7 @@
 import { useDebugValue, useMemo } from 'react'
 
-import { useSplitClient } from '@splitsoftware/splitio-react'
-import _                  from 'lodash'
+import { useSplitTreatments } from '@splitsoftware/splitio-react'
+import _                      from 'lodash'
 
 import { get }                                              from '@acx-ui/config'
 import { useUserProfileContext }                            from '@acx-ui/user'
@@ -53,19 +53,18 @@ export function useFFList (): {
     jwtPayload?.acx_account_vertical as AccountVertical)
     ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
 
-  const { client } = useSplitClient()
   const splitKey = get('SPLIT_IO_KEY')
 
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
-  const treatments = client?.getTreatmentsWithConfig(splitKey, [Features.PLM_FF], {
+  const treatments = useSplitTreatments({ names: [Features.PLM_FF], attributes: {
     tier: acxAccountTier as string,
     vertical: accountVertical as AccountVertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
     isBetaFlag: betaEnabled as boolean
-  }) as SplitIO.TreatmentsWithConfig
+  }, splitKey })
 
-  const treatment = treatments[Features.PLM_FF]
+  const treatment = treatments.treatments[Features.PLM_FF]
 
   const userFFConfig = useMemo(() => {
     if (treatment?.treatment === 'control') return defaultConfig

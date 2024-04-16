@@ -1,5 +1,6 @@
-import { rest }          from 'msw'
-import { BrowserRouter } from 'react-router-dom'
+import { ISplitTreatmentsChildProps, IUseSplitTreatmentsOptions } from '@splitsoftware/splitio-react'
+import { rest }                                                   from 'msw'
+import { BrowserRouter }                                          from 'react-router-dom'
 
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
@@ -26,12 +27,6 @@ jest.mock('@acx-ui/analytics/utils', () => (
     getUserProfile: jest.fn()
   }))
 
-jest.mock('@splitsoftware/splitio-react', () => (
-  {
-    ...jest.requireActual('@splitsoftware/splitio-react'),
-    useSplitTreatments: jest.fn()
-  }))
-
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useGetBetaStatusQuery: () => ({ data: {
@@ -50,28 +45,24 @@ jest.mock('@acx-ui/rc/utils', () => ({
   isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
-jest.mock('@splitsoftware/splitio-react', () => ({
-  useSplitTreatments: jest.fn()
-}))
-
 const splitProxyEndpoint = 'https://splitproxy.dev.ruckus.cloud/api'
 jest.mock('@splitsoftware/splitio-react', () => ({
-  useSplitTreatments: (splitNames: string[], attributes: { params: '1234test' }) => {
-    const treatments: Record<string, Object> = {}
-    if (attributes) {
-      splitNames.forEach((splitName) => {
-        if (splitName === 'testSplitName') {
-          treatments[splitName] = { treatment: 'on', config: JSON.stringify({
-            featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-            betaList: ['PLCY-EDGE', 'BETA-CP']
-          }) }
-        } else {
-          treatments[splitName] = { treatment: 'off', config: '' }
-        }
-      })
-      return treatments
-    } else return { treatment: 'control', config: '' }
-  }
+  ...jest.requireActual('@splitsoftware/splitio-react'),
+  useSplitTreatments: jest.fn().mockImplementation((splitNames: IUseSplitTreatmentsOptions) => {
+    const treatments: SplitIO.TreatmentsWithConfig = {}
+
+    splitNames.names?.forEach((splitName) => {
+      if (splitName === 'testSplitName') {
+        treatments[splitName] = { treatment: 'on', config: JSON.stringify({
+          featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+          betaList: ['PLCY-EDGE', 'BETA-CP']
+        }) }
+      } else {
+        treatments[splitName] = { treatment: 'off', config: '' }
+      }
+    })
+    return { treatments } as ISplitTreatmentsChildProps
+  })
 }))
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
@@ -93,7 +84,7 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
     useTenantId: () => props.tenant
   }))
   jest.doMock('@splitsoftware/splitio-react', () => ({
-    SplitFactory: jest.fn().mockImplementation(() => 'rendered'),
+    SplitFactoryProvider: jest.fn().mockImplementation(() => 'rendered'),
     SplitSdk: jest.fn().mockImplementation(() => 'factory1')
   }))
   split = require('@splitsoftware/splitio-react')
@@ -110,7 +101,7 @@ describe('SplitProvider', () => {
   })
   it('provides for R1', async () => {
     const tenant = 'f91b36cbfb9941e8b45b337a37f330c0'
-    render(<TestSplitProvider IS_MLISA_SA=''
+    await render(<TestSplitProvider IS_MLISA_SA=''
       tenant={tenant}
       SPLIT_PROXY_ENDPOINT={splitProxyEndpoint} />)
     await screen.findByText('rendered')
@@ -125,7 +116,8 @@ describe('SplitProvider', () => {
       storage: { type: 'LOCALSTORAGE', prefix: 'ACX-01234' },
       debug: false
     })
-    expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
+    expect(split.SplitFactoryProvider)
+      .toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
   it('provides for RA', async () => {
     render(<TestSplitProvider IS_MLISA_SA='true'
@@ -138,7 +130,8 @@ describe('SplitProvider', () => {
       storage: { type: 'LOCALSTORAGE', prefix: 'MLISA-01234' },
       debug: false
     })
-    expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
+    expect(split.SplitFactoryProvider).toHaveBeenCalledWith(
+      { children: 'child1', factory: 'factory1' }, {})
   })
 })
 

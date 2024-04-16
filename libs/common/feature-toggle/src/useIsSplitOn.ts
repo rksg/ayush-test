@@ -17,7 +17,7 @@ export function useIsSplitOn (splitName: string): boolean {
   const tenantKey = isMLISA ? accountId : tenantId
   const attributes = { tenantKey }
   const { treatments } = useSplitTreatments({ names: [splitName], ...attributes })
-  const treatment = treatments[splitName].treatment
+  const { treatment } = treatments[splitName]
   useDebugValue(`${splitName}: ${treatment}`) // used to display a label for custom hooks in React DevTools
   return treatment === FeatureFlag.ON
 }
