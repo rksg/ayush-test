@@ -8,7 +8,6 @@ import {
 import moment                    from 'moment-timezone'
 import { useIntl, IntlProvider } from 'react-intl'
 
-import { get }  from '@acx-ui/config'
 import {
   LocaleProvider,
   LocaleContext,
@@ -18,7 +17,9 @@ import {
   onIntlError,
   getIntl,
   DEFAULT_SYS_LANG,
-  setUpIntl
+  setUpIntl,
+  getJwtTokenPayload,
+  AccountVertical
 } from '@acx-ui/utils'
 
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
@@ -39,18 +40,18 @@ function AntConfigProviders (props: ConfigProviderProps) {
 export function ConfigProvider (props: ConfigProviderProps) {
   setUpIntl({ locale: props.lang || DEFAULT_SYS_LANG })
   const { $t } = getIntl()
+  const { acx_account_vertical } = getJwtTokenPayload()
   moment.locale(props.lang)
-  const isMLISA = true //get('IS_MLISA_SA')
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {locale => (
           <IntlProvider locale={locale.lang}
-            defaultRichTextElements={isMLISA ? {
-              venueSingular: () => $t({ defaultMessage: 'zone' }),
-              venuePlural: () => $t({ defaultMessage: 'zones' }),
-              VenueSingular: () => $t({ defaultMessage: 'Zone' }),
-              VenuePlural: () => $t({ defaultMessage: 'Zones' })
+            defaultRichTextElements={acx_account_vertical === AccountVertical.HOSPITALITY ? {
+              venueSingular: () => $t({ defaultMessage: 'space' }),
+              venuePlural: () => $t({ defaultMessage: 'spaces' }),
+              VenueSingular: () => $t({ defaultMessage: 'Space' }),
+              VenuePlural: () => $t({ defaultMessage: 'Spaces' })
             } : {
               venueSingular: () => $t({ defaultMessage: 'venue' }),
               venuePlural: () => $t({ defaultMessage: 'venues' }),
