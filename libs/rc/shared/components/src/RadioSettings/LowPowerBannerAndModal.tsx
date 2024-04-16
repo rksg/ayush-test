@@ -6,7 +6,7 @@ import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 import styled              from 'styled-components/macro'
 
-import { useNavigate, useLocation, useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 
 import { Button, cssStr, Alert } from '@acx-ui/components'
