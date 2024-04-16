@@ -44,7 +44,7 @@ export const InterfaceTable = (props: InterfaceTableProps) => {
     setData(nodeList.map(node => {
       const target = value.find(item => item.serialNumber === node.serialNumber)
       const targetInterfaceInfo = lanInterfaces[node.serialNumber].find(item =>
-        item.portName === target?.portName)
+        item.portName.toLowerCase() === target?.portName.toLowerCase())
       return {
         nodeName: node.name,
         interface: _.capitalize(target?.portName),
