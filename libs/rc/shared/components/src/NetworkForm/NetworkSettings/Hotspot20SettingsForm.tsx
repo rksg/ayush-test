@@ -42,6 +42,7 @@ const { Option } = Select
 export function Hotspot20SettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+
   useEffect(()=>{
     if(data && (editMode || cloneMode)){
 
@@ -164,7 +165,6 @@ function Hotspot20Form () {
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
     const wifiOperatorId = useRef<string>()
-    // const [identityProviders, setIdentityProviders] = useState<string[]>([])
     const defaultPayload = {
       fields: ['name', 'id'],
       pageSize: 100,

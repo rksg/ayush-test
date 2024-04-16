@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                            from 'lodash'
@@ -111,6 +111,12 @@ export function Hotspot20Tab (props: {
     'Enabling RFC 5580 allows the RADIUS server to use user location data.' })
 
   form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
+
+  useEffect(() => {
+    if (data && data.hotspot20Settings) {
+      form.setFieldsValue({ data })
+    }
+  }, [data])
 
   const networkTypeOptions = Object.keys(Hotspot20AccessNetworkTypeEnum).map((key => {
     return (
