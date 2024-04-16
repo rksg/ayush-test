@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-import { Space, Tooltip } from 'antd'
-import _                  from 'lodash'
-import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
+import { Space }     from 'antd'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
+import { Tooltip }                                                            from '@acx-ui/components'
 import { useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
 import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       from '@acx-ui/rc/utils'
 
@@ -152,6 +153,7 @@ export function ExpandableApModelList (props: ExpandableApModelListProps) {
             })}
           </Space>
         }
+        dottedUnderline={true}
       />
     }
   </Space>

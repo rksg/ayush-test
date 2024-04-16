@@ -1,11 +1,18 @@
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
 
+import { states }          from '../Recommendations/config'
 import { useCrrmKpiQuery } from '../Recommendations/services'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-const CrrmKpi: React.FC<{ id: string, code: string }> = ({ id, code }) => {
-  const detailsQuery = useCrrmKpiQuery({ id, code })
+type CrrmKpiType = { id: string, code: string, status: keyof typeof states }
+
+const CrrmKpi: React.FC<CrrmKpiType> = ({ id, code, status }) => {
+  const detailsQuery = useCrrmKpiQuery({
+    id,
+    code,
+    status
+  })
 
   return <Loader
     states={[detailsQuery]}
