@@ -13,6 +13,8 @@ import {
   VerticalBarChart
 } from '@acx-ui/components'
 
+import { checkRollup } from '../../TimeSeries/config'
+
 import { useRssDistributionChartQuery } from './services'
 
 import type { ChartProps } from '../types.d'
@@ -31,19 +33,22 @@ export const RssDistributionChart: React.FC<ChartProps> = (props) => {
 
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
-      <AutoSizer>
-        {({ height, width }) => (
-          <VerticalBarChart
-            data={queryResults.data!}
-            style={{ height, width }}
-            xAxisName={$t({ defaultMessage: '(dBm)' })}
-            barColors={barColors(
-              props.incident.severity,
-              queryResults.data!.source.map(([rss]) => rss as number)
-            )}
-          />
-        )}
-      </AutoSizer>
+      {checkRollup(props.incident)
+        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        : <AutoSizer>
+          {({ height, width }) => (
+            <VerticalBarChart
+              data={queryResults.data!}
+              style={{ height, width }}
+              xAxisName={$t({ defaultMessage: '(dBm)' })}
+              barColors={barColors(
+                props.incident.severity,
+                queryResults.data!.source.map(([rss]) => rss as number)
+              )}
+            />
+          )}
+        </AutoSizer>
+      }
     </Card>
   </Loader>
 }

@@ -1,4 +1,7 @@
+import moment from 'moment'
+
 import { Incident, TimeSeriesData } from '@acx-ui/analytics/utils'
+import { get }                      from '@acx-ui/config'
 
 import airtimeUtilizationChart            from './Charts/AirtimeUtilizationChart'
 import apDisconnectionCountChart          from './Charts/ApDisconnectionCountChart'
@@ -64,4 +67,12 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount,
   [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart,
   [TimeSeriesChartTypes.SwitchMemoryUtilizationChart]: switchMemoryUtilizationChart
+}
+
+export const checkRollup = (data: Incident) => {
+  const incidentDate = (data.code === 'i-switch-vlan-mismatch')
+    ? moment(data?.endTime).unix() : moment(data?.startTime).unix()
+  const rollupDays = get('DRUID_ROLLUP_DAYS')
+  const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days').unix()
+  return incidentDate < rollupDate
 }

@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 
+
 import { gql }     from 'graphql-request'
+import { get }     from 'lodash'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -8,7 +10,11 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
+import { useParams }                      from '@acx-ui/react-router-dom'
 import {  getIntl }                       from '@acx-ui/utils'
+
+import { useIncidentCodeQuery, useIncidentDetailsQuery } from '../../services'
+import { checkRollup }                                   from '../config'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -59,6 +65,13 @@ export function formatWithPercentageAndCount (
 export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart: items } = data
   const { $t } = useIntl()
+  const params = useParams()
+  const id = get(params, 'incidentId', undefined) as string
+  const codeQuery = useIncidentCodeQuery({ id })
+  const detailsQuery = useIncidentDetailsQuery(
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data) }
+  )
 
   const [chartData, seriesFormatters] = useMemo(() => {
     const sets = [items.good, items.average, items.bad] as number[][]
@@ -88,19 +101,22 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   }, [$t, items])
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
-    <AutoSizer>
-      {({ height, width }) => (
-        <StackedAreaChart
-          style={{ height, width }}
-          data={chartData}
-          dataFormatter={formatter('percentFormat')}
-          yAxisProps={{ max: 1, min: 0 }}
-          seriesFormatters={seriesFormatters}
-          stackColors={lineColors}
-          disableLegend={true}
-        />
-      )}
-    </AutoSizer>
+    {checkRollup(detailsQuery?.data!)
+      ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+      : <AutoSizer>
+        {({ height, width }) => (
+          <StackedAreaChart
+            style={{ height, width }}
+            data={chartData}
+            dataFormatter={formatter('percentFormat')}
+            yAxisProps={{ max: 1, min: 0 }}
+            seriesFormatters={seriesFormatters}
+            stackColors={lineColors}
+            disableLegend={true}
+          />
+        )}
+      </AutoSizer>
+    }
   </Card>
 }
 

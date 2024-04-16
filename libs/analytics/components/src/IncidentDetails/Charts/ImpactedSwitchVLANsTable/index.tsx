@@ -9,6 +9,7 @@ import { defaultSort, sortProp }                   from '@acx-ui/analytics/utils
 import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
 import { getIntl }                                 from '@acx-ui/utils'
 
+import { checkRollup }           from '../../TimeSeries/config'
 import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
 
 import {
@@ -21,8 +22,9 @@ import * as UI from './styledComponents'
 
 import type { ChartProps } from '../types.d'
 
-export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
+export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
+  const { id } = incident
   const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
     const filteredResponse = response.data?.reduce((agg, row) => {
       const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
@@ -37,12 +39,17 @@ export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
-      <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
-      <MismatchConnectionCarousel
-        data={response.data!}
-        current={selected}
-        onChange={setSelected}
-      />
+      {checkRollup(incident)
+        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        : <>
+          <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
+          <MismatchConnectionCarousel
+            data={response.data!}
+            current={selected}
+            onChange={setSelected}
+          />
+        </>
+      }
     </Card>
   </Loader>
 }

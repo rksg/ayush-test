@@ -7,6 +7,7 @@ import {
   VLANIcon
 } from '@acx-ui/icons'
 
+import { checkRollup }          from '../../TimeSeries/config'
 import {
   ImpactedSwitchPortRow,
   useImpactedSwitchVLANsQuery
@@ -94,28 +95,31 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      <UI.SummaryWrapper>
-        {impactedSwitches && impactedTypes.map((type, index) => {
-          const items = type.data.slice(0, type.max)
-          const remaining = type.data.length - items?.length
-          return <UI.SummaryType key={index}>
-            <UI.Summary>
-              <UI.SummaryCount>{type.count}</UI.SummaryCount>
-              <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
-              <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
-            </UI.Summary>
-            <UI.SummaryList>
-              {items.map((d, i) => <div key={i} title={d.title}>
-                {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
-                <span>{d.name}</span>
-              </div>)}
-              {remaining > 0 && <span>
-                {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
-              </span>}
-            </UI.SummaryList>
-          </UI.SummaryType>
-        })}
-      </UI.SummaryWrapper>
+      {checkRollup(incident)
+        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        : <UI.SummaryWrapper>
+          {impactedSwitches && impactedTypes.map((type, index) => {
+            const items = type.data.slice(0, type.max)
+            const remaining = type.data.length - items?.length
+            return <UI.SummaryType key={index}>
+              <UI.Summary>
+                <UI.SummaryCount>{type.count}</UI.SummaryCount>
+                <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
+                <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
+              </UI.Summary>
+              <UI.SummaryList>
+                {items.map((d, i) => <div key={i} title={d.title}>
+                  {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
+                  <span>{d.name}</span>
+                </div>)}
+                {remaining > 0 && <span>
+                  {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
+                </span>}
+              </UI.SummaryList>
+            </UI.SummaryType>
+          })}
+        </UI.SummaryWrapper>
+      }
     </Card>
   </Loader>
 }
