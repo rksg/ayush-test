@@ -469,3 +469,8 @@ export interface MspEcWithVenue extends MspEc {
     selected: boolean
   }[]
 }
+
+export interface MspEcTierPayload {
+  type: string,
+  serviceTierStatus: string
+}
