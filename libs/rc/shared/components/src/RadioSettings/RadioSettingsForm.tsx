@@ -175,7 +175,7 @@ export function RadioSettingsForm (props:{
       { AFC_Featureflag && context === 'venue' && enableAfc &&
               <FieldLabel width='180px'>
                 <div style={{ float: 'left' }}>
-                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC Venue Height:' })}</p>
+                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}</p>
                 </div>
                 <Form.Item>
                   <Input.Group
@@ -344,7 +344,7 @@ export function RadioSettingsForm (props:{
             <Space>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
               <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />

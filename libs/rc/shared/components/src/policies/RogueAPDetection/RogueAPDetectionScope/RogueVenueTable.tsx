@@ -47,7 +47,7 @@ export const RogueVenueTable = () => {
         type: 'warning',
         title: $t({ defaultMessage: 'Change Rogue AP Profile?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a venue. Are you sure you want to change the rogue AP profile to this venue?' }),
+        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a <venueSingular></venueSingular>. Are you sure you want to change the rogue AP profile to this <venueSingular></venueSingular>?' }),
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{

@@ -545,7 +545,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Last Venue' })}
+        label={$t({ defaultMessage: 'Last <VenueSingular></VenueSingular>' })}
         children={
           client?.enableLinkToVenue
             ? <TenantLink to={`venues/${client.venueId}/venue-details/overview`}>

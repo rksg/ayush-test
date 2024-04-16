@@ -125,7 +125,7 @@ export function CliStepVenues () {
         display: 'block',
         fontSize: cssStr('--acx-body-3-font-size')
       }}>
-        {$t({ defaultMessage: 'Select venues:' })}
+        {$t({ defaultMessage: 'Select <venuePlural></venuePlural>:' })}
       </Typography.Text>
       <Typography.Text style={{
         display: 'block', margin: '4px 0 12px',

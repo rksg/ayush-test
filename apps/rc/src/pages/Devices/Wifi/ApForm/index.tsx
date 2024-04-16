@@ -353,7 +353,7 @@ export function ApForm () {
   const getApGroupOptions = async (venueId: string) => {
     let result: { label: string; value: string | null }[] = []
     result.push({
-      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      label: $t({ defaultMessage: 'No group (inherit from <VenueSingular></VenueSingular>)' }),
       value: null
     })
 
@@ -519,7 +519,7 @@ export function ApForm () {
                 initialValue={null}
                 rules={[{
                   required: true,
-                  message: $t({ defaultMessage: 'Please select venue' })
+                  message: $t({ defaultMessage: 'Please select <venueSingular></venueSingular>' })
                 }, {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
@@ -562,7 +562,8 @@ export function ApForm () {
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:
-                    'Moving this device to a new venue will reset AFC geolocation. '+
+                    // eslint-disable-next-line max-len
+                    'Moving this device to a new <venueSingular></venueSingular> will reset AFC geolocation. '+
                     '6GHz operation will remain in low power mode ' +
                     'until geolocation information is reestablished.'
                     })
@@ -605,7 +606,7 @@ export function ApForm () {
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value',
-                        $t({ defaultMessage: 'in this Venue' })
+                        $t({ defaultMessage: 'in this <VenueSingular></VenueSingular>' })
                       )
                     }
                   }
@@ -699,7 +700,7 @@ export function ApForm () {
                   : null
               )}
             >
-              {$t({ defaultMessage: 'Same as Venue' })}
+              {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
           </Space>
         </Space>

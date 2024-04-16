@@ -343,7 +343,7 @@ export function LanPorts () {
         onClick={() => handleCustomize(!useVenueSettings)}
       > {useVenueSettings
           ? $t({ defaultMessage: 'Customize' })
-          : $t({ defaultMessage: 'Use Venue Settings' })
+          : $t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
         }</Button>}
     </Space>
   }

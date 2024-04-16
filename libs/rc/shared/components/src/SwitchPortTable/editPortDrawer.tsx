@@ -852,7 +852,7 @@ export function EditPortDrawer ({
                             disabled={getFieldDisabled('useVenuesettings')}
                             onClick={onApplyVenueSettings}
                           >
-                            {$t({ defaultMessage: 'Use Venue settings' })}
+                            {$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> settings' })}
                           </Button>
                         </Space>
                       </Tooltip>

@@ -122,7 +122,7 @@ export const SelectVenuesDrawer = (props: SelectVenuesDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Select Venues' })}
+      title={$t({ defaultMessage: 'Select <VenuePlural></VenuePlural>' })}
       visible={visible}
       onClose={onClose}
       footer={footer}

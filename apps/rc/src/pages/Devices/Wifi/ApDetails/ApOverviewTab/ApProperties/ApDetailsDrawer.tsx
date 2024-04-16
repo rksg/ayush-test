@@ -290,7 +290,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     } else if (venueId) {
       const latitude = gpsToFixed(venueData?.address.latitude)
       const longitude = gpsToFixed(venueData?.address.longitude)
-      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
+      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As <venueSingular></venueSingular>)' }) }</>
     } else {
       return '--'
     }

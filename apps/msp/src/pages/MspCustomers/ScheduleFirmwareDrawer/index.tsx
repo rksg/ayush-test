@@ -151,7 +151,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
       <Space size={18} direction='vertical'>
         <h4>{$t({
           defaultMessage:
-        `Any changes done to the Saved Schedule or a Manual option will overwrite previously 
+        `Any changes done to the Saved Schedule or a Manual option will overwrite previously
         scheduled configurations in Preferences.`
         })}</h4>
         <Form
@@ -191,7 +191,8 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {$t({ defaultMessage: 'Schedule updates manually' })}
                   <UI.GreyTextSection>
                     <div>{$t({ defaultMessage:
-                  '- Applies only to the selected MSP Customers and their venues.' })}</div>
+                  // eslint-disable-next-line max-len
+                  '- Applies only to the selected MSP Customers and their <venuePlural></venuePlural>.' })}</div>
                   </UI.GreyTextSection>
                   {scheduleMode === ScheduleMode.Manually &&
                 <div style={{ marginTop: 10 }}>

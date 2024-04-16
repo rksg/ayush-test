@@ -341,7 +341,7 @@ describe('Edit Privilege Group', () => {
     )
     // Select venues
     await userEvent.click(screen.getByRole('radio', { name: 'All Venues' }))
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venues' }))
     expect(await screen.findByText('new venue')).toBeVisible()
     await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[0])
     await screen.findByText('Select Venues')
@@ -403,7 +403,7 @@ describe('Edit Privilege Group', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(screen.queryByText('Own Account')).toBeNull()
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venues' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
     await screen.findByText('Select Venues')
     await screen.findByText('new venue')

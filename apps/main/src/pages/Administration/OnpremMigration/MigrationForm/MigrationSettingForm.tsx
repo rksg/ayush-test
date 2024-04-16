@@ -242,11 +242,11 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
           <StepsFormLegacy.Title>{$t({ defaultMessage: 'Migration' })}</StepsFormLegacy.Title>
           <Typography.Text>
             {// eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Migration assistant will migrate ZoneDirector configuration from the selected backup file and create a new venue.' })}
+              $t({ defaultMessage: 'Migration assistant will migrate ZoneDirector configuration from the selected backup file and create a new <venueSingular></venueSingular>.' })}
           </Typography.Text>
           <Form.Item
             name='venueName'
-            label={$t({ defaultMessage: 'New Venue Name' })}
+            label={$t({ defaultMessage: 'New <VenueSingular></VenueSingular> Name' })}
             rules={[
               { type: 'string' },
               { min: 2 },

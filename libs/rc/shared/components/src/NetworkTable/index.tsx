@@ -292,7 +292,7 @@ const getDeleteMessage = (messageKey: string) => {
   const deleteMessageMap = {
     deletingGuestPass: $t({ defaultMessage: 'Deleting Guest Pass network will invalidate all its related guest passes.' }),
     deletingDPSK: $t({ defaultMessage: 'Deleting DPSK network will remove all its related DPSK User Credentials (Passphrases).' }),
-    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all venues and APs that the network is activated on.' })
+    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all <venuePlural></venuePlural> and APs that the network is activated on.' })
   }
   return deleteMessageMap?.[messageKey as keyof typeof deleteMessageMap]
 }

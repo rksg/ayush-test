@@ -149,7 +149,8 @@ const SyslogVenueTable = () => {
           type: 'info',
           duration: 10,
           content: $t({ defaultMessage:
-            'The max-number of venues in a syslog server policy profile is 64.' })
+            // eslint-disable-next-line max-len
+            'The max-number of <venuePlural></venuePlural> in a syslog server policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

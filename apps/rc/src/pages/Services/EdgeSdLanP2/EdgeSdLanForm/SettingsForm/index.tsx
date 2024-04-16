@@ -154,7 +154,9 @@ export const SettingsForm = () => {
           <Row>
             <Col span={24}>
               <UI.VenueSelectorText>
-                {$t({ defaultMessage: 'Select the venue where you want to apply the SD-LAN:' })}
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Select the <venueSingular></venueSingular> where you want to apply the SD-LAN:' })
+                }
               </UI.VenueSelectorText>
               <Row>
                 <Col span={18}>
@@ -163,7 +165,8 @@ export const SettingsForm = () => {
                     label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a Venue' })
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
                     }]}
                   >
                     <Select

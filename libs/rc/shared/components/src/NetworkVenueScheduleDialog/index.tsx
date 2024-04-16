@@ -412,7 +412,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     <>
       <Modal
         {...props}
-        title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
+        title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in <VenueSingular></VenueSingular> "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
         okText={$t({ defaultMessage: 'Apply' })}
         maskClosable={true}
         destroyOnClose={true}

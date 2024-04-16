@@ -33,7 +33,7 @@ export function ActiveVenueFilter ({
         singular: defineMessage({ defaultMessage: '<venueSingular></venueSingular>' }),
         plural: defineMessage({ defaultMessage: '<venuePlural></venuePlural>' })
       }}
-      placeholder={$t({ defaultMessage: 'All Active Venues' })}
+      placeholder={$t({ defaultMessage: 'All Active <VenuePlural></VenuePlural>' })}
       multiple
       value={values}
       defaultValue={values}

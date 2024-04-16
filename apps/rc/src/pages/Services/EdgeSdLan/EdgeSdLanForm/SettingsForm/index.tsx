@@ -222,7 +222,8 @@ export const SettingsForm = () => {
                     label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a Venue' })
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
                     }]}
                   >
                     <Select

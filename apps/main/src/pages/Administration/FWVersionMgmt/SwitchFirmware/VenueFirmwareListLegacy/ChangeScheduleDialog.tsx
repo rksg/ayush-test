@@ -260,7 +260,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
             {!enableSwitchTwoVersionUpgrade && <>
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Choose which version to update the <venueSingular></venueSingular> to:' })
+                }
               </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}

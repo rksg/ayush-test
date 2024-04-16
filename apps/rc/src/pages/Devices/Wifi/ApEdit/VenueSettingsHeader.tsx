@@ -41,7 +41,8 @@ export function VenueSettingsHeader (props: {
       <Col span={8}>
         <Button type='link' onClick={handleVenueSetting}>
           {isUseVenueSettings ?
-            $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use Venue Settings' })
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
           }
         </Button>
       </Col>

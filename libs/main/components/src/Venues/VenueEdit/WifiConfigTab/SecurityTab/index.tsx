@@ -403,7 +403,7 @@ export function SecurityTab () {
               <span>{$t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' })}</span>
               <Tooltip.Question
                 // eslint-disable-next-line max-len
-                title={$t({ defaultMessage: 'Boosting TLS can enhance the TLS connection strength between APs and R1. Note that toggling the switch will prompt a reboot of all AP devices within this venue.' })}
+                title={$t({ defaultMessage: 'Boosting TLS can enhance the TLS connection strength between APs and R1. Note that toggling the switch will prompt a reboot of all AP devices within this <venueSingular></venueSingular>.' })}
                 placement='bottom'
               />
               <div style={{ margin: '2px' }}></div>

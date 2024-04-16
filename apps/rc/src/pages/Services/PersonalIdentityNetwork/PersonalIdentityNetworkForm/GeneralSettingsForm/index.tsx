@@ -111,7 +111,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               }
               rules={[{
                 required: true,
-                message: $t({ defaultMessage: 'Please select a Venue' })
+                message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
               }]}
               children={
                 <Select

@@ -253,7 +253,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           marginRight: '3px'
         }} />
       { // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'The following list will only display the connected switch under the venue.' })}
+        $t({ defaultMessage: 'The following list will only display the connected switch under the <venueSingular></venueSingular>.' })}
       </div>
     }
   }

@@ -426,7 +426,7 @@ export function NetworkVenuesTab () {
       render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
           disabled = true
         } else if (systemNetwork) {

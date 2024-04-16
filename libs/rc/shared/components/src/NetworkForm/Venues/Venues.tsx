@@ -310,7 +310,7 @@ export function Venues (props: VenuesProps) {
       render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
           disabled = true
         }else{
@@ -479,7 +479,9 @@ export function Venues (props: VenuesProps) {
       <StepsFormLegacy.Title>
         { $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }
       </StepsFormLegacy.Title>
-      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
+      <p>
+        { $t({ defaultMessage: 'Select <venuePlural></venuePlural> to activate this network' }) }
+      </p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

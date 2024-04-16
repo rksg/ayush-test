@@ -120,7 +120,7 @@ function useColumns (
             />
             {isApCompatibleCheckEnabled && row?.incompatible && row.incompatible > 0 ?
               <Tooltip.Info isFilled
-                title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this venue.' })}
+                title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
               />:[]

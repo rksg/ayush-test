@@ -34,7 +34,7 @@ function VenueEditPageHeader () {
           type='primary'
           onClick={() => navigate(detailsPath)}
         >
-          { $t({ defaultMessage: 'Back to venue details' }) }
+          { $t({ defaultMessage: 'Back to <venueSingular></venueSingular> details' }) }
         </Button>
       ]}
       footer={<VenueEditTabs />}

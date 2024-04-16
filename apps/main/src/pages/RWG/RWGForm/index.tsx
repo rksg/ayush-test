@@ -164,7 +164,7 @@ export function RWGForm () {
                   initialValue={data?.venueId}
                   rules={[{
                     required: true,
-                    message: $t({ defaultMessage: 'Please select Venue' })
+                    message: $t({ defaultMessage: 'Please select <VenueSingular></VenueSingular>' })
                   }]}
                   children={<Select
                     options={venueOption}

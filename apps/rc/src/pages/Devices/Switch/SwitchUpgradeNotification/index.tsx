@@ -45,23 +45,23 @@ export function SwitchUpgradeNotification (props: {
     stack: [{
       // normal
       minFirmwareVersion: '08.0.90d',
-      description: $t({ defaultMessage: 'All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to the venue’s firmware version mentioned above before onboarding.' }),
+      description: $t({ defaultMessage: 'All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to the <venueSingular></venueSingular>’s firmware version mentioned above before onboarding.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless all the members meet FW requirements. All members must be running the same FW version.' })
     }, {
       // need upgrade
       minFirmwareVersion: '08.0.92d',
-      description: $t({ defaultMessage: 'If the members are not running FI 08.0.92d (UFI), then they must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
+      description: $t({ defaultMessage: 'If the members are not running FI 08.0.92d (UFI), then they must be upgraded to the <venueSingular></venueSingular>’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless all the switches have the minimum FW version running (or) have been manually upgraded. All members must be running the same FW version.' })
     }],
     switch: [{
       // normal
       minFirmwareVersion: '08.0.90d',
-      description: $t({ defaultMessage: 'Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label. If not, upgrade the switch FW to the venue’s firmware version mentioned above before onboarding.' }),
+      description: $t({ defaultMessage: 'Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label. If not, upgrade the switch FW to the <venueSingular></venueSingular>’s firmware version mentioned above before onboarding.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless this switch meets the firmware requirements.' })
     }, {
       // need upgrade
       minFirmwareVersion: '08.0.92d',
-      description: $t({ defaultMessage: 'If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
+      description: $t({ defaultMessage: 'If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the <venueSingular></venueSingular>’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.' }),
       warning: $t({ defaultMessage: 'Do not proceed unless the switch has minimum FW version running or is manually upgraded.' })
     }]
   }
