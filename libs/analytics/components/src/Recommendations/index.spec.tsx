@@ -328,7 +328,7 @@ describe('RecommendationTabContent', () => {
         .map(r => ({ ...r, id: uniqueId() }))
       }
     })
-    jest.mocked(get).mockReturnValue('true')
+    jest.mocked(get).mockReturnValue('')
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
         path: '/ai/recommendations/aiOps',
