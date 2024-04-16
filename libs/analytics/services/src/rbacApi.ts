@@ -125,7 +125,8 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           headers: {
             'x-mlisa-user-id': userId
           },
-          body: { resourceGroupId, invitedUserId: userId }
+          body: { resourceGroupId, invitedUserId: userId },
+          responseHandler: 'text'
         }
       },
       invalidatesTags: [

@@ -70,7 +70,7 @@ const transformUsers = (
 }
 const getUserActions = (
   selectedRow: ManagedUser,
-  { setSelectedRow, refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }: {
+  { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }: {
     setSelectedRow: CallableFunction,
     refreshUserDetails: CallableFunction,
     setOpenDrawer: CallableFunction,
@@ -81,7 +81,7 @@ const getUserActions = (
   const user = getUserProfile()
   const {
     refreshText, disabledDeleteText, disabledEditText,
-    editText, deleteText, refreshSuccessful, refreshFailure
+    editText, deleteText
   } = messages
   const { id: tenantId } = user.selectedTenant
   const { accountId } = user
@@ -97,20 +97,7 @@ const getUserActions = (
     {
       label: $t({ defaultMessage: 'Refresh' }),
       tooltip: $t(refreshText, { br: <br/> }) as string,
-      onClick: () => {
-        if (refreshUserDetails({ userId: selectedRow.id })) {
-          showToast({
-            type: 'success',
-            content: $t(refreshSuccessful)
-          })
-        } else {
-          showToast({
-            type: 'error',
-            content: $t(refreshFailure)
-          })
-        }
-        setSelectedRow(null)
-      }
+      onClick: () => refreshUserDetails({ userId: selectedRow.id })
     },
     {
       label: $t(editText),
@@ -125,9 +112,7 @@ const getUserActions = (
       label: $t(deleteText),
       tooltip: isDeleteDisbaled ? $t(disabledDeleteText) : $t(deleteText),
       disabled: isDeleteDisbaled,
-      onClick: () => {
-        handleDeleteUser()
-      }
+      onClick: () => handleDeleteUser()
     }
   ]
 
@@ -146,10 +131,6 @@ interface UsersTableProps {
   isUsersPageEnabled: boolean
   isEditMode: boolean
   setVisible: CallableFunction
-  deleteUser: {
-    deleteUser: boolean
-    showModal: boolean
-  }
 }
 
 export const UsersTable = ({
@@ -163,14 +144,8 @@ export const UsersTable = ({
   openDrawer,
   isUsersPageEnabled,
   isEditMode,
-  setVisible,
-  deleteUser
+  setVisible
 }: UsersTableProps) => {
-  useEffect(() => {
-    if (deleteUser.showModal === false ) {
-      setSelectedRow(null)
-    }
-  }, [deleteUser.showModal, setSelectedRow])
   useEffect(() => {
     if (openDrawer === false) {
       setSelectedRow(null)
@@ -286,7 +261,6 @@ export const UsersTable = ({
         _, selectedRows: ManagedUser[]
       ) => {
         setOpenDrawer(false)
-        deleteUser.showModal = false
         setSelectedRow(selectedRows[0])
       }
     }}

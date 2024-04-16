@@ -28,10 +28,6 @@ const selectedRow = null
 const openDrawer = false
 const isUsersPageEnabled = true
 const isEditMode = true
-const deleteUser = {
-  deleteUser: false,
-  showModal: false
-}
 describe('UsersTable', () => {
   beforeEach(() => {
     mockServer.use(
@@ -55,7 +51,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
     const tbody = await findTBody()
@@ -85,7 +80,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
     const tbody = await findTBody()
@@ -104,7 +98,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
 
@@ -130,7 +123,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
 
@@ -156,7 +148,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
 
@@ -168,7 +159,6 @@ describe('UsersTable', () => {
     fireEvent.click(refreshButton)
 
     expect(refreshUserDetails).toBeCalledTimes(1)
-    expect(await screen.findByText('Refresh user details is unsuccessful')).toBeVisible()
   })
   it('should disable edit and delete for the same user', async () => {
     render(<UsersTable
@@ -183,7 +173,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
 
@@ -234,7 +223,6 @@ describe('UsersTable', () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      deleteUser={deleteUser}
     />,
     { wrapper: Provider })
 

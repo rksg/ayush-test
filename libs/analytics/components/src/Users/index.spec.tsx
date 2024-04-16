@@ -1,6 +1,7 @@
 import '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent   from '@testing-library/user-event'
+import { message } from 'antd'
+import { rest }    from 'msw'
 
 import { rbacApi }                     from '@acx-ui/analytics/services'
 import { ManagedUser }                 from '@acx-ui/analytics/utils'
@@ -15,7 +16,6 @@ import {
   within,
   findTBody
 } from '@acx-ui/test-utils'
-
 
 import { mockMangedUsers } from './__tests__/fixtures'
 
@@ -91,6 +91,7 @@ describe('Users Page', () => {
   beforeEach(() => {
     store.dispatch(rbacApi.util.resetApiState())
   })
+  afterEach(() => message.destroy())
   it('should render correctly', async () => {
     mockRbacUserResponse(mockMangedUsers)
     mockSSOResponse()
@@ -138,16 +139,16 @@ describe('Users Page', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const radio = await screen.findByRole('radio')
-    fireEvent.click(radio)
+    await userEvent.click(radio)
 
     const deleteButton = await screen.findByRole('button', { name: 'Delete' })
     expect(deleteButton).toBeVisible()
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     expect(
       await screen.findByText('Do you really want to remove firstName dog1 lastName dog1?')
     ).toBeVisible()
-    fireEvent.click(await screen.findByText('OK'))
+    await userEvent.click(await screen.findByText('OK'))
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Deleted user details successfully')).toBeVisible()
   })
@@ -158,40 +159,67 @@ describe('Users Page', () => {
       rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
     )
     render(<Users />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const radio = await screen.findByRole('radio')
-    fireEvent.click(radio)
+    await userEvent.click(radio)
 
     const deleteButton = await screen.findByRole('button', { name: 'Delete' })
     expect(deleteButton).toBeVisible()
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     expect(
       await screen.findByText('Do you really want to remove firstName dog1 lastName dog1?')
     ).toBeVisible()
-    fireEvent.click(await screen.findByText('OK'))
+    await userEvent.click(await screen.findByText('OK'))
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Delete user details is unsuccessful')).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should handle delete user details failure with error message correctly for internal user', async () => {
+    mockRbacUserResponse([mockMangedUsers[0]])
+    mockSSOResponse()
+    const error = { status: 422, message: 'error message' }
+    mockServer.use(
+      rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(
+        ctx.status(error.status),
+        ctx.json({ error: error.message })
+      ))
+    )
+    render(<Users />, { wrapper: Provider })
+
+    const radio = await screen.findByRole('radio')
+    await userEvent.click(radio)
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    await userEvent.click(deleteButton)
+
+    expect(
+      await screen.findByText('Do you really want to remove firstName dog1 lastName dog1?')
+    ).toBeVisible()
+    await userEvent.click(await screen.findByText('OK'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const message = `Error: ${error.message}. (status code: ${error.status})`
+    expect(await screen.findByText(message)).toBeVisible()
   })
   it('should handle delete invitation correctly for external user', async () => {
     mockRbacUserResponse([mockMangedUsers[2]])
     mockDeleteInvitationResponse({ data: 'ok' })
     mockSSOResponse()
     render(<Users />, { wrapper: Provider })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const radio = await screen.findByRole('radio')
-    fireEvent.click(radio)
+    await userEvent.click(radio)
 
     const deleteButton = await screen.findByRole('button', { name: 'Delete' })
     expect(deleteButton).toBeVisible()
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
     expect(
       await screen.findByText('Do you really want to remove FisrtName 12 LastName 12?')
     ).toBeVisible()
-    fireEvent.click(await screen.findByText('OK'))
+    await userEvent.click(await screen.findByText('OK'))
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Deleted user details successfully')).toBeVisible()
   })

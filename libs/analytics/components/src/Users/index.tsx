@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
-import { defineMessage, useIntl } from 'react-intl'
+import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
+import { fetchBaseQuery }         from '@reduxjs/toolkit/query'
+import { useIntl }                from 'react-intl'
 
 import {
   useGetUsersQuery,
@@ -70,66 +72,110 @@ const getSSOsettings = (settings: Partial<Settings> | undefined): SSOValue | nul
   return JSON.parse(settings.sso)
 }
 
+function useHandleMutationResponse (
+  response: TypedUseMutationResult<unknown, unknown, ReturnType<typeof fetchBaseQuery>>,
+  successMessage: string,
+  defaultErrorMessage: string,
+  onSuccess?: () => void
+) {
+  useEffect(() => {
+    if (response.isSuccess) {
+      onSuccess?.()
+      showToast({ type: 'success', content: successMessage })
+      response.reset()
+    }
+
+    if (response.isError) {
+      const { $t } = getIntl()
+      let message: string = defaultErrorMessage
+
+      if ('data' in response.error && response.error.data) {
+        const error = JSON.parse(String(response.error.data))
+        message = $t({ defaultMessage: 'Error: {message}. (status code: {code})' }, {
+          message: error.error,
+          code: response.error.status
+        })
+      }
+
+      showToast({ type: 'error', content: message })
+      response.reset()
+    }
+  }, [response, onSuccess, successMessage, defaultErrorMessage])
+}
+
+
 const Users = () => {
   const { $t } = useIntl()
   const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<DrawerType>('edit')
   const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
-  const [deleteUser, setDeleteUser] = useState({ deleteUser: false, showModal: false })
   const usersQuery = useGetUsersQuery()
-  const [refreshUserDetails] = useRefreshUserDetailsMutation()
-  const [deleteUserResourceGroup] = useDeleteUserResourceGroupMutation()
-  const [deleteInvitation] = useDeleteInvitationMutation()
+  const [refreshUserDetails, refreshResponse] = useRefreshUserDetailsMutation()
+  const [deleteUserResourceGroup, deleteUserResponse] = useDeleteUserResourceGroupMutation()
+  const [deleteInvitation, deleteInvitationResponse] = useDeleteInvitationMutation()
 
   const [visible, setVisible] = useState(false)
   const settingsQuery = useGetTenantSettingsQuery()
   const ssoConfig = getSSOsettings(settingsQuery.data)
   const isEditMode = typeof ssoConfig?.metadata === 'string'
 
+  const deselectRow = useCallback(() => setSelectedRow(null), [])
 
-  useEffect(() => {
-    if(deleteUser.showModal && selectedRow){
-      showActionModal({
-        type: 'confirm',
-        title: $t(messages.deleteModalTitle) ,
-        content: $t(messages.deleteModalContent, {
-          firstName: selectedRow?.firstName, lastName: selectedRow?.lastName
-        }),
-        onOk: () => {
-          setDeleteUser({ deleteUser: true, showModal: false })
-        }
-      })
-    }
-    if (deleteUser.deleteUser && selectedRow) {
-      const deleteUserAction = !(selectedRow.invitation?.state === 'pending')
-        ? deleteUserResourceGroup({ userId: selectedRow.id })
-        : deleteInvitation(
-          { resourceGroupId: selectedRow.resourceGroupId,
-            userId: selectedRow.id
+  const showDeleteUserModal = useCallback(() => {
+    const user = selectedRow!
+    showActionModal({
+      type: 'confirm',
+      title: $t(messages.deleteModalTitle) ,
+      content: $t(messages.deleteModalContent, {
+        firstName: user.firstName,
+        lastName: user.lastName
+      }),
+      onOk: () => {
+        if (user.invitation?.state === 'pending') {
+          deleteInvitation({
+            resourceGroupId: user.resourceGroupId,
+            userId: user.id
           })
-      deleteUserAction
-        .then((response) => {
-          usersQuery.refetch()
-            .then(() => {
-              const isSuccess = !(response as { error: string })?.error
-              showToast({
-                type: isSuccess ? 'success' : 'error',
-                content: $t(isSuccess ? messages.deleteSuccessful: messages.deleteFailure)
-              })
-            }
-            )
-        })
-        .finally(() => setDeleteUser({ showModal: false, deleteUser: false }))
-    }
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [selectedRow, deleteUser])
+        } else {
+          deleteUserResourceGroup({ userId: user.id })
+        }
+      }
+    })
+  }, [$t, deleteInvitation, deleteUserResourceGroup, selectedRow])
+
+  useHandleMutationResponse(
+    refreshResponse,
+    $t(messages.refreshSuccessful),
+    $t(messages.refreshFailure),
+    deselectRow
+  )
+
+  useHandleMutationResponse(
+    deleteUserResponse,
+    $t(messages.deleteSuccessful),
+    $t(messages.deleteFailure),
+    deselectRow
+  )
+
+  useHandleMutationResponse(
+    deleteInvitationResponse,
+    $t(messages.deleteSuccessful),
+    $t(messages.deleteFailure),
+    deselectRow
+  )
+
+  const isFetching = [
+    refreshResponse.isLoading,
+    deleteUserResponse.isLoading,
+    deleteInvitationResponse.isLoading,
+    usersQuery.isFetching
+  ].some(Boolean)
 
   return (
     <Loader states={[{
-      isLoading: false || usersQuery.isLoading,
-      isFetching: deleteUser.deleteUser || usersQuery.isFetching
+      isLoading: usersQuery.isLoading,
+      isFetching
     }]}>
       <UsersTable
         data={usersQuery.data}
@@ -137,13 +183,12 @@ const Users = () => {
         selectedRow={selectedRow}
         setSelectedRow={setSelectedRow}
         refreshUserDetails={refreshUserDetails}
-        handleDeleteUser={() => setDeleteUser({ ...deleteUser, showModal: true })}
+        handleDeleteUser={showDeleteUserModal}
         setDrawerType={setDrawerType}
         openDrawer={openDrawer}
         isUsersPageEnabled={isUsersPageEnabled}
         isEditMode={isEditMode}
         setVisible={setVisible}
-        deleteUser={deleteUser}
       />
       <UserDrawer
         opened={openDrawer}
