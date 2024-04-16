@@ -78,7 +78,9 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
         }).unwrap()
       }
       const response = results.response as { id: string }
-      modalMode ? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
+      modalMode
+        ? modalCallBack?.(response.id)
+        : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

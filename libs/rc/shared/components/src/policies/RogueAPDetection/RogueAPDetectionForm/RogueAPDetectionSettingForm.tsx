@@ -4,9 +4,9 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { StepsForm }                                            from '@acx-ui/components'
-import { useGetRoguePolicyListQuery }                           from '@acx-ui/rc/services'
-import { RogueAPDetectionActionTypes, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { StepsForm }                                                           from '@acx-ui/components'
+import { useEnhancedRoguePoliciesQuery, useRoguePolicyQuery }                  from '@acx-ui/rc/services'
+import { RogueAPDetectionActionTypes, servicePolicyNameRegExp, useTableQuery } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -28,7 +28,24 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data } = useGetRoguePolicyListQuery({ params: params })
+  const { data } = useRoguePolicyQuery({
+    params: params
+  })
+
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ]
+  }
+
+  const settingsId = 'policies-rogue-ap-detection-setting-form-table'
+  const tableQuery = useTableQuery({
+    useQuery: useEnhancedRoguePoliciesQuery,
+    defaultPayload,
+    pagination: { settingsId, pageSize: 1000 }
+  })
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
@@ -50,7 +67,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
 
   useEffect(() => {
     if (edit && data) {
-      let policyData = data.filter(d => d.id === params.policyId)[0]
+      let policyData = data
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_STATE,
         payload: {
@@ -63,7 +80,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
           }
         }
       })
-      setOriginalName(policyData.name)
+      setOriginalName(data.name || '')
       form.setFieldValue('policyName', policyData.name ?? '')
       form.setFieldValue('description', policyData.description ?? '')
     }
@@ -84,13 +101,13 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
               { max: 32 },
               { validator: async (rule, value) => {
                 if (!edit && value
-                    && data?.findIndex((policy) => policy.name === value) !== -1) {
+                    && tableQuery.data?.data.findIndex((policy) => policy.name === value) !== -1) {
                   return Promise.reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )
                 }
                 if (edit && value && value !== originalName
-                    && data?.filter((policy) => policy.name !== originalName)
+                    && tableQuery.data?.data.filter((policy) => policy.name !== originalName)
                       .findIndex((policy) => policy.name === value) !== -1) {
                   return Promise.reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })

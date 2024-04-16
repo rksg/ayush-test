@@ -29,10 +29,10 @@ export const RogueApModal = (props: {
           edit={false}
           modalMode={true}
           modalCallBack={(id) => {
-            setVisible(false)
-            if (id) {
+            if (id && visible) {
               setPolicyId(id)
             }
+            setVisible(false)
           }}
         />}
       onCancel={() => setVisible(false)}

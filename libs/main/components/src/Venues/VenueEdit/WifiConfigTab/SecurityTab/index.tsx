@@ -11,9 +11,10 @@ import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery,
+  useUpdateVenueRogueApMutation,
   useGetVenueApEnhancedKeyQuery, useUpdateVenueApEnhancedKeyMutation,
-  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation
+  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation,
+  useEnhancedRoguePoliciesQuery
 } from '@acx-ui/rc/services'
 import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
 import { useNavigate, useParams }                                                     from '@acx-ui/react-router-dom'
@@ -57,6 +58,15 @@ export function SecurityTab () {
     name: DEFAULT_PROFILE_NAME
   }]
 
+  const DEFAULT_PAYLOAD = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ],
+    page: 1, pageSize: 1000
+  }
+
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
     previousPath,
@@ -93,9 +103,12 @@ export function SecurityTab () {
   const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
   const [triggerTlsEnhancedKey, setTriggerTlsEnhancedKey] = useState(false)
 
-  const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
+  const { selectOptions, selected } = useEnhancedRoguePoliciesQuery({
+    params: params,
+    payload: DEFAULT_PAYLOAD
+  },{
     selectFromResult ({ data }) {
-      if (data?.length === 0) {
+      if (data?.totalCount === 0) {
         return {
           selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
           selected: DEFAULT_OPTIONS.find((item) =>
@@ -104,8 +117,10 @@ export function SecurityTab () {
         }
       }
       return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        selected: data?.find((item) => item.id === formRef.current?.getFieldValue('roguePolicyId'))
+        selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+        selected: data?.data.find((item) =>
+          item.id === formRef.current?.getFieldValue('roguePolicyId')
+        )
       }
     }
   })
