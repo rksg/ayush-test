@@ -1,6 +1,9 @@
-import { StepsForm }                                                                                              from '@acx-ui/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { render, screen }                                                                                         from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+
+import { StepsForm }                                                                                                          from '@acx-ui/components'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, screen }                                                                                                     from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -12,6 +15,7 @@ const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
 // eslint-disable-next-line max-len
 const mockedHaWizardNetworkSettings = transformFromApiToFormData(mockedHaNetworkSettings, mockEdgeClusterList.data[0] as EdgeClusterStatus)
+const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -57,5 +61,54 @@ describe('InterfaceSettings - PortForm', () => {
     const tab = screen.getByRole('tab', { name: 'Smart Edge 1' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
     expect(await screen.findByTestId('rc-EdgePortsGeneralBase')).toBeVisible()
+  })
+
+  it('should correctly switch tab', async () => {
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <StepsForm initialValues={mockedHaWizardNetworkSettings}>
+          <StepsForm.StepForm>
+            <PortForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    expect(screen.getByText('Port General Settings')).toBeVisible()
+    expect(screen.getAllByRole('tab').length).toBe(2)
+    const node1Tab = screen.getByRole('tab', { name: 'Smart Edge 1' })
+    expect(node1Tab.getAttribute('aria-selected')).toBeTruthy()
+    const node2Tab = screen.getByRole('tab', { name: 'Smart Edge 2' })
+    await userEvent.click(node2Tab)
+    expect(node2Tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should be empty when node port data not exist', async () => {
+    const lostSomePortConfig = _.cloneDeep(mockedHaWizardNetworkSettings)
+    delete lostSomePortConfig.portSettings[nodeList[1].serialNumber]
+
+    render(
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <StepsForm initialValues={mockedHaWizardNetworkSettings}>
+          <StepsForm.StepForm>
+            <PortForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+      })
+
+    expect(screen.getByText('Port General Settings')).toBeVisible()
+    expect(screen.getAllByRole('tab').length).toBe(2)
+    const node1Tab = screen.getByRole('tab', { name: 'Smart Edge 1' })
+    expect(node1Tab.getAttribute('aria-selected')).toBeTruthy()
+    const node2Tab = screen.getByRole('tab', { name: 'Smart Edge 2' })
+    await userEvent.click(node2Tab)
+    const activePane = screen.getByRole('tabpanel', { hidden: false })
+    expect(activePane.getAttribute('id')).toBe('rc-tabs-test-panel-serialNumber-2')
+    expect(activePane.textContent).toBe('')
   })
 })

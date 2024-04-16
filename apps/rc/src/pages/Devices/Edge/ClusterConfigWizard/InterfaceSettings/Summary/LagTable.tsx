@@ -78,8 +78,8 @@ export const LagTable = (props: LagTableProps) => {
       key: 'lagMembers',
       dataIndex: 'lagMembers',
       render: (_data, row) => {
-        const lagMemberSize = row.lagMembers?.length ?? 0
-        return lagMemberSize > 0 ?
+        const lagMemberSize = row.lagMembers?.length
+        return lagMemberSize ?
           <Tooltip
             title={getToolTipContent(row.serialNumber, row.lagMembers)}
             children={lagMemberSize}
@@ -124,7 +124,7 @@ export const LagTable = (props: LagTableProps) => {
         <Row key={lagmember.portId}>
           <Col>
             {
-              `${getEdgePortDisplayName((portList?.find(port =>
+              `${getEdgePortDisplayName((portList.find(port =>
                 port.id === lagmember.portId)))} (${lagmember.portEnabled ?
                 $t({ defaultMessage: 'Enabled' }) :
                 $t({ defaultMessage: 'Disabled' })})`

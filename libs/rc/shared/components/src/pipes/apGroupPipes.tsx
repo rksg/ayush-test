@@ -272,7 +272,8 @@ export const transformScheduling = (
 export const transformApGroupVlan = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  apGroupId?: string
+  apGroupId?: string,
+  vlanPoolingNameMap?: KeyValue<string, string>[]
 ): JSX.Element => {
   if (!currentVenue) return <></>
 
@@ -291,7 +292,7 @@ export const transformApGroupVlan = (
       if (isVlanPool) {
         const defaultValue = wlan?.advancedCustomization?.vlanPool?.id || ''
         displayText = $t(vlanContents.vlanPool, {
-          poolName: findApGroup.vlanPoolName,
+          poolName: (vlanPoolingNameMap?.find(pool => pool.key === vlanPoolId)?.value) || '',
           isCustom: vlanPoolId && vlanPoolId !== defaultValue
         })
 

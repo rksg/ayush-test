@@ -25,7 +25,8 @@ import {
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
   Venue,
-  VenueObjectList
+  VenueObjectList,
+  systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -360,7 +361,8 @@ export function AddPrivilegeGroup () {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 64 }
+                { max: 64 },
+                { validator: (_, value) => systemDefinedNameValidator(value) }
               ]}
               children={<Input />}
             />
