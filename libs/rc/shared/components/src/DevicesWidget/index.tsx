@@ -31,27 +31,38 @@ export function DevicesWidget (props: {
     numDonut++
   }
 
+  const clickWifiHandler = useNavigateToPath('/devices/wifi')
+  const clickSwitchHandler = useNavigateToPath('/devices/switch')
+  const clickSmartEdgeHandler = useNavigateToPath('/devices/edge')
+
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
-            <DonutChart
-              key='wifi-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Wi-Fi' })}
-              data={props.apData}/>
-            <DonutChart
-              key='switch-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Switch' })}
-              data={props.switchData}/>
-            { edgeSupported && (<DonutChart
-              key='smartEdge-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'SmartEdge' })}
-              data={props.edgeData}/>)}
+            <UI.NavigationContainer onClick={clickWifiHandler}>
+              <DonutChart
+                key='wifi-donutChart'
+                style={{ width: width/numDonut, height }}
+                title={$t({ defaultMessage: 'Wi-Fi' })}
+                data={props.apData}/>
+            </UI.NavigationContainer>
+            <UI.NavigationContainer onClick={clickSwitchHandler}>
+              <DonutChart
+                key='switch-donutChart'
+                style={{ width: width/numDonut, height }}
+                title={$t({ defaultMessage: 'Switch' })}
+                data={props.switchData}/>
+            </UI.NavigationContainer>
+            { edgeSupported && (
+              <UI.NavigationContainer onClick={clickSmartEdgeHandler}>
+                <DonutChart
+                  key='smartEdge-donutChart'
+                  style={{ width: width/numDonut, height }}
+                  title={$t({ defaultMessage: 'SmartEdge' })}
+                  data={props.edgeData}/>
+              </UI.NavigationContainer>)}
           </div>
         )}
       </AutoSizer>

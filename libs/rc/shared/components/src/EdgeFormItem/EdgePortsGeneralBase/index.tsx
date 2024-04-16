@@ -25,7 +25,7 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
-  statusData: EdgePortInfo[]
+  statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
   activeTab?: string
