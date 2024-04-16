@@ -263,7 +263,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -283,7 +283,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    13%
                   </span>
                 </div>
               </div>
@@ -306,7 +306,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    100%
                   </span>
                 </div>
               </div>
@@ -486,7 +486,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -506,7 +506,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    13%
                   </span>
                 </div>
               </div>
@@ -754,7 +754,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
@@ -774,7 +774,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    --
                   </span>
                 </div>
               </div>
@@ -797,7 +797,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    --
                   </span>
                 </div>
               </div>
