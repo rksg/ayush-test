@@ -57,7 +57,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       for(let[k, v] of Object.entries(lanInterfaces)) {
         interfacesOptions[k] = v.map(item => ({
           label: _.capitalize(item.portName),
-          value: item.portName
+          value: item.portName.toLowerCase()
         })).sort(optionSorter)
       }
       setLanInterfacesOptions(interfacesOptions)
@@ -155,7 +155,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                     {({ getFieldValue }) => {
                       const currentPort = getFieldValue([item.serialNumber, 'port'])
                       const currentInterface = lanInterfaces?.[item.serialNumber]?.find(item =>
-                        item.portName === currentPort)
+                        item.portName.toLowerCase() === currentPort?.toLowerCase())
                       return currentPort && $t({ defaultMessage: 'IP subnet: {ip}' },
                         {
                           ip: currentInterface?.ipMode === EdgeIpModeEnum.DHCP ?
@@ -174,7 +174,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                         item.serialNumber
                       )?.map(option => {
                         const targetInterface = lanInterfaces?.[item.serialNumber]?.find(item =>
-                          item.portName === option.value)
+                          item.portName.toLowerCase() === option.value?.toString().toLowerCase())
                         return <Select.Option
                           key={option.value}
                           value={option.value}
