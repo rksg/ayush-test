@@ -32,7 +32,7 @@ const mockWebhooks = (data = webhooks, success = true) => rest.get(
 )
 
 describe('WebhooksTable', () => {
-  describe('R1', () => {
+  describe('RAI', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
@@ -156,27 +156,8 @@ describe('WebhooksTable', () => {
         expect(await screen.findByText(`Error: ${error}. (status code: ${status})`)).toBeVisible()
       })
     })
-
-    describe('when role = READ_ONLY', () => {
-      beforeEach(() => {
-        const profile = getUserProfile()
-        setUserProfile({ ...profile, profile: {
-          ...profile.profile, roles: [RolesEnum.READ_ONLY]
-        } })
-      })
-      it('should hide actions', async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
-        expect(await findTBody()).toBeVisible()
-        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
-      })
-      it('should hide row actions', async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
-        expect(await findTBody()).toBeVisible()
-        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
-      })
-    })
   })
-  describe('RAI', () => {
+  describe('R1', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('')
@@ -197,6 +178,24 @@ describe('WebhooksTable', () => {
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
+    })
+    describe('when role = READ_ONLY', () => {
+      beforeEach(() => {
+        const profile = getUserProfile()
+        setUserProfile({ ...profile, profile: {
+          ...profile.profile, roles: [RolesEnum.READ_ONLY]
+        } })
+      })
+      it('should hide actions', async () => {
+        render(<WebhooksTable />, { wrapper: Provider })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
+      })
+      it('should hide row actions', async () => {
+        render(<WebhooksTable />, { wrapper: Provider })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+      })
     })
   })
 })
