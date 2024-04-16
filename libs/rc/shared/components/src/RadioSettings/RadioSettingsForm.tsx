@@ -7,7 +7,7 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox, Input } from 'antd'
 import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
 import { FormattedMessage, useIntl }                                 from 'react-intl'
 
-import { cssStr, Tooltip, Button }                         from '@acx-ui/components'
+import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { validationMessages }                              from '@acx-ui/utils'
@@ -129,7 +129,7 @@ export function RadioSettingsForm (props:{
 
   return (
     <>
-      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
+      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType && <>
         <FieldLabel width='180px'
           // Hide the label when afcEnable is false or ap is outdoor under ap context
           style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
@@ -151,11 +151,13 @@ export function RadioSettingsForm (props:{
                 }}
               />}
           </Form.Item>
-          <Tooltip title={<>
-            <FormattedMessage
-              values={{ br: () => <br /> }}
-              defaultMessage={'Please ensure that configure the AFC Geo-location for the APs in the mobile APP.'}
-            />
+        </FieldLabel>
+        <Alert
+          type='info'
+          message={<>
+            <span>
+              {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
+            </span>
             <Button type='link'
               style={{
                 height: '16px',
@@ -163,14 +165,13 @@ export function RadioSettingsForm (props:{
                 fontSize: '12px'
               }}
               onClick={() => {}}>
-              {$t({ defaultMessage: 'See details.' })}
+              {$t({ defaultMessage: 'How to configure?' })}
             </Button>
           </>
           }
-          placement='bottom'>
-            <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
-          </Tooltip>
-        </FieldLabel>
+          showIcon={true}
+        />
+      </>
       }
       { AFC_Featureflag && context === 'venue' && enableAfc &&
               <FieldLabel width='180px'>
@@ -219,6 +220,14 @@ export function RadioSettingsForm (props:{
                         placeholder={$t({ defaultMessage: 'Maximum Floor' })}/>
                     </Form.Item>
                     <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
+                    <Tooltip title={<FormattedMessage
+                      values={{ br: () => <br /> }}
+                      defaultMessage={'When grand floor=0'}
+                    />
+                    }
+                    placement='bottom'>
+                      <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+                    </Tooltip>
                   </Input.Group>
                 </Form.Item>
               </FieldLabel>

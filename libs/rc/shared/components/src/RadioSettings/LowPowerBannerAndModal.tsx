@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
-
 import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 import styled              from 'styled-components/macro'
@@ -41,7 +40,7 @@ export function LowPowerBannerAndModal (props: {
 
     if (from === 'ap') {
 
-      modalMessage = $t({ defaultMessage: '6 GHz radio operating in low power mode' })
+      modalMessage = $t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' })
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
