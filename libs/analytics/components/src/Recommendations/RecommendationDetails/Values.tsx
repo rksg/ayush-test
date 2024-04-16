@@ -103,7 +103,8 @@ export const getRecommendationsText = (
     valueFormatter,
     actionText,
     appliedActionText,
-    passRetentionPeriodActionText,
+    dataRetainedActionText,
+    dataRetainedAppliedActionText,
     reasonText,
     tradeoffText,
     partialOptimizedActionText,
@@ -136,14 +137,15 @@ export const getRecommendationsText = (
   }
 
   return {
-    actionText: isCrrm
+    actionText: $t(isCrrm
       ? isDataRetained(dataEndTime)
         ? status === 'applied'
-          ? $t(appliedActionText!, parameters)
-          : (isFullOptimization
-            ? $t(actionText, parameters) : $t(partialOptimizedActionText!, parameters))
-        : $t(passRetentionPeriodActionText!, parameters)
-      : $t(actionText, parameters),
+          ? appliedActionText!
+          : isFullOptimization ? actionText : partialOptimizedActionText!
+        : status === 'applied'
+          ? dataRetainedAppliedActionText!
+          : dataRetainedActionText!
+      : actionText, parameters),
     reasonText: appliedOnce && appliedReasonText
       ? (isFullOptimization
         ? $t(appliedReasonText, parameters)
