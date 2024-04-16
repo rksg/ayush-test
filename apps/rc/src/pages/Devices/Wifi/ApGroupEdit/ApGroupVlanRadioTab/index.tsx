@@ -1,20 +1,19 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
-import _                          from 'lodash'
+import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }         from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetApGroupQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
-  useUpdateNetworkVenuesMutation,
-  useVlanPoolListQuery
-} from '@acx-ui/rc/services'
-import { Network, NetworkVenue, VlanPool } from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
+  useUpdateNetworkVenuesMutation } from '@acx-ui/rc/services'
+import { KeyValue, Network, NetworkVenue, VLANPoolViewModelType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                          from '@acx-ui/react-router-dom'
 
 import { ApGroupEditContext }                            from '..'
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
@@ -36,7 +35,7 @@ export const ApGroupVlanRadioContext = createContext({} as {
   setTableData: (data: Network[]) => void
   drawerStatus: ApGroupVlanRadioDrawerState
   setDrawerStatus: (data: ApGroupVlanRadioDrawerState) => void
-  vlanPoolOptions: VlanPool[]
+  vlanPoolingNameMap: KeyValue<string, string>[]
 })
 
 
@@ -64,26 +63,36 @@ export function ApGroupVlanRadioTab () {
     { params: { tenantId, apGroupId } },
     { skip: !(isApGroupTableFlag && isEditMode) })
 
-
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
   const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
-
-  const { vlanPoolOptions } = useVlanPoolListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolOptions: data ?? []
-      }
-    }
-  })
 
   const [venueId, setVenueId] = useState('')
   const [tableData, setTableData] = useState(defaultTableData)
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
+  // eslint-disable-next-line max-len
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
   useEffect(() => {
     if (apGroupData && !isApGroupDataLoading) {
-      const payload = _.cloneDeep({
+      const payload = cloneDeep({
         ...defaultApGroupNetworkPayload,
         filters: { isAllApGroups: [false] }
       })
@@ -110,7 +119,7 @@ export function ApGroupVlanRadioTab () {
 
         setVenueId(venueId)
         const initData = data?.data || [] as Network[]
-        setTableData(_.cloneDeep(initData))
+        setTableData(cloneDeep(initData))
       }
 
       getInitTableData()
@@ -134,8 +143,8 @@ export function ApGroupVlanRadioTab () {
   }
 
   const handleUpdateApGroupVlanRadio = (editData: Network) => {
-    const editNetworkVenue = _.cloneDeep(getCurrentVenue(editData, venueId)!)
-    const updateData = _.cloneDeep(updateDataRef.current)
+    const editNetworkVenue = cloneDeep(getCurrentVenue(editData, venueId)!)
+    const updateData = cloneDeep(updateDataRef.current)
 
     const findIdx = updateData.findIndex(d => (d.id === editNetworkVenue.id))
     if (findIdx === -1) {
@@ -191,9 +200,9 @@ export function ApGroupVlanRadioTab () {
           venueId, apGroupId,
           tableData, setTableData,
           drawerStatus, setDrawerStatus,
-          vlanPoolOptions }} >
+          vlanPoolingNameMap }} >
           <ApGroupVlanRadioTable />
-          <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio}/>
+          <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio} />
         </ApGroupVlanRadioContext.Provider>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

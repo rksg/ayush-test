@@ -28,7 +28,7 @@ describe('RecommendationDetails', () => {
   it('renders correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
       data: {
-        recommendation: pick(mockedRecommendationFirmware, ['id', 'code'])
+        recommendation: pick(mockedRecommendationFirmware, ['id', 'code', 'status'])
       }
     })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {

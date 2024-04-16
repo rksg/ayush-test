@@ -29,7 +29,7 @@ export const RecommendationDetails = () => {
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
-    { skip: !Boolean(codeQuery.data?.code) }
+    { skip: !Boolean(codeQuery.data?.code && codeQuery.data?.status) }
   )
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>

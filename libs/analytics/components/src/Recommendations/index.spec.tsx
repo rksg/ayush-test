@@ -170,7 +170,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Venue')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
@@ -191,7 +191,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Zone')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
@@ -259,7 +259,7 @@ describe('RecommendationTabContent', () => {
     })
 
     const before = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(before).toHaveLength(1)
+    expect(before).toHaveLength(4)
 
     const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
@@ -270,7 +270,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(2)
+    expect(afterShowMuted).toHaveLength(5)
 
     await userEvent.click(afterShowMuted[1])
     await screen.findByRole('button', { name: 'Unmute' })
@@ -281,7 +281,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(resetButton)
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterReset).toHaveLength(1)
+    expect(afterReset).toHaveLength(4)
   })
 
   it('should mute recommendation correctly', async () => {
