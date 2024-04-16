@@ -9,13 +9,13 @@ import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVl
 
 import { ApGroupVlanRadioContext } from '.'
 
-const vlanPoolOptions = [...vlanPoolList]
+const vlanPoolingNameMap = vlanPoolList.map(vp => ({ key: vp.id, value: vp.name }))
 const venueId = 'venue-id'
 const apGroupId = 'apgroup-id'
 const editData = ApGroupNetworkTableData[0]
 const drawerStatus: ApGroupVlanRadioDrawerState = {
   visible: true,
-  editData: ApGroupNetworkTableData[0]
+  editData
 }
 
 const handleUpdateApGroupVlanRadio = jest.fn()
@@ -29,7 +29,7 @@ describe('ApGroupVlanRadioDrawer', () => {
         <ApGroupVlanRadioContext.Provider value={{
           venueId, apGroupId,
           drawerStatus, setDrawerStatus,
-          vlanPoolOptions }} >
+          vlanPoolingNameMap }} >
           <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio}/>
         </ApGroupVlanRadioContext.Provider>
       </Provider>
@@ -61,7 +61,7 @@ describe('ApGroupVlanRadioDrawer', () => {
       <ApGroupVlanRadioContext.Provider value={{
         venueId, apGroupId,
         drawerStatus, setDrawerStatus,
-        vlanPoolOptions }} >
+        vlanPoolingNameMap }} >
         <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio}/>
       </ApGroupVlanRadioContext.Provider>
     )
@@ -95,7 +95,7 @@ describe('ApGroupVlanRadioDrawer', () => {
       <ApGroupVlanRadioContext.Provider value={{
         venueId, apGroupId,
         drawerStatus, setDrawerStatus,
-        vlanPoolOptions }} >
+        vlanPoolingNameMap }} >
         <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio}/>
       </ApGroupVlanRadioContext.Provider>
     )
@@ -109,7 +109,7 @@ describe('ApGroupVlanRadioDrawer', () => {
     const vlanPoolCombox = await screen.findByRole('combobox', { name: /VLAN Pool/ })
     expect(vlanPoolCombox).toBeInTheDocument()
     await userEvent.click(vlanPoolCombox)
-    await userEvent.click(await screen.findByTitle(vlanPoolOptions[0].name))
+    await userEvent.click(await screen.findByTitle(vlanPoolingNameMap[0].value))
 
 
     const okBtn = await screen.findByRole('button', { name: 'OK' })
