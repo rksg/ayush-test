@@ -60,7 +60,7 @@ describe('cloud Message Banner', () => {
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
       ),
-      rest.get(
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (_, res, ctx) => res(ctx.json(venueEdgeFirmwareList))
       )

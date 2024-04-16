@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatsCard should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with link 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+    <div
+      class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+    >
+      (More details)
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with title 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+  >
+    <div
+      class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+    >
+      Title
+    </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with title and link 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+    >
+      Title
+    </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+    <div
+      class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+    >
+      (More details)
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with title and link and 2 values and divider 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+    >
+      Title
+    </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    >
+      <div
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+        style="width: 50%;"
+      >
+        <div
+          class="ant-statistic-title"
+        >
+          Value 1
+        </div>
+        <div
+          class="ant-statistic-content"
+        >
+          <span
+            class="ant-statistic-content-value"
+          >
+            <span
+              class="ant-statistic-content-value-int"
+            >
+              10
+            </span>
+          </span>
+          <span
+            class="ant-statistic-content-suffix"
+          >
+            suffix1
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+        role="separator"
+      />
+      <div
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+        style="width: 50%;"
+      >
+        <div
+          class="ant-statistic-title"
+        >
+          Value 2
+        </div>
+        <div
+          class="ant-statistic-content"
+        >
+          <span
+            class="ant-statistic-content-value"
+          >
+            <span
+              class="ant-statistic-content-value-int"
+            >
+              20
+            </span>
+          </span>
+          <span
+            class="ant-statistic-content-suffix"
+          >
+            suffix2
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+    >
+      (More details)
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with title and link and isOpen 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+    >
+      Title
+    </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    />
+    <div
+      class="styledComponents__Link-sc-1jdne8l-3 lihdha"
+    >
+      (More details)
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StatsCard should render correctly with title and link and values 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+  >
+    <div
+      class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+    >
+      Title
+    </div>
+    <div
+      class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+    >
+      <div
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+        style="width: 100%;"
+      >
+        <div
+          class="ant-statistic-title"
+        >
+          Value 1
+        </div>
+        <div
+          class="ant-statistic-content"
+        >
+          <span
+            class="ant-statistic-content-value"
+          >
+            <span
+              class="ant-statistic-content-value-int"
+            >
+              10
+            </span>
+          </span>
+          <span
+            class="ant-statistic-content-suffix"
+          >
+            suffix1
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+    >
+      (More details)
+    </div>
+  </div>
+</DocumentFragment>
+`;

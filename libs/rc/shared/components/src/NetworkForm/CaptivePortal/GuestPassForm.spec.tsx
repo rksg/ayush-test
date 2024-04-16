@@ -18,12 +18,11 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse,
   cloudpathResponse,
   externalProviders,
   portalList
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = await screen.findByLabelText(/Network Name/)
@@ -51,17 +50,13 @@ describe('CaptiveNetworkForm-GuestPass', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),

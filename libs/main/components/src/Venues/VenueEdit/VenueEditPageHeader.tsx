@@ -20,7 +20,7 @@ function VenueEditPageHeader () {
   const navigate = useNavigate()
   const detailsPath = usePathBasedOnConfigTemplate(
     `/venues/${venueId}/venue-details/overview`,
-    `/venues/${venueId}/venue-details/services`
+    `/venues/${venueId}/venue-details/networks`
   )
   // eslint-disable-next-line max-len
   const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }])

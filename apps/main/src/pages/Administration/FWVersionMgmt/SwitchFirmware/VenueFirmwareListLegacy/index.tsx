@@ -34,10 +34,12 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
+import { hasAccess }      from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
 import {
@@ -388,7 +390,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
-        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
@@ -483,8 +485,20 @@ function checkCurrentVersions (version: string,
   filterVersions.forEach((v: FirmwareVersion) => {
     if (v.id === version || v.id === rodanVersion) {
       v = { ...v, inUse: true }
+    } else if (isDowngradeVersion(v.id, version, rodanVersion)) {
+      v = { ...v, isDowngradeVersion: true }
     }
     inUseVersions.push(v)
   })
   return inUseVersions
+}
+
+function isDowngradeVersion (inUseVersion: string, version: string, rodanVersion: string) {
+
+  if(inUseVersion.includes('090')){
+    return compareSwitchVersion(version, inUseVersion) > 0
+  } else if (inUseVersion.includes('100')){
+    return compareSwitchVersion(rodanVersion, inUseVersion) > 0
+  }
+  return false
 }

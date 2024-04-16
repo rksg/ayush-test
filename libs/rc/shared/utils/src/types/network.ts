@@ -58,6 +58,11 @@ export interface Network extends BaseNetwork{
   isOweMaster?: boolean
   owePairNetworkId?: string,
   incompatible?: number
+  certificateTemplateId?: string
+}
+
+export interface WifiNetwork extends Network{
+  venueApGroups: VenueApGroup[]
 }
 
 export interface NetworkExtended extends Network {
@@ -129,6 +134,10 @@ export interface NetworkSaveData {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization |
       GuestWlanAdvancedCustomization
+    macAddressAuthenticationConfiguration?: {
+      macAddressAuthentication?: boolean
+      macAuthMacFormat?: string
+    }
   };
   wlanSecurity?: WlanSecurityEnum
   dpskWlanSecurity?: WlanSecurityEnum
@@ -144,6 +153,8 @@ export interface NetworkSaveData {
   enableOwe?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
+  useCertificateTemplate?: boolean
+  certificateTemplateId?: string
 }
 
 export enum MaxRateEnum {
@@ -195,6 +206,12 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   network?: NetworkSaveData | null,
   networkVenue?: NetworkVenue,
   venueName?: string
+}
+
+export interface VenueApGroup {
+  venueId: string,
+  isAllApGroups: boolean,
+  apGroupIds: string[]
 }
 
 export type SchedulingModalState = {

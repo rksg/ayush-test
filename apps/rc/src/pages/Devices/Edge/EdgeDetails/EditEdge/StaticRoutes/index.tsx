@@ -1,121 +1,66 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { Col, Row }               from 'antd'
-import { cloneDeep }              from 'lodash'
+import { Col, Form, Row }         from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, Table, TableProps }                   from '@acx-ui/components'
-import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
-import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
-import { useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                              from '@acx-ui/user'
+import { Loader, StepsForm }             from '@acx-ui/components'
+import { EdgeStaticRouteTable }          from '@acx-ui/rc/components'
+import { useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
+import { EdgeStaticRoute }               from '@acx-ui/rc/utils'
+import { useTenantLink }                 from '@acx-ui/react-router-dom'
 
-import StaticRoutesDrawer from './StaticRoutesDrawer'
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
+interface StaticRoutesFormType {
+  routes: EdgeStaticRoute[]
+}
 
-const StaticRoutes = (
-  { serialNumber, modalMode = false, modalCallBack = ()=>{} }:
-  { serialNumber?: string, modalMode?: boolean, modalCallBack?: ()=>void }
-) => {
+const StaticRoutes = () => {
   const { $t } = useIntl()
-  const params = { ...{ serialNumber }, ...useParams() }
+  const params = useParams()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
-  const [drawerVisible, setDrawerVisible] = useState(false)
-  const [routesData, setRoutesData] = useState<EdgeStaticRoute[]>([])
-  const [currentEditData, setCurrentEditData] = useState<EdgeStaticRoute>()
-  const { data, isFetching: isDataFetching }= useGetStaticRoutesQuery({ params: params })
+  const [form] = Form.useForm()
+  const {
+    clusterInfo,
+    staticRouteData,
+    isStaticRouteDataFetching
+  } = useContext(EditEdgeDataContext)
   const [
     updateStaticRoutes,
     { isLoading: isStaticRoutesUpdating }
   ] = useUpdateStaticRoutesMutation()
 
   useEffect(() => {
-    if(data && data.routes) {
-      setRoutesData(data.routes)
+    if(staticRouteData) {
+      form.setFieldsValue({
+        routes: staticRouteData.routes
+      })
     }
-  }, [data])
+  }, [staticRouteData])
 
-  const columns: TableProps<EdgeStaticRoute>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Network Address' }),
-      key: 'destIp',
-      dataIndex: 'destIp'
-    },
-    {
-      title: $t({ defaultMessage: 'Subnet Mask' }),
-      key: 'destSubnet',
-      dataIndex: 'destSubnet'
-    },
-    {
-      title: $t({ defaultMessage: 'Gateway' }),
-      key: 'nextHop',
-      dataIndex: 'nextHop'
-    }
-  ]
-
-  const rowActions: TableProps<EdgeStaticRoute>['rowActions'] = [
-    {
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        openDrawer(selectedRows[0])
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows, clearSelection) => {
-        setRoutesData(routesData.filter(item => {
-          for(let deletedItem of selectedRows) {
-            if(deletedItem.id === item.id) {
-              return false
-            }
-          }
-          return true
-        }))
-        clearSelection()
-      }
-    }
-  ]
-
-  const openDrawer = (data?: EdgeStaticRoute) => {
-    setCurrentEditData(data)
-    setDrawerVisible(true)
-  }
-
-  const actionButtons = [
-    { label: $t({ defaultMessage: 'Add Route' }), onClick: () => openDrawer() }
-  ]
-
-  const addRoute = (data: EdgeStaticRoute) => {
-    setRoutesData([...routesData, data])
-  }
-
-  const editRoute = (data: EdgeStaticRoute) => {
-    const editIndex = routesData.findIndex(item => item.id === data.id)
-    const newRoutesData = cloneDeep(routesData)
-    newRoutesData[editIndex] = data
-    setRoutesData([...newRoutesData])
-  }
-
-  const handleFinish = async () => {
+  const handleFinish = async (value: StaticRoutesFormType) => {
     try {
-      const payload = {
-        routes: routesData
+      const requestPayload = {
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          ...params
+        },
+        payload: value
       }
-      await updateStaticRoutes({ params: params, payload: payload }).unwrap()
-
-      if (modalMode) modalCallBack()
+      await updateStaticRoutes(requestPayload).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   return (
-    <StepsForm<void>
+    <StepsForm<StaticRoutesFormType>
+      form={form}
       onFinish={handleFinish}
-      onCancel={() => modalMode ? modalCallBack() : navigate(linkToEdgeList)}
+      onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply Static Routes' }) }}
     >
       <StepsForm.StepForm>
@@ -124,25 +69,12 @@ const StaticRoutes = (
             <Loader states={[
               {
                 isLoading: false,
-                isFetching: isDataFetching || isStaticRoutesUpdating
+                isFetching: isStaticRouteDataFetching || isStaticRoutesUpdating
               }
             ]}>
-              <StaticRoutesDrawer
-                visible={drawerVisible}
-                setVisible={setDrawerVisible}
-                addRoute={addRoute}
-                editRoute={editRoute}
-                data={currentEditData}
-                allRoutes={routesData}
-              />
-              <Table<EdgeStaticRoute>
-                actions={filterByAccess(actionButtons)}
-                columns={columns}
-                rowActions={filterByAccess(rowActions)}
-                dataSource={routesData}
-                rowSelection={hasAccess() && { type: 'checkbox' }}
-                rowKey='id'
-              />
+              <Form.Item name='routes'>
+                <EdgeStaticRouteTable />
+              </Form.Item>
             </Loader>
           </Col>
         </Row>

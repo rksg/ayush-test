@@ -120,6 +120,7 @@ export interface FirmwareVersion {
   onboardDate?: string;
   releaseDate?: string;
   inUse?: boolean;
+  isDowngradeVersion?: boolean;
 }
 
 export interface ABFVersion {
@@ -278,6 +279,7 @@ export interface SwitchFirmwareStatus {
   status: SwitchFwStatusEnum;
   targetFirmware: string;
   switchStatus: SwitchStatusEnum;
+  lastStatusUpdateTime?: string;
 }
 
 export interface CurrentVersions {
@@ -328,4 +330,26 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
       }
     }
   }
+}
+
+export interface FirmwareVenuePerApModel {
+  id: string;
+  name: string;
+  isFirmwareUpToDate: boolean;
+  currentApFirmwares?: { apModel: string, firmware: string }[];
+  lastScheduleUpdate?: string;
+  nextSchedules?: Schedule[];
+}
+
+export interface ApModelFirmware {
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  releaseDate: string;
+  onboardDate: string;
+  supportedApModels: string[];
+}
+
+export interface VenueApModelFirmwaresUpdatePayload {
+  targetFirmwares: { apModel: string, firmware: string }[]
 }

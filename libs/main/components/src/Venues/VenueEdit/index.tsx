@@ -9,8 +9,9 @@ import { VenueLed,
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
+import { getIntl }      from '@acx-ui/utils'
 
 import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
@@ -91,7 +92,7 @@ export const VenueEditContext = createContext({} as {
 
 export function VenueEdit () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as EditContext)
   const [

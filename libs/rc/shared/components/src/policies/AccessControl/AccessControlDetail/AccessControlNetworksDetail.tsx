@@ -2,9 +2,16 @@ import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                                                      from '@acx-ui/components'
-import { useNetworkListQuery }                                                          from '@acx-ui/rc/services'
-import { AccessControlInfoType, Network, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                             from '@acx-ui/components'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import {
+  AccessControlInfoType,
+  Network,
+  NetworkTypeEnum,
+  networkTypes,
+  useConfigTemplate,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
@@ -18,6 +25,7 @@ const defaultPayload = {
 
 const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { data } = props
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -61,7 +69,7 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
   }, [data])
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {

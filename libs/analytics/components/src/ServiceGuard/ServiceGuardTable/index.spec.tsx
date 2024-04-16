@@ -60,7 +60,7 @@ describe('Service Validation Table', () => {
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
     await userEvent.click(await screen.findByRole('button', { name: /run now/i }))
-    expect(await screen.findByText('Service Validation test running')).toBeVisible()
+    expect(await screen.findByText('Service Validation test is running')).toBeVisible()
   })
 
   it('should not run test when apsPendingCount is more than 0', async () => {
@@ -132,8 +132,11 @@ describe('Service Validation Table', () => {
 
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    expect(mockedNavigate)
-      .toBeCalledWith('/tenant-id/t/analytics/serviceValidation/spec-id/edit')
+    expect(mockedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/analytics/serviceValidation/spec-id/edit',
+      search: ''
+    })
 
     await userEvent.click(radio[1])
     expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()
@@ -149,7 +152,7 @@ describe('Service Validation Table', () => {
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     await userEvent.click(await screen.findByText(/delete test/i))
-    expect(await screen.findByText('Service Validation test deleted')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was deleted')).toBeVisible()
   })
 
   it('should clone test properly',async () => {
@@ -167,7 +170,7 @@ describe('Service Validation Table', () => {
     expect(await screen.findByText('Clone test')).toBeVisible()
     await userEvent.type(await screen.findByRole('textbox'), 'test-name')
     await userEvent.click(await screen.findByText('Save'))
-    expect(await screen.findByText('Service Validation test cloned')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was cloned')).toBeVisible()
   })
 
   describe('lastResultSort', () => {

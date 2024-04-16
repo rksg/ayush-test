@@ -25,8 +25,8 @@ jest.mock('./MacRegistrationListComponent', () => () => {
   return <div data-testid='MacRegistrationListComponentId' />
 })
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
   useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
 }))
 
@@ -45,7 +45,7 @@ describe('OpenNetwork form', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),

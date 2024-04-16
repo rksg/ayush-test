@@ -94,7 +94,7 @@ export const LagsTab = (props: LagsTabProps) => {
   const navigateToLagConfigPage = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/lag`
+      pathname: `${basePath.pathname}/edit/lags`
     })
   }
 

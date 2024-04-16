@@ -1,21 +1,25 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi, edgeSdLanApi } from '@acx-ui/rc/services'
 import {
+  EdgeGeneralFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanSettingP2,
   EdgeSdLanUrls,
+  EdgeUrlsInfo,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
@@ -23,7 +27,8 @@ import { sdLanFormDefaultValues } from '../EdgeSdLanForm'
 
 import EditEdgeSdLan from '.'
 
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+const { mockedSdLanDataListP2, mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const { click } = userEvent
 
@@ -32,6 +37,7 @@ const mockedSubmitDataGen = jest.fn()
 const mockedNavigate = jest.fn()
 const mockedApiReqCallbackData = jest.fn()
 const mockedApiReqSucceed = jest.fn()
+const mockedSdLanViewModelReq = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
@@ -48,6 +54,12 @@ jest.mock('../EdgeSdLanForm', () => ({
       data-testid='rc-EdgeSdLanForm'
     >
       <div data-testid='rc-EdgeSdLanForm-venue-id'>{props.editData?.venueId}</div>
+      <div data-testid='rc-EdgeSdLanForm-guestTunnelEnabled'>
+        {props.editData?.isGuestTunnelEnabled+''}
+      </div>
+      <div data-testid='rc-EdgeSdLanForm-networkIds'>
+        {props.editData?.networkIds.join(',')}
+      </div>
       <button onClick={() => {
         props.onFinish(submitData)
       }}>Submit</button>
@@ -78,7 +90,7 @@ const mockedDmzData = {
   ...sdLanFormDefaultValues,
   name: 'testEditDMZSdLanService',
   venueId: 'mock_venue_id',
-  edgeId: 'mock_edge_id',
+  edgeClusterId: 'mock_edge_id',
   networkIds: ['network_1'],
   activatedNetworks: [{
     id: 'network_1',
@@ -86,7 +98,7 @@ const mockedDmzData = {
   }],
   tunnelProfileId: 't-tunnelProfile-id',
   isGuestTunnelEnabled: true,
-  guestEdgeId: 'mock_edge_id_2',
+  guestEdgeClusterId: 'mock_edge_id_2',
   guestTunnelProfileId: 't-tunnelProfile-id-2',
   guestNetworkIds: ['network_4'],
   activatedGuestNetworks: [{
@@ -96,22 +108,41 @@ const mockedDmzData = {
 }
 
 const targetPath = getServiceRoutePath({
-  type: ServiceType.EDGE_SD_LAN_P2,
+  type: ServiceType.EDGE_SD_LAN,
   oper: ServiceOperation.LIST
 })
 
 describe('Edit SD-LAN service', () => {
   beforeEach(() => {
+    store.dispatch(edgeSdLanApi.util.resetApiState())
+    store.dispatch(edgeApi.util.resetApiState())
+
     mockedEditFn.mockReset()
     mockedSubmitDataGen.mockReset()
     mockedNavigate.mockReset()
+    mockedSdLanViewModelReq.mockReset()
     mockedApiReqCallbackData.mockReset().mockReturnValue([])
     mockedApiReqSucceed.mockReset().mockReturnValue(true)
 
     mockServer.use(
+      rest.get(
+        EdgeSdLanUrls.getEdgeSdLanIsDmz.url,
+        (_, res, ctx) => res(ctx.json({ isGuestTunnelEnabled: true }))
+      ),
+      rest.get(
+        EdgeSdLanUrls.getEdgeSdLan.url,
+        (_, res, ctx) => res(ctx.json(mockedSdLanServiceP2Dmz))
+      ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+        (_, res, ctx) => {
+          mockedSdLanViewModelReq()
+          return res(ctx.json({ data: mockedSdLanDataListP2 }))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))
       )
     )
   })
@@ -121,6 +152,14 @@ describe('Edit SD-LAN service', () => {
       ...mockedDmzData,
       isGuestTunnelEnabled: false
     }
+
+    mockServer.use(
+      rest.get(
+        EdgeSdLanUrls.getEdgeSdLanIsDmz.url,
+        (_, res, ctx) => res(ctx.json({ isGuestTunnelEnabled: false }))
+      )
+    )
+
     mockedSubmitDataGen.mockReturnValue(mockedDCData)
 
     render(<Provider>
@@ -132,12 +171,11 @@ describe('Edit SD-LAN service', () => {
       }
     })
 
-    await waitFor(async () =>
-      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
+    const form = await basicCheck(false)
+    expect(within(form).getByTestId('rc-EdgeSdLanForm-networkIds'))
+      .toHaveTextContent('network_1,network_4')
 
-    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
+    await click(within(form).getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
         id: mockedCdId,
@@ -146,7 +184,7 @@ describe('Edit SD-LAN service', () => {
         networkIds: mockedDCData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
-        guestEdgeId: mockedDCData.guestEdgeId,
+        guestEdgeClusterId: mockedDCData.guestEdgeClusterId,
         guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
         guestNetworkIds: mockedDCData.activatedGuestNetworks.map(network => network.id!)
       })
@@ -166,7 +204,7 @@ describe('Edit SD-LAN service', () => {
       ...sdLanFormDefaultValues,
       name: 'testEditDMZSdLanService',
       venueId: 'mock_venue_id',
-      edgeId: 'mock_edge_id',
+      edgeClusterId: 'mock_edge_id',
       networkIds: ['network_1'],
       activatedNetworks: [{
         id: 'network_1',
@@ -174,7 +212,7 @@ describe('Edit SD-LAN service', () => {
       }],
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
-      guestEdgeId: 'mock_edge_id_2',
+      guestEdgeClusterId: 'mock_edge_id_2',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworkIds: ['network_4'],
       activatedGuestNetworks: [{
@@ -193,12 +231,8 @@ describe('Edit SD-LAN service', () => {
       }
     })
 
-    await waitFor(async () =>
-      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
-
-    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
+    const form = await basicCheck(true)
+    await click(within(form).getByRole('button', { name: 'Submit' }))
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
         id: mockedCdId,
@@ -207,7 +241,7 @@ describe('Edit SD-LAN service', () => {
         networkIds: mockedDmzData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
-        guestEdgeId: mockedDmzData.guestEdgeId,
+        guestEdgeClusterId: mockedDmzData.guestEdgeClusterId,
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId,
         guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(network => network.id!)
       })
@@ -236,19 +270,10 @@ describe('Edit SD-LAN service', () => {
         path: '/:tenantId/services/edgeEdgeSdLanP2/:serviceId/edit'
       }
     })
-
-    await waitFor(async () =>
-      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
-
-    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledTimes(1)
-    })
-    await waitFor(() => {
-      expect(mockedConsoleFn).toBeCalled()
-    })
+    const form = await basicCheck(true)
+    await click(within(form).getByRole('button', { name: 'Submit' }))
+    await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedConsoleFn).toBeCalled())
     expect(mockedNavigate).toBeCalledTimes(0)
   })
   it('should catch relation API error', async () => {
@@ -267,16 +292,41 @@ describe('Edit SD-LAN service', () => {
       }
     })
 
-    await waitFor(async () =>
-      expect(await screen.findByTestId('rc-EdgeSdLanForm-venue-id'))
-        .toHaveTextContent('a307d7077410456f8f1a4fc41d861567'))
-    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
-    await click(screen.getByRole('button', { name: 'Submit' }))
-    await waitFor(() => {
-      expect(mockedEditFn).toBeCalledTimes(1)
+    const form = await basicCheck(true)
+    await click(within(form).getByRole('button', { name: 'Submit' }))
+    await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
+  })
+  it('should skip req API when get profile API error', async () => {
+    const mockedConsoleFn = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(mockedConsoleFn)
+
+    mockServer.use(
+      rest.get(
+        EdgeSdLanUrls.getEdgeSdLan.url,
+        (_, res, ctx) => res(ctx.status(400))
+      )
+    )
+    render(<Provider>
+      <EditEdgeSdLan />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't-id', serviceId: mockedCdId },
+        path: '/:tenantId/services/edgeEdgeSdLanP2/:serviceId/edit'
+      }
     })
-    await waitFor(() => {
-      expect(mockedNavigate).toBeCalledTimes(1)
-    })
+    const form = await screen.findByTestId('rc-EdgeSdLanForm')
+    expect(form).toBeVisible()
+    expect(mockedSdLanViewModelReq).toBeCalledTimes(0)
   })
 })
+
+const basicCheck = async (isDmz: boolean): Promise<HTMLElement> => {
+  const form = await screen.findByTestId('rc-EdgeSdLanForm')
+  expect(form).toBeVisible()
+  expect(within(form).getByTestId('rc-EdgeSdLanForm-venue-id'))
+    .toHaveTextContent('mock_venue_1')
+  expect(within(form).getByTestId('rc-EdgeSdLanForm-guestTunnelEnabled'))
+    .toHaveTextContent(String(isDmz))
+  return form
+}

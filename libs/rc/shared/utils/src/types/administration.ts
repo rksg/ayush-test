@@ -111,6 +111,9 @@ export interface TenantDetails {
   updatedDate: string;
   upgradeGroup: string;
   preferences?: string;
+  tenantMFA?: {
+    mfaStatus: string
+  }
 }
 
 export enum AdministrationDelegationType {
@@ -203,6 +206,7 @@ export interface TenantAuthentications {
   url?: string;
   scopes?: string;
   domains?: string[];
+  samlSignatureEnabled?: boolean;
 }
 
 export interface Entitlement {
@@ -265,10 +269,11 @@ export interface CustomRole {
   id?: string,
   name?: RolesEnum,
   description?: string,
-  roleType?: string,
+  type?: string,
   frameworkRO?: boolean,
   createdDate?: string,
-  updatedDate?: string
+  updatedDate?: string,
+  scopes?: string[]
 }
 
 export interface AdminGroupLastLogins {
@@ -279,4 +284,45 @@ export interface AdminGroupLastLogins {
 export interface groupMembers {
   email?: string,
   lastLoginDate?: string
+}
+
+export interface PrivilegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  role?: CustomRole,
+  roleName?: string,
+  scope?: string,
+  members?: number,
+  allCustomers?: boolean,
+  delegation?: boolean,
+  policies?: PrivilegePolicy[],
+  policyEntityDTOS?: PrivilegePolicyEntity[]
+}
+
+export enum PrivilegePolicyObjectType {
+  OBJ_TYPE_VENUE = 'com.ruckus.cloud.venue.model.venue'
+}
+
+export enum CustomGroupType {
+  SYSTEM = 'System',
+  CUSTOM = 'Custom'
+}
+
+export interface PrivilegePolicy
+{
+  entityInstanceId?: string,
+  objectType?: string
+}
+
+export interface PrivilegePolicyEntity
+{
+  tenantId?: string,
+  objectList?: VenueObjectList
+}
+
+export interface VenueObjectList
+{
+  'com.ruckus.cloud.venue.model.venue'?: string[]
 }

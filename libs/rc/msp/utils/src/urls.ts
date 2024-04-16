@@ -8,6 +8,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
     newApi: true
   },
+  getMspECList: {
+    method: 'post',
+    url: '/ecs/query?delegations=true',
+    oldUrl: '/mspecs/query',
+    newApi: true
+  },
   getIntegratorCustomersList: {
     method: 'post',
     url: '/techpartners/mspecs/query',
@@ -330,6 +336,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   addMspRecCustomer: {
     method: 'post',
     url: '/mspCustomers/mspRecs',
+    newApi: true
+  },
+  patchCustomer: {
+    method: 'PATCH',
+    url: '/tenants/:tenantId',
     newApi: true
   }
 }

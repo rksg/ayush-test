@@ -20,6 +20,7 @@ import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
+import { formatter } from '@acx-ui/formatter'
 import {
   CheckMark,
   DownloadOutlined
@@ -58,7 +59,7 @@ import { RequestPayload }                                                 from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
@@ -158,6 +159,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
@@ -213,10 +215,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
-        if (apCompatibilities.length > 0) {
+        if (apCompatibilities?.length > 0) {
           apIds.forEach((id:string) => {
             const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            if (apIncompatible) {
+              apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            }
           })
           if (hasGroupBy) {
             tableQuery.data.data?.forEach(item => {
@@ -409,7 +413,19 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         })
         return acc
       }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
-    }, {
+    },
+    ...(apUptimeFlag ? [
+      {
+        key: 'uptime',
+        title: $t({ defaultMessage: 'Up Time' }),
+        dataIndex: 'apStatusData.APSystem.uptime',
+        sorter: true,
+        render: (data: React.ReactNode, row: APExtended) => {
+          const uptime = row.apStatusData?.APSystem?.uptime
+          return (uptime ? formatter('longDurationFormat')(uptime * 1000) : null)
+        }
+      }] : []),
+    {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
@@ -531,7 +547,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (_: React.ReactNode, row: APExtended) => {
-        return (<ApFeatureCompatibility
+        return (<ApCompatibilityFeature
           count={row?.incompatible}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
@@ -768,6 +784,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
+        isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />
     </Loader>

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { ClockCircleOutlined } from '@ant-design/icons'
-import _                       from 'lodash'
+import { isEmpty }             from 'lodash'
 
 import { Button, Tooltip, cssStr } from '@acx-ui/components'
 import {
@@ -18,7 +18,8 @@ import {
   VLAN_PREFIX,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  KeyValue
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }    from '@acx-ui/utils'
@@ -35,27 +36,27 @@ const getRadioDescription = (radioTypes: RadioTypeEnum[]) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getVlanDescription = (apGroup: any, network: NetworkSaveData) =>{
+const getVlanDescription = (apGroup: any, network: NetworkSaveData, vlanPoolingNameMap?: KeyValue<string, string>[]) =>{
   let vlanPrefix = VLAN_PREFIX.VLAN
-  let fieldToDisplay = 'vlanId'
+  let displayText = apGroup.vlanId
   let fieldToCompare = 'vlanId'
   let defaultValue = network.wlan?.vlanId || ''
+  const networkVlanPoolId = network?.wlan?.advancedCustomization?.vlanPool?.id
 
   if (apGroup.vlanPoolId) {
     vlanPrefix = VLAN_PREFIX.POOL
-    fieldToDisplay = 'vlanPoolName'
     fieldToCompare = 'vlanPoolId'
+    displayText = (vlanPoolingNameMap?.find(pool => pool.key === apGroup.vlanPoolId)?.value) || ''
   }
-
-  if (network?.wlan?.advancedCustomization?.vlanPool) {
-    defaultValue = network?.wlan?.advancedCustomization.vlanPool.id || ''
+  if (networkVlanPoolId) {
+    defaultValue = (vlanPoolingNameMap?.find(pool => pool.key === networkVlanPoolId)?.value) || ''
   }
 
   const status = apGroup[fieldToCompare] === undefined || apGroup[fieldToCompare] === defaultValue ? 'Default' : 'Custom'
-  return `${vlanPrefix}${apGroup[fieldToDisplay] ? apGroup[fieldToDisplay] : defaultValue} (${status})`
+  return `${vlanPrefix}${displayText ? displayText : defaultValue} (${status})`
 }
 
-const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveData) => {
+const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveData, vlanPoolingNameMap?: KeyValue<string, string>[]) => {
   let name: JSX.Element[] = []
   let radio: JSX.Element[] = []
   let vlan: JSX.Element[] = []
@@ -68,22 +69,23 @@ const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveD
         radio.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
           apGroup.apGroupName}: </td><td>{apGroup.radioTypes && getRadioDescription(apGroup.radioTypes)}</td></tr>)
         vlan.push(<tr><td style={{ minWidth: '80px' }}>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
-          apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network)}</td></tr>)
+          apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network, vlanPoolingNameMap)}</td></tr>)
       })
     }
   }
   if(type === 'radio'){
-    return _.isEmpty(radio) ? '' : <table>{radio.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(radio) ? '' : <table>{radio.map((item, index) => ({ ...item, key: index }))}</table>
   }else if(type === 'vlan'){
-    return _.isEmpty(vlan) ? '' : <table>{vlan.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(vlan) ? '' : <table>{vlan.map((item, index) => ({ ...item, key: index }))}</table>
   }else{
-    return _.isEmpty(name) ? '' : <table>{name.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(name) ? '' : <table>{name.map((item, index) => ({ ...item, key: index }))}</table>
   }
 }
 
 export const transformVLAN = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
+  vlanPoolingNameMap?: KeyValue<string, string>[],
   callback?: React.MouseEventHandler<HTMLElement>,
   readOnly?: boolean
 ): JSX.Element => {
@@ -101,8 +103,9 @@ export const transformVLAN = (
       const firstApGroup = currentVenue.apGroups[0]
       const isVlanPool = firstApGroup?.vlanPoolId !== undefined
       if (isVlanPool) {
+        const vlanPoolName = (vlanPoolingNameMap?.find(pool => pool.key === firstApGroup.vlanPoolId)?.value) || ''
         displayText = $t(vlanContents.vlanPool, {
-          poolName: firstApGroup.vlanPoolName,
+          poolName: vlanPoolName,
           isCustom: true
         })
       } else if (firstApGroup?.vlanId !== undefined) {
@@ -118,7 +121,7 @@ export const transformVLAN = (
       tooltipTitle = displayText
     } else if (currentVenue.apGroups.length > 1) {
       displayText = $t({ defaultMessage: 'Per AP Group' })
-      tooltipTitle = (network && apGroupTooltip('vlan', currentVenue, network)) || displayText
+      tooltipTitle = (network && apGroupTooltip('vlan', currentVenue, network, vlanPoolingNameMap)) || displayText
     }
   } else {
     const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
@@ -161,7 +164,7 @@ export const transformAps = (
         <Tooltip.Info isFilled
           title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this venue.' })}
           placement='right'
-          iconStyle={{ height: '20px', width: '20px', marginBottom: '-3px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
+          iconStyle={{ height: '16px', width: '16px', marginBottom: '-2px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
         /> :[]
       }
     </>
@@ -269,7 +272,8 @@ export const transformScheduling = (
 export const transformApGroupVlan = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  apGroupId?: string
+  apGroupId?: string,
+  vlanPoolingNameMap?: KeyValue<string, string>[]
 ): JSX.Element => {
   if (!currentVenue) return <></>
 
@@ -284,11 +288,11 @@ export const transformApGroupVlan = (
     const findApGroup = apGroups.find((apGroup) => apGroup.apGroupId === apGroupId)
     if (findApGroup) {
       const vlanPoolId = findApGroup?.vlanPoolId
-      const isVlanPool = vlanPoolId !== undefined
+      const isVlanPool = (vlanPoolId !== undefined && vlanPoolId !== null)
       if (isVlanPool) {
         const defaultValue = wlan?.advancedCustomization?.vlanPool?.id || ''
         displayText = $t(vlanContents.vlanPool, {
-          poolName: findApGroup.vlanPoolName,
+          poolName: (vlanPoolingNameMap?.find(pool => pool.key === vlanPoolId)?.value) || '',
           isCustom: vlanPoolId && vlanPoolId !== defaultValue
         })
 

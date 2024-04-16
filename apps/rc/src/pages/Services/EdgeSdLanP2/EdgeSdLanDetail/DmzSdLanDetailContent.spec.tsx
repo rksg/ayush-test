@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Edge SD-LAN Detail - DC', () => {
+describe('Edge SD-LAN Detail - DMZ', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -67,9 +67,9 @@ describe('Edge SD-LAN Detail - DC', () => {
     const seTab = await screen.findByRole('tab', { name: /SmartEdges/i })
     await userEvent.click(seTab)
     expect(await screen.findByRole('row',
-      { name: 'vSE-b490 12 37' })).toBeVisible()
+      { name: 'SE_Cluster 0 12 37' })).toBeVisible()
     expect(await screen.findByRole('row',
-      { name: /Smart Edge 3/i })).toBeVisible()
+      { name: /SE_Cluster 3/i })).toBeVisible()
   })
   it('should handle with empty venueId', async () => {
     const dataWoVenueId = _.cloneDeep(mockedSdLanData)
@@ -87,5 +87,29 @@ describe('Edge SD-LAN Detail - DC', () => {
     await screen.findByRole('tab', { name: 'Networks(2)' })
     await screen.findByRole('tab', { name: 'SmartEdges(2)' })
     expect(screen.getAllByText('--').length).toBe(1)
+  })
+
+  it('should correctly display stats data', async () => {
+
+    render(
+      <Provider>
+        <DmzSdLanDetailContent data={mockedSdLanData}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeSdLanP2/:serviceId/detail' }
+      }
+    )
+
+    expect(await screen.findByText('Instances')).toBeVisible()
+    await screen.findByRole('tab', { name: 'Networks(2)' })
+    const edgesTable = await screen.findByRole('tab', { name: 'SmartEdges(2)' })
+    await userEvent.click(edgesTable)
+    const dcCluster = await screen.findByRole('row', { name: /SE_Cluster 0/i })
+    expect(dcCluster.textContent).toBe('SE_Cluster 01237')
+    const dmzCluster = await screen.findByRole('row', { name: /SE_Cluster 3/i })
+    expect(dmzCluster.textContent).toBe('SE_Cluster 31020')
+    const vlanCell = await within(dmzCluster).findByText('20')
+    await userEvent.hover(vlanCell)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('11-15303251-53')
   })
 })

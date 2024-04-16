@@ -260,7 +260,7 @@ export function SelectVlanModal (props: {
     >
       <Tabs stickyTop={false} defaultActiveKey='untaggedVlan'>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Untagged VLANs' })}
+          tab={$t({ defaultMessage: 'Untagged VLAN' })}
           key='untaggedVlan'
         >
           <Typography.Text style={{

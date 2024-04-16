@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import {
@@ -20,8 +18,6 @@ import {
 import { useParams }            from '@acx-ui/react-router-dom'
 import { WrapIfAccessible }     from '@acx-ui/user'
 import type { AnalyticsFilter } from '@acx-ui/utils'
-
-import { AlarmsDrawer } from '../AlarmsDrawer'
 
 import * as UI from './styledComponents'
 
@@ -81,7 +77,6 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
   const { $t } = useIntl()
   const { apId } = useParams()
   const { currentAP, filters } = props
-  const [alarmDrawerVisible, setAlarmDrawerVisible] = useState(false)
 
   // Alarms list query
   const alarmQuery = useTableQuery({
@@ -108,6 +103,12 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
   const { data: healthData }= healthApi.useGetKpiThresholdsQuery({ ...filters,
     kpis: ['timeToConnect','clientThroughput'] })
 
+  const onAlarmClick = () => {
+    const event = new CustomEvent('showAlarmDrawer',
+      { detail: { data: { name: 'all', serialNumber: apId } } })
+    window.dispatchEvent(event)
+  }
+
   return (
     <Card title={currentAP?.model} type='solid-bg'>
       <GridRow style={{ flexGrow: '1' }}>
@@ -116,12 +117,19 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
           <UI.Wrapper>
             <Loader states={[alarmQuery]}>
               { alarmData && alarmData.length > 0
-                ? <div onClick={() => setAlarmDrawerVisible(true)}>
+                ? <div onClick={onAlarmClick}>
                   <UI.DonutChartWidget
                     title={$t({ defaultMessage: 'Alarms' })}
                     style={{ width: 100, height: 100 }}
                     legend={'name-value'}
-                    data={alarmData}/>
+                    data={alarmData}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    onClick={(e: any)=>{
+                      e.event.stop()
+                      const event = new CustomEvent('showAlarmDrawer',
+                        { detail: { data: { ...e.data, serialNumber: apId } } })
+                      window.dispatchEvent(event)
+                    }}/>
                 </div>
                 : <NoActiveContent text={$t({ defaultMessage: 'No active alarms' })} />
               }
@@ -183,11 +191,6 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
           </UI.Wrapper>
         </GridCol>
       </GridRow>
-      <AlarmsDrawer
-        visible={alarmDrawerVisible}
-        setVisible={setAlarmDrawerVisible}
-        serialNumber={apId}
-      />
     </Card>
   )
 }

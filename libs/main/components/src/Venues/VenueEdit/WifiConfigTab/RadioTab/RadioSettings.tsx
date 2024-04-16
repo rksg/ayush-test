@@ -588,12 +588,18 @@ export function RadioSettings () {
   }
 
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    update5gData(data)
+    const validationResult = await validationFields() as any
+    if (validationResult?.errorFields) return
 
+    update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
@@ -663,10 +669,13 @@ export function RadioSettings () {
       tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
+
+    const errors = formRef?.current?.getFieldsError().find((field) => field.errors.length > 0)
+
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings,
+      updateWifiRadio: errors ? () => {} : handleUpdateRadioSettings,
       discardWifiRadioChanges: handleDiscard
     })
   }

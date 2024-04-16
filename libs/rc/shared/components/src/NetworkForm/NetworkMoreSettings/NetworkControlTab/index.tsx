@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { Checkbox, Form, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
@@ -16,18 +17,19 @@ import {
   WifiCallingSetting,
   WifiCallingSettingContextType,
   getServiceDetailsLink,
-  TunnelTypeEnum } from '@acx-ui/rc/utils'
+  TunnelTypeEnum,
+  ConfigTemplateType } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext                                        from '../../NetworkFormContext'
-import { hasAccountingRadius, useNetworkVxLanTunnelProfileInfo } from '../../utils'
-import { AccessControlForm }                                     from '../AccessControlForm'
-import ClientIsolationForm                                       from '../ClientIsolation/ClientIsolationForm'
-import { DhcpOption82Form }                                      from '../DhcpOption82Form'
-import { DnsProxyModal }                                         from '../DnsProxyModal'
-import * as UI                                                   from '../styledComponents'
-import { WifiCallingSettingModal }                               from '../WifiCallingSettingModal'
-import WifiCallingSettingTable                                   from '../WifiCallingSettingTable'
+import NetworkFormContext                                                                                   from '../../NetworkFormContext'
+import { hasAccountingRadius, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import { AccessControlForm }                                                                                from '../AccessControlForm'
+import ClientIsolationForm                                                                                  from '../ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }                                                                                 from '../DhcpOption82Form'
+import { DnsProxyModal }                                                                                    from '../DnsProxyModal'
+import * as UI                                                                                              from '../styledComponents'
+import { WifiCallingSettingModal }                                                                          from '../WifiCallingSettingModal'
+import WifiCallingSettingTable                                                                              from '../WifiCallingSettingTable'
 
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
@@ -46,6 +48,8 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
   const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
 
   const showSingleSessionIdAccounting = !isRadiusOptionsSupport
     && hasAccountingRadius(data, wlanData)
@@ -130,7 +134,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
       filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
     }
   }, {
-    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled || !isEdgePinReady,
     selectFromResult: ({ data }) => {
       return {
         nsgId: _.get(data?.data.filter(item => item.networkIds.length > 0), ['0', 'id'])
@@ -172,7 +176,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch disabled={!isWifiCallingSupported} />}
           />
           <WifiCallingSettingContext.Provider
             value={{ wifiCallingSettingList, setWifiCallingSettingList }}>
@@ -193,6 +197,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
       <div style={{ maxWidth: '600px' }}>
         <ClientIsolationForm labelWidth={labelWidth} />
       </div>
+
       <>
         <UI.FieldLabel width={labelWidth}>
           {$t({ defaultMessage: 'Anti-spoofing' })}
@@ -329,13 +334,13 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
           <UI.Description>
             {
               $t({
-                defaultMessage: `All networks under the same Network Segmentation
+                defaultMessage: `All networks under the same Personal Identity Network
                 share the same tunnel profile. Go `
               })
             }
             &nbsp;
             <Space size={1}></Space>
-            { nsgId &&
+            { nsgId && isEdgePinReady &&
             <TenantLink to={getServiceDetailsLink({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.DETAIL,

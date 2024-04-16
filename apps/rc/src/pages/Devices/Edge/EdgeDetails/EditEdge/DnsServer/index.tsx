@@ -1,44 +1,42 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
 import {
-  StepsFormLegacy,
-  StepsFormLegacyInstance,
-  Loader
+  Loader,
+  StepsForm
 } from '@acx-ui/components'
-import { useGetDnsServersQuery, useUpdateDnsServersMutation } from '@acx-ui/rc/services'
-import { EdgeDnsServers, serverIpAddressRegExp }              from '@acx-ui/rc/utils'
+import { useUpdateDnsServersMutation }           from '@acx-ui/rc/services'
+import { EdgeDnsServers, serverIpAddressRegExp } from '@acx-ui/rc/utils'
 import {
   useNavigate, useParams, useTenantLink
 } from '@acx-ui/react-router-dom'
 
-
-
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
 const DnsServer = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge')
-  const formRef = useRef<StepsFormLegacyInstance<EdgeDnsServers>>()
+  const [form] = Form.useForm()
   const params = useParams()
-  const { data: dnsServersData, isLoading: isLoadingDnsServersData } = useGetDnsServersQuery({
-    params: {
-      serialNumber: params.serialNumber
-    }
-  })
+  const {
+    clusterInfo,
+    dnsServersData,
+    isDnsServersDataFetching
+  } = useContext(EditEdgeDataContext)
   const [updateDnsServers, { isLoading: isDnsServersUpdating }] = useUpdateDnsServersMutation()
 
   useEffect(() => {
     if(dnsServersData) {
-      formRef.current?.setFieldsValue({ ...dnsServersData })
+      form.setFieldsValue({ ...dnsServersData })
     }
   }, [dnsServersData])
 
   const havePrimary = (value: string) => {
-    if(value && !!!formRef.current?.getFieldValue('primary')) {
+    if(value && !form.getFieldValue('primary')) {
       return Promise.reject($t({ defaultMessage: 'Must have primary DNS' }))
     }
     return Promise.resolve()
@@ -46,25 +44,33 @@ const DnsServer = () => {
 
   const handleApplyDns = async (data: EdgeDnsServers) => {
     try {
-      await updateDnsServers({ params: params, payload: data }).unwrap()
+      const requestPayload = {
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          ...params
+        },
+        payload: data
+      }
+      await updateDnsServers(requestPayload).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   return (
-    <StepsFormLegacy
-      formRef={formRef}
+    <StepsForm
+      form={form}
       onFinish={handleApplyDns}
       onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply DNS Server' }) }}
     >
-      <StepsFormLegacy.StepForm>
+      <StepsForm.StepForm>
         <Row gutter={20}>
           <Col span={5}>
             <Loader states={[{
-              isLoading: isLoadingDnsServersData,
-              isFetching: isDnsServersUpdating
+              isLoading: false,
+              isFetching: isDnsServersUpdating || isDnsServersDataFetching
             }]}>
               <Form.Item
                 name='primary'
@@ -86,8 +92,8 @@ const DnsServer = () => {
             </Loader>
           </Col>
         </Row>
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+      </StepsForm.StepForm>
+    </StepsForm>
 
   )
 }

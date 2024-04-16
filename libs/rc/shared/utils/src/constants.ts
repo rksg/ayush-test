@@ -178,7 +178,8 @@ export enum AclRuleProtocolEnum {
 
 export enum AclTypeEnum {
   STANDARD = 'standard',
-  EXTENDED = 'extended'
+  EXTENDED = 'extended',
+  IPv6 = 'IPv6'
 }
 
 export enum AclRuleActionEnum {
@@ -818,6 +819,7 @@ export enum UnitStatus {
   OTHER = 'OTHER', // Somehow SZ may send 'Other' status
 }
 
+// Deprecated: no port prefix for all models
 export enum PortLabelType {
   GENERAL = '', // 1, 2. For high end models, fiber port doesn't have port label too
   COPPER = 'C', // C1, C2
@@ -830,75 +832,75 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     'C12P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08PT': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C10ZP': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24F': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
-        { portLabel: PortLabelType.FIBER },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48PF': {
       powerSlots: 1, fanSlots: 3, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48ZP': {
       powerSlots: 2, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL }
       ]
     }
   },

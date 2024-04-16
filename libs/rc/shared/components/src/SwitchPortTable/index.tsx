@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
@@ -33,6 +34,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 }) {
   const { $t } = useIntl()
   const { serialNumber, venueId, tenantId, switchId } = useParams()
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -71,7 +73,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
     'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
     'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-    'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+    'lagId', 'syncedSwitchConfig', 'usedInFormingStack',
+    'ingressAclName', 'egressAclName', 'vsixIngressAclName', 'vsixEgressAclName',
     'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
     'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
     'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
@@ -252,18 +255,30 @@ export function SwitchPortTable ({ isVenueLevel }: {
     show: false
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true,
     show: false
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
   },
-  {
+  ...(isSwitchV6AclEnabled ? [{
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
+    dataIndex: 'vsixEgressAclName',
+    sorter: true,
+    show: false
+  }] : []), {
     key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',

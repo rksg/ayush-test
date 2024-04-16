@@ -28,8 +28,8 @@ import {
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
-jest.mock('../useEdgeActions', () => ({
-  ...jest.requireActual('../useEdgeActions'),
+jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
   useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
 }))
 jest.mock('./utils', () => ({
@@ -164,7 +164,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getNetworkDeepList.url, (_, res, ctx) =>
         res(ctx.json({ response: [networkResponse] }))
       ),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (_, res, ctx) =>
+      rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venuesResponse))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
@@ -205,9 +205,7 @@ describe('NetworkForm', () => {
         res(ctx.json([]))
       ),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
-        (_, res, ctx) => res(ctx.json(externalProviders))),
-      rest.get('https://maps.googleapis.com/maps/api/timezone/json',
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(externalProviders)))
 
     )
   })

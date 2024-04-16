@@ -13,10 +13,13 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
-import { Loader, Fieldset, Transfer, AnchorContext }               from '@acx-ui/components'
-import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
+import { Loader, Fieldset, Transfer, AnchorContext }                                      from '@acx-ui/components'
+import {
+  useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery,
+  useGetVenueTemplateSwitchAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery
+} from '@acx-ui/rc/services'
+import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                          from '@acx-ui/react-router-dom'
 
 import { AAADraggableItem } from './AAADraggableItem'
 import * as UI              from './styledComponents'
@@ -113,10 +116,11 @@ export const AAASettings = (props: {
   cliApplied?: boolean
 }) => {
   const { setAAASettingId, cliApplied } = props
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { setReadyToScroll } = useContext(AnchorContext)
+  const { isTemplate } = useConfigTemplate()
 
   const serverLevelItem = [{
     value: 'PORT_CONFIG',
@@ -143,7 +147,7 @@ export const AAASettings = (props: {
   }
 
   const radiusTableQuery = useTableQuery({
-    useQuery: useVenueSwitchAAAServerListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
     defaultPayload: { ...defaultPayload, serverType: AAAServerTypeEnum.RADIUS },
     pagination: {
       pageSize: 5
@@ -151,14 +155,17 @@ export const AAASettings = (props: {
   })
 
   const tacasTableQuery = useTableQuery({
-    useQuery: useVenueSwitchAAAServerListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
     defaultPayload: { ...defaultPayload, serverType: AAAServerTypeEnum.TACACS },
     pagination: {
       pageSize: 5
     }
   })
 
-  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
+  // const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
+  const { data: aaaSetting, isFetching, isLoading } = useConfigTemplateQueryFnSwitcher<AAASetting>(
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery
+  )
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)
   const [ availableCommandAuthOrder, setAvailableCommandAuthOrder] = useState(defaultAvailableCommandAuthOrder)

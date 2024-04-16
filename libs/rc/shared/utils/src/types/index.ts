@@ -38,6 +38,7 @@ export * from './property'
 export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
+export * from './topology'
 
 export interface CommonResult {
   requestId: string
@@ -226,27 +227,6 @@ export interface GatewayDetails {
   gatewayDetailsHardware: GatewayDetailsHardware
   gatewayDetailsOs: GatewayDetailsOs
   gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
-}
-
-export interface DNSRecord {
-    id: string,
-    name: string,
-    host: string,
-    ttl: number,
-    dataType: string,
-    data: string
-}
-
-export enum DNSDataType {
-  A = 'A',
-  AAAA = 'AAAA',
-  CNAME = 'CNAME',
-  LOC = 'LOC',
-  MX = 'MX',
-  NS = 'NS',
-  PTR = 'PTR',
-  SRV = 'SRV',
-  TXT = 'TXT'
 }
 
 export type Alarm = AlarmBase & AlarmMeta

@@ -7,15 +7,16 @@ import toArray          from 'rc-util/lib/Children/toArray'
 
 import { noDataDisplay } from '@acx-ui/utils'
 
-import * as UI                                                  from './styledComponents'
-import { InternalStepFormProps, StepFormProps, StepsFormProps } from './types'
-import { useStepsForm }                                         from './useStepsForm'
+import * as UI                                                                       from './styledComponents'
+import { InternalStepFormProps, StepFormProps, StepsFormGotoStepFn, StepsFormProps } from './types'
+import { useStepsForm }                                                              from './useStepsForm'
 
 interface IStepsFormContext <T> {
   form: FormInstance<T>
   current: number
   editMode: boolean
   initialValues?: Partial<T>
+  gotoStep: StepsFormGotoStepFn
 }
 
 // https://stackoverflow.com/a/61020816/499975
@@ -42,6 +43,7 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
     editMode: editMode,
     defaultFormValues: props.initialValues,
     buttonLabel: props.buttonLabel,
+    customSubmit: props.customSubmit,
     onFinish: props.onFinish,
     onCancel: props.onCancel,
     onFinishFailed: props.onFinishFailed
@@ -51,7 +53,8 @@ export function StepsForm <T> ({ editMode, ...props }: StepsFormProps<T>) {
     form,
     current: config.current,
     editMode: Boolean(editMode),
-    initialValues: props.initialValues
+    initialValues: props.initialValues,
+    gotoStep: config.gotoStep
   }
 
   return <StepsFormContext.Provider
@@ -76,6 +79,9 @@ StepsForm.Title = UI.Title
 StepsForm.SectionTitle = UI.SectionTitle
 StepsForm.FieldLabel = UI.FieldLabel
 StepsForm.MultiSelect = UI.MultiSelect
+StepsForm.DescriptionWrapper = UI.DescriptionWrapper
+StepsForm.DescriptionTextWrapper = UI.DescriptionTextWrapper
+StepsForm.ActionsContainer = UI.ActionsContainer
 
 export type FieldSummaryProps <T = unknown> = {
   value?: T

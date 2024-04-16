@@ -7,11 +7,13 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
+import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG, getServiceListRoutePath, getServiceRoutePath,
-  QosPriorityEnum, ServiceOperation, ServiceType
+  EPDG, generateServicePageHeaderTitle,
+  QosPriorityEnum, ServiceOperation, ServiceType,
+  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -24,14 +26,15 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 export const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING,
-    oper: ServiceOperation.LIST
-  })
+  const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const { pathname: tablePath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
 
-  const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
+  const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation
+  )
 
   const initServiceName = ''
   const initDescription = ''
@@ -57,6 +60,8 @@ export const WifiCallingConfigureForm = () => {
     epdgs
   })
 
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
+
   const handleUpdateWifiCallingService = async () => {
     try {
       await updateWifiCallingService({
@@ -72,12 +77,8 @@ export const WifiCallingConfigureForm = () => {
   return (
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          { text: $t({ defaultMessage: 'Wi-Fi Calling' }), link: tablePath }
-        ]}
+        title={generateServicePageHeaderTitle(true, isTemplate, ServiceType.WIFI_CALLING)}
+        breadcrumb={breadcrumb}
       />
       <StepsForm<CreateNetworkFormFields>
         form={form}

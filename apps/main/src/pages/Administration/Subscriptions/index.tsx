@@ -1,5 +1,10 @@
-import { Space }              from 'antd'
-import { IntlShape, useIntl } from 'react-intl'
+import { useState } from 'react'
+
+
+import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
+import { Alert, Button, Space } from 'antd'
+import moment                   from 'moment'
+import { IntlShape, useIntl }   from 'react-intl'
 
 import {
   Loader,
@@ -66,6 +71,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'future',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
@@ -83,6 +92,8 @@ const SubscriptionTable = () => {
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
+
 
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
@@ -192,12 +203,35 @@ const SubscriptionTable = () => {
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'active'
-          ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+        if (row.status === 'active') {
+          return $t({ defaultMessage: 'Active' })
+        } else if (row.status === 'future') {
+          return $t({ defaultMessage: 'Future' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
       }
     }
   ]
+
+  const refreshFunc = async () => {
+    setBannerRefreshLoading(true)
+    try {
+      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
+      if (isNewApi === false) {
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Successfully refreshed.'
+          })
+        })
+      }
+      setBannerRefreshLoading(false)
+    } catch (error) {
+      setBannerRefreshLoading(false)
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const actions: TableProps<Entitlement>['actions'] = [
     {
@@ -209,42 +243,47 @@ const SubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
-      onClick: async () => {
-        try {
-          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-          if (isNewApi === false) {
-            showToast({
-              type: 'success',
-              content: $t({
-                defaultMessage: 'Successfully refreshed.'
-              })
-            })
-          }
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
-        }
-      }
+      onClick: refreshFunc
     }
   ]
 
-  const GetStatus = (expirationDate: string) => {
+  const GetStatus = (effectiveDate: string, expirationDate: string) => {
     const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
-    return remainingDays < 0 ? 'expired' : 'active'
+    const isFuture = moment(new Date()).isBefore(effectiveDate)
+    return remainingDays < 0 ? 'expired' : isFuture ? 'future' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      status: GetStatus(response?.expirationDate)
+      status: GetStatus(response?.effectiveDate, response?.expirationDate)
     }
   }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
 
+  const checkSubscriptionStatus = function () {
+    return (queryResults?.error as FetchBaseQueryError)?.status === 417
+  }
+
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={checkSubscriptionStatus()
+      ? [] : [queryResults]}>
+      {checkSubscriptionStatus()
+      && <Alert
+        type='info'
+        message={<><span>{$t({ defaultMessage: `At least one active subscription must be available!
+        Please activate subscription and click on` })} </span>
+        <Button
+          type='link'
+          onClick={refreshFunc}
+          loading={bannerRefreshLoading}
+          data-testid='bannerRefreshLink'>
+          {$t({ defaultMessage: 'Refresh' })}</Button></>}
+        showIcon={true}/>
+      }
       <Table
         columns={columns}
         actions={filterByAccess(actions)}
-        dataSource={subscriptionData}
+        dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         rowKey='id'
       />
     </Loader>
