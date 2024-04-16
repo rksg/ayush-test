@@ -140,15 +140,6 @@ export function ApFloorplan (props: {
     }
   }, [floorplan?.imageId])
 
-  useEffect(() => {
-    if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
-      response.then((_imageUrl) => {
-        setImageUrl(_imageUrl)
-      })
-    }
-  }, [floorplan?.imageId])
-
   function onImageLoad () {
     activeDevice.position = apPosition
     const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth || 0
