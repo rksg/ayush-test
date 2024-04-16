@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -10,13 +9,11 @@ import {
   WifiOperatorUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -30,36 +27,11 @@ import {
   mockHotspot20OperatorList,
   mockHotpost20IdentityProviderList
 } from '../__tests__/fixtures'
-import { MLOContext, NetworkForm } from '../NetworkForm'
+import { MLOContext } from '../NetworkForm'
 
 import { Hotspot20SettingsForm } from './Hotspot20SettingsForm'
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText(/Network Name/)
-  fireEvent.change(insertInput, { target: { value: networkName } })
-  fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating, { timeout: 7000 })
-  await userEvent.click(screen.getByRole('radio', { name: /Hotspot 2.0 Access/ }))
-  await userEvent.click(screen.getByText('Next'))
-  await screen.findByRole('heading', { level: 3, name: 'Hotspot 2.0 Settings' })
-  await userEvent.click((await screen.findAllByRole('combobox'))[1])
-  await userEvent.click((await screen.findAllByTitle('test1'))[0])
-}
-
-async function fillInAfterSettings (checkSummary: Function) {
-  await userEvent.click(screen.getByText('Next'))
-  await screen.findByRole('heading', { level: 3, name: 'Venues' })
-  await userEvent.click(screen.getByText('Next'))
-  await screen.findByRole('heading', { level: 3, name: 'Summary' })
-
-  checkSummary()
-  const finish = screen.getByText('Finish')
-  await userEvent.click(finish)
-  await waitForElementToBeRemoved(finish)
-}
 
 describe('NetworkForm', () => {
   beforeEach(() => {
