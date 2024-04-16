@@ -193,8 +193,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
         style="display: block;"
       >
         <div
-          class="styledComponents__FieldLabel-sc-1jfjsg1-0 jRXaya"
-          width="230px"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
+          width="250px"
         >
           VLAN Pooling
           <div
@@ -347,8 +347,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-1jfjsg1-0 jRXaya"
-          width="230px"
+          class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
+          width="250px"
         >
           Proxy ARP
           <div
