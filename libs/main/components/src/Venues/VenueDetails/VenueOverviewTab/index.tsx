@@ -44,7 +44,6 @@ export function VenueOverviewTab () {
   }
   const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
 
-  console.log(venueRadio)
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -58,7 +57,16 @@ export function VenueOverviewTab () {
     }
   ]
   return (<>
-    <LowPowerBannerAndModal from={'venue'} />
+    {
+      (
+        (venueRadio?.radioParams6G?.enableAfc === true) &&
+        (
+          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+        )
+      ) &&
+      <LowPowerBannerAndModal from={'venue'} />
+    }
     <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' />
   </>)
