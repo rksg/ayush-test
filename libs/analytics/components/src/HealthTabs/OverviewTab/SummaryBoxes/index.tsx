@@ -1,3 +1,4 @@
+import { isNil }         from 'lodash'
 import { defineMessage } from 'react-intl'
 
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
@@ -67,13 +68,20 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   )
   const powerUtilization = [{
     title: defineMessage({ defaultMessage: 'Wireless' }),
-    value: 'X%'
+    value: !isNil(summaryData?.poeUnderPoweredApCount) && summaryData?.apCount ?
+      formatter('percentFormatRound')(
+        summaryData?.poeUnderPoweredApCount! / summaryData?.apCount!)
+      : noDataDisplay
   }]
 
   !wirelessOnly && powerUtilization.push(
     {
       title: defineMessage({ defaultMessage: 'Wired' }),
-      value: 'Y1'
+      value: !isNil(summaryData?.poeUnderPoweredSwitchCount) &&
+      summaryData?.poeThresholdSwitchCount ?
+        formatter('percentFormatRound')(
+          summaryData?.poeUnderPoweredSwitchCount! / summaryData?.poeThresholdSwitchCount!)
+        : noDataDisplay
     }
   )
 
@@ -96,7 +104,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
     {
       // TODO: integrate with api
       type: 'grey',
-      title: defineMessage({ defaultMessage: 'PoE' }),
+      title: defineMessage({ defaultMessage: 'Power Utilization' }),
       values: powerUtilization
     }
   ]

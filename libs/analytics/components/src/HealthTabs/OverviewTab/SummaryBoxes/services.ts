@@ -20,6 +20,10 @@ export interface SummaryResult {
   avgPerAPClientCount: number
   apTotalTraffic: number
   switchTotalTraffic?: number
+  poeUnderPoweredApCount: number
+  apCount: number
+  poeUnderPoweredSwitchCount?: number
+  poeThresholdSwitchCount?: number
 }
 
 export interface SwitchCount {
@@ -35,6 +39,8 @@ const wirelessFields = `
   })
   avgPerAPClientCount
   apTotalTraffic: totalTraffic
+  poeUnderPoweredApCount
+  apCount
 `
 
 const wiredFields = `
@@ -46,6 +52,8 @@ const wiredFields = `
   switchTotalTraffic
   totalPortCount
   portCount
+  poeUnderPoweredSwitchCount
+  poeThresholdSwitchCount
 `
 
 export const api = dataApi.injectEndpoints({
