@@ -120,12 +120,6 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-
-  // eslint-disable-next-line
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
-}
-
 // eslint-disable-next-line
 export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
 
@@ -222,11 +216,6 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   }
 
   return (displayList.length === 0) ? '--' : displayList.join(' ')
-}
-
-export const APPropertiesAFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-  // eslint-disable-next-line
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
 // eslint-disable-next-line
