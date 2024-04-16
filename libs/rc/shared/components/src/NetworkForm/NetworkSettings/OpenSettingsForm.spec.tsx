@@ -25,8 +25,8 @@ jest.mock('./MacRegistrationListComponent', () => () => {
   return <div data-testid='MacRegistrationListComponentId' />
 })
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
   useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
 }))
 
