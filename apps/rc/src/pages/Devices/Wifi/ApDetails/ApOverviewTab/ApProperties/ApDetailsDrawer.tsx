@@ -92,7 +92,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return (<>
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           children={
             <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
               {currentAP?.venueName}

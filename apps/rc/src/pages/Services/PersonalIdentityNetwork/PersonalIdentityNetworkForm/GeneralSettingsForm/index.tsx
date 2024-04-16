@@ -101,7 +101,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               name='venueId'
               label={
                 <>
-                  {$t({ defaultMessage: 'Venue with SmartEdge deployed' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular> with SmartEdge deployed' })}
                   <Tooltip.Question
                     title={$t({ defaultMessage: `To enable the property management for a venue,
                     please go to the Venue configuration/property management page to enable it.` })}

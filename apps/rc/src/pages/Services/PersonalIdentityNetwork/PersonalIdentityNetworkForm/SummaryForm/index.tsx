@@ -92,7 +92,7 @@ export const SummaryForm = () => {
         <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={nsgName} />
       </Col>
       <Col flex={1}>
-        <Form.Item label={$t({ defaultMessage: 'Venue with the property management enabled' })}
+        <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
           children={getVenueName(venueId)} />
       </Col>
     </Row>

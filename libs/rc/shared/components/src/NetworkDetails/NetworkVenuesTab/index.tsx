@@ -366,7 +366,7 @@ export function NetworkVenuesTab () {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,

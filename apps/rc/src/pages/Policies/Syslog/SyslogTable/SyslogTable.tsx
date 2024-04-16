@@ -58,7 +58,7 @@ export default function SyslogTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
       async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
     )
   }
@@ -209,7 +209,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,

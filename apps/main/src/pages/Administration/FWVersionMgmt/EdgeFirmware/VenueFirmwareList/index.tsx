@@ -94,7 +94,7 @@ export function VenueFirmwareList () {
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },

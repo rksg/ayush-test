@@ -66,7 +66,7 @@ const SyslogVenueTable = () => {
 
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true

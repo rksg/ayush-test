@@ -162,7 +162,7 @@ export function ApForm () {
     })
 
     return <Space direction='vertical' style={{ margin: '8px 0' }}>
-      {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
+      {$t({ defaultMessage: '<VenueSingular></VenueSingular> Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
       { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : null }
@@ -503,7 +503,7 @@ export function ApForm () {
                 name='venueId'
                 style={{ marginBottom: '0px' }}
                 label={<>
-                  {$t({ defaultMessage: 'Venue' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
                     title={
                       apMeshRoleDisabled
@@ -544,7 +544,7 @@ export function ApForm () {
                     const selectVenue = getVenueById(venues, value)
                     if (!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
-                        cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
+                        cellularApModels, apDetails?.model, $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                       )
                     }
                     return Promise.resolve()

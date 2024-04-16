@@ -159,7 +159,7 @@ export function RWGForm () {
                 <Form.Item
                   name='venueId'
                   label={<>
-                    {$t({ defaultMessage: 'Venue' })}
+                    {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   </>}
                   initialValue={data?.venueId}
                   rules={[{

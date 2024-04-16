@@ -36,7 +36,7 @@ const RogueAPDetectionVenueDetail = () => {
   const params = useParams()
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'name',
       key: 'name',
       searchable: true,

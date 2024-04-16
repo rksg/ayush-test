@@ -35,7 +35,7 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       key: 'venueName',
       sorter: true,

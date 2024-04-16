@@ -97,7 +97,7 @@ export function VenueSetting () {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true
@@ -171,7 +171,7 @@ export function VenueSetting () {
     ]}>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Venues' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} />
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}

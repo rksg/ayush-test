@@ -27,7 +27,7 @@ export function CliStepVenues () {
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'name',
     dataIndex: 'name',
     sorter: true,
@@ -119,7 +119,7 @@ export function CliStepVenues () {
 
   return <Row gutter={24}>
     <Col span={24}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Venues' })}</StepsForm.Title>
+      <StepsForm.Title>{$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}</StepsForm.Title>
       <Typography.Text style={{
         fontWeight: 600,
         display: 'block',

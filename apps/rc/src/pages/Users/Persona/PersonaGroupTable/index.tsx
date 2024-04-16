@@ -91,7 +91,7 @@ function useColumns (
     },
     {
       key: 'propertyId',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'propertyId',
       sorter: true,
       filterMultiple: false,
@@ -273,7 +273,7 @@ export function PersonaGroupTable () {
           fieldName: 'personalIdentityNetworkId',
           fieldText: $t({ defaultMessage: 'Personal Identity Network' })
         },
-        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
+        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
         .then(() => {

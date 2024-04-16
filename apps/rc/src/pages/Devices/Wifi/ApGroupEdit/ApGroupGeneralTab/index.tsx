@@ -259,7 +259,7 @@ export function ApGroupGeneralTab () {
               <Form.Item
                 name='venueId'
                 label={<>
-                  {$t({ defaultMessage: 'Venue' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                 </>}
                 initialValue={null}
                 rules={[{

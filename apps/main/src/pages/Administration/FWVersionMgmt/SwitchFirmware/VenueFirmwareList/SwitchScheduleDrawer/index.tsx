@@ -128,7 +128,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     children={<>
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
-          <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+          <b>  {intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b> {props.data.name}
         </Typography.Text>
       </Row>
       <Row style={{ lineHeight: '24px' }}>

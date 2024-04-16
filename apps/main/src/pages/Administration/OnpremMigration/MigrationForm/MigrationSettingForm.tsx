@@ -179,7 +179,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Venue' }))
+    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
   }
 
   const addressValidator = async () => {
@@ -251,7 +251,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
               { min: 2 },
               { max: 32 },
               { // eslint-disable-next-line max-len
-                pattern: /\s*\S+\s*\S+.*/, message: $t({ defaultMessage: 'Venue name must contain at least two non-whitespace characters.' }) },
+                pattern: /\s*\S+\s*\S+.*/, message: $t({ defaultMessage: '<VenueSingular></VenueSingular> name must contain at least two non-whitespace characters.' }) },
               {
                 validator: (_, value) => nameValidator(value)
               }

@@ -219,7 +219,7 @@ export const SettingsForm = () => {
                 <Col span={13}>
                   <Form.Item
                     name='venueId'
-                    label={$t({ defaultMessage: 'Venue' })}
+                    label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
                       message: $t({ defaultMessage: 'Please select a Venue' })

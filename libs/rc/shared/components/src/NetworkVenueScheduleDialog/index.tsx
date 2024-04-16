@@ -458,7 +458,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
                   <UI.TipSpan>{$t({ defaultMessage: 'See tips' })}</UI.TipSpan>
                 </Button></>}
               extra={<>
-                {$t({ defaultMessage: 'Venue time zone:' })} <b>
+                {$t({ defaultMessage: '<VenueSingular></VenueSingular> time zone:' })} <b>
                   {transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})
                 </b>
               </>}

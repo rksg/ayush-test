@@ -63,7 +63,7 @@ function useColumns (
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },

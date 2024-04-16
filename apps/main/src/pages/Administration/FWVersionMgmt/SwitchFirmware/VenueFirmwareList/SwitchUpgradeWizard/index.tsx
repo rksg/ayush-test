@@ -156,7 +156,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
       const selectedItemMap = {
         'true,true': $t({ defaultMessage: 'items' }),
-        'true,false': $t({ defaultMessage: 'venues' }),
+        'true,false': $t({ defaultMessage: '<venuePlural></venuePlural>' }),
         'false,true': $t({ defaultMessage: 'switches' }),
         'false,false': $t({ defaultMessage: 'items' })
       }

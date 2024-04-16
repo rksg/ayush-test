@@ -171,7 +171,7 @@ export default function CliProfileForm () {
 
           <StepsForm.StepForm
             name='venues'
-            title={$t({ defaultMessage: 'Venues' })}
+            title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
           >
             <CliStepVenues />
           </StepsForm.StepForm>

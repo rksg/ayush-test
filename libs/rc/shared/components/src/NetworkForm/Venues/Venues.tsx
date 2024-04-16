@@ -269,7 +269,7 @@ export function Venues (props: VenuesProps) {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true
     },
@@ -476,7 +476,7 @@ export function Venues (props: VenuesProps) {
 
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsFormLegacy.Title>
+      <StepsFormLegacy.Title>{ $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }</StepsFormLegacy.Title>
       <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>

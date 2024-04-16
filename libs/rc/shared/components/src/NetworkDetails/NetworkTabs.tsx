@@ -35,7 +35,7 @@ function NetworkTabs () {
     return (
       <Tabs onChange={onTabChange} activeKey={params.activeTab}>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+          tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' }, { venuesCount })}
           key='venues'
         />
       </Tabs>
@@ -57,7 +57,7 @@ function NetworkTabs () {
             />
             }
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' }, { venuesCount })}
               key='venues'
             />
             <Tabs.TabPane
@@ -83,7 +83,7 @@ function NetworkTabs () {
               key='aps'
             />
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' }, { venuesCount })}
               key='venues'
             />
             <Tabs.TabPane

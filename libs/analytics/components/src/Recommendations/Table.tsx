@@ -322,7 +322,7 @@ export function RecommendationTable (
     ...(showCrrm ? [{
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM Health' })
-        : $t({ defaultMessage: 'Venue RRM Health' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular> RRM Health' }),
       width: 140,
       dataIndex: 'crrmOptimizedState',
       key: 'crrmOptimizedState',
@@ -386,7 +386,7 @@ export function RecommendationTable (
     {
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone' })
-        : $t({ defaultMessage: 'Venue' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       width: 200,
       dataIndex: 'sliceValue',
       key: 'sliceValue',

@@ -629,7 +629,7 @@ export function NetworkForm (props:{
               }
               <StepsFormLegacy.StepForm
                 name='venues'
-                title={intl.$t({ defaultMessage: 'Venues' })}
+                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                 onFinish={handleVenues}
               >
                 <Venues defaultActiveVenues={defaultActiveVenues} />
@@ -719,7 +719,7 @@ export function NetworkForm (props:{
               }
               <StepsForm.StepForm
                 name='venues'
-                title={intl.$t({ defaultMessage: 'Venues' })}
+                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                 onFinish={handleVenues}
               >
                 <Venues />

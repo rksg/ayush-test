@@ -100,7 +100,7 @@ export const RogueVenueTable = () => {
 
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true

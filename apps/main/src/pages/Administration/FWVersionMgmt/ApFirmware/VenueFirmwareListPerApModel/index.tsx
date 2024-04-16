@@ -95,7 +95,7 @@ function useColumns () {
 
   const columns: TableProps<FirmwareVenuePerApModel>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },

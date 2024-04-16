@@ -70,7 +70,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       key: 'venueName',
       filterMultiple: false,

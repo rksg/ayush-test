@@ -112,7 +112,7 @@ function getCols (intl: ReturnType<typeof useIntl>,
     },
     {
       key: 'venues',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
