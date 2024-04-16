@@ -15,7 +15,8 @@ import { Path }                                  from '@acx-ui/react-router-dom'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { mockedRogueApPoliciesList } from '../__tests__/fixtures'
+import RogueAPDetectionContext       from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm'
 
@@ -307,6 +308,10 @@ describe('RogueAPDetectionForm', () => {
         (_, res, ctx) => res(
           ctx.json(policyListContent)
         )
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
       )
     )
   })
@@ -378,7 +383,7 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyTestName-modify' } })
+      { target: { value: 'policyTestName-modify-new' } })
 
     await addRuleWithoutEdit('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
@@ -386,13 +391,11 @@ describe('RogueAPDetectionForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    await screen.findByRole('heading', { name: 'Scope', level: 3 })
-
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText(/venues \(0\)/i)
 
-    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+    await screen.findByRole('heading', { name: 'Summary' })
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })

@@ -1,20 +1,28 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                  from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                      from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                 from '@acx-ui/msp/services'
+import { Brand360 }                                         from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
 import {
-  AAAForm, AAAPolicyDetail,
+  AAAForm,
+  AAAPolicyDetail,
   DHCPDetail,
-  DHCPForm, DpskForm,
+  DHCPForm,
+  DpskForm,
   PortalForm,
-  NetworkDetails, NetworkForm,
-  AccessControlForm, AccessControlDetail,
+  NetworkDetails,
+  NetworkForm,
+  AccessControlForm,
+  AccessControlDetail,
   useConfigTemplateVisibilityMap,
-  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
+  WifiCallingForm,
+  WifiCallingConfigureForm,
+  WifiCallingDetailView,
+  RogueAPDetectionForm,
+  RogueAPDetectionDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -276,24 +284,41 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.CREATE
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE
             })}
             element={<WifiCallingForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.EDIT
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT
             })}
             element={<WifiCallingConfigureForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.DETAIL
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE
+            })}
+            element={<RogueAPDetectionForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT
+            })}
+            element={<RogueAPDetectionForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL
+            })}
+            element={<RogueAPDetectionDetailView />}
           />
         </>}
       </Route>

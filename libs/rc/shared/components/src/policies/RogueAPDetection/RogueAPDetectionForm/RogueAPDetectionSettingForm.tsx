@@ -2,11 +2,21 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
 
-import { StepsForm }                                                           from '@acx-ui/components'
-import { useEnhancedRoguePoliciesQuery, useRoguePolicyQuery }                  from '@acx-ui/rc/services'
-import { RogueAPDetectionActionTypes, servicePolicyNameRegExp, useTableQuery } from '@acx-ui/rc/utils'
+import { StepsForm }    from '@acx-ui/components'
+import {
+  useEnhancedRoguePoliciesQuery,
+  useGetRoguePolicyTemplateListQuery,
+  useGetRoguePolicyTemplateQuery,
+  useRoguePolicyQuery
+} from '@acx-ui/rc/services'
+import {
+  RogueAPDetectionActionTypes,
+  servicePolicyNameRegExp,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -18,8 +28,8 @@ type RogueAPDetectionSettingFormProps = {
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { edit } = props
-  const params = useParams()
   const [originalName, setOriginalName] = useState('')
 
   const form = Form.useFormInstance()
@@ -28,9 +38,9 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data } = useRoguePolicyQuery({
-    params: params
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery, !edit
+  )
 
   const defaultPayload = {
     searchString: '',
@@ -42,7 +52,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
 
   const settingsId = 'policies-rogue-ap-detection-setting-form-table'
   const tableQuery = useTableQuery({
-    useQuery: useEnhancedRoguePoliciesQuery,
+    useQuery: isTemplate ? useGetRoguePolicyTemplateListQuery : useEnhancedRoguePoliciesQuery,
     defaultPayload,
     pagination: { settingsId, pageSize: 1000 }
   })

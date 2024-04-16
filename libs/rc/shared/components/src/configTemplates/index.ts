@@ -30,7 +30,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.PORTAL]: isGA,
     [ConfigTemplateType.VLAN_POOL]: isGA,
     [ConfigTemplateType.WIFI_CALLING]: isGA,
-    [ConfigTemplateType.CLIENT_ISOLATION]: false // Not supported in the current scope
+    [ConfigTemplateType.CLIENT_ISOLATION]: false, // Not supported in the current scope
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: true // Not supported in the current scope
   }
 
   return visibilityMap

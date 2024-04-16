@@ -8,7 +8,8 @@ import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } fro
 import { Provider, store }                                                   from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor }                          from '@acx-ui/test-utils'
 
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { mockedRogueApPoliciesList } from '../__tests__/fixtures'
+import RogueAPDetectionContext       from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm }        from './RogueAPDetectionForm'
 import { RogueAPDetectionSettingForm } from './RogueAPDetectionSettingForm'
@@ -92,6 +93,9 @@ describe('RogueAPDetectionSettingForm', () => {
       (_, res, ctx) => res(
         ctx.json(policyListContent)
       )
+    ), rest.post(
+      RogueApUrls.getEnhancedRoguePolicyList.url,
+      (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
     ))
 
     render(
@@ -138,6 +142,9 @@ describe('RogueAPDetectionSettingForm', () => {
       (_, res, ctx) => res(
         ctx.json(policyListContent)
       )
+    ), rest.post(
+      RogueApUrls.getEnhancedRoguePolicyList.url,
+      (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
     ))
 
     render(

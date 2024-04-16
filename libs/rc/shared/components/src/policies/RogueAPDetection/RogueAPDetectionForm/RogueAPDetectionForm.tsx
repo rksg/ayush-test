@@ -7,15 +7,23 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
+import {
+  useAddRoguePolicyMutation,
+  useAddRoguePolicyTemplateMutation,
+  useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
+} from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
   RogueAPRule,
   RogueVenue,
   getPolicyRoutePath,
-  getPolicyListRoutePath,
   PolicyType,
-  PolicyOperation, CommonResult
+  PolicyOperation,
+  CommonResult,
+  usePolicyListBreadcrumb,
+  generatePolicyPageHeaderTitle,
+  useConfigTemplate,
+  useConfigTemplateTenantLink, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -33,10 +41,12 @@ type RogueAPDetectionFormProps = {
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
+  const templateBasePath = useConfigTemplateTenantLink('')
   const params = useParams()
   const { edit, modalMode, modalCallBack } = props
 
@@ -49,9 +59,13 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     venues: [] as RogueVenue[]
   })
 
-  const [ createRoguePolicy ] = useAddRoguePolicyMutation()
+  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddRoguePolicyMutation, useAddRoguePolicyTemplateMutation
+  )
 
-  const [ updateRoguePolicy ] = useUpdateRoguePolicyMutation()
+  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
+  )
 
   const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) => {
     return {
@@ -80,31 +94,26 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       const response = results.response as { id: string }
       modalMode
         ? modalCallBack?.(response.id)
-        : navigate(linkToPolicies, { replace: true })
+        : navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
+
   return (
     <RogueAPDetectionContext.Provider value={{ state, dispatch }}>
       {!modalMode && <PageHeader
-        title={edit
-          ? $t({ defaultMessage: 'Edit Rogue AP Detection Policy' })
-          : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
-        ]}
+        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.ROGUE_AP_DETECTION)}
+        breadcrumb={breadcrumb}
       />}
       <StepsForm<RogueAPDetectionContextType>
         form={form}
         editMode={edit}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
+        onCancel={() => modalMode
+          ? modalCallBack?.()
+          : navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })}
         onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >
         <StepsForm.StepForm<RogueAPDetectionContextType>

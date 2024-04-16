@@ -11,7 +11,12 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   L2AclPolicy,
   L3AclPolicy,
-  ApplicationPolicy, TableResult
+  ApplicationPolicy,
+  TableResult,
+  RogueAPDetectionTempType,
+  RogueApUrls,
+  RogueAPDetectionContextType,
+  EnhancedRoguePolicyType, VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -46,6 +51,17 @@ export const AccessControlTemplateUseCases = [
   'AddAccessControlProfileTemplate',
   'UpdateAccessControlProfileTemplate',
   'DeleteAccessControlProfileTemplate'
+]
+
+export const RogueTemplateUseCases = [
+  'AddRogueApPolicyProfile',
+  'UpdateRogueApPolicyProfile',
+  'DeleteRogueApPolicyProfile',
+  'DeleteRogueApPolicyProfiles',
+  'UpdateVenueRogueAp',
+  'UpdateDenialOfServiceProtection',
+  'DeleteVenue',
+  'DeleteVenues'
 ]
 
 export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
@@ -236,6 +252,54 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     delAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(RogueApUrls.addRoguePolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
+      query: commonQueryFn(RogueApUrls.getRoguePolicy),
+      providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
+    }),
+    getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
+      query: commonQueryFn(RogueApUrls.getEnhancedRoguePolicyList),
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, RogueTemplateUseCases, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'RogueApTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    updateRoguePolicyTemplate: build.mutation<RogueAPDetectionTempType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateRoguePolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRoguePolicy),
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([{
+              type: 'RogueApTemplate', id: 'LIST'
+            }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -265,5 +329,11 @@ export const {
   useGetAppPolicyTemplateQuery,
   useGetAppPolicyTemplateListQuery,
   useUpdateAppPolicyTemplateMutation,
-  useDelAppPolicyTemplateMutation
+  useDelAppPolicyTemplateMutation,
+  useAddRoguePolicyTemplateMutation,
+  useGetRoguePolicyTemplateQuery,
+  useGetRoguePolicyTemplateListQuery,
+  useUpdateRoguePolicyTemplateMutation,
+  useDelRoguePolicyTemplateMutation,
+  useGetVenueRoguePolicyTemplateQuery
 } = policiesConfigTemplateApi

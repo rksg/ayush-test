@@ -1,6 +1,7 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
+  // Access control
   addL2AclPolicy: {
     method: 'post',
     url: '/templates/l2AclPolicies',
@@ -163,6 +164,37 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getEnhancedDevicePolicies: {
     method: 'post',
     url: '/templates/devicePolicies/query',
+    newApi: true
+  },
+  // Rogue
+  addRoguePolicy: {
+    method: 'post',
+    url: '/templates/rogueApPolicyProfiles',
+    newApi: true
+  },
+  getRoguePolicy: {
+    method: 'get',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  getEnhancedRoguePolicyList: {
+    method: 'post',
+    url: '/templates/enhancedRogueApPolicyProfiles/query',
+    newApi: true
+  },
+  updateRoguePolicy: {
+    method: 'put',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  deleteRogueApPolicy: {
+    method: 'delete',
+    url: '/templates/rogueApPolicyProfiles/:templateId',
+    newApi: true
+  },
+  getVenueRoguePolicy: {
+    method: 'post',
+    url: '/venues/query',
     newApi: true
   }
 }
