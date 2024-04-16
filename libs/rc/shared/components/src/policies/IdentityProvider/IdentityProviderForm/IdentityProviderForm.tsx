@@ -89,8 +89,8 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
           }
         })
 
-        origAuthId.current = state.authRadiusId
-        origAccountingId.current = state.accountingRadiusId
+        origAuthId.current = data.authRadiusId
+        origAccountingId.current = data.accountingRadiusId
       }
 
       if (form) {
@@ -102,7 +102,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
 
   const transformPayload = (state: IdentityProvider) => {
     let newData = cloneDeep(state)
-    const { naiRealms, plmns, roamConsortiumOIs, accountingRadiusEnabled } = newData
+    const { naiRealms, plmns, roamConsortiumOIs } = newData
     // remove rowId
     const newRealms = naiRealms.map(realm => {
       const { eaps } = realm
@@ -114,9 +114,10 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
       }
     })
 
-    if (!accountingRadiusEnabled) {
-      delete newData.accountingRadiusId
-    }
+    // RBAC API doesn't need the radius setting
+    delete newData.authRadiusId
+    delete newData.accountingRadiusEnabled
+    delete newData.accountingRadiusId
 
     return {
       ...newData,
