@@ -1,3 +1,4 @@
+import { get }                     from '@acx-ui/config'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import { RolesEnum }               from '@acx-ui/types'
@@ -33,10 +34,13 @@ function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
   })
 }
 
+jest.mock('@acx-ui/config', () => ({ get: jest.fn().mockReturnValue('') }))
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   TenantNavigate: () => <div data-testid='no-permissions' />
 }))
+
+beforeEach(() => jest.mocked(get).mockReset())
 
 describe('hasAccess', () => {
   describe('without id', () => {
@@ -127,6 +131,27 @@ describe('filterByAccess', () => {
         key: getShowWithoutRbacCheckKey('test')
       }
     ])).toHaveLength(1)
+  })
+
+  it('returns true when IS_MLISA_SA for any role', () => {
+    const items = [
+      { key: 'random-key' },
+      {}
+    ]
+
+    jest.mocked(get).mockReturnValue('true')
+
+    setRole(RolesEnum.PRIME_ADMIN)
+    expect(filterByAccess(items)).toHaveLength(2)
+
+    setRole(RolesEnum.ADMINISTRATOR)
+    expect(filterByAccess(items)).toHaveLength(2)
+
+    setRole(RolesEnum.GUEST_MANAGER)
+    expect(filterByAccess(items)).toHaveLength(2)
+
+    setRole(RolesEnum.READ_ONLY)
+    expect(filterByAccess(items)).toHaveLength(2)
   })
 })
 
