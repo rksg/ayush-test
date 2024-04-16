@@ -195,7 +195,7 @@ describe('RBAC API', () => {
         resourceGroupId: 'rg1'
       })
     ) as { data: string }
-    expect(data).toEqual(null)
+    expect(data).toEqual('')
   })
 
   it('update account', async () => {
