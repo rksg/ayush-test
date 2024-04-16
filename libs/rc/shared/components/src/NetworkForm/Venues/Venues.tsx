@@ -476,7 +476,9 @@ export function Venues (props: VenuesProps) {
 
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }</StepsFormLegacy.Title>
+      <StepsFormLegacy.Title>
+        { $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }
+      </StepsFormLegacy.Title>
       <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>

@@ -62,7 +62,8 @@ export function VenuesDashboardWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} onArrowClick={onArrowClick}>
+      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart
@@ -96,7 +97,8 @@ export function VenuesDashboardWidgetV2 () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} onArrowClick={onArrowClick}>
+      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <UI.Container onClick={onArrowClick}>

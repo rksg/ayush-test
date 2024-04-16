@@ -91,7 +91,7 @@ export const SummaryForm = () => {
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={nsgName} />
       </Col>
-      <Col flex={1}>
+      <Col flex={1}>{/* eslint-disable-next-line max-len */}
         <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
           children={getVenueName(venueId)} />
       </Col>

@@ -113,6 +113,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       children: $t(category)
     }),
     (!isRrm && {
+      // eslint-disable-next-line max-len
       label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       children: sliceValue
     }),

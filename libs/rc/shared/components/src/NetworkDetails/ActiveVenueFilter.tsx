@@ -30,8 +30,8 @@ export function ActiveVenueFilter ({
   return <Loader states={[networkQuery, venuesQuery]} style={{ minWidth: '159px' }}>
     <Cascader
       entityName={{
-        singular: defineMessage({ defaultMessage: 'venue' }),
-        plural: defineMessage({ defaultMessage: 'venues' })
+        singular: defineMessage({ defaultMessage: '<venueSingular></venueSingular>' }),
+        plural: defineMessage({ defaultMessage: '<venuePlural></venuePlural>' })
       }}
       placeholder={$t({ defaultMessage: 'All Active Venues' })}
       multiple

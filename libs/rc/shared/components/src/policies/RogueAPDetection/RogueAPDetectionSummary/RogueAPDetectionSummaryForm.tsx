@@ -52,7 +52,8 @@ export const RogueAPDetectionSummaryForm = () => {
         <Row>
           <Col span={24}>
             <Subtitle level={4}>{
-              $t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count: state.venues.length })
+              $t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' },
+                { count: state.venues.length })
             }</Subtitle>
           </Col>
           <Col span={6}>

@@ -273,6 +273,7 @@ export function PersonaGroupTable () {
           fieldName: 'personalIdentityNetworkId',
           fieldText: $t({ defaultMessage: 'Personal Identity Network' })
         },
+        // eslint-disable-next-line max-len
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })

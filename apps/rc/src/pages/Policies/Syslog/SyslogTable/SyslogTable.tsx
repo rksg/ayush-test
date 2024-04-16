@@ -58,6 +58,7 @@ export default function SyslogTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
+      // eslint-disable-next-line max-len
       [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
       async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
     )

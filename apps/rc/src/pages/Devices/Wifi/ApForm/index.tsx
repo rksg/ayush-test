@@ -544,7 +544,8 @@ export function ApForm () {
                     const selectVenue = getVenueById(venues, value)
                     if (!selectVenue?.dhcp?.enabled) {
                       return checkObjectNotExists(
-                        cellularApModels, apDetails?.model, $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+                        cellularApModels, apDetails?.model,
+                        $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                       )
                     }
                     return Promise.resolve()

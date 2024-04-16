@@ -40,7 +40,9 @@ export const UnknownDetails = () => {
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(date, moment.ISO_8601))
     }
   ]
+  // eslint-disable-next-line max-len
   const value = isZone ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: '<venueSingular></venueSingular>' })
+  // eslint-disable-next-line max-len
   const Value = isZone ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
 
   const failureText = {

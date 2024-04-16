@@ -179,6 +179,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
   }
 
