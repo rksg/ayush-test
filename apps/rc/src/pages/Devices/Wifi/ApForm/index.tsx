@@ -328,7 +328,6 @@ export function ApForm () {
     } else {
       processUpdateAp(values)
     }
-    processUpdateAp(values)
   }
 
   const processUpdateAp = async (values: ApDeep) => {
