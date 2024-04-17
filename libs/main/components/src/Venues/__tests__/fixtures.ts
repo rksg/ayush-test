@@ -939,7 +939,7 @@ export const venueRogueAp = {
 }
 
 export const venueApTlsEnhancedKey = {
-  tlsEnhancedKeyEnabled: true
+  tlsKeyEnhancedModeEnabled: true
 }
 
 export const venueRoguePolicy = [
