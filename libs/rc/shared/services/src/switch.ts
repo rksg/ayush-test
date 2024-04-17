@@ -823,7 +823,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchClientListWithPortStatus: build.query<TableResult<SwitchClient>, RequestPayload>({
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const listInfo = {
           ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
@@ -856,36 +856,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
 
         const aggregatedList = aggregatedSwitchClientData(list, switches, switchPorts)
-
-        return listQuery.data
-          ? { data: aggregatedList }
-          : { error: listQuery.error as FetchBaseQueryError }
-      },
-      keepUnusedDataFor: 0,
-      providesTags: [{ type: 'SwitchClient', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
-    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
-          body: arg.payload
-        }
-        const listQuery = await fetchWithBQ(listInfo)
-        const list = listQuery.data as TableResult<SwitchClient>
-
-        const switchesInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
-          body: {
-            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
-            filters: { id: _.uniq(list.data.map(c => c.switchId)) },
-            pageSize: 10000
-          }
-        }
-        const switchesQuery = await fetchWithBQ(switchesInfo)
-        const switches = switchesQuery.data as TableResult<SwitchRow>
-
-        const aggregatedList = aggregatedSwitchClientData(list, switches)
 
         return listQuery.data
           ? { data: aggregatedList }
@@ -1406,7 +1376,6 @@ export const {
   useLazyGetJwtTokenQuery,
   useGetJwtTokenQuery,
   useGetSwitchClientListQuery,
-  useGetSwitchClientListWithPortStatusQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
   usePingMutation,

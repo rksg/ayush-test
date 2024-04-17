@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader, ColumnType, Button }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListWithPortStatusQuery, useLazyGetLagListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
 
   FILTER,
@@ -72,7 +72,7 @@ export function ClientsTable (props: {
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const portLinkEnabled = true//useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -88,7 +88,7 @@ export function ClientsTable (props: {
 
 
   const inlineTableQuery = usePollingTableQuery({
-    useQuery: useGetSwitchClientListWithPortStatusQuery,
+    useQuery: useGetSwitchClientListQuery,
     defaultPayload: {
       ...defaultSwitchClientPayload
     },
