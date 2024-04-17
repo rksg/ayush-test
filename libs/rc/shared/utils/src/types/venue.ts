@@ -744,7 +744,7 @@ export interface VenueBssColoring {
 }
 
 export interface ApEnhancedKey {
-	tlsEnhancedKeyEnabled: boolean
+  tlsKeyEnhancedModeEnabled: boolean
 }
 
 export interface ApManagementVlan {
