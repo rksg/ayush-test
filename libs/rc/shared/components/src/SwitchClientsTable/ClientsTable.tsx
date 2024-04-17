@@ -25,7 +25,7 @@ import * as UI                 from './styledComponents'
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
-    'venueName', 'switchName', 'clientVlan', 'switchPort', 'clientIpv4Addr'],
+    'venueName', 'switchName', 'clientVlan', 'switchPort', 'clientIpv4Addr', 'clientIpv6Addr'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName', 'vni',
     'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
