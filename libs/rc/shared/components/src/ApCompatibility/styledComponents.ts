@@ -1,5 +1,5 @@
-import { Row , Col } from 'antd'
-import styled from 'styled-components/macro'
+import { Col } from 'antd'
+import styled  from 'styled-components/macro'
 
 import {
   CheckMarkCircleSolid,
