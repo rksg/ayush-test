@@ -21,6 +21,8 @@ import {
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
@@ -45,9 +47,16 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
-  const { data } = useGetInstance(isEdit)
-  const createInstance = useAddInstance()
-  const updateInstance = useUpdateInstance()
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useAaaPolicyQuery,
+    useGetAAAPolicyTemplateQuery,
+    !isEdit
+  )
+
+  // eslint-disable-next-line max-len
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddAAAPolicyMutation, useAddAAAPolicyTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateAAAPolicyMutation, useUpdateAAAPolicyTemplateMutation)
   const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
   useEffect(() => {
@@ -101,30 +110,4 @@ export const AAAForm = (props: AAAFormProps) => {
       </StepsFormLegacy>
     </>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
-  const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
-
-  return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
-}
-
-function useGetInstance (isEdit: boolean) {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const aaaPolicyResult = useAaaPolicyQuery({ params }, { skip: !isEdit || isTemplate })
-  // eslint-disable-next-line max-len
-  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
-
-  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
-  const [ updateAAAPolicyTemplate ] = useUpdateAAAPolicyTemplateMutation()
-
-  return isTemplate ? updateAAAPolicyTemplate : updateAAAPolicy
 }
