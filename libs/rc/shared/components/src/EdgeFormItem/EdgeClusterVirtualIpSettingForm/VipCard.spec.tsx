@@ -11,10 +11,10 @@ jest.mock('./InterfaceTable', () => ({
   InterfaceTable: () => <div data-testid='InterfaceTable' />
 }))
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockLanInterfaces } = EdgePortConfigFixtures
 
-describe('InterfaceTable', () => {
+describe('VipCard', () => {
   it('should render VipCard successfully', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -48,14 +48,13 @@ describe('InterfaceTable', () => {
   it('should be blocked when the config is incomplete', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      const lanInterfaceKeys = Object.keys(mockLanInterfaces)
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3')
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        [mockedHaNetworkSettings.virtualIpSettings.map(item => ({
+          vip: item.virtualIp,
+          interfaces: item.ports
+        }))[0]]
+      )
       return form
     })
 
@@ -83,23 +82,17 @@ describe('InterfaceTable', () => {
     expect(await screen.findByText('Please make sure you select an interface and configure the IP subnet for the SmartEdge(s).')).toBeVisible()
   })
 
-  it('should be blocked when the config has invalide ip', async () => {
+  it('should be blocked when the config has invalid ip', async () => {
+    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      const lanInterfaceKeys = Object.keys(mockLanInterfaces)
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port3'),
-            ip: '12345'
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        mockedHaNetworkSettings.virtualIpSettings.map(item => ({
+          vip: item.virtualIp,
+          interfaces: item.ports
+        }))
+      )
       return form
     })
 
@@ -116,6 +109,15 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{}}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={{
+                  [lanInterfaceKeys[0]]: [{
+                    ...mockLanInterfaces[lanInterfaceKeys[0]].find(item =>
+                      // eslint-disable-next-line max-len
+                      item.portName === mockedHaNetworkSettings.virtualIpSettings[0].ports[0].portName),
+                    ip: '0.0.0.0'
+                  }],
+                  [lanInterfaceKeys[1]]: mockLanInterfaces[lanInterfaceKeys[1]]
+                } as { [key: string]: EdgePortInfo[] }}
               />)
           }
         </Form.List>
@@ -129,19 +131,19 @@ describe('InterfaceTable', () => {
   it('should be blocked when the subnet is not consistent', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      const lanInterfaceKeys = Object.keys(mockLanInterfaces)
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port2')
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        [{
+          vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp,
+          interfaces: [
+            mockedHaNetworkSettings.virtualIpSettings[0].ports[0],
+            {
+              serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+              portName: 'port3'
+            }
+          ]
+        }]
+      )
       return form
     })
 
@@ -158,6 +160,7 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{}}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={mockLanInterfaces}
               />)
           }
         </Form.List>
@@ -170,21 +173,15 @@ describe('InterfaceTable', () => {
   })
 
   it('should be blocked when the vip is not in the subnet range', async () => {
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port3')
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        mockedHaNetworkSettings.virtualIpSettings.map(item => ({
+          vip: item.virtualIp,
+          interfaces: item.ports
+        }))
+      )
       return form
     })
 
@@ -201,26 +198,21 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{
                   0: {
-                    interfaces: {
-                      [lanInterfaceKeys[0]]: mockLanInterfaces[
-                        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-                      ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo,
-                      [lanInterfaceKeys[1]]: {
-                        ...mockLanInterfaces[
-                          lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-                        ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo
-                      }
-                    },
-                    vip: ''
+                    interfaces: mockedHaNetworkSettings.virtualIpSettings[0].ports,
+                    vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={mockLanInterfaces}
               />)
           }
         </Form.List>
       </Form>
     )
 
+    await userEvent.clear(
+      screen.getByRole('textbox', { name: 'Virtual IP Address' })
+    )
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Virtual IP Address' }),
       '1.2.3.4'
@@ -229,21 +221,15 @@ describe('InterfaceTable', () => {
   })
 
   it('should be blocked when the vip is the same as any node', async () => {
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port3')
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        mockedHaNetworkSettings.virtualIpSettings.map(item => ({
+          vip: item.virtualIp,
+          interfaces: item.ports
+        }))
+      )
       return form
     })
 
@@ -260,50 +246,45 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{
                   0: {
-                    interfaces: {
-                      [lanInterfaceKeys[0]]: mockLanInterfaces[
-                        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-                      ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo,
-                      [lanInterfaceKeys[1]]: {
-                        ...mockLanInterfaces[
-                          lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-                        ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo
-                      }
-                    },
-                    vip: ''
+                    interfaces: mockedHaNetworkSettings.virtualIpSettings[0].ports,
+                    vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={mockLanInterfaces}
               />)
           }
         </Form.List>
       </Form>
     )
 
+    await userEvent.clear(
+      screen.getByRole('textbox', { name: 'Virtual IP Address' })
+    )
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Virtual IP Address' }),
-      '192.168.14.135'
+      '192.168.13.136'
     )
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Virtual IP cannot be the same as any node interface IP.')).toBeVisible()
   })
 
   it('should show suggested range correctly', async () => {
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'port3'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port3')
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        [{
+          vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp,
+          interfaces: [
+            mockedHaNetworkSettings.virtualIpSettings[0].ports[0],
+            {
+              serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+              portName: 'port2'
+            }
+          ]
+        }]
+      )
       return form
     })
 
@@ -320,45 +301,37 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{
                   0: {
-                    interfaces: {
-                      [lanInterfaceKeys[0]]: mockLanInterfaces[
-                        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-                      ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo,
-                      [lanInterfaceKeys[1]]: {
-                        ...mockLanInterfaces[
-                          lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-                        ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo
+                    interfaces: [
+                      mockedHaNetworkSettings.virtualIpSettings[0].ports[0],
+                      {
+                        serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+                        portName: 'port2'
                       }
-                    },
-                    vip: ''
+                    ],
+                    vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={mockLanInterfaces}
               />)
           }
         </Form.List>
       </Form>
     )
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Suggested range: 192.168.14.0/ 24')).toBeVisible()
+    expect(await screen.findByText('Suggested range: 192.168.13.0/ 24')).toBeVisible()
   })
 
   it('should not show suggested range when there are some dhcp port', async () => {
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', [{
-        interfaces: {
-          [lanInterfaceKeys[0]]: mockLanInterfaces[
-            lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-          ].find(item => item.portName === 'lag0'),
-          [lanInterfaceKeys[1]]: {
-            ...mockLanInterfaces[
-              lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-            ].find(item => item.portName === 'port3')
-          }
-        }
-      }])
+      form.setFieldValue(
+        'vipConfig',
+        mockedHaNetworkSettings.virtualIpSettings.map(item => ({
+          vip: item.virtualIp,
+          interfaces: item.ports
+        }))
+      )
       return form
     })
 
@@ -375,20 +348,18 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{
                   0: {
-                    interfaces: {
-                      [lanInterfaceKeys[0]]: mockLanInterfaces[
-                        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-                      ].find(item => item.portName === 'lag0') ?? {} as EdgePortInfo,
-                      [lanInterfaceKeys[1]]: {
-                        ...mockLanInterfaces[
-                          lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-                        ].find(item => item.portName === 'port3') ?? {} as EdgePortInfo
+                    interfaces: [
+                      mockedHaNetworkSettings.virtualIpSettings[0].ports[0],
+                      {
+                        ...mockedHaNetworkSettings.virtualIpSettings[0].ports[1],
+                        portName: 'lag0'
                       }
-                    },
-                    vip: ''
+                    ],
+                    vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+                lanInterfaces={mockLanInterfaces}
               />)
           }
         </Form.List>

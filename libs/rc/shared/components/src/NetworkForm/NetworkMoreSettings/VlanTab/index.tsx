@@ -78,10 +78,12 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           initialValue={1}
           rules={[
-            { required: true }, {
+            { required: true },
+            {
               type: 'number', max: 4094, min: 1,
               message: $t(validationMessages.vlanRange)
-            }]}
+            }
+          ]}
           style={{ marginBottom: '15px' }}
           children={<InputNumber style={{ width: '80px' }}
             disabled={isPortalDefaultVLANId || pureVxLanEnabled}/>}

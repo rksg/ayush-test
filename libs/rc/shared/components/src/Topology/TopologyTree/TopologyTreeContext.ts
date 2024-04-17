@@ -6,6 +6,8 @@ export interface TopologyTreeType {
   setTranslate: (data: number[]) => void
   onDrag: boolean
   setOnDrag: (data: boolean) => void
+  selectedNode: string
+  selectedVlanPortList: string[]
 }
 
 export const TopologyTreeContext = createContext({} as TopologyTreeType)

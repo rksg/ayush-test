@@ -362,7 +362,7 @@ export function AddPrivilegeGroup () {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 64 },
+                { max: 128 },
                 { validator: (_, value) => systemDefinedNameValidator(value) }
               ]}
               children={<Input />}
@@ -370,11 +370,9 @@ export function AddPrivilegeGroup () {
             <Form.Item
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
-              rules={[
-                { min: 2 },
-                { max: 64 }
-              ]}
-              children={<Input />}
+              children={
+                <Input.TextArea rows={4} maxLength={180} />
+              }
             />
             <CustomRoleSelector />
           </Col>

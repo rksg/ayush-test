@@ -28,8 +28,6 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
-} from '@acx-ui/msp/services'
-import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
@@ -41,7 +39,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -54,7 +53,8 @@ import {
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
   AssignActionEnum,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -208,6 +208,7 @@ export function ManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -609,8 +610,7 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        service_expiration_date: expirationDate
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -620,8 +620,15 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+
+      if (originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {

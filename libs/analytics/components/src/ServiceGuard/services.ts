@@ -587,7 +587,7 @@ export const transformPathFromDB = (spec: ServiceGuardSpec, systemMap: SystemMap
       ...config,
       networkPaths: {
         networkNodes: _.uniqBy(config.networkPaths!.networkNodes.reduce((agg, path) => {
-          const { system, rest } =_.groupBy(path, n => n.type === 'system' ? 'system' : 'rest')
+          const { system, rest = [] } =_.groupBy(path, n => n.type === 'system' ? 'system' : 'rest')
           const name = system && mapping[(system[0] as PathNode).name]
           name
             ? agg.push([{ type: 'system', name }, ...rest] as NetworkPath)
