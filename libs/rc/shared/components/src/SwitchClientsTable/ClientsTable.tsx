@@ -70,7 +70,6 @@ export function ClientsTable (props: {
   }, [tableQuery.data])
 
   const handleFilterChange = (filters: FILTER, search: SEARCH, groupBy: string | undefined) => {
-
     setTableQueryFilters?.(filters)
     tableQuery.handleFilterChange(filters, search, groupBy)
   }
