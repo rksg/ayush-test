@@ -19,7 +19,8 @@ import {
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
 import {
-  CustomRole
+  CustomRole,
+  systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -27,6 +28,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }                            from '@acx-ui/types'
 import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
@@ -34,7 +36,8 @@ import * as UI from '../styledComponents'
 interface CustomRoleData {
   name?: string,
   description?: string,
-  scopes?: string[]
+  scopes?: string[],
+  preDefinedRole?: string
 }
 
 export function AddCustomRole () {
@@ -50,6 +53,9 @@ export function AddCustomRole () {
   const [updateCustomRole] = useUpdateCustomRoleMutation()
 
   const isEditMode = action === 'edit'
+  const isClone = action === 'clone'
+  const clonePreDefinedRole = isClone && location?.name &&
+      Object.values(RolesEnum).includes(location?.name) ? location?.name : undefined
 
   const wifiScopes = [
     WifiScopes.READ, WifiScopes.CREATE,
@@ -78,7 +84,8 @@ export function AddCustomRole () {
       const roleData: CustomRoleData = {
         name: name,
         description: description,
-        scopes: checkedScopes
+        scopes: checkedScopes,
+        preDefinedRole: clonePreDefinedRole
       }
       if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },
@@ -94,8 +101,8 @@ export function AddCustomRole () {
   }
 
   useEffect(() => {
-    if (location && (isEditMode || action === 'clone')) {
-      form.setFieldValue('name', location?.name)
+    if (location && (isEditMode || isClone)) {
+      form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
     }
   }, [form, location])
@@ -118,7 +125,10 @@ export function AddCustomRole () {
           label={intl.$t({ defaultMessage: 'Role Name' })}
           style={{ width: '300px' }}
           rules={[
-            { required: true }
+            { required: true },
+            { min: 2 },
+            { max: 128 },
+            { validator: (_, value) => systemDefinedNameValidator(value) }
           ]}
           validateFirst
           hasFeedback
@@ -173,7 +183,7 @@ export function AddCustomRole () {
       useState(form.getFieldValue(EdgeScopes.READ) ?? false)
 
     useEffect(() => {
-      if (location && location?.scopes && (isEditMode || action === 'clone')) {
+      if (location && location?.scopes && (isEditMode || isClone)) {
         const scopes = location.scopes
         scopes.map(s => form.setFieldValue(s, true))
         setWifiAttribute(scopes.find(a =>a.includes('wifi')) ? true : false )
@@ -555,7 +565,8 @@ export function AddCustomRole () {
     <PageHeader
       title={isEditMode
         ? intl.$t({ defaultMessage: 'Edit Admin Role' })
-        : intl.$t({ defaultMessage: 'Add Admin Role' })
+        : isClone ? intl.$t({ defaultMessage: 'Clone Admin Role' })
+          : intl.$t({ defaultMessage: 'Add Admin Role' })
       }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },

@@ -22,6 +22,7 @@ import {
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
+  useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,
   useGetVenuesQuery,
   useUpdatePrivilegeGroupMutation
@@ -32,7 +33,8 @@ import {
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
   Venue,
-  VenueObjectList
+  VenueObjectList,
+  systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -126,8 +128,10 @@ export function EditPrivilegeGroup () {
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
   const isOnboardedMsp = location ?? false
+  const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
@@ -207,8 +211,9 @@ export function EditPrivilegeGroup () {
           ? policyEntities : undefined
       }
 
-      await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
-        payload: privilegeGroupData }).unwrap()
+      isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
+        : await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
+          payload: privilegeGroupData }).unwrap()
 
       navigate(linkToPrivilegeGroups)
     } catch (error) {
@@ -219,7 +224,7 @@ export function EditPrivilegeGroup () {
   useEffect(() => {
     if (privilegeGroup) {
       const delegation = privilegeGroup.delegation || false
-      form.setFieldValue('name', privilegeGroup.name)
+      form.setFieldValue('name', isClone ? (privilegeGroup.name + ' - copy') : privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
       setDisplayMspScope(delegation)
@@ -464,18 +469,17 @@ export function EditPrivilegeGroup () {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 64 }
+                { max: 128 },
+                { validator: (_, value) => systemDefinedNameValidator(value) }
               ]}
               children={<Input />}
             />
             <Form.Item
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
-              rules={[
-                { min: 2 },
-                { max: 64 }
-              ]}
-              children={<Input />}
+              children={
+                <Input.TextArea rows={4} maxLength={180} />
+              }
             />
             <CustomRoleSelector />
           </Col>
@@ -506,7 +510,9 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Administrators' })}
+      title={isClone ? intl.$t({ defaultMessage: 'Clone Privilege Group' })
+        : intl.$t({ defaultMessage: 'Edit Privilege Group' })
+      }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },
         { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },

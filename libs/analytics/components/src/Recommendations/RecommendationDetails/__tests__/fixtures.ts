@@ -730,3 +730,81 @@ export const mockRecommendationAutoBackground = {
     }
   ]
 } as unknown as RecommendationDetails
+
+export const mockRecommendationProbeflexNew = {
+  id: '49c8ec53-a266-4dc1-a872-91a242791a53',
+  code: 'c-probeflex-24g',
+  status: 'new',
+  appliedTime: null,
+  isMuted: false,
+  originalValue: null,
+  currentValue: false,
+  recommendedValue: true,
+  metadata: {
+    dataEndTime: 1710720000000
+  },
+  sliceType: 'zone',
+  sliceValue: 'Divya-REC-Venue-AX-APs',
+  updatedAt: '2024-04-03T06:44:25.951Z',
+  dataEndTime: '2024-03-18T00:00:00.000Z',
+  preferences: {
+    crrmFullOptimization: true
+  },
+  path: [
+    {
+      type: 'zone',
+      name: 'Divya-REC-Venue-AX-APs'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2024-04-03T06:41:48.733Z'
+    }
+  ],
+  kpi_curr_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  }
+}
+
+export const mockRecommendationProbeflexApplied = {
+  id: '49c8ec53-a266-4dc1-a872-91a242791a53',
+  code: 'c-probeflex-24g',
+  status: 'applied',
+  appliedTime: null,
+  isMuted: false,
+  originalValue: null,
+  currentValue: false,
+  recommendedValue: true,
+  metadata: {
+    dataEndTime: 1710720000000
+  },
+  sliceType: 'zone',
+  sliceValue: 'Divya-REC-Venue-AX-APs',
+  updatedAt: '2024-04-03T06:44:25.951Z',
+  dataEndTime: '2024-03-18T00:00:00.000Z',
+  preferences: {
+    crrmFullOptimization: true
+  },
+  path: [
+    {
+      type: 'zone',
+      name: 'Divya-REC-Venue-AX-APs'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'applied',
+      createdAt: '2024-04-03T06:41:48.733Z'
+    }
+  ],
+  kpi_curr_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  },
+  kpi_prev_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  }
+}

@@ -23,6 +23,7 @@ const DnsServer = () => {
   const [form] = Form.useForm()
   const params = useParams()
   const {
+    clusterInfo,
     dnsServersData,
     isDnsServersDataFetching
   } = useContext(EditEdgeDataContext)
@@ -43,7 +44,15 @@ const DnsServer = () => {
 
   const handleApplyDns = async (data: EdgeDnsServers) => {
     try {
-      await updateDnsServers({ params: params, payload: data }).unwrap()
+      const requestPayload = {
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          ...params
+        },
+        payload: data
+      }
+      await updateDnsServers(requestPayload).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
