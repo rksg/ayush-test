@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent   from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 
-import { Provider, dataApiURL, store }                                  from '@acx-ui/store'
-import { render, screen, fireEvent, mockGraphqlQuery, waitFor, logDOM } from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store }                          from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery, waitFor } from '@acx-ui/test-utils'
 
 import { switchCountFixture, switchCountNoDataFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
 import { api }                                          from './OverviewTab/SummaryBoxes/services'
