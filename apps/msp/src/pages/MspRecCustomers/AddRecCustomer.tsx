@@ -255,24 +255,20 @@ export function AddRecCustomer () {
   const displayRecCustomer = () => {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
       return noDataDisplay
-    return mspRecCustomer.length === 1
-      ? <>
+    return mspRecCustomer.map(customer =>
+      <>
         <Form.Item
           label={intl.$t({ defaultMessage: 'Property Name' })}
         >
-          <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
+          <Paragraph>{customer.account_name}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Address' })}
         >
-          <Paragraph>{mspUtils.transformMspRecAddress(mspRecCustomer[0])}</Paragraph>
+          <Paragraph>{mspUtils.transformMspRecAddress(customer)}</Paragraph>
         </Form.Item>
       </>
-      : mspRecCustomer.map(customer =>
-        <UI.AdminList key={customer.account_id}>
-          {customer.account_name}
-        </UI.AdminList>
-      )
+    )
   }
 
   const displayEditRecCustomer = () => {
@@ -323,7 +319,7 @@ export function AddRecCustomer () {
         <label>{
           intl.$t({ defaultMessage: 'Brand Property' })
         }</label>
-        <Form.Item
+        <Form.Item style={{ maxHeight: '300px', overflow: 'auto' }}
           children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerRecVisible(true)}>
