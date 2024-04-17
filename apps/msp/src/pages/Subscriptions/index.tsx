@@ -17,6 +17,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
+  PendingActivations,
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
 import {
@@ -37,7 +38,7 @@ import {
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import HspContext from '../../HspContext'
 
@@ -62,10 +63,15 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 
 export function Subscriptions () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/mspLicenses', 'v')
+
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
+  const [activeKey, setActiveTabKey] = useState('')
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
+  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const {
     state
   } = useContext(HspContext)
@@ -357,6 +363,12 @@ export function Subscriptions () {
 
   const onTabChange = (tab: string) => {
     setActiveTab(tab === 'assignedSubscriptions')
+    setActiveTabKey(tab)
+    if (tab === 'pendingActivations')
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${tab}`
+      })
   }
 
   return (
@@ -385,11 +397,15 @@ export function Subscriptions () {
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
           key='assignedSubscriptions' />
+        {isPendingActivationEnabled && <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Pending Activations' })}
+          children={<PendingActivations />}
+          key='pendingActivations' />}
       </Tabs>}
 
-      <SubscriptionUtilization />
-      {(isAssignedActive && isMspSelfAssignmentEnabled)
-        ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
+      {activeKey !== 'pendingActivations' && <div><SubscriptionUtilization />
+        {(isAssignedActive && isMspSelfAssignmentEnabled)
+          ? <AssignedSubscriptionTable /> : <SubscriptionTable />}</div>}
     </>
   )
 }

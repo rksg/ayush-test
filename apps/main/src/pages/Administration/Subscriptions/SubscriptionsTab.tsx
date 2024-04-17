@@ -5,6 +5,7 @@ import {
   Tabs
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { PendingActivations }                                from '@acx-ui/msp/components'
 import { SpaceWrapper }                                      from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
@@ -12,8 +13,6 @@ import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 import MySubscriptions            from './MySubscriptions'
-import PendingActivations         from './PendingActivations'
-
 
 export const SubscriptionTabs = () => {
   const { $t } = useIntl()
