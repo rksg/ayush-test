@@ -36,6 +36,28 @@ describe('InterfaceTable', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: 'Smart Edge 1 Port2 192.168.13.136/ 24' })).toBeVisible()
     // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: 'Smart Edge 2 Port2 192.168.13.134/ 24' })).toBeVisible()
+  })
+
+  it('should render "Dynamic" when ip mode is DHCP', async () => {
+    render(
+      <InterfaceTable
+        value={[
+          mockVipConfig[0].interfaces[0],
+          {
+            ...mockVipConfig[0].interfaces[1],
+            portName: 'lag0'
+          }
+        ]}
+        nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+        lanInterfaces={mockLanInterfaces}
+      />
+    )
+
+    expect(screen.getByTestId('SelectInterfaceDrawer')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: 'Smart Edge 1 Port2 192.168.13.136/ 24' })).toBeVisible()
+    // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: 'Smart Edge 2 Lag0 Dynamic' })).toBeVisible()
   })
 

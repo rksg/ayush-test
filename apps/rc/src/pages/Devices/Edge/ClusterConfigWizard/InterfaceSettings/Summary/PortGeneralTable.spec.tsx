@@ -1,39 +1,31 @@
-import _ from 'lodash'
+/* eslint-disable max-len */
 
-import { EdgeGeneralFixtures, EdgeIpModeEnum, EdgePort, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen }                                            from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { defaultCxtData, getTargetInterfaceFromInterfaceSettingsFormData, mockClusterConfigWizardData } from '../../__tests__/fixtures'
-import { ClusterConfigWizardContext }                                                                   from '../../ClusterConfigWizardDataProvider'
+import { defaultCxtData, mockClusterConfigWizardData } from '../../__tests__/fixtures'
+import { ClusterConfigWizardContext }                  from '../../ClusterConfigWizardDataProvider'
 
 import { PortGeneralTable } from './PortGeneralTable'
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
-const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
-
 describe('InterfaceSettings - Summary > port general table', () => {
   it('should render correctly', async () => {
-    const mockData = _.cloneDeep(mockClusterConfigWizardData)
-    const n1p1 = getTargetInterfaceFromInterfaceSettingsFormData(
-      nodeList[0].serialNumber, 'port1', mockData.lagSettings, mockData.portSettings)
-    n1p1!.ipMode = EdgeIpModeEnum.DHCP
-    const n2p2 = getTargetInterfaceFromInterfaceSettingsFormData(
-      nodeList[1].serialNumber, 'port2', mockData.lagSettings, mockData.portSettings) as EdgePort
-    n2p2.enabled = false
-
     render(
       <ClusterConfigWizardContext.Provider value={defaultCxtData}>
         <PortGeneralTable
-          data={mockData.portSettings}
+          data={mockClusterConfigWizardData.portSettings}
         />
       </ClusterConfigWizardContext.Provider>
     )
 
     const node1PortsRow = await screen.findAllByRole('row', { name: /Smart Edge 1/ })
     expect(node1PortsRow.length).toBe(2)
-    screen.getByRole('row', { name: 'Smart Edge 1 port1 Enabled WAN DHCP' })
+    expect(screen.getByRole('row', { name: 'Smart Edge 1 port1 Disabled WAN Static IP 1.1.1.1' })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('row', { name: 'Smart Edge 1 port2 Enabled LAN Static IP 2.2.2.3' })).toBeVisible()
     const node2PortsRow = await screen.findAllByRole('row', { name: /Smart Edge 2/ })
-    expect(node2PortsRow.length).toBe(1)
-    screen.getByRole('row', { name: 'Smart Edge 2 port2 Disabled LAN Static IP 2.2.2.2' })
+    expect(node2PortsRow.length).toBe(2)
+    expect(screen.getByRole('row', { name: 'Smart Edge 2 port1 Disabled WAN DHCP' })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(screen.getByRole('row', { name: 'Smart Edge 2 port2 Enabled LAN Static IP 2.2.2.2' })).toBeVisible()
   })
 })
