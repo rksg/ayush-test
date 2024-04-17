@@ -1,16 +1,17 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
+
 import { Col, Row, Modal } from 'antd'
 import { useIntl }         from 'react-intl'
 import styled              from 'styled-components/macro'
 
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
+import { Button, cssStr, Alert }               from '@acx-ui/components'
+import { Android, Apple }                      from '@acx-ui/icons'
+import { AFCStatus, AFCInfo }                  from '@acx-ui/rc/utils'
+import { useNavigate, useLocation, useParams } from '@acx-ui/react-router-dom'
 
-import { Button, cssStr, Alert } from '@acx-ui/components'
-import { Android, Apple }        from '@acx-ui/icons'
-import { AFCStatus, AFCInfo }    from '@acx-ui/rc/utils'
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 const StyledAlert = styled(Alert)`
   line-height: 20px;
