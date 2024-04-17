@@ -1,17 +1,17 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useIntl }                                              from 'react-intl'
 
-import { Button, PageHeader, StepsForm } from '@acx-ui/components'
-import { formatter }                     from '@acx-ui/formatter'
+import { Button, PageHeader, StepsForm, Tooltip } from '@acx-ui/components'
+import { formatter }                              from '@acx-ui/formatter'
 import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon
 } from '@acx-ui/icons'
-import { EdgeClusterTypeCard, SpaceWrapper }     from '@acx-ui/rc/components'
-import { CommonCategory, Device, genUrl }        from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeClusterTypeCard, SpaceWrapper }                   from '@acx-ui/rc/components'
+import { CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
 import * as UI                        from './styledComponents'
@@ -21,61 +21,42 @@ export const SelectType = () => {
   const { clusterId } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const [selected, setSelected] = useState<string | undefined>(undefined)
+  const [hasGateway, setHasGateway] = useState(false)
 
-  const typeCards = [{
-    id: 'interface',
-    title: $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }),
-    icon: <PortIcon />,
-    targetUrl: genUrl([
-      CommonCategory.Device,
-      Device.EdgeCluster,
-      clusterId!,
-      'configure',
-      'interface'
-    ])
-  },
-  // {
-  //   id: 'subInterface',
-  //   title: $t({ defaultMessage: 'Sub-interface Settings' }),
-  //   icon: <SubInterfaceIcon />,
-  //   targetUrl: genUrl([
-  //     CommonCategory.Device,
-  //     Device.EdgeCluster,
-  //     clusterId!,
-  //     'configure',
-  //     'subInterface'
-  //   ])
-  // },
-  {
-    id: 'clusterInterface',
-    title: $t({ defaultMessage: 'Cluster Interface Settings' }),
-    icon: <ClusterInterfaceIcon />,
-    targetUrl: genUrl([
-      CommonCategory.Device,
-      Device.EdgeCluster,
-      clusterId!,
-      'configure',
-      'clusterInterface'
-    ])
-  }]
+  useEffect(() => {
+    if(!clusterNetworkSettings?.portSettings) return
+    const validateGateway = async () => {
+      for(let i=0; i<clusterNetworkSettings.portSettings.length; i++) {
+        const portSetting = clusterNetworkSettings.portSettings[i]
+        const lagSetting = clusterNetworkSettings.lagSettings.find(item =>
+          item.serialNumber === portSetting.serialNumber)
+        try {
+          await validateEdgeGateway(
+            portSetting.ports,
+            lagSetting?.lags ?? []
+          )
+        } catch (error) {
+          if((error as string).startsWith('At least'))
+            break
+        }
+        if(i === clusterNetworkSettings.portSettings.length - 1) {
+          setHasGateway(true)
+        }
+      }
+    }
+    validateGateway()
+  }, [clusterNetworkSettings])
 
   const handleClickTypeCard = (e: RadioChangeEvent) => {
     setSelected(e.target.value)
   }
 
-  const handleCacnel = () => {
+  const handleCancel = () => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/devices/${Device.Edge}` })
-  }
-
-  const handleNext = () => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}${typeCards.filter(i => i.id === selected)[0].targetUrl}`
-    })
   }
 
   const clusterName = clusterInfo?.name
@@ -101,6 +82,64 @@ export const SelectType = () => {
             && Math.ceil(+memoryVal) === Math.ceil(+targetMemoryVal)
       })
 
+  const typeCards = [{
+    id: 'interface',
+    title: $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }),
+    icon: <PortIcon />,
+    targetUrl: genUrl([
+      CommonCategory.Device,
+      Device.EdgeCluster,
+          clusterId!,
+          'configure',
+          'interface'
+    ]),
+    disabledList: [
+      {
+        value: !isHardwareCompatible
+      }
+    ]
+  },
+  // {
+  //   id: 'subInterface',
+  //   title: $t({ defaultMessage: 'Sub-interface Settings' }),
+  //   icon: <SubInterfaceIcon />,
+  //   targetUrl: genUrl([
+  //     CommonCategory.Device,
+  //     Device.EdgeCluster,
+  //     clusterId!,
+  //     'configure',
+  //     'subInterface'
+  //   ])
+  // },
+  {
+    id: 'clusterInterface',
+    title: $t({ defaultMessage: 'Cluster Interface Settings' }),
+    icon: <ClusterInterfaceIcon />,
+    targetUrl: genUrl([
+      CommonCategory.Device,
+      Device.EdgeCluster,
+          clusterId!,
+          'configure',
+          'clusterInterface'
+    ]),
+    disabledList: [
+      {
+        value: !isHardwareCompatible
+      },
+      {
+        value: !hasGateway,
+        tooltip: $t({ defaultMessage: 'Please complete the LAG, Port & Virtual IP Settings first' })
+      }
+    ]
+  }]
+
+  const handleNext = () => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}${typeCards.filter(i => i.id === selected)[0].targetUrl}`
+    })
+  }
+
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Cluster & SmartEdge Configuration Wizard' })}
@@ -122,16 +161,34 @@ export const SelectType = () => {
         value={selected}
       >
         <Row gutter={[12, 0]}>
-          {typeCards.map(item => (
-            <Col key={item.id}>
-              <EdgeClusterTypeCard
-                id={item.id}
-                title={item.title}
-                icon={item.icon}
-                disabled={!isHardwareCompatible}
-              />
-            </Col>
-          ))}
+          {
+            typeCards.map(item => {
+              const disabled = item.disabledList.find(item => item.value)
+              return <Col key={item.id}>
+                {
+                  disabled?.tooltip ?
+                    <Tooltip title={disabled.tooltip}>
+                      <div>
+                        <EdgeClusterTypeCard
+                          id={item.id}
+                          title={item.title}
+                          icon={item.icon}
+                          disabled={disabled?.value}
+                        />
+                      </div>
+                    </Tooltip>
+                    :
+                    <EdgeClusterTypeCard
+                      id={item.id}
+                      title={item.title}
+                      icon={item.icon}
+                      disabled={disabled?.value}
+                    />
+                }
+              </Col>
+            }
+            )
+          }
         </Row>
       </Radio.Group>
       {clusterInfo && !isHardwareCompatible &&
@@ -156,16 +213,19 @@ export const SelectType = () => {
     <StepsForm.ActionsContainer>
       <Space align='center' size={12}>
         <Button
-          onClick={handleCacnel}
+          onClick={handleCancel}
           children={$t({ defaultMessage: 'Cancel' })}
         />
         <Space align='center' size={12}>
-          <Button
-            type='primary'
-            onClick={handleNext}
-            disabled={!isHardwareCompatible || !Boolean(selected)}
-            children={$t({ defaultMessage: 'Next' })}
-          />
+          <Tooltip title='test'>
+
+            <Button
+              type='primary'
+              onClick={handleNext}
+              disabled={!isHardwareCompatible || !Boolean(selected)}
+              children={$t({ defaultMessage: 'Next' })}
+            />
+          </Tooltip>
         </Space>
       </Space>
     </StepsForm.ActionsContainer>
