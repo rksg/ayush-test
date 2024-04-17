@@ -114,4 +114,48 @@ describe('IntlUtils', () => {
     /* eslint-enable no-console */
   })
 
+  describe('getReSkinningElements', () => {
+    it('get default re-skinning elements', () => {
+      const expected = {
+        venueSingular: 'venue',
+        venuePlural: 'venues',
+        VenueSingular: 'Venue',
+        VenuePlural: 'Venues'
+      }
+      const ret = intlUtil.getReSkinningElements()
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(ret[fnName]()).toEqual(expected[fnName])
+      }
+
+      const retWithIntl = intlUtil.getReSkinningElements(intlUtil.getIntl())
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+      }
+    })
+    it('get default re-skinning elements with HSP user', () => {
+      require('./jwtToken').getJwtTokenPayload = jest.fn().mockImplementation(() => ({
+        acx_account_vertical: 'Hospitality'
+      }))
+      const expected = {
+        venueSingular: 'space',
+        venuePlural: 'spaces',
+        VenueSingular: 'Space',
+        VenuePlural: 'Spaces'
+      }
+      const ret = intlUtil.getReSkinningElements()
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(ret[fnName]()).toEqual(expected[fnName])
+      }
+
+      const retWithIntl = intlUtil.getReSkinningElements(intlUtil.getIntl())
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+      }
+    })
+  })
 })
+

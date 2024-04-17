@@ -1,6 +1,8 @@
 import { OnErrorFn, IntlErrorCode }                           from '@formatjs/intl'
 import { createIntl, createIntlCache, IntlConfig, IntlShape } from 'react-intl'
 
+import { AccountVertical, getJwtTokenPayload } from './jwtToken'
+
 const globalIntlCache = createIntlCache()
 
 let intl: IntlShape | undefined
@@ -14,13 +16,32 @@ export const onIntlError: OnErrorFn = (error) => {
   console.error(error)
 }
 
+export function getReSkinningElements (intl?: IntlShape) {
+  const { acx_account_vertical } = getJwtTokenPayload()
+  return acx_account_vertical === AccountVertical.HOSPITALITY ? {
+    venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
+    venuePlural: () => intl ? intl.$t({ defaultMessage: 'spaces' }) : 'spaces',
+    VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Space' }) : 'Space',
+    VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Spaces' }) : 'Spaces'
+  } : {
+    venueSingular: () => intl ? intl.$t({ defaultMessage: 'venue' }) : 'venue' ,
+    venuePlural: () => intl ? intl.$t({ defaultMessage: 'venues' }) : 'venues',
+    VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Venue' }) : 'Venue',
+    VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Venues' }) : 'Venues'
+  }
+}
+
 export function setUpIntl (config?: IntlConfig) {
   if (!config) {
     intl = undefined
     return
   }
 
-  config = { onError: onIntlError, ...config }
+  config = {
+    defaultRichTextElements: getReSkinningElements(),
+    onError: onIntlError,
+    ...config
+  }
   intl = createIntl(config, globalIntlCache)
 }
 

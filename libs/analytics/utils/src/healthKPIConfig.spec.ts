@@ -4,6 +4,7 @@ describe('Health KPI', () => {
   const mockGet = jest.fn()
   beforeEach(() => {
     jest.resetModules()
+    require('@acx-ui/utils').setUpIntl({ locale: 'en-US', messages: {} })
     jest.doMock('@acx-ui/config', () => ({ get: mockGet }))
   })
   it('returns config for R1', () => {

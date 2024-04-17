@@ -15,11 +15,7 @@ import {
   LocaleProviderProps,
   prepareAntdValidateMessages,
   onIntlError,
-  getIntl,
-  DEFAULT_SYS_LANG,
-  setUpIntl,
-  getJwtTokenPayload,
-  AccountVertical
+  getReSkinningElements
 } from '@acx-ui/utils'
 
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
@@ -38,30 +34,13 @@ function AntConfigProviders (props: ConfigProviderProps) {
 }
 
 export function ConfigProvider (props: ConfigProviderProps) {
-  try {
-    getIntl()
-  } catch (error) {
-    setUpIntl({ locale: props.lang || DEFAULT_SYS_LANG })
-  }
-  const { $t } = getIntl()
-  const { acx_account_vertical } = getJwtTokenPayload()
   moment.locale(props.lang)
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {locale => (
           <IntlProvider locale={locale.lang}
-            defaultRichTextElements={acx_account_vertical === AccountVertical.HOSPITALITY ? {
-              venueSingular: () => $t({ defaultMessage: 'space' }),
-              venuePlural: () => $t({ defaultMessage: 'spaces' }),
-              VenueSingular: () => $t({ defaultMessage: 'Space' }),
-              VenuePlural: () => $t({ defaultMessage: 'Spaces' })
-            } : {
-              venueSingular: () => $t({ defaultMessage: 'venue' }),
-              venuePlural: () => $t({ defaultMessage: 'venues' }),
-              VenueSingular: () => $t({ defaultMessage: 'Venue' }),
-              VenuePlural: () => $t({ defaultMessage: 'Venues' })
-            }}
+            defaultRichTextElements={getReSkinningElements()}
             messages={locale.messages}
             onError={onIntlError}
           >
