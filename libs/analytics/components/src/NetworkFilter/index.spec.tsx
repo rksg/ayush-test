@@ -11,7 +11,7 @@ import { networkFilterResult } from './__tests__/fixtures'
 import { api, Child }          from './services'
 import { NonSelectableItem }   from './styledComponents'
 
-import { NetworkFilter, onApply, getNetworkFilterData } from './index'
+import { NetworkFilter, onApply, getNetworkFilterData, modifyRawValue } from './index'
 
 const mockIncidents = [
   {
@@ -270,7 +270,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    mockUseReportsFilter.raw = [['switchGroup']]
+    mockUseReportsFilter.raw = [['switchGroup']] as never[]
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQueryAp
       shouldQuerySwitch={false}
@@ -291,7 +291,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    mockUseReportsFilter.raw = [['zone']]
+    mockUseReportsFilter.raw = [['zone']] as never[]
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQueryAp={false}
       shouldQuerySwitch
@@ -455,5 +455,55 @@ describe('getNetworkFilterData', () => {
     expect(switchItem.value).toEqual('switchesSome Name')
     expect(JSON.parse(String(switchItem.children?.[0].value))[1].name).toEqual('Some Name')
     /* eslint-enable testing-library/no-node-access */
+  })
+  it('should not return aps and switches in the network filter', () => {
+    const data: Child[] = [{
+      id: '473f0528888b4e09872b1560711d9dbd',
+      type: 'zone',
+      name: 'Some Name',
+      aps: [
+        { name: 'AP Name', mac: '00:00:00:00:00:00' }
+      ],
+      switches: [
+        { name: 'Switch Name', mac: '11:11:11:11:11:11' }
+      ]
+    }]
+    const [firstItem] = getNetworkFilterData(data, {}, false, true)
+    // eslint-disable-next-line testing-library/no-node-access
+    const [apItem, switchItem] = firstItem.children!
+    expect(apItem).toBeUndefined()
+    expect(switchItem).toBeUndefined()
+  })
+})
+
+describe('modifyRawValue', () => {
+  it('should not modify rawVal if only zones are present in data, for switch case', () => {
+    const rawVal = [
+      '[{"type":"zone","name":"zone-name"}]',
+      'apszone',
+      '[{"type":"zone","name":"zone-name"},{"type":"AP","name":"CC:1B:5A:00:9F:40"}]'
+    ]
+    const dataText = '[{"type":"zone","name":"zone-name"}]'
+    expect(modifyRawValue(rawVal, dataText, 'switchGroup', 'zone')).toEqual(rawVal)
+  })
+
+  it('should modify zone to switchGroup for switch case', () => {
+    const rawVal = [
+      '[{"type":"zone","name":"zone-name"}]'
+    ]
+    const dataText = '[{"type":"switchGroup","name":"zone-name"}]'
+    expect(modifyRawValue(rawVal, dataText, 'zone', 'switchGroup')).toEqual([
+      '[{"type":"switchGroup","name":"zone-name"}]'
+    ])
+  })
+
+  it('should return empty array data does not contain the raw val nodes', () => {
+    const rawVal = [
+      '[{"type":"zone","name":"zone"}]',
+      'apszone',
+      '[{"type":"zone","name":"zone"},{"type":"AP","name":"CC:1B:5A:00:9F:40"}]'
+    ]
+    const dataText = '[{"type": "switchGroup", "name": "switch-group"}]'
+    expect(modifyRawValue(rawVal, dataText, 'zone', 'switchGroup')).toEqual([])
   })
 })

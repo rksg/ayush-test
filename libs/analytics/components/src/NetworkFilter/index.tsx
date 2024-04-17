@@ -193,6 +193,33 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
+/**
+ * Modify the raw values based on the provided criteria.
+ *
+ * @param {string[]} rawVal - The array of raw values to be modified
+ * @param {string} dataText - The text data to compare with
+ * @param {string} type - The type to match in the raw values
+ * @param {string} replaceTxt - The text to replace in the raw values
+ * @return {string[]} The modified raw values array
+ */
+export const modifyRawValue = (
+  rawVal:string[], dataText: string, type: string, replaceTxt: string
+) => {
+  const newRawVal = rawVal.map(value => {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      return JSON.parse(value)
+        .map((item: RawValPath) =>
+          item.type === type && dataText.includes(item.name)
+            ? { ...item, type: replaceTxt } : item)
+    }
+    return value
+  }).map(item => Array.isArray(item) ? JSON.stringify(item) : item)
+
+  return newRawVal.some(value => value.includes(replaceTxt))
+    ? newRawVal
+    : []
+}
+
 export { ConnectedNetworkFilter as NetworkFilter }
 
 function ConnectedNetworkFilter (
@@ -260,26 +287,10 @@ function ConnectedNetworkFilter (
       .map(({ value }) => value)
       .join(',')
 
-    const modifyRawVal = (rawVal:string[], type: string, replaceTxt: string) => {
-      const newRawVal = rawVal.map(value => {
-        if (value.startsWith('[') && value.endsWith(']')) {
-          return JSON.parse(value)
-            .map((item: RawValPath) =>
-              item.type === type && dataText.includes(item.name)
-                ? { ...item, type: replaceTxt } : item)
-        }
-        return value
-      }).map(item => Array.isArray(item) ? JSON.stringify(item) : item)
-
-      return newRawVal.some(value => value.includes(replaceTxt))
-        ? newRawVal
-        : []
-    }
-
     if(!shouldQueryAp && shouldQuerySwitch){
-      rawVal = modifyRawVal(rawVal, 'zone', 'switchGroup')
+      rawVal = modifyRawValue(rawVal, dataText, 'zone', 'switchGroup')
     } else if(shouldQueryAp){
-      rawVal = modifyRawVal(rawVal, 'switchGroup', 'zone')
+      rawVal = modifyRawValue(rawVal, dataText, 'switchGroup', 'zone')
     }
   }
 
