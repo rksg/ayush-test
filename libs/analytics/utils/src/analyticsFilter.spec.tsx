@@ -167,6 +167,8 @@ describe('useAnalyticsFilter', () => {
   })
 
   it('should set path to default when path is health and selected node is switch for R1', () => {
+    mockGet.mockReturnValueOnce('true')
+
     const filter = {
       path: [
         { type: 'switchGroup', name: 'switchGroup' }
@@ -411,11 +413,20 @@ describe('isSwitchPath', () => {
 })
 describe('isApPath', () => {
   it('returns true if is ap path', () => {
+    mockGet.mockReturnValueOnce('true')
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'system', name: 's1' },
       { type: 'zone', name: 'z1' },
       { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApPath(path)).toBe(true)
+  })
+  it('returns true if is ap path for Alto', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'z1' },
       { type: 'AP', name: 'm1' }
     ] as NetworkPath
     expect(isApPath(path)).toBe(true)

@@ -159,7 +159,7 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
 
 export const isSwitchPath = (path: NetworkPath) => {
   return get('IS_MLISA_SA')
-    ? Boolean(path.find(({ type }) => type === 'switchGroup'))
+    ? Boolean(path.find(({ type }) => type === 'switchGroup' || type === 'switch'))
     : Boolean(path.find(({ type }) => type === 'switch'))
 }
 
