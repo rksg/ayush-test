@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import userEvent   from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 
 import { Provider, dataApiURL, store }                          from '@acx-ui/store'
@@ -78,7 +79,7 @@ describe('HealthTabs', () => {
     )
   })
 
-  it('should disable the wired tab when no switches', async () => {
+  it('should show the tooltip when wired tab is disabled', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountNoDataFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1' })
@@ -95,8 +96,16 @@ describe('HealthTabs', () => {
       <HealthTabs />
     </Provider>, { route: { params } })
 
-    await waitFor(async () =>
-      expect(screen.getByRole('tab', { name: 'Wired' }).getAttribute('aria-disabled'))
-        .toBe('true'))
+    await waitFor(async () => {
+      const wiredTab= await screen.findByText('Wired')
+      expect(wiredTab.getAttribute('aria-disabled'))
+        .toBe(null)
+    })
+    const wiredTab= await screen.findByText('Wired')
+    await userEvent.hover(wiredTab)
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip', { hidden: true }))
+        .toHaveTextContent('Switches have not been on boarded in your SmartZone')
+    })
   })
 })

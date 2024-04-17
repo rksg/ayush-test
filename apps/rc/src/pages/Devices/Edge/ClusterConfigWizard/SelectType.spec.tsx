@@ -22,12 +22,12 @@ jest.mock('antd', () => ({
   ...jest.requireActual('antd'),
   Spin: ({ children, spinning }: React.PropsWithChildren
   & { spinning: boolean }) => <div>
-    {spinning && <div data-testid='antd-spinning' />}
+    {spinning && <div data-testid='antd-disabled-frame' />}
     {children}
   </div>
 }))
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 
 describe('SelectType', () => {
   let params: { tenantId: string, clusterId:string }
@@ -44,7 +44,10 @@ describe('SelectType', () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -57,11 +60,14 @@ describe('SelectType', () => {
     // expect(screen.getByText('Sub-interface Settings')).toBeInTheDocument()
     expect(screen.getByText('Cluster Interface Settings')).toBeInTheDocument()
   })
-  it('should navigte to interface setting step', async () => {
+  it('should navigate to interface setting step', async () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -83,11 +89,14 @@ describe('SelectType', () => {
       search: ''
     })
   })
-  it.skip('should navigte to sub-interface setting step', async () => {
+  it.skip('should navigate to sub-interface setting step', async () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -108,11 +117,14 @@ describe('SelectType', () => {
       search: ''
     })
   })
-  it('should navigte to cluster interface setting step', async () => {
+  it('should navigate to cluster interface setting step', async () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -120,6 +132,7 @@ describe('SelectType', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
       })
     await checkDataRendered()
+    await waitFor(() => expect(screen.queryByTestId('antd-disabled-frame')).toBeNull())
     const cardIcon = screen.getAllByRole('radio').filter(i =>
       i.getAttribute('value') === 'clusterInterface'
     )[0]
@@ -133,11 +146,14 @@ describe('SelectType', () => {
       search: ''
     })
   })
-  it('should navigte to cluster table page when cancel is clicked', async () => {
+  it('should navigate to cluster table page when cancel is clicked', async () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
+          clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -159,7 +175,10 @@ describe('SelectType', () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockedData.data[0] as EdgeClusterStatus
+          clusterInfo: mockedData.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -177,7 +196,10 @@ describe('SelectType', () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockedIncompatibleData.data[0] as EdgeClusterStatus
+          clusterInfo: mockedIncompatibleData.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -186,7 +208,7 @@ describe('SelectType', () => {
       })
     await checkDataRendered()
     expect(screen.queryByText('Incompatible Hardware warning:')).toBeValid()
-    expect(screen.getAllByTestId('antd-spinning').length).toBe(2)
+    expect(screen.getAllByTestId('antd-disabled-frame').length).toBe(2)
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled()
   })
   it('should be no hardware compatible issue when only 1 node', async () => {
@@ -196,7 +218,10 @@ describe('SelectType', () => {
     render(
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
-          clusterInfo: mockedOneNodeData.data[0] as EdgeClusterStatus
+          clusterInfo: mockedOneNodeData.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
         }}>
           <SelectType />
         </ClusterConfigWizardContext.Provider>
@@ -205,12 +230,40 @@ describe('SelectType', () => {
       })
     await checkDataRendered()
     expect(screen.queryByText('Incompatible Hardware warning:')).toBeNull()
-    expect(screen.queryByTestId('antd-spinning')).toBeNull()
+    await waitFor(() => expect(screen.queryByTestId('antd-disabled-frame')).toBeNull())
     const cardIcon = screen.getAllByRole('radio').filter(i =>
       i.getAttribute('value') === 'clusterInterface'
     )[0]
     await userEvent.click(cardIcon)
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
+  })
+
+  it('cluster interface card should be disabled when there is no gateway', async () => {
+    const mockedOneNodeData = _.cloneDeep(mockEdgeClusterList)
+    mockedOneNodeData.data[0].edgeList.splice(1, 1)
+
+    render(
+      <Provider>
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: mockedOneNodeData.data[0] as EdgeClusterStatus,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <SelectType />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+    await checkDataRendered()
+    expect(screen.queryByText('Incompatible Hardware warning:')).toBeNull()
+    await waitFor(() => expect(screen.queryAllByTestId('antd-disabled-frame').length).toBe(1))
+    const cardIcon = screen.getAllByRole('radio').filter(i =>
+      i.getAttribute('value') === 'clusterInterface'
+    )[0]
+    await userEvent.hover(cardIcon)
+    expect(
+      await screen.findByRole('tooltip')
+    ).toHaveTextContent('Please complete the LAG, Port & Virtual IP Settings first')
   })
 })
 
