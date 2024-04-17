@@ -38,8 +38,7 @@ export const SelectType = () => {
             lagSetting?.lags ?? []
           )
         } catch (error) {
-          if((error as string).startsWith('At least'))
-            break
+          break
         }
         if(i === clusterNetworkSettings.portSettings.length - 1) {
           setHasGateway(true)
