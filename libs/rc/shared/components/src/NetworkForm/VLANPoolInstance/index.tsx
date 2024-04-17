@@ -4,10 +4,10 @@ import { Form, Select, Input, Space } from 'antd'
 import { DefaultOptionType }          from 'antd/lib/select'
 import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
-import { useParams }                  from 'react-router-dom'
 
-import { Tooltip }              from '@acx-ui/components'
-import { useVlanPoolListQuery } from '@acx-ui/rc/services'
+import { Tooltip }                                                     from '@acx-ui/components'
+import { useGetVlanPoolPolicyTemplateListQuery, useVlanPoolListQuery } from '@acx-ui/rc/services'
+import { VlanPool, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
 
 import VLANPoolModal from './VLANPoolModal'
 
@@ -19,20 +19,22 @@ const listPayload = {
 
 const VLANPoolInstance = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
-  // const { data } = useGetVLANPoolPolicyListQuery({ params })
-  const { data } = useVlanPoolListQuery({
-    params,
-    payload: listPayload
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher<VlanPool[]>(
+    useVlanPoolListQuery,
+    useGetVlanPoolPolicyTemplateListQuery,
+    false,
+    listPayload
+  )
 
   const [vlanPoolList, setVlanPoolList]= useState<DefaultOptionType[]>()
-  useEffect(()=>{
-    if(data){
+
+  useEffect(() => {
+    if (data) {
       setVlanPoolList(data.map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
+
   return (
     <>
       <Form.Item label={$t({ defaultMessage: 'Select VLAN Pool' })}><Space>

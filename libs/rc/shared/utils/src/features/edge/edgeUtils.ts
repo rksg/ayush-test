@@ -355,12 +355,12 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
 
   const lagWithGateway = getLagGatewayCount(lagData)
 
-  const totoalGateway = portWithGateway + lagWithGateway
+  const totalGateway = portWithGateway + lagWithGateway
 
-  if (totoalGateway === 0) {
+  if (totalGateway === 0) {
     // eslint-disable-next-line max-len
     return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
-  } else if (totoalGateway > 1) {
+  } else if (totalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   } else {
     return Promise.resolve()
