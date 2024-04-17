@@ -345,7 +345,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addBrandCustomers: {
     method: 'post',
-    url: '/brandAccounts',
+    url: '/tenants',
     newApi: true
   }
 }
