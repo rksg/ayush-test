@@ -415,7 +415,7 @@ export const mockedHaNetworkSettings = {
       gateway: '',
       corePortEnabled: false,
       natEnabled: true,
-      lagEnabled: false
+      lagEnabled: true
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
@@ -433,7 +433,7 @@ export const mockedHaNetworkSettings = {
       gateway: '127.1.1.0',
       corePortEnabled: false,
       natEnabled: false,
-      lagEnabled: false
+      lagEnabled: true
     }]
   }],
   portSettings: [{
