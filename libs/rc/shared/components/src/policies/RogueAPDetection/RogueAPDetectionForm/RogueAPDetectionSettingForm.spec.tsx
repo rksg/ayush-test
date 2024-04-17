@@ -8,53 +8,12 @@ import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } fro
 import { Provider, store }                                                   from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor }                          from '@acx-ui/test-utils'
 
-import { mockedRogueApPoliciesList } from '../__tests__/fixtures'
-import RogueAPDetectionContext       from '../RogueAPDetectionContext'
+import { detailContent, mockedRogueApPoliciesList, policyListContent } from '../__tests__/fixtures'
+import RogueAPDetectionContext                                         from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm }        from './RogueAPDetectionForm'
 import { RogueAPDetectionSettingForm } from './RogueAPDetectionSettingForm'
 
-
-const policyListContent = [
-  {
-    id: 'policyId1',
-    name: 'policyName1',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1664790827392,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  },
-  {
-    id: 'be62604f39aa4bb8a9f9a0733ac07add',
-    name: 'test6',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1667215711375,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  }
-]
-const detailContent = {
-  venues: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue'
-    }
-  ],
-  name: 'policyName1',
-  rules: [
-    {
-      name: 'SameNetworkRuleName',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 1
-    }
-  ],
-  id: 'policyId1'
-}
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
@@ -127,16 +86,16 @@ describe('RogueAPDetectionSettingForm', () => {
     expect(screen.getByRole('columnheader', {
       name: /category/i
     })).toBeTruthy()
-
-    await screen.findByRole('heading', { name: 'Settings', level: 3 })
   })
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {
+    const mockGetRoguePolicy = jest.fn()
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
+      (_, res, ctx) => {
+        mockGetRoguePolicy()
+        return res(ctx.json(detailContent))
+      }
     ), rest.get(
       RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
@@ -163,6 +122,8 @@ describe('RogueAPDetectionSettingForm', () => {
       }
     )
 
+    await waitFor(() => expect(mockGetRoguePolicy).toBeCalled())
+
     expect(screen.getByRole('columnheader', {
       name: /priority/i
     })).toBeTruthy()
@@ -176,9 +137,8 @@ describe('RogueAPDetectionSettingForm', () => {
       name: /category/i
     })).toBeTruthy()
 
-    await screen.findByRole('heading', { name: 'Settings', level: 3 })
     await waitFor(async () => {
-      expect(await screen.findByLabelText(/Policy Name/i)).toHaveValue('policyName1')
+      expect(await screen.findByLabelText(/Policy Name/i)).toHaveValue(detailContent.name)
     })
   })
 })

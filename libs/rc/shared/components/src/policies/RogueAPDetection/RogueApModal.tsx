@@ -20,7 +20,7 @@ export const RogueApModal = (props: {
     >
       {$t({ defaultMessage: 'Add Profile' })}
     </Button>
-    <Modal
+    {visible && <Modal
       title={$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
       visible={visible}
       type={ModalType.ModalStepsForm}
@@ -36,6 +36,6 @@ export const RogueApModal = (props: {
           }}
         />}
       onCancel={() => setVisible(false)}
-    />
+    />}
   </>
 }
