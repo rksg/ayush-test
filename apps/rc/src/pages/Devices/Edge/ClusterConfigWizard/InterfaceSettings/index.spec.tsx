@@ -5,11 +5,11 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
-import { CompatibilityNodeError, CompatibilityStatusEnum }                                                                                                                         from '@acx-ui/rc/components'
-import { edgeApi }                                                                                                                                                                 from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgeLagFixtures, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                                                  from '@acx-ui/test-utils'
+import { CompatibilityNodeError, CompatibilityStatusEnum }                                                                                                        from '@acx-ui/rc/components'
+import { edgeApi }                                                                                                                                                from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                                                                                                            from '@acx-ui/test-utils'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -19,9 +19,8 @@ import * as VirtualIpForm from './VirtualIpForm'
 
 import { InterfaceSettings } from '.'
 
-const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockedEdgeLagList } = EdgeLagFixtures
-const { mockedPortsStatus, mockEdgePortConfig } = EdgePortConfigFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
 const mockEdgeCluster = _.cloneDeep(EdgeGeneralFixtures.mockEdgeCluster)
 mockEdgeCluster.virtualIpSettings.virtualIps[0].virtualIp = '2.2.2.90'
@@ -91,6 +90,7 @@ const defaultCxtData = {
   clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
   portsStatus: mockedPortsStatus,
   edgeSdLanData: mockedSdLanServiceP2Dmz as EdgeSdLanViewDataP2,
+  clusterNetworkSettings: mockedHaNetworkSettings,
   isLoading: false,
   isFetching: false
 }
@@ -109,18 +109,6 @@ describe('InterfaceSettings', () => {
     store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getEdgeCluster.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdgeLagList.url,
-        (_req, res, ctx) => res(ctx.json(mockedEdgeLagList))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
       rest.patch(
         EdgeUrlsInfo.patchEdgeClusterNetworkSettings.url,
         (req, res, ctx) => {
@@ -140,7 +128,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const form = await screen.findByTestId('steps-form')
     within(form).getByRole('button', { name: 'LAG' })
     expect(await screen.findByTestId('rc-LagForm')).toBeVisible()
@@ -159,7 +146,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     const nextBtn = screen.getByRole('button', { name: 'Next' })
     within(stepsForm).getByTestId('rc-LagForm')
@@ -193,7 +179,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     const nextBtn = screen.getByRole('button', { name: 'Next' })
     within(stepsForm).getByTestId('rc-LagForm')
@@ -221,7 +206,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
@@ -245,7 +229,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -281,7 +264,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -311,7 +293,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -341,7 +322,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     const nextBtn = screen.getByRole('button', { name: 'Next' })
     within(stepsForm).getByTestId('rc-LagForm')
@@ -352,8 +332,8 @@ describe('InterfaceSettings', () => {
       expect(within(stepsForm).queryByRole('heading', { name: 'Cluster Virtual IP' })).toBeValid())
     // eslint-disable-next-line max-len
     const vipInputs = await within(stepsForm).findAllByRole('textbox', { name: 'Virtual IP Address' })
-    await userEvent.clear(vipInputs[1])
-    await userEvent.type(vipInputs[1], '3.3.3.12')
+    await userEvent.clear(vipInputs[0])
+    await userEvent.type(vipInputs[0], '2.2.2.10')
     await userEvent.click(nextBtn)
     await within(stepsForm).findByTestId('rc-Summary')
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
@@ -374,7 +354,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -402,7 +381,6 @@ describe('InterfaceSettings', () => {
       route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const stepsForm = await screen.findByTestId('steps-form')
     within(stepsForm).getByTestId('rc-LagForm')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -446,7 +424,6 @@ describe('InterfaceSettings', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
       })
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       within(await screen.findByTestId('steps-form')).getByTestId('rc-LagForm')
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       const compatibleStatusBar = screen.queryByTestId('rc-CompatibilityStatusBar')
@@ -484,7 +461,6 @@ describe('InterfaceSettings', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
       })
 
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       within(await screen.findByTestId('steps-form')).getByTestId('rc-LagForm')
       await userEvent.click(screen.getByRole('button', { name: 'Next' }))
       const compatibleStatusBar = screen.queryByTestId('rc-CompatibilityStatusBar')

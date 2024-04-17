@@ -21,7 +21,7 @@ import ClusterConfigWizard from './index'
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockedSdLanDataList } = EdgeSdLanFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 const MockedComponent = (props: React.PropsWithChildren) => {
@@ -81,6 +81,10 @@ describe('ClusterConfigWizard', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeClusterNetworkSettings.url,
+        (_req, res, ctx) => res(ctx.json(mockedHaNetworkSettings))
       )
     )
   })
