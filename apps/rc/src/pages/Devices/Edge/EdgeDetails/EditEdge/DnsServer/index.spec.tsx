@@ -14,7 +14,7 @@ import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataPro
 
 import DnsServer from './index'
 
-const { mockEdgeDnsServersData } = EdgeGeneralFixtures
+const { mockEdgeDnsServersData, mockEdgeClusterList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -47,6 +47,7 @@ describe('EditEdge dns servers', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             dnsServersData: mockEdgeDnsServersData,
             isDnsServersDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -69,6 +70,7 @@ describe('EditEdge dns servers', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             dnsServersData: mockEdgeDnsServersData,
             isDnsServersDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -92,6 +94,7 @@ describe('EditEdge dns servers', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             dnsServersData: mockEdgeDnsServersData,
             isDnsServersDataFetching: false
           } as unknown as EditEdgeDataContextType}
@@ -138,6 +141,7 @@ describe('EditEdge dns servers fail case', () => {
       <Provider>
         <EditEdgeDataContext.Provider
           value={{
+            clusterInfo: mockEdgeClusterList.data[1],
             dnsServersData: mockEdgeDnsServersData,
             isDnsServersDataFetching: false
           } as unknown as EditEdgeDataContextType}

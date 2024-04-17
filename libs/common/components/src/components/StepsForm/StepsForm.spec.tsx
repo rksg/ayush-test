@@ -10,7 +10,8 @@ import {
   FieldSummaryProps,
   StepsForm
 } from './StepsForm'
-import { StepsFormProps } from './types'
+import { StepsFormProps }             from './types'
+import { isStepsFormBackStepClicked } from './utils'
 
 const StepFormContext = createStepsFormContext()
 
@@ -362,13 +363,13 @@ describe('StepsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
-    expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onFinish1.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
-    expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onFinish2.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
 
     expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
     expect(onFinish).not.toBeCalled()
@@ -417,13 +418,13 @@ describe('StepsForm', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 1' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    expect(onFinish1).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onFinish1.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
     expect(logError).toHaveBeenCalledWith(true)
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
-    expect(onFinish2).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onFinish2.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
     expect(onFinishFailed2).toBeCalledWith(true)
 
     expect(onFinishFailed).not.toBeCalled()
@@ -507,17 +508,58 @@ describe('StepsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
-    expect(onStep1Finish).toHaveBeenCalledWith({ field1: 'value' })
+    expect(onStep1Finish.mock.calls[0][0]).toStrictEqual({ field1: 'value' })
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Field 2' }), 'value')
     await userEvent.click(screen.getByRole('button', { name: 'ApplyAndContinue' }))
 
     expect(await screen.findByRole('heading', { name: 'Done 1' })).toBeVisible()
-    expect(onStep2Finish).toHaveBeenCalledWith({ field1: 'value', field2: 'value' })
+    expect(onStep2Finish.mock.calls[0][0]).toStrictEqual({ field1: 'value', field2: 'value' })
 
     expect(await screen.findAllByRole('heading', { name: /Done/ })).toHaveLength(1)
     expect(onFinish).not.toBeCalled()
     expect(mockedCustomSubmitOnFinish).toBeCalled()
+  })
+
+  it('should correctly recognize back step button', async () => {
+    const step1OnFinishSpy = jest.fn()
+    const step2OnFinishSpy = jest.fn()
+    render(<StepsForm>
+      <StepsForm.StepForm title='Step 1'
+        onFinish={async (_, e?: React.MouseEvent) => {
+          step1OnFinishSpy(isStepsFormBackStepClicked(e))
+        }}>
+        <StepsForm.Title>Step 1 Title</StepsForm.Title>
+        <Form.Item name='field1' label='Field 1'>
+          <Input />
+        </Form.Item>
+      </StepsForm.StepForm>
+      <StepsForm.StepForm title='Step 2'
+        onFinish={async (_, e?: React.MouseEvent) => {
+          step2OnFinishSpy(isStepsFormBackStepClicked(e))
+        }}>
+        <StepsForm.Title>Step 2 Title</StepsForm.Title>
+        <Form.Item name='field2' label='Field 2'>
+          <Input />
+        </Form.Item>
+      </StepsForm.StepForm>
+    </StepsForm>)
+
+    const actions = screen.getByTestId('steps-form-actions')
+    expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+    await userEvent.click(within(actions).getByRole('button', { name: 'Next' }))
+    expect(step1OnFinishSpy).toBeCalledWith(false)
+
+    expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
+    await userEvent.click(within(actions).getByRole('button', { name: 'Back' }))
+
+    expect(step2OnFinishSpy).toBeCalledWith(true)
+    expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
+    await userEvent.click(within(actions).getByRole('button', { name: 'Next' }))
+    await userEvent.click(within(actions).getByRole('button', { name: 'Add' }))
+    expect(step2OnFinishSpy).toBeCalledWith(false)
+    expect(step1OnFinishSpy).toBeCalledTimes(2)
+    expect(step2OnFinishSpy).toBeCalledTimes(2)
   })
 
   // TODO
@@ -529,7 +571,7 @@ describe('StepsForm.StepForm', () => {
   const Component = ({ current, step }: { current: number, step: number }) => {
     const editMode = false
     const [form] = Form.useForm()
-    const context = { form, current, editMode, initialValues: {} }
+    const context = { form, current, editMode, initialValues: {} , gotoStep: jest.fn() }
     const props = { step, children: <h1>OK</h1> }
 
     return <StepFormContext.Provider

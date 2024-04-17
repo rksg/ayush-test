@@ -40,7 +40,7 @@ const {
   mockedTunnelProfileViewData
 } = EdgeTunnelProfileFixtures
 
-const { mockedEdgeLagList } = EdgeLagFixtures
+const { mockedEdgeLagListCorePortEnabled } = EdgeLagFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -279,7 +279,7 @@ describe('Edge centrailized forwarding form: settings', () => {
         ),
         rest.get(
           EdgeUrlsInfo.getEdgeLagList.url,
-          (_, res, ctx) => res(ctx.json(mockedEdgeLagList))
+          (_, res, ctx) => res(ctx.json(mockedEdgeLagListCorePortEnabled))
         )
       )
     })

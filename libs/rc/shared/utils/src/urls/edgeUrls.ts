@@ -45,14 +45,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDnsServers: {
     method: 'get',
-    url: '/edges/:serialNumber/dnsServers',
-    oldUrl: '/api/edges/:serialNumber/dnsServers',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/dnsServers',
     newApi: true
   },
   updateDnsServers: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/dnsServers',
-    oldUrl: '/api/edges/:serialNumber/dnsServers',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/dnsServers',
     newApi: true
   },
   getPortConfig: {
@@ -93,14 +91,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getStaticRoutes: {
     method: 'get',
-    url: '/edges/:serialNumber/staticRouteConfigs',
-    oldUrl: '/api/edges/:serialNumber/staticRouteConfig',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/staticRouteConfigs',
     newApi: true
   },
   updateStaticRoutes: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/staticRouteConfigs',
-    oldUrl: '/api/edges/:serialNumber/staticRouteConfig',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/staticRouteConfigs',
     newApi: true
   },
   getEdgePortStatusList: {
@@ -289,6 +285,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   getEdgeCluster: {
     method: 'get',
     url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
+  },
+  getEdgeClusterNetworkSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
   },
   patchEdgeClusterNetworkSettings: {

@@ -206,6 +206,7 @@ export interface TenantAuthentications {
   url?: string;
   scopes?: string;
   domains?: string[];
+  samlSignatureEnabled?: boolean;
 }
 
 export interface Entitlement {
@@ -295,7 +296,8 @@ export interface CustomRole {
   frameworkRO?: boolean,
   createdDate?: string,
   updatedDate?: string,
-  scopes?: string[]
+  scopes?: string[],
+  preDefinedRole?: string
 }
 
 export interface AdminGroupLastLogins {
@@ -316,7 +318,7 @@ export interface PrivilegeGroup {
   role?: CustomRole,
   roleName?: string,
   scope?: string,
-  members?: number,
+  memberCount?: number,
   allCustomers?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],

@@ -49,7 +49,18 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
     setVisible(true)
   }
 
-  const { data: dnsServers } = useGetDnsServersQuery({ params: { serialNumber } })
+  const { data: dnsServers } = useGetDnsServersQuery(
+    {
+      params: {
+        venueId: currentEdge?.venueId,
+        edgeClusterId: currentEdge?.clusterId,
+        serialNumber
+      }
+    },
+    {
+      skip: !currentEdge
+    }
+  )
 
   const { data: userProfile } = useUserProfileContext()
   const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood

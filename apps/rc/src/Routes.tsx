@@ -22,6 +22,7 @@ import {
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
   VLANPoolForm,
+  VLANPoolDetail,
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
   WifiOperatorForm
@@ -102,7 +103,6 @@ import AddTunnelProfile                     from './pages/Policies/TunnelProfile
 import EditTunnelProfile                    from './pages/Policies/TunnelProfile/EditTunnelProfile'
 import TunnelProfileDetail                  from './pages/Policies/TunnelProfile/TunnelProfileDetail'
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
-import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }           from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                    from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'

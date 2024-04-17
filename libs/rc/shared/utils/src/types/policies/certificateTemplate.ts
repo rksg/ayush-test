@@ -89,7 +89,8 @@ export interface CertificateTemplate {
   algorithm: AlgorithmType
   certificateCount?: number
   certificateNames?: string[]
-  chromebook?: Chromebook
+  chromebook?: Chromebook,
+  networkIds?: string[]
 }
 
 export interface OnboardCA {
@@ -213,4 +214,12 @@ export interface CertificateFormData {
 export type CertificateTemplateMutationResult = {
   requestId: string
   id?: string
+}
+
+export enum CertificateAcceptType {
+  PEM = 'application/x-pem-file',
+  DER = 'application/x-x509-ca-cert',
+  PKCS7 = 'application/x-pkcs7-certificates',
+  PKCS8 = 'application/pkcs8',
+  PKCS12 = 'application/x-pkcs12'
 }

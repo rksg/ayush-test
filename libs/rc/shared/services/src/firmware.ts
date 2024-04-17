@@ -16,7 +16,10 @@ import {
   EdgeFirmwareVersion,
   SwitchFirmwareStatus,
   SwitchFirmware,
-  ApModelFamily
+  ApModelFamily,
+  FirmwareVenuePerApModel,
+  ApModelFirmware,
+  VenueApModelFirmwaresUpdatePayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -208,6 +211,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchLatestFirmwareList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchDefaultFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchDefaultFirmwareList, params)
         return {
           ...req
         }
@@ -428,6 +440,51 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+    }),
+    // eslint-disable-next-line max-len
+    getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList)
+        return {
+          ...req,
+          body: covertVenueApModelFirmwareListPayload(payload)
+        }
+      },
+      transformResponse (result: FirmwareVenuePerApModel[] ) {
+        return {
+          data: result,
+          page: 1,
+          totalCount: result.length
+        } as TableResult<FirmwareVenuePerApModel>
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
+            api.dispatch(firmwareApi.util.invalidateTags([
+              { type: 'Firmware', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList)
+        return { ...req }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<VenueApModelFirmwaresUpdatePayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
   })
 })
@@ -450,6 +507,7 @@ export const {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchDefaultFirmwareListQuery,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
@@ -471,5 +529,29 @@ export const {
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
   useGetScheduledFirmwareQuery,
-  useLazyGetScheduledFirmwareQuery
+  useLazyGetScheduledFirmwareQuery,
+  useGetVenueApModelFirmwareListQuery,
+  useGetAllApModelFirmwareListQuery,
+  usePatchVenueApModelFirmwaresMutation
 } = firmwareApi
+
+
+interface VenueApModelFirmwareListPayload {
+  filters?: {
+    currentApFirmwares?: string[]
+  }
+  searchString?: string
+}
+// eslint-disable-next-line max-len
+function covertVenueApModelFirmwareListPayload (originPayload?: unknown): { firmwareVersion?: string, search?: string } {
+  if (!originPayload) return {}
+
+  const payload = originPayload as VenueApModelFirmwareListPayload
+  const targetVersion = payload.filters?.currentApFirmwares?.[0] as string
+  const serachString = payload.searchString
+
+  return {
+    ...(targetVersion ? { firmwareVersion: targetVersion } : {}),
+    ...(serachString ? { search: serachString } : {})
+  }
+}
