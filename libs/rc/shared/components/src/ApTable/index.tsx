@@ -418,7 +418,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       {
         key: 'uptime',
         title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'uptime',
+        dataIndex: 'apStatusData.APSystem.uptime',
         sorter: true,
         render: (data: React.ReactNode, row: APExtended) => {
           const uptime = row.apStatusData?.APSystem?.uptime

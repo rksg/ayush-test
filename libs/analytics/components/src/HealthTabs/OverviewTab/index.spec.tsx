@@ -10,6 +10,10 @@ jest.mock('./SummaryBoxes', () => ({
   SummaryBoxes: () => <div>Mocked SummaryBoxes</div>
 }))
 
+jest.mock('./ConnectedClientsOverTime', () => ({
+  ConnectedClientsOverTime: () => <div>Mocked ConnectedClientsOverTime</div>
+}))
+
 const params = { activeTab: 'overview', tenantId: 'tenant-id' }
 describe('OverviewTab', () => {
   it('should render correctly', async () => {
@@ -30,5 +34,3 @@ describe('OverviewTab', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 })
-
-

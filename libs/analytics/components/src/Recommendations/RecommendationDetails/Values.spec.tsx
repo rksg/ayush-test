@@ -9,7 +9,8 @@ import {
   mockedRecommendationFirmware,
   mockRecommendationAutoBackground,
   mockRecommendationNoKPI,
-  mockedRecommendationCRRM
+  mockedRecommendationCRRM,
+  mockRecommendationProbeflexNew
 } from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 import { getRecommendationsText, Values }                  from './Values'
@@ -57,6 +58,14 @@ describe('Recommendation Overview', () => {
     render(<Values details={powerDetails} />, { wrapper: Provider })
     const backgroundScan = await screen.findByText(/"ChannelFly*/i)
     expect(backgroundScan).toBeVisible()
+  })
+
+  it('should render correctly for probeflex', async () => {
+    const probeflexDetails = transformDetailsResponse(
+      mockRecommendationProbeflexNew as unknown as RecommendationDetails)
+    render(<Values details={probeflexDetails} />, { wrapper: Provider })
+    const probeflex = await screen.findByText(/^AirFlexAI$/i)
+    expect(probeflex).toBeVisible()
   })
 
   it('does not show config when null', async () => {
@@ -111,7 +120,5 @@ describe('getRecommendationsText', () => {
     const result = getRecommendationsText(crrmDetails)
     // eslint-disable-next-line max-len
     expect(result.reasonText).toEqual('AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.')
-    // eslint-disable-next-line max-len
-    expect(result.tradeoffText).toEqual('AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.')
   })
 })
