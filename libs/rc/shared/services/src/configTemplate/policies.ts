@@ -14,7 +14,6 @@ import {
   ApplicationPolicy,
   TableResult,
   RogueAPDetectionTempType,
-  RogueApUrls,
   RogueAPDetectionContextType,
   EnhancedRoguePolicyType, VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
@@ -254,15 +253,15 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(RogueApUrls.addRoguePolicy),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addRoguePolicy),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(RogueApUrls.getRoguePolicy),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getRoguePolicy),
       providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
     }),
     getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(RogueApUrls.getEnhancedRoguePolicyList),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList),
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

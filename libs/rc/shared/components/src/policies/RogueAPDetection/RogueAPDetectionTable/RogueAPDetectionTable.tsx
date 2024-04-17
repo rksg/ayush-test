@@ -8,6 +8,7 @@ import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
   useEnhancedRoguePoliciesQuery,
+  useGetRoguePolicyTemplateListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -18,7 +19,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   EnhancedRoguePolicyType,
-  Venue
+  Venue, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                          from '@acx-ui/types'
@@ -74,6 +75,7 @@ const defaultPayload = {
 
 export function RogueAPDetectionTable () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
@@ -82,7 +84,7 @@ export function RogueAPDetectionTable () {
 
   const settingsId = 'policies-rogue-ap-detection-table'
   const tableQuery = useTableQuery({
-    useQuery: useEnhancedRoguePoliciesQuery,
+    useQuery: isTemplate ? useGetRoguePolicyTemplateListQuery : useEnhancedRoguePoliciesQuery,
     defaultPayload,
     pagination: { settingsId }
   })
