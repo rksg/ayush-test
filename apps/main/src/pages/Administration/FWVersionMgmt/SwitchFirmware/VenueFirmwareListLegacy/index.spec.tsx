@@ -65,6 +65,10 @@ describe('Firmware Venues Table', () => {
       rest.get(
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
       )
     )
     params = {

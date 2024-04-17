@@ -34,19 +34,10 @@ import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
 
-type TableQueryPayload = React.SetStateAction<{
-  searchString: string;
-  searchTargetFields: string[];
-  fields: string[];
-  sortField: string;
-  sortOrder: string;
-  filters: {};
-}> & React.SetStateAction<RequestPayload<unknown>>
-
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
-    'venueName', 'switchName', 'clientVlan', 'switchPort'],
+    'venueName', 'switchName', 'clientVlan', 'switchPort', 'clientIpv4Addr', 'clientIpv6Addr'],
   fields: [
     'clientDesc', 'clientIpv4Addr', 'clientIpv6Addr', 'clientMac',
     'clientName', 'clientType', 'clientVlan', 'cog',
@@ -104,16 +95,8 @@ export function ClientsTable (props: {
   }, [tableQuery.data])
 
   const handleFilterChange = (filters: FILTER, search: SEARCH, groupBy: string | undefined) => {
-    const payload = {
-      ...tableQuery.payload,
-      filters: {
-        ...defaultSwitchClientPayload.filters,
-        ...filters
-      }, ...search, groupBy
-    }
     setTableQueryFilters?.(filters)
     tableQuery.handleFilterChange(filters, search, groupBy)
-    tableQuery.setPayload(payload as TableQueryPayload)
   }
 
   function getCols (intl: ReturnType<typeof useIntl>) {
@@ -159,6 +142,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'clientIpv4Addr',
       sorter: true,
+      searchable: searchable,
       render: (_, row) => getClientIpAddr(row)
     }, {
       key: 'clientDesc',

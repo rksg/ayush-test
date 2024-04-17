@@ -211,7 +211,7 @@ const getCompatibleCheckResult = (
     }
   })
   const portTypesCheck = _.every(results, (res) => {
-    // cehck no error
+    // check no error
     return _.values(res.errors.portTypes).some(i => i.isError) === false
   })
 
