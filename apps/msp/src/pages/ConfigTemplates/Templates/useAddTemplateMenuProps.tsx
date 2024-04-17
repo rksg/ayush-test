@@ -64,6 +64,7 @@ function usePolicyMenuItems (): ItemType[] {
   return [
     createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
     createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap),
     createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap)
   ]
 }

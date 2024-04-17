@@ -11,57 +11,24 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   L2AclPolicy,
   L3AclPolicy,
-  ApplicationPolicy,
-  TableResult,
-  RogueAPDetectionTempType,
+  ApplicationPolicy, TableResult,
+  VLANPoolPolicyType,
+  VLANPoolVenues,
+  VlanPool,
   RogueAPDetectionContextType,
-  EnhancedRoguePolicyType, VenueRoguePolicyType
+  EnhancedRoguePolicyType,
+  RogueAPDetectionTempType,
+  VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { commonQueryFn, configTemplateApi } from './common'
-
-export const L2AclTemplateUseCases = [
-  'AddL2AclPolicyTemplate',
-  'UpdateL2AclPolicyTemplate',
-  'DeleteL2AclPolicyTemplate'
-]
-
-export const L3AclTemplateUseCases = [
-  'AddL3AclPolicyTemplate',
-  'UpdateL3AclPolicyTemplate',
-  'DeleteL3AclPolicyTemplate'
-]
-
-export const DeviceTemplateUseCases = [
-  'AddDevicePolicyTemplate',
-  'UpdateDevicePolicyTemplate',
-  'DeleteDevicePolicyTemplate'
-]
-
-export const ApplicationTemplateUseCases = [
-  'AddApplicationPolicyTemplate',
-  'UpdateApplicationPolicyTemplate',
-  'DeleteApplicationPolicyTemplate'
-]
-
-export const AccessControlTemplateUseCases = [
-  'AddAccessControlProfileTemplate',
-  'UpdateAccessControlProfileTemplate',
-  'DeleteAccessControlProfileTemplate'
-]
-
-export const RogueTemplateUseCases = [
-  'AddRogueApPolicyProfile',
-  'UpdateRogueApPolicyProfile',
-  'DeleteRogueApPolicyProfile',
-  'DeleteRogueApPolicyProfiles',
-  'UpdateVenueRogueAp',
-  'UpdateDenialOfServiceProtection',
-  'DeleteVenue',
-  'DeleteVenues'
-]
+import { commonQueryFn, configTemplateApi }                                     from './common'
+import {
+  AccessControlTemplateUseCases, ApplicationTemplateUseCases,
+  DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
+  useCasesToRefreshVlanPoolTemplateList, useCasesToRefreshRogueAPTemplateList
+} from './constants'
 
 export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -252,6 +219,44 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
+    getVlanPoolPolicyTemplateList: build.query<VlanPool[], RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPools),
+      providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshVlanPoolTemplateList, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'VlanPoolTemplate', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getVlanPoolPolicyTemplateDetail: build.query<VLANPoolPolicyType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy),
+      transformResponse (data: VLANPoolPolicyType) {
+        data.vlanMembers = (data.vlanMembers as string[]).join(',')
+        return data
+      },
+      providesTags: [{ type: 'VlanPoolTemplate', id: 'DETAIL' }]
+    }),
+    // eslint-disable-next-line max-len
+    addVlanPoolPolicyTemplate: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy),
+      invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
+    }),
+    updateVlanPoolPolicyTemplate: build.mutation<VLANPoolPolicyType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicy),
+      invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
+    }),
+    delVlanPoolPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy),
+      invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
+    }),
+    getVlanPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolVenues),
+      providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addRoguePolicy),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
@@ -265,7 +270,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, RogueTemplateUseCases, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshRogueAPTemplateList, () => {
             api.dispatch(configTemplateApi.util.invalidateTags([
               { type: 'RogueApTemplate', id: 'LIST' }
             ]))
@@ -329,6 +334,12 @@ export const {
   useGetAppPolicyTemplateListQuery,
   useUpdateAppPolicyTemplateMutation,
   useDelAppPolicyTemplateMutation,
+  useGetVlanPoolPolicyTemplateListQuery,
+  useGetVlanPoolPolicyTemplateDetailQuery,
+  useAddVlanPoolPolicyTemplateMutation,
+  useUpdateVlanPoolPolicyTemplateMutation,
+  useDelVlanPoolPolicyTemplateMutation,
+  useGetVlanPoolVenuesQuery,
   useAddRoguePolicyTemplateMutation,
   useGetRoguePolicyTemplateQuery,
   useGetRoguePolicyTemplateListQuery,

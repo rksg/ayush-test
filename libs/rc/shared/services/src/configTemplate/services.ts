@@ -12,12 +12,13 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { createDpskHttpRequest, transformDhcpResponse } from '../service'
 
+import { commonQueryFn }                     from './common'
 import {
-  commonQueryFn,
   useCasesToRefreshDhcpTemplateList,
   useCasesToRefreshDpskTemplateList,
-  useCasesToRefreshPortalTemplateList, useCasesToRefreshWifiCallingTemplateList
-} from './common'
+  useCasesToRefreshPortalTemplateList,
+  useCasesToRefreshWifiCallingTemplateList
+} from './constants'
 
 export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({

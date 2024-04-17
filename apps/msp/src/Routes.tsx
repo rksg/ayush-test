@@ -7,20 +7,16 @@ import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/c
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
 import {
-  AAAForm,
-  AAAPolicyDetail,
+  AAAForm, AAAPolicyDetail,
   DHCPDetail,
-  DHCPForm,
-  DpskForm,
+  DHCPForm, DpskForm,
   PortalForm,
-  NetworkDetails,
-  NetworkForm,
-  AccessControlForm,
-  AccessControlDetail,
+  NetworkDetails, NetworkForm,
+  AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
-  WifiCallingForm,
-  WifiCallingConfigureForm,
-  WifiCallingDetailView,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  VLANPoolForm,
+  VLANPoolDetail,
   RogueAPDetectionForm,
   RogueAPDetectionDetailView
 } from '@acx-ui/rc/components'
@@ -299,6 +295,29 @@ export function ConfigTemplatesRoutes () {
               type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<VLANPoolForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<VLANPoolForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<VLANPoolDetail />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
