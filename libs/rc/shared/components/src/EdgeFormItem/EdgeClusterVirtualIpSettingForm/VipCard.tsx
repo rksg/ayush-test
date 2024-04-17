@@ -152,7 +152,8 @@ const getInterfacesInfoByVipConfig = (
   const result = []
   for(let settingInfo of vipSetting) {
     const targetLanInterfaces = lanInterfaces[settingInfo.serialNumber]
-    const targetSetting = targetLanInterfaces.find(item => item.portName === settingInfo.portName)
+    const targetSetting = targetLanInterfaces.find(item =>
+      item.portName.toLocaleLowerCase() === settingInfo.portName.toLowerCase())
     if(targetSetting) result.push(targetSetting)
   }
   return result

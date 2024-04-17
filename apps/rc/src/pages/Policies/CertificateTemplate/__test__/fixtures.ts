@@ -265,6 +265,10 @@ export const certificateTemplateList = {
         'testCertificate25',
         'testCertificate26',
         'testCertificate27'
+      ],
+      networkIds: [
+        'testNetworkId1',
+        'testNetworkId2'
       ]
     },
     {
