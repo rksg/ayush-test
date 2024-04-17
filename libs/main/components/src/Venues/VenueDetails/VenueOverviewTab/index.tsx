@@ -27,7 +27,7 @@ import {
 import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
 import { useNavigateToPath }                                             from '@acx-ui/react-router-dom'
-import { hasPermission, SwitchScopes }                                   from '@acx-ui/user'
+import { hasPermission, EdgeScopes, SwitchScopes, WifiScopes }           from '@acx-ui/user'
 import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
 import type { AnalyticsFilter }                                          from '@acx-ui/utils'
 
@@ -42,20 +42,24 @@ export function VenueOverviewTab () {
     filter: generateVenueFilter([venueId as string])
   }
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
+    ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
       children: <ApWidgets filters={venueFilter}/>
-    },
+    }] : []),
     ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets filters={venueFilter}/>
     }] : [])
   ]
+
+  const hasReadPermission
+    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ] })
+
   return (<>
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' />
+    { hasReadPermission && <ContentSwitcher tabDetails={tabDetails} size='large' />}
   </>)
 }
 
@@ -64,6 +68,9 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
   const [incidentCount, setIncidentCount] = useState(0)
   const onIncidentClick =
     useNavigateToPath(`/venues/${venueId}/venue-details/analytics/incidents/overview`)
+
+  const hasReadPermission
+    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
 
   const filters = props.filters
   return (
@@ -79,9 +86,9 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
           <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
         </UI.Container>
       </GridCol>
-      <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
+      { hasReadPermission && <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
         <VenueDevicesWidget />
-      </GridCol>
+      </GridCol>}
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
         <VenueHealth filters={filters}/>

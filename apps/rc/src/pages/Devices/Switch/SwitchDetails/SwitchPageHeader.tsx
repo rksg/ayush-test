@@ -203,6 +203,7 @@ function SwitchPageHeader () {
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
   const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
   const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
+  const showAddMember = isStack && (maxMembers > 0) && hasCreatePermission
 
   const menu = (
     <Menu
@@ -226,11 +227,13 @@ function SwitchPageHeader () {
         }, {
           key: MoreActions.CLI_SESSION,
           label: $t({ defaultMessage: 'CLI Session' })
-        }, {
-          type: 'divider'
         }] : []),
 
-        ...(isStack && (maxMembers > 0) && hasCreatePermission ? [{
+        ...(hasUpdatePermission && (showAddMember || hasDeletaPermission) ? [{
+          type: 'divider'
+        }] : [] ),
+
+        ...(showAddMember ? [{
           key: MoreActions.ADD_MEMBER,
           disabled: maxMembers === 0,
           label: $t({ defaultMessage: 'Add Member' })

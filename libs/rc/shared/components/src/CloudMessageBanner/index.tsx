@@ -20,7 +20,11 @@ import {
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
   UserSettingsUIModel,
-  hasRoles
+  hasRoles,
+  hasPermission,
+  SwitchScopes,
+  WifiScopes,
+  EdgeScopes
 } from '@acx-ui/user'
 
 export function CloudMessageBanner () {
@@ -53,10 +57,10 @@ export function CloudMessageBanner () {
   useEffect(() => {
     if (cloudVersion && userSettings) {
       setVersion(version)
-      checkWifiScheduleExists()
-      if (!hasRoles(RolesEnum.DPSK_ADMIN))
+      hasPermission({ scopes: [WifiScopes.READ] }) && checkWifiScheduleExists()
+      if (!hasRoles(RolesEnum.DPSK_ADMIN) && hasPermission({ scopes: [SwitchScopes.READ] }))
         checkSwitchScheduleExists()
-      if(isEdgeEnabled && isScheduleUpdateReady)
+      if(isEdgeEnabled && isScheduleUpdateReady && hasPermission({ scopes: [EdgeScopes.READ] }))
         checkEdgeScheduleExists()
     }
   }, [cloudVersion, userSettings])

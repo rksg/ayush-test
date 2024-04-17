@@ -15,8 +15,9 @@ import {
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { compareSwitchVersion }                                from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
+import { EdgeScopes, hasPermission, SwitchScopes, WifiScopes } from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -89,7 +90,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new AP firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <ApFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [WifiScopes.READ] })
     },
     switchFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
@@ -97,7 +98,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [SwitchScopes.READ] })
     },
     edgeFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'SmartEdge Firmware' })}
@@ -105,7 +106,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new SmartEdge firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.READ] })
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}

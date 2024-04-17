@@ -9,6 +9,7 @@ import type { DonutChartData }                                   from '@acx-ui/c
 import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes, hasPermission }               from '@acx-ui/user'
 import { useDashboardFilter }                                    from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
@@ -178,64 +179,68 @@ export function ClientsWidgetV2 () {
         <AutoSizer>
           {({ height, width }) => (
             <UI.WidgetContainer style={{ height, width }}>
-              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
-                <GridCol col={{ span: apClientCount > 0 ? 9 : 12 }}>
-                  { apClientCount > 0
-                    ? $t({ defaultMessage: 'Wi-Fi' })
-                    : $t({ defaultMessage: 'No Wi-Fi Clients' })
-                  }
-                </GridCol>
-                <GridCol col={{ span: apClientCount > 0 ? 15 : 12 }}>
-                  { apClientCount > 0
-                    ? <Space>
-                      <StackedBarChart
-                        animation={false}
-                        style={{
-                          height: height / 2 - 30,
-                          width: width / 2 - 15
-                        }}
-                        data={apData}
-                        showLabels={false}
-                        showTotal={false}
-                        total={apClientCount}
-                        barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/users/wifi/clients'}>
-                        {apClientCount}
-                      </TenantLink>
-                    </Space>
-                    : <div style={{ height: (height/2) - 30 }}/>
-                  }
-                </GridCol>
-              </GridRow>
-              <GridRow style={{ display: 'flex', alignItems: 'center' }}>
-                <GridCol col={{ span: switchClientCount > 0 ? 9 : 12 }}>
-                  { switchClientCount > 0
-                    ? $t({ defaultMessage: 'Wired' })
-                    : $t({ defaultMessage: 'No Wired Clients' })
-                  }
-                </GridCol>
-                <GridCol col={{ span: switchClientCount > 0 ? 15 : 12 }}>
-                  { switchClientCount > 0
-                    ? <Space>
-                      <StackedBarChart
-                        animation={false}
-                        style={{
-                          height: height/2 - 30,
-                          width: width/2 - 15
-                        }}
-                        data={switchData}
-                        showLabels={false}
-                        showTotal={false}
-                        total={switchClientCount}
-                        barColors={getDeviceConnectionStatusColorsv2()} />
-                      <TenantLink to={'/users/switch/clients'}>
-                        {switchClientCount}
-                      </TenantLink>
-                    </Space>
-                    : <div style={{ height: (height/2) - 30 }}/>
-                  }
-                </GridCol>
-              </GridRow>
+              { hasPermission({ scopes: [WifiScopes.READ] })
+                && <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                  <GridCol col={{ span: apClientCount > 0 ? 9 : 12 }}>
+                    { apClientCount > 0
+                      ? $t({ defaultMessage: 'Wi-Fi' })
+                      : $t({ defaultMessage: 'No Wi-Fi Clients' })
+                    }
+                  </GridCol>
+                  <GridCol col={{ span: apClientCount > 0 ? 15 : 12 }}>
+                    { apClientCount > 0
+                      ? <Space>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height / 2 - 30,
+                            width: width / 2 - 15
+                          }}
+                          data={apData}
+                          showLabels={false}
+                          showTotal={false}
+                          total={apClientCount}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={'/users/wifi/clients'}>
+                          {apClientCount}
+                        </TenantLink>
+                      </Space>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </GridCol>
+                </GridRow>
+              }
+              { hasPermission({ scopes: [SwitchScopes.READ] })
+                && <GridRow style={{ display: 'flex', alignItems: 'center' }}>
+                  <GridCol col={{ span: switchClientCount > 0 ? 9 : 12 }}>
+                    { switchClientCount > 0
+                      ? $t({ defaultMessage: 'Wired' })
+                      : $t({ defaultMessage: 'No Wired Clients' })
+                    }
+                  </GridCol>
+                  <GridCol col={{ span: switchClientCount > 0 ? 15 : 12 }}>
+                    { switchClientCount > 0
+                      ? <Space>
+                        <StackedBarChart
+                          animation={false}
+                          style={{
+                            height: height/2 - 30,
+                            width: width/2 - 15
+                          }}
+                          data={switchData}
+                          showLabels={false}
+                          showTotal={false}
+                          total={switchClientCount}
+                          barColors={getDeviceConnectionStatusColorsv2()} />
+                        <TenantLink to={'/users/switch/clients'}>
+                          {switchClientCount}
+                        </TenantLink>
+                      </Space>
+                      : <div style={{ height: (height/2) - 30 }}/>
+                    }
+                  </GridCol>
+                </GridRow>
+              }
             </UI.WidgetContainer>
           )}
         </AutoSizer>

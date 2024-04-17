@@ -30,9 +30,9 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }                     from '@acx-ui/utils'
+import { RolesEnum }                                                    from '@acx-ui/types'
+import { SwitchScopes, hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }                                                  from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -139,7 +139,7 @@ export function useMenuConfig () {
             }
           ]
         },
-        {
+        ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
@@ -148,7 +148,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Wired Clients List' })
             }
           ]
-        },
+        }] : []),
         ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Identity Management' }),
@@ -224,7 +224,7 @@ export function useMenuConfig () {
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
     }] : []),
-    {
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: SwitchOutlined,
       activeIcon: SwitchSolid,
@@ -259,7 +259,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    },
+    }] : []),
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),

@@ -7,6 +7,7 @@ import { useIntl }                                 from 'react-intl'
 import { Button, Dropdown, CaretDownSolidIcon }                     from '@acx-ui/components'
 import { SearchOutlined }                                           from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { hasPermission, SwitchScopes }                              from '@acx-ui/user'
 import { getIntl }                                                  from '@acx-ui/utils'
 
 import * as UI        from './styledComponents'
@@ -70,6 +71,9 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
   // refer current implentation in rc-ui. for now skipping lte_ap
   // option from dropdown as per current implematation in rc-ui.
   remove(networkDeviceTypeArray, type => type === NetworkDeviceType.lte_ap)
+  remove(networkDeviceTypeArray, type =>
+    !hasPermission({ scopes: [SwitchScopes.READ] }) && type === NetworkDeviceType.switch
+  )
 
   const items = [{
     key: 'All',

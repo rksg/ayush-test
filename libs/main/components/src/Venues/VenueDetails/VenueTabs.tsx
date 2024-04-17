@@ -9,8 +9,8 @@ import {
   useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
+import { hasPermission, SwitchScopes, WifiScopes } from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -45,9 +45,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
 
     navigate({
       ...basePath,
-      pathname: (tab === 'clients' || tab === 'devices')
-        ? `${basePath.pathname}/${tab}/wifi`
-        : `${basePath.pathname}/${tab}`
+      pathname: `${basePath.pathname}/${tab}`
     })
   }
 
@@ -61,6 +59,9 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     data?.activeNetworkCount ?? 0,
     unitQuery?.totalCount ?? 0
   ]
+
+  const hasReadPermission
+  = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ] })
 
   if (isTemplate) {
     return (
@@ -80,22 +81,22 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasAccess() && <Tabs.TabPane
+      { hasPermission() && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
       /> }
-      <Tabs.TabPane
+      { hasReadPermission && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
         key='clients'
-      />
-      <Tabs.TabPane
+      />}
+      { hasReadPermission && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Devices ({devicesCount})' }, { devicesCount })}
         key='devices'
-      />
-      <Tabs.TabPane
+      />}
+      { hasPermission({ scopes: [WifiScopes.READ] }) && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
         key='networks'
-      />
+      />}
       {(enableProperty
           && !propertyConfig?.isError
           && propertyConfig?.currentData?.status === PropertyConfigStatus.ENABLED
