@@ -161,7 +161,7 @@ describe('Network Filter', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter shouldQueryAp shouldQuerySwitch/></Provider>)
+    render(<Provider><NetworkFilter shouldQueryAp={false} shouldQuerySwitch/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render network filter', async () => {
