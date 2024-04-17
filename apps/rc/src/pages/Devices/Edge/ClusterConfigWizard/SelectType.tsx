@@ -216,15 +216,12 @@ export const SelectType = () => {
           children={$t({ defaultMessage: 'Cancel' })}
         />
         <Space align='center' size={12}>
-          <Tooltip title='test'>
-
-            <Button
-              type='primary'
-              onClick={handleNext}
-              disabled={!isHardwareCompatible || !Boolean(selected)}
-              children={$t({ defaultMessage: 'Next' })}
-            />
-          </Tooltip>
+          <Button
+            type='primary'
+            onClick={handleNext}
+            disabled={!isHardwareCompatible || !Boolean(selected)}
+            children={$t({ defaultMessage: 'Next' })}
+          />
         </Space>
       </Space>
     </StepsForm.ActionsContainer>
