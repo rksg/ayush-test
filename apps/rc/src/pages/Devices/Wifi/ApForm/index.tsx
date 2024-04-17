@@ -30,6 +30,7 @@ import {
   useVenuesListQuery,
   useWifiCapabilitiesQuery,
   useGetVenueVersionListQuery,
+  useLazyGetVenueApEnhancedKeyQuery,
   useLazyGetVenueApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useLazyGetApValidChannelQuery
@@ -90,6 +91,7 @@ export function ApForm () {
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
+  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const { tenantId, action, serialNumber } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -114,6 +116,7 @@ export function ApForm () {
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getApValidChannel] = useLazyGetApValidChannelQuery()
+  const [getVenueApEnhancedKey] = useLazyGetVenueApEnhancedKeyQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
@@ -129,6 +132,8 @@ export function ApForm () {
   const [cellularApModels, setCellularApModels] = useState([] as string[])
   const [triApModels, setTriApModels] = useState([] as string[])
   const [afcEnabled, setAfcEnabled] = useState(false)
+  const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
+  const [changeTlsEnhancedKey, setChangeTlsEnhancedKey] = useState(false)
   const location = useLocation()
 
   const venueFromNavigate = location.state as { venueId?: string }
@@ -217,6 +222,13 @@ export function ApForm () {
         if (afcEnabled) {
           setAfcEnabled(afcEnabled)
         }
+        if (supportTlsKeyEnhance) {
+          // eslint-disable-next-line
+          const tlsEnhancedKeyEnabled = (await getVenueApEnhancedKey({ params: { venueId: apDetails?.venueId } })).data?.tlsKeyEnhancedModeEnabled
+          if (tlsEnhancedKeyEnabled) {
+            setTlsEnhancedKeyEnabled(tlsEnhancedKeyEnabled)
+          }
+        }
       }
 
       setData(apDetails)
@@ -277,6 +289,32 @@ export function ApForm () {
             management VLAN and reboot this AP device. Incorrect
             settings between APs and switches could result in AP access
             loss. Are you sure you want to continue?`
+          }
+          values={{
+            b: (text: string) => <strong>{text}</strong>,
+            venueName: selectedVenue.name
+          }}/>),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          handleUpdateTlsKey(values)
+        }
+      })
+    } else {
+      handleUpdateTlsKey(values)
+    }
+  }
+
+  const handleUpdateTlsKey = async (values: ApDeep) => {
+    if (supportTlsKeyEnhance && changeTlsEnhancedKey) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'TLS Key Change' }),
+        content: (<FormattedMessage
+          defaultMessage={
+            `Moving to Venue: <b>{venueName}</b> will alter the current key on
+            the TLS connection and reboot this AP device. Are you sure
+            you want to continue?`
           }
           values={{
             b: (text: string) => <strong>{text}</strong>,
@@ -389,6 +427,12 @@ export function ApForm () {
           { params: { serialNumber } })).data
         setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
       }
+    }
+    if (supportTlsKeyEnhance) {
+      const targetVenueTlsKey = (await getVenueApEnhancedKey(
+        { params: { venueId: value } })).data
+      // eslint-disable-next-line max-len
+      setChangeTlsEnhancedKey(tlsEnhancedKeyEnabled !== targetVenueTlsKey?.tlsKeyEnhancedModeEnabled)
     }
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])

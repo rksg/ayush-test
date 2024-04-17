@@ -152,7 +152,7 @@ export function SecurityTab () {
     if (!venueApEnhancedKeyData) return
 
     formRef?.current?.setFieldsValue({
-      tlsEnhancedKeyEnabled: venueApEnhancedKeyData.tlsEnhancedKeyEnabled
+      tlsEnhancedKeyEnabled: venueApEnhancedKeyData.tlsKeyEnhancedModeEnabled
     })
   }, [venueApEnhancedKeyData])
 
@@ -231,7 +231,7 @@ export function SecurityTab () {
       onOk: async () => {
         try {
           const tlsEnhancedKeyEnabledPayload = {
-            tlsEnhancedKeyEnabled: enabled
+            tlsKeyEnhancedModeEnabled: enabled
           }
           await updateVenueApEnhancedKey({ params, payload: tlsEnhancedKeyEnabledPayload }).unwrap()
           setTriggerTlsEnhancedKey(false)

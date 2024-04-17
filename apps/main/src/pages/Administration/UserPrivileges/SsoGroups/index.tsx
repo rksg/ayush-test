@@ -7,6 +7,7 @@ import { useParams }                     from 'react-router-dom'
 
 
 import {
+  Button,
   Loader,
   showActionModal,
   Table,
@@ -22,6 +23,8 @@ import { AdminGroup, sortProp, defaultSort }                    from '@acx-ui/rc
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
+
+import { ShowMembersDrawer } from '../../Administrators/AdminGroups/ShowMembersDrawer'
 
 import { AddSsoGroupDrawer } from './AddSsoGroupDrawer'
 
@@ -49,6 +52,8 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<AdminGroup>({} as AdminGroup)
+  const [membersGroupId, setMemberGroupId] = useState('')
+  const [membersDrawerVisible, setMembersDrawerVisible] = useState(false)
   const { data: userProfileData } = useUserProfileContext()
 
   const { data: adminList, isLoading, isFetching } = useGetAdminGroupsQuery({ params })
@@ -70,7 +75,19 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (_, row) => {
+        return <Button
+          size='small'
+          type='link'
+          onClick={(e) => {
+            e.stopPropagation()
+            setMemberGroupId(row.groupId as string)
+            setMembersDrawerVisible(true)
+          }}
+          children={(row.name ?? '')}
+        />
+      }
     },
     {
       title: $t({ defaultMessage: 'Group ID' }),
@@ -252,6 +269,11 @@ const SsoGroups = (props: AdminGroupsTableProps) => {
         setVisible={setShowDialog}
         isEditMode={editMode}
         editData={editMode ? editData : undefined}
+      />}
+      {membersDrawerVisible && <ShowMembersDrawer
+        visible={membersDrawerVisible}
+        setVisible={setMembersDrawerVisible}
+        membersGroupId={membersGroupId}
       />}
     </Loader>
   )

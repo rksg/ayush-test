@@ -85,6 +85,10 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchFirmwareList.url,
         (req, res, ctx) => {
