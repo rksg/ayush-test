@@ -5,30 +5,16 @@ import { rest }  from 'msw'
 import {
   VlanPoolUrls,
   WifiUrlsInfo,
-  VLANPoolPolicyType
+  PoliciesConfigTemplateUrlsInfo,
+  ConfigTemplateContext
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                        from '@acx-ui/user'
 
-import { VLANPoolForm } from './VLANPoolForm'
+import { vlanData, vlanList, vlanTemplateList } from './__tests__/fixtures'
+import { VLANPoolForm }                         from './VLANPoolForm'
 
-const successResponse = { requestId: 'request-id' }
-const vlanData: VLANPoolPolicyType = {
-  id: 'policy-id',
-  name: 'test1',
-  vlanMembers: ['2','3']
-}
-
-const vlanList=[{
-  id: '1',
-  name: 'test1',
-  vlanMembers: ['2','3']
-},{
-  id: 'policy-id',
-  name: 'test2',
-  vlanMembers: ['2','3']
-}] as VLANPoolPolicyType[]
 
 const mockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -37,15 +23,27 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('VLANPoolForm', () => {
+  const successResponse = { requestId: 'request-id' }
+  const params = {
+    networkId: 'UNKNOWN-NETWORK-ID',
+    tenantId: 'tenant-id',
+    type: 'wifi',
+    policyId: 'policy-id'
+  }
+
   beforeEach(() => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
-        (_, res, ctx) => {return res(ctx.json(vlanList))}
+        (_, res, ctx) => res(ctx.json(vlanList))
       ),
       rest.get(
         VlanPoolUrls.getVLANPoolPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(vlanData))}
+        (_, res, ctx) => res(ctx.json(vlanData))
+      ),
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVlanPools.url,
+        (_, res, ctx) => res(ctx.json(vlanTemplateList))
       )
     )
   })
@@ -69,9 +67,6 @@ describe('VLANPoolForm', () => {
       )
     )
 
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-      policyId: 'policy-id' }
-
     render(<Provider><VLANPoolForm edit={false}/></Provider>, {
       route: { params }
     })
@@ -89,12 +84,6 @@ describe('VLANPoolForm', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    const params = {
-      networkId: 'UNKNOWN-NETWORK-ID',
-      tenantId: 'tenant-id',
-      type: 'wifi',
-      policyId: 'policy-id'
-    }
     render(<Provider><VLANPoolForm edit={false}/></Provider>, {
       route: { params }
     })
@@ -126,9 +115,6 @@ describe('VLANPoolForm', () => {
       )
     )
 
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-      policyId: 'policy-id' }
-
     render(<Provider><VLANPoolForm edit={true}/></Provider>, {
       route: { params }
     })
@@ -156,8 +142,6 @@ describe('VLANPoolForm', () => {
         (_, res, ctx) => {return res(ctx.json(successResponse))}
       )
     )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-      policyId: 'policy-id' }
 
     render(<Provider><VLANPoolForm edit={true}/></Provider>, {
       route: { params }
@@ -167,5 +151,33 @@ describe('VLANPoolForm', () => {
     expect(mockNavigate).toHaveBeenCalledWith({
       hash: '', pathname: '/tenant-id/t/policies/vlanPool/list', search: '' }, { replace: true }
     )
+  })
+
+  it('should create VLAN Pool template successfully', async () => {
+    const addTemplateFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy.url,
+        (_, res, ctx) => {
+          addTemplateFn()
+          return res(ctx.json(successResponse))
+        }
+      )
+    )
+
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+      <Provider>
+        <VLANPoolForm edit={false}/>
+      </Provider>
+    </ConfigTemplateContext.Provider>, { route: { params } })
+
+    await userEvent.type(await screen.findByLabelText('Policy Name'), 'My VLAN pool template')
+    await userEvent.type(await screen.findByLabelText('Description'), 'Some description')
+    await userEvent.type(await screen.findByLabelText('VLANs'), '1288')
+    await userEvent.click(await screen.findByText('Add'))
+
+    await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalled())
   })
 })

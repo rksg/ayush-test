@@ -24,7 +24,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   NetworkForm: () => <div>NetworkForm</div>,
   DpskForm: () => <div>DpskForm</div>,
   DHCPForm: () => <div>DHCPForm</div>,
-  PortalForm: () => <div>PortalForm</div>
+  PortalForm: () => <div>PortalForm</div>,
+  VLANPoolForm: () => <div>VLANPoolForm</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -169,7 +170,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     expect(await screen.findByText('DHCPForm')).toBeVisible()
   })
 
-  it('should navigate to the VLAN Pool config template', async () => {
+  it('should navigate to the Portal config template', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
       [ConfigTemplateType.PORTAL]: true
@@ -185,5 +186,23 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('PortalForm')).toBeVisible()
+  })
+
+  it('should navigate to the VLAN Pool config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.VLAN_POOL]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('VLANPoolForm')).toBeVisible()
   })
 })

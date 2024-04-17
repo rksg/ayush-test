@@ -5,10 +5,9 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { isStepsFormBackStepClicked, Loader, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum }                                from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }                        from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
 import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
@@ -50,7 +49,7 @@ export const InterfaceSettings = () => {
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
@@ -60,22 +59,10 @@ export const InterfaceSettings = () => {
       type={CompatibilityStatusEnum.PASS}
     />
   })
-
-  const { clusterNetworkSettings, isFetching } = useGetEdgeClusterNetworkSettingsQuery({
-    params: {
-      venueId: clusterInfo?.venueId,
-      clusterId: clusterInfo?.clusterId
-    }
-  },{
-    skip: !Boolean(clusterInfo),
-    selectFromResult: ({ data, isFetching }) => ({
-      clusterNetworkSettings: transformFromApiToFormData(data),
-      isFetching
-    })
-  })
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
+  const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
 
   const doCompatibleCheck = (typeKey: string): void => {
     const checkResult = getCompatibleCheckResult(typeKey)
@@ -154,7 +141,8 @@ export const InterfaceSettings = () => {
       } else if (changedField === 'portType' && (changedValue === EdgePortTypeEnum.LAN)) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType' && changedValue === EdgePortTypeEnum.WAN) {
-        const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfName][0]
+        // eslint-disable-next-line max-len
+        const initialPortData = clusterNetworkSettingsFormData.portSettings[targetSn][targetPortIfName][0]
         if (initialPortData?.portType !== EdgePortTypeEnum.WAN) {
           configWizardForm.setFieldValue(targetNamePath.concat(['natEnabled']), true)
         }
@@ -289,7 +277,7 @@ export const InterfaceSettings = () => {
   }
 
   const isVipConfigChanged = (config: VirtualIpFormType['vipConfig']) => {
-    return !_.isEqual(config, clusterNetworkSettings.vipConfig)
+    return !_.isEqual(config, clusterNetworkSettingsFormData.vipConfig)
   }
 
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
@@ -311,41 +299,39 @@ export const InterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: isFetching }]}>
-      <StepsForm<InterfaceSettingsFormType>
-        form={configWizardForm}
-        alert={isSingleNode ? undefined : alertData}
-        onFinish={applyAndFinish}
-        onCancel={handleCancel}
-        initialValues={clusterNetworkSettings}
-        buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply & Finish' })
-        }}
-        customSubmit={{
-          label: $t({ defaultMessage: 'Apply & Continue' }),
-          onCustomFinish: applyAndContinue
-        }}
-      >
-        {
-          steps.map((item, index) =>
-            <StepsForm.StepForm
-              key={`step-${index}`}
-              name={index.toString()}
-              title={item.title}
-              onFinish={item.onFinish
-                ? (_, e?: React.MouseEvent) => item.onFinish?.(item.id, e)
-                : undefined}
-              onValuesChange={
-                item.onValuesChange
-                  // eslint-disable-next-line max-len
-                  ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
-                  : undefined
-              }
-            >
-              {item.content}
-            </StepsForm.StepForm>)
-        }
-      </StepsForm>
-    </Loader>
+    <StepsForm<InterfaceSettingsFormType>
+      form={configWizardForm}
+      alert={isSingleNode ? undefined : alertData}
+      onFinish={applyAndFinish}
+      onCancel={handleCancel}
+      initialValues={clusterNetworkSettingsFormData}
+      buttonLabel={{
+        submit: $t({ defaultMessage: 'Apply & Finish' })
+      }}
+      customSubmit={{
+        label: $t({ defaultMessage: 'Apply & Continue' }),
+        onCustomFinish: applyAndContinue
+      }}
+    >
+      {
+        steps.map((item, index) =>
+          <StepsForm.StepForm
+            key={`step-${index}`}
+            name={index.toString()}
+            title={item.title}
+            onFinish={item.onFinish
+              ? (_, e?: React.MouseEvent) => item.onFinish?.(item.id, e)
+              : undefined}
+            onValuesChange={
+              item.onValuesChange
+              // eslint-disable-next-line max-len
+                ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
+                : undefined
+            }
+          >
+            {item.content}
+          </StepsForm.StepForm>)
+      }
+    </StepsForm>
   )
 }

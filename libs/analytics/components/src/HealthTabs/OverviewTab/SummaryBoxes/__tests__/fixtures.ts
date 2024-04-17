@@ -1,43 +1,26 @@
-export const trafficSummaryFixture = {
+export const switchCountFixture = {
   network: {
     hierarchyNode: {
-      apTotalTraffic: 1189597336,
-      switchTotalTraffic: 2333440
+      switchCount: 21
     }
   }
 }
 
-export const trafficSummaryNoDataFixture = {
+export const switchCountNoDataFixture = {
   network: {
     hierarchyNode: {
-      apTotalTraffic: null,
-      switchTotalTraffic: null
+      switchCount: 0
     }
   }
 }
 
-
-export const incidentSummaryFixture = {
+export const summaryDataFixture = {
   network: {
     hierarchyNode: {
       apIncidentCount: 461,
-      switchIncidentCount: 8
-    }
-  }
-}
-
-export const incidentSummaryNoDataFixture = {
-  network: {
-    hierarchyNode: {
-      apIncidentCount: null,
-      switchIncidentCount: null
-    }
-  }
-}
-
-export const utilizationSummaryFixture = {
-  network: {
-    hierarchyNode: {
+      switchIncidentCount: 8,
+      apTotalTraffic: 1189597336,
+      switchTotalTraffic: 2333440,
       portCount: 636,
       totalPortCount: 14229,
       avgPerAPClientCount: 643
@@ -45,12 +28,27 @@ export const utilizationSummaryFixture = {
   }
 }
 
-export const utilizationSummaryNoDataFixture = {
+export const summaryWirelessDataFixture = {
   network: {
     hierarchyNode: {
-      portCount: null,
-      totalPortCount: null,
-      avgPerAPClientCount: null
+      apIncidentCount: 461,
+      apTotalTraffic: 1189597336,
+      avgPerAPClientCount: 643
+    }
+  }
+}
+
+
+export const summaryNoDataFixture = {
+  network: {
+    hierarchyNode: {
+      apIncidentCount: 0,
+      switchIncidentCount: 0,
+      apTotalTraffic: null,
+      switchTotalTraffic: null,
+      portCount: 0,
+      totalPortCount: 0,
+      avgPerAPClientCount: 0
     }
   }
 }
