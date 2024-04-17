@@ -62,7 +62,7 @@ export function VenueOverviewTab () {
   return (<>
     {
       (
-        (tripleBand === true) &&
+        (tripleBand?.enabled === true) &&
         (venueRadio?.radioParams6G?.enableAfc === true) &&
         (
           (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
