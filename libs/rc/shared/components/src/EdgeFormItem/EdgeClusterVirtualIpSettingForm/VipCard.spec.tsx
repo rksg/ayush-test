@@ -14,7 +14,7 @@ jest.mock('./InterfaceTable', () => ({
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockLanInterfaces } = EdgePortConfigFixtures
 
-describe('InterfaceTable', () => {
+describe('VipCard', () => {
   it('should render VipCard successfully', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -348,7 +348,13 @@ describe('InterfaceTable', () => {
                 remove={remove}
                 vipConfig={{
                   0: {
-                    interfaces: mockedHaNetworkSettings.virtualIpSettings[0].ports,
+                    interfaces: [
+                      mockedHaNetworkSettings.virtualIpSettings[0].ports[0],
+                      {
+                        ...mockedHaNetworkSettings.virtualIpSettings[0].ports[1],
+                        portName: 'lag0'
+                      }
+                    ],
                     vip: mockedHaNetworkSettings.virtualIpSettings[0].virtualIp
                   }
                 }}
