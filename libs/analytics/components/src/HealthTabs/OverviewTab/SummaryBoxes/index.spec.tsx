@@ -6,12 +6,10 @@ import { DateRange }                                                   from '@ac
 
 
 import {
-  incidentSummaryFixture,
-  incidentSummaryNoDataFixture,
-  trafficSummaryFixture,
-  trafficSummaryNoDataFixture,
-  utilizationSummaryFixture,
-  utilizationSummaryNoDataFixture } from './__tests__/fixtures'
+  summaryDataFixture,
+  summaryNoDataFixture,
+  summaryWirelessDataFixture
+} from './__tests__/fixtures'
 import { api } from './services'
 
 import { SummaryBoxes } from '.'
@@ -27,13 +25,24 @@ describe('SummaryBoxes', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
   })
-  it('should render correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficSummary', { data: trafficSummaryFixture })
-    mockGraphqlQuery(dataApiURL, 'IncidentSummary', { data: incidentSummaryFixture })
-    mockGraphqlQuery(dataApiURL, 'UtilizationSummary', { data: utilizationSummaryFixture })
+  it('should render correctly for wired and wireless', async () => {
+    mockGraphqlQuery(dataApiURL, 'SummaryQuery', { data: summaryDataFixture })
 
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
+        wirelessOnly={false}
+        filters={filters}
+      /></Provider></Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly for wireless only view', async () => {
+    mockGraphqlQuery(dataApiURL, 'SummaryQuery', { data: summaryWirelessDataFixture })
+
+    const { asFragment } = render(
+      <Router><Provider><SummaryBoxes
+        wirelessOnly={true}
         filters={filters}
       /></Provider></Router>
     )
@@ -41,11 +50,10 @@ describe('SummaryBoxes', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should show - when no data', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficSummary', { data: trafficSummaryNoDataFixture })
-    mockGraphqlQuery(dataApiURL, 'IncidentSummary', { data: incidentSummaryNoDataFixture })
-    mockGraphqlQuery(dataApiURL, 'UtilizationSummary', { data: utilizationSummaryNoDataFixture })
+    mockGraphqlQuery(dataApiURL, 'SummaryQuery', { data: summaryNoDataFixture })
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
+        wirelessOnly={false}
       /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
