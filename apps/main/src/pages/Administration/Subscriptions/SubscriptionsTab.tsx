@@ -12,7 +12,10 @@ import { useGetAccountTierQuery }                            from '@acx-ui/user'
 import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
-import MySubscriptions            from './MySubscriptions'
+// import MySubscriptions            from './MySubscriptions'
+import { SubscriptionsTabHeader } from './SubscriptionsTabHeader'
+
+import { SubscriptionTable } from '.'
 
 export const SubscriptionTabs = () => {
   const { $t } = useIntl()
@@ -32,7 +35,10 @@ export const SubscriptionTabs = () => {
     const tabs = {
       mySubscriptions: {
         title: $t({ defaultMessage: 'My Subscriptions' }),
-        content: <MySubscriptions />,
+        content: <SpaceWrapper fullWidth size='large' direction='vertical'>
+          <SubscriptionsTabHeader />
+          <SubscriptionTable />
+        </SpaceWrapper>,
         visible: true
       },
       pendingActivations: {

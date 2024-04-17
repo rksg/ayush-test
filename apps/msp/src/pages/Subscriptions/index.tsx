@@ -68,7 +68,6 @@ export function Subscriptions () {
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
-  const [activeKey, setActiveTabKey] = useState('')
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
@@ -361,14 +360,36 @@ export function Subscriptions () {
     )
   }
 
+  const tabs = {
+    mspSubscriptions: {
+      title: $t({ defaultMessage: 'MSP Subscriptions' }),
+      content: <>
+        <SubscriptionUtilization />
+        <SubscriptionTable />
+      </>,
+      visible: true
+    },
+    assignedSubscriptions: {
+      title: $t({ defaultMessage: 'MSP Assigned Subscriptions' }),
+      content: <>
+        <SubscriptionUtilization />
+        <AssignedSubscriptionTable />
+      </>,
+      visible: isMspSelfAssignmentEnabled
+    },
+    pendingActivations: {
+      title: $t({ defaultMessage: 'Pending Activations' }),
+      content: <PendingActivations />,
+      visible: isPendingActivationEnabled
+    }
+  }
+
   const onTabChange = (tab: string) => {
     setActiveTab(tab === 'assignedSubscriptions')
-    setActiveTabKey(tab)
-    if (tab === 'pendingActivations')
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${tab}`
-      })
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
   }
 
   return (
@@ -389,23 +410,19 @@ export function Subscriptions () {
       />
       {isMspSelfAssignmentEnabled && <Tabs
         defaultActiveKey='mspSubscriptions'
+        type='card'
         onChange={onTabChange}
       >
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'MSP Subscriptions' })}
-          key='mspSubscriptions' />
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
-          key='assignedSubscriptions' />
-        {isPendingActivationEnabled && <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Pending Activations' })}
-          children={<PendingActivations />}
-          key='pendingActivations' />}
+        {
+          Object.entries(tabs).map((item) =>
+            item[1].visible &&
+            <Tabs.TabPane
+              key={item[0]}
+              tab={item[1].title}
+              children={item[1].content}
+            />)
+        }
       </Tabs>}
-
-      {activeKey !== 'pendingActivations' && <div><SubscriptionUtilization />
-        {(isAssignedActive && isMspSelfAssignmentEnabled)
-          ? <AssignedSubscriptionTable /> : <SubscriptionTable />}</div>}
     </>
   )
 }

@@ -78,7 +78,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
-const SubscriptionTable = () => {
+export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
