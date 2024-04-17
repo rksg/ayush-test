@@ -48,6 +48,10 @@ describe('Switch Firmware Banner', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(lastestFirmware))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(lastestFirmware))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
