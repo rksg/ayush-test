@@ -58,7 +58,7 @@ export const VersionBanner = () => {
       label: $t({ defaultMessage: 'For ICX Models (7150-7850):' }),
       firmware: {
         version: parseSwitchVersion(firmware?.name),
-        category: isDefaultVersion(rodanFirmware?.name) ?
+        category: isDefaultVersion(firmware?.name) ?
           FirmwareCategory.RECOMMENDED: FirmwareCategory.REGULAR,
         releaseDate: firmware?.createdDate
       }
