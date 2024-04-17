@@ -164,5 +164,35 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/devicePolicies/query',
     newApi: true
+  },
+  deleteVlanPoolPolicy: {
+    method: 'delete',
+    url: '/templates/vlanPools/:templateId',
+    newApi: true
+  },
+  addVlanPoolPolicy: {
+    method: 'post',
+    url: '/templates/vlanPools',
+    newApi: true
+  },
+  getVlanPoolPolicy: {
+    method: 'get',
+    url: '/templates/vlanPools/:policyId',
+    newApi: true
+  },
+  updateVlanPoolPolicy: {
+    method: 'put',
+    url: '/templates/vlanPools/:policyId',
+    newApi: true
+  },
+  getVlanPoolVenues: {
+    method: 'post',
+    url: '/templates/vlanPools/:policyId/venues',
+    newApi: true
+  },
+  getVlanPools: {
+    method: 'get',
+    url: '/templates/vlanPools',
+    newApi: true
   }
 }
