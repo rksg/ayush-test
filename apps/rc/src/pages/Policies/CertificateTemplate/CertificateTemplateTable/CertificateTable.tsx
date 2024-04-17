@@ -81,6 +81,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
       title: $t({ defaultMessage: 'Expiration Date' }),
       dataIndex: 'notAfterDate',
       key: 'notAfterDate',
+      sorter: true,
       render: (_, row) => {
         return row.notAfterDate ?
           moment(row.notAfterDate).format(EXPIRATION_DATE_FORMAT)
@@ -103,6 +104,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
       title: $t({ defaultMessage: 'Revocation Date' }),
       dataIndex: 'revocationDate',
       key: 'revocationDate',
+      sorter: true,
       render: (_, row) => {
         return row.revocationDate
           ? moment(row.revocationDate).format(EXPIRATION_TIME_FORMAT)
@@ -118,12 +120,14 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
+      sorter: true,
       show: false
     },
     {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
       key: 'serialNumber',
+      sorter: true,
       show: false
     },
     {
@@ -134,8 +138,9 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
     },
     {
       title: $t({ defaultMessage: 'Timestamp' }),
-      dataIndex: 'timestamp',
-      key: 'timestamp',
+      dataIndex: 'createDate',
+      key: 'createDate',
+      sorter: true,
       render: (_, row) => {
         return moment(row.createDate).format(EXPIRATION_TIME_FORMAT)
       }
