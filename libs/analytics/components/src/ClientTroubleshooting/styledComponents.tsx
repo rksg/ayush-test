@@ -341,3 +341,8 @@ export const PcapSpin = styled(Spin)`
   position: relative;
   left: 15%;
 `
+
+export const RollupText = styled.div`
+  display: flex;
+  justify-content: center;
+`

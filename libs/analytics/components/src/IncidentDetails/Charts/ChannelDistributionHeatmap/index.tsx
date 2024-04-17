@@ -1,13 +1,19 @@
 import {
   CallbackDataParams
 } from 'echarts/types/dist/shared'
-import { flatten, uniq,max } from 'lodash'
-import moment                from 'moment-timezone'
-import { renderToString }    from 'react-dom/server'
-import AutoSizer             from 'react-virtualized-auto-sizer'
+import { flatten, uniq,max, get } from 'lodash'
+import moment                     from 'moment-timezone'
+import { renderToString }         from 'react-dom/server'
+import { useIntl }                from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip } from '@acx-ui/components'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }                                         from '@acx-ui/utils'
+
+import { useIncidentCodeQuery, useIncidentDetailsQuery } from '../../services'
+import { checkRollup }                                   from '../../TimeSeries/config'
+import { RollupText }                                    from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -64,12 +70,20 @@ export const tooltipFormatter = (params: CallbackDataParams) => {
   )
 }
 export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProps> = (props) => {
+  const { $t } = useIntl()
   const queryResults = useHeatmapDistributionByChannelQuery(props)
   const { heatMapConfig } = props
   const { key, value: title, channel, count, infoIconText } = heatMapConfig
 
   const heatmapData = queryResults?.data?.[key as ChannelType]
 
+  const params = useParams()
+  const id = get(params, 'incidentId', undefined) as string
+  const codeQuery = useIncidentCodeQuery({ id })
+  const detailsQuery = useIncidentDetailsQuery(
+    codeQuery.data!,
+    { skip: !Boolean(codeQuery.data) }
+  )
 
   const xAxisCategories = (heatmapData?.time as string[])?.map((datum: string) =>
     moment(datum).format('DD MMM HH:mm')
@@ -108,24 +122,28 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
           title={{ title: title, icon: infoIconText
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              backfilledHeatmapData.length > 0
-                ? <Heatmap
-                  style={{ width, height }}
-                  tooltipFormatter={tooltipFormatter}
-                  xAxisCategories={xAxisCategories}
-                  yAxisCategories={yAxisCategories}
-                  data={backfilledHeatmapData}
-                  colors={heatmapColorPalette}
-                  min={0}
-                  max={max(backfilledHeatmapData?.map((row) => row?.[2])) as number}
-                  title={key}
-                />
-                : <NoData />
-
-            )}
-          </AutoSizer>
+          {checkRollup(detailsQuery.data!)
+            ? <RollupText>
+              {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+            </RollupText>
+            : <AutoSizer>
+              {({ height, width }) => (
+                backfilledHeatmapData.length > 0
+                  ? <Heatmap
+                    style={{ width, height }}
+                    tooltipFormatter={tooltipFormatter}
+                    xAxisCategories={xAxisCategories}
+                    yAxisCategories={yAxisCategories}
+                    data={backfilledHeatmapData}
+                    colors={heatmapColorPalette}
+                    min={0}
+                    max={max(backfilledHeatmapData?.map((row) => row?.[2])) as number}
+                    title={key}
+                  />
+                  : <NoData />
+              )}
+            </AutoSizer>
+          }
         </Card>
       </Loader>
     </div>

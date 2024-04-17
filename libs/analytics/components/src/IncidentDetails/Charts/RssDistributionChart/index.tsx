@@ -14,6 +14,7 @@ import {
 } from '@acx-ui/components'
 
 import { checkRollup } from '../../TimeSeries/config'
+import { RollupText }  from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useRssDistributionChartQuery } from './services'
 
@@ -34,7 +35,9 @@ export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
       {checkRollup(props.incident)
-        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        ? <RollupText>
+          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+        </RollupText>
         : <AutoSizer>
           {({ height, width }) => (
             <VerticalBarChart

@@ -13,6 +13,7 @@ import { formatter }                      from '@acx-ui/formatter'
 import { useParams }                      from '@acx-ui/react-router-dom'
 import {  getIntl }                       from '@acx-ui/utils'
 
+import { RollupText }                                    from '../../Charts/ImpactedSwitchVLANDetails/styledComponents'
 import { useIncidentCodeQuery, useIncidentDetailsQuery } from '../../services'
 import { checkRollup }                                   from '../config'
 
@@ -102,7 +103,9 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
     {checkRollup(detailsQuery?.data!)
-      ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+      ? <RollupText>
+        {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+      </RollupText>
       : <AutoSizer>
         {({ height, width }) => (
           <StackedAreaChart

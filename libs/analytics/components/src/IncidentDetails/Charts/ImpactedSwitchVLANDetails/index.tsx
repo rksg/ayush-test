@@ -96,7 +96,9 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
       {checkRollup(incident)
-        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        ? <UI.RollupText>
+          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+        </UI.RollupText>
         : <UI.SummaryWrapper>
           {impactedSwitches && impactedTypes.map((type, index) => {
             const items = type.data.slice(0, type.max)

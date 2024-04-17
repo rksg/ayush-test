@@ -11,6 +11,7 @@ import { getIntl }                                 from '@acx-ui/utils'
 
 import { checkRollup }           from '../../TimeSeries/config'
 import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
+import { RollupText }            from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import {
   ImpactedSwitchPortRow,
@@ -40,7 +41,9 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
       {checkRollup(incident)
-        ? <>{$t({ defaultMessage: 'Data granularity at this level is not available.' })}</>
+        ? <RollupText>
+          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+        </RollupText>
         : <>
           <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
           <MismatchConnectionCarousel
