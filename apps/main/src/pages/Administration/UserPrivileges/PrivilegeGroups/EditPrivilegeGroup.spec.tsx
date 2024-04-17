@@ -357,8 +357,8 @@ describe('Edit Privilege Group', () => {
     // Select customers
     await userEvent.click(screen.getByRole('radio', { name: 'All Customers' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
-    expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venue)')).toBeVisible()
-    expect(screen.getByText('Amy (1 Venue)')).toBeVisible()
+    expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venues)')).toBeVisible()
+    expect(screen.getByText('Amy (1 Venues)')).toBeVisible()
     await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[1])
     await screen.findByText('Select Customers')
     await screen.findByText('int 1')
@@ -367,9 +367,9 @@ describe('Edit Privilege Group', () => {
     await userEvent.click(screen.getAllByRole('checkbox')[4])
     await userEvent.click(screen.getAllByRole('checkbox')[5])
     await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
-    expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (1 Venue)')).toBeNull()
-    expect(screen.queryByText('Amy (1 Venue)')).toBeNull()
-    expect(screen.getByText('int 1 (1 Venue)')).toBeVisible()
+    expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (1 Venues)')).toBeNull()
+    expect(screen.queryByText('Amy (1 Venues)')).toBeNull()
+    expect(screen.getByText('int 1 (1 Venues)')).toBeVisible()
 
     // Add
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))

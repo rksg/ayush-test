@@ -38,7 +38,11 @@ function AntConfigProviders (props: ConfigProviderProps) {
 }
 
 export function ConfigProvider (props: ConfigProviderProps) {
-  setUpIntl({ locale: props.lang || DEFAULT_SYS_LANG })
+  try {
+    getIntl()
+  } catch (error) {
+    setUpIntl({ locale: props.lang || DEFAULT_SYS_LANG })
+  }
   const { $t } = getIntl()
   const { acx_account_vertical } = getJwtTokenPayload()
   moment.locale(props.lang)
