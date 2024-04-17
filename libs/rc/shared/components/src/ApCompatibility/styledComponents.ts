@@ -1,3 +1,4 @@
+import { Row , Col } from 'antd'
 import styled from 'styled-components/macro'
 
 import {
@@ -47,4 +48,22 @@ export const TableStyleWrapper = styled.div`
     border-radius: 4px;
     padding: 2px;
   }
+`
+
+export const RowStyleWrapper = styled.div`
+  width: 100%;
+`
+
+export const RowRightStyleWrapper = styled(Col)`
+  width: 50%;  
+  margin-top: 12px;
+  text-align: right;
+  height: var(--acx-body-3-line-height);
+`
+
+
+export const TotalStyleWrapper = styled.label`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
 `
