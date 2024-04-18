@@ -5,12 +5,10 @@ import { Tooltip }                                            from '@acx-ui/comp
 import { Tabs }                                               from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { HealthPage }       from '..'
-import { useNetworkFilter } from '../Header'
+import { HealthPage } from '..'
 
 import { OverviewTab }         from './OverviewTab'
 import { useSwitchCountQuery } from './OverviewTab/SummaryBoxes/services'
-import { FilterWrapper }       from './styledComponents'
 
 export function HealthTabs () {
   const { $t } = useIntl()
@@ -46,23 +44,10 @@ export function HealthTabs () {
     type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview'>
-      <>
-        <FilterWrapper>
-          {useNetworkFilter({
-            shouldQuerySwitch: true,
-            shouldShowOnlyDomains: true
-          })}
-        </FilterWrapper>
-        <OverviewTab wirelessOnly={wirelessOnly}/>
-      </>
+      <OverviewTab wirelessOnly={wirelessOnly}/>
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
-      <>
-        <FilterWrapper>
-          {useNetworkFilter({})}
-        </FilterWrapper>
-        <HealthPage />
-      </>
+      <HealthPage />
     </Tabs.TabPane>
     <Tabs.TabPane
       tab={
@@ -82,19 +67,10 @@ export function HealthTabs () {
           :
           $t({ defaultMessage: 'Wired' })
       }
-      key='wired'
-      disabled={wirelessOnly}>
-      <>
-        <FilterWrapper>
-          {useNetworkFilter({
-            shouldQueryAp: false,
-            shouldQuerySwitch: true
-          })}
-        </FilterWrapper>
-        <div>
+      key='wired'>
+      <div>
         Health Wired Page
-        </div>
-      </>
+      </div>
     </Tabs.TabPane>
   </Tabs>
 }

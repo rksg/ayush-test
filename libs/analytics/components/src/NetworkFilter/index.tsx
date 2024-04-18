@@ -289,7 +289,7 @@ function ConnectedNetworkFilter (
 
     if(!shouldQueryAp && shouldQuerySwitch){
       rawVal = modifyRawValue(rawVal, dataText, 'zone', 'switchGroup')
-    } else if(shouldQueryAp){
+    } else if(shouldQueryAp && !shouldQuerySwitch){
       rawVal = modifyRawValue(rawVal, dataText, 'switchGroup', 'zone')
     }
   }

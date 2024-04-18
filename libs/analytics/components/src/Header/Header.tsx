@@ -19,7 +19,7 @@ export type HeaderData = {
   subTitle: SubTitle[]
 }
 
-type UseHeaderExtraProps = {
+export type UseHeaderExtraProps = {
   shouldQueryAp?: boolean,
   shouldQuerySwitch?: boolean,
   shouldShowOnlyDomains?: boolean,

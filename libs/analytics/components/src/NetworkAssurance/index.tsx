@@ -5,10 +5,10 @@ import {
   Tabs,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { DateRange }                  from '@acx-ui/utils'
+import { get }                                     from '@acx-ui/config'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { DateRange }                               from '@acx-ui/utils'
 
 import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
@@ -16,6 +16,8 @@ import { HealthPage }      from '../Health'
 import { HealthTabs }      from '../HealthTabs'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
+
+import type { UseHeaderExtraProps } from '../Header'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
@@ -34,6 +36,9 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const location = useLocation()
+  const basePath = useTenantLink('/analytics')
+
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isSwitchHealthEnabled = [
@@ -41,12 +46,32 @@ const useTabs = () : Tab[] => {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
 
+  const getHeaderExtraOptions = (): Partial<UseHeaderExtraProps> => {
+    const path = location.pathname.replace(basePath.pathname, '')
+    switch (path) {
+      case `/${NetworkAssuranceTabEnum.HEALTH}/overview`:
+        return {
+          shouldQuerySwitch: true,
+          shouldShowOnlyDomains: true
+        }
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wired`:
+        return {
+          shouldQueryAp: false,
+          shouldQuerySwitch: true
+        }
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wireless`:
+      default:
+        return {}
+    }
+  }
+
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
     component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
     headerExtra: useHeaderExtra({
-      shouldQuerySwitch: false, withIncidents: false, excludeNetworkFilter: isSwitchHealthEnabled
+      ...(isSwitchHealthEnabled ? getHeaderExtraOptions() : { shouldQuerySwitch: false }),
+      withIncidents: false
     })
   }
 
