@@ -74,6 +74,7 @@ export enum Features {
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
+  MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   MSP_HSP_PLM_FF = 'LOC-HSP',
