@@ -420,7 +420,7 @@ export function ApForm () {
     if (supportMgmtVlan) {
       const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
         { params: { venueId: value } })).data
-      if (!targetVenueMgmtVlan?.vlanOverrideEnabled) {
+      if (!targetVenueMgmtVlan?.vlanId) {
         setChangeMgmtVlan(false)
       } else {
         const apMgmtVlan = (await getApMgmtVlan(
