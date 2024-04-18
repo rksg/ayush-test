@@ -302,7 +302,7 @@ export function CcdResultViewer (props: CcdResultViewerProps) {
       : (statusCode === CcdStatus.FAIL)? '#941100' : 'orange'
 
     // draw message text
-    const msg = $t(CcdMsg[messageId])
+    const msg = $t(CcdMsg[messageId] ?? { defaultMessage: 'Undefined Message' })
     containerGroup.append('text')
       .attr('x', rowX)
       .attr('y', rowY + rowHeight / 2)

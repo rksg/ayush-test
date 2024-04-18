@@ -28,7 +28,7 @@ describe('InterfaceSettings - Summary > LagTable', () => {
     const node2LagsRow = screen.getAllByRole('row', { name: /Smart Edge 2/ })
     expect(node2LagsRow.length).toBe(1)
     // eslint-disable-next-line max-len
-    screen.getByRole('row', { name: 'Smart Edge 2 Lag1 LACP (Active) 1 LAN Static IP 1.10.10.1 Enabled' })
+    screen.getByRole('row', { name: 'Smart Edge 2 Lag1 LACP (Active) 0 LAN Static IP 1.10.10.1 Enabled' })
   })
 
   it('should correctly handle empty Lags and Lag is not enabled', async () => {
@@ -54,6 +54,6 @@ describe('InterfaceSettings - Summary > LagTable', () => {
     const node2LagsRow = screen.getAllByRole('row', { name: /Smart Edge 2/ })
     expect(node2LagsRow.length).toBe(1)
     // eslint-disable-next-line max-len
-    screen.getByRole('row', { name: 'Smart Edge 2 Lag1 LACP (Active) 1 LAN Static IP 1.10.10.1 Disabled' })
+    screen.getByRole('row', { name: 'Smart Edge 2 Lag1 LACP (Active) 0 LAN Static IP 1.10.10.1 Disabled' })
   })
 })

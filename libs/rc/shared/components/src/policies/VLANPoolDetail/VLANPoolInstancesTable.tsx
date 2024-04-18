@@ -1,19 +1,18 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader } from '@acx-ui/components'
-import { useGetVLANPoolVenuesQuery }       from '@acx-ui/rc/services'
-import { VLANPoolVenues, useTableQuery }   from '@acx-ui/rc/utils'
-import { TenantLink }                      from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                      from '@acx-ui/components'
+import { useGetVLANPoolVenuesQuery, useGetVlanPoolVenuesQuery } from '@acx-ui/rc/services'
+import { VLANPoolVenues, useConfigTemplate, useTableQuery }     from '@acx-ui/rc/utils'
+import { TenantLink }                                           from '@acx-ui/react-router-dom'
 
 
 export default function VLANPoolInstancesTable (){
-
   const { $t } = useIntl()
-  // const params = useParams()
+  const { isTemplate } = useConfigTemplate()
 
   const tableQuery = useTableQuery({
-    useQuery: useGetVLANPoolVenuesQuery,
+    useQuery: isTemplate ? useGetVlanPoolVenuesQuery : useGetVLANPoolVenuesQuery,
     defaultPayload: {
       fields: ['venueId', 'venueName', 'venueApCount', 'apGroupData'],
       pageSize: 10000
