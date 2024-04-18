@@ -23,7 +23,7 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
 import { Provider }                                 from '@acx-ui/store'
 import { RolesEnum }                                from '@acx-ui/types'
-import { hasAccess, hasRoles }                      from '@acx-ui/user'
+import { hasRoles }                                 from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
@@ -33,7 +33,7 @@ export default function AnalyticsRoutes () {
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!hasAccess() && !hasRoles([RolesEnum.READ_ONLY]) ) return <React.Fragment />
+  if (hasRoles([RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN]) ) return <React.Fragment />
 
   const HealthComponent = !canUseAnltAdv
     ? <HealthPage/>
