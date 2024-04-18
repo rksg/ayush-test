@@ -33,8 +33,9 @@ import {
   ShowTopologyFloorplanOn,
   LinkConnectionInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink }                              from '@acx-ui/react-router-dom'
-import { hasPermission, SwitchScopes, WifiScopes } from '@acx-ui/user'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }            from '@acx-ui/user'
 
 import LinkTooltip             from './LinkTooltip'
 import NodeTooltip             from './NodeTooltip'

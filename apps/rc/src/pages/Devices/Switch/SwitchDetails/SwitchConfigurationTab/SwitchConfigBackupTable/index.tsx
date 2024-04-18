@@ -7,10 +7,10 @@ import { Loader, Table, TableProps, showActionModal, showToast }                
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation } from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, usePollingTableQuery }         from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                                                                       from '@acx-ui/types'
 import {
   filterByAccess,
   getShowWithoutRbacCheckKey,
-  SwitchScopes,
   hasPermission
 }                                                                              from '@acx-ui/user'
 import { handleBlobDownloadFile } from '@acx-ui/utils'

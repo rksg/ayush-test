@@ -39,8 +39,8 @@ import {
   SwitchClient,
   Client
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                          from '@acx-ui/types'
-import { SwitchScopes, WifiScopes, hasPermission } from '@acx-ui/user'
+import { RequestPayload, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }                            from '@acx-ui/user'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'
 

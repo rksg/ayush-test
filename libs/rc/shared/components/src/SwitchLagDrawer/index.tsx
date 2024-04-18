@@ -23,9 +23,10 @@ import {
   useGetLagListQuery,
   useSwitchDetailHeaderQuery
 }                            from '@acx-ui/rc/services'
-import { isOperationalSwitch, Lag }                    from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission, SwitchScopes } from '@acx-ui/user'
+import { isOperationalSwitch, Lag }      from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SwitchLagModal } from './SwitchLagModal'
 

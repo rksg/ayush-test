@@ -24,8 +24,9 @@ import {
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission, SwitchScopes } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 

@@ -7,7 +7,8 @@ import { DateFormatEnum, formatter }                                            
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { useLocation }                                                                              from '@acx-ui/react-router-dom'
-import { WifiScopes, hasPermission }                                                                from '@acx-ui/user'
+import { WifiScopes }                                                                               from '@acx-ui/types'
+import { hasPermission }                                                                            from '@acx-ui/user'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 

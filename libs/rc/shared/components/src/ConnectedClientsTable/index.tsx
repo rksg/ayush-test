@@ -26,10 +26,10 @@ import {
   networkTypes,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
-import { RequestPayload }              from '@acx-ui/types'
-import { SwitchScopes, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }               from '@acx-ui/utils'
+import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
+import { noDataDisplay }                from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 

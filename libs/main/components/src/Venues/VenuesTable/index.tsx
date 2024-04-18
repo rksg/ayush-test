@@ -27,10 +27,10 @@ import {
   TableQuery,
   usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                     from '@acx-ui/react-router-dom'
-import { RequestPayload }                                         from '@acx-ui/types'
-import { SwitchScopes, filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
-import { transformToCityListOptions }                             from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }       from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }             from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+import { transformToCityListOptions }               from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,

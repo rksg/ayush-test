@@ -11,8 +11,8 @@ import {
   useLazyGetVenueEdgeFirmwareListQuery,
   useLazyGetScheduledFirmwareQuery
 } from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                             from '@acx-ui/types'
+import { useNavigate, useParams, useTenantLink }           from '@acx-ui/react-router-dom'
+import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import {
   CloudVersion,
   getUserSettingsByPath,
@@ -21,10 +21,7 @@ import {
   useGetCloudVersionQuery,
   UserSettingsUIModel,
   hasRoles,
-  hasPermission,
-  SwitchScopes,
-  WifiScopes,
-  EdgeScopes
+  hasPermission
 } from '@acx-ui/user'
 
 export function CloudMessageBanner () {

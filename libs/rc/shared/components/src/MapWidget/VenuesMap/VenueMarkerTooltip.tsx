@@ -6,8 +6,9 @@ import {
   Table,
   getDeviceConnectionStatusColors
 }     from '@acx-ui/components'
-import { VenueMarkerOptions }                                  from '@acx-ui/rc/utils'
-import { EdgeScopes, SwitchScopes, WifiScopes, hasPermission } from '@acx-ui/user'
+import { VenueMarkerOptions }                   from '@acx-ui/rc/utils'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }                        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 

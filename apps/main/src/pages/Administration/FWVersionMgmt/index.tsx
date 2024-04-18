@@ -15,9 +15,10 @@ import {
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { compareSwitchVersion }                                from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
-import { EdgeScopes, hasPermission, SwitchScopes, WifiScopes } from '@acx-ui/user'
+import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 

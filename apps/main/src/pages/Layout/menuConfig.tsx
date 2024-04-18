@@ -30,9 +30,9 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { SwitchScopes, hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }                                                  from '@acx-ui/utils'
+import { RolesEnum, SwitchScopes }                        from '@acx-ui/types'
+import { hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }                                    from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()

@@ -47,8 +47,8 @@ import {
   getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess, SwitchScopes, hasPermission }       from '@acx-ui/user'
+import { RequestPayload, SwitchScopes }                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }                     from '@acx-ui/user'
 import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'

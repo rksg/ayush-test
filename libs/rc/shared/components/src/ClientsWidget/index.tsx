@@ -9,7 +9,8 @@ import type { DonutChartData }                                   from '@acx-ui/c
 import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes, hasPermission }               from '@acx-ui/user'
+import { SwitchScopes, WifiScopes }                              from '@acx-ui/types'
+import { hasPermission }                                         from '@acx-ui/user'
 import { useDashboardFilter }                                    from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'

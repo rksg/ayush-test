@@ -3,7 +3,8 @@ import '@testing-library/jest-dom'
 import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { SwitchScopes, getUserProfile, setUserProfile }                from '@acx-ui/user'
+import { SwitchScopes }                                                from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                              from '@acx-ui/user'
 
 import {
   apListData,

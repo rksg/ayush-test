@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom'
 import { useEffect } from 'react'
 
-import { useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { BrowserRouter }                                            from '@acx-ui/react-router-dom'
-import { Provider }                                                 from '@acx-ui/store'
-import { fireEvent, render, screen }                                from '@acx-ui/test-utils'
-import { SwitchScopes, getUserProfile, setUserProfile, WifiScopes } from '@acx-ui/user'
-import { DateRange }                                                from '@acx-ui/utils'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { BrowserRouter }                  from '@acx-ui/react-router-dom'
+import { Provider }                       from '@acx-ui/store'
+import { fireEvent, render, screen }      from '@acx-ui/test-utils'
+import { SwitchScopes, WifiScopes }       from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { DateRange }                      from '@acx-ui/utils'
 
 import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 

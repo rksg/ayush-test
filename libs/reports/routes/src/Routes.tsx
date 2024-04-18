@@ -3,7 +3,8 @@ import { get }                                        from '@acx-ui/config'
 import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
 import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
 import { Provider }                                   from '@acx-ui/store'
-import { AuthRoute, SwitchScopes, WifiScopes }        from '@acx-ui/user'
+import { SwitchScopes, WifiScopes }                   from '@acx-ui/types'
+import { AuthRoute }                                  from '@acx-ui/user'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')

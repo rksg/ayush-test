@@ -8,9 +8,10 @@ import {
   useGetPersonaGroupByIdQuery,
   useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType }              from '@acx-ui/reports/components'
-import { SwitchScopes, WifiScopes, hasPermission } from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
+import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
 

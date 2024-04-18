@@ -14,7 +14,8 @@ import {
   VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasPermission, SwitchScopes }           from '@acx-ui/user'
+import { SwitchScopes }                          from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '..'
 

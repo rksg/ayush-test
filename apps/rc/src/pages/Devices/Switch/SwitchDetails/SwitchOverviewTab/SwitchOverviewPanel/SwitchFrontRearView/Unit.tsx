@@ -22,7 +22,8 @@ import { getPoeUsage,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-import { hasPermission, SwitchScopes }       from '@acx-ui/user'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'

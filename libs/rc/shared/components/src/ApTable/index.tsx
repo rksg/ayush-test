@@ -43,7 +43,6 @@ import {
   TableResult,
   usePollingTableQuery,
   APExtendedGrouped,
-  AFCMaxPowerRender,
   AFCPowerStateRender,
   AFCStatusRender,
   getFilters,
@@ -55,8 +54,8 @@ import {
   ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                 from '@acx-ui/types'
-import { SwitchScopes, filterByAccess, hasPermission }                    from '@acx-ui/user'
+import { RequestPayload, SwitchScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
@@ -520,15 +519,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             />}
           </>
         )
-      }
-    },
-    { key: 'afcMaxPower',
-      title: $t({ defaultMessage: 'AFC Max Power' }),
-      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
     ]: []),

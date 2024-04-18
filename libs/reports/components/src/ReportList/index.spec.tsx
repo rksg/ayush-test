@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { render, screen, within }                       from '@acx-ui/test-utils'
-import { SwitchScopes, getUserProfile, setUserProfile } from '@acx-ui/user'
+import { render, screen, within }         from '@acx-ui/test-utils'
+import { SwitchScopes }                   from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { ReportList } from '.'
 

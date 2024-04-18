@@ -38,15 +38,9 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import {
-  EdgeScopes,
-  SwitchScopes,
-  WifiScopes,
-  filterByAccess,
-  getShowWithoutRbacCheckKey,
-  hasPermission
-}    from '@acx-ui/user'
+import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import {
   useDashboardFilter,
   DateFilter,

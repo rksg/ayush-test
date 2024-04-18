@@ -40,10 +40,11 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import { store }                       from '@acx-ui/store'
-import { hasPermission, SwitchScopes } from '@acx-ui/user'
-import { getIntl }                     from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'

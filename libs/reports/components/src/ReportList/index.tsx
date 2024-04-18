@@ -2,7 +2,8 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
 import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes, hasPermission } from '@acx-ui/user'
+import { SwitchScopes, WifiScopes }                from '@acx-ui/types'
+import { hasPermission }                           from '@acx-ui/user'
 
 export function ReportList () {
   const { $t } = useIntl()

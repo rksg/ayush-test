@@ -12,9 +12,10 @@ import {
   useGetDelegationsQuery,
   useGetNotificationRecipientsQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab }                                                        from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                      from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, hasPermission, useUserProfileContext, WifiScopes } from '@acx-ui/user'
+import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
+import { hasPermission, useUserProfileContext }  from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'

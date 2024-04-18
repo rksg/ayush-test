@@ -29,10 +29,10 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-import { RequestPayload }                              from '@acx-ui/types'
-import { filterByAccess, hasPermission, SwitchScopes } from '@acx-ui/user'
-import { noDataDisplay }                               from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,

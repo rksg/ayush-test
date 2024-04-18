@@ -15,7 +15,8 @@ import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, 
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
 import { ConnectionStates, ConnectionStatus, DeviceStates, TopologyDeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes, hasPermission }                                                                                                                                                                                    from '@acx-ui/user'
+import { SwitchScopes, WifiScopes }                                                                                                                                                                                                   from '@acx-ui/types'
+import { hasPermission }                                                                                                                                                                                                              from '@acx-ui/user'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'

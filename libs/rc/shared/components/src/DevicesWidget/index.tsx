@@ -5,11 +5,12 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }                                                 from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
-import { ChartData }                                                           from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath }                                       from '@acx-ui/react-router-dom'
-import { EdgeScopes, filterByAccess, hasPermission, SwitchScopes, WifiScopes } from '@acx-ui/user'
+import type { DonutChartData }                  from '@acx-ui/components'
+import { TierFeatures, useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { ChartData }                            from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath }        from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { filterByAccess, hasPermission }        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 

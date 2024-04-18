@@ -8,7 +8,8 @@ import { DateFormatEnum, formatter }                                            
 import { CloseSymbol }                                                              from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus }             from '@acx-ui/rc/utils'
 import { useLocation }                                                              from '@acx-ui/react-router-dom'
-import { SwitchScopes, hasPermission }                                              from '@acx-ui/user'
+import { SwitchScopes }                                                             from '@acx-ui/types'
+import { hasPermission }                                                            from '@acx-ui/user'
 import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 

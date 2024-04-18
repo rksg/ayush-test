@@ -11,9 +11,10 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import { SwitchScopes, hasPermission } from '@acx-ui/user'
-import { getIntl }                     from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { VlanSettingDrawer } from '../VlanSettingDrawer'
 

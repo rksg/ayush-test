@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                                from '@acx-ui/components'
-import { useIsTierAllowed, TierFeatures }                      from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, WifiScopes, hasPermission } from '@acx-ui/user'
+import { Tabs }                                  from '@acx-ui/components'
+import { useIsTierAllowed, TierFeatures }        from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueSwitch } from './VenueSwitch'

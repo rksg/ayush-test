@@ -24,12 +24,16 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
-import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
-import { useNavigateToPath }                                             from '@acx-ui/react-router-dom'
-import { hasPermission, EdgeScopes, SwitchScopes, WifiScopes }           from '@acx-ui/user'
-import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                                          from '@acx-ui/utils'
+import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
+import { ShowTopologyFloorplanOn }              from '@acx-ui/rc/utils'
+import { useNavigateToPath }                    from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }                        from '@acx-ui/user'
+import { generateVenueFilter, useDateFilter }   from '@acx-ui/utils'
+import type { AnalyticsFilter }                 from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -41,6 +45,9 @@ export function VenueOverviewTab () {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+  const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -59,6 +66,17 @@ export function VenueOverviewTab () {
     = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ] })
 
   return (<>
+    {
+      (
+        (tripleBand?.enabled === true) &&
+        (venueRadio?.radioParams6G?.enableAfc === true) &&
+        (
+          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+        )
+      ) &&
+      <LowPowerBannerAndModal from={'venue'} />
+    }
     <CommonDashboardWidgets filters={venueFilter}/>
     { hasReadPermission && <ContentSwitcher tabDetails={tabDetails} size='large' />}
   </>)

@@ -17,8 +17,8 @@ import {
   CommonUrlsInfo,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                  from '@acx-ui/types'
-import { EdgeScopes, SwitchScopes, WifiScopes, hasPermission }             from '@acx-ui/user'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes }            from '@acx-ui/types'
+import { hasPermission }                                                   from '@acx-ui/user'
 import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'

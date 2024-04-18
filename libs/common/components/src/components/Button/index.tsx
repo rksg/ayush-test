@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
 
 import { Tooltip } from '../Tooltip'
 
