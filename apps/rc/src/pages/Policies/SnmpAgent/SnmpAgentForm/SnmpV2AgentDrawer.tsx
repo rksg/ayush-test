@@ -1,31 +1,41 @@
-import { useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input } from 'antd'
+import { cloneDeep }   from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, Tooltip } from '@acx-ui/components'
-import { SnmpV2Agent }     from '@acx-ui/rc/utils'
+import { Drawer, Tooltip }               from '@acx-ui/components'
+import { ApSnmpActionType, SnmpV2Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
+import SnmpAgentFormContext                                                from './SnmpAgentFormContext'
 
+
+const initSnmpV2Agent = {
+  communityName: '',
+  readPrivilege: false,
+  trapPrivilege: false
+}
 
 type SnmpV2AgentDrawerProps = {
-  visible: boolean,
-  isEditMode: boolean,
-  curData: SnmpV2Agent,
-  othersData: SnmpV2Agent[],
-  onDataChanged: (d: SnmpV2Agent) => void
-  onCancel: () => void
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  editIndex: number
 }
 
 const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
+  const { state, dispatch } = useContext(SnmpAgentFormContext)
 
-  const { visible, isEditMode, curData, othersData=[], onDataChanged } = props
-  const usedCommunityName = othersData.map(d => d.communityName)
+  const [ othersData, setOthersData ] = useState<SnmpV2Agent[]>([])
+  const usedCommunityNames = othersData.map(s => s.communityName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
+
+  const [form] = Form.useForm()
+
+  const { visible, setVisible, editIndex } = props
+  const isEditMode = (editIndex !== -1)
 
   const title = isEditMode
     ? $t({ defaultMessage: 'Edit SNMPv2 Agent' })
@@ -36,65 +46,93 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
     : $t({ defaultMessage: 'Add' })
 
 
-
   useEffect(() => {
-    if (curData) {
-      form.setFieldsValue(curData)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curData])
+    if (visible && form) {
+      const { snmpV2Agents } = state
+      const snmpV2Agent = cloneDeep(isEditMode? snmpV2Agents?.[editIndex] : initSnmpV2Agent)
 
-  const content = <Form layout='vertical'
-    form={form}
-  >
-    <Form.Item
-      name='communityName'
-      label={
-        <>
+      setOthersData(snmpV2Agents?.filter((s, index) => ( index !== editIndex)) ?? [])
+
+      form.setFieldsValue(snmpV2Agent)
+    }
+  }, [editIndex, visible, form, isEditMode, state])
+
+  const communityNameValidator = async (value: string) => {
+    const re = new RegExp('^[^\'#" ]*$')
+
+    return (value && !re.test(value))
+      // eslint-disable-next-line max-len
+      ? Promise.reject($t({ defaultMessage: 'The Community name cannot contain spaces, single quotes(\'), double quotes("), or pound signs(#).' }))
+      : Promise.resolve()
+  }
+
+  const communityNameDuplicationValidator = async (value: string) => {
+    return (usedCommunityNames.includes(value))
+      ? Promise.reject($t({ defaultMessage: 'The Community name already exists' }))
+      : Promise.resolve()
+  }
+
+  const content = (
+    <Form layout='vertical' form={form}>
+      <Form.Item
+        name='communityName'
+        label={<>
           {$t({ defaultMessage: 'Community Name' })}
           <Tooltip.Question
             placement='bottom'
             title={$t({ defaultMessage: 'Length is limited to 1-32 characters.' })}
           />
-        </>
+        </>}
+        style={{ width: '350px' }}
+        rules={[
+          { required: true, message: $t({ defaultMessage: 'Please enter Community Name' }) },
+          { min: 1 },
+          { max: 32 },
+          { validator: (_, value) => communityNameValidator(value) },
+          { validator: (_, value) => communityNameDuplicationValidator(value) }
+        ]}
+        children={<Input />}
+      />
+      <PrivilegeForm
+        hasOtherReadPrivilegeEnabled={hasOtherReadPrivilegeEnabled}
+        hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
+    </Form>
+  )
+
+  const resetData = () => {
+    form.resetFields()
+  }
+
+  const onClose = () => {
+    resetData()
+    setVisible(false)
+  }
+
+  const onSave = async (addAnotherRuleChecked: boolean) => {
+    try {
+      const valid = await form.validateFields()
+      if (valid) {
+        const payload = form.getFieldsValue()
+        const { readPrivilege, trapPrivilege } = payload
+
+        if (readPrivilege || trapPrivilege) {
+          const type = isEditMode? ApSnmpActionType.UPDATE_SNMP_V2 : ApSnmpActionType.ADD_SNMP_V2
+          dispatch({ type, payload })
+
+          form.submit()
+
+          const allPrivilegeEnabled = (readPrivilege || hasOtherReadPrivilegeEnabled)
+            && (trapPrivilege || hasOtherTrapPrivilegeEnabled)
+
+          if (!addAnotherRuleChecked || allPrivilegeEnabled ) {
+            onClose()
+          } else {
+            resetData()
+          }
+        }
       }
-      style={{ width: '350px' }}
-      rules={[
-        { required: true,
-          message: $t({ defaultMessage: 'Please enter Community Name' }) },
-        { min: 1 },
-        { max: 32 },
-        { validator: (_, value) => {
-          const communityNameRegExp = (value: string) => {
-            const re = new RegExp('^[^\'#" ]*$')
-            if (value && !re.test(value)) {
-              return Promise.reject($t(
-                { defaultMessage:
-                  // eslint-disable-next-line max-len
-                  'The Community name cannot contain spaces, single quotes(\'), double quotes("), or pound signs(#).'
-                }))
-            }
-            return Promise.resolve()
-          }
-
-          if (usedCommunityName && usedCommunityName.includes(value)) {
-            return Promise.reject($t({ defaultMessage: 'The Community name already exists' }))
-          }
-
-          return communityNameRegExp(value)
-        } }
-      ]}
-      children={<Input />}
-    />
-    <PrivilegeForm
-      hasOtherReadPrivilegeEnabled={hasOtherReadPrivilegeEnabled}
-      hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
-  </Form>
-
-  // reset form fields when drawer is closed
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      form.resetFields()
+    } catch (error) {
+      if (error instanceof Error) throw error
     }
   }
 
@@ -102,11 +140,10 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
     <Drawer
       title={title}
       visible={visible}
-      onClose={props.onCancel}
-      children={content}
+      onClose={onClose}
       destroyOnClose={true}
+      children={content}
       width={'500px'}
-      afterVisibleChange={handleOpenChange}
       footer={
         <Drawer.FormFooter
           showAddAnother={!isEditMode}
@@ -114,31 +151,8 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
             addAnother: $t({ defaultMessage: 'Add another SNMPv2 agent' }),
             save: saveButtonText
           })}
-          onCancel={props.onCancel}
-          onSave={async (addAnotherRuleChecked: boolean) => {
-            try {
-              const valid = await form.validateFields()
-              if (valid) {
-                const newData = form.getFieldsValue()
-                const { readPrivilege, trapPrivilege } = newData
-
-                if (readPrivilege || trapPrivilege) {
-                  onDataChanged(newData)
-                  //form.submit()
-                  const allPrivilegeEnabled = (readPrivilege || hasOtherReadPrivilegeEnabled)
-                    && (trapPrivilege || hasOtherTrapPrivilegeEnabled)
-
-                  if (!addAnotherRuleChecked || allPrivilegeEnabled) {
-                    props.onCancel()
-                  } else {
-                    form.resetFields()
-                  }
-                }
-              }
-            } catch (error) {
-              if (error instanceof Error) throw error
-            }
-          }}
+          onCancel={onClose}
+          onSave={onSave}
         />
       }
     />
