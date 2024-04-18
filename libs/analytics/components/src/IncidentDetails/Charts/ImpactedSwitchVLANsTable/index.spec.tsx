@@ -4,7 +4,6 @@ import userEvent         from '@testing-library/user-event'
 import { CarouselProps } from 'antd'
 
 import { fakeIncidentVlan }                                             from '@acx-ui/analytics/utils'
-import { get }                                                          from '@acx-ui/config'
 import { Provider, dataApi, dataApiURL, store }                         from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -43,8 +42,9 @@ jest.mock('antd', () => {
   }
 })
 
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
 }))
 
 // mac and portmac the same
@@ -338,17 +338,7 @@ const response = (data: ImpactedSwitch[] = [
 })
 
 describe('ImpactedSwitchVLANsTable', () => {
-  beforeEach(() => {
-    store.dispatch(dataApi.util.resetApiState())
-    jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
-    const mockDate = new Date('2022-10-06T00:00:00.000Z')
-    jest.useFakeTimers('modern').setSystemTime(mockDate)
-  })
-
-  afterEach(() => {
-    jest.useRealTimers()
-    jest.resetAllMocks()
-  })
+  beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
 
   const getSlide = async (index: number) => (await screen.findByTestId(`carousel-slide-${index}`))
 

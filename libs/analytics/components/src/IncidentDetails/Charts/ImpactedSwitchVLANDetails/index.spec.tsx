@@ -1,12 +1,12 @@
 import { fakeIncidentVlan }                                            from '@acx-ui/analytics/utils'
-import { get }                                                         from '@acx-ui/config'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ImpactedSwitchVLANsDetails } from '.'
 
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
 }))
 
 const response = {
@@ -116,10 +116,7 @@ const response = {
 }
 
 describe('ImpactedSwitchVLANDetails', () => {
-  jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
   it('should render', async () => {
-    const mockDate = new Date('2022-10-06T01:00:00.000Z')
-    jest.useFakeTimers('modern').setSystemTime(mockDate)
     mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response })
     render(<ImpactedSwitchVLANsDetails
       incident={fakeIncidentVlan}

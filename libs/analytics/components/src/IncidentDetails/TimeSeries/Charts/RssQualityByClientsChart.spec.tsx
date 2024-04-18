@@ -1,7 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import { fakeIncidentRss }             from '@acx-ui/analytics/utils'
-import { get }                         from '@acx-ui/config'
 import { dataApiURL, store, Provider } from '@acx-ui/store'
 import { mockGraphqlQuery, render }    from '@acx-ui/test-utils'
 
@@ -16,8 +15,9 @@ import {
 
 import type { TimeSeriesChartResponse } from '../types'
 
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
 }))
 
 const expectedResult = {
@@ -36,20 +36,10 @@ const expectedResult = {
   }
 } as unknown as TimeSeriesChartResponse
 
-beforeEach(() => {
-  store.dispatch(Api.util.resetApiState())
-  jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
-})
-
-afterEach(() => {
-  jest.useRealTimers()
-  jest.resetAllMocks()
-})
+beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('RssQualityByClientsChart', () => {
   it('should render chart', () => {
-    const mockDate = new Date('2022-09-30T00:00:00.000Z')
-    jest.useFakeTimers('modern').setSystemTime(mockDate)
     const { asFragment } = render(
       <Provider>
         <BrowserRouter>

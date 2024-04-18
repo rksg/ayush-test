@@ -3,17 +3,17 @@ import {
 } from 'echarts/types/dist/shared'
 import { unitOfTime } from 'moment-timezone'
 
-import { fakeIncident1 }                                               from '@acx-ui/analytics/utils'
-import { get }                                                         from '@acx-ui/config'
-import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { fakeIncident1 }                    from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
 import { ChannelDistributionHeatMap, tooltipFormatter } from '.'
 
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
 }))
 
 const buffer = {
@@ -90,16 +90,7 @@ const response = {
 }
 
 describe('ChannelDistributionHeatMap', () => {
-  beforeEach(() => {
-    store.dispatch(api.util.resetApiState())
-    jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
-    const mockDate = new Date('2022-07-21T02:42:00.000Z')
-    jest.useFakeTimers('modern').setSystemTime(mockDate)
-  })
-  afterEach(() => {
-    jest.useRealTimers()
-    jest.resetAllMocks()
-  })
+  beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', { data: response })
@@ -140,8 +131,7 @@ describe('ChannelDistributionHeatMap', () => {
   it('should handle dynamic height', async () => {
     let time: object [] = []
     let heatmap: object[] = []
-    const startDate = new Date('2022-07-20T02:42:00.000Z')
-    jest.useFakeTimers('modern').setSystemTime(startDate)
+    const startDate = new Date()
     Array.from({ length: 25 }).forEach((_, index) => {
       const newDate = new Date(startDate)
       newDate.setDate(startDate.getDate() + index)
@@ -166,7 +156,6 @@ describe('ChannelDistributionHeatMap', () => {
       </Provider>
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('AP DISTRIBUTION BY CHANNEL')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('canvas')).toBeDefined()
