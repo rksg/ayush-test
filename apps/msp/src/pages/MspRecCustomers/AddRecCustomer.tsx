@@ -256,7 +256,7 @@ export function AddRecCustomer () {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
       return noDataDisplay
     return mspRecCustomer.map(customer =>
-      <>
+      <div key={customer.account_id}>
         <Form.Item
           label={intl.$t({ defaultMessage: 'Property Name' })}
         >
@@ -267,7 +267,7 @@ export function AddRecCustomer () {
         >
           <Paragraph>{mspUtils.transformMspRecAddress(customer)}</Paragraph>
         </Form.Item>
-      </>
+      </div>
     )
   }
 
