@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import { useEffect } from 'react'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { BrowserRouter }                  from '@acx-ui/react-router-dom'
-import { Provider }                       from '@acx-ui/store'
-import { fireEvent, render, screen }      from '@acx-ui/test-utils'
-import {  DateRange }                     from '@acx-ui/utils'
+import { useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { BrowserRouter }                                            from '@acx-ui/react-router-dom'
+import { Provider }                                                 from '@acx-ui/store'
+import { fireEvent, render, screen }                                from '@acx-ui/test-utils'
+import { SwitchScopes, getUserProfile, setUserProfile, WifiScopes } from '@acx-ui/user'
+import { DateRange }                                                from '@acx-ui/utils'
 
 import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 
@@ -151,5 +152,49 @@ describe('Dashboard', () => {
       </BrowserRouter>
       ,{ wrapper: Provider })
     expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
+  })
+
+  describe('should render correctly when abac is enabled', () => {
+    it('has permission: wifi & switch', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.READ, SwitchScopes.READ]
+      })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+
+      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
+    })
+
+    it('has permission: switch', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ]
+      })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+
+      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
+      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
+    })
+
+    it('has no permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: []
+      })
+
+      render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+
+      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(3)
+      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(4)
+    })
   })
 })

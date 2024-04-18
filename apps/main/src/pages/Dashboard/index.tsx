@@ -98,11 +98,13 @@ export default function Dashboard () {
       value: 'ap',
       children: <ApWidgets />
     }] : []),
+
     ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets />
     }] : []),
+
     ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.READ] }) ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),

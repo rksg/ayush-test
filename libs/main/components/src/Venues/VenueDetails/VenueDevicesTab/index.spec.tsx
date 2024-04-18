@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
-import { venueApi, apApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
+import { venueApi, apApi }                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                             from '@acx-ui/rc/utils'
+import { Provider, store }                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor }           from '@acx-ui/test-utils'
+import { SwitchScopes, WifiScopes, getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData } from '../../__tests__/fixtures'
 
@@ -221,6 +222,51 @@ describe('Venue device tab', () => {
       pathname: `/${params.tenantId}/t/venues/${params.venueId}/venue-details/devices/switch`,
       hash: '',
       search: ''
+    })
+  })
+
+  describe('should render correctly when abac is enabled', () => {
+    it('has permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ, WifiScopes.READ]
+      })
+
+      render(
+        <Provider>
+          <VenueDevicesTab />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
+          }
+        })
+
+      expect(await screen.findAllByRole('tab')).toHaveLength(2)
+    })
+
+    it('has permission: switch', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ]
+      })
+
+      render(
+        <Provider>
+          <VenueDevicesTab />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
+          }
+        })
+
+      const tab = await screen.findByRole('tab', { name: 'Switch' })
+      expect(tab.getAttribute('aria-selected')).toBeTruthy()
     })
   })
 })

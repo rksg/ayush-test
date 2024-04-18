@@ -47,6 +47,7 @@ export function VenueOverviewTab () {
       value: 'ap',
       children: <ApWidgets filters={venueFilter}/>
     }] : []),
+
     ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',

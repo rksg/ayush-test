@@ -29,11 +29,13 @@ export function VenueDevicesTab () {
       value: 'wifi',
       children: <VenueWifi />
     }] : []),
+
     ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <VenueSwitch />
     }] : []),
+
     ...(useIsTierAllowed(TierFeatures.SMART_EDGES)
       && hasPermission({ scopes: [EdgeScopes.READ] }) ? [{
         label: $t({ defaultMessage: 'SmartEdge' }),

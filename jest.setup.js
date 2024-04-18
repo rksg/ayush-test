@@ -82,6 +82,8 @@ beforeEach(async () => {
     allowedOperations: [],
     accountTier: 'Gold',
     betaEnabled: false,
+    abacEnabled: false,
+    isCustomRole: false,
     profile: {
       region: '[NA]',
       allowedRegions: [

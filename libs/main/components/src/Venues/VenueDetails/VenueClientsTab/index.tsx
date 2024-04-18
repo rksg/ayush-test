@@ -82,11 +82,13 @@ export function VenueClientsTab () {
         </Tabs.TabPane>
       </IconThirdTab>
     }] : []),
+
     ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wired' }),
       value: 'switch',
       children: <SwitchClientsTable filterBySwitch={true}/>
     }] : []),
+
     ...(isCloudpathBetaEnabled
     && personaGroupData?.personalIdentityNetworkId
     && personaGroupData?.id ? [{
