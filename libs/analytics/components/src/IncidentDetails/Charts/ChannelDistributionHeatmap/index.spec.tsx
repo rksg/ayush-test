@@ -3,7 +3,7 @@ import {
 } from 'echarts/types/dist/shared'
 import { unitOfTime } from 'moment-timezone'
 
-import { fakeIncident1 }                    from '@acx-ui/analytics/utils'
+import { fakeIncident1, overlapsRollup }    from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -15,6 +15,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   overlapsRollup: jest.fn().mockReturnValue(false)
 }))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 const buffer = {
   front: { value: 0, unit: 'hours' as unitOfTime.Base },
@@ -159,6 +160,25 @@ describe('ChannelDistributionHeatMap', () => {
     await screen.findByText('AP DISTRIBUTION BY CHANNEL')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('canvas')).toBeDefined()
+  })
+
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', { data: response })
+    render(
+      <Provider>
+        <ChannelDistributionHeatMap
+          heatMapConfig={config2}
+          incident={fakeIncident1}
+          buffer={buffer}
+          minGranularity='PT3M'
+        />
+      </Provider>
+    )
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await screen.findByText('DFS EVENTS BY CHANNEL')
+    await screen.findByText('Data granularity at this level is not available.')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
 })
 

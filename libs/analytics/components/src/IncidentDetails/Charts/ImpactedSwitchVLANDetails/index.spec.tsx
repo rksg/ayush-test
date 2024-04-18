@@ -1,4 +1,4 @@
-import { fakeIncidentVlan }                                            from '@acx-ui/analytics/utils'
+import { fakeIncidentVlan, overlapsRollup }                            from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -8,6 +8,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   overlapsRollup: jest.fn().mockReturnValue(false)
 }))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 const response = {
   incident: {
@@ -127,5 +128,15 @@ describe('ImpactedSwitchVLANDetails', () => {
     expect(screen.getByText('Out of 1 switch')).toBeVisible()
     expect(screen.getByText('Mismatched VLAN')).toBeVisible()
     expect(screen.getByText('6 configured VLANs')).toBeVisible()
+  })
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response })
+    render(<ImpactedSwitchVLANsDetails
+      incident={fakeIncidentVlan}
+    />, { wrapper: Provider })
+
+    await screen.findByText('Data granularity at this level is not available.')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
 })
