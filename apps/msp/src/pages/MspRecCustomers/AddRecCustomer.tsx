@@ -215,13 +215,13 @@ export function AddRecCustomer () {
       }
 
       const customerMulti: MspMultiRecData = { data: recCustomers }
-      const customer1: MspRecData =
+      const customerRec: MspRecData =
       {
         account_id: mspRecCustomer[0].account_id,
         admin_delegations: delegations
       }
 
-      const customer = multiPropertySelectionEnabled ? customerMulti : customer1
+      const customer = multiPropertySelectionEnabled ? customerMulti : customerRec
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
