@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
