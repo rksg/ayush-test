@@ -71,6 +71,7 @@ function Init () {
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -87,7 +88,6 @@ export default function MspRoutes () {
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,7 +136,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
-      <Route path='dataStudio' element={<DataStudio />} />
+      {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
