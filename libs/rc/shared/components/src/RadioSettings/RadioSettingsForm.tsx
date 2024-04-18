@@ -188,16 +188,11 @@ export function RadioSettingsForm (props:{
               <span style={{ marginRight: '30px' }}>
                 {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
               </span>
-              <Button type='link'
-                style={{
-                  height: '16px',
-                  lineHeight: '12px',
-                  fontSize: '12px'
-                }}
-                // TODO: Pending for document
-                onClick={() => {}}>
+              <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                target='_blank'
+                rel='noreferrer'>
                 {$t({ defaultMessage: 'How to configure?' })}
-              </Button>
+              </a>
             </>
             }
             showIcon={true}
