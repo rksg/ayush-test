@@ -12,10 +12,10 @@ import {
   SwitchViewModel,
   SWITCH_TYPE
 } from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
-import { render, screen, mockServer, waitFor }          from '@acx-ui/test-utils'
-import { UseQueryResult }                               from '@acx-ui/types'
-import { SwitchScopes, getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Provider, store }                     from '@acx-ui/store'
+import { render, screen, mockServer, waitFor } from '@acx-ui/test-utils'
+import { SwitchScopes, UseQueryResult }        from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import { switchFirmwareVenue } from '../__tests__/fixtures'
 

@@ -15,13 +15,12 @@ import {
   screen,
   within
 } from '@acx-ui/test-utils'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
 import {
-  SwitchScopes,
   getUserProfile,
   setUserProfile,
   UserProfileContext,
-  UserProfileContextProps,
-  WifiScopes
+  UserProfileContextProps
 } from '@acx-ui/user'
 
 

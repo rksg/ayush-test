@@ -16,7 +16,8 @@ import {
   within,
   findTBody
 } from '@acx-ui/test-utils'
-import { SwitchScopes, getUserProfile, setUserProfile } from '@acx-ui/user'
+import { SwitchScopes }                   from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { SwitchTable } from '.'
 
