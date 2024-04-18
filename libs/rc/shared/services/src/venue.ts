@@ -1641,6 +1641,7 @@ export const {
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
   useGetVenueApEnhancedKeyQuery,
+  useLazyGetVenueApEnhancedKeyQuery,
   useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
