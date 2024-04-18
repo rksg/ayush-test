@@ -183,7 +183,7 @@ function Histogram ({
                     barWidth={20}
                     xAxisOffset={10}
                     barColors={barColors}
-                    onBarAreaClick={onBarClick}
+                    onBarAreaClick={!disabled ? onBarClick : undefined}
                     grid={{ bottom: '35%' }}
                     yAxisOffset={
                       yAxisLabelOffset
