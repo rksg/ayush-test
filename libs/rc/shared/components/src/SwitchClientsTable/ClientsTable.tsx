@@ -63,7 +63,7 @@ export function ClientsTable (props: {
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const portLinkEnabled = true//useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
