@@ -120,12 +120,6 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   return transform
 }
 
-export const AFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-
-  // eslint-disable-next-line
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
-}
-
 // eslint-disable-next-line
 export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
 
@@ -145,33 +139,33 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
       switch(afcInfo?.afcStatus) {
         case AFCStatus.WAIT_FOR_LOCATION:
           return {
-            columnText: $t({ defaultMessage: 'Low power' }),
-            tooltipText: $t({ defaultMessage: 'Geo Location not set' })
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'AFC Geo-Location not set' })
           }
         case AFCStatus.REJECTED:
           return {
-            columnText: $t({ defaultMessage: 'Low power' }),
-            tooltipText: $t({ defaultMessage: 'No channels available' })
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'Rejected by FCC DB due to no available channels' })
           }
         case AFCStatus.WAIT_FOR_RESPONSE:
           return {
-            columnText: $t({ defaultMessage: 'Low power' }),
-            tooltipText: $t({ defaultMessage: 'Pending response from the AFC server' })
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'Wait for AFC server response' })
           }
         case AFCStatus.AFC_SERVER_FAILURE:
           return {
-            columnText: $t({ defaultMessage: 'Low power' }),
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
             tooltipText: $t({ defaultMessage: 'AFC Server failure' })
           }
         case AFCStatus.PASSED:
           return {
-            columnText: $t({ defaultMessage: 'Low power' }),
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
             tooltipText: $t({ defaultMessage: 'AP is working on LPI channel' })
           }
       }
     } else {
       return {
-        columnText: $t({ defaultMessage: 'Low power' }),
+        columnText: $t({ defaultMessage: 'Low Power Indoor' }),
         tooltipText: undefined
       }
     }
@@ -198,16 +192,17 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   }
 
   else if (powerMode === AFCPowerMode.LOW_POWER) {
-    displayList.push($t({ defaultMessage: 'Low power' }))
+    displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: '[Geo Location not set]' }))
+        displayList.push($t({ defaultMessage: '[AFC Geo-Location not set]' }))
         break
       case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: '[No channels available]' }))
+        // eslint-disable-next-line
+        displayList.push($t({ defaultMessage: '[Rejected by FCC DB due to no available channels]' }))
         break
       case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: '[Pending response from the AFC server]' }))
+        displayList.push($t({ defaultMessage: '[Wait for AFC server response]' }))
         break
       case AFCStatus.AFC_NOT_REQUIRED:
         displayList.push($t({ defaultMessage: '[User set]' }))
@@ -222,11 +217,6 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   }
 
   return (displayList.length === 0) ? '--' : displayList.join(' ')
-}
-
-export const APPropertiesAFCMaxPowerRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-  // eslint-disable-next-line
-  return (afcInfo?.maxPowerDbm && apRadioDeploy === '2-5-6') ? `${afcInfo?.maxPowerDbm} dBm` : '--'
 }
 
 // eslint-disable-next-line
@@ -249,13 +239,13 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
   else if (powerMode === AFCPowerMode.LOW_POWER) {
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: 'Wait for location' }))
+        displayList.push($t({ defaultMessage: 'AFC Geo-Location not set' }))
         break
       case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: 'Rejected' }))
+        displayList.push($t({ defaultMessage: 'Rejected by FCC DB due to no available channels' }))
         break
       case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: 'Wait for response' }))
+        displayList.push($t({ defaultMessage: 'Wait for AFC server response' }))
         break
       case AFCStatus.AFC_NOT_REQUIRED:
         displayList.push($t({ defaultMessage: 'N/A' }))

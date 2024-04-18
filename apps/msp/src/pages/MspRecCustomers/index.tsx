@@ -418,7 +418,7 @@ export function MspRecCustomers () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'EC' }),
+              entityName: $t({ defaultMessage: 'Property' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
