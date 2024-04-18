@@ -27,7 +27,8 @@ describe('LowPowerBannerAndModal Unit Test', () => {
 
   it('Test Case for AP Banner display', async () => {
     render(<LowPowerBannerAndModal from={'ap'} />, { route: { params }, wrapper: Provider })
-    expect(await screen.findByText('6 GHz radio operating in low power mode')).toBeInTheDocument()
+    // eslint-disable-next-line
+    expect(await screen.findByText('6 GHz radio operating in Low Power Indoor Mode.')).toBeInTheDocument()
   })
 
   it('Test Case for Venue Banner display', async () => {
