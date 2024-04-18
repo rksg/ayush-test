@@ -50,9 +50,8 @@ export const PropertyManagementInfo = (props: PersonaGroupTableProps) => {
 
   const warningMsg = <FormattedMessage
     defaultMessage={
-      `<style>
-        You must go to
-        <link><VenueSingular></VenueSingular>'s property configuration page</link>
+      `<style> You must go to the
+        <link>property configuration page</link> of <VenueSingular></VenueSingular>
         to enable property management before creating Personal Identity.
       </style>`
     }

@@ -104,7 +104,7 @@ export default function SnmpAgentTable () {
             title: $t({ defaultMessage: 'Delete a SNMP agent that is currently in use?' }),
             content: $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?'
+              defaultMessage: 'This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?'
             }),
             onOk: () => {
               deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)

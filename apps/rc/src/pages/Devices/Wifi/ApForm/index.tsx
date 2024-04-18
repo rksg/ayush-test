@@ -313,9 +313,9 @@ export function ApForm () {
         title: $t({ defaultMessage: 'TLS Key Change' }),
         content: (<FormattedMessage
           defaultMessage={
-            `Moving to Venue: <b>{venueName}</b> will alter the current key on
-            the TLS connection and reboot this AP device. Are you sure
-            you want to continue?`
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will
+            alter the current key on the TLS connection and reboot this AP device.
+            Are you sure you want to continue?`
           }
           values={{
             b: (text: string) => <strong>{text}</strong>,

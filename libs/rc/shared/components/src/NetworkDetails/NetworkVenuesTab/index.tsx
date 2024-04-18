@@ -99,7 +99,7 @@ const defaultPayload = {
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
-  defaultMessage: 'No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating venues'
+  defaultMessage: 'No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating <venuePlural></venuePlural>'
 })
 
 interface schedule {
@@ -306,7 +306,7 @@ export function NetworkVenuesTab () {
         content: (<>
           <div>
             {$t(
-              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { defaultMessage: 'For the following {count, plural, one {<venueSingular></venueSingular>} other {<venuePlural></venuePlural>}}, the network could not be activated on all <VenuePlural></VenuePlural>:' },
               { count: enabledNotActivatedVenueNames.length }
             )}
           </div>

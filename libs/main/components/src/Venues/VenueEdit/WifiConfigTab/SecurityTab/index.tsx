@@ -222,11 +222,9 @@ export function SecurityTab () {
       type: 'confirm',
       width: 450,
       title: $t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' }),
-      content:
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage:
+      content: $t({ defaultMessage:
           `Boosting TLS key will prompt a reboot of all AP devices within
-          this venue. Are you sure you want to continue?` }),
+          this <venueSingular></venueSingular>. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {

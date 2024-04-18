@@ -65,8 +65,7 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
           <Typography.Text strong>
             {$t({
               defaultMessage:
-                // eslint-disable-next-line max-len
-                'Networks running the SD-LAN on this venue:'
+                'Networks running the SD-LAN on this <venueSingular></venueSingular>:'
             })}
           </Typography.Text>
         </Col>
