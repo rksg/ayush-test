@@ -1,9 +1,12 @@
 import { get }                     from '@acx-ui/config'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
-import { RolesEnum }               from '@acx-ui/types'
+import {
+  EdgeScopes,
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes }               from '@acx-ui/types'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from './types'
 import {
   AuthRoute,
   filterByAccess,

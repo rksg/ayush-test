@@ -2,11 +2,15 @@ import { ReactElement } from 'react'
 
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get }               from '@acx-ui/config'
-import { TenantNavigate }    from '@acx-ui/react-router-dom'
-import { RolesEnum as Role } from '@acx-ui/types'
+import { get }            from '@acx-ui/config'
+import { TenantNavigate } from '@acx-ui/react-router-dom'
+import {
+  RolesEnum as Role,
+  EdgeScopes,
+  SwitchScopes,
+  WifiScopes } from '@acx-ui/types'
 
-import { UserProfile, WifiScopes, SwitchScopes, EdgeScopes } from './types'
+import { UserProfile } from './types'
 
 type Profile = {
   profile: UserProfile

@@ -16,7 +16,7 @@ import { render, screen, within } from '@acx-ui/test-utils'
 
 import {
   getTargetInterfaceFromInterfaceSettingsFormData,
-  mockClusterConfigWizardData
+  mockFailedNetworkConfig
 } from '../__tests__/fixtures'
 
 import { CompatibilityCheckResult, InterfaceSettingsFormType } from './types'
@@ -24,27 +24,28 @@ import {
   getLagFormCompatibilityFields,
   getPortFormCompatibilityFields,
   interfaceCompatibilityCheck,
-  lagSettingsCompatibleCheck } from './utils'
+  lagSettingsCompatibleCheck,
+  transformFromApiToFormData } from './utils'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 const node1SN = nodeList[0].serialNumber
 const node2SN = nodeList[1].serialNumber
-const mockNoLagData = _.cloneDeep(mockClusterConfigWizardData)
+const mockNoLagData = transformFromApiToFormData(mockFailedNetworkConfig)
 mockNoLagData.lagSettings = nodeList.map(item => ({
   serialNumber: item.serialNumber,
   lags: [] as EdgeLag[]
 })) as InterfaceSettingsFormType['lagSettings']
 
 jest.mock('antd', () => {
-  const antdCompoents =jest.requireActual('antd')
-  antdCompoents.Typography.Text = ({ children, type }
+  const antdComponents =jest.requireActual('antd')
+  antdComponents.Typography.Text = ({ children, type }
     : React.PropsWithChildren<{ type: string }>) => (<span data-testid='rc-text'>
     <div data-testid='rc-text-type'>{type}</div>
     {children}
   </span>
   )
-  return { ...antdCompoents }
+  return { ...antdComponents }
 })
 
 describe('Interface Compatibility Check', () => {
@@ -124,7 +125,7 @@ describe('Interface Compatibility Check', () => {
   describe('failed case', () => {
     it('when is LAG member', async () => {
       // node2 port1 is lag member
-      const mockData = _.cloneDeep(mockClusterConfigWizardData)
+      const mockData = _.cloneDeep(transformFromApiToFormData(mockFailedNetworkConfig))
 
       const result = interfaceCompatibilityCheck(
         mockData.portSettings, mockData.lagSettings, nodeList)
@@ -327,7 +328,7 @@ describe('LAG Settings Compatibility Check', () => {
     })
 
     it('when core LAG', async () => {
-      const mockData = _.cloneDeep(mockClusterConfigWizardData.lagSettings)
+      const mockData = _.cloneDeep(transformFromApiToFormData(mockFailedNetworkConfig).lagSettings)
       const result = lagSettingsCompatibleCheck(mockData, nodeList)
 
       expect(result.isError).toBe(false)
@@ -345,7 +346,7 @@ describe('LAG Settings Compatibility Check', () => {
     })
 
     it('when core LAG + LAN LAG', async () => {
-      const mockData = _.cloneDeep(mockClusterConfigWizardData.lagSettings)
+      const mockData = _.cloneDeep(transformFromApiToFormData(mockFailedNetworkConfig).lagSettings)
       const lanLag = {
         id: 2,
         description: 'test',
@@ -387,7 +388,7 @@ describe('LAG Settings Compatibility Check', () => {
 
   describe('failed case', () => {
     it('when first node core LAG, second node WAN LAG', async () => {
-      const mockData = _.cloneDeep(mockClusterConfigWizardData.lagSettings)
+      const mockData = _.cloneDeep(transformFromApiToFormData(mockFailedNetworkConfig).lagSettings)
       mockData[1].lags[0].portType = EdgePortTypeEnum.WAN
       mockData[1].lags[0].ipMode = EdgeIpModeEnum.DHCP
       mockData[1].lags[0].corePortEnabled = false
