@@ -240,7 +240,7 @@ describe('AllRoutes', () => {
     await screen.findByTestId('timeline')
   })
 
-  test('should not see anayltics & service validation if not admin or read only', async () => {
+  test('should not see AI Assurance if guest manager', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const { rerender } = render(<AllRoutes />, {
@@ -256,6 +256,30 @@ describe('AllRoutes', () => {
       profile: {
         ...getUserProfile().profile,
         roles: [RolesEnum.GUEST_MANAGER]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
+    rerender(<AllRoutes />)
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
+  })
+
+  test('should not see AI Assurance if DPSK admin', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const { rerender } = render(<AllRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/tenantId/t/dashboard'
+      }
+    })
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
+
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        roles: [RolesEnum.DPSK_ADMIN]
       },
       accountTier: 'Gold',
       betaEnabled: false
