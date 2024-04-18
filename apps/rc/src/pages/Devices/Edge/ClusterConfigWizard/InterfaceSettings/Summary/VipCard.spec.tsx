@@ -19,6 +19,6 @@ describe('InterfaceSettings - Summary > LagTable', () => {
 
     expect(screen.getByText('#1 Virtual IP')).toBeVisible()
     expect(screen.getByText('Smart Edge 1 - Port2')).toBeVisible()
-    expect(screen.getByText('Smart Edge 2 - Lag1')).toBeVisible()
+    expect(screen.getByText('Smart Edge 2 - Port2')).toBeVisible()
   })
 })

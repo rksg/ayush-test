@@ -58,6 +58,11 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => ''
+}))
+
 const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
 const mockedReqClusterList = jest.fn()

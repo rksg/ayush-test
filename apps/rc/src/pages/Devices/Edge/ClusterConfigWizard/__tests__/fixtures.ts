@@ -5,33 +5,20 @@ import {
   EdgeClusterStatus,
   EdgeGeneralFixtures,
   EdgeIpModeEnum,
-  EdgePort,
+  EdgeLagLacpModeEnum,
+  EdgeLagTimeoutEnum,
+  EdgeLagTypeEnum,
   EdgePortConfigFixtures,
   EdgePortTypeEnum,
   EdgeSdLanFixtures,
   EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 
-import { VirtualIpConfigFormType }   from '../../EditEdgeCluster/VirtualIp'
 import { InterfaceSettingsFormType } from '../InterfaceSettings/types'
 
 const { mockedHaNetworkSettings, mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
-
-const getTargetInterface = (
-  serialNumber: string, portName: string,
-  lagSettings: ClusterNetworkSettings['lagSettings'],
-  portSettings: ClusterNetworkSettings['portSettings']
-) => {
-  if(portName.startsWith('l')) {
-    return lagSettings.find(item => item.serialNumber === serialNumber)
-      ?.lags.find(item => item.id.toString() === portName.charAt(3))
-  } else {
-    return portSettings.find(item => item.serialNumber === serialNumber)
-      ?.ports.find(item => item.interfaceName === portName)
-  }
-}
 
 export const mockClusterConfigWizardData = {
   portSettings: _.reduce(mockedHaNetworkSettings.portSettings,
@@ -42,29 +29,7 @@ export const mockClusterConfigWizardData = {
   lagSettings: mockedHaNetworkSettings.lagSettings,
   vipConfig: mockedHaNetworkSettings.virtualIpSettings.map(item => {
     return {
-      interfaces: _.reduce(item.ports, (result, port) => {
-        const targetInterfaceInfo = getTargetInterface(
-          port.serialNumber,
-          port.portName,
-          mockedHaNetworkSettings.lagSettings,
-          mockedHaNetworkSettings.portSettings
-        )
-        result[port.serialNumber] = {
-          serialNumber: port.serialNumber,
-          id: targetInterfaceInfo?.id.toString() ?? '',
-          portName: port.portName,
-          ipMode: targetInterfaceInfo?.ipMode ?? EdgeIpModeEnum.DHCP,
-          ip: targetInterfaceInfo?.ip ?? '',
-          mac: (targetInterfaceInfo as EdgePort).mac ?? '',
-          subnet: targetInterfaceInfo?.subnet ?? '',
-          portType: targetInterfaceInfo?.portType ?? EdgePortTypeEnum.UNCONFIGURED,
-          isCorePort: false,
-          isLag: false,
-          isLagMember: false,
-          portEnabled: true
-        }
-        return result
-      }, {} as VirtualIpConfigFormType['interfaces']),
+      interfaces: item.ports,
       vip: item.virtualIp
     }
   }),
@@ -91,3 +56,118 @@ export const getTargetInterfaceFromInterfaceSettingsFormData = (
     return portSettings[serialNumber]?.[portName]?.[0]
   }
 }
+
+export const mockFailedNetworkConfig = {
+  lagSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    lags: [{
+      id: 0,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: true,
+      natEnabled: true,
+      lagEnabled: true
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    lags: [{
+      id: 1,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [{
+        portId: 'port_id_0',
+        portEnabled: true
+      }],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.10.10.1',
+      subnet: '255.255.0.0',
+      gateway: '127.1.1.0',
+      corePortEnabled: true,
+      natEnabled: false,
+      lagEnabled: true
+    }]
+  }],
+  portSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:00',
+      enabled: true,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.1.1.1',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:01',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '',
+      corePortEnabled: false,
+      interfaceName: 'port2'
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:02',
+      enabled: true,
+      portType: EdgePortTypeEnum.UNCONFIGURED,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:03',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '',
+      corePortEnabled: false,
+      interfaceName: 'port2'
+    }]
+  }],
+  virtualIpSettings: [{
+    virtualIp: '1.1.1.1',
+    ports: [{
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      portName: 'port2'
+    }, {
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+      portName: 'lag0'
+    }],
+    timeoutSeconds: 6
+  }]
+} as ClusterNetworkSettings

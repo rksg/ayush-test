@@ -1,17 +1,18 @@
 import userEvent from '@testing-library/user-event'
 
-import { EdgeGeneralFixtures, EdgePortInfo, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen }                                from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, screen }                                          from '@acx-ui/test-utils'
 
 import { mockVipConfig }  from './__tests__/fixtures'
 import { InterfaceTable } from './InterfaceTable'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockLanInterfaces } = EdgePortConfigFixtures
 
 jest.mock('./SelectInterfaceDrawer', () => ({
   ...jest.requireActual('./SelectInterfaceDrawer'),
   SelectInterfaceDrawer: ({ handleFinish }: {
-    handleFinish: (data: { [key: string]: EdgePortInfo | undefined }) => void
+    handleFinish: (data: { serialNumber: string; portName: string; }[]) => void
   }) => <div data-testid='SelectInterfaceDrawer'>
     <button
       onClick={() => handleFinish(mockVipConfig[0].interfaces)}
@@ -27,19 +28,43 @@ describe('InterfaceTable', () => {
       <InterfaceTable
         value={mockVipConfig[0].interfaces}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+        lanInterfaces={mockLanInterfaces}
       />
     )
 
     expect(screen.getByTestId('SelectInterfaceDrawer')).toBeVisible()
-    expect(await screen.findByRole('row', { name: 'Smart Edge 1 Port2 2.2.2.2/ 24' })).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('row', { name: 'Smart Edge 2 Lag1 1.10.10.1/ 16' })).toBeVisible()
+    expect(await screen.findByRole('row', { name: 'Smart Edge 1 Port2 192.168.13.136/ 24' })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: 'Smart Edge 2 Port2 192.168.13.134/ 24' })).toBeVisible()
+  })
+
+  it('should render "Dynamic" when ip mode is DHCP', async () => {
+    render(
+      <InterfaceTable
+        value={[
+          mockVipConfig[0].interfaces[0],
+          {
+            ...mockVipConfig[0].interfaces[1],
+            portName: 'lag0'
+          }
+        ]}
+        nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
+        lanInterfaces={mockLanInterfaces}
+      />
+    )
+
+    expect(screen.getByTestId('SelectInterfaceDrawer')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: 'Smart Edge 1 Port2 192.168.13.136/ 24' })).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: 'Smart Edge 2 Lag0 Dynamic' })).toBeVisible()
   })
 
   it('should show "Select Interface" button when there is no interface data', async () => {
     render(
       <InterfaceTable
-        value={{}}
+        value={[]}
       />
     )
 

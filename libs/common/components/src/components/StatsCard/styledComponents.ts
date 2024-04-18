@@ -69,11 +69,13 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
   .ant-statistic-title {
     color: var(${props => colors[props.$type as Type].text});
     font-size: var(--acx-body-5-font-size);
+    min-height: 24px;
+    margin-bottom: 0px;
   }
   .ant-statistic-content {
     color: var(${props => colors[props.$type as Type].text});
     .ant-statistic-content-value {
-      font-size: 30px;
+      font-size: 23px;
       font-weight: var(--acx-body-font-weight-bold);
     }
     .ant-statistic-content-suffix {

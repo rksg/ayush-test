@@ -43,4 +43,27 @@ describe('InterfaceSettings - Summary', () => {
     expect(await screen.findByText('HA Timeout')).toBeVisible()
     expect(await screen.findByText('3 seconds')).toBeVisible()
   })
+
+  it('should not render VipCard when vipConfig is empty/undefined', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldValue('vipConfig', undefined)
+      form.setFieldValue('timeout', mockClusterConfigWizardData.timeout)
+      return form
+    })
+    render(
+      <StepsForm form={formRef.current}>
+        <StepsForm.StepForm>
+          <Summary />
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+
+    expect(screen.getByText('Summary')).toBeVisible()
+    expect(screen.getByTestId('LagTable')).toBeVisible()
+    expect(screen.getByTestId('PortGeneralTable')).toBeVisible()
+    expect(screen.queryByTestId('VipCard')).toBeNull()
+    expect(screen.queryByTestId('HA Timeout')).toBeNull()
+    expect(screen.queryByTestId('3 seconds')).toBeNull()
+  })
 })

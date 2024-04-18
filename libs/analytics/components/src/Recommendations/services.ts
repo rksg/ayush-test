@@ -68,6 +68,11 @@ export type AiOpsList = {
   recommendations: AiOpsListItem[]
 }
 
+export type RecommendationWlan = {
+  name: string
+  ssid: string
+}
+
 export type Recommendation = {
   id: string
   code: string
@@ -76,7 +81,10 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: object & { scheduledAt: string }
+  metadata: object & {
+    scheduledAt: string
+    wlans?: RecommendationWlan[]
+  }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null
@@ -87,6 +95,7 @@ export type Recommendation = {
   }
   statusTrail: StatusTrail
   toggles?: { crrmFullOptimization: boolean }
+  trigger: string
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -101,30 +110,22 @@ export type RecommendationListItem = Recommendation & {
   crrmOptimizedState?: IconValue
 }
 
-export interface MutationPayload {
-  id: string
-  mute: boolean
-}
-export interface MutationResponse {
-  toggleMute: {
-    success: boolean
-    errorMsg: string
-    errorCode: string
-  }
-}
+type MutationPayload = { id: string }
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
-interface SchedulePayload {
-  id: string
+export interface MuteMutationPayload extends MutationPayload { mute: boolean }
+export interface MuteMutationResponse { toggleMute: MutationResponse }
+
+export interface SchedulePayload extends MutationPayload {
   type: string
   scheduledAt: string
+  isRecommendationRevertEnabled?: boolean
+  wlans?: RecommendationWlan[]
 }
-interface ScheduleResponse {
-  schedule: {
-    errorCode: string;
-    errorMsg: string;
-    success: boolean;
-  }
-}
+interface ScheduleResponse { schedule: MutationResponse }
+
+interface DeleteMutationPayload extends MutationPayload { }
+interface DeleteMutationResponse { deleteRecommendation: MutationResponse }
 
 interface PreferencePayload {
   path: NetworkPath
@@ -132,14 +133,7 @@ interface PreferencePayload {
     crrmFullOptimization: boolean
   }
 }
-
-interface PreferenceResponse {
-  setPreference: {
-    errorCode: string
-    errorMsg: string
-    success: boolean
-  }
-}
+interface PreferenceResponse { setPreference: MutationResponse }
 
 type Metadata = {
   error?: {
@@ -309,6 +303,23 @@ export const api = recommendationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
+    recommendationWlans: build.query<RecommendationWlan[], { id: String }>({
+      query: ({ id }) => ({
+        document: gql`
+        query Wlans($id: String) {
+          recommendation(id: $id) {
+            WLANs {
+              name
+              ssid
+            }
+          }
+        }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: { recommendation: { WLANs: RecommendationWlan[] } }) =>
+        response.recommendation.WLANs
+    }),
     aiOpsList: build.query<
       AiOpsList,
       PathFilter & { n: number }
@@ -382,6 +393,7 @@ export const api = recommendationApi.injectEndpoints({
               name
             }
             statusTrail { status }
+            trigger
           }
         }
         `,
@@ -445,7 +457,7 @@ export const api = recommendationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
-    muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
+    muteRecommendation: build.mutation<MuteMutationResponse, MuteMutationPayload>({
       query: (payload) => ({
         document: gql`
           mutation MuteRecommendation($id: String, $mute: Boolean) {
@@ -467,20 +479,21 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    scheduleRecommendation: build.mutation<
-      ScheduleResponse, SchedulePayload & { isRecommendationRevertEnabled?: boolean }
-    >({
+    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
       query: ({ isRecommendationRevertEnabled, ...payload }) => ({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
             ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
+            ${payload.wlans ? '$wlans: [WLANInput]' : ''}
           ) {
             schedule(
               id: $id,
               ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
-              scheduledAt: $scheduledAt) {
+              ${payload.wlans ? 'wlans: $wlans,' : ''}
+              scheduledAt: $scheduledAt
+            ) {
               success
               errorMsg
               errorCode
@@ -490,6 +503,7 @@ export const api = recommendationApi.injectEndpoints({
         variables: {
           id: payload.id,
           actionType: payload.type,
+          wlans: payload.wlans,
           scheduledAt: payload.scheduledAt
         }
       }),
@@ -522,12 +536,31 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
-      query: ({ id, code }) => ({
+    deleteRecommendation: build.mutation<DeleteMutationResponse, DeleteMutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation DeleteRecommendation($id: String) {
+            deleteRecommendation(id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: { id: payload.id }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    }),
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code' | 'status'>>({
+      query: ({ id, code, status }) => ({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status ${kpiHelper(code!)}
+              id status ${kpiHelper(code!, status)}
             }
           }
         `,
@@ -571,9 +604,11 @@ export const {
   useCrrmListQuery,
   useAiOpsListQuery,
   useRecommendationListQuery,
+  useRecommendationWlansQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,
+  useDeleteRecommendationMutation,
   useCrrmKpiQuery,
   useSetPreferenceMutation
 } = api
