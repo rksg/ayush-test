@@ -63,10 +63,10 @@ function RowTooltip (props: RowProps) {
       channel plan can be found within the next 24 hours.
     ` })
     : defineMessage({ defaultMessage: `
-      RUCKUS AI is currently working on optimizing this venue, with the full
-      optimization criteria, where the channel bandwidth and AP Tx
-      power will be included in the optimization plan. A new
-      recommendation for this venue will be generated only if a better
+      RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>,
+      with the full optimization criteria, where the channel bandwidth and AP Tx
+      power will be included in the optimization plan. A new recommendation for this
+      <venueSingular></venueSingular> will be generated only if a better
       channel plan can be found within the next 24 hours.
     ` })
   const partialOptimizationText = get('IS_MLISA_SA')
@@ -78,10 +78,10 @@ function RowTooltip (props: RowProps) {
       channel plan can be found within the next 24 hours.
     ` })
     : defineMessage({ defaultMessage: `
-      RUCKUS AI is currently working on optimizing this venue, without the
-      full optimization criteria, where the channel bandwidth and AP Tx
-      power will not be included in the optimization plan. A new
-      recommendation for this venue will be generated only if a better
+      RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>,
+      without the full optimization criteria, where the channel bandwidth and AP Tx
+      power will not be included in the optimization plan. A new recommendation for this
+      <venueSingular></venueSingular> will be generated only if a better
       channel plan can be found within the next 24 hours.
     ` })
   return (
@@ -158,8 +158,8 @@ export const getDeleteTooltipText = (state: StateType) => {
   in the next 24 hours.` }, values)
     : $t({ defaultMessage: `
   Since a previous {status} has failed, you have the option to delete this,
-  in order for RUCKUS AI to re-run the recommendation algorithm for this venue
-  in the next 24 hours.` }, values)
+  in order for RUCKUS AI to re-run the recommendation algorithm for this
+  <venueSingular></venueSingular> in the next 24 hours.` }, values)
 }
 
 export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
@@ -298,7 +298,7 @@ export function RecommendationTable (
       When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel
       plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference.
       When it is disabled, only the channel plan will be optimized, using the currently configured
-      venue channel bandwidth and Tx power.
+      <venueSingular></venueSingular> channel bandwidth and Tx power.
     ` })
 
   const isCrrmPartialEnabled = [
@@ -439,8 +439,8 @@ export function RecommendationTable (
             ` })
             : $t({ defaultMessage: `
               Optimization option cannot be modified when RRM recommendations are applied across any
-              of the radios of the same venue. Please revert them in case you still prefer to change
-              the optimization option for current recommendation.
+              of the radios of the same <venueSingular></venueSingular>. Please revert them in case
+              you still prefer to change the optimization option for current recommendation.
             ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>

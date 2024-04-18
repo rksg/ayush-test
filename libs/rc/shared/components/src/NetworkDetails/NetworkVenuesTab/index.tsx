@@ -99,7 +99,7 @@ const defaultPayload = {
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
-  defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+  defaultMessage: 'No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating venues'
 })
 
 interface schedule {

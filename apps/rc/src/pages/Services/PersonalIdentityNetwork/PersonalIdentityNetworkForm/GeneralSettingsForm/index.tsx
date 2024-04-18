@@ -89,7 +89,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
               {
                 $t({
                 // eslint-disable-next-line max-len
-                  defaultMessage: 'Select the Venue where you want to segment the devices (identities):'
+                  defaultMessage: 'Select the <VenueSingular></VenueSingular> where you want to segment the devices (identities):'
                 })
               }
             </UI.FieldTitle>
@@ -103,8 +103,10 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
                 <>{/* eslint-disable-next-line max-len */}
                   {$t({ defaultMessage: '<VenueSingular></VenueSingular> with SmartEdge deployed' })}
                   <Tooltip.Question
-                    title={$t({ defaultMessage: `To enable the property management for a venue,
-                    please go to the Venue configuration/property management page to enable it.` })}
+                    title={$t({ defaultMessage: `
+                    To enable the property management for a <venueSingular></venueSingular>,
+                    please go to the <VenueSingular></VenueSingular> configuration/property
+                    management page to enable it.` })}
                     placement='bottom'
                   />
                 </>

@@ -159,7 +159,7 @@ export function VenueSetting () {
     renderCell (checked: any, record: any, index: any, node: any) {
       if (venueAppliedToCli?.map(item => item.venueId).includes(record.id)) {
         // eslint-disable-next-line max-len
-        return <Tooltip title='A CLI configuration profile has been applied to this venue so it cannot be selected.'>{node}</Tooltip>
+        return <Tooltip title={$t({ defaultMessage: 'A CLI configuration profile has been applied to this <venueSingular></venueSingular> so it cannot be selected.' })}>{node}</Tooltip>
       }
       return node
     }

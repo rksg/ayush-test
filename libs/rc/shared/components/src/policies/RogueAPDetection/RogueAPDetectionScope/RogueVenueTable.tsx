@@ -190,7 +190,8 @@ export const RogueVenueTable = () => {
         showToast({
           type: 'info',
           duration: 10,
-          content: 'The max-number of venues in a rogue ap policy profile is 64.'
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'The max-number of <venuePlural></venuePlural> in a rogue ap policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

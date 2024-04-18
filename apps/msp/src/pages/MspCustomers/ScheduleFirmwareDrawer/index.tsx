@@ -169,9 +169,11 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {$t({ defaultMessage: 'Use saved schedule' })}
                   <UI.GreyTextSection>
                     <div>{$t({
-                      defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
+                      // eslint-disable-next-line max-len
+                      defaultMessage: '- Schedule is based on <venuePlural></venuePlural> local time-zone' })}</div>
                     <div>{$t({
-                      defaultMessage: '- Applies to all newly added venues automatically' })}</div>
+                      // eslint-disable-next-line max-len
+                      defaultMessage: '- Applies to all newly added <venuePlural></venuePlural> automatically' })}</div>
                   </UI.GreyTextSection>
                   <UI.PreferencesSection>
                     <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>

@@ -155,7 +155,8 @@ export function ApForm () {
   const getVenueInfos = (venueFwVersion: string) => {
     const contentInfo = $t({
       defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
-        'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
+        // eslint-disable-next-line max-len
+        'please update the firmware in this <venueSingular></venueSingular> to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
       apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
@@ -285,7 +286,7 @@ export function ApForm () {
         title: $t({ defaultMessage: 'AP Management VLAN Change' }),
         content: (<FormattedMessage
           defaultMessage={
-            `Moving to Venue: <b>{venueName}</b> will change the AP
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will change the AP
             management VLAN and reboot this AP device. Incorrect
             settings between APs and switches could result in AP access
             loss. Are you sure you want to continue?`
@@ -830,7 +831,7 @@ function CoordinatesModal (props: {
         width: 450,
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
-          defaultMessage: `Your GPS coordinates are outside the venue:
+          defaultMessage: `Your GPS coordinates are outside the <venueSingular></venueSingular>:
             {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),

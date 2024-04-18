@@ -344,7 +344,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         {
           <UI.TitleActive>
             {$t({
-              defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Selected time will apply to each <venueSingular></venueSingular> according to own time-zone'
             })}
           </UI.TitleActive>}
 

@@ -26,7 +26,7 @@ export function VenueSettingsHeader (props: {
           { isUseVenueSettings ?
             <FormattedMessage
               defaultMessage={`
-              Currently settings as the venue (<venuelink></venuelink>)
+              Currently settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)
             `}
               values={{
                 venuelink: () => venue?

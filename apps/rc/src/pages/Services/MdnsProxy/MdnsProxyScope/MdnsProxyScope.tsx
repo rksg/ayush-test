@@ -118,7 +118,8 @@ export function MdnsProxyScope () {
     <>
       <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Scope' }) }</StepsFormLegacy.Title>
       <p>{ $t({
-        defaultMessage: 'Select the venues and APs where the mDNS Proxy Service will be applied:'
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Select the <venuePlural></venuePlural> and APs where the mDNS Proxy Service will be applied:'
       }) }</p>
       {selectedVenue
         ? <MdnsProxyScopeApDrawer

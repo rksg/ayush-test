@@ -1009,7 +1009,7 @@ export function RadioSettings () {
               {
                 isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
                   <FormattedMessage
-                    defaultMessage={'Currently using radio settings of the venue (<venuelink></venuelink>)'}
+                    defaultMessage={'Currently using radio settings of the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                     values={{
                       venuelink: () => venue?
                         <TenantLink
@@ -1046,7 +1046,7 @@ export function RadioSettings () {
                 isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
                   <span>
                     <FormattedMessage
-                      defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the venue (<venuelink></venuelink>)'}
+                      defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                       values={{
                         radioTypeName: () => getRadioTypeDisplayName(currentTab),
                         venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
