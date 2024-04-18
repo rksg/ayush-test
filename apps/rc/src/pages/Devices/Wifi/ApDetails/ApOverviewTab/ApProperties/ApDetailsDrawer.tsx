@@ -14,7 +14,6 @@ import {
   gpsToFixed,
   useApContext,
   Capabilities,
-  APPropertiesAFCMaxPowerRender,
   APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
@@ -68,20 +67,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     const apRadioDeploy = currentAP?.apRadioDeploy
 
     if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
-      displayContent = (<>
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Power State' })}
-          children={
-            APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
-          }
-        />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Max Power' })}
-          children={
-            APPropertiesAFCMaxPowerRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
-          }
-        />
-      </>)
+      displayContent = (<Descriptions.Item
+        label={$t({ defaultMessage: 'AFC Power State' })}
+        children={
+          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
+        }
+      />)
     }
 
     return displayContent
