@@ -1,15 +1,14 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useGetUsersQuery }           from '@acx-ui/analytics/services'
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { OnboardedSystems } from '../OnboardedSystems'
-import { Support }          from '../Support'
-import Users                from '../Users'
-import { WebhooksTable }    from '../Webhooks'
+import { useOnboardedSystems } from '../OnboardedSystems'
+import { Support }             from '../Support'
+import { useUsers }            from '../Users'
+import { WebhooksTable }       from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -38,26 +37,14 @@ export const CountContext = createContext({} as CountContextType)
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const usersQuery = useGetUsersQuery()
-  const [usersCount, setUsersCount] = useState(usersQuery.data?.length || 0)
-  useEffect(() => {
-    usersQuery.data && setUsersCount(usersQuery.data.length)
-  }, [usersQuery.data])
 
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: $t({ defaultMessage: 'Onboarded Systems' }),
-    component: <OnboardedSystems />
+    ...useOnboardedSystems()
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: $t(
-      { defaultMessage: 'Users ({userCount, plural, zero {0} one {1} other {#}})' },
-      { userCount: usersCount || 0 }
-    ),
-    component: <CountContext.Provider value={{ usersCount, setUsersCount }}>
-      <Users />
-    </CountContext.Provider>
+    ...useUsers()
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,

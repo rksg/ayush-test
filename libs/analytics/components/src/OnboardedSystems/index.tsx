@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 
 import { Badge }                   from 'antd'
 import { Map }                     from 'immutable'
@@ -196,7 +196,7 @@ export const TooltipContent = (value: FormattedOnboardedSystem) =>
       <Errors>{value.errors.map(error => <li key={error}>{error}</li>)}</Errors>
     </>
 
-export const OnboardedSystems = () => {
+export const useOnboardedSystems = () => {
   const { $t } = useIntl()
   const tenant = getUserProfile()
   const tenantId = tenant.selectedTenant.id
@@ -206,10 +206,15 @@ export const OnboardedSystems = () => {
 
   const queryResults = useFetchSmartZoneListQuery(tenant.tenants
     .filter(t => Boolean(t.permissions[PERMISSION_MANAGE_MLISA]))
-    .map(t => t.id), {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
-    })
+    .map(t => t.id))
+  const data = formatSmartZone(queryResults.data || [], tenantId, tenantsMap)
+
+  const [count, setCount] = useState(queryResults.data?.length || 0)
+  useEffect(() => { setCount(queryResults.data?.length || 0) }, [queryResults])
+
+  const title = defineMessage({
+    defaultMessage: 'Onboarded Systems {count, select, null {} other {({count})}}',
+    description: 'Translation string - Onboarded Systems'
   })
 
   const ColumnHeaders: TableProps<FormattedOnboardedSystem>['columns'] = [
@@ -261,11 +266,11 @@ export const OnboardedSystems = () => {
     }
   ]
 
-  return <Loader states={[queryResults]}>
+  const component = <Loader states={[queryResults]}>
     <Table
       rowKey='id'
       columns={ColumnHeaders}
-      dataSource={queryResults.data as FormattedOnboardedSystem[]}
+      dataSource={data as FormattedOnboardedSystem[]}
       rowSelection={{
         type: 'radio',
         selectedRowKeys: selected ? [ selected.id ] : [],
@@ -280,7 +285,7 @@ export const OnboardedSystems = () => {
             type: 'confirm',
             title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: selected?.name }),
             content: $t({ defaultMessage:
-              'Historical data for this system will not be viewable anymore if you confirm.' }),
+                'Historical data for this system will not be viewable anymore if you confirm.' }),
             onOk: async () => {
               await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
                 .unwrap()
@@ -301,6 +306,9 @@ export const OnboardedSystems = () => {
         tooltip: !(selected?.canDelete)
           ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
+      onDisplayRowChange={(dataSource) => setCount(dataSource.length)}
     />
   </Loader>
+
+  return { title: $t(title, { count }), component }
 }

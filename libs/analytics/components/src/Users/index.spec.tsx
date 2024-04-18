@@ -19,7 +19,7 @@ import {
 
 import { mockMangedUsers } from './__tests__/fixtures'
 
-import Users from '.'
+import { useUsers } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -95,7 +95,11 @@ describe('Users Page', () => {
   it('should render correctly', async () => {
     mockRbacUserResponse(mockMangedUsers)
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(5)
@@ -103,7 +107,11 @@ describe('Users Page', () => {
   it('should render empty array correctly', async () => {
     mockRbacUserResponse([])
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
@@ -111,7 +119,11 @@ describe('Users Page', () => {
   it('should render undefined correctly', async () => {
     mockRbacUserResponse(undefined)
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const tbody = await findTBody()
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
@@ -120,7 +132,11 @@ describe('Users Page', () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const radio = await screen.findByRole('radio')
     fireEvent.click(radio)
@@ -135,7 +151,11 @@ describe('Users Page', () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockDeleteUserDetailsResponse({ data: 'ok' })
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const radio = await screen.findByRole('radio')
@@ -158,7 +178,11 @@ describe('Users Page', () => {
     mockServer.use(
       rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
     )
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
 
     const radio = await screen.findByRole('radio')
     await userEvent.click(radio)
@@ -186,7 +210,11 @@ describe('Users Page', () => {
         ctx.json({ error: error.message })
       ))
     )
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
 
     const radio = await screen.findByRole('radio')
     await userEvent.click(radio)
@@ -207,7 +235,11 @@ describe('Users Page', () => {
     mockRbacUserResponse([mockMangedUsers[2]])
     mockDeleteInvitationResponse({ data: 'ok' })
     mockSSOResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
 
     const radio = await screen.findByRole('radio')
     await userEvent.click(radio)
@@ -227,7 +259,11 @@ describe('Users Page', () => {
     mockRbacUserResponse([mockMangedUsers[0]])
     mockSSOResponse()
     mockRGResponse()
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const radio = await screen.findByRole('radio')
@@ -242,7 +278,11 @@ describe('Users Page', () => {
   it('should open user drawer for add internal user correctly', async () => {
     mockRbacUserResponse([])
     mockSSOResponse('samlFile')
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(await screen.findByText('Add Internal'))
@@ -251,7 +291,11 @@ describe('Users Page', () => {
   it('should open user drawer for 3rd party user correctly', async () => {
     mockRbacUserResponse([])
     mockSSOResponse('samlFile')
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(await screen.findByText('Add Third Party'))
@@ -261,7 +305,11 @@ describe('Users Page', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockRbacUserResponse(mockMangedUsers)
     mockSSOResponse('samlFile')
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
     const updateSSOBtn = await screen.findByText('Configure SSO')
@@ -273,7 +321,11 @@ describe('Users Page', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockRbacUserResponse(mockMangedUsers)
     mockSSOResponse('samlFile')
-    render(<Users />, { wrapper: Provider })
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() =>
       screen.queryAllByRole('img', { name: 'loader' }))
     const updateSSOBtn = screen.queryByText('Configure SSO')

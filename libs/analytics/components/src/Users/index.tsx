@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import { fetchBaseQuery }         from '@reduxjs/toolkit/query'
-import { useIntl }                from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   useGetUsersQuery,
@@ -19,7 +19,6 @@ import { getIntl }                            from '@acx-ui/utils'
 import { ImportSSOFileDrawer }    from './ImportSSOFileDrawer'
 import { UsersTable, messages }   from './Table'
 import { UserDrawer, DrawerType } from './UserDrawer'
-
 
 interface SSOValue {
   type: 'saml2'
@@ -64,7 +63,7 @@ function useHandleMutationResponse (
 }
 
 
-const Users = () => {
+export const useUsers = () => {
   const { $t } = useIntl()
   const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const [openDrawer, setOpenDrawer] = useState(false)
@@ -132,41 +131,45 @@ const Users = () => {
     usersQuery.isFetching
   ].some(Boolean)
 
-  return (
-    <Loader states={[{
-      isLoading: usersQuery.isLoading,
-      isFetching
-    }]}>
-      <UsersTable
-        data={usersQuery.data}
-        setOpenDrawer={setOpenDrawer}
-        selectedRow={selectedRow}
-        setSelectedRow={setSelectedRow}
-        refreshUserDetails={refreshUserDetails}
-        handleDeleteUser={showDeleteUserModal}
-        setDrawerType={setDrawerType}
-        openDrawer={openDrawer}
-        isUsersPageEnabled={isUsersPageEnabled}
-        isEditMode={isEditMode}
-        setVisible={setVisible}
-      />
-      <UserDrawer
-        opened={openDrawer}
-        toggleDrawer={setOpenDrawer}
-        type={drawerType}
-        selectedRow={selectedRow}
-      />
-      <ImportSSOFileDrawer
-        title={isEditMode
-          ? $t({ defaultMessage: 'Configure SSO with 3rd Party Provider' })
-          : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
-        visible={visible}
-        isEditMode={isEditMode}
-        setVisible={setVisible}
-        samlFileName={ssoConfig?.fileName}
-      />
-    </Loader>
-  )
-}
+  const [count, setCount] = useState(usersQuery.data?.length || 0)
+  useEffect(() => { setCount(usersQuery.data?.length || 0) }, [usersQuery])
 
-export default Users
+  const title = defineMessage({
+    defaultMessage: 'Users {count, select, null {} other {({count})}}',
+    description: 'Translation string - Users'
+  })
+
+  const component = <Loader states={[{ isLoading: usersQuery.isLoading, isFetching }]}>
+    <UsersTable
+      data={usersQuery.data}
+      setOpenDrawer={setOpenDrawer}
+      selectedRow={selectedRow}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={showDeleteUserModal}
+      setDrawerType={setDrawerType}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      onDisplayRowChange={(dataSource) => setCount(dataSource.length)}
+    />
+    <UserDrawer
+      opened={openDrawer}
+      toggleDrawer={setOpenDrawer}
+      type={drawerType}
+      selectedRow={selectedRow}
+    />
+    <ImportSSOFileDrawer
+      title={isEditMode
+        ? $t({ defaultMessage: 'Configure SSO with 3rd Party Provider' })
+        : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
+      visible={visible}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+      samlFileName={ssoConfig?.fileName}
+    />
+  </Loader>
+
+  return { title: $t(title, { count }), component }
+}

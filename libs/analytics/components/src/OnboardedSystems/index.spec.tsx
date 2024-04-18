@@ -11,7 +11,7 @@ import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery
 import { mockSmartZoneList } from './__tests__/fixtures'
 import { OnboardedSystem }   from './services'
 
-import { OnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
+import { useOnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
 
 const services = require('./services')
 jest.mock('./services', () => ({
@@ -42,7 +42,11 @@ describe('OnboardedSystems', () => {
     }
   })
   it('should render correctly', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findAllByText('Status')).toHaveLength(2)
     expect(await screen.findByPlaceholderText('Search Account, Name')).toBeVisible()
     expect(await screen.findByText('Account')).toBeVisible()
@@ -56,7 +60,11 @@ describe('OnboardedSystems', () => {
   })
   it('should sort by selected account', async () => {
     setUserProfile({ accountId: tenants[1].id, tenants } as UserProfile)
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findAllByText('account2')).toHaveLength(2)
   })
   it('should handle delete submit', async () => {
@@ -65,7 +73,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { status: 204 }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -78,11 +90,14 @@ describe('OnboardedSystems', () => {
     await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
-    expect(await screen.findByTestId('toast-content'))
-      .toHaveTextContent('sz3 was deleted')
+    expect(await screen.findByTestId('toast-content')).toHaveTextContent('sz3 was deleted')
   })
   it('should handle delete cancel', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -97,7 +112,11 @@ describe('OnboardedSystems', () => {
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
   })
   it('should disable delete', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
@@ -109,7 +128,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { error: 'CANNOT_DELETE' }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -132,7 +155,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { error: 'UNKNOWN' }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -155,8 +182,12 @@ describe('OnboardedSystems', () => {
       { id: 'id3', name: 'account3', permissions: { [PERMISSION_MANAGE_MLISA]: false } }
     ] } as UserProfile)
     jest.spyOn(services, 'useFetchSmartZoneListQuery')
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
-    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'], expect.anything())
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'])
   })
 })
 

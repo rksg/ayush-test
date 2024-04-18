@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -12,8 +12,6 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Table, TableProps }      from '@acx-ui/components'
 import { noDataDisplay, getIntl } from '@acx-ui/utils'
-
-import { CountContext } from '../AccountManagement'
 
 type DisplayUser = ManagedUser & {
   displayInvitationState: string
@@ -111,7 +109,6 @@ const transformUsers = (
 const getUserActions = (
   selectedRow: ManagedUser,
   { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }: {
-    setSelectedRow: CallableFunction,
     refreshUserDetails: CallableFunction,
     setOpenDrawer: CallableFunction,
     handleDeleteUser: CallableFunction,
@@ -171,6 +168,7 @@ interface UsersTableProps {
   isUsersPageEnabled: boolean
   isEditMode: boolean
   setVisible: CallableFunction
+  onDisplayRowChange?: (displayRows: DisplayUser[]) => void
 }
 
 export const UsersTable = ({
@@ -184,7 +182,8 @@ export const UsersTable = ({
   openDrawer,
   isUsersPageEnabled,
   isEditMode,
-  setVisible
+  setVisible,
+  onDisplayRowChange
 }: UsersTableProps) => {
   useEffect(() => {
     if (openDrawer === false) {
@@ -195,7 +194,7 @@ export const UsersTable = ({
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const users = transformUsers(data, brand)
-  const { setUsersCount } = useContext(CountContext)
+
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Internal' }),
@@ -292,7 +291,7 @@ export const UsersTable = ({
     actions={actions}
     rowActions={getUserActions(
       selectedRow as ManagedUser,
-      { setSelectedRow, refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }
+      { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }
     )}
     rowSelection={{
       type: 'radio',
@@ -304,7 +303,7 @@ export const UsersTable = ({
         setSelectedRow(selectedRows[0])
       }
     }}
-    onDisplayRowChange={(dataSource) => setUsersCount?.(dataSource.length)}
+    onDisplayRowChange={onDisplayRowChange}
   />
 }
 
