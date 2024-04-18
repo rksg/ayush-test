@@ -28,7 +28,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -55,7 +55,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -105,7 +105,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -132,7 +132,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -177,7 +177,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -214,7 +214,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -263,19 +263,19 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 czxCPi"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ldgxTA"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wireless
+                  Insufficient powered APs
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -283,7 +283,16 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /8
                   </span>
                 </div>
               </div>
@@ -292,13 +301,13 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 czxCPi"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ldgxTA"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wired
+                  Switches under PoE threshold
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -306,7 +315,16 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      2
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /2
                   </span>
                 </div>
               </div>
@@ -347,7 +365,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 100%;"
               >
                 <div
@@ -392,7 +410,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 100%;"
               >
                 <div
@@ -437,7 +455,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 100%;"
               >
                 <div
@@ -486,19 +504,19 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 czxCPi"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ldgxTA"
                 style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wireless
+                  Insufficient powered APs
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -506,7 +524,16 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /8
                   </span>
                 </div>
               </div>
@@ -547,7 +574,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -574,7 +601,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -624,7 +651,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -651,7 +678,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -696,7 +723,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -719,7 +746,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bJgawK"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
                 style="width: 50%;"
               >
                 <div
@@ -754,19 +781,19 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 czxCPi"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ldgxTA"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wireless
+                  Insufficient powered APs
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -774,7 +801,16 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /0
                   </span>
                 </div>
               </div>
@@ -783,13 +819,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 czxCPi"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ldgxTA"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wired
+                  Switches under PoE threshold
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -797,7 +833,16 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /0
                   </span>
                 </div>
               </div>
