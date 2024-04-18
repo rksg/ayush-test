@@ -23,7 +23,12 @@ export const summaryDataFixture = {
       switchTotalTraffic: 2333440,
       portCount: 636,
       totalPortCount: 14229,
-      avgPerAPClientCount: 643
+      avgPerAPClientCount: 643,
+      poeUnderPoweredApCount: 1,
+      apCount: 8,
+      poeUnderPoweredSwitchCount: 2,
+      poeThresholdSwitchCount: 2
+
     }
   }
 }
@@ -33,7 +38,9 @@ export const summaryWirelessDataFixture = {
     hierarchyNode: {
       apIncidentCount: 461,
       apTotalTraffic: 1189597336,
-      avgPerAPClientCount: 643
+      avgPerAPClientCount: 643,
+      poeUnderPoweredApCount: 1,
+      apCount: 8
     }
   }
 }
@@ -48,7 +55,11 @@ export const summaryNoDataFixture = {
       switchTotalTraffic: null,
       portCount: 0,
       totalPortCount: 0,
-      avgPerAPClientCount: 0
+      avgPerAPClientCount: 0,
+      poeUnderPoweredApCount: 0,
+      apCount: 0,
+      poeUnderPoweredSwitchCount: 0,
+      poeThresholdSwitchCount: 0
     }
   }
 }

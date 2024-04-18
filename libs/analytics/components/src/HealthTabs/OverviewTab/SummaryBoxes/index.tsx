@@ -66,14 +66,16 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
     }
   )
   const powerUtilization = [{
-    title: defineMessage({ defaultMessage: 'Wireless' }),
-    value: 'X%'
+    title: defineMessage({ defaultMessage: 'Insufficient powered APs' }),
+    value: formatValue(summaryData?.poeUnderPoweredApCount),
+    suffix: `/${formatValue(summaryData?.apCount)}`
   }]
 
   !wirelessOnly && powerUtilization.push(
     {
-      title: defineMessage({ defaultMessage: 'Wired' }),
-      value: 'Y1'
+      title: defineMessage({ defaultMessage: 'Switches under PoE threshold' }),
+      value: formatValue(summaryData?.poeUnderPoweredSwitchCount),
+      suffix: `/${formatValue(summaryData?.poeThresholdSwitchCount)}`
     }
   )
 
@@ -96,7 +98,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
     {
       // TODO: integrate with api
       type: 'grey',
-      title: defineMessage({ defaultMessage: 'PoE' }),
+      title: defineMessage({ defaultMessage: 'Power Utilization' }),
       values: powerUtilization
     }
   ]
