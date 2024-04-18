@@ -207,7 +207,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEnhancedRoguePolicyList: {
     method: 'post',
-    url: '/templates/enhancedRogueApPolicyProfiles/query',
+    url: '/templates/rogueApPolicyProfiles/query',
     newApi: true
   },
   updateRoguePolicy: {
@@ -222,7 +222,17 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueRoguePolicy: {
     method: 'post',
-    url: '/venues/query',
+    url: '/templates/venues/query',
+    newApi: true
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/templates/venues/:venueId/rogueApSettings',
+    newApi: true
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/templates/venues/:venueId/rogueApSettings',
     newApi: true
   }
 }

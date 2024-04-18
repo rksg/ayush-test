@@ -18,7 +18,7 @@ import {
   RogueAPDetectionContextType,
   EnhancedRoguePolicyType,
   RogueAPDetectionTempType,
-  VenueRoguePolicyType
+  VenueRoguePolicyType, VenueRogueAp
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -29,6 +29,7 @@ import {
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
   useCasesToRefreshVlanPoolTemplateList, useCasesToRefreshRogueAPTemplateList
 } from './constants'
+import { venueConfigTemplateApi } from './venue'
 
 export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -289,7 +290,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRoguePolicy),
-      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRogueAp),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -297,13 +301,15 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
             'UpdateDenialOfServiceProtection'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(configTemplateApi.util.invalidateTags([{
-              type: 'RogueApTemplate', id: 'LIST'
-            }]))
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
           })
         })
-      },
-      extraOptions: { maxRetries: 5 }
+      }
+    }),
+    updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueRogueAp),
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
     })
   })
 })
@@ -345,5 +351,7 @@ export const {
   useGetRoguePolicyTemplateListQuery,
   useUpdateRoguePolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
-  useGetVenueRoguePolicyTemplateQuery
+  useGetVenueRoguePolicyTemplateQuery,
+  useGetVenueRogueApTemplateQuery,
+  useUpdateVenueRogueApTemplateMutation
 } = policiesConfigTemplateApi

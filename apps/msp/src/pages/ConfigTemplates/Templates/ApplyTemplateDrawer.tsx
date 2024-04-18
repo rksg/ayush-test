@@ -118,12 +118,17 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
         columns={columns}
         dataSource={tableQuery.data?.data}
         rowKey='id'
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        settingsId='msp-apply-template-table'
         rowSelection={hasAccess() && {
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
           }
         }}
+        enableApiFilter={true}
       />
     </Loader>
   </Space>

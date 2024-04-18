@@ -12,16 +12,21 @@ import {
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
-  useGetVenueApEnhancedKeyQuery, useUpdateVenueApEnhancedKeyMutation,
-  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation,
-  useEnhancedRoguePoliciesQuery, useGetRoguePolicyTemplateListQuery
+  useGetVenueApEnhancedKeyQuery,
+  useUpdateVenueApEnhancedKeyMutation,
+  useGetVenueTemplateDoSProtectionQuery,
+  useUpdateVenueTemplateDoSProtectionMutation,
+  useEnhancedRoguePoliciesQuery,
+  useGetRoguePolicyTemplateListQuery,
+  useGetVenueRogueApTemplateQuery,
+  useUpdateVenueRogueApTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   VenueDosProtection,
   VenueMessages,
   redirectPreviousPage,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -88,14 +93,20 @@ export function SecurityTab () {
     )
 
   const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
+    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
+    useUpdateVenueRogueApMutation,
+    useUpdateVenueRogueApTemplateMutation
+  )
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
     useGetVenueTemplateDoSProtectionQuery
   )
 
-  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params }, { skip: isTemplate })
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
+    useGetVenueRogueApQuery,
+    useGetVenueRogueApTemplateQuery
+  )
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
