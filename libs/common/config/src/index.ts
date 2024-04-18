@@ -11,10 +11,10 @@ type commonEnvironment = {
 /**
  * Steps to add new env var
  * 1. Define new env var in the `R1Environment` below
- * 2. Update `apps/main/src/globalValues.json`
- * 3. Update `configs/acx-ui/configmaps/base/configmap-acx-ui.yaml`
- * 4. Update `configs/acx-ui/configmaps/base/values-configmap-env-map-acx-ui.yaml`
- * 5. Update `tools/docker/nginx/globalValues.json.template`
+ * 2. Update `apps/main/src/globalValues.json` (R1) and/or 'apps/ra/src/globalValues.json' (RA)
+ * 3. Update `configs/acx-ui/configmaps/base/configmap-acx-ui.yaml` (R1 only)
+ * 4. Update `configs/acx-ui/configmaps/base/values-configmap-env-map-acx-ui.yaml` (R1 only)
+ * 5. Update `tools/docker/nginx/globalValues.json.template` (R1) and/or `tools/docker/nginx/globalValues-ra.json.template` (RA)
  */
 type R1Environment = {
   GOOGLE_MAPS_KEY: string
