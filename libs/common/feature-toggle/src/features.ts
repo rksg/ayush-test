@@ -78,6 +78,7 @@ export enum Features {
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
   MSP_HSP_PLM_FF = 'LOC-HSP',
+  MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
