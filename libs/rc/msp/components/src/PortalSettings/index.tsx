@@ -56,7 +56,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { loadImageWithJWT } from '@acx-ui/utils'
 
-import defaultLoginLogo   from '../images/ec-login-logo.png'
+import defaultLoginLogo   from '../images/comscope-logo-ping.png'
 import defaultAlarmLogo   from '../images/ruckus-logo-alarm.png'
 import defaultPortalLogo  from '../images/ruckus-logo-cloud.png'
 import defaultSupportLogo from '../images/ruckus-logo-notification.png'
