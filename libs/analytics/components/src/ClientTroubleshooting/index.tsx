@@ -3,11 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Row, Col }                          from 'antd'
 import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
-import moment                                from 'moment'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
+import { overlapsRollup }                     from '@acx-ui/analytics/utils'
 import { Cascader, Button, Loader }           from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
@@ -107,10 +106,6 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
 
   const isMaxEventError = clientQuery.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
 
-  const date = moment(startDate).unix()
-  const rollupDays = get('DRUID_ROLLUP_DAYS')
-  const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days').unix()
-
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>
       <span>{maxEventsMsg(
@@ -168,7 +163,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           )}
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
-              {date < rollupDate
+              {overlapsRollup(startDate)
                 ? <RollupText>
                   {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
                 </RollupText>
