@@ -29,12 +29,13 @@ const barColors = (severity: Incident['severity'], rssBuckets: number[]) => {
 
 export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
+  const druidRolledup = overlapsRollup(props.incident.startTime)
 
-  const queryResults = useRssDistributionChartQuery(props.incident)
+  const queryResults = useRssDistributionChartQuery(props.incident, { skip: druidRolledup })
 
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
-      {overlapsRollup(props.incident.startTime)
+      {druidRolledup
         ? <RollupText>
           {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
         </RollupText>

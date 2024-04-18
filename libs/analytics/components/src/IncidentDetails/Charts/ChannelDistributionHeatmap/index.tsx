@@ -69,7 +69,8 @@ export const tooltipFormatter = (params: CallbackDataParams) => {
 }
 export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProps> = (props) => {
   const { $t } = useIntl()
-  const queryResults = useHeatmapDistributionByChannelQuery(props)
+  const druidRolledup = overlapsRollup(props.incident.startTime)
+  const queryResults = useHeatmapDistributionByChannelQuery(props, { skip: druidRolledup })
   const { heatMapConfig } = props
   const { key, value: title, channel, count, infoIconText } = heatMapConfig
 
@@ -112,7 +113,7 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
           title={{ title: title, icon: infoIconText
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
-          {overlapsRollup(props.incident.startTime)
+          {druidRolledup
             ? <RollupText>
               {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
             </RollupText>

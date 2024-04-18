@@ -25,21 +25,25 @@ import type { ChartProps } from '../types.d'
 export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const { id } = incident
-  const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const filteredResponse = response.data?.reduce((agg, row) => {
-      const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
-      if (!agg[key]) agg[key] = { ...row, key }
-      return agg
-    }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
-    const result = Object.values(filteredResponse).map((item, index) => ({ ...item, index }))
-    const rows = result.map(concatMismatchedVlans)
-    return { ...response, data: rows }
-  } })
+  const druidRolledup = overlapsRollup(incident.endTime)
+
+  const response = useImpactedSwitchVLANsQuery({ id },
+    { skip: druidRolledup, selectFromResult: (response) => {
+      const filteredResponse = response.data?.reduce((agg, row) => {
+        const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
+        if (!agg[key]) agg[key] = { ...row, key }
+        return agg
+      }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
+      const result = Object.values(filteredResponse).map((item, index) => ({ ...item, index }))
+      const rows = result.map(concatMismatchedVlans)
+      return { ...response, data: rows }
+    } })
+
   const [selected, setSelected] = useState(0)
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
-      {overlapsRollup(incident.endTime)
+      {druidRolledup
         ? <RollupText>
           {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
         </RollupText>

@@ -35,10 +35,13 @@ export function concatMismatchedVlans (item: ImpactedSwitchPortRow) {
 export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const { id, switchCount, vlanCount } = incident
-  const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const rows = response.data?.map(concatMismatchedVlans)
-    return { ...response, rows }
-  } })
+  const druidRolledup = overlapsRollup(incident.endTime)
+
+  const response = useImpactedSwitchVLANsQuery({ id },
+    { skip: druidRolledup, selectFromResult: (response) => {
+      const rows = response.data?.map(concatMismatchedVlans)
+      return { ...response, rows }
+    } })
 
   const impactedSwitches = response.data!
 
@@ -96,7 +99,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      {overlapsRollup(incident.endTime)
+      {druidRolledup
         ? <UI.RollupText>
           {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
         </UI.RollupText>
