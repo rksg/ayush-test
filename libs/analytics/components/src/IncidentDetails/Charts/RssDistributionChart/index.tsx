@@ -4,7 +4,8 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   incidentSeverities,
   calculateSeverity,
-  Incident
+  Incident,
+  overlapsRollup
 } from '@acx-ui/analytics/utils'
 import {
   cssStr,
@@ -13,8 +14,7 @@ import {
   VerticalBarChart
 } from '@acx-ui/components'
 
-import { checkRollup } from '../../TimeSeries/config'
-import { RollupText }  from '../ImpactedSwitchVLANDetails/styledComponents'
+import { RollupText } from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useRssDistributionChartQuery } from './services'
 
@@ -34,7 +34,7 @@ export const RssDistributionChart: React.FC<ChartProps> = (props) => {
 
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
-      {checkRollup(props.incident)
+      {overlapsRollup(props.incident.startTime)
         ? <RollupText>
           {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
         </RollupText>

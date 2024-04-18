@@ -25,8 +25,8 @@ const getGranularity = (interval: number) => {
       return 'PT180S'
   }
 }
-const overlapsRollup = (start: string) => {
+export const overlapsRollup = (start: string) => {
   const rollupDays = parseInt(get('DRUID_ROLLUP_DAYS'), 10)
   const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days')
-  return rollupDays < 36500 && moment(start) < rollupDate
+  return moment(start) < rollupDate
 }

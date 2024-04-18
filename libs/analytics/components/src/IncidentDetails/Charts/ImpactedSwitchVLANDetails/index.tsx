@@ -1,13 +1,13 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Card, Loader } from '@acx-ui/components'
+import { overlapsRollup } from '@acx-ui/analytics/utils'
+import { Card, Loader }   from '@acx-ui/components'
 import {
   Switch,
   VLANIcon
 } from '@acx-ui/icons'
 
-import { checkRollup }          from '../../TimeSeries/config'
 import {
   ImpactedSwitchPortRow,
   useImpactedSwitchVLANsQuery
@@ -45,7 +45,8 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
       ? []
-      : _.uniqBy(impactedSwitches, (item) => item.mismatchedVlans[0].id)
+      : _.uniqBy(impactedSwitches, (item) =>
+        item.mismatchedVlans ? item.mismatchedVlans[0]?.id : [])
 
   const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
     ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
@@ -95,7 +96,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      {checkRollup(incident)
+      {overlapsRollup(incident.endTime)
         ? <UI.RollupText>
           {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
         </UI.RollupText>

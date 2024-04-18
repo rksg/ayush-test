@@ -6,13 +6,12 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                  from '@acx-ui/analytics/utils'
+import { getSeriesData, overlapsRollup }  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
 import {  getIntl }                       from '@acx-ui/utils'
 
-import { RollupText }  from '../../Charts/ImpactedSwitchVLANDetails/styledComponents'
-import { checkRollup } from '../config'
+import { RollupText } from '../../Charts/ImpactedSwitchVLANDetails/styledComponents'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -92,7 +91,7 @@ export const RssQualityByClientsChart = ({ data, incident }: TimeSeriesChartProp
   }, [$t, items])
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
-    {checkRollup(incident)
+    {overlapsRollup(incident.startTime)
       ? <RollupText>
         {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
       </RollupText>

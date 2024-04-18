@@ -7,11 +7,11 @@ import { renderToString }    from 'react-dom/server'
 import { useIntl }           from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
+import { overlapsRollup }                                                 from '@acx-ui/analytics/utils'
 import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip } from '@acx-ui/components'
 import { getIntl, noDataDisplay }                                         from '@acx-ui/utils'
 
-import { checkRollup } from '../../TimeSeries/config'
-import { RollupText }  from '../ImpactedSwitchVLANDetails/styledComponents'
+import { RollupText } from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -112,7 +112,7 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
           title={{ title: title, icon: infoIconText
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
-          {checkRollup(props.incident)
+          {overlapsRollup(props.incident.startTime)
             ? <RollupText>
               {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
             </RollupText>
