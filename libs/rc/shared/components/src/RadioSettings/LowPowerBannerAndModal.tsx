@@ -39,29 +39,33 @@ export function LowPowerBannerAndModal (props: {
 
     let modalMessage = ''
 
-    if (from === 'ap') {
-
-      modalMessage = $t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' })
-
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
-        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(AP is working on LPI channel)' })
-      }
-      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
-        modalMessage = modalMessage + ' ' + $t({ defaultMessage: '(AFC Server failure)' })
-      }
-    }
-
     if (from === 'venue') {
       modalMessage = $t({ defaultMessage: 'AFC in the 6 GHz band requires a venue height to be set for standard power operation.' })
+    }
+    else {
+      // when from 'AP'
+      const messageList: string[] = []
+
+      messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        messageList.push($t({ defaultMessage: '(Geo Location not set)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+        messageList.push($t({ defaultMessage: '(No channels available)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        messageList.push($t({ defaultMessage: '(Pending response from the AFC server)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
+        messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+        messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
+      }
+
+      modalMessage = messageList.join(' ')
+
     }
 
     setBannerText(modalMessage)
