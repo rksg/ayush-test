@@ -33,7 +33,7 @@ Object {
     "p-airtime-b-24g-high",
   ],
   "end": "2023-11-09T00:00:00.000Z",
-  "granularity": "PT15M",
+  "granularity": "PT1H",
   "path": Array [
     Object {
       "name": "vsz34",
