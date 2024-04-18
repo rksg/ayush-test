@@ -10,6 +10,8 @@ import {
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid,
   MspSubscriptionOutlined,
   MspSubscriptionSolid,
   IntegratorsOutlined,
@@ -29,11 +31,11 @@ import { AccountType  }                                   from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
   const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -50,7 +52,6 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   } = useContext(HspContext)
 
   const { isHsp: isHspSupportEnabled } = state
-
 
   const mspCustomersMenu = {
     uri: '/dashboard/mspCustomers',
@@ -114,6 +115,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(isHspSupportEnabled && isDataStudioEnabled && !isInstaller ? [{
+      uri: '/dataStudio',
+      label: $t({ defaultMessage: 'Data Studio' }),
+      tenantType: 'v' as TenantType,
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    }] : []),
     ...(isConfigTemplateEnabled
       ? [{
         uri: '/' + getConfigTemplatePath(),

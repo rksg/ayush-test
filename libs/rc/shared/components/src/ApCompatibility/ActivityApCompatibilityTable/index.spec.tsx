@@ -37,11 +37,13 @@ describe('ActivityApCompatibilityTable', () => {
       { route: { params } })
 
     const { totalCount, impactedCount } = mockActivityApCompatibilityTable
-    const percent = Math.round(totalCount / impactedCount * 100 )
-    const expectDesc = `(${totalCount} / ${impactedCount} devices, ${percent}%)`
+    const compatibiliyCount = impactedCount - totalCount
+    const percent = Math.round(compatibiliyCount / impactedCount * 100 )
+    const expectDesc = `(${compatibiliyCount} / ${impactedCount} devices, ${percent}%)`
     const element = await screen.findByText('AP-1')
     expect(element).toBeInTheDocument()
     expect(await screen.findByText('AP-10')).toBeInTheDocument()
+    expect(await screen.findByText(`Total: ${totalCount}`)).toBeInTheDocument()
     const showBtn = await screen.findByTestId('showBtn')
     expect(showBtn).toBeVisible()
     await userEvent.click(showBtn)
