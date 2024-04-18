@@ -87,7 +87,7 @@ export function userAuthFailedLogout (response: Response) {
   if(response.status !== 200){
     const token = sessionStorage.getItem('jwt')?? null
     sessionStorage.removeItem('jwt')
-
+    sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
     window.location.href = token? `/logout?token=${token}` : '/logout'
   }
 }
