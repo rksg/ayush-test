@@ -1,53 +1,13 @@
 import { rest } from 'msw'
 
-import { VlanPoolUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
-import {
-  mockServer,
-  render,
-  screen,
-  waitFor,
-  within
-} from '@acx-ui/test-utils'
+import { VlanPoolUrls }                                from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import VLANPoolDetail from '.'
+import { vlanPoolVenueList, vlanPoolDetail } from './__tests__/fixtures'
 
-const list = {
-  totalCount: 2,
-  totalPages: 1,
-  page: 1,
-  data: [{
-    venueId: 'ebcccef6b366415dbb85073e5aa7248c',
-    venueName: 'tVenue1',
-    apGroupData: [{
-      apGroupId: '33e6a901d4a8492eb4a1f2b75de75af3',
-      apGroupName: 'apg1',
-      apCount: 0
-    },
-    {
-      apGroupId: '81134687bde947cb86a0426995fdd442',
-      apGroupName: 'apg2',
-      apCount: 0
-    }]
-  },
-  {
-    venueId: '2df3c129c00e4686b11cf70dac845367',
-    venueName: 'My-Venue',
-    apGroupData: [
-      {
-        apGroupId: '8dfa1ac3147542df82f7f86fd0c2d8bc',
-        apGroupName: 'ALL_APS',
-        apCount: 0
-      }
-    ]
-  }]
-}
-const detailResult = {
-  tenantId: '4217246d0e5344b7b1e9d66d4ec4d105',
-  name: 'test',
-  vlanMembers: ['2-6','7-9'],
-  id: '9461e5412c1b424f975cd4aee2b1eca2'
-}
+import { VLANPoolDetail } from '.'
+
 
 describe('VLAN Pool Detail Page', () => {
   let params: { tenantId: string, policyId: string }
@@ -59,11 +19,11 @@ describe('VLAN Pool Detail Page', () => {
     mockServer.use(
       rest.post(
         VlanPoolUrls.getVLANPoolVenues.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(vlanPoolVenueList))
       ),
       rest.get(
         VlanPoolUrls.getVLANPoolPolicy.url,
-        (req, res, ctx) => res(ctx.json(detailResult))
+        (req, res, ctx) => res(ctx.json(vlanPoolDetail))
       )
     )
   })
@@ -73,7 +33,7 @@ describe('VLAN Pool Detail Page', () => {
       route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
     })
     expect(await screen.findByText('test')).toBeVisible()
-    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
+    expect(await screen.findByText((`Instances (${vlanPoolVenueList.data.length})`))).toBeVisible()
     const body = await screen.findByRole('rowgroup', {
       name: (_, element) => element.classList.contains('ant-table-tbody')
     })

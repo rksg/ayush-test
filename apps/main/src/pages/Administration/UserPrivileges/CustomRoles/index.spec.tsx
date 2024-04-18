@@ -269,7 +269,7 @@ describe('Custom Roles Table', () => {
         route: { params }
       })
 
-    const systemRow = await screen.findByRole('row', { name: /Prime Admin/i })
+    const systemRow = await screen.findByRole('row', { name: /Read Only/i })
     await userEvent.click(within(systemRow).getByRole('radio'))
     expect(screen.getByRole('button', { name: 'Clone' })).toBeVisible()
     const customRow = await screen.findByRole('row', { name: /custom role/i })
