@@ -1,8 +1,9 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncidentRss }          from '@acx-ui/analytics/utils'
-import { dataApiURL, store }        from '@acx-ui/store'
-import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { fakeIncidentRss }             from '@acx-ui/analytics/utils'
+import { get }                         from '@acx-ui/config'
+import { dataApiURL, store, Provider } from '@acx-ui/store'
+import { mockGraphqlQuery, render }    from '@acx-ui/test-utils'
 
 import { noBuffer }             from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
@@ -14,6 +15,10 @@ import {
 } from './RssQualityByClientsChart'
 
 import type { TimeSeriesChartResponse } from '../types'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 const expectedResult = {
   rssQualityByClientsChart: {
@@ -31,19 +36,31 @@ const expectedResult = {
   }
 } as unknown as TimeSeriesChartResponse
 
-beforeEach(() => store.dispatch(Api.util.resetApiState()))
+beforeEach(() => {
+  store.dispatch(Api.util.resetApiState())
+  jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
+})
+
+afterEach(() => {
+  jest.useRealTimers()
+  jest.resetAllMocks()
+})
 
 describe('RssQualityByClientsChart', () => {
   it('should render chart', () => {
+    const mockDate = new Date('2022-09-30T00:00:00.000Z')
+    jest.useFakeTimers('modern').setSystemTime(mockDate)
     const { asFragment } = render(
-      <BrowserRouter>
-        <RssQualityByClientsChart
-          chartRef={()=>{}}
-          buffer={noBuffer}
-          incident={fakeIncidentRss}
-          data={expectedResult}
-        />
-      </BrowserRouter>
+      <Provider>
+        <BrowserRouter>
+          <RssQualityByClientsChart
+            chartRef={()=>{}}
+            buffer={noBuffer}
+            incident={fakeIncidentRss}
+            data={expectedResult}
+          />
+        </BrowserRouter>
+      </Provider>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()

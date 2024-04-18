@@ -1,19 +1,17 @@
 import {
   CallbackDataParams
 } from 'echarts/types/dist/shared'
-import { flatten, uniq,max, get } from 'lodash'
-import moment                     from 'moment-timezone'
-import { renderToString }         from 'react-dom/server'
-import { useIntl }                from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
+import { flatten, uniq,max } from 'lodash'
+import moment                from 'moment-timezone'
+import { renderToString }    from 'react-dom/server'
+import { useIntl }           from 'react-intl'
+import AutoSizer             from 'react-virtualized-auto-sizer'
 
 import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip } from '@acx-ui/components'
-import { useParams }                                                      from '@acx-ui/react-router-dom'
 import { getIntl, noDataDisplay }                                         from '@acx-ui/utils'
 
-import { useIncidentCodeQuery, useIncidentDetailsQuery } from '../../services'
-import { checkRollup }                                   from '../../TimeSeries/config'
-import { RollupText }                                    from '../ImpactedSwitchVLANDetails/styledComponents'
+import { checkRollup } from '../../TimeSeries/config'
+import { RollupText }  from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -77,14 +75,6 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
 
   const heatmapData = queryResults?.data?.[key as ChannelType]
 
-  const params = useParams()
-  const id = get(params, 'incidentId', undefined) as string
-  const codeQuery = useIncidentCodeQuery({ id })
-  const detailsQuery = useIncidentDetailsQuery(
-    codeQuery.data!,
-    { skip: !Boolean(codeQuery.data) }
-  )
-
   const xAxisCategories = (heatmapData?.time as string[])?.map((datum: string) =>
     moment(datum).format('DD MMM HH:mm')
   )
@@ -122,7 +112,7 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
           title={{ title: title, icon: infoIconText
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
-          {checkRollup(detailsQuery.data!)
+          {checkRollup(props.incident)
             ? <RollupText>
               {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
             </RollupText>

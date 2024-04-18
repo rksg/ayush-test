@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 
 import { gql }     from 'graphql-request'
-import { get }     from 'lodash'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
@@ -10,12 +9,10 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
-import { useParams }                      from '@acx-ui/react-router-dom'
 import {  getIntl }                       from '@acx-ui/utils'
 
-import { RollupText }                                    from '../../Charts/ImpactedSwitchVLANDetails/styledComponents'
-import { useIncidentCodeQuery, useIncidentDetailsQuery } from '../../services'
-import { checkRollup }                                   from '../config'
+import { RollupText }  from '../../Charts/ImpactedSwitchVLANDetails/styledComponents'
+import { checkRollup } from '../config'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -63,16 +60,9 @@ export function formatWithPercentageAndCount (
   })
 }
 
-export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
+export const RssQualityByClientsChart = ({ data, incident }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart: items } = data
   const { $t } = useIntl()
-  const params = useParams()
-  const id = get(params, 'incidentId', undefined) as string
-  const codeQuery = useIncidentCodeQuery({ id })
-  const detailsQuery = useIncidentDetailsQuery(
-    codeQuery.data!,
-    { skip: !Boolean(codeQuery.data) }
-  )
 
   const [chartData, seriesFormatters] = useMemo(() => {
     const sets = [items.good, items.average, items.bad] as number[][]
@@ -102,7 +92,7 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   }, [$t, items])
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
-    {checkRollup(detailsQuery?.data!)
+    {checkRollup(incident)
       ? <RollupText>
         {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
       </RollupText>

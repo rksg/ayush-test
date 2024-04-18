@@ -1,10 +1,15 @@
 import { fakeIncidentRss }                  from '@acx-ui/analytics/utils'
+import { get }                              from '@acx-ui/config'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { rssDistributionChartApi, Response } from './services'
 
 import { RssDistributionChart } from '.'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 const response = {
   network: {
@@ -34,6 +39,13 @@ const response = {
 describe('RssQualityByClientsChart', () => {
   beforeEach(() => {
     store.dispatch(rssDistributionChartApi.util.resetApiState())
+    jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
+    const mockDate = new Date('2022-07-21T02:42:00.000Z')
+    jest.useFakeTimers('modern').setSystemTime(mockDate)
+  })
+  afterEach(() => {
+    jest.useRealTimers()
+    jest.resetAllMocks()
   })
 
   it('should render chart', async () => {

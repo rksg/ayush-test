@@ -1,5 +1,6 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
+import { get }                                                                             from '@acx-ui/config'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
 
@@ -10,6 +11,10 @@ import { api }                                                          from './
 
 import { ClientTroubleshooting, getSelectedCallback, getPanelCallback } from './index'
 
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('ClientTroubleshootingTab', () => {
   const params = {
     tenantId: 'tenant-id',
@@ -17,6 +22,7 @@ describe('ClientTroubleshootingTab', () => {
     clientId: 'mac'
   }
   beforeEach(() => {
+    jest.mocked(get).mockReturnValue('32') // get('DRUID_ROLLUP_DAYS')
     store.dispatch(api.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       data: {

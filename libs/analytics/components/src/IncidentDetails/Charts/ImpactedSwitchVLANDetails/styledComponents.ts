@@ -69,4 +69,6 @@ export const SummaryDetails = styled.div`
 export const RollupText = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: -webkit-fill-available;
 `

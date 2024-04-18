@@ -3,12 +3,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Row, Col }                          from 'antd'
 import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
+import moment                                from 'moment'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
 import { Cascader, Button, Loader }           from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
+import { RollupText }         from '../IncidentDetails/Charts/ImpactedSwitchVLANDetails/styledComponents'
 import { useIncidentToggles } from '../useIncidentToggles'
 
 import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
@@ -104,6 +107,10 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
 
   const isMaxEventError = clientQuery.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
 
+  const date = moment(startDate).unix()
+  const rollupDays = get('DRUID_ROLLUP_DAYS')
+  const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days').unix()
+
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>
       <span>{maxEventsMsg(
@@ -161,36 +168,41 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           )}
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
-              <Loader states={[clientQuery, incidentsQuery]}>
-                <TimeLine
-                  data={data}
-                  filters={filters}
-                  setEventState={setEventState}
-                  setVisible={setPopoverVisible}
-                  sharedChartName={sharedChartName}
-                  connectChart={connectChart}
-                  popoverRef={popoverRef}
-                  onChartReady={onChartReady}
-                />
-                <ConnectionEventPopover
-                  key={Number(popoverVisible)}
-                  arrowPointAtCenter
-                  autoAdjustOverflow={false}
-                  event={eventState}
-                  visible={popoverVisible}
-                  onVisibleChange={setPopoverVisible}
-                  trigger='click'
-                  placement='bottom'
-                  align={{
-                    targetOffset: [
-                      (eventState as unknown as { x: number }).x,
-                      (eventState as unknown as { y: number }).y
-                    ]
-                  }}
-                >
-                  <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
-                </ConnectionEventPopover>
-              </Loader>
+              {date < rollupDate
+                ? <RollupText>
+                  {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+                </RollupText>
+                : <Loader states={[clientQuery, incidentsQuery]}>
+                  <TimeLine
+                    data={data}
+                    filters={filters}
+                    setEventState={setEventState}
+                    setVisible={setPopoverVisible}
+                    sharedChartName={sharedChartName}
+                    connectChart={connectChart}
+                    popoverRef={popoverRef}
+                    onChartReady={onChartReady}
+                  />
+                  <ConnectionEventPopover
+                    key={Number(popoverVisible)}
+                    arrowPointAtCenter
+                    autoAdjustOverflow={false}
+                    event={eventState}
+                    visible={popoverVisible}
+                    onVisibleChange={setPopoverVisible}
+                    trigger='click'
+                    placement='bottom'
+                    align={{
+                      targetOffset: [
+                        (eventState as unknown as { x: number }).x,
+                        (eventState as unknown as { y: number }).y
+                      ]
+                    }}
+                  >
+                    <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
+                  </ConnectionEventPopover>
+                </Loader>
+              }
             </UI.TimelineLoaderWrapper>
           </Col>
         </Row>
