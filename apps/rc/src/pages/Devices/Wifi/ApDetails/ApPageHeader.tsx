@@ -81,7 +81,9 @@ function ApPageHeader () {
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }].filter(item => currentApOperational || item.key === 'delete')}
+      }].filter(item => (currentApOperational || item.key === 'delete' ||
+        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+      ))}
     />
   )
 

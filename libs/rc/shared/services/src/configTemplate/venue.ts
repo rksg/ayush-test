@@ -15,7 +15,8 @@ import { RequestPayload }        from '@acx-ui/types'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn, configTemplateApi } from './common'
+import { commonQueryFn, configTemplateApi }   from './common'
+import { useCasesToRefreshVenueTemplateList } from './constants'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -44,12 +45,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddVenueTemplateRecord',
-            'UpdateVenueTemplateRecord',
-            'DeleteVenueTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshVenueTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
           })

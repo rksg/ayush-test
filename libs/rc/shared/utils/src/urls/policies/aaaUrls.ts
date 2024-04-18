@@ -36,11 +36,5 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/radius/:policyId/networks',
     url: '/radiusServerProfiles/:policyId/networks',
     newApi: true
-  },
-  getAAAProfileDetail: {
-    method: 'get',
-    oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
-    url: '/radiusServerProfiles/:policyId',
-    newApi: true
   }
 }

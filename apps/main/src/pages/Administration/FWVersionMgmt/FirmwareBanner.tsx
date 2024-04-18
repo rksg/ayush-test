@@ -44,6 +44,7 @@ const VersionInfo = (props: VersionInfoProps) => {
   const { $t } = useIntl()
   const transform = firmwareTypeTrans($t)
   const { label, firmware } = props
+  const subType = transform(firmware.category, 'subType')
 
   return (
     <UI.FwContainer>
@@ -54,7 +55,7 @@ const VersionInfo = (props: VersionInfoProps) => {
       <UI.TypeSpace split={<Divider type='vertical' />}>
         <div>
           <span>{transform(firmware.category, 'type')} </span>
-          <span>({transform(firmware.category, 'subType')})</span>
+          {subType && <span>({transform(firmware.category, 'subType')})</span>}
         </div>
         {firmware.releaseDate && formatter(DateFormatEnum.DateFormat)(firmware.releaseDate)}
       </UI.TypeSpace>
