@@ -127,9 +127,13 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     isLoading: isPortDataLoading,
     isFetching: isPortDataFetching
   } = useGetPortConfigQuery({
-    params: { serialNumber }
+    params: {
+      venueId: clusterInfo?.venueId,
+      edgeClusterId: clusterInfo?.clusterId,
+      serialNumber
+    }
   }, {
-    skip: !serialNumber
+    skip: !serialNumber || !clusterInfo?.venueId || !clusterInfo?.clusterId
   })
 
   const {

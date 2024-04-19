@@ -48,7 +48,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess, SwitchScopes }                      from '@acx-ui/user'
+import { SwitchScopes }                                      from '@acx-ui/types'
+import { filterByAccess }                                    from '@acx-ui/user'
 import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'

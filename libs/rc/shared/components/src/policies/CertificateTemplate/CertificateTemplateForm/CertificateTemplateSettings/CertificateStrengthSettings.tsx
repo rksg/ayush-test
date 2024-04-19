@@ -35,6 +35,7 @@ export default function CertificateStrengthSettings () {
           style={{ width: '240px' }}
           min={512}
           max={4096}
+          step={8}
           marks={{ 512: '512', 4096: '4096' }}
         />
       </Form.Item>
