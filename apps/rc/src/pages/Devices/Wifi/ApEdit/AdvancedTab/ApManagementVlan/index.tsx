@@ -117,7 +117,7 @@ export function ApManagementVlanForm () {
   }
 
   const setDataToForm = (data: { vlanId?: number }) => {
-    form.setFieldValue(vlanIdFieldName, data.vlanId ?? 1)
+    form.setFieldValue(vlanIdFieldName, data.vlanId)
   }
 
   const handleUpdateApManagementVlan = async () => {

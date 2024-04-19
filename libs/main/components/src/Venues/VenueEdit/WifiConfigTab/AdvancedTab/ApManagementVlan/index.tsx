@@ -23,18 +23,18 @@ export function ApManagementVlan () {
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
 
-  const { data: venueApMgmtData, isLoading: isGetVeneuApMgmtData } =
+  const { data: venueApMgmtData, isLoading: isVenueApMgmtLoading } =
     useGetVenueApManagementVlanQuery({ params: { venueId } })
   const [updateVenueApManagementVlan, { isLoading: isUpdatingVenueManagementVlan }] =
     useUpdateVenueApManagementVlanMutation()
 
   useEffect(() => {
-    if (!isGetVeneuApMgmtData && venueApMgmtData) {
+    if (!isVenueApMgmtLoading && venueApMgmtData) {
       const { vlanId = 1 } = venueApMgmtData
       form.setFieldValue('vlanId', vlanId)
     }
 
-  }, [form, venueApMgmtData, isGetVeneuApMgmtData])
+  }, [form, venueApMgmtData, isVenueApMgmtLoading])
 
   const onFormDataChanged = () => {
 
@@ -92,7 +92,7 @@ export function ApManagementVlan () {
 
   return (
     <Loader states={[{
-      isLoading: isGetVeneuApMgmtData,
+      isLoading: isVenueApMgmtLoading,
       isFetching: isUpdatingVenueManagementVlan
     }]}>
       <Space align='start'>
