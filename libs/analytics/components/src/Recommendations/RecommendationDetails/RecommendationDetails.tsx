@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
+import { hasPermission }                        from '@acx-ui/user'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
 
@@ -40,7 +41,7 @@ export const RecommendationDetails = () => {
         { text: $t(recommendationTypeMapping.aiOps.title),
           link: recommendationTypeMapping.aiOps.link }
       ]}
-      extra={[<RecommendationSetting recommendationDetails={details} />]}
+      extra={hasPermission() ? [<RecommendationSetting recommendationDetails={details} />] : []}
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>

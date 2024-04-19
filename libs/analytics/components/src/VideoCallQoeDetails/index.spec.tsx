@@ -9,6 +9,8 @@ import {
   mockGraphqlQuery, render, screen, waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
   callQoeTestDetailsFixtures1,
@@ -19,6 +21,7 @@ import {
 import { clientSearchApi } from '../VideoCallQoe/services'
 
 import { VideoCallQoeDetails } from '.'
+
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -181,5 +184,21 @@ describe('VideoCallQoe Details Page', () => {
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
+  })
+  it('should hide edit when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
+      { data: callQoeTestDetailsFixtures1 })
+    render(
+      <Provider>
+        <VideoCallQoeDetails />
+      </Provider>, {
+        route: { params }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.queryByTestId('EditOutlinedIcon')).not.toBeInTheDocument()
   })
 })
