@@ -1,7 +1,7 @@
 import { Space, Typography } from 'antd'
 import _                     from 'lodash'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
+import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } from '@acx-ui/rc/components'
 import {
   ClusterNetworkSettings,
   EdgeClusterStatus,
@@ -37,7 +37,9 @@ export const transformFromApiToFormData =
    const vipConfig = virtualIpSettings?.map(item => ({
      vip: item.virtualIp,
      interfaces: item.ports
-   })) ?? [{}]
+   })) ?? []
+
+   if(vipConfig.length === 0) vipConfig.push({} as VipConfigType)
 
    return {
      portSettings,
