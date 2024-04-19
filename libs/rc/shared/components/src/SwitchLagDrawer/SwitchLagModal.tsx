@@ -42,19 +42,28 @@ import { getIntl }   from '@acx-ui/utils'
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
 
+export interface SwitchLagParams {
+  switchMac: string,
+  serialNumber: string
+}
+
 interface SwitchLagProps {
   visible: boolean
   isEditMode: boolean
   editData: Lag[]
   setVisible: (visible: boolean) => void
   type?: string
+  params?: SwitchLagParams
 }
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const { tenantId, switchId, serialNumber } = useParams()
+  const urlParams = useParams()
+  const tenantId = urlParams.tenantId
+  const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
+  const serialNumber = urlParams.serialNumber || props.params?.serialNumber
 
   const portPayload = {
     fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
