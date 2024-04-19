@@ -3,12 +3,12 @@ import React from 'react'
 import { Form, Input }               from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { useVlanPoolListQuery }                       from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }                  from '@acx-ui/components'
+import { useGetVlanPoolPolicyTemplateListQuery, useVlanPoolListQuery } from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMembers, servicePolicyNameRegExp
+  checkVlanPoolMembers, servicePolicyNameRegExp,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
@@ -19,14 +19,15 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
-  const params = useParams()
-  const { data } = useVlanPoolListQuery({
-    params,
-    payload: {
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useVlanPoolListQuery,
+    useGetVlanPoolPolicyTemplateListQuery,
+    false,
+    {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  })
+  )
 
   const nameValidator = async (_rule: unknown, value: string) => {
     return new Promise<void>((resolve, reject) => {

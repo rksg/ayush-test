@@ -23,7 +23,8 @@ import {
   render,
   renderHook,
   screen,
-  waitFor } from '@acx-ui/test-utils'
+  waitFor
+} from '@acx-ui/test-utils'
 
 import { EdgePortTabEnum }                                                              from '..'
 import { EditContext as EdgeEditContext, EditEdgeContextType, EditEdgeFormControlType } from '../../EdgeEditContext'
@@ -148,7 +149,7 @@ describe('EditEdge ports - ports general', () => {
 
     mockServer.use(
       rest.patch(
-        EdgeUrlsInfo.updatePortConfig.url,
+        EdgeUrlsInfo.updatePortConfigDeprecated.url,
         (req, res, ctx) => {
           mockedUpdateReq(req.body)
           return res(ctx.status(202))
@@ -327,7 +328,7 @@ describe('EditEdge ports - ports general', () => {
 
       mockServer.use(
         rest.patch(
-          EdgeUrlsInfo.updatePortConfig.url,
+          EdgeUrlsInfo.updatePortConfigDeprecated.url,
           (_req, res, ctx) => res(ctx.status(500))
         )
       )
