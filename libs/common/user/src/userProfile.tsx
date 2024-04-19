@@ -2,6 +2,7 @@ import { ReactElement } from 'react'
 
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
@@ -66,6 +67,7 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  */
 
 export function hasAccess (id?: string) {
+  if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   return hasAllowedOperations(id)
