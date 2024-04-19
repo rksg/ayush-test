@@ -89,7 +89,8 @@ export interface CertificateTemplate {
   algorithm: AlgorithmType
   certificateCount?: number
   certificateNames?: string[]
-  chromebook?: Chromebook
+  chromebook?: Chromebook,
+  networkIds?: string[]
 }
 
 export interface OnboardCA {

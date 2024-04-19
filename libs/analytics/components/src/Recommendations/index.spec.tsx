@@ -17,6 +17,8 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum }                         from '@acx-ui/types'
+import { getUserProfile, setUserProfile }    from '@acx-ui/user'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
 import { recommendationListResult } from './__tests__/fixtures'
@@ -168,7 +170,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Venue')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
@@ -189,7 +191,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Zone')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
@@ -257,7 +259,7 @@ describe('RecommendationTabContent', () => {
     })
 
     const before = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(before).toHaveLength(1)
+    expect(before).toHaveLength(4)
 
     const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
@@ -268,7 +270,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(2)
+    expect(afterShowMuted).toHaveLength(5)
 
     await userEvent.click(afterShowMuted[1])
     await screen.findByRole('button', { name: 'Unmute' })
@@ -279,7 +281,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(resetButton)
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterReset).toHaveLength(1)
+    expect(afterReset).toHaveLength(4)
   })
 
   it('should mute recommendation correctly', async () => {
@@ -313,6 +315,29 @@ describe('RecommendationTabContent', () => {
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(0)
     await userEvent.click(mute)
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
+  })
+
+  it('should hide row action when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
+    })
+    jest.mocked(get).mockReturnValue('')
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/aiOps',
+        params: { activeTab: 'aiOps' },
+        wrapRoutes: false
+      }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 
   it('should handle toggle of full/partial crrm correctly', async () => {
@@ -373,6 +398,30 @@ describe('RecommendationTabContent', () => {
     })
     expect(within(appliedRow).getByRole('switch')).toBeDisabled()
     expect(within(newRow).getByRole('switch')).toBeDisabled()
+  })
+
+  it('should not allow toggle of full/partial when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
+    })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal channel plan found for 2\.4 GHz radio zone-1 New/i
+    })
+    expect(within(row).getByRole('switch')).toBeDisabled()
   })
 
   it('should not have mismatch tooltip for unknown zone', async () => {

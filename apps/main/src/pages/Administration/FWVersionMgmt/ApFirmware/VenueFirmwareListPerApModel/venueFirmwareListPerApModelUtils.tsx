@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-import { Space, Tooltip } from 'antd'
-import _                  from 'lodash'
-import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
+import { Space }     from 'antd'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
+import { Tooltip }                                                            from '@acx-ui/components'
 import { useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
 import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       from '@acx-ui/rc/utils'
 
@@ -13,14 +14,27 @@ import * as UI              from '../../styledComponents'
 
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)
-  const handleUpdateModalCancel = () => {
+  const handleUpdateNowCancel = () => {
     setUpdateNowVisible(false)
   }
 
   return {
     updateNowVisible,
     setUpdateNowVisible,
-    handleUpdateModalCancel
+    handleUpdateNowCancel
+  }
+}
+
+export function useChangeScheduleVisiblePerApModel () {
+  const [ changeScheduleVisible, setChangeScheduleVisible ] = useState(false)
+  const handleChangeScheduleCancel = () => {
+    setChangeScheduleVisible(false)
+  }
+
+  return {
+    changeScheduleVisible,
+    setChangeScheduleVisible,
+    handleChangeScheduleCancel
   }
 }
 
@@ -129,9 +143,7 @@ export function ExpandableApModelList (props: ExpandableApModelListProps) {
     {isMoreDevicesTooltipShown &&
       <Tooltip
         overlayStyle={{ maxWidth: chunkApModels.length > 3 ? '350px' : '250px' }}
-        children={
-          <UI.ShowMoreLink>{$t({ defaultMessage: 'See more devices' })}</UI.ShowMoreLink>
-        }
+        children={$t({ defaultMessage: 'See more devices' })}
         title={
           <Space direction='horizontal' align='start' size={10}>
             {chunkApModels.map((models: string[], index) => {
@@ -139,6 +151,7 @@ export function ExpandableApModelList (props: ExpandableApModelListProps) {
             })}
           </Space>
         }
+        dottedUnderline={true}
       />
     }
   </Space>

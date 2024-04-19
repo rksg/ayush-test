@@ -112,6 +112,7 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
     </Route>
   )
 }

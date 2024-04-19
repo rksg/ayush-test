@@ -81,7 +81,9 @@ function ApPageHeader () {
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }].filter(item => currentApOperational || item.key === 'delete')}
+      }].filter(item => (currentApOperational || item.key === 'delete' ||
+        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+      ))}
     />
   )
 
@@ -134,7 +136,7 @@ function ApPageHeader () {
         {
           AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
-          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo}/>
+          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
         }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}

@@ -65,6 +65,7 @@ interface JwtToken {
   acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
+  isAlphaFlag?: boolean
 }
 
 const cache = new Map<string, JwtToken>()
@@ -117,9 +118,9 @@ export function updateJwtCache (newJwt: string) {
   }
 }
 
-export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
+export async function loadImageWithJWT (imageId: string) {
   const headers = { mode: 'no-cors', ...getJwtHeaders() }
-  const url = requestUrl || `/api/file/tenant/${getTenantId()}/${imageId}/url`
+  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const response = await fetch(url, { headers })
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
