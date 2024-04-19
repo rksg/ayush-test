@@ -1453,7 +1453,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       transformResponse: (data: ApManagementVlan ) => {
         return {
           ...data,
-          vlanId: data.vlanId ?? 1
+          vlanId: data.vlanId ?? 1,
+          vlanOverrideEnabled: !!data.vlanId
         }
       }
     }),
