@@ -125,7 +125,11 @@ const Ports = () => {
 
     try {
       await updatePortConfig({
-        params: { serialNumber },
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          serialNumber
+        },
         payload: { ports: formData } }).unwrap()
       handleFinishPostProcess()
     } catch (error) {
