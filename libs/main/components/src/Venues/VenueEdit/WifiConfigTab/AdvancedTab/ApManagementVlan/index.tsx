@@ -92,7 +92,7 @@ export function ApManagementVlan () {
 
   return (
     <Loader states={[{
-      isLoading: getVenueApManagementVlan.isLoading,
+      isLoading: isGetVeneuApMgmtData,
       isFetching: isUpdatingVenueManagementVlan
     }]}>
       <Space align='start'>
