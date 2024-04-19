@@ -48,7 +48,6 @@ jest.mock('@acx-ui/user', () => ({
 
 jest.mock('./useIsTierAllowed', () => ({
   ...jest.requireActual('./useIsTierAllowed'),
-  useGetBetaList: jest.fn(() => ['beta1', 'beta2', 'beta3']),
   useFFList: jest.fn(() => ({
     featureDrawerBetaList: ['beta1', 'beta2', 'beta3']
   }))
@@ -71,16 +70,18 @@ describe('Test useIsTierAllowed function', () => {
     })
   })
   it('should function correctly for beta flag true and REC tenant type', async () => {
+    user.useUserProfileContext = jest.fn(() => ({ data: { dogfood: true }, betaEnabled: true }))
     useIsSplitOn.useIsSplitOn = jest.fn().mockReturnValue(true)
     const enabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
     expect(enabled).toBeFalsy()
   })
   it('should function correctly for beta flag false and VAR tenant type', async () => {
+    user.useUserProfileContext = jest.fn(() => ({ data: { dogfood: false }, betaEnabled: false }))
     useIsSplitOn.useIsSplitOn = jest.fn().mockReturnValue(false)
     utils.getJwtTokenPayload = jest.fn().mockImplementation(() => {
       return {
         acx_account_tier: 'Platinum',
-        acx_account_vertical: 'Default',
+        acx_account_vertical: 'Hospitality',
         isBetaFlag: false,
         tenantType: AccountType.VAR
       }
@@ -155,14 +156,6 @@ describe('Test useIsTierAllowed function', () => {
       ? AccountVertical.DEFAULT : jwtPayload?.acx_account_vertical
     expect(accountVertical).toBe(AccountVertical.EDU)
   })
-
-})
-
-describe('useGetBetaList', () => {
-  it('returns the correct beta list', () => {
-    const { result } = renderHook(() => useGetBetaList())
-    expect(result.current).toEqual(['beta1', 'beta2', 'beta3'])
-  })
 })
 
 describe('Feature Key Test', () => {
@@ -202,6 +195,26 @@ describe('Feature Key Test', () => {
     expect(result.betaList).toEqual(['beta1', 'beta2'])
     expect(result.featureDrawerBetaList).toEqual(['beta1', 'beta2'])
     expect(result.alphaList).toEqual(['alpha1', 'alpha2'])
+  })
+})
+
+describe('useGetBetaList', () => {
+  it('should return an empty array when featureDrawerBetaList is null', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: () => ({ featureDrawerBetaList: null })
+    }))
+
+    const result = useGetBetaList()
+    expect(result).toEqual([])
+  })
+
+  it('should return an empty array when featureDrawerBetaList is undefined', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: () => ({ featureDrawerBetaList: undefined })
+    }))
+
+    const result = useGetBetaList()
+    expect(result).toEqual([])
   })
 })
 

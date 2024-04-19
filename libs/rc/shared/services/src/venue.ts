@@ -1449,6 +1449,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      transformResponse: (data: ApManagementVlan ) => {
+        return {
+          ...data,
+          vlanId: data.vlanId ?? 1,
+          keepAp: !data.vlanId
+        }
       }
     }),
     updateVenueApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
@@ -1641,6 +1648,7 @@ export const {
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
   useGetVenueApEnhancedKeyQuery,
+  useLazyGetVenueApEnhancedKeyQuery,
   useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,

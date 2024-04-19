@@ -744,13 +744,14 @@ export interface VenueBssColoring {
 }
 
 export interface ApEnhancedKey {
-	tlsEnhancedKeyEnabled: boolean
+  tlsKeyEnhancedModeEnabled: boolean
 }
 
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
-	useVenueSettings: boolean
+	useVenueSettings: boolean,
+	keepAp?: boolean
 }
 
 export interface MdnsFencingWirelessRule {

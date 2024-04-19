@@ -34,6 +34,7 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', switchListData)
     mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(SwitchUrlsInfo.getSwitchPortlist.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(ClientUrlsInfo.getClientMeta.url, 'post', {})
     mockRestApiQuery(SwitchUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getHistoricalClientList.url, 'post',

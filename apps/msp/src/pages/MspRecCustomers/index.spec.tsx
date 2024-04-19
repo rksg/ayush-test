@@ -309,7 +309,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(deleteButton)
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete EC' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Property' })
     await userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>

@@ -7,7 +7,8 @@ import {
   AAAPolicyType,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate, usePolicyListBreadcrumb
+  useConfigTemplateQueryFnSwitcher,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -55,15 +56,5 @@ export function AAAPolicyDetail () {
 }
 
 export function useGetAAAPolicyInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const requestPayload = { params }
-  const aaaPolicyResult = useGetAAAProfileDetailQuery(requestPayload, {
-    skip: isTemplate
-  })
-  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery(requestPayload, {
-    skip: !isTemplate
-  })
-
-  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
+  return useConfigTemplateQueryFnSwitcher(useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery)
 }

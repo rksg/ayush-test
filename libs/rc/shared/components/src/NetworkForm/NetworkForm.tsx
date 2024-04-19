@@ -17,7 +17,9 @@ import {
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useActivateCertificateTemplateMutation,
-  useGetCertificateTemplatesQuery
+  useGetCertificateTemplatesQuery,
+  useUpdateNetworkVenueTemplateMutation,
+  useDeleteNetworkVenuesTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -120,8 +122,12 @@ export function NetworkForm (props:{
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
     useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
   )
-  const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+  )
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
+  )
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
@@ -161,7 +167,7 @@ export function NetworkForm (props:{
   const { data } = useGetInstance(editMode)
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplatesQuery(
-    { payload: { pageSize: 1, page: 1, filters: { networkId: [data?.id] } } },
+    { payload: { pageSize: 1, page: 1, filters: { networkId: data?.id } } },
     {
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
