@@ -88,12 +88,14 @@ export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
     const { raw: rawPath, path: readPath } = read() || defaultPath
 
     const revertToDefault =
-      (isURLPresent(noApOrSwitchSupportURLs) && (isApPath(readPath) || isSwitchPath(readPath))) ||
+      (isURLPresent(noApOrSwitchSupportURLs) && (isApOrSwitchPath(readPath))) ||
       (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
       (isURLPresent(noApSupportURLs) && isApPath(readPath))
+
     const { raw, path, filter } = revertToDefault
       ? { ...defaultPath, filter: {} }
       : { raw: rawPath, path: readPath, filter: pathToFilter(readPath) }
+
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
@@ -160,11 +162,15 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
 export const isSwitchPath = (path: NetworkPath) => {
   return get('IS_MLISA_SA')
     ? Boolean(path.find(({ type }) => type === 'switchGroup' || type === 'switch'))
-    : Boolean(path.find(({ type }) => type === 'switch'))
+    : Boolean(path.find(({ type }) => type === 'switchGroup'))
 }
 
 export const isApPath = (path: NetworkPath) => {
   return get('IS_MLISA_SA')
     ? Boolean(path.find(({ type }) => type === 'zone' || type === 'apGroup'))
     : Boolean(path.find(({ type }) => type === 'AP'))
+}
+
+export const isApOrSwitchPath = (path: NetworkPath) => {
+  return Boolean(path.find(({ type }) => type === 'switch' || type === 'AP'))
 }

@@ -30,8 +30,6 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   severity: { [key: string]: number };
 }
 
-type RawValPath = { name: string, type: string }
-
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
     shouldQuerySwitch: boolean,
@@ -197,25 +195,29 @@ export const onApply = (
  * Modify the raw values based on the provided criteria.
  *
  * @param {string[]} rawVal - The array of raw values to be modified
- * @param {string} dataText - The text data to compare with
- * @param {string} type - The type to match in the raw values
- * @param {string} replaceTxt - The text to replace in the raw values
+ * @param {string} queriedData - The text data to compare with
+ * @param {string} targetType - The type to match in the raw values
+ * @param {string} replacementType - The text to replace in the raw values
  * @return {string[]} The modified raw values array
  */
 export const modifyRawValue = (
-  rawVal:string[], dataText: string, type: string, replaceTxt: string
+  rawVal:string[], queriedData: string, targetType: string, replacementType: string
 ) => {
   const newRawVal = rawVal.map(value => {
     if (value.startsWith('[') && value.endsWith(']')) {
       return JSON.parse(value)
-        .map((item: RawValPath) =>
-          item.type === type && dataText.includes(item.name)
-            ? { ...item, type: replaceTxt } : item)
+        .map((item: { name: string, type: string }) => {
+          return item.type === targetType
+            && queriedData.includes(`{"type":"${item.type}","name":"${item.name}"}`)
+            ? item
+            : (item.type === 'zone' || item.type === 'switchGroup')
+              ? { ...item, type: replacementType } : item
+        })
     }
     return value
   }).map(item => Array.isArray(item) ? JSON.stringify(item) : item)
-
-  return newRawVal.some(value => value.includes(replaceTxt))
+  // Should return [] if the queried data does not contain the selected node path present in rawVal
+  return newRawVal.some(value => queriedData.includes(value))
     ? newRawVal
     : []
 }
