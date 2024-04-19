@@ -5,6 +5,7 @@ import { useIntl }          from 'react-intl'
 
 import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip }       from '@acx-ui/components'
+import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
@@ -103,8 +104,6 @@ export const getRecommendationsText = (
     valueFormatter,
     actionText,
     appliedActionText,
-    dataRetainedActionText,
-    dataRetainedAppliedActionText,
     reasonText,
     tradeoffText,
     partialOptimizedActionText,
@@ -114,7 +113,7 @@ export const getRecommendationsText = (
 
   const isCrrm = code.startsWith('c-crrm')
 
-  let parameters: Record<string, string | JSX.Element> = {
+  let parameters: Record<string, string | JSX.Element | boolean> = {
     ...productNames,
     ...metadata,
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
@@ -127,24 +126,30 @@ export const getRecommendationsText = (
     parameters = {
       ...parameters,
       ...link,
-      scopeType: nodeTypes(sliceType as NodeType),
       initialTime: formatter(
         DateFormatEnum.DateTimeFormat)(details.statusTrail.slice(-1)[0].createdAt),
       ...(status === 'applied' && { appliedTime: formatter(DateFormatEnum.DateTimeFormat)(
         details.statusTrail.filter(r => r.status === 'applied')[0].createdAt)
+      }),
+      isDataRetained: isDataRetained(dataEndTime),
+      dataNotRetainedMsg: $t({
+        defaultMessage: `The initial optimization graph is no longer available below
+        since the {scopeType} recommendation details has crossed the standard RUCKUS
+        data retention policy.{isApplied, select, true { However your {scopeType}
+        configuration continues to be monitored and adjusted for further optimization.} other {}}`
+      }, {
+        isApplied: status === 'applied',
+        scopeType: get('IS_MLISA_SA')
+          ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: 'venue' })
       })
     }
   }
 
   return {
     actionText: $t(isCrrm
-      ? isDataRetained(dataEndTime)
-        ? status === 'applied'
-          ? appliedActionText!
-          : isFullOptimization ? actionText : partialOptimizedActionText!
-        : status === 'applied'
-          ? dataRetainedAppliedActionText!
-          : dataRetainedActionText!
+      ? status === 'applied'
+        ? appliedActionText!
+        : isFullOptimization ? actionText : partialOptimizedActionText!
       : actionText, parameters),
     reasonText: appliedOnce && appliedReasonText
       ? (isFullOptimization
