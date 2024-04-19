@@ -2,9 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { ServiceGuardDetails } from '.'
 
@@ -62,5 +64,26 @@ describe('Service Validation', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should hide re-run button when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    render(
+      <Provider>
+        <ServiceGuardDetails />
+      </Provider>,
+      { route: { params } }
+    )
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
+    expect(await screen.findByText('Service Validation')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-Title')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-SubTitle')).toBeVisible()
+    expect(screen.queryByTestId('ServiceGuardDetails-ReRunButton')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('ServiceGuardDetails-TestRunButton')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-Overview')).toBeVisible()
   })
 })
