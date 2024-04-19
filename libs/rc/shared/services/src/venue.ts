@@ -1454,7 +1454,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...data,
           vlanId: data.vlanId ?? 1,
-          vlanOverrideEnabled: !!data.vlanId
+          keepAp: !data.vlanId
         }
       }
     }),

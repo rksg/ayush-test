@@ -30,7 +30,7 @@ export function ApManagementVlan () {
 
   useEffect(() => {
     if (!isVenueApMgmtLoading && venueApMgmtData) {
-      const { vlanId = 1 } = venueApMgmtData
+      const { vlanId } = venueApMgmtData
       form.setFieldValue('vlanId', vlanId)
     }
 
