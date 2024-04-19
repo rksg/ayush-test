@@ -750,7 +750,8 @@ export interface ApEnhancedKey {
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
-	useVenueSettings: boolean
+	useVenueSettings: boolean,
+	keepAp?: boolean
 }
 
 export interface MdnsFencingWirelessRule {
