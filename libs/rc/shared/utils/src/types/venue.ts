@@ -751,7 +751,7 @@ export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
 	useVenueSettings: boolean,
-	keepAp: boolean
+	keepAp?: boolean
 }
 
 export interface MdnsFencingWirelessRule {
