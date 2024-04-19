@@ -58,7 +58,6 @@ export function ApManagementVlanForm () {
         const venueApMgmtVlan =
           (await getVenueApManagementVlan({ params: { venueId } }, true).unwrap())
         initDataRef.current = apMgmtVlanData
-        venueApMgmtVlan.vlanId = venueApMgmtVlan.vlanId ?? 1
         venueLevelDataRef.current = venueApMgmtVlan
         setVenue(apVenue)
         form.setFieldsValue(apMgmtVlanData)
@@ -118,7 +117,7 @@ export function ApManagementVlanForm () {
   }
 
   const setDataToForm = (data: { vlanId?: number }) => {
-    form.setFieldValue(vlanIdFieldName, data.vlanId)
+    form.setFieldValue(vlanIdFieldName, data.vlanId ?? 1)
   }
 
   const handleUpdateApManagementVlan = async () => {
