@@ -25,10 +25,14 @@ import {
   ContentSwitcher
 } from '@acx-ui/components'
 import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
-import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
-import { useNavigateToPath }                                             from '@acx-ui/react-router-dom'
-import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                                          from '@acx-ui/utils'
+import { LowPowerBannerAndModal }                                        from '@acx-ui/rc/components'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
+import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
+import { useNavigateToPath }                  from '@acx-ui/react-router-dom'
+import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -40,6 +44,9 @@ export function VenueOverviewTab () {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+  const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -53,6 +60,17 @@ export function VenueOverviewTab () {
     }
   ]
   return (<>
+    {
+      (
+        (tripleBand?.enabled === true) &&
+        (venueRadio?.radioParams6G?.enableAfc === true) &&
+        (
+          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+        )
+      ) &&
+      <LowPowerBannerAndModal from={'venue'} />
+    }
     <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' />
   </>)
