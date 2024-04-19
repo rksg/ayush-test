@@ -16,8 +16,9 @@ import {
 import {
   usePollingTableQuery
 }      from '@acx-ui/rc/utils'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
-import { filterByAccess, SwitchScopes } from '@acx-ui/user'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { SwitchScopes }          from '@acx-ui/types'
+import { filterByAccess }        from '@acx-ui/user'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()

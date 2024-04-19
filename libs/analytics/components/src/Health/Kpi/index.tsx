@@ -16,6 +16,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
 import { get }                              from '@acx-ui/config'
+import { hasPermission }                    from '@acx-ui/user'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
@@ -135,6 +136,7 @@ function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
+                disabled={!hasPermission()}
               />
             ) : (
               <BarChart

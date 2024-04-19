@@ -43,7 +43,6 @@ import {
   TableResult,
   usePollingTableQuery,
   APExtendedGrouped,
-  AFCMaxPowerRender,
   AFCPowerStateRender,
   AFCStatusRender,
   getFilters,
@@ -520,15 +519,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             />}
           </>
         )
-      }
-    },
-    { key: 'afcMaxPower',
-      title: $t({ defaultMessage: 'AFC Max Power' }),
-      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
     }
     ]: []),

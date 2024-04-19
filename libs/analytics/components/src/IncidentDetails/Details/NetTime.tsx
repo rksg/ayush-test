@@ -6,12 +6,13 @@ import {
   shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { hasPermission }                              from '@acx-ui/user'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
-import MuteIncident from './MuteIncident'
+import { MuteIncident } from './MuteIncident'
 
 export const NetTime = (incident: Incident) => {
   const { $t } = useIntl()
@@ -36,7 +37,7 @@ export const NetTime = (incident: Incident) => {
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
-        extra={[<MuteIncident incident={incident} />]}
+        extra={hasPermission() ? [<MuteIncident incident={incident} />] : []}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>

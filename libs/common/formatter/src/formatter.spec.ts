@@ -179,7 +179,7 @@ describe('formatter', () => {
       })
     })
     testFormat('durationFormat', {
-      0: '0',
+      0: '0 ms',
       2: '2 ms',
       2.54: '2.54 ms',
       2.54999: '2.55 ms',
@@ -227,7 +227,7 @@ describe('formatter', () => {
       })
     })
     testFormat('longDurationFormat', {
-      0: '0',
+      0: '0 milliseconds',
       1: '1 millisecond',
       2: '2 milliseconds',
       2.54: '2.54 milliseconds',

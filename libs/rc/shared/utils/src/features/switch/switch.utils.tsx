@@ -680,12 +680,14 @@ export const getDhcpOptionList = () => {
 }
 
 export const getClientIpAddr = (data?: SwitchClient) => {
-  if (data?.clientIpv4Addr !== '0.0.0.0') {
-    return data?.clientIpv4Addr
-  } else if (data?.clientIpv6Addr !== '0:0:0:0:0:0:0:0') {
-    return data?.clientIpv6Addr
+  const ipAddress: string[] = []
+  if (data?.clientIpv4Addr && !['', '0.0.0.0'].includes(data?.clientIpv4Addr)) {
+    ipAddress.push(data?.clientIpv4Addr)
   }
-  return noDataDisplay
+  if (data?.clientIpv6Addr && !['', '0:0:0:0:0:0:0:0'].includes(data?.clientIpv6Addr)) {
+    ipAddress.push(data?.clientIpv6Addr)
+  }
+  return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
 export const getAdminPassword = (
