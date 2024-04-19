@@ -87,7 +87,7 @@ describe('Search Results', () => {
   })
 
   describe('should render tables correctly when abac is enabled', () => {
-    it('has permission', async () => {
+    it('has permission: switch', async () => {
       setUserProfile({
         ...getUserProfile(),
         abacEnabled: true,

@@ -14,8 +14,7 @@ import {
 } from '@acx-ui/rc/services'
 import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
-import { hasPermission, useUserProfileContext }  from '@acx-ui/user'
+import { useUserProfileContext }                 from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -116,25 +115,12 @@ const tabPanes = {
 
 export default function Administration () {
   const { $t } = useIntl()
-  const { tenantId, activeTab, activeSubTab } = useParams()
+  const { tenantId, activeTab } = useParams()
   const { data: userProfileData } = useUserProfileContext()
-
-  const navigate = useNavigate()
-  const basePath = useTenantLink('')
-  const hasNoPermissions
-    = !hasPermission({ scopes: [WifiScopes.READ] }) && activeSubTab === 'apFirmware'
-    || !hasPermission({ scopes: [SwitchScopes.READ] }) && activeSubTab === 'switchFirmware'
-    || !hasPermission({ scopes: [EdgeScopes.READ] }) && activeSubTab === 'edgeFirmware'
 
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
   if (isAdministratorAccessible === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
-  }
-  if (hasNoPermissions) {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/no-permissions`
-    })
   }
 
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
