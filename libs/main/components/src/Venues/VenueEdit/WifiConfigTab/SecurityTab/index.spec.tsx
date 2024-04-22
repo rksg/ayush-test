@@ -205,7 +205,7 @@ describe('SecurityTab', () => {
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await screen.findByText('TLS Enhanced Key: RSA 3072/ECDSA P-256')
+    await screen.findByText('TLS Enhanced Key (RSA 3072/ECDSA P-256)')
 
     const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
 
