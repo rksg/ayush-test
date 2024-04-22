@@ -572,7 +572,6 @@ export function ManageIntegrator () {
             : intl.$t({ defaultMessage: 'Role' })}
         >
           <Paragraph>
-            {/* {intl.$t(roleDisplayText[mspEcAdmins[0].role])} */}
             {roleDisplayText[mspEcAdmins[0].role]
               ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
           </Paragraph>
@@ -584,7 +583,6 @@ export function ManageIntegrator () {
         <UI.AdminList>
           {admin.email} {roleDisplayText[admin.role]
             ? intl.$t(roleDisplayText[admin.role]) : admin.role}
-          {/* {admin.email} ({intl.$t(roleDisplayText[admin.role])} */}
         </UI.AdminList>
       )}
     </div>
