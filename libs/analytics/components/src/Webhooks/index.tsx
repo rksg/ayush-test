@@ -12,7 +12,8 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
+import { get }                           from '@acx-ui/config'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
 import { WebhookForm }                                                                from './WebhookForm'
@@ -139,11 +140,13 @@ export const WebhooksTable = () => {
         onClose={() => setSelectedId(null)}
       />
       <Table<ExtendedWebhook>
-        {...{ actions, columns, rowActions }}
+        columns={columns}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowKey='id'
         dataSource={webhooks}
         searchableWidth={450}
-        rowSelection={{
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selectedId ? [selectedId] : []
         }}

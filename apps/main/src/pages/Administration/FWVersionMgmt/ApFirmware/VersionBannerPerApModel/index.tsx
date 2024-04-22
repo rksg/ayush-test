@@ -61,15 +61,15 @@ function ShowMoreFirmwaresLink (props: ShowMoreFirmwaresLinkProps) {
   const { $t } = useIntl()
   const { shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner } = props
 
-  return <UI.ShowMoreLink
-    style={{ cursor: 'pointer' }}
+  return <span
+    style={{ cursor: 'pointer', color: 'var(--acx-accents-blue-50)' }}
     onClick={() => setShownMoreFirmwaresInBanner(!shownMoreFirmwaresInBanner)}
   >
     {shownMoreFirmwaresInBanner
       ? $t({ defaultMessage: 'Show less' })
       : $t({ defaultMessage: 'Show more available firmware' })
     }
-  </UI.ShowMoreLink>
+  </span>
 }
 
 interface VersionInfoPerApModelProps {
