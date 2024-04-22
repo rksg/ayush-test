@@ -33,10 +33,10 @@ export const SnmpAgentFormReducer = (
     case ApSnmpActionType.UPDATE_SNMP_V2:
       return {
         ...state,
-        snmpV2Agents: state.snmpV2Agents.map((snmpv2) => {
-          const { payload } = action
-          if (snmpv2.communityName === payload.communityName) {
-            return { ...payload }
+        snmpV2Agents: state.snmpV2Agents.map((snmpv2, index) => {
+          const { editIndex, ...data } = action.payload
+          if (index === editIndex) {
+            return { ...data }
           }
           return snmpv2
         })
@@ -72,10 +72,10 @@ export const SnmpAgentFormReducer = (
     case ApSnmpActionType.UPDATE_SNMP_V3:
       return {
         ...state,
-        snmpV3Agents: state.snmpV3Agents.map((snmpv3) => {
-          const { payload } = action
-          if (snmpv3.userName === payload.userName) {
-            return { ...payload }
+        snmpV3Agents: state.snmpV3Agents.map((snmpv3, index) => {
+          const { editIndex, ...data } = action.payload
+          if (index === editIndex) {
+            return { ...data }
           }
           return snmpv3
         })

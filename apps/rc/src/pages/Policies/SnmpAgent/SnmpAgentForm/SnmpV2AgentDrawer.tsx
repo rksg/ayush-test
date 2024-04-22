@@ -112,11 +112,12 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
     try {
       const valid = await form.validateFields()
       if (valid) {
-        const payload = form.getFieldsValue()
-        const { readPrivilege, trapPrivilege } = payload
+        const formData = form.getFieldsValue()
+        const { readPrivilege, trapPrivilege } = formData
 
         if (readPrivilege || trapPrivilege) {
           const type = isEditMode? ApSnmpActionType.UPDATE_SNMP_V2 : ApSnmpActionType.ADD_SNMP_V2
+          const payload = isEditMode? { ...formData, editIndex } : { ...formData }
           dispatch({ type, payload })
 
           form.submit()

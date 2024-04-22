@@ -91,7 +91,7 @@ export type ApSnmpActionPayload = {
   payload: SnmpV2Agent
 } | {
   type: ApSnmpActionType.UPDATE_SNMP_V2,
-  payload: SnmpV2Agent
+  payload: SnmpV2Agent & { editIndex: number }
 } | {
   type: ApSnmpActionType.DELETE_SNMP_V2,
   payload: {
@@ -102,7 +102,7 @@ export type ApSnmpActionPayload = {
   payload: SnmpV3Agent
 } | {
   type: ApSnmpActionType.UPDATE_SNMP_V3,
-  payload: SnmpV3Agent
+  payload: SnmpV3Agent & { editIndex: number }
 } | {
   type: ApSnmpActionType.DELETE_SNMP_V3,
   payload: {

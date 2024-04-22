@@ -2,12 +2,17 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  ApSnmpUrls,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import SnmpAgentForm from './SnmpAgentForm'
-
 
 
 const mockSnmpData = {
@@ -155,53 +160,39 @@ jest.mock('react-router-dom', () => ({
 
 
 describe('SnmpAgentForm', () => {
+  const mockGetProfileApi = jest.fn()
+  const mockAddFn = jest.fn()
+  const mockEditFn = jest.fn()
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
+    mockAddFn.mockClear()
+    mockEditFn.mockClear()
+    mockGetProfileApi.mockClear()
+    mockedUseNavigate.mockClear()
+
     mockServer.use(
       rest.post(ApSnmpUrls.addApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: '123456789' }))),
+        (_, res, ctx) => {
+          mockAddFn()
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      ),
       rest.get(ApSnmpUrls.getApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json(mockSnmpData))),
+        (_, res, ctx) => {
+          mockGetProfileApi()
+          return res(ctx.json(mockSnmpData))
+        }
+      ),
       rest.get(ApSnmpUrls.getApSnmpPolicyList.url,
         (_, res, ctx) => res(ctx.json(mockSnmpListData))),
       rest.put(ApSnmpUrls.updateApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: '123456789' })))
+        (_, res, ctx) => {
+          mockEditFn()
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      )
     )
-  })
-
-  it.skip('should create SNMP Agent successfully', async () => {
-    render(
-      <Provider>
-        <SnmpAgentForm editMode={false}/>
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: createPath }
-      })
-
-    const header = screen.getByRole('heading', { name: /Add SNMP Agent/i })
-    expect(header).toBeInTheDocument()
-
-    const inputElem = await screen.findByRole('textbox')
-    await userEvent.type(inputElem, 'test1')
-    expect(inputElem).toHaveAttribute('value', 'test1')
-
-
-    // Add SNMPv2 Agent
-    await userEvent.click(await screen.findByRole('button', { name: 'Add SNMPv2 Agent' }))
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Community Name' }), 'cn1')
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-
-    // Edit SNMPv2 Agent
-    let row = await screen.findByRole('row', { name: /cn1/i })
-    await userEvent.click(await within(row).findByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Notification' }))
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Target IP' }), '192.168.0.100')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
-
-    // await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -219,6 +210,12 @@ describe('SnmpAgentForm', () => {
     expect(screen.getByRole('link', {
       name: 'SNMP Agent'
     })).toBeVisible()
+
+    expect(await screen.findByText('Add SNMP Agent')).toBeInTheDocument()
+    // In create mode doesn't call the getting profile API
+    expect(mockGetProfileApi).not.toBeCalled()
+
+    expect(await screen.findByText('Add SNMP Agent')).toBeInTheDocument()
   })
 
   it('should edit SNMP Agent successfully', async () => {
@@ -233,7 +230,12 @@ describe('SnmpAgentForm', () => {
     const header = screen.getByRole('heading', { name: /Edit SNMP Agent/i })
     expect(header).toBeInTheDocument()
 
-    // await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await waitFor(() => {
+      expect(mockGetProfileApi).toBeCalled()
+    })
+
+    // data has been loaded
+    expect(await screen.findByDisplayValue('www')).toBeInTheDocument()
   })
 
   it('should Policy name not empty and duplicated', async () => {
@@ -264,7 +266,7 @@ describe('SnmpAgentForm', () => {
       pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
       hash: '',
       search: ''
-    })
+    }, { replace: true })
   })
 
   it('should at least one SNMPv2 agent or SNMPv3 agent', async () => {
@@ -291,7 +293,7 @@ describe('SnmpAgentForm', () => {
       pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
       hash: '',
       search: ''
-    })
+    }, { replace: true })
   })
 
 })
