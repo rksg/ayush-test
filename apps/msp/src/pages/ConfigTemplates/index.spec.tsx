@@ -1,7 +1,8 @@
+import userEvent from '@testing-library/user-event'
+
 import { CONFIG_TEMPLATE_PATH_PREFIX } from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
-
 
 import { ConfigTemplate, ConfigTemplateTabKey } from '.'
 
@@ -37,5 +38,8 @@ describe('ConfigTemplate', () => {
 
     // await userEvent.click(screen.getByRole('tab', { name: /Bundles/i }))
     // expect(await screen.findByText('Config Template Bundle List')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('tab', { name: /templates/i }))
+    expect(await screen.findByText('Config Template List')).toBeVisible()
   })
 })
