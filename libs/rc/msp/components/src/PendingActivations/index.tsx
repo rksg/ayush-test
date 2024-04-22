@@ -1,3 +1,4 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
@@ -21,6 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 const PendingActivationsTable = () => {
   const { $t } = useIntl()
@@ -35,7 +37,6 @@ const PendingActivationsTable = () => {
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
-  //   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
 
   const columns: TableProps<EntitlementActivations>['columns'] = [
     {
@@ -77,20 +78,26 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Subscription Term' }),
       dataIndex: 'subscriptionTerm',
-      key: 'subscriptionTerm'
+      key: 'subscriptionTerm',
+      render: function (_, row) {
+        const terms =
+          moment.duration(moment(row.spaEndDate).diff(moment(row.spaStartDate))).asDays()/30
+        return Math.floor(terms) + ' ' + $t({ defaultMessage: 'mos' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Activation Period Ends on' }),
       dataIndex: 'spaEndDate',
       key: 'spaEndDate',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
+        return row.productClass === 'ACX-TRIAL-NEW'
+          ? noDataDisplay
+          : formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
       }
     }
   ]
 
   const refreshFunc = async () => {
-    // setBannerRefreshLoading(true)
     try {
       await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
       if (isNewApi === false) {
@@ -101,9 +108,7 @@ const PendingActivationsTable = () => {
           })
         })
       }
-    //   setBannerRefreshLoading(false)
     } catch (error) {
-    //   setBannerRefreshLoading(false)
       console.log(error) // eslint-disable-line no-console
     }
   }
@@ -141,5 +146,3 @@ export const PendingActivations = () => {
     </SpaceWrapper>
   )
 }
-
-// export default PendingActivations
