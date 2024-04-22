@@ -209,8 +209,41 @@ describe('UserProfileContext', () => {
         UserUrlsInfo.getUserProfile.url,
         (_req, res, ctx) => res(ctx.json({
           ...mockedUserProfile,
+          role: 'CUSTOM_ROLE',
+          roles: ['CUSTOM_ROLE'],
           scope: ['switch-r'],
           customRoleName: 'CUSTOM_USER'
+        }))
+      ),
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
+          'allowed-operations-toggle': false })))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+  })
+
+  it('user profile special abac disabled case with default role', async () => {
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          ...mockedUserProfile,
+          role: 'READ_ONLY',
+          roles: ['READ_ONLY'],
+          scope: ['switch-r'],
+          customRoleName: 'READ_ONLY'
         }))
       ),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
