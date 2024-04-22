@@ -15,6 +15,8 @@ import { useGetMspEcWithVenuesListQuery } from '@acx-ui/msp/services'
 import { MspEcWithVenue }                 from '@acx-ui/msp/utils'
 import { AccountType }                    from '@acx-ui/utils'
 
+import * as UI from '../styledComponents'
+
 interface SelectCustomerDrawerProps {
   visible: boolean
   selected: MspEcWithVenue[]
@@ -106,23 +108,27 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   }, [customerList?.data])
 
   const content =
-  <Space direction='vertical'>
-    <Loader >
-      <Table
-        columns={columns}
-        dataSource={customerList?.data}
-        indentSize={20}
-        rowKey='id'
-        rowSelection={{
-          selectedRowKeys: selectedKeys,
-          onChange (selectedRowKeys, selRows) {
-            setSelectedRows(selRows)
-          },
-          checkStrictly: false
-        }}
-      />
-    </Loader>
-  </Space>
+  <UI.ExpanderTableWrapper>
+    <Space direction='vertical'>
+      <Loader >
+        <Table
+          columns={columns}
+          dataSource={customerList?.data}
+          indentSize={20}
+          rowKey='id'
+          rowSelection={{
+            selectedRowKeys: selectedKeys,
+            onChange (selectedRowKeys, selRows) {
+              setSelectedRows(selRows)
+              setSelectedKeys(selectedRowKeys.filter(id =>
+                !customerList?.data.map(ec => ec.id).includes(id as string)))
+            },
+            checkStrictly: false
+          }}
+        />
+      </Loader>
+    </Space>
+  </UI.ExpanderTableWrapper>
 
   const footer =<div>
     <Button
