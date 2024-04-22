@@ -195,7 +195,7 @@ describe('AP Form - Add', () => {
       ),
       rest.get(
         WifiUrlsInfo.getVenueApManagementVlan.url,
-        (_req, res, ctx) => res(ctx.json({ vlanOverrideEnabled: false, vlanId: 1 }))
+        (_req, res, ctx) => res(ctx.json({ vlanId: null }))
       )
     )
   })

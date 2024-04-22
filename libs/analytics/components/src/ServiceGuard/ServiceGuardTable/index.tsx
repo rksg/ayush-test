@@ -14,7 +14,7 @@ import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@a
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                        from '@acx-ui/user'
+import { useUserProfileContext, filterByAccess, hasPermission }         from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import { CountContext }  from '..'
@@ -248,8 +248,8 @@ export function ServiceGuardTable () {
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
-        rowSelection={{ type: 'radio' }}
-        rowActions={rowActions}
+        rowSelection={hasPermission() && { type: 'radio' }}
+        rowActions={filterByAccess(rowActions)}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}

@@ -173,6 +173,10 @@ describe('AddRecCustomer', () => {
       rest.put(
         MspUrlsInfo.updateMspEcDelegatedAdmins.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        MspUrlsInfo.addBrandCustomers.url,
+        (_req, res, ctx) => res(ctx.json({ requestId: 'add' }))
       )
     )
 
@@ -182,6 +186,7 @@ describe('AddRecCustomer', () => {
     jest.spyOn(services, 'useEnableMspEcSupportMutation')
     jest.spyOn(services, 'useDisableMspEcSupportMutation')
     jest.spyOn(services, 'useUpdateMspEcDelegatedAdminsMutation')
+    jest.spyOn(services, 'useAddBrandCustomersMutation')
     services.useGetAvailableMspRecCustomersQuery = jest.fn().mockImplementation(() => {
       return { data: recList }
     })
@@ -532,6 +537,43 @@ describe('AddRecCustomer', () => {
 
     await userEvent.click(screen.getAllByText('Manage')[0])
     await screen.findByText('Manage Brand Property')
+  })
+
+  it('should save correctly for multiple property add', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: {} }
+    })
+    render(
+      <Provider>
+        <AddRecCustomer />
+      </Provider>, {
+        route: { params }
+      })
+
+    // Select customers
+    await userEvent.click(screen.getAllByText('Manage')[0])
+    await screen.findByText('Manage Brand Property')
+    await screen.findByRole('button', { name: 'Save' })
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    expect(checkboxes).toHaveLength(3)
+    await userEvent.click(checkboxes.at(1)!)
+    await userEvent.click(checkboxes.at(2)!)
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Manage Brand Property')).toBeNull()
+    })
+
+    expect(screen.getByRole('button', { name: 'Add' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(services.useAddBrandCustomersMutation).toHaveBeenCalled()
+    })
   })
 
 })

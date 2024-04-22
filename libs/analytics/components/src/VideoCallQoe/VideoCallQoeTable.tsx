@@ -11,6 +11,7 @@ import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToa
 import { Loader }                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }                                             from '@acx-ui/user'
 import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
@@ -214,9 +215,9 @@ export function VideoCallQoeTable () {
       <Table
         columns={columnHeaders}
         dataSource={meetingList}
-        rowActions={actions}
+        rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasPermission() && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE

@@ -10,8 +10,11 @@ import {
   screen,
   mockGraphqlMutation,
   within,
-  findTBody
-}                              from '@acx-ui/test-utils'
+  findTBody,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures            from '../__tests__/fixtures'
 import { ServiceGuardTableRow } from '../services'
@@ -171,6 +174,18 @@ describe('Service Validation Table', () => {
     await userEvent.type(await screen.findByRole('textbox'), 'test-name')
     await userEvent.click(await screen.findByText('Save'))
     expect(await screen.findByText('Service Validation test was cloned')).toBeVisible()
+  })
+
+  it('should not allow row selection when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    render(<ServiceGuardTable/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 
   describe('lastResultSort', () => {
