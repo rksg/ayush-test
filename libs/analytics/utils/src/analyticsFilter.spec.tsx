@@ -13,7 +13,8 @@ import {
   pathToFilter,
   defaultNetworkPath,
   isSwitchPath,
-  isApPath
+  isApPath,
+  isApOrSwitchPath
 } from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
@@ -178,11 +179,9 @@ describe('useAnalyticsFilter', () => {
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
       const { filters, pathFilters } = useAnalyticsFilter({
-        revertToDefaultURLs: [
-          { url: '/analytics/health', type: 'switch' },
-          { url: '/ai/url1', type: 'ap' },
-          { url: '/ai/url2', type: 'both' }
-        ]
+        revertToDefaultURLs: {
+          noSwitchSupportURLs: ['/ai/health', '/analytics/health']
+        }
       })
       return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
@@ -434,5 +433,30 @@ describe('isApPath', () => {
   it('returns false if not ap path', () => {
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     expect(isApPath(path)).toBe(false)
+  })
+})
+describe('isApOrSwitchPath', () => {
+  it('returns true if is ap path', () => {
+    mockGet.mockReturnValueOnce('true')
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'zone', name: 'z1' },
+      { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(true)
+  })
+  it('returns true if is ap path for Alto', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'z1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(true)
+  })
+  it('returns false if not ap path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(false)
   })
 })
