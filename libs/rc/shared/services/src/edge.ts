@@ -182,7 +182,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.getPortConfig : EdgeUrlsInfo.getPortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req
         }
@@ -201,7 +203,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.updatePortConfig : EdgeUrlsInfo.updatePortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req,
           body: payload

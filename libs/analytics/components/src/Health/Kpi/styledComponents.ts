@@ -24,6 +24,12 @@ export const StyledSlider = styled(Slider)`
     height: 1px !important;
     background-color: var(--acx-primary-black) !important;
   }
+  &.ant-slider-disabled {
+    cursor: default;
+    .ant-slider-mark-text, .ant-slider-handle {
+      cursor: default !important;
+    }
+  }
 `
 export const HistogramGoalPercentage = styled.span`
   color: var(--acx-primary-black);

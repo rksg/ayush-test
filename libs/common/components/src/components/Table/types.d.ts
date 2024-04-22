@@ -7,7 +7,7 @@ import {
 }                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
 
 import type {
   ProColumnType,
