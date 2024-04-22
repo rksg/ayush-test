@@ -31,8 +31,9 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { filterByAccess }                  from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -291,9 +292,10 @@ export const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const { tenantType } = getJwtTokenPayload()
 
   return (
-    isPendingActivationEnabled
+    (isPendingActivationEnabled && tenantType === AccountType.REC)
       ? <SubscriptionTabs />
       : <SpaceWrapper fullWidth size='large' direction='vertical'>
         <SubscriptionHeader />
