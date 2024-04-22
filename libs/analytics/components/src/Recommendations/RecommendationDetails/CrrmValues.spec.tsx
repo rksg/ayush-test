@@ -9,6 +9,10 @@ import { CrrmValues }                                      from './CrrmValues'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 
 describe('CrrmValues', () => {
+  beforeEach(() =>
+    jest.spyOn(require('./utils'), 'isDataRetained')
+      .mockImplementation(() => true)
+  )
   it('should render correctly for new crrm', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })

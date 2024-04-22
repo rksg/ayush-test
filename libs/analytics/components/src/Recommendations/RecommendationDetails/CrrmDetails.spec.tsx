@@ -34,6 +34,8 @@ describe('CrrmDetails', () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
+    jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+      .mockImplementation(() => true)
   })
   it('renders correctly', async () => {
     render(<CrrmDetails />, {
