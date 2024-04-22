@@ -2,16 +2,17 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeEditContext, EdgePortTabEnum }                                                        from '@acx-ui/rc/components'
-import { edgeSdLanApi }                                                                            from '@acx-ui/rc/services'
-import { EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                         from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor }                                         from '@acx-ui/test-utils'
+import { EdgeEditContext, EdgePortTabEnum }                                                                             from '@acx-ui/rc/components'
+import { edgeSdLanApi }                                                                                                 from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                              from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                                                              from '@acx-ui/test-utils'
 
 import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
 
 import Ports from './index'
 
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
 const { mockedSdLanDataList } = EdgeSdLanFixtures
@@ -79,6 +80,7 @@ describe('EditEdge - Ports', () => {
         >
           <EditEdgeDataContext.Provider
             value={{
+              clusterInfo: mockEdgeClusterList.data[0],
               portData: mockEdgePortConfig.ports,
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
@@ -109,6 +111,7 @@ describe('EditEdge - Ports', () => {
         >
           <EditEdgeDataContext.Provider
             value={{
+              clusterInfo: mockEdgeClusterList.data[0],
               portData: mockEdgePortConfig.ports,
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
@@ -144,6 +147,7 @@ describe('EditEdge - Ports', () => {
         >
           <EditEdgeDataContext.Provider
             value={{
+              clusterInfo: mockEdgeClusterList.data[0],
               portData: mockEdgePortConfig.ports,
               portStatus: mockEdgePortStatus,
               lagData: mockedEdgeLagList.content,
