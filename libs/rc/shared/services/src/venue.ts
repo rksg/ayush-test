@@ -518,6 +518,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueSpecificUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(CommonUrlsInfo.getVenueSpecificUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
     updateFloorPlan: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateFloorplan, params)
@@ -1545,6 +1554,7 @@ export const {
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
   useGetUploadURLMutation,
+  useGetVenueSpecificUploadURLMutation,
   useUpdateFloorPlanMutation,
   useGetAllDevicesQuery,
   useUpdateSwitchPositionMutation,
