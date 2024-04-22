@@ -194,5 +194,30 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/templates/vlanPools',
     newApi: true
+  },
+  deleteSyslogPolicy: {
+    method: 'delete',
+    url: '/templates/syslogServerProfiles/:templateId',
+    newApi: true
+  },
+  addSyslogPolicy: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles',
+    newApi: true
+  },
+  getSyslogPolicy: {
+    method: 'get',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  updateSyslogPolicy: {
+    method: 'put',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  getSyslogPolicyList: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles/query',
+    newApi: true
   }
 }

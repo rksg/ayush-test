@@ -62,8 +62,9 @@ function usePolicyMenuItems (): ItemType[] {
   const visibilityMap = useConfigTemplateVisibilityMap()
 
   return [
-    createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
     createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.SYSLOG, visibilityMap),
     createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
   ]
 }

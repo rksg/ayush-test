@@ -246,7 +246,7 @@ describe('Venues Form', () => {
         }
       ),
       rest.post(
-        VenueConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
       )
     )

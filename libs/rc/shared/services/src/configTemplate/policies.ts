@@ -14,7 +14,12 @@ import {
   ApplicationPolicy, TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
-  VlanPool
+  VlanPool,
+  SyslogContextType,
+  SyslogPolicyDetailType,
+  VenueSyslogPolicyType,
+  ConfigTemplateUrlsInfo,
+  SyslogPolicyListType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -23,6 +28,7 @@ import { commonQueryFn, configTemplateApi } from './common'
 import {
   AccessControlTemplateUseCases, ApplicationTemplateUseCases,
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
+  useCasesToRefreshSyslogTemplateList,
   useCasesToRefreshVlanPoolTemplateList
 } from './constants'
 
@@ -252,6 +258,40 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolVenues),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    addSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addSyslogPolicy),
+      invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
+    }),
+    delSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy),
+      invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
+    }),
+    updateSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy),
+      invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
+    }),
+    getSyslogPolicyTemplate: build.query<SyslogPolicyDetailType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicy),
+      providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
+    }),
+    getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList),
+      providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshSyslogTemplateList, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'SyslogTemplate', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateForSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -287,5 +327,11 @@ export const {
   useAddVlanPoolPolicyTemplateMutation,
   useUpdateVlanPoolPolicyTemplateMutation,
   useDelVlanPoolPolicyTemplateMutation,
-  useGetVlanPoolVenuesQuery
+  useGetVlanPoolVenuesQuery,
+  useAddSyslogPolicyTemplateMutation,
+  useDelSyslogPolicyTemplateMutation,
+  useGetSyslogPolicyTemplateListQuery,
+  useGetSyslogPolicyTemplateQuery,
+  useUpdateSyslogPolicyTemplateMutation,
+  useGetVenueTemplateForSyslogPolicyQuery
 } = policiesConfigTemplateApi

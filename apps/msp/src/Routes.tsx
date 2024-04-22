@@ -15,8 +15,8 @@ import {
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
-  VLANPoolForm,
-  VLANPoolDetail
+  VLANPoolForm, VLANPoolDetail,
+  SyslogForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -321,6 +321,22 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<SyslogForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<SyslogForm edit={true}/>}
           />
         </>}
       </Route>
