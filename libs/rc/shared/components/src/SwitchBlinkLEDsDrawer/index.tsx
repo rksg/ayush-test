@@ -1,39 +1,28 @@
 
-import { useState } from 'react'
 
 import {
+  Form,
+  InputNumber,
   Space } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button,
-  Drawer,
-  Loader,
-  showActionModal,
-  Table,
-  TableProps,
-  Tooltip
-} from '@acx-ui/components'
+  Drawer} from '@acx-ui/components'
 import {
-  DeleteOutlinedIcon,
-  EditOutlinedIcon
-} from '@acx-ui/icons'
-import {
-  useDebugRequestsMutation,
-  useDeleteLagMutation,
-  useGetLagListQuery,
-  useSwitchDetailHeaderQuery
-}                            from '@acx-ui/rc/services'
-import { isOperationalSwitch, Lag, StackMember } from '@acx-ui/rc/utils'
-import { filterByAccess }                        from '@acx-ui/user'
+  useDebugRequestsMutation}                            from '@acx-ui/rc/services'
+import { StackMember } from '@acx-ui/rc/utils'
 
+export interface SwitchInfo {
+  venueId: string
+  switchId: string
+  stackMembers?: StackMember
+}
 
 interface SwitchBlinkLEDsProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  switchId: string
-  isStack: boolean
-  stackMembers?: StackMember
+  switches: SwitchInfo[]
 }
 
 export const SwitchBlinkLEDsDrawer = (props: SwitchBlinkLEDsProps) => {
@@ -67,6 +56,8 @@ export const SwitchBlinkLEDsDrawer = (props: SwitchBlinkLEDsProps) => {
     </Space>
   ]
 
+  const [form] = Form.useForm()
+
   return (
     <Drawer
       title={$t({ defaultMessage: 'Blink LEDs' })}
@@ -75,21 +66,25 @@ export const SwitchBlinkLEDsDrawer = (props: SwitchBlinkLEDsProps) => {
       width={644}
       footer={footer}
       children={
-        <div>Duration</div>
-        // <Table
-        //   columns={columns}
-        //   type='compact'
-        //   dataSource={data}
-        //   rowKey='name'
-        //   actions={filterByAccess([{
-        //     label: $t({ defaultMessage: 'Add LAG' }),
-        //     disabled: !isOperational,
-        //     onClick: () => {
-        //       setModalVisible(true)
-        //       setIsEditMode(false)
-        //     }
-        //   }])}
-        // />
+
+        <Form
+          layout='vertical'
+          form={form}
+          onFinish={onApply}
+        >
+          <Form.Item
+            label={$t({ defaultMessage: 'Duration' })}
+            name='duration'
+            rules={[
+              { required: true }]}
+          >
+            <InputNumber
+              min={1}
+              max={60}
+            />
+          </Form.Item>
+        </Form>
+
       }
     />
   )

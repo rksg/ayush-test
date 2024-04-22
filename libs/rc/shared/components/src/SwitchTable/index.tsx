@@ -54,6 +54,7 @@ import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
+import { SwitchBlinkLEDsDrawer, SwitchInfo }                           from '../SwitchBlinkLEDsDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
 
@@ -162,6 +163,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
+  const enableSwitchBlinkLed = true//useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -189,6 +191,11 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
   const [stackTooltip, setStackTooltip] = useState('')
 
+  const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
+  const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
+
+
+
   const getPasswordTooltip = (row: SwitchRow) => {
     if (!(row?.configReady && row?.syncedSwitchConfig)) {
       return $t(PasswordTooltip.SYNCING)
@@ -196,6 +203,17 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       return $t(PasswordTooltip.CUSTOM)
     }
     return $t(PasswordTooltip.SYNCED)
+  }
+
+  const handleBlinkLeds = (switchRows: SwitchRow[])=> {
+
+    const transformedSwitchRows: SwitchInfo[] = switchRows.map(row => ({
+      switchId: row.id,
+      venueId: row.venueId
+    }))
+    setBlinkData(transformedSwitchRows)
+    setBlinkDrawerVisible(true)
+
   }
 
   const handleClickMatchPassword = (rows: SwitchRow[], clearSelection: () => void) => {
@@ -440,7 +458,19 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }
       switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
     }
-  }, {
+  },
+  ...(enableSwitchBlinkLed ? [{
+    label: $t({ defaultMessage: 'Blink LEDs' }),
+    disabled: (rows: SwitchRow[]) => {
+      return rows.filter((row: SwitchRow) => {
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+            row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        return !isOperational
+      }).length > 0
+    },
+    onClick: handleBlinkLeds
+  }] : []),
+  {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
     onClick: async (rows, clearSelection) => {
@@ -556,6 +586,11 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         serialNumber={cliData.serialNumber}
         jwtToken={cliData.token}
         switchName={cliData.switchName}
+      />
+      <SwitchBlinkLEDsDrawer
+        visible={blinkDrawerVisible}
+        setVisible={setBlinkDrawerVisible}
+        switches={blinkData}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.Switch}
