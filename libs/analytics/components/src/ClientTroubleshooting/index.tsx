@@ -5,12 +5,11 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { overlapsRollup }                     from '@acx-ui/analytics/utils'
-import { Cascader, Button, Loader }           from '@acx-ui/components'
-import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
-import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { overlapsRollup }                              from '@acx-ui/analytics/utils'
+import { Cascader, Button, Loader, NoGranularityText } from '@acx-ui/components'
+import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter }          from '@acx-ui/utils'
 
-import { RollupText }         from '../IncidentDetails/Charts/ImpactedSwitchVLANDetails/styledComponents'
 import { useIncidentToggles } from '../useIncidentToggles'
 
 import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
@@ -164,9 +163,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
               {overlapsRollup(startDate)
-                ? <RollupText>
-                  {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-                </RollupText>
+                ? NoGranularityText()
                 : <Loader states={[clientQuery, incidentsQuery]}>
                   <TimeLine
                     data={data}

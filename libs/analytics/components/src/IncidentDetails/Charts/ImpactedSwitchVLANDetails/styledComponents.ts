@@ -65,10 +65,3 @@ export const SummaryDetails = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
 `
-
-export const RollupText = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: -webkit-fill-available;
-`

@@ -5,12 +5,11 @@ import { CarouselRef }       from 'antd/lib/carousel'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { defaultSort, overlapsRollup, sortProp }   from '@acx-ui/analytics/utils'
-import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { getIntl }                                 from '@acx-ui/utils'
+import { defaultSort, overlapsRollup, sortProp }                      from '@acx-ui/analytics/utils'
+import { Button, Card, Loader, Table, TableProps, NoGranularityText } from '@acx-ui/components'
+import { getIntl }                                                    from '@acx-ui/utils'
 
 import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
-import { RollupText }            from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import {
   ImpactedSwitchPortRow,
@@ -44,9 +43,7 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
       {druidRolledup
-        ? <RollupText>
-          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-        </RollupText>
+        ? NoGranularityText()
         : <>
           <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
           <MismatchConnectionCarousel

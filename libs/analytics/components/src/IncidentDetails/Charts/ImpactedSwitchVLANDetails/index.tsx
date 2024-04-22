@@ -1,8 +1,8 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { overlapsRollup } from '@acx-ui/analytics/utils'
-import { Card, Loader }   from '@acx-ui/components'
+import { overlapsRollup }                  from '@acx-ui/analytics/utils'
+import { Card, Loader, NoGranularityText } from '@acx-ui/components'
 import {
   Switch,
   VLANIcon
@@ -100,9 +100,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
       {druidRolledup
-        ? <UI.RollupText>
-          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-        </UI.RollupText>
+        ? NoGranularityText()
         : <UI.SummaryWrapper>
           {impactedSwitches && impactedTypes.map((type, index) => {
             const items = type.data.slice(0, type.max)

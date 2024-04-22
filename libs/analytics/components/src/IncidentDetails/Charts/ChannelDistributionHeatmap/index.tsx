@@ -4,14 +4,11 @@ import {
 import { flatten, uniq,max } from 'lodash'
 import moment                from 'moment-timezone'
 import { renderToString }    from 'react-dom/server'
-import { useIntl }           from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { overlapsRollup }                                                 from '@acx-ui/analytics/utils'
-import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip } from '@acx-ui/components'
-import { getIntl, noDataDisplay }                                         from '@acx-ui/utils'
-
-import { RollupText } from '../ImpactedSwitchVLANDetails/styledComponents'
+import { overlapsRollup }                                                                    from '@acx-ui/analytics/utils'
+import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip, NoGranularityText } from '@acx-ui/components'
+import { getIntl, noDataDisplay }                                                            from '@acx-ui/utils'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -68,7 +65,6 @@ export const tooltipFormatter = (params: CallbackDataParams) => {
   )
 }
 export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProps> = (props) => {
-  const { $t } = useIntl()
   const druidRolledup = overlapsRollup(props.incident.startTime)
   const queryResults = useHeatmapDistributionByChannelQuery(props, { skip: druidRolledup })
   const { heatMapConfig } = props
@@ -114,9 +110,7 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
           {druidRolledup
-            ? <RollupText>
-              {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-            </RollupText>
+            ? NoGranularityText()
             : <AutoSizer>
               {({ height, width }) => (
                 backfilledHeatmapData.length > 0

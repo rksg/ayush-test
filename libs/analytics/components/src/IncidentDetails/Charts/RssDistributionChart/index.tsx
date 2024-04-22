@@ -11,10 +11,9 @@ import {
   cssStr,
   Card,
   Loader,
-  VerticalBarChart
+  VerticalBarChart,
+  NoGranularityText
 } from '@acx-ui/components'
-
-import { RollupText } from '../ImpactedSwitchVLANDetails/styledComponents'
 
 import { useRssDistributionChartQuery } from './services'
 
@@ -36,9 +35,7 @@ export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
       {druidRolledup
-        ? <RollupText>
-          {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-        </RollupText>
+        ? NoGranularityText()
         : <AutoSizer>
           {({ height, width }) => (
             <VerticalBarChart
