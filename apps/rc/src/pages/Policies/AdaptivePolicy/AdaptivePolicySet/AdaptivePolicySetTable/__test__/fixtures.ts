@@ -178,7 +178,6 @@ export const certificateTemplateList = {
         certRemovalType: 'NONE',
         enrollmentType: 'DEVICE',
         notifyAppId: null,
-        accountCredential: '{"type":"service_account","project_id":"test","private_key_id":"a0f9127e0cb0241472b02cd0ac0299246696fb40","private_key":"123","client_email":"test-9@crucial-garden-230004.iam.gserviceaccount.com","client_id":"123","auth_uri":"123","token_uri":"123"}',
         enabled: true,
         type: 'service_account',
         projectId: 'test',

@@ -15,10 +15,15 @@ import { Path }                                        from '@acx-ui/react-route
 import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { certificateTemplateList } from '../../../CertificateTemplate/__test__/fixtures'
-import { dpskList }                from '../AdaptivePolicySetDetail/__test__/fixtures'
+import { dpskList } from '../AdaptivePolicySetDetail/__test__/fixtures'
 
-import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
+import {
+  policySetList,
+  prioritizedPolicies,
+  adaptivePolicyList,
+  macList,
+  certificateTemplateList
+} from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
