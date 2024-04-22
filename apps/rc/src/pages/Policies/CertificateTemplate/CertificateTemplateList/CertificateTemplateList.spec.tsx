@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { CertificateCategoryType, CertificateUrls } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
-import { mockServer, render, screen }               from '@acx-ui/test-utils'
+import { CertificateCategoryType, CertificateUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                 from '@acx-ui/store'
+import { mockServer, render, screen }                               from '@acx-ui/test-utils'
 
 import { certificateAuthorityList, certificateList, certificateTemplateList } from '../__test__/fixtures'
 
@@ -24,6 +24,14 @@ describe('CertificateTemplateList', () => {
       rest.post(
         CertificateUrls.getCertificates.url,
         (req, res, ctx) => res(ctx.json(certificateList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [
+            { name: 'testAAA-ct', id: 'testNetworkId1' },
+            { name: 'testAAA-ct2', id: 'testNetworkId2' }]
+        }))
       )
     )
   })

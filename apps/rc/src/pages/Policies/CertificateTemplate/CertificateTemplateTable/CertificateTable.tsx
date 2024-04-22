@@ -4,21 +4,22 @@ import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                                  from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }               from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, CertificateStatusType, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, FILTER, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                                                     from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                       from '@acx-ui/components'
+import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                    from '@acx-ui/rc/services'
+import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                                                                                       from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                                                                                                                                          from '@acx-ui/utils'
 
 import CertificateSettings from '../CertificateForm/CertificateSettings'
+import { issuedByLabel }   from '../contentsMap'
 
 import DetailDrawer                                            from './DetailDrawer'
 import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDrawerHelper'
 import RevokeForm                                              from './RevokeForm'
 
 
-export default function CertificateTable ({ templateId, showGenerateCert = false }:
-  { templateId?: string, showGenerateCert?: boolean }) {
+export default function CertificateTable ({ templateData, showGenerateCert = false }:
+  { templateData?: CertificateTemplate, showGenerateCert?: boolean }) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
@@ -28,9 +29,9 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
   const settingsId = 'certificate-table'
   const tableQuery = useTableQuery({
     useQuery:
-      templateId ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
+    templateData ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
     defaultPayload: {},
-    apiParams: templateId ? { templateId } : {},
+    apiParams: templateData?.id ? { templateId: templateData?.id } : {},
     pagination: { settingsId }
   })
 
@@ -88,7 +89,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
           : noDataDisplay
       }
     },
-    ...(!templateId ? [
+    ...(!templateData ? [
       {
         title: $t({ defaultMessage: 'CA Name' }),
         dataIndex: 'certificateAuthoritiesName',
@@ -113,8 +114,13 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
     },
     {
       title: $t({ defaultMessage: 'Issued By' }),
-      dataIndex: 'issuedBy',
-      key: 'issuedBy'
+      dataIndex: 'enrollmentType',
+      key: 'enrollmentType',
+      sorter: true,
+      render: (_, row) => {
+        return row.enrollmentType ?
+          $t(issuedByLabel[EnrollmentType[row.enrollmentType]]) : noDataDisplay
+      }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
@@ -212,7 +218,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
   }
 
   const actionButtons = [
-    ...(templateId && showGenerateCert ? [{
+    ...(templateData && showGenerateCert ? [{
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)
@@ -254,10 +260,12 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
             onCancel={() => setCertificateDrawerOpen(false)}
             onSave={async () => {
               try {
-                const { certificateTemplateId, csrType, ...rest } = certificateForm.getFieldsValue()
+                await certificateForm.validateFields()
+                const { certificateTemplateId, csrType,
+                  csrString, description, ...variables } = certificateForm.getFieldsValue()
                 await generateCertificate({
-                  params: { templateId: templateId },
-                  payload: { ...rest }
+                  params: { templateId: templateData?.id },
+                  payload: { csrString, description, variableValues: { ...variables } }
                 })
                 setCertificateDrawerOpen(false)
                 certificateForm.resetFields()
@@ -267,7 +275,7 @@ export default function CertificateTable ({ templateId, showGenerateCert = false
         }
       >
         <Form layout='vertical' form={certificateForm}>
-          <CertificateSettings specificTemplate={true} />
+          <CertificateSettings templateData={templateData} />
         </Form>
       </Drawer >
     </>
