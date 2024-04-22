@@ -289,6 +289,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
     newApi: true
   },
+  getBrandingData: {
+    method: 'get',
+    url: '/brandingsData',
+    oldUrl: '/api/mspservice/tenant/:tenantId/brandingdata',
+    newApi: true
+  },
   assignMultiMspEcDelegatedAdmins: {
     method: 'PATCH',
     url: '/mspCustomers/mspAdmins/associations',
