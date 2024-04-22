@@ -1,8 +1,9 @@
-import { get } from '@acx-ui/config'
 import jwtDecode from 'jwt-decode'
 
+import { get } from '@acx-ui/config'
+
 import { isDelegationMode, isLocalHost } from './apiService'
-import { getTenantId }      from './getTenantId'
+import { getTenantId }                   from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
