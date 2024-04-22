@@ -52,11 +52,12 @@ const noApOrSwitchSupportURLs = [
   '/analytics/health/overview'
 ]
 
-interface AnalyticsFilterProps {
+export interface AnalyticsFilterProps {
   revertToDefaultURLs?: {
-    url: string
-    type: string
-  }[]
+    noApSupportURLs?: string[],
+    noSwitchSupportURLs?: string[],
+    noApOrSwitchSupportURLs?: string[]
+  }
 }
 
 export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
@@ -72,15 +73,7 @@ export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
     write({ path, raw: [JSON.stringify(path)] })
   }
 
-  const { revertToDefaultURLs: customURLs } = props || {}
-  if (customURLs) {
-    for (const { url, type } of customURLs) {
-      if (type === 'ap' && !noApSupportURLs.includes(url)) noApSupportURLs.push(url)
-      if (type === 'switch' && !noSwitchSupportURLs.includes(url)) noSwitchSupportURLs.push(url)
-      // eslint-disable-next-line max-len
-      if (type === 'both' && !noApOrSwitchSupportURLs.includes(url)) noApOrSwitchSupportURLs.push(url)
-    }
-  }
+  const { revertToDefaultURLs } = props || {}
 
   return useMemo(() => {
     const isURLPresent = (list: string[]) => Boolean(list.find(url => pathname.includes(url)))
@@ -88,9 +81,15 @@ export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
     const { raw: rawPath, path: readPath } = read() || defaultPath
 
     const revertToDefault =
-      (isURLPresent(noApOrSwitchSupportURLs) && (isApOrSwitchPath(readPath))) ||
-      (isURLPresent(noSwitchSupportURLs) && isSwitchPath(readPath)) ||
-      (isURLPresent(noApSupportURLs) && isApPath(readPath))
+      ((isURLPresent(noApOrSwitchSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noApOrSwitchSupportURLs ?? []))
+          && (isApOrSwitchPath(readPath))) ||
+      ((isURLPresent(noSwitchSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noSwitchSupportURLs ?? []))
+          && isSwitchPath(readPath)) ||
+      ((isURLPresent(noApSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noApSupportURLs ?? []))
+          && isApPath(readPath))
 
     const { raw, path, filter } = revertToDefault
       ? { ...defaultPath, filter: {} }
@@ -172,5 +171,7 @@ export const isApPath = (path: NetworkPath) => {
 }
 
 export const isApOrSwitchPath = (path: NetworkPath) => {
-  return Boolean(path.find(({ type }) => type === 'switch' || type === 'AP'))
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'switchGroup' || type === 'zone'))
+    : Boolean(path.find(({ type }) => type === 'switch' || type === 'AP'))
 }

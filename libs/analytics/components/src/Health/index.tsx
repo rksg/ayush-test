@@ -32,15 +32,11 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const { filters } = useAnalyticsFilter(
-    isSwitchHealthEnabled
-      ? {}
-      : {
-        revertToDefaultURLs: [
-          { url: '/ai/health', type: 'switch' },
-          { url: '/analytics/health', type: 'switch' }
-        ]
-      })
+  const { filters } = useAnalyticsFilter({
+    revertToDefaultURLs: {
+      noSwitchSupportURLs: isSwitchHealthEnabled ? [] : ['/ai/health', '/analytics/health']
+    }
+  })
   const healthPageFilters = widgetFilters ? widgetFilters : filters
   const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 
