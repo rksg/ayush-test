@@ -41,6 +41,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     })
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
   afterEach(() => cleanup())
   it('should render loader', () => {
@@ -104,8 +105,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     )
-    await screen.findByText('Data granularity at this level is not available.')
-    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
+    await screen.findAllByText('Data granularity at this level is not available.')
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(

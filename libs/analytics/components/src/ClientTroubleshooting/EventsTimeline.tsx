@@ -7,9 +7,9 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident }      from '@acx-ui/analytics/utils'
-import { Tooltip }       from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
+import { Tooltip }                  from '@acx-ui/components'
+import { useDateFilter }            from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -24,7 +24,8 @@ import {
   RoamingConfigParam,
   RoamingTimeSeriesData,
   DisplayEvent,
-  ALL
+  ALL,
+  TimelineItem
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
@@ -94,7 +95,7 @@ export function TimeLine (props: TimeLineProps) {
       [type]: !toggle
     })
   const toggleIcon = (
-    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined
+    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, disabled?: boolean
   ) => {
     if (noData) {
       return <Tooltip
@@ -115,7 +116,7 @@ export function TimeLine (props: TimeLineProps) {
     ) : (
       <UI.StyledPlusSquareOutlined
         style={{ cursor: 'pointer' }}
-        onClick={() => onExpandToggle(type, expandObj[type])}
+        onClick={() => disabled ? '' : onExpandToggle(type, expandObj[type])}
       />
     )
   }
@@ -133,6 +134,11 @@ export function TimeLine (props: TimeLineProps) {
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
       { br: '\n', apMac, apModel, apFirmware })
 
+  const checkRollup = (config: TimelineItem) => {
+    return overlapsRollup(startDate)
+    && (config.value === 'roaming' || config.value === 'connectionQuality')
+  }
+
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -144,8 +150,10 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
-                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData)
-                }
+                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
+                  (checkRollup(config)
+                    ? true : false)
+                )}
               </Col>
               <Col
                 span={17}
@@ -153,11 +161,12 @@ export function TimeLine (props: TimeLineProps) {
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                {config.showCount ? (
-                  <UI.TimelineCount>
-                    {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
-                  </UI.TimelineCount>
-                ) : null}
+                {checkRollup(config)
+                  ? null :config.showCount ? (
+                    <UI.TimelineCount>
+                      {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
+                    </UI.TimelineCount>
+                  ) : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 (config.value === TYPES.ROAMING
@@ -210,11 +219,15 @@ export function TimeLine (props: TimeLineProps) {
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <Col span={24} key={config.value}>
-              <TimelineChart
-                key={index}
-                index={index}
-                style={{ width: 'auto', marginBottom: 8 }}
-                data={getChartData(
+              {checkRollup(config)
+                ? <UI.RollupText>
+                  {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+                </UI.RollupText>
+                : <TimelineChart
+                  key={index}
+                  index={index}
+                  style={{ width: 'auto', marginBottom: 8 }}
+                  data={getChartData(
         config?.value as keyof TimelineData,
         TimelineData.connectionEvents.all,
         expandObj[config?.value as keyof TimelineData],
@@ -224,35 +237,42 @@ export function TimeLine (props: TimeLineProps) {
           ...roamingEventsTimeSeries,
           [ALL]: TimelineData.roaming.all
         } as RoamingTimeSeriesData[]
-                )}
-                showResetZoom={config?.showResetZoom}
-                chartBoundary={chartBoundary}
-                hasXaxisLabel={config?.hasXaxisLabel}
-                mapping={
-                  expandObj[config?.value as keyof TimelineData]
-                    ? config.value === TYPES.ROAMING
-                      ? config.chartMapping.concat(
-                        getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
-                      ).reverse()
-                      : config.chartMapping.slice().reverse()
-                    : [config.chartMapping[0]]
-                }
-                onDotClick={
-                  /* istanbul ignore next */
-                  (params) => {
-                  /* istanbul ignore next */
-                    setEventState(params as CoordDisplayEvent)
+                  )}
+                  showResetZoom={config?.showResetZoom}
+                  chartBoundary={chartBoundary}
+                  hasXaxisLabel={config?.hasXaxisLabel}
+                  mapping={
+                    expandObj[config?.value as keyof TimelineData]
+                      ? config.value === TYPES.ROAMING
+                        ? config.chartMapping.concat(
+                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                        ).reverse()
+                        : config.chartMapping.slice().reverse()
+                      : [config.chartMapping[0]]
+                  }
+                  onDotClick={
                     /* istanbul ignore next */
-                    setVisible(true)
-                  }}
-                chartRef={connectChart}
-                sharedChartName={sharedChartName}
-                popoverRef={popoverRef}
-                onChartReady={onChartReady}
-              />
+                    (params) => {
+                    /* istanbul ignore next */
+                      setEventState(params as CoordDisplayEvent)
+                      /* istanbul ignore next */
+                      setVisible(true)
+                    }}
+                  chartRef={connectChart}
+                  sharedChartName={sharedChartName}
+                  popoverRef={popoverRef}
+                  onChartReady={onChartReady}
+                />
+              }
             </Col>
           ))}
+          {/* <Col span={24}>
+            {NoGranularityText()}
+          </Col> */}
         </Row>
+        {/* <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
+          {NoGranularityText()}
+        </Row> */}
       </Col>
     </Row>
   )

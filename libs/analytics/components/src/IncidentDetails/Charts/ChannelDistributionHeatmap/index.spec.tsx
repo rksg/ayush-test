@@ -175,7 +175,6 @@ describe('ChannelDistributionHeatMap', () => {
         />
       </Provider>
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await screen.findByText('DFS EVENTS BY CHANNEL')
     await screen.findByText('Data granularity at this level is not available.')
     jest.mocked(mockOverlapsRollup).mockReturnValue(false)

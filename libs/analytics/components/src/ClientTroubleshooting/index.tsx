@@ -5,10 +5,9 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { overlapsRollup }                              from '@acx-ui/analytics/utils'
-import { Cascader, Button, Loader, NoGranularityText } from '@acx-ui/components'
-import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
-import { useEncodedParameter, useDateFilter }          from '@acx-ui/utils'
+import { Cascader, Button, Loader }           from '@acx-ui/components'
+import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -162,39 +161,36 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           )}
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
-              {overlapsRollup(startDate)
-                ? NoGranularityText()
-                : <Loader states={[clientQuery, incidentsQuery]}>
-                  <TimeLine
-                    data={data}
-                    filters={filters}
-                    setEventState={setEventState}
-                    setVisible={setPopoverVisible}
-                    sharedChartName={sharedChartName}
-                    connectChart={connectChart}
-                    popoverRef={popoverRef}
-                    onChartReady={onChartReady}
-                  />
-                  <ConnectionEventPopover
-                    key={Number(popoverVisible)}
-                    arrowPointAtCenter
-                    autoAdjustOverflow={false}
-                    event={eventState}
-                    visible={popoverVisible}
-                    onVisibleChange={setPopoverVisible}
-                    trigger='click'
-                    placement='bottom'
-                    align={{
-                      targetOffset: [
-                        (eventState as unknown as { x: number }).x,
-                        (eventState as unknown as { y: number }).y
-                      ]
-                    }}
-                  >
-                    <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
-                  </ConnectionEventPopover>
-                </Loader>
-              }
+              <Loader states={[clientQuery, incidentsQuery]}>
+                <TimeLine
+                  data={data}
+                  filters={filters}
+                  setEventState={setEventState}
+                  setVisible={setPopoverVisible}
+                  sharedChartName={sharedChartName}
+                  connectChart={connectChart}
+                  popoverRef={popoverRef}
+                  onChartReady={onChartReady}
+                />
+                <ConnectionEventPopover
+                  key={Number(popoverVisible)}
+                  arrowPointAtCenter
+                  autoAdjustOverflow={false}
+                  event={eventState}
+                  visible={popoverVisible}
+                  onVisibleChange={setPopoverVisible}
+                  trigger='click'
+                  placement='bottom'
+                  align={{
+                    targetOffset: [
+                      (eventState as unknown as { x: number }).x,
+                      (eventState as unknown as { y: number }).y
+                    ]
+                  }}
+                >
+                  <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
+                </ConnectionEventPopover>
+              </Loader>
             </UI.TimelineLoaderWrapper>
           </Col>
         </Row>

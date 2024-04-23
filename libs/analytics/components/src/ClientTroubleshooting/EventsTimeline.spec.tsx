@@ -13,6 +13,11 @@ import { ConnectionEvent, ConnectionQuality }                           from './
 
 import { Filters } from '.'
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+
 const incidents = [{
   id: '9cf271f8-fe98-4725-9ee3-baf89119164a',
   path: [{
