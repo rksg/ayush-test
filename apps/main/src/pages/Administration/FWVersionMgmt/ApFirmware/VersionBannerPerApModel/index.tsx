@@ -5,28 +5,40 @@ import { useIntl }                  from 'react-intl'
 
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
+import { ApModelFirmware }                   from '@acx-ui/rc/utils'
+import { noDataDisplay }                     from '@acx-ui/utils'
 
-import { VersionLabelType }                                             from '../../FirmwareUtils'
-import * as UI                                                          from '../../styledComponents'
-import { ExpandableApModelList, convertApModelFirmwaresToUpdateGroups } from '../VenueFirmwareListPerApModel/venueFirmwareListPerApModelUtils'
+import { VersionLabelType }                                                                        from '../../FirmwareUtils'
+import * as UI                                                                                     from '../../styledComponents'
+import { ApFirmwareUpdateGroupType, ExpandableApModelList, convertApModelFirmwaresToUpdateGroups } from '../VenueFirmwareListPerApModel/venueFirmwareListPerApModelUtils'
 
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
-  const { updateGroups } = useGetAllApModelFirmwareListQuery({}, {
+  const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
+  const { updateGroupsWithLatestVersion } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60,
     selectFromResult ({ data, isLoading }) {
-      if (!data || isLoading) return { updateGroups: [] }
+      if (!data || isLoading) return { updateGroupsWithLatestVersion: [] }
 
-      const updateGroups = convertApModelFirmwaresToUpdateGroups(data)
+      let updateGroups = convertApModelFirmwaresToUpdateGroups(data)
+
+      // ACX-56531: At least display the latest version where there is no AP in the tenant
+      if (updateGroups.length === 0) {
+        updateGroups = [extractLatestVersionToUpdateGroup(data)]
+      }
+
+      const updateGroupsWithLatestVersion = updateGroups
         .map(item => ({ firmware: item.firmwares[0], apModels: item.apModels }))
 
-      return { updateGroups }
+      return { updateGroupsWithLatestVersion }
     }
   })
 
-  const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
+  if (updateGroupsWithLatestVersion.length === 0) return null
 
-  if (updateGroups.length === 0) return null
+  const displayUpdateGroups = shownMoreFirmwaresInBanner
+    ? updateGroupsWithLatestVersion
+    : updateGroupsWithLatestVersion.slice(0, 1)
 
   return <UI.BannerVersion>
     <Row justify='space-between' gutter={[16, 16]}>
@@ -35,7 +47,7 @@ export function VersionBannerPerApModel () {
           {$t({ defaultMessage: 'Latest Version' })}
         </UI.LatestVersion>
       </Col>
-      { updateGroups.length > 1 &&
+      { updateGroupsWithLatestVersion.length > 1 &&
         <Col>
           <ShowMoreFirmwaresLink
             shownMoreFirmwaresInBanner={shownMoreFirmwaresInBanner}
@@ -46,11 +58,26 @@ export function VersionBannerPerApModel () {
     </Row>
     <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
       {
-        updateGroups.filter((_, index) => shownMoreFirmwaresInBanner || index === 0)
-          .map(item => <VersionPerApModelInfo key={item.firmware.name} {...item} />)
+        // eslint-disable-next-line max-len
+        displayUpdateGroups.map(item => <VersionPerApModelInfo key={item.firmware.name} {...item} />)
       }
     </Space>
   </UI.BannerVersion>
+}
+
+// eslint-disable-next-line max-len
+function extractLatestVersionToUpdateGroup (apModelFirmwares: ApModelFirmware[]): ApFirmwareUpdateGroupType {
+  const latest = apModelFirmwares[0]
+
+  return {
+    apModels: latest.supportedApModels ?? [],
+    firmwares: [{
+      name: latest.name,
+      category: latest.category,
+      releaseDate: latest.releaseDate,
+      onboardDate: latest.onboardDate
+    }]
+  }
 }
 
 interface ShowMoreFirmwaresLinkProps {
@@ -67,7 +94,7 @@ function ShowMoreFirmwaresLink (props: ShowMoreFirmwaresLinkProps) {
   >
     {shownMoreFirmwaresInBanner
       ? $t({ defaultMessage: 'Show less' })
-      : $t({ defaultMessage: 'Show more available firmware' })
+      : $t({ defaultMessage: 'Show more' })
     }
   </span>
 }
@@ -82,7 +109,7 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
 
   const generateLabelWrapper = (apModelsForDisplay: string) => {
     // eslint-disable-next-line max-len
-    return <span>{ $t({ defaultMessage: 'For devices {apModels}' }, { apModels: apModelsForDisplay }) }</span>
+    return <span>{ $t({ defaultMessage: 'For devices {apModels}' }, { apModels: apModelsForDisplay || noDataDisplay }) }</span>
   }
 
   return (
