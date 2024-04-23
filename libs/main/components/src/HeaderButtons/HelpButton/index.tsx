@@ -6,6 +6,7 @@ import { useIntl }     from 'react-intl'
 import { LayoutUI, Dropdown, Tooltip }                    from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
 import { QuestionMarkCircleSolid, WarningCircleOutlined } from '@acx-ui/icons'
+import { MspProfile }                                     from '@acx-ui/msp/utils'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles }                                       from '@acx-ui/user'
 
@@ -13,13 +14,15 @@ import Firewall from './Firewall'
 import HelpPage from './HelpPage'
 
 export interface HelpButtonProps{
+  isMspEc?: boolean,
+  mspBrandData?: MspProfile,
   supportStatus?: string
 }
 
 let timeout:NodeJS.Timeout
 
 const HelpButton = (props:HelpButtonProps) => {
-  const { supportStatus } = props
+  const { isMspEc, mspBrandData, supportStatus } = props
   const { $t } = useIntl()
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
@@ -28,6 +31,10 @@ const HelpButton = (props:HelpButtonProps) => {
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
+  const mspContactSupport = mspBrandData?.contact_support_url
+  const mspOpenaCase = mspBrandData?.open_case_url
+  const mspMyOpenCases = mspBrandData?.my_open_case_url
 
   useEffect(()=>{
     switch (supportStatus) {
@@ -88,6 +95,15 @@ const HelpButton = (props:HelpButtonProps) => {
           case 'mibFiles':
             window.open(mibFiles, '_blank')
             break
+          case 'mspContactSupport':
+            window.open(mspContactSupport, '_blank')
+            break
+          case 'mspMyOpenCases':
+            window.open(mspMyOpenCases, '_blank')
+            break
+          case 'mspOpenaCase':
+            window.open(mspOpenaCase, '_blank')
+            break
         }
       }}
       items={[{
@@ -102,17 +118,24 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'help',
         label: $t({ defaultMessage: 'Help for this page' })
       },
-      {
-        key: 'support',
-        disabled: isChatDisabled,
-        label: <Space>{$t({ defaultMessage: 'Contact Support' })}
-          {isBlocked && <Tooltip showArrow={false}
-            // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'Some browser\'s security extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
-            <WarningCircleOutlined style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
-          </Tooltip>}
-        </Space>
-      },
+      ...(!isMspEc ? [
+        {
+          key: 'support',
+          disabled: isChatDisabled,
+          label: <Space>{$t({ defaultMessage: 'Contact Support' })}
+            {isBlocked && <Tooltip showArrow={false}
+              // eslint-disable-next-line max-len
+              title={$t({ defaultMessage: 'Some browser\'s security extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
+              <WarningCircleOutlined
+                style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
+            </Tooltip>}
+          </Space>
+        }] : mspContactSupport ? [
+        {
+          key: 'mspContactSupport',
+          label: $t({ defaultMessage: 'Contact Support' })
+        }
+      ] : []),
       {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
@@ -126,10 +149,22 @@ const HelpButton = (props:HelpButtonProps) => {
         label: $t({ defaultMessage: 'Device MIB Files' })
       },
       { type: 'divider' },
-      {
-        key: 'openCases',
-        label: $t({ defaultMessage: 'My Open Cases' })
-      },
+      ...(isMspEc && mspOpenaCase ? [
+        {
+          key: 'mspOpenaCase',
+          label: $t({ defaultMessage: 'Open A Case' })
+        }]
+        : []),
+      ...(!isMspEc ? [
+        {
+          key: 'openCases',
+          label: $t({ defaultMessage: 'My Open Cases' })
+        }] : mspMyOpenCases ? [
+        {
+          key: 'mspMyOpenCases',
+          label: $t({ defaultMessage: 'My Open Cases' })
+        }
+      ] : []),
       { type: 'divider' },
       {
         key: 'privacy',
