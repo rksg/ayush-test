@@ -591,6 +591,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         visible={blinkDrawerVisible}
         setVisible={setBlinkDrawerVisible}
         switches={blinkData}
+        isStack={false}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.Switch}

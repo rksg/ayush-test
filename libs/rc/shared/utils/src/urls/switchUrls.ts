@@ -409,6 +409,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/:switchId/debugRequests',
     newApi: true
   },
+  blinkLeds: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/debugRequests',
+    newApi: true
+  },
   ping: {
     method: 'post',
     url: '/switches/:switchId/debugRequests',

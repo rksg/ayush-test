@@ -903,9 +903,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    debugRequests: build.mutation<TroubleshootingResult, RequestPayload>({
+    blinkLeds: build.mutation<TroubleshootingResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.debugRequests, params)
+        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params)
         return {
           ...req,
           body: payload
@@ -1387,7 +1387,7 @@ export const {
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
-  useDebugRequestsMutation,
+  useBlinkLedsMutation,
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,
