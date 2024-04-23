@@ -284,18 +284,32 @@ describe('switch.utils', () => {
   })
 
   describe('Test getClientIpAddr function', () => {
-    const data = {
+    const legacyDefaultData = {
       clientIpv4Addr: '0.0.0.0',
       clientIpv6Addr: '0:0:0:0:0:0:0:0'
     } as SwitchClient
+
+    const defaultData = {
+      clientIpv4Addr: '',
+      clientIpv6Addr: ''
+    } as SwitchClient
     it('should render correctly', async () => {
-      expect(getClientIpAddr(data)).toBe('--')
+      expect(getClientIpAddr(legacyDefaultData)).toBe('--')
+      expect(getClientIpAddr(defaultData)).toBe('--')
       expect(getClientIpAddr({
-        ...data,
+        ...legacyDefaultData,
         clientIpv4Addr: '192.168.1.1'
       })).toBe('192.168.1.1')
       expect(getClientIpAddr({
-        ...data,
+        ...legacyDefaultData,
+        clientIpv6Addr: '1:0:0:0:0:0:0:0'
+      })).toBe('1:0:0:0:0:0:0:0')
+      expect(getClientIpAddr({
+        ...defaultData,
+        clientIpv4Addr: '192.168.1.1'
+      })).toBe('192.168.1.1')
+      expect(getClientIpAddr({
+        ...defaultData,
         clientIpv6Addr: '1:0:0:0:0:0:0:0'
       })).toBe('1:0:0:0:0:0:0:0')
     })
