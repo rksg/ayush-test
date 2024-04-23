@@ -517,7 +517,8 @@ export function ManageIntegrator () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -565,14 +566,18 @@ export function ManageIntegrator () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -696,7 +701,8 @@ export function ManageIntegrator () {
               Object.entries(RolesEnum).map(([label, value]) => (
                 <Option
                   key={label}
-                  value={value}>{intl.$t(roleDisplayText[value])}
+                  value={value}>
+                  {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                 </Option>
               ))
             }
@@ -957,7 +963,10 @@ export function ManageIntegrator () {
           label={intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
