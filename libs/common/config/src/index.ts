@@ -37,6 +37,7 @@ type RAEnvironment = {
   MLISA_REGION: string
   MLISA_VERSION: string
   MLISA_UI_USER_TRACKING: string
+  MLISA_LOGOUT_URL: string
   DRUID_ROLLUP_DAYS: string
   ENABLED_FEATURES: string
 }
@@ -45,18 +46,16 @@ type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
 
 const config: { value?: EnvironmentConfig } = {}
 
-export async function initialize (deployment: 'r1' | 'ra' | 'test') {
+export class CommonConfigGetError extends Error {}
+
+export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
   const envConfigUrl = `${baseUrl}/globalValues.json`
-  const isTestDeployment = deployment === 'test'
 
-  let requestConfig: RequestInit = {}
-  if (deployment === 'r1') {
-    requestConfig = { headers: { Authorization: `Bearer ${getJwtToken()}` } }
-  }
-
-  const response = await fetch(envConfigUrl, requestConfig)
-  !isTestDeployment && userAuthFailedLogout(response)
+  const response = await fetch(envConfigUrl, { headers: {
+    ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` })
+  } })
+  if (response.status !== 200) throw new CommonConfigGetError()
 
   const jsonValue = await response.json()
 
@@ -76,18 +75,8 @@ export function get (key: keyof EnvironmentConfig): string {
   return config.value[key]
 }
 
-
+// similar to from @acx-ui/utils - getJwtToken
+// but copied here to avoid circular dependency
 export function getJwtToken () {
   return sessionStorage.getItem('jwt') || null
-}
-
-export function userAuthFailedLogout (response: Response) {
-  //Trigger a user logout and redirect them back to the login page following authorization fails,
-  //clone the code from 'utils/user' since this file unable access 'utils/user'
-  if(response.status !== 200){
-    const token = sessionStorage.getItem('jwt')?? null
-    sessionStorage.removeItem('jwt')
-    sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
-    window.location.href = token? `/logout?token=${token}` : '/logout'
-  }
 }
