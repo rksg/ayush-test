@@ -68,14 +68,21 @@ describe('SnmpV3AgentTable', () => {
 
     // Add SNMPv3 Agent
     await userEvent.click(await screen.findByRole('button', { name: 'Add SNMPv3 Agent' }))
+
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      const addAnotherCheckbox = screen.queryByRole('checkbox', { name: 'Add another SNMPv3 agent' })
+      expect(addAnotherCheckbox).toBeInTheDocument()
+    })
+
     await userEvent.type(
       await screen.findByRole('textbox', { name: /User Name/i }), 'jj_un1')
 
     await userEvent.type(
       await screen.findByLabelText(/Authentication Password/i), '88888888')
 
-    const addBtn = await screen.findByRole('button', { name: 'Add' })
-    await userEvent.click(addBtn)
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()

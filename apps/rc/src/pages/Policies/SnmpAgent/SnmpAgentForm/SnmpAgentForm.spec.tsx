@@ -214,8 +214,6 @@ describe('SnmpAgentForm', () => {
     expect(await screen.findByText('Add SNMP Agent')).toBeInTheDocument()
     // In create mode doesn't call the getting profile API
     expect(mockGetProfileApi).not.toBeCalled()
-
-    expect(await screen.findByText('Add SNMP Agent')).toBeInTheDocument()
   })
 
   it('should edit SNMP Agent successfully', async () => {
