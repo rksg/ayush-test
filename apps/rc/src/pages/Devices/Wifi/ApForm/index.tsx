@@ -92,6 +92,7 @@ export function ApForm () {
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const supportUpgradeByModel = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const { tenantId, action, serialNumber } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -167,14 +168,12 @@ export function ApForm () {
     })
 
     return <Space direction='vertical' style={{ margin: '8px 0' }}>
-      {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
-        fwVersion: venueFwVersion
-      })}
-      { checkTriApModelsAndBaseFwVersion(venueFwVersion) ? <span>{contentInfo}</span> : null }
-      { isEditMode && apDetails && <VersionChangeAlert
-        targetVenueVersion={venueFwVersion}
-        apFirmwareVersion={apDetails.firmware}
-      /> }
+      { // eslint-disable-next-line max-len
+        !supportUpgradeByModel && $t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, { fwVersion: venueFwVersion })}
+      { // eslint-disable-next-line max-len
+        !supportUpgradeByModel && checkTriApModelsAndBaseFwVersion(venueFwVersion) && <span>{contentInfo}</span>}
+      { // eslint-disable-next-line max-len
+        isEditMode && apDetails && <VersionChangeAlert targetVersion={venueFwVersion} existingVersion={apDetails.firmware}/>}
     </Space>
   }
 
