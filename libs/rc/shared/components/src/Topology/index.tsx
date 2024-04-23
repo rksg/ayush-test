@@ -165,6 +165,15 @@ export function validateEdgeDirection (edges: Link[], nodeMap: Record<string, No
 
   let uniqueValues: { [key: string]: boolean } = {}
   const uniqueEdges: Link[] = []
+
+  if(calibrateEdges.length < edges.length){
+    edges.forEach((edge: Link) => {
+      if(!isVisited(edge)){
+        calibrateEdges.push(edge)
+      }
+    })
+  }
+
   calibrateEdges.forEach((item: Link) => {
     if (!uniqueValues[item.to]) {
       uniqueValues[item.to] = true
@@ -209,6 +218,7 @@ export function parseTopologyData (
 
   // Calibrate the edge direction
   const edgeCalibrateResult: Link[] = validateEdgeDirection(edgeResult, nodeMap)
+  console.log(edgeCalibrateResult)
 
   // Build the tree structure based on the edges
   edgeCalibrateResult.forEach((edge: Link) => {
