@@ -42,7 +42,10 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Order Date' }),
       dataIndex: 'orderCreateDate',
-      key: 'orderCreateDate'
+      key: 'orderCreateDate',
+      render: function (_, row) {
+        return formatter(DateFormatEnum.DateFormat)(row.orderCreateDate)
+      }
     },
     {
       title: $t({ defaultMessage: 'SPA Activation Code' }),
