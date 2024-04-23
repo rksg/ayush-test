@@ -2,8 +2,6 @@ import { ApiInfo } from '@acx-ui/utils'
 
 import { CommonUrlsInfo } from './commonUrls'
 
-export const websocketServerUrl = '/api/websocket/socket.io'
-
 export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   ...CommonUrlsInfo,
   UpdateSwitchPosition: {
