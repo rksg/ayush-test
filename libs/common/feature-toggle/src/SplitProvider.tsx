@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { SplitFactory, SplitSdk } from '@splitsoftware/splitio-react'
-import SplitIO                    from '@splitsoftware/splitio-react/types/splitio/splitio'
+import { SplitFactoryProvider, SplitSdk } from '@splitsoftware/splitio-react'
 
 import { getUserProfile } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
@@ -42,7 +41,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
     })
   }
   return tenantKey ? (
-    <SplitFactory factory={factory} children={props.children} />
+    <SplitFactoryProvider factory={factory} children={props.children}/>
   ) : null
 }
 
