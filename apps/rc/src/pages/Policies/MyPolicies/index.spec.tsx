@@ -1,4 +1,3 @@
-import _        from 'lodash'
 import { rest } from 'msw'
 
 import {
@@ -6,10 +5,9 @@ import {
   AccessControlUrls,
   ApSnmpUrls,
   ClientIsolationUrls,
-  CommonUrlsInfo,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  PolicyType, RogueApUrls, SyslogUrls, WifiUrlsInfo
+  RogueApUrls, SyslogUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -19,8 +17,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedRogueApPoliciesList,
-  emptyPoliciesList
+  mockedRogueApPoliciesList
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -66,17 +63,6 @@ describe('MyPolicies', () => {
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => {
-          const type = _.get(req, 'body.filters.type') as string[]
-
-          if (type.includes(PolicyType.ROGUE_AP_DETECTION)) {
-            return res(ctx.json({ ...mockedRogueApPoliciesList }))
-          }
-          return res(ctx.json({ ...emptyPoliciesList }))
-        }
       ),
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
