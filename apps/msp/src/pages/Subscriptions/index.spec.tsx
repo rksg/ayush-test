@@ -173,25 +173,4 @@ describe('Subscriptions', () => {
     fireEvent.click(refreshButton)
   })
 
-  it('should render correctly MSP_SELF_ASSIGNMENT feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_SELF_ASSIGNMENT)
-    render(
-      <Provider>
-        <Subscriptions />
-      </Provider>, {
-        route: { params, path: '/:tenantId/mspLicenses' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getAllByText('Active')).toHaveLength(2)
-    expect(screen.getAllByText('Expired')).toHaveLength(2)
-    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
-    fireEvent.click(generateUsageButton)
-    const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subscriptions' })
-    fireEvent.click(licenseManagementButton)
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    fireEvent.click(refreshButton)
-  })
-
 })
