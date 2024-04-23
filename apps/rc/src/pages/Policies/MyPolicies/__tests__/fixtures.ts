@@ -16,16 +16,3 @@ export const mockedRogueApPoliciesList = {
     }
   ]
 }
-
-export const emptyPoliciesList = {
-  fields: [
-    'scope',
-    'name',
-    'cog',
-    'id',
-    'type'
-  ],
-  totalCount: 0,
-  page: 1,
-  data: []
-}

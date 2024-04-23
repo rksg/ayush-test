@@ -15,6 +15,7 @@ import {
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
+  SwitchPortViewModelQueryFields,
   SwitchVlan,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
@@ -69,16 +70,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
 
-  const queryFields = ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-    'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-    'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-    'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-    'lagId', 'syncedSwitchConfig', 'usedInFormingStack',
-    'ingressAclName', 'egressAclName', 'vsixIngressAclName', 'vsixEgressAclName',
-    'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-    'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-    'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
-  ]
+  const queryFields = SwitchPortViewModelQueryFields
 
   const settingsId = 'switch-port-table'
   const tableQuery = usePollingTableQuery({
@@ -391,13 +383,13 @@ export function isLAGMemberPort (port: SwitchPortViewModel): boolean {
   return !!port.lagId && port.lagId.trim() !== '0' && port.lagId.trim() !== '-1'
 }
 
-function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
+export function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
   return port && port.deviceStatus
     ? isOperationalSwitch(port.deviceStatus, port.syncedSwitchConfig)
     : false
 }
 
-function isStackPort (port: SwitchPortViewModel): boolean {
+export function isStackPort (port: SwitchPortViewModel): boolean {
   const slot = port.portIdentifier.split('/')?.[1]
   if (isICX7650Port(getSwitchModel(port.switchUnitId)) && (slot === '3' || slot === '4')) {
     return true

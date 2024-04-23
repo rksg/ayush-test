@@ -347,9 +347,15 @@ export interface ApModelFirmware {
   category: FirmwareCategory;
   releaseDate: string;
   onboardDate: string;
-  supportedApModels: string[];
+  supportedApModels?: string[];
 }
 
-export interface VenueApModelFirmwaresUpdatePayload {
+export interface UpdateFirmwarePerApModelPayload {
+  targetFirmwares: { apModel: string, firmware: string }[]
+}
+
+export interface UpdateFirmwareSchedulePerApModelPayload {
+  date: string;
+  time: string;
   targetFirmwares: { apModel: string, firmware: string }[]
 }
