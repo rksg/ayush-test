@@ -79,7 +79,7 @@ describe('NetworkMoreSettingsForm', () => {
     const tabs = await screen.findAllByRole('tab')
     // The User Connection tab is hidden when the nwtwork type is not Captive Portal
     // The Advanced tab is hidden when the QoS feature flag are turned Off
-    expect(tabs.length).toBe(4)
+    expect(tabs.length).toBe(5)
     const networkControlTab = tabs[1]
     await userEvent.click(networkControlTab)
 
@@ -93,7 +93,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
 
     const tabs = await screen.findAllByRole('tab')
-    expect(tabs.length).toBe(5)
+    expect(tabs.length).toBe(6)
   })
 
 })
