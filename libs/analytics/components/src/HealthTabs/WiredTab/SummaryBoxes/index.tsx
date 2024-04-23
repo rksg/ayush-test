@@ -16,29 +16,20 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
   }
 
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
-  // const formatValue = (value: number | undefined) => {
-  //   if (value == null) return noDataDisplay
-  //   return formatter('countFormat')(value)
-  // }
-
-
-  // eslint-disable-next-line no-console
-  console.log('#### summaryData: ', summaryData)
 
   const mapping: StatsCardProps[] = [
     {
       type: 'green',
       values: [{
         title: defineMessage({ defaultMessage: 'DHCP Failure' }),
-        value: !isNil(summaryData?.dhcpSuccessAttemptCount.successCount) &&
-        summaryData?.dhcpSuccessAttemptCount.attemptCount
+        value: !isNil(summaryData?.switchDHCP.successCount) &&
+        summaryData?.switchDHCP.attemptCount
           ? formatter('percentFormat')(
-            summaryData?.dhcpSuccessAttemptCount.successCount /
-            summaryData?.dhcpSuccessAttemptCount.attemptCount)
+            summaryData?.switchDHCP.successCount /
+            summaryData?.switchDHCP.attemptCount)
           : noDataDisplay
       }],
-      // eslint-disable-next-line no-console
-      onClick: () => { console.log('DHCP Failure more details clicked') }
+      onClick: () => { }
     },
     {
       type: 'red',
@@ -46,8 +37,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         title: defineMessage({ defaultMessage: 'Congestion' }),
         value: 'X2%'
       }],
-      // eslint-disable-next-line no-console
-      onClick: () => { console.log('Congestion more details clicked') }
+      onClick: () => { }
     },
     {
       type: 'yellow',
@@ -55,18 +45,15 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         title: defineMessage({ defaultMessage: 'Ports exp. Storm' }),
         value: 'X3%'
       }],
-      // eslint-disable-next-line no-console
-      onClick: () => { console.log('Ports exp. Storm more details clicked') }
+      onClick: () => { }
     },
     {
-      // TODO: integrate with api
       type: 'grey',
       values: [{
         title: defineMessage({ defaultMessage: 'High CPU' }),
         value: 'X4%'
       }],
-      // eslint-disable-next-line no-console
-      onClick: () => { console.log('High CPU more details clicked') }
+      onClick: () => { }
     }
   ]
 

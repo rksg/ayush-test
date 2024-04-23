@@ -12,7 +12,7 @@ export interface RequestPayload {
 }
 
 export interface WiredSummaryResult {
-  dhcpSuccessAttemptCount: {
+  switchDHCP: {
     attemptCount: number
     successCount: number
   }
@@ -32,7 +32,7 @@ export const api = dataApi.injectEndpoints({
           ) {
             network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
-                dhcpSuccessAttemptCount {
+                switchDHCP {
                   attemptCount
                   successCount
                 }
