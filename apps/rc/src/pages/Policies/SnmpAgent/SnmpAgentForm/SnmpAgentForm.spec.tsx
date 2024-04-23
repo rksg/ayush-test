@@ -14,11 +14,13 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import SnmpAgentForm from './SnmpAgentForm'
 
+const mockedTenantId = '__Tenant_ID__'
+const mockedPolicyId = '__Policy_ID__'
 
 const mockSnmpData = {
   policyName: 'www',
-  id: '876899c9f9a64196b4604fe5d5dac9d2',
-  tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+  id: mockedPolicyId,
+  tenantId: mockedTenantId,
   snmpV2Agents: [
     {
       communityName: 'joe_cn1',
@@ -37,20 +39,18 @@ const mockSnmpData = {
   snmpV3Agents: [
     {
       userName: 'joe_un1',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: 'Trap',
-      targetAddr: '192.168.0.100',
-      targetPort: 162,
+      readPrivilege: true,
+      trapPrivilege: false,
       authProtocol: 'SHA',
       authPassword: '1234567890',
       privacyProtocol: 'None'
     },
     {
       userName: 'joe_un2',
-      readPrivilege: true,
-      trapPrivilege: false,
+      readPrivilege: false,
+      trapPrivilege: true,
       notificationType: 'Trap',
+      targetAddr: '192.168.0.201',
       targetPort: 162,
       authProtocol: 'MD5',
       authPassword: '123456789',
@@ -61,55 +61,11 @@ const mockSnmpData = {
 }
 
 const mockSnmpListData = [
+  mockSnmpData,
   {
-    policyName: 'www',
-    id: '876899c9f9a64196b4604fe5d5dac9d2',
-    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
-    snmpV2Agents: [
-      {
-        communityName: 'joe_cn1',
-        readPrivilege: true,
-        trapPrivilege: false,
-        notificationType: 'Trap',
-        targetPort: 162
-      },
-      {
-        communityName: 'joe_cn2',
-        readPrivilege: false,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.120',
-        targetPort: 162
-      }
-    ],
-    snmpV3Agents: [
-      {
-        userName: 'joe_un1',
-        readPrivilege: false,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.100',
-        targetPort: 162,
-        authProtocol: 'SHA',
-        authPassword: '1234567890',
-        privacyProtocol: 'None'
-      },
-      {
-        userName: 'joe_un2',
-        readPrivilege: true,
-        trapPrivilege: false,
-        notificationType: 'Trap',
-        targetPort: 162,
-        authProtocol: 'MD5',
-        authPassword: '123456789',
-        privacyProtocol: 'AES',
-        privacyPassword: '12345678'
-      }
-    ]
-  }, {
     policyName: 'ttt',
-    id: '876899c9f9a64196b4604fe5d5dac9d8',
-    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    id: '__Policy_ID_2__',
+    tenantId: mockedTenantId,
     snmpV2Agents: [
       {
         communityName: 'ttt2',
@@ -135,8 +91,7 @@ const mockSnmpListData = [
     ]
   }]
 
-const mockedTenantId = '__Tenant_ID__'
-const mockedPolicyId = '__Policy_ID__'
+
 
 // eslint-disable-next-line max-len
 const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })
@@ -234,6 +189,13 @@ describe('SnmpAgentForm', () => {
 
     // data has been loaded
     expect(await screen.findByDisplayValue('www')).toBeInTheDocument()
+    expect(await screen.findByText('joe_cn1')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+      expect(mockEditFn).toBeCalled()
+    })
   })
 
   it('should Policy name not empty and duplicated', async () => {
