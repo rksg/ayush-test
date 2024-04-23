@@ -521,7 +521,6 @@ export function ManageIntegrator () {
         <UI.AdminList key={admin.id}>
           {admin.email} ({roleDisplayText[admin.role]
             ? intl.$t(roleDisplayText[admin.role]) : admin.role})
-
         </UI.AdminList>
       )}
     </>
