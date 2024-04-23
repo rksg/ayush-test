@@ -365,7 +365,7 @@ describe('RcRoutes: Devices', () => {
   })
 
   describe('should render correctly when abac is enabled', () => {
-    it('has permission', async () => {
+    it('has permission: switch', async () => {
       setUserProfile({
         ...getUserProfile(),
         abacEnabled: true,

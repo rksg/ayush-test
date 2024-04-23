@@ -43,7 +43,7 @@ describe('ReportList', () => {
   })
 
   describe('should render correctly when abac is enabled', () => {
-    it('has permission', () => {
+    it('has permission: switch', () => {
       setUserProfile({
         ...getUserProfile(),
         abacEnabled: true,

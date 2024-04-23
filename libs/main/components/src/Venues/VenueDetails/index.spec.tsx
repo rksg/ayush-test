@@ -1,37 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { venueApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen }          from '@acx-ui/test-utils'
-import { RolesEnum, SwitchScopes }             from '@acx-ui/types'
-import { getUserProfile, setUserProfile }      from '@acx-ui/user'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { venueApi }                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                 from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { RolesEnum, SwitchScopes }        from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
-import {
-  venueDetailHeaderData,
-  venueNetworkList,
-  networkDeepList,
-  serviceProfile,
-  venueNetworkApGroupData
-} from '../__tests__/fixtures'
-
-import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
+import { venueDetailHeaderData } from '../__tests__/fixtures'
 
 import { VenueDetails } from '.'
-
-const data: Dashboard = {
-  summary: {
-    alarms: {
-      summary: {
-        critical: 1,
-        major: 1
-      },
-      totalCount: 2
-    }
-  }
-}
 
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
@@ -44,7 +24,9 @@ jest.mock('@acx-ui/rc/components', () => {
     .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
-
+jest.mock('./VenueOverviewTab', () => ({
+  VenueOverviewTab: () => <div data-testid={'rc-VenueOverviewTab'} title='VenueOverviewTab' />
+}))
 jest.mock('./VenueAnalyticsTab', () => ({
   VenueAnalyticsTab: () => <div data-testid={'rc-VenueAnalyticsTab'} title='VenueAnalyticsTab' />
 }))
@@ -80,69 +62,6 @@ describe('VenueDetails', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
-      ),
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (req, res, ctx) => res(ctx.json(data))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
-      ),
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
-      ),
-      rest.get(
-        DHCPUrls.getVenueDHCPServiceProfile.url,
-        (_, res, ctx) => res(ctx.json(serviceProfile))
-      ),
-      rest.post(
-        CommonUrlsInfo.getEventList.url,
-        (_, res, ctx) => res(ctx.json(events))
-      ),
-      rest.post(
-        CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventsMeta))
-      ),
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsList.url,
-        (_, res, ctx) => res(ctx.json({
-          data: [],
-          totalCount: 0
-        }))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueFloorplans.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsListMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAllDevices.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        CommonUrlsInfo.getVenueRogueAp.url,
-        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -162,6 +81,7 @@ describe('VenueDetails', () => {
     })
     expect(await screen.findByText('testVenue')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(7)
+    expect(await screen.findByTestId('rc-VenueOverviewTab')).toBeVisible()
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -300,6 +220,7 @@ describe('VenueDetails', () => {
       })
       expect(await screen.findByText('testVenue')).toBeVisible()
       expect(screen.getAllByRole('tab')).toHaveLength(6)
+      expect(await screen.findByTestId('rc-VenueOverviewTab')).toBeVisible()
     })
 
     it('has no permission', async () => {
@@ -320,6 +241,7 @@ describe('VenueDetails', () => {
       })
       expect(await screen.findByText('testVenue')).toBeVisible()
       expect(screen.getAllByRole('tab')).toHaveLength(4)
+      expect(await screen.findByTestId('rc-VenueOverviewTab')).toBeVisible()
     })
   })
 })

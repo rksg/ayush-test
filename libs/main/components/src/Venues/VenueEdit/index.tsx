@@ -119,16 +119,16 @@ export function VenueEdit () {
 
   useEffect(() => {
     const hasNoPermissions
-    = !hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi'
-    || !hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch'
+    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
+    || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
 
     if (hasNoPermissions) {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}/no-permissions`
-      })
+      }, { replace: true })
     }
-  }, [])
+  }, [activeTab, basePath, navigate])
 
   return (
     <VenueEditContext.Provider value={{

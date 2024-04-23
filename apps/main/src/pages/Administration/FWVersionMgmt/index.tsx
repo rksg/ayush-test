@@ -36,6 +36,7 @@ const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const tenantBasePath = useTenantLink('')
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
@@ -56,6 +57,12 @@ const FWVersionMgmt = () => {
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
+
+  const hasNoPermissions
+    = (!hasPermission({ scopes: [WifiScopes.READ] }) && params?.activeSubTab === 'apFirmware')
+    // eslint-disable-next-line max-len
+    || (!hasPermission({ scopes: [SwitchScopes.READ] }) && params?.activeSubTab === 'switchFirmware')
+    || (!hasPermission({ scopes: [EdgeScopes.READ] }) && params?.activeSubTab === 'edgeFirmware')
 
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
@@ -83,6 +90,15 @@ const FWVersionMgmt = () => {
       item.versions?.[0].id !== latestEdgeReleaseVersion?.id)
     setIsEdgeFirmwareAvailable(!!hasOutdated)
   }, [edgeVenueVersionList, latestEdgeReleaseVersion])
+
+  useEffect(() => {
+    if (hasNoPermissions) {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/no-permissions`
+      }, { replace: true })
+    }
+  }, [ hasNoPermissions, tenantBasePath, navigate ])
 
   const tabs = {
     apFirmware: {
