@@ -218,7 +218,6 @@ export function parseTopologyData (
 
   // Calibrate the edge direction
   const edgeCalibrateResult: Link[] = validateEdgeDirection(edgeResult, nodeMap)
-  console.log(edgeCalibrateResult)
 
   // Build the tree structure based on the edges
   edgeCalibrateResult.forEach((edge: Link) => {
