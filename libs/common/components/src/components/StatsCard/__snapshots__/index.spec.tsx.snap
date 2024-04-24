@@ -82,7 +82,7 @@ exports[`StatsCard should render correctly with title and link and 2 values and 
       class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
     >
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
         style="width: 50%;"
       >
         <div
@@ -114,7 +114,7 @@ exports[`StatsCard should render correctly with title and link and 2 values and 
         role="separator"
       />
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
         style="width: 50%;"
       >
         <div
@@ -187,7 +187,7 @@ exports[`StatsCard should render correctly with title and link and values 1`] = 
       class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
     >
       <div
-        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 ibMvk"
+        class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
         style="width: 100%;"
       >
         <div

@@ -96,7 +96,6 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
       values: traffic
     },
     {
-      // TODO: integrate with api
       type: 'grey',
       title: defineMessage({ defaultMessage: 'Power Utilization' }),
       values: powerUtilization

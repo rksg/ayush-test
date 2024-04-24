@@ -1,0 +1,535 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Failure
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    29.97%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congestion
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X2%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Ports exp. Storm
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X3%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    12.35%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Failure
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    29.97%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congestion
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X2%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Ports exp. Storm
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X3%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    12.35%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should show when no data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Failure
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congestion
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X2%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Ports exp. Storm
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    X3%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 hDtfoa"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="styledComponents__Link-sc-1jdne8l-3 brALVm"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
