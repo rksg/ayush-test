@@ -7,14 +7,14 @@ import { useIntl }                        from 'react-intl'
 import * as UI                   from '../../VenueFirmwareList/styledComponents'
 import { ExpandableApModelList } from '../venueFirmwareListPerApModelUtils'
 
-export interface ApFirmwareUpdateGroupProps {
+interface UpdateFirmwarePerApModelGroupProps {
   apModels: string[]
   versionOptions: DefaultOptionType[]
   update: (apModels: string[], version: string | undefined) => void
   defaultVersion: string
 }
 
-export function ApFirmwareUpdateGroup (props: ApFirmwareUpdateGroupProps) {
+export function UpdateFirmwarePerApModelGroup (props: UpdateFirmwarePerApModelGroupProps) {
   const { $t } = useIntl()
   const { apModels, versionOptions, update, defaultVersion } = props
   // eslint-disable-next-line max-len

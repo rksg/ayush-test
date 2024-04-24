@@ -4,8 +4,6 @@ import {
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
-  CommonUrlsInfo,
-  Policy,
   RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
@@ -709,34 +707,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'RogueAp', id: 'LIST' }
             ]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
-    }),
-    policyList: build.query<TableResult<Policy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
-        return {
-          ...policyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile',
-            'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile',
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool',
-            'PatchVlanPool',
-            'DeleteVlanPools',
-            ...clientIsolationMutationUseCases
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
         })
       },
@@ -2511,7 +2481,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
 })
 
 export const {
-  usePolicyListQuery,
   useMacRegListsQuery,
   useSearchMacRegListsQuery,
   useLazySearchMacRegListsQuery,

@@ -17,6 +17,7 @@ import {
   Tooltip,
   showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { VenueRadioContext }                                      from '@acx-ui/rc/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -335,6 +336,7 @@ export function RadioSettings () {
   const [venue, setVenue] = useState({} as VenueExtended)
   const [venueBandMode, setVenueBandMode] = useState(BandModeEnum.DUAL)
   const [afcProps, setAfcProps] = useState({} as AFCProps)
+  const [venueRadioData, setVenueRadioData] = useState({} as VenueRadioCustomization)
 
   const [isSupportTriBandRadioAp, setIsSupportTriBandRadioAp] = useState(false)
   const [isSupportBandManagementAp, setIsSupportBandManagementAp] = useState(false)
@@ -563,6 +565,7 @@ export function RadioSettings () {
 
       const venueRadioData = (await getVenueCustomization({
         params: { tenantId, venueId: venue.id } }, true).unwrap())
+      setVenueRadioData(venueRadioData)
       const apVenueData = convertVenueRadioSetingsToApRadioSettings(venueRadioData)
       venueRef.current = apVenueData
 
@@ -711,6 +714,10 @@ export function RadioSettings () {
     setCurrentTab((Object.keys(RadioType).find(key => key === tab) || RadioType.Normal24GHz) as RadioType)
   }
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleEnableChanged = (value: boolean, fieldName: string) => {
     switch(fieldName) {
       case 'enable24G':
@@ -837,6 +844,10 @@ export function RadioSettings () {
       }
     }
     try {
+
+      const validationResult = await validationFields() as any
+      if (validationResult?.errorFields) return
+
       setEditContextData?.({
         ...editContextData,
         isDirty: false
@@ -1210,21 +1221,23 @@ export function RadioSettings () {
               isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)}
             />
           </div>
-          <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
-            <ApSingleRadioSettings
-              isEnabled={isEnable6g}
-              radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
-              useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
-              enabledFieldName={['enable6G']}
-              onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
-              radioType={ApRadioTypeEnum.Radio6G}
-              supportChannels={support6GChannels}
-              bandwidthOptions={bandwidth6GOptions}
-              handleChanged={handleChange}
-              isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)}
-              afcProps={afcProps}
-            />
-          </div>
+          <VenueRadioContext.Provider value={{ venue, venueRadio: venueRadioData }}>
+            <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
+              <ApSingleRadioSettings
+                isEnabled={isEnable6g}
+                radioTypeName={getRadioTypeDisplayName(RadioType.Normal6GHz)}
+                useVenueSettingsFieldName={['apRadioParams6G', 'useVenueSettings']}
+                enabledFieldName={['enable6G']}
+                onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
+                radioType={ApRadioTypeEnum.Radio6G}
+                supportChannels={support6GChannels}
+                bandwidthOptions={bandwidth6GOptions}
+                handleChanged={handleChange}
+                isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)}
+                afcProps={afcProps}
+              />
+            </div>
+          </VenueRadioContext.Provider>
           {isSupportDual5GAp && (
             <>
               <div style={{ display: currentTab === RadioType.Lower5GHz ? 'block' : 'none' }}>

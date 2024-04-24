@@ -43,7 +43,8 @@ function ThresholdConfig ({
   onReset,
   onApply,
   canSave,
-  isNetwork
+  isNetwork,
+  disabled
 }: {
   thresholdValue: number;
   percent: number;
@@ -53,6 +54,7 @@ function ThresholdConfig ({
   onApply: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
+  disabled?: boolean
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
@@ -78,7 +80,7 @@ function ThresholdConfig ({
           {$t(thresholdDescText.metGoal)}
         </UI.HistogramBoldContent>
       </UI.HistogramGoalPercentage>
-      <UI.BtnWrapper>
+      {!disabled && <UI.BtnWrapper>
         <Button
           style={{ width: 70 }}
           size='small'
@@ -105,7 +107,7 @@ function ThresholdConfig ({
             {$t(thresholdDescText.applyBtn)}
           </Button>
         }
-      </UI.BtnWrapper>
+      </UI.BtnWrapper>}
     </UI.HistogramConfig>
   )
 }

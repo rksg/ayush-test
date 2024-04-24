@@ -38,7 +38,8 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum, NetworkTypeEnum
+  WlanSecurityEnum, NetworkTypeEnum,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -88,6 +89,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
@@ -362,7 +364,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 )}
               </Form.Item>
 
-              <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
+              <Radio disabled={isTemplate} value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.List name='apgroups'>

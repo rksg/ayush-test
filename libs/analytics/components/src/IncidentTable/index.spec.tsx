@@ -14,7 +14,9 @@ import {
   mockGraphqlMutation,
   within
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { DateRange }                      from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
@@ -402,6 +404,28 @@ describe('IncidentTable', () => {
 
     const afterReset = await screen.findAllByRole('radio', { hidden: true, checked: false })
     expect(afterReset).toHaveLength(2)
+  })
+
+  it('should hide muted when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false
+      }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 
   it('should render drawer when click on description', async () => {

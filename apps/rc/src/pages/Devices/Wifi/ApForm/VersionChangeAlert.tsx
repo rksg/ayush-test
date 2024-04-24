@@ -3,15 +3,15 @@ import { useIntl } from 'react-intl'
 import { compareVersions } from '@acx-ui/utils'
 
 interface VersionChangeAlertProps {
-  targetVenueVersion: string
-  apFirmwareVersion: string
+  targetVersion: string
+  existingVersion: string
 }
 
 export function VersionChangeAlert (props: VersionChangeAlertProps) {
   const { $t } = useIntl()
-  const { targetVenueVersion, apFirmwareVersion } = props
+  const { targetVersion, existingVersion } = props
 
-  if (compareVersions(targetVenueVersion, apFirmwareVersion) >= 0) {
+  if (compareVersions(targetVersion, existingVersion) >= 0) {
     return null
   }
 

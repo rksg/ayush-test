@@ -5,6 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
+import { isDataRetained } from '../utils'
+
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,
@@ -17,7 +19,7 @@ import { getRecommendationsText, getValues } from './Values'
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const {
-    appliedOnce, status, original, current, recommended
+    appliedOnce, firstAppliedAt, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
   const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
@@ -28,7 +30,9 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Original Configuration' })
         : $t({ defaultMessage: 'Current Configuration' }),
-      value: applied ? original : current
+      value: isDataRetained(firstAppliedAt)
+        ? (applied ? original : current)
+        : $t({ defaultMessage: 'Beyond data retention period' })
     },
     {
       label: applied

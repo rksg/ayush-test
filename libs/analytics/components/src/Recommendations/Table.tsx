@@ -21,6 +21,7 @@ import { get }                                from '@acx-ui/config'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }      from '@acx-ui/user'
 import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
@@ -447,7 +448,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.crrmFullOptimization}
-            disabled={!canToggle || record.isMuted}
+            disabled={!canToggle || record.isMuted || !hasPermission()}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
@@ -469,8 +470,8 @@ export function RecommendationTable (
         type='tall'
         dataSource={showCrrm ? data : noCrrmData}
         columns={columns}
-        rowActions={rowActions}
-        rowSelection={{
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

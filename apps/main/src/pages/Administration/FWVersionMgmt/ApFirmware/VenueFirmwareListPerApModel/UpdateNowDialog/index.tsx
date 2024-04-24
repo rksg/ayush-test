@@ -1,0 +1,82 @@
+import { useState } from 'react'
+
+
+import { useIntl } from 'react-intl'
+
+import { Modal }                                                    from '@acx-ui/components'
+import { usePatchVenueApModelFirmwaresMutation }                    from '@acx-ui/rc/services'
+import { FirmwareVenuePerApModel, UpdateFirmwarePerApModelPayload } from '@acx-ui/rc/utils'
+
+import * as UI                          from '../../VenueFirmwareList/styledComponents'
+import { firmwareNote1, firmwareNote2 } from '../../VenueFirmwareList/UpdateNowDialog'
+
+import { UpdateFirmwarePerApModelPanel } from './UpdateFirmwarePerApModelPanel'
+
+
+export type UpdateFirmwarePerApModelFirmware = UpdateFirmwarePerApModelPayload['targetFirmwares']
+
+export interface UpdateNowPerApModelDialogProps {
+  onCancel: () => void
+  afterSubmit: () => void
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
+}
+
+export function UpdateNowPerApModelDialog (props: UpdateNowPerApModelDialogProps) {
+  const { $t } = useIntl()
+  const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
+  const [ disableSave, setDisableSave ] = useState(false)
+  const [ payload, setPayload ] = useState<UpdateFirmwarePerApModelFirmware>([])
+  const [ updateVenueApModelFirmwares ] = usePatchVenueApModelFirmwaresMutation()
+
+  const triggerSubmit = async () => {
+    try {
+      const requests = selectedVenuesFirmwares.filter(v => !v.isFirmwareUpToDate).map(venueFw => {
+        return updateVenueApModelFirmwares({
+          params: { venueId: venueFw.id },
+          payload: { targetFirmwares: payload }
+        }).unwrap()
+      })
+
+      await Promise.all(requests)
+
+      onModalCancel()
+      afterSubmit()
+    } catch (err) {
+      console.log(err) // eslint-disable-line no-console
+    }
+  }
+
+  const onModalCancel = () => {
+    onCancel()
+  }
+
+  const updatePayload = (targetFirmwares: UpdateFirmwarePerApModelFirmware = []) => {
+    const compactedTargetFirmwares = targetFirmwares.filter(fw => fw.firmware)
+    setPayload(compactedTargetFirmwares)
+    setDisableSave(compactedTargetFirmwares.length === 0)
+  }
+
+  return (
+    <Modal
+      title={$t({ defaultMessage: 'Update Now' })}
+      visible={true}
+      width={560}
+      okText={$t({ defaultMessage: 'Update Firmware' })}
+      onOk={triggerSubmit}
+      onCancel={onModalCancel}
+      okButtonProps={{ disabled: disableSave }}
+      destroyOnClose={true}
+    >
+      <UpdateFirmwarePerApModelPanel
+        selectedVenuesFirmwares={selectedVenuesFirmwares}
+        updatePayload={updatePayload}
+      />
+      <UI.Section>
+        <UI.Ul>
+          <UI.Li>{$t(firmwareNote1)}</UI.Li>
+          <UI.Li>{$t(firmwareNote2)}</UI.Li>
+        </UI.Ul>
+      </UI.Section>
+    </Modal>
+  )
+}

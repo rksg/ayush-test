@@ -154,10 +154,11 @@ export function AddPrivilegeGroup () {
     }
   }
 
-  const DisplaySelectedVenues = () => {
+  function DisplaySelectedVenues (ownScope: boolean) {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
+    return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
+      marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -239,7 +240,7 @@ export function AddPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(true) }
     </>
   }
 
@@ -291,7 +292,7 @@ export function AddPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(false) }
 
       <Form.Item
         name='mspscope'

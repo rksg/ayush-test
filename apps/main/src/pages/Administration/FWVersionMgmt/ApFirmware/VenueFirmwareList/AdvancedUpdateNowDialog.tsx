@@ -4,8 +4,7 @@ import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
 import { defineMessage, useIntl }         from 'react-intl'
 
-import { Modal, Tooltip }   from '@acx-ui/components'
-import { InformationSolid } from '@acx-ui/icons'
+import { Modal }     from '@acx-ui/components'
 import {
   FirmwareCategory,
   FirmwareVenue,
@@ -16,7 +15,6 @@ import {
 import { findMaxActiveABFVersion, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware, MaxABFVersionMap } from '../../FirmwareUtils'
 
 import * as UI                                                                                       from './styledComponents'
-import { SupportedAPModelsList }                                                                     from './SupportedAPModelsList'
 import { firmwareNote1, firmwareNote2 }                                                              from './UpdateNowDialog'
 import { EolApFirmwareGroup, getRemainingApModels, UpgradableApModelsAndFamilies, useApEolFirmware } from './useApEolFirmware'
 
@@ -254,21 +252,14 @@ function ABFSelector (props: ABFSelectorProps) {
   }, [selectedVersion])
 
   return (<>
-    <UI.LabelWithHint>
-      <UI.TitleActive>
-        {abfLabel}&nbsp;
-        ({ apModels
-          ? apModels
-          // eslint-disable-next-line max-len
-          : <span className='empty'>{$t({ defaultMessage: 'No affected AP for this upgrade' })}</span>
-        })
-      </UI.TitleActive>
-      <Tooltip
-        overlayInnerStyle={{ minWidth: '500px' }}
-        children={<InformationSolid />}
-        title={<SupportedAPModelsList />}
-      />
-    </UI.LabelWithHint>
+    <UI.TitleActive>
+      {abfLabel}&nbsp;
+      ({ apModels
+        ? apModels
+        // eslint-disable-next-line max-len
+        : <span className='empty'>{$t({ defaultMessage: 'No affected AP for this upgrade' })}</span>
+      })
+    </UI.TitleActive>
     <UI.ValueContainer>
       <Radio.Group
         onChange={onSelectedVersionChange}
