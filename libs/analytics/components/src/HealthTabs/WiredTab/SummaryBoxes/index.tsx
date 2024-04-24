@@ -51,7 +51,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'grey',
       values: [{
         title: defineMessage({ defaultMessage: 'High CPU' }),
-        value: 'X4%'
+        value: !isNil(summaryData?.switchCpuUtilizationPct)
+          ? formatter('percentFormat')(summaryData?.switchCpuUtilizationPct)
+          : noDataDisplay
       }],
       onClick: () => { }
     }
