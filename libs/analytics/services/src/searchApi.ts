@@ -35,7 +35,7 @@ export interface NetworkHierarchy {
   switchCount: number
 }
 
-export interface SearchResponse extends APListResponse, SwitchListResponse, NetworkListReponse {
+export interface SearchResponse extends APListResponse, SwitchListResponse, NetworkListResponse {
   clients: Client[]
   networkHierarchy: NetworkHierarchy[]
 }
@@ -48,7 +48,7 @@ export interface SwitchListResponse {
   switches: Switch[]
 }
 
-export interface NetworkListReponse {
+export interface NetworkListResponse {
   wifiNetworks: Network[]
 }
 
@@ -163,7 +163,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
     }),
-    switchtList: build.query<SwitchListResponse, ListPayload>({
+    switchList: build.query<SwitchListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
@@ -229,7 +229,7 @@ export const networkSearchApi = dataApi.injectEndpoints({
       transformResponse: (response: { network: { search: APListResponse } }) =>
         response.network.search
     }),
-    networkList: build.query<NetworkListReponse, ListPayload>({
+    networkList: build.query<NetworkListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Network(
@@ -258,7 +258,7 @@ export const networkSearchApi = dataApi.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
-      transformResponse: (response: { network: { search: NetworkListReponse } }) =>
+      transformResponse: (response: { network: { search: NetworkListResponse } }) =>
         response.network.search
     }),
     networkClientList: build.query<ClientList, ListPayload>({
@@ -297,8 +297,10 @@ export const networkSearchApi = dataApi.injectEndpoints({
 
 export const {
   useSearchQuery,
-  useSwitchtListQuery
+  useSwitchListQuery,
+  useLazySwitchListQuery
 } = searchApi
+
 export const {
   useApListQuery,
   useNetworkListQuery,
