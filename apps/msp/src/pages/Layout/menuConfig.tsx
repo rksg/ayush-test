@@ -23,11 +23,11 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType }                                     from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasRoles  }                                      from '@acx-ui/user'
-import { AccountType  }                                   from '@acx-ui/utils'
+import { getConfigTemplatePath, hasConfigTemplateAccess }    from '@acx-ui/rc/utils'
+import { TenantType }                                        from '@acx-ui/react-router-dom'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRoles  }                                         from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload  } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -46,6 +46,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
+  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
+    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
 
   const {
     state
@@ -79,7 +81,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     }] : []),
-    {
+    ...(isHospitality ? (!isHspSupportEnabled || isSupport ? [] : [{
+      uri: '/dashboard/mspRecCustomers',
+      tenantType: 'v' as TenantType,
+      label: $t({ defaultMessage: 'Brand Properties' }),
+      inactiveIcon: UsersThreeOutlined,
+      activeIcon: UsersThreeSolid
+    }]) : [{
       label: $t({ defaultMessage: 'My Customers' }),
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
@@ -93,7 +101,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
             : $t({ defaultMessage: 'VAR Customers' })
         }])
       ]
-    },
+    }]),
     ...((isVar || isTechPartner || isSupport) ? [] : [{
       uri: '/integrators',
       label: $t({ defaultMessage: 'Tech Partners' }),
