@@ -200,7 +200,7 @@ export const zeroCurrTimeseries = {
   errors: []
 } as unknown as FranchisorTimeseries
 
-export const propertiesMappingData = [
+export const propertiesMappingData = { data: [
   {
     id: '1',
     name: 'property-1',
@@ -212,6 +212,7 @@ export const propertiesMappingData = [
     creationDate: '1704166457659',
     tenantType: 'MSP_REC',
     integrator: '4',
+    integrators: ['1'],
     installerCount: 0,
     integratorCount: 1
   },
@@ -226,6 +227,7 @@ export const propertiesMappingData = [
     creationDate: '1704166457659',
     tenantType: 'MSP_REC',
     integrator: '4',
+    integrators: ['1'],
     installerCount: 0,
     integratorCount: 1
   },
@@ -240,6 +242,7 @@ export const propertiesMappingData = [
     creationDate: '1704166457659',
     tenantType: 'MSP_REC',
     integrator: '4',
+    integrators: ['1'],
     installerCount: 0,
     integratorCount: 1
   },
@@ -280,7 +283,7 @@ export const propertiesMappingData = [
     installerCount: 0,
     integratorCount: 0
   }
-]
+]}
 export const franchisorZones = {
   data: [
     {

@@ -41,8 +41,8 @@ describe('services', () => {
       mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const { status, data, error } = await store.dispatch(
         api.endpoints.fetchBrandTimeseries.initiate({
-          chartKey,
-          ...baseProps
+          ...baseProps,
+          tenantIds: ['1', '2']
         })
       )
       expect(error).toBeUndefined()
@@ -57,9 +57,9 @@ describe('services', () => {
       mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const { status, data, error } = await store.dispatch(
         api.endpoints.fetchBrandTimeseries.initiate({
-          chartKey: 'incident' as const,
           ...baseProps,
-          ...date
+          ...date,
+          tenantIds: []
         })
       )
       expect(error).toBeUndefined()
