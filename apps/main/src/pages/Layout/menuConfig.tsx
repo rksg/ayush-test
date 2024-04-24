@@ -54,6 +54,10 @@ export function useMenuConfig () {
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -90,7 +94,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Network Assurance' }),
           children: [
             {
-              uri: '/analytics/health',
+              uri: `/analytics/health${isSwitchHealthEnabled ? '/overview' : ''}`,
               label: $t({ defaultMessage: 'Health' })
             },
             ...(isAnltAdvTier ? [{
