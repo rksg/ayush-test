@@ -25,8 +25,8 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         value: !isNil(summaryData?.switchDHCP.successCount) &&
         summaryData?.switchDHCP.attemptCount
           ? formatter('percentFormat')(
-            summaryData?.switchDHCP.successCount /
-            summaryData?.switchDHCP.attemptCount)
+            (summaryData?.switchDHCP.attemptCount - summaryData?.switchDHCP.successCount)
+        / summaryData?.switchDHCP.attemptCount )
           : noDataDisplay
       }],
       onClick: () => { }
