@@ -169,6 +169,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/entitlement',
     newApi: true
   },
+  getEntitlementsActivations: {
+    method: 'post',
+    url: '/entitlements/orders/query',
+    newApi: true
+  },
   refreshLicensesData: {
     method: 'get',
     url: '/entitlements/summaries?refresh=true',

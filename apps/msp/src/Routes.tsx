@@ -174,6 +174,7 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
+        <Route path=':activeTab' element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
