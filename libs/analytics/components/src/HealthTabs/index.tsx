@@ -1,7 +1,6 @@
-import { FormattedMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter }                                 from '@acx-ui/analytics/utils'
-import { Tooltip }                                            from '@acx-ui/components'
 import { Tabs }                                               from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -34,11 +33,11 @@ export function HealthTabs () {
   }
 
   const { data } = useSwitchCountQuery(payload)
-
   const wirelessOnly = data?.switchCount === 0
 
   return <Tabs
     onChange={onTabChange}
+    // destroyInactiveTabPane
     activeKey={activeSubTab}
     defaultActiveKey='overview'
     type='card'
@@ -49,25 +48,7 @@ export function HealthTabs () {
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wireless'>
       <HealthPage />
     </Tabs.TabPane>
-    <Tabs.TabPane tab={
-      wirelessOnly ?
-        <Tooltip
-          title={
-            <FormattedMessage
-              defaultMessage={`Switches have not been on boarded in your SmartZone
-              or there is <b>no RUCKUS switch</b> in your network`}
-              values={{
-                b: (content: string) => <b>{content}</b>
-              }}
-            />
-          }>
-          <span>{$t({ defaultMessage: 'Wired' })}</span>
-        </Tooltip>
-        :
-        $t({ defaultMessage: 'Wired' })
-    }
-    key='wired'
-    disabled={wirelessOnly}>
+    <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
       <WiredTab/>
     </Tabs.TabPane>
   </Tabs>

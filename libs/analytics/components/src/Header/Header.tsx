@@ -19,8 +19,10 @@ export type HeaderData = {
   subTitle: SubTitle[]
 }
 
-type UseHeaderExtraProps = {
+export type UseHeaderExtraProps = {
+  shouldQueryAp?: boolean,
   shouldQuerySwitch?: boolean,
+  shouldShowOnlyDomains?: boolean,
   withIncidents?: boolean,
   excludeNetworkFilter?: boolean,
   /** @default 'datepicker' */
@@ -29,16 +31,21 @@ type UseHeaderExtraProps = {
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
 const Filter = (
-  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
+  { shouldQueryAp = true, shouldQuerySwitch, shouldShowOnlyDomains,
+    withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {
   return excludeNetworkFilter
     ? null
     : isMLISA
-      ? <SANetworkFilter shouldQuerySwitch={Boolean(shouldQuerySwitch)} />
+      ? <SANetworkFilter
+        shouldQueryAp={Boolean(shouldQueryAp)}
+        shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+        shouldShowOnlyDomains={Boolean(shouldShowOnlyDomains)} />
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('network-filter')}
+        shouldQueryAp={Boolean(shouldQueryAp)}
         shouldQuerySwitch={Boolean(shouldQuerySwitch)}
-        shouldQueryAp
+        shouldShowOnlyVenues={Boolean(shouldShowOnlyDomains)}
         withIncidents={withIncidents}
       />
 }
@@ -65,10 +72,18 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
   ]
 }
 
-export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
+export const useNetworkFilter = ({ ...props }: UseHeaderExtraProps) => {
+  return <Filter
+    key={getShowWithoutRbacCheckKey('network-filter')}
+    {...props}
+  />
+}
+
+export const Header = ({
+  shouldQueryAp, shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   return <PageHeader
     {...props}
     title={props.title}
-    extra={useHeaderExtra({ shouldQuerySwitch, withIncidents })}
+    extra={useHeaderExtra({ shouldQueryAp, shouldQuerySwitch, withIncidents })}
   />
 }

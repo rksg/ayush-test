@@ -1,12 +1,11 @@
 import '@testing-library/jest-dom'
-import userEvent   from '@testing-library/user-event'
 import * as router from 'react-router-dom'
 
-import { Provider, dataApiURL, store }                          from '@acx-ui/store'
-import { render, screen, fireEvent, mockGraphqlQuery, waitFor } from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store }                 from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-import { switchCountFixture, switchCountNoDataFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
-import { api }                                          from './OverviewTab/SummaryBoxes/services'
+import { switchCountFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
+import { api }                from './OverviewTab/SummaryBoxes/services'
 
 import { HealthTabs } from '.'
 
@@ -54,9 +53,10 @@ describe('HealthTabs', () => {
       }) as unknown as ReturnType<typeof router.useLocation>
     )
 
-    render(<Provider>
-      <HealthTabs />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <HealthTabs />
+      </Provider>, { route: { params } })
     fireEvent.click(await screen.findByText('Wireless'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/t1/t/analytics/health/wireless'
@@ -77,40 +77,10 @@ describe('HealthTabs', () => {
     )
     render(<Provider>
       <HealthTabs />
-    </Provider>, { route: { params } })
+    </Provider> , { route: { params } })
     fireEvent.click(await screen.findByText('Wired'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/t1/t/analytics/health/wired'
     )
-  })
-
-  it('should show the tooltip when wired tab is disabled', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountNoDataFixture })
-    jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ tenantId: 't1' })
-    )
-    jest.spyOn(router, 'useLocation').mockImplementation(
-      () => ({
-        pathname: '/health',
-        search: '',
-        state: {}
-      }) as unknown as ReturnType<typeof router.useLocation>
-    )
-
-    render(<Provider>
-      <HealthTabs />
-    </Provider>, { route: { params } })
-
-    await waitFor(async () => {
-      const wiredTab= await screen.findByText('Wired')
-      expect(wiredTab.getAttribute('aria-disabled'))
-        .toBe(null)
-    })
-    const wiredTab= await screen.findByText('Wired')
-    await userEvent.hover(wiredTab)
-    await waitFor(async () => {
-      expect(await screen.findByRole('tooltip', { hidden: true }))
-        .toHaveTextContent('Switches have not been on boarded in your SmartZone')
-    })
   })
 })
