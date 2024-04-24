@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   Layout as LayoutComponent,
@@ -26,7 +27,7 @@ import { ConfigTemplateContext }                                                
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { getJwtTokenPayload, isDelegationMode, AccountType }                        from '@acx-ui/utils'
+import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }       from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -54,6 +55,8 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
+    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
 
@@ -132,6 +135,12 @@ function Layout () {
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
+        { isHospitality &&
+          <UI.VerticalTitle>
+            <Typography.Title level={3}>
+              {$t({ defaultMessage: 'Hospitality Edition' })}
+            </Typography.Title>
+          </UI.VerticalTitle>}
       </>}
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>

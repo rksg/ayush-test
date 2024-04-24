@@ -129,6 +129,7 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
