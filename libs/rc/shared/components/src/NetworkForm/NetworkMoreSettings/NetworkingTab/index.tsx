@@ -37,7 +37,6 @@ export function NetworkingTab (props: {
 
   const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
-  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
@@ -71,13 +70,9 @@ export function NetworkingTab (props: {
   let networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise]
-
-  if (enableWPA3_80211R) {
-    networkWPASecuredList = networkWPASecuredList.concat([
-      WlanSecurityEnum.WPA23Mixed,
-      WlanSecurityEnum.WPA3])
-  }
+    WlanSecurityEnum.WPA2Enterprise,
+    WlanSecurityEnum.WPA23Mixed,
+    WlanSecurityEnum.WPA3]
 
   const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
     networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false

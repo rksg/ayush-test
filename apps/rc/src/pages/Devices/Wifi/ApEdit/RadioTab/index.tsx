@@ -48,7 +48,6 @@ export function RadioTab () {
 
   const isAntTypeAP = (apCapabilities?.supportAntennaType) === true
   // waiting for the feature is implemented and useing feature flag to control
-  const supportClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_2_TOGGLE)
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
   const supportAntenna = supportAntTypeSelection
 
@@ -68,7 +67,7 @@ export function RadioTab () {
       </>
     )
   },
-  ...(supportClientAdmissionControl? [{
+  {
     title: clientAdmissionCtlTitle,
     content: (
       <>
@@ -87,7 +86,7 @@ export function RadioTab () {
         }
       </>
     )
-  }]: []),
+  },
   ...(supportAntenna? [{
     title: antennaTitle,
     content: (
