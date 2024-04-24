@@ -1050,6 +1050,7 @@ export function EditPortDrawer ({
                     initialValue={false}
                   >
                     <Switch
+                      data-testid='poeEnable'
                       disabled={getFieldDisabled('poeEnable')}
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
