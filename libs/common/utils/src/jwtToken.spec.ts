@@ -116,11 +116,12 @@ describe('loadImageWithJWT', () => {
       status: 200,
       json: () => Promise.resolve({ signedUrl: 'https://example.com/image.png' })
     }))
-    const { href, pathname } = window.location
+    const { href, pathname, origin } = window.location
     const url = 'http://dummy.com/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard'
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard' }
+      value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed0/t/dashboard',
+        origin: 'http:localhost' }
     })
 
     const token = {
@@ -139,15 +140,30 @@ describe('loadImageWithJWT', () => {
       expect.objectContaining({
         headers: {
           // eslint-disable-next-line max-len
-          Authorization: 'Bearer xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsImFjeF9hY2NvdW50X3ZlcnRpY2FsIjoiRGVmYXVsdCIsInRlbmFudFR5cGUiOiJSRUMiLCJpc0JldGFGbGFnIjpmYWxzZSwidGVuYW50SWQiOiI4YjllODMzOGM4MWQ0MDRlOTg2YzFkNjUxY2E3ZmVkMCJ9.xxx',
-          mode: 'no-cors'
+          'Authorization': 'Bearer xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsImFjeF9hY2NvdW50X3ZlcnRpY2FsIjoiRGVmYXVsdCIsInRlbmFudFR5cGUiOiJSRUMiLCJpc0JldGFGbGFnIjpmYWxzZSwidGVuYW50SWQiOiI4YjllODMzOGM4MWQ0MDRlOTg2YzFkNjUxY2E3ZmVkMCJ9.xxx',
+          'mode': 'no-cors',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       }))
     expect(result).toEqual('https://example.com/image.png')
 
+    await loadImageWithJWT('123', '/any-url')
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http:localhost/any-url',
+      expect.objectContaining({
+        headers: {
+          // eslint-disable-next-line max-len
+          'Authorization': 'Bearer xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsImFjeF9hY2NvdW50X3ZlcnRpY2FsIjoiRGVmYXVsdCIsInRlbmFudFR5cGUiOiJSRUMiLCJpc0JldGFGbGFnIjpmYWxzZSwidGVuYW50SWQiOiI4YjllODMzOGM4MWQ0MDRlOTg2YzFkNjUxY2E3ZmVkMCJ9.xxx',
+          'mode': 'no-cors',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }))
+
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { href, pathname }
+      value: { href, pathname, origin }
     })
   })
 

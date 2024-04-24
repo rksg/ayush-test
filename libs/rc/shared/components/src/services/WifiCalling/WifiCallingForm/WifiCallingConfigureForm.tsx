@@ -15,7 +15,7 @@ import {
   useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -28,8 +28,7 @@ export const WifiCallingConfigureForm = () => {
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
-  const { pathname: tablePath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
-  const linkToServices = useTenantLink(tablePath)
+  const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
 
   const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
@@ -68,7 +67,7 @@ export const WifiCallingConfigureForm = () => {
         params,
         payload: WifiCallingFormValidate(state)
       }).unwrap()
-      navigate(linkToServices, { replace: true })
+      navigate(previousPath, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -83,7 +82,7 @@ export const WifiCallingConfigureForm = () => {
       <StepsForm<CreateNetworkFormFields>
         form={form}
         editMode={true}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => navigate(previousPath)}
         onFinish={handleUpdateWifiCallingService}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
