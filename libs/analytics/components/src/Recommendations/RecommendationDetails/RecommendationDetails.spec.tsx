@@ -25,6 +25,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('RecommendationDetails', () => {
+  beforeEach(() => {
+    jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+      .mockImplementation(() => true)
+  })
   it('renders correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
       data: {
