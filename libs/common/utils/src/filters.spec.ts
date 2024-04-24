@@ -1,4 +1,4 @@
-import { generateDomainFilter } from "./filters"
+import { generateDomainFilter } from './filters'
 
 describe('Filters', () => {
   it('should generate domain filter', () => {

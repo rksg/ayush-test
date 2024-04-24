@@ -37,7 +37,7 @@ describe('services', () => {
   }
 
   it('should handle fetching timeseries correctly', async () => {
-    const fetchPromise = chartKeys.map(async chartKey => {
+    const fetchPromise = chartKeys.map(async () => {
       mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const { status, data, error } = await store.dispatch(
         api.endpoints.fetchBrandTimeseries.initiate({
