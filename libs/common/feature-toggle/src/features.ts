@@ -137,7 +137,6 @@ export enum Features {
   WIFI_DTIM_TOGGLE = 'wifi-dtim-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
-  WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
