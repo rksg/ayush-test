@@ -1,9 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { useSearchParams }                      from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes, EdgeScopes } from '@acx-ui/types'
-import { RolesEnum as Role }                    from '@acx-ui/types'
-import { useTenantId }                          from '@acx-ui/utils'
+import { RolesEnum as Role } from '@acx-ui/types'
+import { useTenantId }       from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -38,8 +36,6 @@ export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
   const tenantId = useTenantId()
-  const [searchParams] = useSearchParams()
-
   const {
     data: profile,
     isFetching: isUserProfileFetching
@@ -53,7 +49,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   const allowedOperationsFF = 'allowed-operations-toggle'
 
-  let abacEnabled = false, isCustomRole = false, scopes = null
+  let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
@@ -73,7 +69,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = !!profile?.customRoleName
     abacEnabled = featureFlagStates?.[abacFF] ?? false
-    scopes = profile?.scopes
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
@@ -82,12 +77,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
         .every(r => r in Role) ? userProfile.roles : [Role.PRIME_ADMIN]
       isCustomRole = false
     }
-
-    if (searchParams.get('scopes')) {
-      isCustomRole = true
-      abacEnabled = true
-      scopes = searchParams.get('scopes')?.split(',') as (WifiScopes | SwitchScopes | EdgeScopes)[]
-    }
     setUserProfile({
       profile: userProfile,
       allowedOperations,
@@ -95,7 +84,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       isCustomRole,
-      scopes: scopes
+      scopes: profile?.scopes
     })
   }
 
