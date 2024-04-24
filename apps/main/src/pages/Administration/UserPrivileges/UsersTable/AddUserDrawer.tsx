@@ -18,7 +18,9 @@ import {
   sfdcEmailRegExp,
   TenantAuthenticationType,
   TenantAuthentications,
-  getRoles
+  getRoles,
+  PrivilegeGroup,
+  CustomGroupType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -61,6 +63,8 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const [isSsoConfigured, setSsoConfigured] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
+  const [isSystemRoleSelected, setSelectedRole] = useState<Boolean>()
+
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const tenantAuthenticationData =
@@ -139,6 +143,10 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
   const handleCancel = () => {
     setVisible(false)
     form.resetFields()
+  }
+
+  const selectedPrivilegeGroup = (selected: PrivilegeGroup) => {
+    setSelectedRole(selected.type === CustomGroupType.SYSTEM)
   }
 
   useEffect(() => {
@@ -238,7 +246,9 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
           </div>}
 
         {isAbacToggleEnabled
-          ? <PrivilegeGroupSelector />
+          ? <PrivilegeGroupSelector
+            setSelected={selectedPrivilegeGroup}
+          />
           : <Form.Item
             name='role'
             style={{ marginTop: '13px' }}
@@ -253,7 +263,8 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             />
           </Form.Item> }
 
-        { isOnboardedMsp === true && <MspCustomerSelector /> }
+        { (isOnboardedMsp === true && isSystemRoleSelected === true)
+          && <MspCustomerSelector /> }
       </Form>
     </Drawer>
   )
