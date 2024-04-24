@@ -16,9 +16,9 @@ export const onIntlError: OnErrorFn = (error) => {
   console.error(error)
 }
 
-export function getReSkinningElements (intl?: IntlShape) {
+export function getReSkinningElements (supportReSkinning = false, intl?: IntlShape) {
   const { acx_account_vertical } = getJwtTokenPayload()
-  return acx_account_vertical === AccountVertical.HOSPITALITY ? {
+  return acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ? {
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
     venuePlural: () => intl ? intl.$t({ defaultMessage: 'spaces' }) : 'spaces',
     VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Space' }) : 'Space',
