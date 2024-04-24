@@ -83,6 +83,11 @@ export function useDelegateToMspEcPath () {
   return { delegateToMspEcPath }
 }
 
+const v4Header = {
+  'Content-Type': 'application/vnd.ruckus.v4+json',
+  'Accept': 'application/vnd.ruckus.v4+json'
+}
+
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
@@ -695,6 +700,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getBrandingData: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getUserProfilePver: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -870,6 +884,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    addBrandCustomers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params, v4Header)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     patchCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.patchCustomer, params)
@@ -970,6 +994,7 @@ export const {
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
+  useGetBrandingDataQuery,
   useLazyGetUserProfilePverQuery,
   useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
@@ -987,6 +1012,7 @@ export const {
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
+  useAddBrandCustomersMutation,
   usePatchCustomerMutation
 } = mspApi
 

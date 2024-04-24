@@ -221,12 +221,12 @@ export function SecurityTab () {
     showActionModal({
       type: 'confirm',
       width: 450,
-      title: $t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' }),
+      title: $t({ defaultMessage: 'TLS Enhanced Key' }),
       content:
         // eslint-disable-next-line max-len
         $t({ defaultMessage:
-          `Boosting TLS key will prompt a reboot of all AP devices within
-          this venue. Are you sure you want to continue?` }),
+          `Enabling TLS Enhanced key will prompt a reboot of all AP
+          devices within this venue. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
@@ -400,11 +400,12 @@ export function SecurityTab () {
               width='max-content'
               style={{ height: '32px', display: 'flex', alignItems: 'center', paddingLeft: '8px' }}
             >
-              <span>{$t({ defaultMessage: 'TLS Enhanced Key: RSA 3072/ECDSA P-256' })}</span>
+              <span>{$t({ defaultMessage: 'TLS Enhanced Key (RSA 3072/ECDSA P-256)' })}</span>
               <Tooltip.Question
                 // eslint-disable-next-line max-len
-                title={$t({ defaultMessage: 'Boosting TLS can enhance the TLS connection strength between APs and R1. Note that toggling the switch will prompt a reboot of all AP devices within this venue.' })}
+                title={$t({ defaultMessage: 'Strengthen the TLS connection strength between APs and R1 by utilizing RSA 3072 for WiFi 7 and ECDSA P-256 for non-WiFi 7 devices. Note that toggling the switch will prompt a reboot of all AP devices within this venue.' })}
                 placement='bottom'
+                iconStyle={{ height: '16px', width: '16px' }}
               />
               <div style={{ margin: '2px' }}></div>
               <Form.Item

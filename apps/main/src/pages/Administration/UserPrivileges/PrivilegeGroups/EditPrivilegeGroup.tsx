@@ -232,10 +232,12 @@ export function EditPrivilegeGroup () {
       const venues = (venuesList?.data.filter(venue =>
         privilegeGroup?.policies?.map(p => p.entityInstanceId).includes(venue.id)) || [])
       setVenues(venues)
-      setSelectedScope( venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
-      form.setFieldValue('mspvenues', venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
+      const venueRadioButton = venues.length > 0
+        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES
+      setSelectedScope(venueRadioButton)
+      isOnboardedMsp
+        ? form.setFieldValue('mspvenues', venueRadioButton)
+        : form.setFieldValue('scope', venueRadioButton)
 
       const ecCustomers = (customerList?.data.filter(customer =>
         privilegeGroup?.policyEntityDTOS?.map(p => p.tenantId).includes(customer.id)) || [])
@@ -264,10 +266,11 @@ export function EditPrivilegeGroup () {
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
-  const DisplaySelectedVenues = () => {
+  function DisplaySelectedVenues (ownScope: boolean) {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
+    return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
+      marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -345,7 +348,7 @@ export function EditPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(true)}
     </>
   }
 
@@ -396,7 +399,7 @@ export function EditPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(false)}
 
       <Form.Item
         name='mspscope'
