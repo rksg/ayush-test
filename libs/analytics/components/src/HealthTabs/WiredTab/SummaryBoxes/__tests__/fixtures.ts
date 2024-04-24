@@ -1,7 +1,9 @@
 export const wiredSummaryNoDataFixture = {
   network: {
     hierarchyNode: {
-      switchDHCP: { attemptCount: 0, successCount: 0 }
+      switchDHCP: { attemptCount: 0, successCount: 0 },
+      switchCpuUtilizationPct: 0
+
     }
   }
 }
@@ -9,7 +11,8 @@ export const wiredSummaryNoDataFixture = {
 export const wiredSummaryDataFixture = {
   network: {
     hierarchyNode: {
-      switchDHCP: { attemptCount: 1001, successCount: 701 }
+      switchDHCP: { attemptCount: 1001, successCount: 701 },
+      switchCpuUtilizationPct: 0.12345
     }
   }
 }
