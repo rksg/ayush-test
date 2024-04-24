@@ -54,8 +54,10 @@ import {
   QUALITY,
   ROAMING,
   INCIDENTS,
-  ALL
+  ALL,
+  TimelineItem
 } from './config'
+import { checkRollup }                     from './EventsTimeline'
 import * as UI                             from './styledComponents'
 import { getQualityColor, labelFormatter } from './util'
 
@@ -83,6 +85,8 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   onClick?: Function
   index?: React.Attributes['key'];
   popoverRef?: RefObject<HTMLDivElement>;
+  startDate: string;
+  config: TimelineItem;
 }
 
 export const getSeriesData = (
@@ -320,6 +324,8 @@ export function TimelineChart ({
   sharedChartName,
   popoverRef,
   onChartReady,
+  startDate,
+  config,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -345,6 +351,8 @@ export function TimelineChart ({
   )
   useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
 
+  const GranularityText = $t({ defaultMessage: 'Data granularity at this level is not available.' })
+
   const mappedData = useMemo(() => mapping
     .slice()
     .reverse()
@@ -356,12 +364,34 @@ export function TimelineChart ({
           symbol: 'circle',
           symbolSize: 8,
           animation: false,
-          data: getSeriesData(data, key, series, toggles),
+          data: checkRollup(config, startDate) ? [] : getSeriesData(data, key, series, toggles),
           itemStyle: {
             color: getSeriesItemColor
           },
           clip: true,
-          cursor: 'pointer'
+          cursor: 'pointer',
+          markArea: {
+            silent: true,
+            itemStyle: {
+              color: 'transparent'
+            },
+            data: [
+              [
+                {
+                  name: checkRollup(config, startDate) ? GranularityText : '',
+                  xAxis: 'min',
+                  yAxis: 'min',
+                  label: {
+                    offset: [0, 12]
+                  }
+                },
+                {
+                  xAxis: 'max',
+                  yAxis: 'max'
+                }
+              ]
+            ]
+          }
         })
         : ({
           type: 'custom',
@@ -371,9 +401,31 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: getSeriesData(data, key, series, toggles),
+          data: checkRollup(config, startDate) ? [] : getSeriesData(data, key, series, toggles),
           clip: true,
-          cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
+          cursor: (key === 'incidents') ? 'pointer' : 'crosshair',
+          markArea: {
+            silent: true,
+            itemStyle: {
+              color: 'transparent'
+            },
+            data: [
+              [
+                {
+                  name: checkRollup(config, startDate) ? GranularityText : '',
+                  xAxis: 'min',
+                  yAxis: 'min',
+                  label: {
+                    offset: [0, 12]
+                  }
+                },
+                {
+                  xAxis: 'max',
+                  yAxis: 'max'
+                }
+              ]
+            ]
+          }
         })
     ) as SeriesOption[], [data, mapping])
 
@@ -446,7 +498,7 @@ export function TimelineChart ({
       max: chartBoundary[1],
       splitLine: {
         show: false,
-        lineStyle: { color: cssStr('--acx-neutrals-20') }
+        lineStyle: { color: cssStr('--acx-primary-black') }
       },
       axisPointer: {
         show: hasData,

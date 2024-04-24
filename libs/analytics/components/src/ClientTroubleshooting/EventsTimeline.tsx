@@ -52,12 +52,17 @@ type TimeLineProps = {
   connectChart: (instance: ReactECharts) => void,
   sharedChartName: string,
   popoverRef: RefObject<HTMLDivElement>,
-  onChartReady: (instance: EChartsType) => void,
+  onChartReady: (instance: EChartsType) => void
 }
 
 type CoordDisplayEvent = DisplayEvent & {
   x: number,
   y: number
+}
+
+export const checkRollup = (config: TimelineItem, startDate: string) => {
+  return overlapsRollup(startDate)
+  && (config.value === 'roaming' || config.value === 'connectionQuality')
 }
 
 export function TimeLine (props: TimeLineProps) {
@@ -134,11 +139,6 @@ export function TimeLine (props: TimeLineProps) {
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
       { br: '\n', apMac, apModel, apFirmware })
 
-  const checkRollup = (config: TimelineItem) => {
-    return overlapsRollup(startDate)
-    && (config.value === 'roaming' || config.value === 'connectionQuality')
-  }
-
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -151,7 +151,7 @@ export function TimeLine (props: TimeLineProps) {
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
                     && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
-                  (checkRollup(config)
+                  (checkRollup(config, startDate)
                     ? true : false)
                 )}
               </Col>
@@ -161,7 +161,7 @@ export function TimeLine (props: TimeLineProps) {
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                {checkRollup(config)
+                {checkRollup(config, startDate)
                   ? null :config.showCount ? (
                     <UI.TimelineCount>
                       {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
@@ -219,60 +219,50 @@ export function TimeLine (props: TimeLineProps) {
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <Col span={24} key={config.value}>
-              {checkRollup(config)
-                ? <UI.RollupText>
-                  {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-                </UI.RollupText>
-                : <TimelineChart
-                  key={index}
-                  index={index}
-                  style={{ width: 'auto', marginBottom: 8 }}
-                  data={getChartData(
-        config?.value as keyof TimelineData,
-        TimelineData.connectionEvents.all,
-        expandObj[config?.value as keyof TimelineData],
-        !Array.isArray(qualities) ? qualities.all : [],
-        Array.isArray(incidents) ? incidents : [],
-        {
-          ...roamingEventsTimeSeries,
-          [ALL]: TimelineData.roaming.all
-        } as RoamingTimeSeriesData[]
-                  )}
-                  showResetZoom={config?.showResetZoom}
-                  chartBoundary={chartBoundary}
-                  hasXaxisLabel={config?.hasXaxisLabel}
-                  mapping={
-                    expandObj[config?.value as keyof TimelineData]
-                      ? config.value === TYPES.ROAMING
-                        ? config.chartMapping.concat(
-                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
-                        ).reverse()
-                        : config.chartMapping.slice().reverse()
-                      : [config.chartMapping[0]]
-                  }
-                  onDotClick={
+              <TimelineChart
+                key={index}
+                index={index}
+                style={{ width: 'auto', marginBottom: 8 }}
+                data={getChartData(
+                  config?.value as keyof TimelineData,
+                  TimelineData.connectionEvents.all,
+                  expandObj[config?.value as keyof TimelineData],
+                  !Array.isArray(qualities) ? qualities.all : [],
+                  Array.isArray(incidents) ? incidents : [],
+                  {
+                    ...roamingEventsTimeSeries,
+                    [ALL]: TimelineData.roaming.all
+                  } as RoamingTimeSeriesData[] )}
+                showResetZoom={config?.showResetZoom}
+                chartBoundary={chartBoundary}
+                hasXaxisLabel={config?.hasXaxisLabel}
+                mapping={
+                  expandObj[config?.value as keyof TimelineData]
+                    ? config.value === TYPES.ROAMING
+                      ? config.chartMapping.concat(
+                        getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                      ).reverse()
+                      : config.chartMapping.slice().reverse()
+                    : [config.chartMapping[0]]
+                }
+                onDotClick={
+                  /* istanbul ignore next */
+                  (params) => {
+                  /* istanbul ignore next */
+                    setEventState(params as CoordDisplayEvent)
                     /* istanbul ignore next */
-                    (params) => {
-                    /* istanbul ignore next */
-                      setEventState(params as CoordDisplayEvent)
-                      /* istanbul ignore next */
-                      setVisible(true)
-                    }}
-                  chartRef={connectChart}
-                  sharedChartName={sharedChartName}
-                  popoverRef={popoverRef}
-                  onChartReady={onChartReady}
-                />
-              }
+                    setVisible(true)
+                  }}
+                chartRef={connectChart}
+                sharedChartName={sharedChartName}
+                popoverRef={popoverRef}
+                onChartReady={onChartReady}
+                startDate={startDate}
+                config={config}
+              />
             </Col>
           ))}
-          {/* <Col span={24}>
-            {NoGranularityText()}
-          </Col> */}
         </Row>
-        {/* <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {NoGranularityText()}
-        </Row> */}
       </Col>
     </Row>
   )
