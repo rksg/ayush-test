@@ -160,7 +160,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X4%
+                    12.35%
                   </span>
                 </div>
               </div>
@@ -338,7 +338,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X4%
+                    12.35%
                   </span>
                 </div>
               </div>
@@ -516,7 +516,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X4%
+                    0%
                   </span>
                 </div>
               </div>
