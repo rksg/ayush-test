@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                            from 'antd/lib/select'
-import _                                                from 'lodash'
+import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                     from 'antd/lib/select'
+import _                                                         from 'lodash'
 
 import {
   Alert,
@@ -13,6 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -27,7 +29,8 @@ import {
   useLazyGetVlansByVenueQuery,
   useLazyGetVenueRoutedListQuery,
   useSwitchDetailHeaderQuery,
-  useSavePortsSettingMutation
+  useSavePortsSettingMutation,
+  useCyclePoeMutation
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -146,6 +149,7 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
+  const cyclePoeFFEnabled = !useIsSplitOn(Features.G_MAP)
   const [loading, setLoading] = useState<boolean>(true)
 
   const defaultVlanName = 'DEFAULT-VLAN'
@@ -189,6 +193,7 @@ export function EditPortDrawer ({
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [drawerAclVisible, setDrawerAclVisible] = useState(false)
+  const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -201,6 +206,7 @@ export function EditPortDrawer ({
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
+  const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
@@ -332,6 +338,7 @@ export function EditPortDrawer ({
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setUseVenueSettings(portSetting?.revert)
     setLldpQosList(portSetting?.lldpQos || [])
+    setCyclePoeEnable(portSetting.poeEnable)
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -374,6 +381,7 @@ export function EditPortDrawer ({
     const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
+    setCyclePoeEnable(portsSetting?.response?.filter(s => s?.poeEnable)?.length > 0)
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
@@ -438,6 +446,7 @@ export function EditPortDrawer ({
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
+      case 'cyclePoe': return disablePoeCapability || !cyclePoeEnable
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
         return isMultipleEdit && !checkboxEnabled
@@ -585,6 +594,15 @@ export function EditPortDrawer ({
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+  }
+
+  const onCyclePoe = async () => {
+    const venueId = selectedPorts[0].venueId
+    const payload = selectedPorts.map(port=>port.portIdentifier)
+    await cyclePoe({
+      params: { venueId, switchId },
+      payload
+    }).unwrap()
   }
 
   const resetFields = async () => {
@@ -746,6 +764,16 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+      {
+        cyclePoeFFEnabled && <>
+          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+            {$t({ defaultMessage: 'Cycle PoE' })}
+          </Button>
+          <UI.DrawerFooterDivider>
+            <Divider type='vertical' />
+          </UI.DrawerFooterDivider>
+        </>
+      }
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -767,7 +795,7 @@ export function EditPortDrawer ({
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
-      isFetching: isPortsSettingUpdating
+      isFetching: isPortsSettingUpdating || isCyclePoeUpdating
     }]}>
       {
         isCloudPort && <Alert

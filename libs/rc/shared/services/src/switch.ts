@@ -410,6 +410,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
+    cyclePoe: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.portsPowerCycle, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -1321,6 +1330,7 @@ export const {
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,
   useLazyGetPortsSettingQuery,
+  useCyclePoeMutation,
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
   useGetDefaultVlanQuery,
