@@ -67,7 +67,7 @@ export function NetworkingTab (props: {
     }
   }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
 
-  let networkWPASecuredList = [
+  const networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
     WlanSecurityEnum.WPA2Enterprise,
