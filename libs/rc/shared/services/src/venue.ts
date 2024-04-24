@@ -518,6 +518,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueSpecificUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(CommonUrlsInfo.getVenueSpecificUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
     updateFloorPlan: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateFloorplan, params)
@@ -1449,6 +1458,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      transformResponse: (data: ApManagementVlan ) => {
+        return {
+          ...data,
+          vlanId: data.vlanId ?? 1,
+          keepAp: !data.vlanId
+        }
       }
     }),
     updateVenueApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
@@ -1545,6 +1561,7 @@ export const {
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
   useGetUploadURLMutation,
+  useGetVenueSpecificUploadURLMutation,
   useUpdateFloorPlanMutation,
   useGetAllDevicesQuery,
   useUpdateSwitchPositionMutation,

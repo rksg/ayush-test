@@ -6,14 +6,15 @@ import { useIntl }       from 'react-intl'
 const { Option } = Select
 
 
-export interface ApFirmwareUpdateIndividualProps {
+interface UpdateFirmwarePerApModelIndividualProps {
   apModel: string
   versionOptions: { key: string, label: string }[]
   update: (apModel: string, version: string) => void
   defaultVersion: string
 }
 
-export function ApFirmwareUpdateIndividual (props: ApFirmwareUpdateIndividualProps) {
+// eslint-disable-next-line max-len
+export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApModelIndividualProps) {
   const { $t } = useIntl()
   const { apModel, versionOptions, update, defaultVersion } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)

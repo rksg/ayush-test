@@ -24,13 +24,14 @@ interface SelectRecCustomerDrawerProps {
   tenantId?: string
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspRecCustomer[]) => void
+  multiSelectionEnabled: boolean
 }
 
 export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
 
-  const { visible, setVisible, setSelected } = props
+  const { visible, setVisible, setSelected, multiSelectionEnabled } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
 
@@ -82,7 +83,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
           dataSource={queryResults?.data?.child_accounts}
           rowKey='account_name'
           rowSelection={{
-            type: 'radio',
+            type: multiSelectionEnabled ? 'checkbox' : 'radio',
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
             }
