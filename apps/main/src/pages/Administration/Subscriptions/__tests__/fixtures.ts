@@ -123,3 +123,11 @@ export const mockedSummary =
       remainingDevices: 0
     }
   ]
+
+export const fakeMspEcProfile = {
+  msp_label: '',
+  name: '',
+  service_effective_date: '',
+  service_expiration_date: '',
+  is_active: 'false'
+}
