@@ -479,7 +479,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchProfileList: {
     method: 'post',
-    url: '/switches/profiles/query',
+    url: '/switchProfiles/query',
     oldUrl: '/api/viewmodel/:tenantId/switch/profilelist',
     newApi: true
   },
