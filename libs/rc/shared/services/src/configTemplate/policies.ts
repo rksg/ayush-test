@@ -18,7 +18,7 @@ import {
   RogueAPDetectionContextType,
   EnhancedRoguePolicyType,
   RogueAPDetectionTempType,
-  VenueRoguePolicyType, VenueRogueAp
+  VenueRoguePolicyType, VenueRogueAp, ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -289,7 +289,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRoguePolicy),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
@@ -297,8 +297,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateVenueRogueAp',
-            'UpdateDenialOfServiceProtection'
+            'UpdateVenueTemplateRogueAp',
+            'UpdateVenueTemplateDenialOfServiceProtection'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len

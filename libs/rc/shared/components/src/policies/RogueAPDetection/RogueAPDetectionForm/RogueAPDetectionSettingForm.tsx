@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
@@ -11,11 +11,12 @@ import {
   useRoguePolicyQuery
 } from '@acx-ui/rc/services'
 import {
+  checkObjectNotExists,
+  EnhancedRoguePolicyType, PolicyType, policyTypeLabelMapping,
   RogueAPDetectionActionTypes,
   servicePolicyNameRegExp,
-  useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher,
-  useTableQuery
+  TableResult,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
@@ -28,9 +29,7 @@ type RogueAPDetectionSettingFormProps = {
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
   const { edit } = props
-  const [originalName, setOriginalName] = useState('')
 
   const form = Form.useFormInstance()
 
@@ -38,24 +37,19 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery, !edit
+  const { data: policyData } = useConfigTemplateQueryFnSwitcher(
+    useRoguePolicyQuery,
+    useGetRoguePolicyTemplateQuery,
+    !edit
   )
 
-  const defaultPayload = {
-    searchString: '',
-    fields: [
-      'id',
-      'name'
-    ]
-  }
-
-  const settingsId = 'policies-rogue-ap-detection-setting-form-table'
-  const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetRoguePolicyTemplateListQuery : useEnhancedRoguePoliciesQuery,
-    defaultPayload,
-    pagination: { settingsId, pageSize: 1000 }
-  })
+  // eslint-disable-next-line max-len
+  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<EnhancedRoguePolicyType>>(
+    useEnhancedRoguePoliciesQuery,
+    useGetRoguePolicyTemplateListQuery,
+    false,
+    { page: 1, pageSize: 10000 }
+  )
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
@@ -76,8 +70,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   }
 
   useEffect(() => {
-    if (edit && data) {
-      let policyData = data
+    if (edit && policyData) {
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_STATE,
         payload: {
@@ -90,11 +83,18 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
           }
         }
       })
-      setOriginalName(data.name || '')
       form.setFieldValue('policyName', policyData.name ?? '')
       form.setFieldValue('description', policyData.description ?? '')
     }
-  }, [data])
+  }, [policyData])
+
+  const nameValidator = (value: string) => {
+    const list = (policyList?.data ?? [])
+      .filter(n => n.id !== policyData?.id)
+      .map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value } , $t(policyTypeLabelMapping[PolicyType.ROGUE_AP_DETECTION]))
+  }
 
 
   return (
@@ -109,22 +109,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
               { required: true },
               { min: 2 },
               { max: 32 },
-              { validator: async (rule, value) => {
-                if (!edit && value
-                    && tableQuery.data?.data.findIndex((policy) => policy.name === value) !== -1) {
-                  return Promise.reject(
-                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                  )
-                }
-                if (edit && value && value !== originalName
-                    && tableQuery.data?.data.filter((policy) => policy.name !== originalName)
-                      .findIndex((policy) => policy.name === value) !== -1) {
-                  return Promise.reject(
-                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                  )
-                }
-                return Promise.resolve()
-              } },
+              { validator: (_, value) => nameValidator(value) },
               { validator: (_, value) => servicePolicyNameRegExp(value) }
             ]}
             validateFirst

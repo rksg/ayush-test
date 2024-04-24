@@ -88,9 +88,9 @@ export const useCasesToRefreshWifiCallingTemplateList = [
 ]
 
 export const useCasesToRefreshRogueAPTemplateList = [
-  'AddRogueAPPolicyTemplate',
-  'UpdateRogueAPPolicyTemplate',
-  'DeleteRogueAPPolicyTemplate'
+  'AddRogueApPolicyProfileTemplate',
+  'UpdateRogueApPolicyProfileTemplate',
+  'DeleteRogueApPolicyProfileTemplate'
 ]
 
 export const useCasesToRefreshTemplateList = [
@@ -103,5 +103,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshPortalTemplateList,
   ...useCasesToRefreshVlanPoolTemplateList,
   ...useCasesToRefreshRadiusServerTemplateList,
-  ...useCasesToRefreshWifiCallingTemplateList
+  ...useCasesToRefreshWifiCallingTemplateList,
+  ...useCasesToRefreshRogueAPTemplateList
 ]

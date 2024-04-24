@@ -13,7 +13,7 @@ export enum ConfigTemplateType {
   LAYER_3_POLICY = 'L3_ACL',
   DEVICE_POLICY = 'DEVICE_POLICY',
   APPLICATION_POLICY = 'APPLICATION_POLICY',
-  ROGUE_AP_DETECTION = 'ROGUE_AP_DETECTION'
+  ROGUE_AP_DETECTION = 'ROGUE_AP'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {

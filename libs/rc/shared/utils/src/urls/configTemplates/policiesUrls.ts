@@ -220,11 +220,6 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/rogueApPolicyProfiles/:templateId',
     newApi: true
   },
-  getVenueRoguePolicy: {
-    method: 'post',
-    url: '/templates/venues/query',
-    newApi: true
-  },
   getVenueRogueAp: {
     method: 'get',
     url: '/templates/venues/:venueId/rogueApSettings',
