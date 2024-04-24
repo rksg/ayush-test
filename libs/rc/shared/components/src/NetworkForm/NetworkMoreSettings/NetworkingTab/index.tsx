@@ -35,7 +35,6 @@ export function NetworkingTab (props: {
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
-  const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
@@ -87,24 +86,22 @@ export function NetworkingTab (props: {
 
   return (
     <>
-      {ambFlag &&
-        <UI.FieldLabel width={labelWidth}>
-          <Space align='start'>
-            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
-            <Tooltip.Question
-              title={agileMultibandTooltipContent}
-              placement='right'
-              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
-          </Space>
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}/>
-        </UI.FieldLabel>
-      }
+      <UI.FieldLabel width={labelWidth}>
+        <Space align='start'>
+          {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+          <Tooltip.Question
+            title={agileMultibandTooltipContent}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}/>
+      </UI.FieldLabel>
 
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
