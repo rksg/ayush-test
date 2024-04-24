@@ -44,6 +44,9 @@
   "+3Y2UX": {
     "defaultMessage": "Override existing switch configuration"
   },
+  "+3u5BT": {
+    "defaultMessage": "TLS Enhanced Key (RSA 3072/ECDSA P-256)"
+  },
   "+41/Q7": {
     "defaultMessage": "Pre-Shared Key(PSK):"
   },
@@ -101,11 +104,17 @@
   "+FbKYE": {
     "defaultMessage": "{summary} on {sliceValue}"
   },
+  "+G9X/W": {
+    "defaultMessage": "<section> <p>* The following LAN Port settings can’t work because DHCP is enabled.</p> <p>You cannot edit LAN Port setting on this device because it has assigned to the <venueSingular></venueSingular> which already has enabled DHCP service.</p> </section>"
+  },
   "+GDdPu": {
     "defaultMessage": "Rogue AP Detection Policy Details: {policyName}"
   },
   "+GUwuS": {
     "defaultMessage": "Time to Connect"
+  },
+  "+HT8G4": {
+    "defaultMessage": "My Subscriptions"
   },
   "+HzOCB": {
     "defaultMessage": "SSID Rate Limiting: Downlink"
@@ -427,6 +436,9 @@
   "/BPwUm": {
     "defaultMessage": "2. 'Open a Case' link behavior"
   },
+  "/Bw846": {
+    "defaultMessage": "This option enables current and future beta features for this account across all <venuePlural></venuePlural>, networks, and users.{br} When disabled, any configuration related to beta features will remain available until deleted."
+  },
   "/CHe1i": {
     "defaultMessage": "EAP-SIM"
   },
@@ -439,6 +451,9 @@
   "/DTVUD": {
     "defaultMessage": "Please select protocol type"
   },
+  "/Ds5XK": {
+    "defaultMessage": "Deploy a <b>SmartEdge</b> device at the <venueSingular></venueSingular> where you intend to segment the clients"
+  },
   "/Ei/TF": {
     "defaultMessage": "Extension File"
   },
@@ -450,9 +465,6 @@
   },
   "/Gmdgt": {
     "defaultMessage": "Policy Type"
-  },
-  "/H12m5": {
-    "defaultMessage": "(As venue)"
   },
   "/H2sf+": {
     "defaultMessage": "{count} Rogue {count, plural, one {AP} other {APs}}",
@@ -481,6 +493,9 @@
   },
   "/LyAlX": {
     "defaultMessage": "Show expired guests"
+  },
+  "/Lya/Q": {
+    "defaultMessage": "Some access points may not be compatible with certain features in this <venueSingular></venueSingular>."
   },
   "/OroRi": {
     "defaultMessage": "Out of {switchCount} {switchCount, plural, one {switch} other {switches}}"
@@ -516,11 +531,14 @@
   "/XBdf2": {
     "defaultMessage": "There are two options to connect the RUCKUS Switch to RUCKUS One:"
   },
-  "/Xxlbr": {
-    "defaultMessage": "There are one or more legacy devices in selected venues ({apModels})."
+  "/XuT87": {
+    "defaultMessage": "How to configure?"
   },
   "/YEy66": {
     "defaultMessage": "Select Type..."
+  },
+  "/YVmL0": {
+    "defaultMessage": "The port cannot be edited since it is on a switch that is not operational"
   },
   "/a/m3A": {
     "defaultMessage": "Deployment Scope"
@@ -576,6 +594,9 @@
   "/fbL8m": {
     "defaultMessage": "Please select tunnel profile (cluster- DMZ cluster tunnel)"
   },
+  "/fgYHe": {
+    "defaultMessage": "Are you sure you want to downgrade the firmware version on devices in selected <venueSingular></venueSingular>?"
+  },
   "/gHHBC": {
     "defaultMessage": "No RRM recommendation as zone has no APs"
   },
@@ -620,9 +641,6 @@
   },
   "/tczv9": {
     "defaultMessage": "Regular Profiles"
-  },
-  "/tzSUy": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
   },
   "/uDL9y": {
     "defaultMessage": "Enable AirFlexAI for 6 GHz"
@@ -710,17 +728,11 @@
   "07KB2d": {
     "defaultMessage": "Country Code"
   },
-  "07RU9I": {
-    "defaultMessage": "Moving to this venue involves a firmware version downgrade. Please consider the impact on AP stability before proceeding."
-  },
   "07a9rK": {
     "defaultMessage": "Time To Connect"
   },
   "08gBns": {
     "defaultMessage": "mDNS Proxy ({count})"
-  },
-  "08tui5": {
-    "defaultMessage": "No group (inherit from Venue)"
   },
   "09XqW5": {
     "defaultMessage": "Interface MAC"
@@ -771,14 +783,14 @@
     "defaultMessage": "Whitespace chars only are not allowed",
     "description": "Validation - Whitespace chars check"
   },
-  "0GYVM7": {
-    "defaultMessage": "For segment assignment for <sub5b>AP wired</sub5b>, please go to the <sub5b>Venue/ property Units page</sub5b> to assign an AP for the specific unit / identity."
-  },
   "0GYzwv": {
     "defaultMessage": "X Application Management"
   },
   "0GgWOP": {
     "defaultMessage": "Use Load Balancing"
+  },
+  "0GxaW4": {
+    "defaultMessage": "in this <VenueSingular></VenueSingular>"
   },
   "0Hd1cr": {
     "defaultMessage": "Allow users to access the network without any authentication/security (not recommended)",
@@ -881,9 +893,6 @@
   "0XSjrq": {
     "defaultMessage": "AFC Server failure"
   },
-  "0Y1/ft": {
-    "defaultMessage": "Venue with SmartEdge deployed"
-  },
   "0Y1lqO": {
     "defaultMessage": "DHCP Service (Pool)"
   },
@@ -898,6 +907,9 @@
   },
   "0aTe9u": {
     "defaultMessage": "Enable Pre-Shared Key (PSK)"
+  },
+  "0ah2ud": {
+    "defaultMessage": "Space"
   },
   "0b9CQ8": {
     "defaultMessage": "Manage Fencing services"
@@ -921,14 +933,14 @@
   "0ceRGX": {
     "defaultMessage": "<p>PoE power has been denied due to power exhaustion or because another high priority device is plugged in.</p>"
   },
+  "0ck0lk": {
+    "defaultMessage": "To enable the client admission control, please make sure the band balancing or load balancing in the <venueSingular></venueSingular> is disabled."
+  },
   "0d36aK": {
     "defaultMessage": "The Common Name is normally used to provide identity information within the certificate. Variables, such as $'{USERNAME'}, will be replaced at the time of issuance with the appropriate value from the enrollment."
   },
   "0eBCLR": {
     "defaultMessage": "Wireless Networks ({num})"
-  },
-  "0exaFl": {
-    "defaultMessage": "If you are adding an <b>{apModels} or {lastApModel}</b> AP, please update the firmware in this venue to <b>{baseVersion}</b> or greater. This can be accomplished in the Administration's {fwManagementLink} section."
   },
   "0exxUK": {
     "defaultMessage": "Available older firmware versions"
@@ -939,11 +951,11 @@
   "0f8FB9": {
     "defaultMessage": "RF Channel"
   },
-  "0h130Z": {
-    "defaultMessage": "No RRM recommendation as venue has no APs"
-  },
   "0hGFjE": {
     "defaultMessage": "Top Switches by PoE Usage"
+  },
+  "0hSedV": {
+    "defaultMessage": "{ count, plural, one {<VenueSingular></VenueSingular>} other {<VenuePlural></VenuePlural>} }"
   },
   "0hzOfx": {
     "defaultMessage": "AA-BB-CC-DD-EE-FF"
@@ -975,14 +987,14 @@
   "0niASN": {
     "defaultMessage": "End Time"
   },
-  "0nin51": {
-    "defaultMessage": "You cannot activate the DHCP Network on this venue because it already enabled mesh setting"
-  },
   "0pnNqw": {
     "defaultMessage": "No Auth before Assoc"
   },
   "0qXU+z": {
     "defaultMessage": "Please select at least 1 event type"
+  },
+  "0qci8e": {
+    "defaultMessage": "Congestion"
   },
   "0rJuTz": {
     "defaultMessage": "Changing any virtual IP configurations might temporarily cause network disruption and alter the active/backup roles of this cluster. Are you sure you want to continue?"
@@ -1004,9 +1016,6 @@
   },
   "0x1OUD": {
     "defaultMessage": "Rebooting the SmartEdge will disconnect all connected clients. Are you sure you want to reboot?"
-  },
-  "0xOwY0": {
-    "defaultMessage": "To use SD-LAN on the venue, you must select a port as the Core Port/LAG on the {editPortLink}. Core port is the port used to connect SmartEdge to the core network for SDLAN service"
   },
   "0y/Oz+": {
     "defaultMessage": "High: 20 Seconds"
@@ -1086,6 +1095,12 @@
   "19vHLE": {
     "defaultMessage": "Enable access to Ruckus Support"
   },
+  "1A1gh+": {
+    "defaultMessage": "<VenueSingular></VenueSingular> Name"
+  },
+  "1ABl9e": {
+    "defaultMessage": "Set it up now"
+  },
   "1AJFHC": {
     "defaultMessage": "Shared Secret was changed"
   },
@@ -1100,9 +1115,6 @@
   },
   "1CcaTS": {
     "defaultMessage": "Edit X app"
-  },
-  "1D5vJK": {
-    "defaultMessage": "AFC Max Power"
   },
   "1DbAYw": {
     "defaultMessage": "ON (IN: {inCount} {inCount, plural, one {rule} other {rules}}, OUT: {outCount} {outCount, plural, one {rule} other {rules}})"
@@ -1119,14 +1131,11 @@
   "1G1Ohw": {
     "defaultMessage": "No 3rd Party Administrator Invited"
   },
-  "1GMAIH": {
-    "defaultMessage": "Please select venue(s)"
-  },
   "1GekVl": {
     "defaultMessage": "WEP Key"
   },
-  "1I+2ee": {
-    "defaultMessage": "in this Venue"
+  "1I1gtG": {
+    "defaultMessage": "Do not update firmware on selected <venuePlural></venuePlural>"
   },
   "1IGVC6": {
     "defaultMessage": "<p>This disconnect issue is happening because clients are disconnected because they are sending unsupported frames (i.e. Class2) before forming a valid open authentication.</p>"
@@ -1157,6 +1166,9 @@
   },
   "1PUJv9": {
     "defaultMessage": "Lower 5G"
+  },
+  "1PhhYg": {
+    "defaultMessage": "Once the CLI Configuration profile is applied to a <venueSingular></venueSingular>, you will not be able to apply a regular switch configuration profile to the same <venueSingular></venueSingular>"
   },
   "1QZzPK": {
     "defaultMessage": "Select switch models"
@@ -1318,6 +1330,9 @@
   "1orpct": {
     "defaultMessage": "Background Scan (Lower 5 GHz)"
   },
+  "1p9gxP": {
+    "defaultMessage": "<VenueSingular></VenueSingular> name must contain at least two non-whitespace characters."
+  },
   "1pOAr9": {
     "defaultMessage": "Add DDoS Rule"
   },
@@ -1451,6 +1466,9 @@
   },
   "2BgxeS": {
     "defaultMessage": "Select LinkedIn app to be used for sign in"
+  },
+  "2Bvv2H": {
+    "defaultMessage": "SPA Activation Code"
   },
   "2CIbYn": {
     "defaultMessage": "Add OI"
@@ -1640,9 +1658,6 @@
   "2fcjwx": {
     "defaultMessage": "Wi-Fi Network"
   },
-  "2gE8C3": {
-    "defaultMessage": "Select the venues where the rogue AP detection policy will be applied:"
-  },
   "2gm1+D": {
     "defaultMessage": "Source Ip"
   },
@@ -1670,9 +1685,6 @@
   "2lsTaQ": {
     "defaultMessage": "An error occurred: {error}"
   },
-  "2n2eHo": {
-    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
-  },
   "2n9biM": {
     "defaultMessage": "Latency"
   },
@@ -1687,9 +1699,6 @@
   },
   "2pzTGC": {
     "defaultMessage": "Critical"
-  },
-  "2qaZeq": {
-    "defaultMessage": "Select the venues and APs where the mDNS Proxy Service will be applied:"
   },
   "2rRZtB": {
     "defaultMessage": "Speed test skipped as virtual client and data plane mapped to tunnel WLAN are in same subnet and is not supported"
@@ -1796,9 +1805,6 @@
   "36lcvI": {
     "defaultMessage": "{threshold}"
   },
-  "36pknT": {
-    "defaultMessage": "All Active Venues"
-  },
   "3734cY": {
     "defaultMessage": "Please select one channel"
   },
@@ -1869,9 +1875,6 @@
   "3KyZGF": {
     "defaultMessage": "All Radios"
   },
-  "3LWRoB": {
-    "defaultMessage": "AFC Venue Height:"
-  },
   "3LWcsK": {
     "defaultMessage": "EAP Failure",
     "description": "CCD Message ID 44"
@@ -1904,9 +1907,6 @@
   "3NqKWO": {
     "defaultMessage": "Host Settings"
   },
-  "3NrCTk": {
-    "defaultMessage": "Once the CLI Configuration profile is applied to a venue, you will not be able to apply a regular switch configuration profile to the same venue"
-  },
   "3NuDkZ": {
     "defaultMessage": "The mesh STA fails the authenticated mesh peering exchange because due to failure in selecting either the pairwise ciphersuite or group ciphersuite"
   },
@@ -1928,9 +1928,6 @@
   "3Rh+pv": {
     "defaultMessage": "Japan"
   },
-  "3RvJ0y": {
-    "defaultMessage": "AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage."
-  },
   "3Rx6Qo": {
     "defaultMessage": "Advanced"
   },
@@ -1945,6 +1942,9 @@
   },
   "3SgGyw": {
     "defaultMessage": "NetBIOS Scope"
+  },
+  "3So/cV": {
+    "defaultMessage": "High CPU"
   },
   "3Spwog": {
     "defaultMessage": "AP(s) operating in Low Power Mode: {scope}."
@@ -2001,6 +2001,9 @@
   "3fGWfR": {
     "defaultMessage": "Invalid file content."
   },
+  "3fgOoW": {
+    "defaultMessage": "Switches should belong to the same model family and <venueSingular></venueSingular>"
+  },
   "3g6QAZ": {
     "defaultMessage": "This action will cause network interruption and impact service delivery."
   },
@@ -2009,6 +2012,9 @@
   },
   "3i6uGr": {
     "defaultMessage": "No interfering links"
+  },
+  "3iXBt5": {
+    "defaultMessage": "All <VenuePlural></VenuePlural>"
   },
   "3j670j": {
     "defaultMessage": "DHCP Configuration"
@@ -2050,6 +2056,9 @@
   "3rkhnM": {
     "defaultMessage": "Channel Selection Method: Background Scanning (6 GHz)"
   },
+  "3sAvzh": {
+    "defaultMessage": "Low Power Indoor"
+  },
   "3t/gV9": {
     "defaultMessage": "Firmware Update - Awaiting Response from Switch"
   },
@@ -2086,6 +2095,9 @@
   "3xfFuh": {
     "defaultMessage": "Communication Templates"
   },
+  "3xjeXK": {
+    "defaultMessage": "{scope} had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
+  },
   "3yd70F": {
     "defaultMessage": "Overload"
   },
@@ -2098,11 +2110,11 @@
   "4+zb5O": {
     "defaultMessage": "Top applications and traffic distribution by clients and trend"
   },
+  "4/n4Wk": {
+    "defaultMessage": "Beyond data retention period"
+  },
   "40Uezy": {
     "defaultMessage": "6GHz only works when this network is using WPA3 or OWE encryption."
-  },
-  "40a9l1": {
-    "defaultMessage": "Select the APs that the mDNS Proxy Service will be applied to at venue “{venueName}”."
   },
   "415mrr": {
     "defaultMessage": "DFS channels share the spectrum with weather radar and other radar systems. RUCKUS APs have the capability to detect if there is a conflict and automatically move away from the channel if there is a conflict. This move may not be observable to most Wi-Fi end users. However, for users engaged in a live audio/video call or other real-time and low-latency applications, this move may cause temporary disruptions."
@@ -2143,9 +2155,6 @@
   "47FYwb": {
     "defaultMessage": "Cancel"
   },
-  "47SgpC": {
-    "defaultMessage": "Not allow to change Venue on DHCP AP."
-  },
   "48UOCk": {
     "defaultMessage": "Application Recognition & control: Client Virtual Extraction"
   },
@@ -2176,9 +2185,6 @@
   "4DFwvX": {
     "defaultMessage": "ap syslog server profile id"
   },
-  "4DXIrZ": {
-    "defaultMessage": "Some access points may not be compatible with certain features in this venue."
-  },
   "4DsQr3": {
     "defaultMessage": "Peak percentage of mgmt. frames was {count}"
   },
@@ -2208,6 +2214,9 @@
   },
   "4JAywO": {
     "defaultMessage": "Preview App"
+  },
+  "4KC2j8": {
+    "defaultMessage": "Create <b>DPSK networks</b> and activate them on the <venueSingular></venueSingular>"
   },
   "4KCWLt": {
     "defaultMessage": "-4db"
@@ -2247,9 +2256,6 @@
   },
   "4QNqkK": {
     "defaultMessage": "LAN Port:"
-  },
-  "4RbqN8": {
-    "defaultMessage": "No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
   },
   "4Rp1Vo": {
     "defaultMessage": "Rogue: Radio Jamming Threshold"
@@ -2310,6 +2316,9 @@
   "4dk4rO": {
     "defaultMessage": "Accounting Service"
   },
+  "4eDo5g": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
+  },
   "4eRUgj": {
     "defaultMessage": "Inform"
   },
@@ -2321,6 +2330,9 @@
   },
   "4fOqW7": {
     "defaultMessage": "One of the values you entered conflicts with an existing accounting server configuration in another network."
+  },
+  "4fs1kq": {
+    "defaultMessage": "Ports exp. Storm"
   },
   "4hNKKJ": {
     "defaultMessage": "For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode."
@@ -2336,9 +2348,6 @@
   },
   "4ldizo": {
     "defaultMessage": "{scope} is experiencing unusually high CPU usage"
-  },
-  "4mFNbs": {
-    "defaultMessage": "Create and apply a configuration profile to this switch's venue to add/edit ACL"
   },
   "4omKXu": {
     "defaultMessage": "Limit to"
@@ -2414,9 +2423,6 @@
   },
   "51Cok1": {
     "defaultMessage": "{radioTypeName} Radio is disabled"
-  },
-  "51ekIf": {
-    "defaultMessage": "Optimization option cannot be modified when RRM recommendations are applied across any of the radios of the same venue. Please revert them in case you still prefer to change the optimization option for current recommendation."
   },
   "525rtk": {
     "defaultMessage": "Device Subscriptions Utilization"
@@ -2677,6 +2683,9 @@
   "5kY8fa": {
     "defaultMessage": "Wireless Clients"
   },
+  "5kebJR": {
+    "defaultMessage": "Created <VenueSingular></VenueSingular>"
+  },
   "5khpOQ": {
     "defaultMessage": "{milliseconds} {milliseconds, plural, one {millisecond} other {milliseconds}}"
   },
@@ -2749,9 +2758,6 @@
   },
   "5xgAq6": {
     "defaultMessage": "Xbox"
-  },
-  "5y2tcC": {
-    "defaultMessage": "Boosting TLS can enhance the TLS connection strength between APs and R1. Note that toggling the switch will prompt a reboot of all AP devices within this venue."
   },
   "6+4dUF": {
     "defaultMessage": "Tunnel & Network"
@@ -2904,17 +2910,8 @@
   "6PDwDl": {
     "defaultMessage": "Controller"
   },
-  "6PGlQr": {
-    "defaultMessage": "Deploy a <b>SmartEdge</b> device at the venue where you intend to segment the clients"
-  },
-  "6QBsLu": {
-    "defaultMessage": "Manually update firmware per venue"
-  },
   "6RKXNK": {
     "defaultMessage": "Use RADIUS Server"
-  },
-  "6U4EVP": {
-    "defaultMessage": "Please confirm that you wish to exclude the selected venues from this scheduled update"
   },
   "6U6zBD": {
     "defaultMessage": "Outbound SSH (TCP 22) from APs and Switches to:"
@@ -2943,9 +2940,6 @@
   },
   "6XtweV": {
     "defaultMessage": "Reboot due to firmware change"
-  },
-  "6Y1zSY": {
-    "defaultMessage": "Currently using radio settings of the venue (<venuelink></venuelink>)"
   },
   "6YEpt1": {
     "defaultMessage": "The syslog server with that name already exists"
@@ -3121,8 +3115,8 @@
   "6wvD2J": {
     "defaultMessage": "Do not proceed unless all the members meet FW requirements. All members must be running the same FW version."
   },
-  "6x1k6I": {
-    "defaultMessage": "You cannot activate the DHCP service on this venue because it already enabled mesh setting"
+  "6xHujj": {
+    "defaultMessage": "All Active <VenuePlural></VenuePlural>"
   },
   "6xap9L": {
     "defaultMessage": "Good"
@@ -3161,6 +3155,9 @@
   "73nhOH": {
     "defaultMessage": "CLI template"
   },
+  "73tJAh": {
+    "defaultMessage": "Some features are not enabled on specific access points in this <venueSingular></venueSingular> due to firmware or device incompatibility. Please see the minimum firmware versions required below. Also note that not all features are available on all access points. You may upgrade your firmware from"
+  },
   "74mmE4": {
     "defaultMessage": "Uplink - {value} Mbps"
   },
@@ -3181,9 +3178,6 @@
   },
   "79VTNA": {
     "defaultMessage": "RADIUS Attributes"
-  },
-  "7A7d3o": {
-    "defaultMessage": "If the members are not running FI 08.0.92d (UFI), then they must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label."
   },
   "7AlT6P": {
     "defaultMessage": "REMOVED/Unassigned"
@@ -3278,9 +3272,6 @@
   "7Q1NMo": {
     "defaultMessage": "The email address belongs to a user of another RUCKUS One tenant. You may add this user as a 3rd party administrator."
   },
-  "7Q4Ysa": {
-    "defaultMessage": "The selected venue already has a SmartEdge"
-  },
   "7QNXGY": {
     "defaultMessage": "(No channels available)"
   },
@@ -3301,9 +3292,6 @@
   },
   "7SSF71": {
     "defaultMessage": "No SmartEdges"
-  },
-  "7Sk+pg": {
-    "defaultMessage": "Your GPS coordinates are outside the venue: {venueName}. Are you sure you want to place the device in this new position?"
   },
   "7TUyZ1": {
     "defaultMessage": "Applied"
@@ -3417,11 +3405,17 @@
   "7rAOwP": {
     "defaultMessage": "DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss."
   },
+  "7rgNWr": {
+    "defaultMessage": "No devices added yet to this <venueSingular></venueSingular>"
+  },
   "7ruLSs": {
     "defaultMessage": "Floor Plan"
   },
   "7tFWKM": {
     "defaultMessage": "Wi-Fi Syslog server"
+  },
+  "7tNE1t": {
+    "defaultMessage": "AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation."
   },
   "7tSsC/": {
     "defaultMessage": "<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p> <ol> <li>Confirm the L2 MAC ACL policy.</li> <li>Confirm the Blocked Client List.</li> </ol>"
@@ -3432,8 +3426,8 @@
   "7vTvJh": {
     "defaultMessage": "WiFi4EU is enabled but not configured!"
   },
-  "7vrpoV": {
-    "defaultMessage": "Wait for location"
+  "7vpWk2": {
+    "defaultMessage": "<VenueSingular></VenueSingular> Firmware Version: {fwVersion}"
   },
   "7wEMs5": {
     "defaultMessage": "at:"
@@ -3479,6 +3473,9 @@
   },
   "81GBoI": {
     "defaultMessage": "RUCKUS DHCP Service:"
+  },
+  "81Q7iF": {
+    "defaultMessage": "Note that this will affect the service on all <venuePlural></venuePlural> and APs that the network is activated on."
   },
   "81SDSt": {
     "defaultMessage": "The SSID must be at least 2 characters"
@@ -3545,9 +3542,6 @@
   "8AN/pf": {
     "defaultMessage": "Executive Accounting"
   },
-  "8AxuPJ": {
-    "defaultMessage": "Are you sure you want to downgrade the firmware version on devices in selected venue?"
-  },
   "8B04tJ": {
     "defaultMessage": "WPA"
   },
@@ -3556,6 +3550,9 @@
   },
   "8BH+xm": {
     "defaultMessage": "Access Control Policy"
+  },
+  "8Bdkr7": {
+    "defaultMessage": "Select the <venuePlural></venuePlural> where the syslog server will be applied:"
   },
   "8Bwvdr": {
     "defaultMessage": "mDNS Proxy"
@@ -3792,9 +3789,6 @@
   "8lHXaF": {
     "defaultMessage": "DHCP failures are high in {scope} impacting connectivity for {impact} of clients."
   },
-  "8llhFc": {
-    "defaultMessage": "There are one or more devices in selected venues ({apModels})."
-  },
   "8mPp7v": {
     "defaultMessage": "Firmware Type"
   },
@@ -3843,9 +3837,6 @@
   "8xW9fg": {
     "defaultMessage": "Client Id"
   },
-  "8xX5u3": {
-    "defaultMessage": "AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage."
-  },
   "8xg5UF": {
     "defaultMessage": "SHA384"
   },
@@ -3870,6 +3861,9 @@
   "9+FS4x": {
     "defaultMessage": "RADIUS Failure"
   },
+  "9+u+qX": {
+    "defaultMessage": "Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update"
+  },
   "9/EZ5y": {
     "defaultMessage": "An invitation will be sent to the entered email address. Once accepted, any person that has access to the email will gain administration rights to your system."
   },
@@ -3879,11 +3873,11 @@
   "90rdoz": {
     "defaultMessage": "Gateway Path MTU Mode"
   },
+  "91/26M": {
+    "defaultMessage": "Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting."
+  },
   "91pVwu": {
     "defaultMessage": "Signal"
-  },
-  "925lC/": {
-    "defaultMessage": "Activate networks for the SD-LAN service on the venue ({venueName}):"
   },
   "93dEsE": {
     "defaultMessage": "Clients List ({clientCount})"
@@ -3910,14 +3904,14 @@
   "96UZNr": {
     "defaultMessage": "Trailers"
   },
+  "96gCdU": {
+    "defaultMessage": "AFC Geo-Location not set"
+  },
   "97KPDR": {
     "defaultMessage": "Add Certificate Template"
   },
   "98I6q1": {
     "defaultMessage": "Details of access point traffic, client and trends by AP, Wi-Fi network, radio or clients over time"
-  },
-  "98JZkW": {
-    "defaultMessage": "Select venues"
   },
   "98XQOm": {
     "defaultMessage": "IPv4 Gateway"
@@ -3991,9 +3985,6 @@
   "9M4h3/": {
     "defaultMessage": "Schedule a day and time to apply this recommendation."
   },
-  "9MfwNc": {
-    "defaultMessage": "Moving to Venue: <b>{venueName}</b> will alter the current key on the TLS connection and reboot this AP device. Are you sure you want to continue?"
-  },
   "9MixhE": {
     "defaultMessage": "Manage Integrator"
   },
@@ -4017,9 +4008,6 @@
   },
   "9P6N7P": {
     "defaultMessage": "RSSI-Based Association Rejection Threshold must be between -90 and -60"
-  },
-  "9PDAEl": {
-    "defaultMessage": "The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the venue in the future"
   },
   "9Q5dzu": {
     "defaultMessage": "Telnet Authentication"
@@ -4157,9 +4145,6 @@
   "9nEbIT": {
     "defaultMessage": "{time} (Same as list)"
   },
-  "9nV3VB": {
-    "defaultMessage": "Create and apply a configuration profile to this switch's venue to add/edit VLANs"
-  },
   "9nkHpt": {
     "defaultMessage": "Select the untagged ports (trunk ports) for this model ({family}-{model}):"
   },
@@ -4232,6 +4217,9 @@
   "9xjE4Z": {
     "defaultMessage": "SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility."
   },
+  "9xmy8X": {
+    "defaultMessage": "You cannot activate the Mesh Network on this <venueSingular></venueSingular> because it already has enable DHCP settings"
+  },
   "9y9QQh": {
     "defaultMessage": "JSON"
   },
@@ -4277,6 +4265,9 @@
   "A6KJTt": {
     "defaultMessage": "Selected channels will be available for radio broadcasting in this {context}. Hover to see overlapping channels"
   },
+  "A6V0BA": {
+    "defaultMessage": "<VenueSingular></VenueSingular>/Property Units"
+  },
   "A6V57r": {
     "defaultMessage": "<b>See how everything connects together:</b>"
   },
@@ -4315,6 +4306,9 @@
   },
   "AAzmHI": {
     "defaultMessage": "Allow Band Balancing"
+  },
+  "AB1h/C": {
+    "defaultMessage": "[AFC Geo-Location not set]"
   },
   "ABdY8j": {
     "defaultMessage": "Last IP Address"
@@ -4360,6 +4354,9 @@
   },
   "AJFEms": {
     "defaultMessage": "Sub-optimal channel conditions detected for 2.4 GHz in {scope}"
+  },
+  "AJIusw": {
+    "defaultMessage": "Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will alter the current key on the TLS connection and reboot this AP device. Are you sure you want to continue?"
   },
   "AJL6Xa": {
     "defaultMessage": "Edit Webhook"
@@ -4446,11 +4443,11 @@
   "AbieCT": {
     "defaultMessage": "Channel Bandwidth"
   },
+  "AboLYs": {
+    "defaultMessage": "This <venueSingular></venueSingular> contains no networking device"
+  },
   "AcAA5x": {
     "defaultMessage": "Components"
-  },
-  "AccasF": {
-    "defaultMessage": "Low power"
   },
   "AcmDVC": {
     "defaultMessage": "Time Offset"
@@ -4470,9 +4467,6 @@
   },
   "AetNAD": {
     "defaultMessage": "Browse"
-  },
-  "AetaeJ": {
-    "defaultMessage": "Select venues to activate this network"
   },
   "AfUjYu": {
     "defaultMessage": "Config Change"
@@ -4561,9 +4555,6 @@
   "AtG4cS": {
     "defaultMessage": "NIS-Domain-Name"
   },
-  "AtpttE": {
-    "defaultMessage": "[No channels available]"
-  },
   "AuYnqc": {
     "defaultMessage": "CPE MAC Address"
   },
@@ -4630,11 +4621,11 @@
   "B487HA": {
     "defaultMessage": "In Progress"
   },
+  "B48br9": {
+    "defaultMessage": "<VenueSingular></VenueSingular>'s local time-zone is applied to the selection below."
+  },
   "B6Nc0o": {
     "defaultMessage": "Edit SNMPv3 Agent"
-  },
-  "B7Lbf5": {
-    "defaultMessage": "Specific Venue(s)"
   },
   "B7i3/p": {
     "defaultMessage": "AP Models: {apModels}"
@@ -4653,9 +4644,6 @@
   },
   "BABXFi": {
     "defaultMessage": "MSP Assigned"
-  },
-  "BAqvno": {
-    "defaultMessage": "Including any AP that will be added to this venue in the future."
   },
   "BBA7Er": {
     "defaultMessage": "DHCP request rate limit"
@@ -4692,9 +4680,6 @@
   },
   "BGtLSM": {
     "defaultMessage": "The VRRP timer of 6 seconds or above is recommended for SmartEdge usecases. A timer lesser than this is too aggressive and could potentially cause VRRP issues in some networks. HA timeout refers to the duration within which if a node does not receive a periodic heartbeat from the active node. This triggers the process of selecting the next active node to maintain system functionality"
-  },
-  "BHJFl3": {
-    "defaultMessage": "These settings cannot be changed, since a CLI profile is applied on the venue."
   },
   "BHNDjb": {
     "defaultMessage": "Channel Range (Lower 5 GHz)"
@@ -4786,6 +4771,9 @@
   "BRiRpL": {
     "defaultMessage": "to landscape orientation"
   },
+  "BRtD/X": {
+    "defaultMessage": "Order Date"
+  },
   "BT6Jf5": {
     "defaultMessage": "SSO removed successfully"
   },
@@ -4826,6 +4814,9 @@
   "BYDdVe": {
     "defaultMessage": "PDG"
   },
+  "BYXgcS": {
+    "defaultMessage": "This device not added to any <venueSingular></venueSingular>"
+  },
   "BYvdbS": {
     "defaultMessage": "Leave empty or enter valid MAC address"
   },
@@ -4863,9 +4854,6 @@
   "Bi+2ZQ": {
     "defaultMessage": "<p>The connection was not completed because the client has left, or is leaving, the network.</p>"
   },
-  "Bi49kY": {
-    "defaultMessage": "Create and apply a configuration profile to this switch's venue to add/edit LLDP QoS"
-  },
   "BiGR2L": {
     "defaultMessage": "incidents table"
   },
@@ -4883,6 +4871,10 @@
   },
   "Bn86uQ": {
     "defaultMessage": "System does not exist"
+  },
+  "Bo4fs0": {
+    "defaultMessage": "Cannot move AP to another <venueSingular></venueSingular> in different country code or country",
+    "description": "Validation - Venue Country checks"
   },
   "BoZteQ": {
     "defaultMessage": "Incompatible Hardware warning:"
@@ -5046,9 +5038,6 @@
   "CFZujf": {
     "defaultMessage": "IE Invalid"
   },
-  "CFt6nY": {
-    "defaultMessage": "Venue name must contain at least two non-whitespace characters."
-  },
   "CG4tfw": {
     "defaultMessage": "{adminCountHeader}"
   },
@@ -5060,9 +5049,6 @@
   },
   "CHs6+w": {
     "defaultMessage": "RADIUS Access Request"
-  },
-  "CHtKm8": {
-    "defaultMessage": "New Venue Name"
   },
   "CIgJwr": {
     "defaultMessage": "Users register their details in the portal including their host email - the host needs to approve the request",
@@ -5181,9 +5167,6 @@
   "CYegoE": {
     "defaultMessage": "Data consumption"
   },
-  "Ca302B": {
-    "defaultMessage": "Select venues:"
-  },
   "CaRKL1": {
     "defaultMessage": "Forwarding rules"
   },
@@ -5195,9 +5178,6 @@
   },
   "Cc/lJ6": {
     "defaultMessage": "Detecting Malicious rogue"
-  },
-  "CcNx88": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
   },
   "CcR1OM": {
     "defaultMessage": "Add LAG"
@@ -5241,9 +5221,6 @@
   "CklSJB": {
     "defaultMessage": "Peak airtime Rx was {count}"
   },
-  "Cm/QtZ": {
-    "defaultMessage": "<li>Enable ChannelFly for the venue.</li>"
-  },
   "Co9pxf": {
     "defaultMessage": "DTIM (Delivery Traffic Indication Message) Interval"
   },
@@ -5285,6 +5262,9 @@
   },
   "CwWmoq": {
     "defaultMessage": "Traffic tunneled to SmartEdge from APs"
+  },
+  "CyWSu3": {
+    "defaultMessage": "{scope} had experienced high co-channel interference in 5 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
   },
   "Cz8y9g": {
     "defaultMessage": "CA Type"
@@ -5344,9 +5324,6 @@
   "D6UU7g": {
     "defaultMessage": "Add Network"
   },
-  "D7/GIg": {
-    "defaultMessage": "Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone."
-  },
   "D73EmX": {
     "defaultMessage": "{n} of {d} connections under {threshold}"
   },
@@ -5369,9 +5346,6 @@
   "DAMC+s": {
     "defaultMessage": "<p>The RADIUS server is offline or unreachable from {smartZone}/AP (message from {smartZone}/AP to RADIUS is failing), which is often caused by:</p> <ol> <li>AP/SZ misconfiguration (Bad IP, bad port).</li> <li>The RADIUS server is offline.</li> <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li> </ol>"
   },
-  "DAlRj2": {
-    "defaultMessage": "Migration assistant will migrate ZoneDirector configuration from the selected backup file and create a new venue."
-  },
   "DB5UhN": {
     "defaultMessage": "Local2"
   },
@@ -5384,6 +5358,9 @@
   },
   "DCV1zh": {
     "defaultMessage": "LSP"
+  },
+  "DDIat+": {
+    "defaultMessage": "Cannot save threshold at organization level. Please select a <VenueSingular></VenueSingular> or AP to set a threshold."
   },
   "DDq5Q+": {
     "defaultMessage": "Add Gateway"
@@ -5403,6 +5380,9 @@
   "DFU+E1": {
     "defaultMessage": "Modifying the uplink port may result in the switch losing connectivity"
   },
+  "DFUCtg": {
+    "defaultMessage": "[Rejected by FCC DB due to no available channels]"
+  },
   "DGsOsb": {
     "defaultMessage": "Add Floor Plan"
   },
@@ -5417,9 +5397,6 @@
   },
   "DIZgr3": {
     "defaultMessage": "Boolean"
-  },
-  "DIbPUG": {
-    "defaultMessage": "Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated venues."
   },
   "DJvCG/": {
     "defaultMessage": "Subtitle"
@@ -5462,6 +5439,9 @@
   },
   "DT1Xmz": {
     "defaultMessage": "Failure reason: {reason}"
+  },
+  "DUFZKY": {
+    "defaultMessage": "Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will change the AP management VLAN and reboot this AP device. Incorrect settings between APs and switches could result in AP access loss. Are you sure you want to continue?"
   },
   "DUIDEq": {
     "defaultMessage": "Storage"
@@ -5573,6 +5553,9 @@
   "DmmGET": {
     "defaultMessage": "Activating the OWE network also enables the read-only OWE transition network."
   },
+  "DnfjeG": {
+    "defaultMessage": "Moving this device to a new <venueSingular></venueSingular> will reset AFC geolocation. 6GHz operation will remain in low power mode until geolocation information is reestablished."
+  },
   "Dnob31": {
     "defaultMessage": "Operational"
   },
@@ -5599,9 +5582,6 @@
   },
   "DqTQOp": {
     "defaultMessage": "Once"
-  },
-  "DrHyOk": {
-    "defaultMessage": "Enable the <b>Property management</b>service for the venue on the venue configuration page"
   },
   "DslQ+4": {
     "defaultMessage": "Client Admission Control: Min Client Count (Lower 5 GHz)"
@@ -5658,11 +5638,17 @@
   "E5jCMU": {
     "defaultMessage": "DPSK Service"
   },
+  "E5qRjj": {
+    "defaultMessage": "When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference. When it is disabled, only the channel plan will be optimized, using the currently configured <venueSingular></venueSingular> channel bandwidth and Tx power."
+  },
   "E65tJO": {
     "defaultMessage": "Client roamed"
   },
   "E6FqER": {
     "defaultMessage": "Module 3:"
+  },
+  "E73/Q2": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
   },
   "E7Kzs3": {
     "defaultMessage": "{impactedClients} clients impacted"
@@ -5709,9 +5695,6 @@
   "EF037K": {
     "defaultMessage": "CA Name"
   },
-  "EGPV2c": {
-    "defaultMessage": "Some access points may not be compatible with certain Wi-Fi features in this venue."
-  },
   "EGQVHJ": {
     "defaultMessage": "SNR (2.4G)"
   },
@@ -5747,6 +5730,9 @@
   },
   "ELmJ40": {
     "defaultMessage": "PSK Failure (passphrase mismatch) - Invalid MIC"
+  },
+  "EMttYL": {
+    "defaultMessage": "<VenueSingular></VenueSingular> Code"
   },
   "ENWiJM": {
     "defaultMessage": "Historical data is slightly delayed, and not real-time"
@@ -5880,6 +5866,9 @@
   "EnTkxu": {
     "defaultMessage": "Recommendations"
   },
+  "EnawvS": {
+    "defaultMessage": "Select the cluster that all traffic will be tunneled to in the selected <venueSingular></venueSingular>. Make sure SmartEdges have already set the core port"
+  },
   "EnxHjQ": {
     "defaultMessage": "Access granted"
   },
@@ -5898,9 +5887,6 @@
   },
   "EqE62w": {
     "defaultMessage": "Manual Channel Selection: Upper 5 GHz"
-  },
-  "ErMdrS": {
-    "defaultMessage": "Please ensure that configure the AFC Geo-location for the APs in the mobile APP."
   },
   "ErQRRo": {
     "defaultMessage": "{count} of {count} {count, plural, one {AP} other {APs}} ({percent})"
@@ -5922,6 +5908,9 @@
   },
   "EsRolr": {
     "defaultMessage": "End IP Address"
+  },
+  "Eseze+": {
+    "defaultMessage": "Modifying the AP management VLAN for managing traffic will cause a reboot of all AP devices within this <venueSingular></venueSingular>. Please note that incorrect settings between APs and switches could result in losing access to your APs. Are you sure you want to continue?"
   },
   "EsovIr": {
     "defaultMessage": "Primary IP Address"
@@ -5948,9 +5937,6 @@
     "defaultMessage": "RADIUS Access Accept",
     "description": "CCD Message ID 53"
   },
-  "Eys/Mn": {
-    "defaultMessage": "Select the cluster that all traffic will be tunneled to in the selected venue. Make sure SmartEdges have already set the core port"
-  },
   "Eyv6AW": {
     "defaultMessage": "{apName} ({apMac}) on {radio}: {message}"
   },
@@ -5963,14 +5949,14 @@
   "F/++n1": {
     "defaultMessage": "No Switch clients"
   },
-  "F/1pwP": {
-    "defaultMessage": "Venues:"
-  },
   "F/XWHh": {
     "defaultMessage": "LAG Type"
   },
   "F0Scdk": {
     "defaultMessage": "You can <supportSiteLink>download RUCKUS One MIBs file</supportSiteLink> and load it into your SNMP console to monitor the objects that are defined in the MIBs."
+  },
+  "F1/2v1": {
+    "defaultMessage": "If you are adding an <b>{apModels} or {lastApModel}</b> AP, please update the firmware in this <venueSingular></venueSingular> to <b>{baseVersion}</b> or greater. This can be accomplished in the Administration's {fwManagementLink} section."
   },
   "F14cIQ": {
     "defaultMessage": "EAP-AKA"
@@ -6013,6 +5999,9 @@
   },
   "F45u42": {
     "defaultMessage": "Paid Subscription"
+  },
+  "F4IC8v": {
+    "defaultMessage": "Client Isolation Allowlist by <VenueSingular></VenueSingular>"
   },
   "F5sIKs": {
     "defaultMessage": "QoS VLAN Type"
@@ -6152,6 +6141,9 @@
   "FTRunt": {
     "defaultMessage": "Please select a Tunnel Profile"
   },
+  "FTYZXY": {
+    "defaultMessage": "<VenuePlural></VenuePlural> ({venuesCount})"
+  },
   "FU3C90": {
     "defaultMessage": "AppInsights (coming soon)"
   },
@@ -6160,9 +6152,6 @@
   },
   "FV+P4u": {
     "defaultMessage": "802.3af"
-  },
-  "FVB7Oy": {
-    "defaultMessage": "Selected time will apply to each venue according to own time-zone"
   },
   "FWHHMy": {
     "defaultMessage": "Usages"
@@ -6182,9 +6171,6 @@
   "FagSb9": {
     "defaultMessage": "No Resident Portal"
   },
-  "FbnpZB": {
-    "defaultMessage": "Cluster of {count} Venues"
-  },
   "Fbq2xR": {
     "defaultMessage": "Enabling this feature allows the APs to maintain one accounting session for a client roaming between APs. If the client roams from one AP to another, the accounting session ID and statistics will be carried while roaming from one AP to the other."
   },
@@ -6203,6 +6189,9 @@
   },
   "FdbMPT": {
     "defaultMessage": "Client Admission control: Enabled (5 GHz)"
+  },
+  "Fe8v8F": {
+    "defaultMessage": "The cellular AP cannot be moved to the <venueSingular></venueSingular> which doesn't enable DHCP service"
   },
   "FeE4gS": {
     "defaultMessage": "Offboard this system to enable deletion"
@@ -6249,6 +6238,9 @@
   "FlnPqQ": {
     "defaultMessage": "Force DHCP Timeout"
   },
+  "FmIkki": {
+    "defaultMessage": "These settings cannot be changed, since a CLI profile is applied on the <venueSingular></venueSingular>."
+  },
   "Fn3BCP": {
     "defaultMessage": "Time Schedule"
   },
@@ -6267,9 +6259,6 @@
   "Fo/Tdb": {
     "defaultMessage": "Your RUCKUS One subscription has expired. You can use the application for {daysText} days"
   },
-  "FoDCpr": {
-    "defaultMessage": "[Geo Location not set]"
-  },
   "FoE42e": {
     "defaultMessage": "Requires Attention"
   },
@@ -6284,6 +6273,9 @@
   },
   "FrLBxB": {
     "defaultMessage": "Disassociated because sending STA is leaving (or has left) BSS"
+  },
+  "FrM62S": {
+    "defaultMessage": "Select the <venuePlural></venuePlural> where the rogue AP detection policy will be applied:"
   },
   "FrXOIi": {
     "defaultMessage": "Import Units From File"
@@ -6339,6 +6331,9 @@
   "Fz+7iC": {
     "defaultMessage": "Force Fragmentation"
   },
+  "Fz4Sj0": {
+    "defaultMessage": "<VenuePlural></VenuePlural> to apply"
+  },
   "FzXfbE": {
     "defaultMessage": "DHCP Relay Agent"
   },
@@ -6391,6 +6386,9 @@
   "G9T4D2": {
     "defaultMessage": "{name}<br></br> <space><b>{formattedValue}</b> MB</space>"
   },
+  "GA+AME": {
+    "defaultMessage": "Select <venuePlural></venuePlural> to activate this network"
+  },
   "GA2hk8": {
     "defaultMessage": "802.3af Switch/Injector"
   },
@@ -6426,6 +6424,9 @@
   },
   "GFZYPa": {
     "defaultMessage": "Default VLAN (Multiple values)"
+  },
+  "GGQuPj": {
+    "defaultMessage": "<VenueSingular></VenueSingular> (AP configure AP Group change)"
   },
   "GGtY1E": {
     "defaultMessage": "Please deactivate the SmartEdge Firewall Service under Scope menu first"
@@ -6489,9 +6490,6 @@
   },
   "GPfwkk": {
     "defaultMessage": "Current Status"
-  },
-  "GPhQ8g": {
-    "defaultMessage": "There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this Venue."
   },
   "GQSMoL": {
     "defaultMessage": "AP Capacity"
@@ -6641,6 +6639,9 @@
   "Gr1SAu": {
     "defaultMessage": "Customer Name"
   },
+  "Grg8dZ": {
+    "defaultMessage": "Use <VenueSingular></VenueSingular> Settings"
+  },
   "GruwnW": {
     "defaultMessage": "Brand Property Account"
   },
@@ -6682,6 +6683,9 @@
   },
   "H+WUmt": {
     "defaultMessage": "AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone."
+  },
+  "H+aQH9": {
+    "defaultMessage": "Since there are active mesh links in this <venueSingular></venueSingular>, in order prevent networking issues, you cannot turn mesh networking off"
   },
   "H/qYei": {
     "defaultMessage": "Edit DDoS Rule"
@@ -6732,6 +6736,9 @@
   "H8wOLa": {
     "defaultMessage": "No Authentication"
   },
+  "H91fl4": {
+    "defaultMessage": "To enable the property management for a <venueSingular></venueSingular>, please go to the <VenueSingular></VenueSingular> configuration/property management page to enable it."
+  },
   "H9nXqy": {
     "defaultMessage": "meets goal"
   },
@@ -6781,6 +6788,9 @@
   "HJCpBo": {
     "defaultMessage": "Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br> Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br> - IP address(e.g. 10.11.12.13)<br></br> - IP address range(e.g. 10.11.12.13-10.11.12.15)<br></br> - CIDR(e.g. 10.11.12.13/28)<br></br> - IP address and mask(e.g. 10.11.12.13 255.255.255.0)<br></br> - Website FQDN(e.g. www.ruckus.com)<br></br> - Website FQDN with a wildcard(e.g. *.amazon.com; *.com)"
   },
+  "HJYY7u": {
+    "defaultMessage": "For segment assignment for <sub5b>AP wired</sub5b>, please go to the <sub5b><VenueSingular></VenueSingular>/ property Units page</sub5b> to assign an AP for the specific unit / identity."
+  },
   "HJikvH": {
     "defaultMessage": "Guest DPSK Passphrase"
   },
@@ -6807,6 +6817,9 @@
   },
   "HMxN4/": {
     "defaultMessage": "{count} {title}"
+  },
+  "HONKNB": {
+    "defaultMessage": "No group (inherit from <VenueSingular></VenueSingular>)"
   },
   "HP/Zj2": {
     "defaultMessage": "Error has occurred. Backend returned code {status}"
@@ -6850,6 +6863,9 @@
   "HX3vfn": {
     "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
   },
+  "HXRmGO": {
+    "defaultMessage": "<venueSingular></venueSingular>"
+  },
   "HYZLA2": {
     "defaultMessage": "Contact information for emails footer"
   },
@@ -6878,8 +6894,8 @@
   "HbxVqg": {
     "defaultMessage": "Create L2-L7 access policies for device access to wireless networks"
   },
-  "Hc0dIr": {
-    "defaultMessage": "This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?"
+  "Hc3KbA": {
+    "defaultMessage": "Currently <radioTypeName></radioTypeName> settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)"
   },
   "HcCWSD": {
     "defaultMessage": "Tunnel & Network Settings"
@@ -6908,6 +6924,9 @@
   },
   "HfARvt": {
     "defaultMessage": "Read this before you start:"
+  },
+  "HfO5Iq": {
+    "defaultMessage": "<VenuePlural></VenuePlural> ({count})"
   },
   "HfWpHr": {
     "defaultMessage": "{operation} Route"
@@ -6948,14 +6967,14 @@
   "HoC8fU": {
     "defaultMessage": "WiFi4EU Snippet Settings"
   },
+  "HoQIWb": {
+    "defaultMessage": "Create and apply a configuration profile to this switch's <venueSingular></venueSingular> to add/edit LLDP QoS"
+  },
   "HojTOr": {
     "defaultMessage": "YYYY/MM/DD"
   },
   "HooajF": {
     "defaultMessage": "Add another Realm"
-  },
-  "HpH0V0": {
-    "defaultMessage": "All Venues"
   },
   "HpjP+D": {
     "defaultMessage": "Insufficient data for RUCKUS AI to generate RRM recommendations. RUCKUS AI requires at least 3 days of data to train its AI models."
@@ -7047,9 +7066,6 @@
   "I1W2Zf": {
     "defaultMessage": "SNMPv3 Privilege: Read-Write"
   },
-  "I1ZCPK": {
-    "defaultMessage": "Technology"
-  },
   "I21S2+": {
     "defaultMessage": "Root Cause Analysis"
   },
@@ -7113,9 +7129,6 @@
   "IBON3S": {
     "defaultMessage": "Five Years"
   },
-  "IBbIwV": {
-    "defaultMessage": "Policies & Profiles ({policyCount})"
-  },
   "IC2Uy7": {
     "defaultMessage": "The following properties determine the lifespan of the issued certificates. We recommend setting the start date to 1 month before issuance to avoid issues with end-user system clocks"
   },
@@ -7157,12 +7170,6 @@
   },
   "ILVg4S": {
     "defaultMessage": "<p>Users are failing to successfully connect at the RADIUS stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>"
-  },
-  "IN9Bzr": {
-    "defaultMessage": "Top Venues with poor experience"
-  },
-  "IO24yP": {
-    "defaultMessage": "Boosting TLS key will prompt a reboot of all AP devices within this venue. Are you sure you want to continue?"
   },
   "IObDwo": {
     "defaultMessage": "Primary DNS IP"
@@ -7269,9 +7276,6 @@
   },
   "IfmpSq": {
     "defaultMessage": "DHCP Success"
-  },
-  "Ig2+qm": {
-    "defaultMessage": "Geo Location not set"
   },
   "IgLZkb": {
     "defaultMessage": "NFC Secure Element"
@@ -7453,6 +7457,9 @@
   "J7lsnc": {
     "defaultMessage": "Select profile..."
   },
+  "J7ubvR": {
+    "defaultMessage": "Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the persona group in the property management of <venueSingular></venueSingular>. A DPSK network only can be associated with one personal identity network"
+  },
   "J8EWE/": {
     "defaultMessage": "DHCP Offer",
     "description": "CCD Message ID 32"
@@ -7483,6 +7490,9 @@
   },
   "JBqn/p": {
     "defaultMessage": "CLI commands"
+  },
+  "JBuVj9": {
+    "defaultMessage": "The max-number of <venuePlural></venuePlural> in a rogue ap policy profile is 64."
   },
   "JCIgkj": {
     "defaultMessage": "Username"
@@ -7529,9 +7539,6 @@
   "JKnT12": {
     "defaultMessage": "The controller cluster is sending data with an incorrect past timestamp. To avoid false or misleading data analysis, past timestamped data is not analyzed for incidents."
   },
-  "JL2eG+": {
-    "defaultMessage": "RUCKUS DHCP service automatically creates and assigns a new DHCP-Guest Service and DHCP Pool for those Guest WLAN related venues that do not have a specified DHCP Service. Please refer to the DHCP Service at each Venue for more information."
-  },
   "JNKsEK": {
     "defaultMessage": "{statusMessage} - Warning"
   },
@@ -7544,26 +7551,17 @@
   "JPQRtl": {
     "defaultMessage": "Update switch {switchName} configuration success"
   },
-  "JRBOf3": {
-    "defaultMessage": "SNMP Agent Settings"
-  },
   "JSFCAO": {
     "defaultMessage": "UP"
   },
   "JU41ei": {
     "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Check the peer device configuration. It should match with AP WAN Port capacity.</li> <li>Check the peer device capacity for supporting multi gig throughput.</li> <li>Check the cable for good Ethernet link negotiation.</li> </ol>"
   },
-  "JUMvz8": {
-    "defaultMessage": "Only 1 rogue AP classification profile can be active at any venue at any time."
-  },
   "JUh0e1": {
     "defaultMessage": "When enabled, multiple devices will be able to use this passphrase"
   },
   "JUj/z8": {
     "defaultMessage": "AP MAC-hex"
-  },
-  "JVlczk": {
-    "defaultMessage": "This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?"
   },
   "JWDcRP": {
     "defaultMessage": "Client Rate Limit"
@@ -7591,10 +7589,6 @@
   },
   "JZLN65": {
     "defaultMessage": "Add Tech Partner"
-  },
-  "JZyXT9": {
-    "defaultMessage": "Cannot move AP to another venue in different country code or country",
-    "description": "Validation - Venue Country checks"
   },
   "JaEaSH": {
     "defaultMessage": "{propertyLabel} Count"
@@ -7630,8 +7624,15 @@
   "JdXc/M": {
     "defaultMessage": "Oops. Something is going wrong..."
   },
+  "JeG8cY": {
+    "defaultMessage": "Currently using radio settings of the <venueSingular></venueSingular> (<venuelink></venuelink>)"
+  },
   "JeLJc6": {
     "defaultMessage": "Onboarded Systems"
+  },
+  "Jf0Rrt": {
+    "defaultMessage": "The cellular AP cannot be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service",
+    "description": "Validation - Cellular AP Dhcp checks"
   },
   "Jf8djI": {
     "defaultMessage": "Auto-Config"
@@ -7686,6 +7687,9 @@
   "JlgFSk": {
     "defaultMessage": "Onboarding: Delete data connectors & streaming profiles"
   },
+  "Jll7cP": {
+    "defaultMessage": "For the following {count, plural, one {<venueSingular></venueSingular>} other {<venuePlural></venuePlural>}}, the network could not be activated on all <VenuePlural></VenuePlural>:"
+  },
   "JmukWh": {
     "defaultMessage": "You can define up to 64 VLAN members",
     "description": "Validation - VLAN members max length checks"
@@ -7724,9 +7728,6 @@
   "Jrcxmu": {
     "defaultMessage": "My.Ruckus support for Tunnel-WLAN/VLAN"
   },
-  "JsIX6C": {
-    "defaultMessage": "Cannot save threshold at organization level. Please select a Venue or AP to set a threshold."
-  },
   "JsLzgX": {
     "defaultMessage": "Logo: {imageName}"
   },
@@ -7738,6 +7739,9 @@
   },
   "JtBvVk": {
     "defaultMessage": "Use Both"
+  },
+  "JtNI5v": {
+    "defaultMessage": "All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to the <venueSingular></venueSingular>’s firmware version mentioned above before onboarding."
   },
   "JtnBv4": {
     "defaultMessage": "See incompatible report"
@@ -7799,9 +7803,6 @@
   "K5hTdm": {
     "defaultMessage": "Portal Title"
   },
-  "K64foy": {
-    "defaultMessage": "Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting."
-  },
   "K6A/9/": {
     "defaultMessage": "with Generative AI"
   },
@@ -7816,6 +7817,9 @@
   },
   "KAH6lu": {
     "defaultMessage": "ZD Migration"
+  },
+  "KAih6a": {
+    "defaultMessage": "<VenuePlural></VenuePlural>"
   },
   "KBMGUC": {
     "defaultMessage": "Full Optimization Period (Lower 5 GHz)"
@@ -7878,17 +7882,11 @@
   "KKprKW": {
     "defaultMessage": "Secure your network"
   },
-  "KKxUU1": {
-    "defaultMessage": "Venue firmware version for ICX {venueCategory} Series:"
-  },
   "KLRE0U": {
     "defaultMessage": "Ethernet (Primary) with cellular failover"
   },
   "KLVpve": {
     "defaultMessage": "ePDG"
-  },
-  "KLboNm": {
-    "defaultMessage": "Venue time zone:"
   },
   "KLph2n": {
     "defaultMessage": "-9db"
@@ -7914,9 +7912,6 @@
   "KOUS0L": {
     "defaultMessage": "Generate New Passphrase"
   },
-  "KOvBw1": {
-    "defaultMessage": "Venue Management"
-  },
   "KP378E": {
     "defaultMessage": "Map Region"
   },
@@ -7940,6 +7935,9 @@
   },
   "KQvWvD": {
     "defaultMessage": "Deleted"
+  },
+  "KRSMu3": {
+    "defaultMessage": "Activate networks for the SD-LAN service on the <venueSingular></venueSingular> ({venueName}):"
   },
   "KRy0+E": {
     "defaultMessage": "Video Call QoE"
@@ -8045,14 +8043,14 @@
   "KlyKOH": {
     "defaultMessage": "SSO Groups ({ssoGroupCount})"
   },
-  "KnQY9q": {
-    "defaultMessage": "Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the persona group in the venue’s property management. A DPSK network only can be associated with one personal identity network"
-  },
   "KoRg76": {
     "defaultMessage": "Enable DFS channel: Channel 144"
   },
   "KoU19A": {
     "defaultMessage": "802.3bt8"
+  },
+  "Kpb+lS": {
+    "defaultMessage": "Selected <VenuePlural></VenuePlural> are already on this release"
   },
   "KqPbq8": {
     "defaultMessage": "This value should be higher than or equal to 1",
@@ -8133,6 +8131,9 @@
   "L/BmLn": {
     "defaultMessage": "VLAN-{id}"
   },
+  "L0dX+u": {
+    "defaultMessage": "Not allow to change <VenueSingular></VenueSingular> on DHCP AP."
+  },
   "L15a2j": {
     "defaultMessage": "Are you sure you want to upgrade the firmware version on devices for selected customers?"
   },
@@ -8211,6 +8212,9 @@
   "LFHwJS": {
     "defaultMessage": "Dynamic vlan"
   },
+  "LFR+wN": {
+    "defaultMessage": "Mesh AP cannot be moved to a different <venueSingular></venueSingular>"
+  },
   "LG+bSR": {
     "defaultMessage": "Channel Change Frequency:"
   },
@@ -8231,9 +8235,6 @@
   },
   "LHR2ir": {
     "defaultMessage": "Subnet Network Address"
-  },
-  "LHXv8m": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
   },
   "LHrFri": {
     "defaultMessage": "Here is some information about"
@@ -8296,9 +8297,6 @@
   "LPhGQY": {
     "defaultMessage": "Application Policy"
   },
-  "LQ3MUI": {
-    "defaultMessage": "Are you sure you want to downgrade the firmware version on devices in this venue?"
-  },
   "LS1Wqe": {
     "defaultMessage": "All Days"
   },
@@ -8357,11 +8355,17 @@
     "defaultMessage": "Please select one channel",
     "description": "Validation - radio channel checks"
   },
+  "LdHBwY": {
+    "defaultMessage": "Strengthen the TLS connection strength between APs and R1 by utilizing RSA 3072 for WiFi 7 and ECDSA P-256 for non-WiFi 7 devices. Note that toggling the switch will prompt a reboot of all AP devices within this <venueSingular></venueSingular>."
+  },
   "LdU9Y4": {
     "defaultMessage": "Organization Unit Pattern"
   },
   "Ldk2g+": {
     "defaultMessage": "Local Users"
+  },
+  "LekA5H": {
+    "defaultMessage": "There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this <VenueSingular></VenueSingular>."
   },
   "LezilD": {
     "defaultMessage": "Primary DHCP Server"
@@ -8396,11 +8400,17 @@
   "LkRUqG": {
     "defaultMessage": "DFS Events"
   },
+  "LkWHbc": {
+    "defaultMessage": "The initial optimization graph is no longer available below since the {scopeType} recommendation details has crossed the standard RUCKUS data retention policy.{isApplied, select, true { However your {scopeType} configuration continues to be monitored and adjusted for further optimization.} other {}}"
+  },
   "LmULx9": {
     "defaultMessage": "Conservative"
   },
   "LnECmw": {
     "defaultMessage": "Before: {before} | After: {after}"
+  },
+  "Lo7S1S": {
+    "defaultMessage": "No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating <venuePlural></venuePlural>"
   },
   "LolZ3b": {
     "defaultMessage": "AI-Driven RRM for channel plan"
@@ -8431,6 +8441,9 @@
   },
   "LsO8d2": {
     "defaultMessage": "Cluster Virtual IP"
+  },
+  "LsgJV+": {
+    "defaultMessage": "Schedule for Network \"{NetworkName}\" in <VenueSingular></VenueSingular> \"{VenueName}\""
   },
   "Lt0QwS": {
     "defaultMessage": "48 mbps"
@@ -8549,6 +8562,9 @@
   "M6scJt": {
     "defaultMessage": "2.4 GHz radio setting for {scope} has \"Auto Channel Selection\" set as \"{channelSelectionMode}\", however \"Background Scan\" feature is disabled for this Zone. To effectively use \"{channelSelectionMode}\" as channel selection algorithm, it recommended to enable \"Background Scan\" feature with default scan timer as 20 seconds."
   },
+  "M81uG7": {
+    "defaultMessage": "5 GHz radio setting for {scope} has \"Auto Channel Selection\" set as \"{channelSelectionMode}\", however \"Background Scan\" feature is disabled for this <VenueSingular></VenueSingular>. To effectively use \"{channelSelectionMode}\" as channel selection algorithm, it recommended to enable \"Background Scan\" feature with default scan timer as 20 seconds."
+  },
   "M8CzT7": {
     "defaultMessage": "DFS EVENTS BY CHANNEL"
   },
@@ -8634,9 +8650,6 @@
   "MHWaDv": {
     "defaultMessage": "[Last] dddd[,] HH:mm"
   },
-  "MHf6hy": {
-    "defaultMessage": "You cannot activate the Mesh Network on this venue because it already has enable DHCP settings"
-  },
   "MHyZ/t": {
     "defaultMessage": "LLDP Enabled"
   },
@@ -8678,9 +8691,6 @@
   "MN6Kh7": {
     "defaultMessage": "Please select Layer 3 profile"
   },
-  "MOwOvp": {
-    "defaultMessage": "Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed"
-  },
   "MOy05h": {
     "defaultMessage": "Operating bands: {context}"
   },
@@ -8698,6 +8708,9 @@
   },
   "MUzcWQ": {
     "defaultMessage": "MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}"
+  },
+  "MVAJOi": {
+    "defaultMessage": "New <VenueSingular></VenueSingular> Name"
   },
   "MVGVlP": {
     "defaultMessage": "ICMP"
@@ -8769,20 +8782,20 @@
   "MfzcHF": {
     "defaultMessage": "User Connection Settings"
   },
+  "Mg1IiD": {
+    "defaultMessage": "mos"
+  },
   "MhLfzX": {
     "defaultMessage": "Generate New Certificate Authority"
   },
-  "MhNbTQ": {
-    "defaultMessage": "Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation."
+  "MhtvT3": {
+    "defaultMessage": "Please ensure that you are familiar with the requirements for AFC Geo-Location."
   },
   "MiYx1b": {
     "defaultMessage": "Wireless Networks"
   },
   "MiqoP+": {
     "defaultMessage": "802.11 Auth Failure"
-  },
-  "MjAgRT": {
-    "defaultMessage": "The selected firmware version will be updated on all devices in the venue, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade."
   },
   "MjCJ1V": {
     "defaultMessage": "Custom date"
@@ -8856,6 +8869,9 @@
   "MsyStf": {
     "defaultMessage": "Existing configurations have been detected on the selected ports. Please be aware that, to integrate them into the LAG, we will replace the current configurations with LAG settings. Are you sure you want to proceed?"
   },
+  "MtHC3l": {
+    "defaultMessage": "RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>, without the full optimization criteria, where the channel bandwidth and AP Tx power will not be included in the optimization plan. A new recommendation for this <venueSingular></venueSingular> will be generated only if a better channel plan can be found within the next 24 hours."
+  },
   "Mtd9LO": {
     "defaultMessage": "Timeout"
   },
@@ -8864,9 +8880,6 @@
   },
   "Mu7bwi": {
     "defaultMessage": "Enter a destination Ip"
-  },
-  "MvCKUF": {
-    "defaultMessage": "Venue:"
   },
   "MvP8qK": {
     "defaultMessage": "Search Switch, Model"
@@ -8891,6 +8904,9 @@
   },
   "MyVwZ6": {
     "defaultMessage": "Certificate ({count})"
+  },
+  "Myz+uI": {
+    "defaultMessage": "<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs"
   },
   "N+0qSu": {
     "defaultMessage": "Sector"
@@ -8977,6 +8993,9 @@
   "NAidKb": {
     "defaultMessage": "Notifications"
   },
+  "NBK6vH": {
+    "defaultMessage": "You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting"
+  },
   "NBTwVC": {
     "defaultMessage": "Invalid NAS ID"
   },
@@ -9040,9 +9059,6 @@
   "NL6w6k": {
     "defaultMessage": "Core LAG"
   },
-  "NLKBsm": {
-    "defaultMessage": "Select the venues where the syslog server will be applied:"
-  },
   "NM5ZxG": {
     "defaultMessage": "Failures"
   },
@@ -9051,6 +9067,9 @@
   },
   "NN1TnK": {
     "defaultMessage": "Edit CLI Template"
+  },
+  "NNjBGs": {
+    "defaultMessage": "Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>."
   },
   "NOiJNj": {
     "defaultMessage": "Next Hop"
@@ -9100,9 +9119,6 @@
   },
   "NVU46R": {
     "defaultMessage": "Test name exists. Enter a different name"
-  },
-  "NVb6YP": {
-    "defaultMessage": "If Rogue AP Detection is OFF for a venue and you activate a policy, Rogue detection will be turned ON for the venue automatically."
   },
   "NWD7Vo": {
     "defaultMessage": "Google Service Account"
@@ -9236,6 +9252,9 @@
   "Ns6wtQ": {
     "defaultMessage": "You have entered the same MAC address for both the device and the closest AP. Only Unique MAC addresses allowed."
   },
+  "NsHUk9": {
+    "defaultMessage": "Activated in <venuePlural></venuePlural>"
+  },
   "NsUrSZ": {
     "defaultMessage": "Own Account: {venueCount}"
   },
@@ -9308,9 +9327,6 @@
   "O2+8pd": {
     "defaultMessage": "Average Upload"
   },
-  "O20KVt": {
-    "defaultMessage": "Currently <radioTypeName></radioTypeName> settings as the venue (<venuelink></venuelink>)"
-  },
   "O3DDcK": {
     "defaultMessage": "data-source"
   },
@@ -9322,9 +9338,6 @@
   },
   "O5f/aO": {
     "defaultMessage": "Apple File Sharing"
-  },
-  "O5vLF3": {
-    "defaultMessage": "Networks running the SD-LAN on this venue:"
   },
   "O6+/CI": {
     "defaultMessage": "3"
@@ -9373,9 +9386,6 @@
   },
   "ODP173": {
     "defaultMessage": "End Value"
-  },
-  "ODTJT0": {
-    "defaultMessage": "Venues to apply"
   },
   "ODg339": {
     "defaultMessage": "Transient Client Management:"
@@ -9444,21 +9454,12 @@
   "OLVyHL": {
     "defaultMessage": "WEP"
   },
-  "OLjMOd": {
-    "defaultMessage": "Select Venues / APs to test"
-  },
   "OLrMrb": {
     "defaultMessage": "\"`\" is not allowed",
     "description": "Validation - grave accent checks"
   },
-  "ONDX3I": {
-    "defaultMessage": "Currently settings as the venue (<venuelink></venuelink>)"
-  },
   "ONGUDU": {
     "defaultMessage": "System notifications will be sent to the following email addresses and mobile devices:"
-  },
-  "ONMhRo": {
-    "defaultMessage": "Pending response from the AFC server"
   },
   "ONScAg": {
     "defaultMessage": "Forwarding Rules"
@@ -9514,23 +9515,17 @@
   "OY3OaX": {
     "defaultMessage": "some required field(s) are empty."
   },
-  "OZGLav": {
-    "defaultMessage": "Match Admin Password to Venue"
-  },
   "OZLfhb": {
     "defaultMessage": "Top Switches by Error"
+  },
+  "OZfLwd": {
+    "defaultMessage": "A list of the networks that have been activated on this <venueSingular></venueSingular>."
   },
   "OaMgcI": {
     "defaultMessage": "Auto channel selection: 2.4 GHz Optimization time period"
   },
   "OaW3nf": {
     "defaultMessage": "Download template"
-  },
-  "Oavm97": {
-    "defaultMessage": "AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten."
-  },
-  "ObC/u4": {
-    "defaultMessage": "Venue Firmware Version: {fwVersion}"
   },
   "Oc3JoV": {
     "defaultMessage": "Optimized Connectivity Experience (OCE)"
@@ -9627,6 +9622,9 @@
   "OqoHpV": {
     "defaultMessage": "Please select group"
   },
+  "OrRKcY": {
+    "defaultMessage": "Enabling TLS Enhanced key will prompt a reboot of all AP devices within this <venueSingular></venueSingular>. Are you sure you want to continue?"
+  },
   "OruViT": {
     "defaultMessage": "Selected APs"
   },
@@ -9686,6 +9684,9 @@
   },
   "P+uzqp": {
     "defaultMessage": "3 (802.3af 15.4 W)"
+  },
+  "P0Dkr7": {
+    "defaultMessage": "Back to <venueSingular></venueSingular> details"
   },
   "P0HnjZ": {
     "defaultMessage": "Click-Through",
@@ -9800,6 +9801,9 @@
   "PMVvkt": {
     "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li> <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li> <li>If static channel assignment is desired consider reducing Channelization to 20MHz / 40MHz.</li> <li>Scan your environments for rogue APs and remove them if possible.</li> <li>In the Zone/ AP group configuration, remove DFS channels with excessive DFS events.</li> </ol>"
   },
+  "PN16Sx": {
+    "defaultMessage": "Activation Period Ends on"
+  },
   "PNem12": {
     "defaultMessage": "Created Time"
   },
@@ -9885,6 +9889,9 @@
   "Pi8gM8": {
     "defaultMessage": "Restart \"{count, plural, one {{entityValue}} other {{count} Services} }\"?"
   },
+  "PiEm16": {
+    "defaultMessage": "This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively."
+  },
   "PiIN3F": {
     "defaultMessage": "Cannot locate this rogue AP since the detecting APs are not placed in any floor plans."
   },
@@ -9939,6 +9946,9 @@
   "Pv5jZv": {
     "defaultMessage": "Dual 5G: Enabled"
   },
+  "PvlTUD": {
+    "defaultMessage": "Select the APs that the mDNS Proxy Service will be applied to at <venueSingular></venueSingular> “{venueName}”."
+  },
   "PxQpsu": {
     "defaultMessage": "Max clients per radio:"
   },
@@ -9985,6 +9995,9 @@
   "Q3r+96": {
     "defaultMessage": "Dual-band"
   },
+  "Q56LB1": {
+    "defaultMessage": "No RRM recommendation as <venueSingular></venueSingular> is unqualified"
+  },
   "Q6F+Bs": {
     "defaultMessage": "Access Points"
   },
@@ -10002,6 +10015,9 @@
   },
   "Q7OxBg": {
     "defaultMessage": "Tech Partners"
+  },
+  "Q7ZeTU": {
+    "defaultMessage": "Last <VenueSingular></VenueSingular>"
   },
   "Q7nVr8": {
     "defaultMessage": "Client Throughput"
@@ -10064,9 +10080,6 @@
   "QGf94p": {
     "defaultMessage": "ID Authentication Request",
     "description": "CCD Message ID 64"
-  },
-  "QGi6YT": {
-    "defaultMessage": "Are you sure you want to update the firmware version on devices in all selected venues?"
   },
   "QHkbkO": {
     "defaultMessage": "Primary Server"
@@ -10212,6 +10225,9 @@
   "QirE3M": {
     "defaultMessage": "Start Date"
   },
+  "QissJ+": {
+    "defaultMessage": "Firmware downgrade started on devices in the selected <venueSingular></venueSingular>."
+  },
   "Qj4rv9": {
     "defaultMessage": "Disassociated due to inactivity"
   },
@@ -10234,6 +10250,9 @@
   "QlsDcr": {
     "defaultMessage": "Action"
   },
+  "QlzMGd": {
+    "defaultMessage": "AFC <VenueSingular></VenueSingular> Height:"
+  },
   "QmHS60": {
     "defaultMessage": "Delete {count, plural, one {\"{entityValue}\"} other {{count} APs} }?"
   },
@@ -10251,6 +10270,9 @@
   },
   "Qq9Z7z": {
     "defaultMessage": "Resource Utilization"
+  },
+  "Qt18X+": {
+    "defaultMessage": "<VenueSingular></VenueSingular> RRM Health"
   },
   "QtFGiO": {
     "defaultMessage": "Host"
@@ -10341,6 +10363,9 @@
   },
   "RFhyTh": {
     "defaultMessage": "Attention Required: Please ensure to configure {staticRoute} on SmartEdge ({edgeName}) for the distribution switch’s loopback IP addresses to establish the connection."
+  },
+  "RG0OjJ": {
+    "defaultMessage": "Select the <venueSingular></venueSingular> where you want to apply the SD-LAN:"
   },
   "RHP1QJ": {
     "defaultMessage": "DPSK ({count})"
@@ -10453,6 +10478,9 @@
   "RbQ6Yz": {
     "defaultMessage": "The following properties determine the strength of the certificate authority."
   },
+  "RbR6Po": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
+  },
   "RbYqWm": {
     "defaultMessage": "Report duration will be last 7 days"
   },
@@ -10464,6 +10492,9 @@
   },
   "RcmUwY": {
     "defaultMessage": "Number of Devices Per Passphrase must be between 1 and {max}"
+  },
+  "Rcrn32": {
+    "defaultMessage": "Same as <VenueSingular></VenueSingular>"
   },
   "Rd0Anx": {
     "defaultMessage": "Tx Traffic"
@@ -10492,6 +10523,9 @@
   },
   "RgxG85": {
     "defaultMessage": "L3 Authentication Failures"
+  },
+  "Rh9HnR": {
+    "defaultMessage": "Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label. If not, upgrade the switch FW to the <venueSingular></venueSingular>’s firmware version mentioned above before onboarding."
   },
   "RhJnEj": {
     "defaultMessage": "{threshold} ms"
@@ -10637,6 +10671,9 @@
   "S3XVto": {
     "defaultMessage": "Activity Details"
   },
+  "S4Fz6x": {
+    "defaultMessage": "Please select <VenueSingular></VenueSingular>"
+  },
   "S4Nsth": {
     "defaultMessage": "Remove certificate with same CN or issuing CA."
   },
@@ -10719,9 +10756,6 @@
   "SJWYs1": {
     "defaultMessage": "Module 2:"
   },
-  "SK37Pf": {
-    "defaultMessage": "This venue contains no networking device"
-  },
   "SK7W08": {
     "defaultMessage": "Changes only affect new user accounts. To edit your language profile, go to"
   },
@@ -10740,9 +10774,6 @@
   "SN2zjb": {
     "defaultMessage": "Disk Total Space"
   },
-  "SNxApV": {
-    "defaultMessage": "<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p> <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>"
-  },
   "SOKQx7": {
     "defaultMessage": "Please enter secret"
   },
@@ -10755,14 +10786,8 @@
   "SPUXV4": {
     "defaultMessage": "Invalid User Login Context"
   },
-  "SQ8J/m": {
-    "defaultMessage": "- Applies to all newly added venues automatically"
-  },
-  "SQGxz0": {
-    "defaultMessage": "Client Isolation Allowlist by Venue"
-  },
-  "SU/joz": {
-    "defaultMessage": "Since a previous {status} has failed, you have the option to delete this, in order for RUCKUS AI to re-run the recommendation algorithm for this venue in the next 24 hours."
+  "SSM5uD": {
+    "defaultMessage": "AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage."
   },
   "SUK8RA": {
     "defaultMessage": "RADIUS Access Accept"
@@ -10806,9 +10831,6 @@
   },
   "Sc5yTL": {
     "defaultMessage": "No detected neighbor data"
-  },
-  "ScFzUg": {
-    "defaultMessage": "Venue Name"
   },
   "ScY5C+": {
     "defaultMessage": "Access Vlan"
@@ -10862,6 +10884,9 @@
   },
   "Sjo1P4": {
     "defaultMessage": "Custom"
+  },
+  "Sk11nb": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
   },
   "SkEeGe": {
     "defaultMessage": "Please enter number of days"
@@ -10922,6 +10947,9 @@
   },
   "SsiZK7": {
     "defaultMessage": "December"
+  },
+  "St5aMo": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
   },
   "StIhpp": {
     "defaultMessage": "Tunnel Type"
@@ -11047,6 +11075,9 @@
   "TBqaGq": {
     "defaultMessage": "{count} Mbps"
   },
+  "TCJdeH": {
+    "defaultMessage": "This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?"
+  },
   "TCNKxE": {
     "defaultMessage": "Enter domains separated by comma"
   },
@@ -11089,6 +11120,9 @@
   },
   "TGZPcr": {
     "defaultMessage": "Test is in progress"
+  },
+  "TGp8Uf": {
+    "defaultMessage": "Enabling mesh for a <venueSingular></venueSingular> creates a new WLAN for mesh communication between Access Points"
   },
   "TGpEPS": {
     "defaultMessage": "Value must between 5-10080 minutes or 1-7 days or 1 week"
@@ -11135,6 +11169,9 @@
   "TLiG9d": {
     "defaultMessage": "NTP Servers"
   },
+  "TMXF/r": {
+    "defaultMessage": "<VenueSingular></VenueSingular> Details"
+  },
   "TMXzZs": {
     "defaultMessage": "List {name} was added"
   },
@@ -11158,6 +11195,9 @@
   },
   "TRBp7I": {
     "defaultMessage": "Service Validation test was created"
+  },
+  "TS7qT2": {
+    "defaultMessage": "<VenueSingular></VenueSingular>:"
   },
   "TSRo+c": {
     "defaultMessage": "Band Balancing feature intelligently distributes WLAN clients on 2.4 GHz and 5 GHz channels in order to balance the client load. Band Balancing shall result in better radio utilization resulting in better Wi-Fi experience to the user."
@@ -11237,9 +11277,6 @@
   "TcwMs6": {
     "defaultMessage": "Instances"
   },
-  "TedOVF": {
-    "defaultMessage": "Wi-Fi country code is used to indicate the available channels and power levels for use by access points at a venue. In most use cases the Wi-Fi country code is identical to the venue's location and need not be modified. If needed, you may select an alternate country code that is appropriate for your location."
-  },
   "Tf5z2y": {
     "defaultMessage": "- It is recommended to use logos with transparent background"
   },
@@ -11252,14 +11289,23 @@
   "TfNbIe": {
     "defaultMessage": "Airtime Busy is unusually high in 5 GHz in {scope}"
   },
+  "TfQ0t3": {
+    "defaultMessage": "Applied at <venueSingular></venueSingular>"
+  },
   "Tffbyh": {
     "defaultMessage": "Guest Pass - Forgot password"
+  },
+  "TfmZ/f": {
+    "defaultMessage": "The following list will only display the connected switch under the <venueSingular></venueSingular>."
   },
   "TfpT1u": {
     "defaultMessage": "Backup File"
   },
   "Tgyxau": {
     "defaultMessage": "Application Category"
+  },
+  "Th0baE": {
+    "defaultMessage": "Create and apply a configuration profile to this switch's <venueSingular></venueSingular> to add/edit ACL"
   },
   "Tho2i0": {
     "defaultMessage": "Specific Subnet"
@@ -11331,9 +11377,6 @@
   "Tt+JnP": {
     "defaultMessage": "VLANs trunked"
   },
-  "TtiWO4": {
-    "defaultMessage": "The max-number of venues in a syslog server policy profile is 64."
-  },
   "TtsWJ7": {
     "defaultMessage": "Reboot due to firmware download failure"
   },
@@ -11369,6 +11412,9 @@
     "defaultMessage": "No leading or trailing spaces allowed",
     "description": "Validation - no leading/trailing whitespace checks"
   },
+  "Tza3Ak": {
+    "defaultMessage": "(As <venueSingular></venueSingular>)"
+  },
   "U+7zaY": {
     "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp"
   },
@@ -11389,9 +11435,6 @@
   },
   "U/ZAet": {
     "defaultMessage": "AP-to-{smartZone} Latency"
-  },
-  "U0H2WM": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
   },
   "U20LYL": {
     "defaultMessage": "The following information was reported for the error you encountered."
@@ -11417,6 +11460,9 @@
   "U6HvJ4": {
     "defaultMessage": "The following properties are embedded into the CA. Many organizations have guidelines specifying exactly what these values need to be."
   },
+  "U6K5/D": {
+    "defaultMessage": "Open A Case"
+  },
   "U6PDWK": {
     "defaultMessage": "WLAN Specific: Device Policy"
   },
@@ -11440,12 +11486,6 @@
   },
   "U9Z6Iv": {
     "defaultMessage": "Type the word \"{text}\" to confirm:"
-  },
-  "U9n+Wu": {
-    "defaultMessage": "Use Venue settings"
-  },
-  "U9t35W": {
-    "defaultMessage": "Some features are not enabled on specific access points in this venue due to firmware or device incompatibility. Please see the minimum firmware versions required below. Also note that not all features are available on all access points. You may upgrade your firmware from"
   },
   "U9tjJ5": {
     "defaultMessage": "2 days"
@@ -11528,6 +11568,9 @@
   },
   "UMPt+I": {
     "defaultMessage": "Enable Event Report Schedule"
+  },
+  "UNJ2kS": {
+    "defaultMessage": "Use <VenueSingular></VenueSingular> settings"
   },
   "UOFwAv": {
     "defaultMessage": "Connection Success Ratio"
@@ -11749,6 +11792,9 @@
   "V+3KR9": {
     "defaultMessage": "Client (re)associated (802.11)"
   },
+  "V0Ow+j": {
+    "defaultMessage": "The selected firmware version will be updated on all devices in the <venueSingular></venueSingular>, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade."
+  },
   "V0WlMs": {
     "defaultMessage": "The access control profile with that name already exists"
   },
@@ -11772,9 +11818,6 @@
   },
   "V2t+rG": {
     "defaultMessage": "We are not able to determine the password before completing data synchronization."
-  },
-  "V2yQt+": {
-    "defaultMessage": "Venue settings default VLAN ID is the same as one of switch VLANs"
   },
   "V3HPvg": {
     "defaultMessage": "Floor Number"
@@ -11821,6 +11864,9 @@
   },
   "VAaPh+": {
     "defaultMessage": "Invalid port range"
+  },
+  "VCZj/I": {
+    "defaultMessage": "Including any AP that will be added to this <venueSingular></venueSingular> in the future."
   },
   "VEge/7": {
     "defaultMessage": "Switches under PoE threshold"
@@ -11894,8 +11940,8 @@
   "VSiY8k": {
     "defaultMessage": "DHCP Offer"
   },
-  "VU151L": {
-    "defaultMessage": "Since there are active mesh links in this venue, in order prevent networking issues, you cannot turn mesh networking off"
+  "VU5uv4": {
+    "defaultMessage": "To use SD-LAN on the <venueSingular></venueSingular>, you must select a port as the Core Port/LAG on the {editPortLink}. Core port is the port used to connect SmartEdge to the core network for SDLAN service"
   },
   "VUbBN1": {
     "defaultMessage": "Ethernet link"
@@ -11945,6 +11991,9 @@
   },
   "VaR+5v": {
     "defaultMessage": "Router Request"
+  },
+  "ValKs9": {
+    "defaultMessage": "Please select <venueSingular></venueSingular>"
   },
   "VcGmPo": {
     "defaultMessage": "Edit schedule"
@@ -12005,6 +12054,9 @@
   "Vl9Unn": {
     "defaultMessage": "Host Approval",
     "description": "Guest network type - Host Approval"
+  },
+  "VlGqCb": {
+    "defaultMessage": "Match Admin Password to <VenueSingular></VenueSingular>"
   },
   "Vm7thJ": {
     "defaultMessage": "By clicking “Enable Beta”, you agree to the RUCKUS One Beta Terms & Conditions."
@@ -12117,6 +12169,9 @@
   },
   "W/G06d": {
     "defaultMessage": "SZ Cluster"
+  },
+  "W/I9Io": {
+    "defaultMessage": "AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage."
   },
   "W/V6+Y": {
     "defaultMessage": "Collapse"
@@ -12369,6 +12424,9 @@
   "Wm/5TR": {
     "defaultMessage": "AP response timeout"
   },
+  "WnuSih": {
+    "defaultMessage": "{scope} had experienced high co-channel interference in 6 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
+  },
   "WnyGeS": {
     "defaultMessage": "Download FastIron {firmwareVersion} firmware (use UFI router image) from the following link:"
   },
@@ -12535,9 +12593,6 @@
   "XAnUfK": {
     "defaultMessage": "Client List"
   },
-  "XApV4A": {
-    "defaultMessage": "Do not update firmware on selected venue(s)"
-  },
   "XB60lD": {
     "defaultMessage": "Show Mesh Topology"
   },
@@ -12577,17 +12632,20 @@
   "XHHR08": {
     "defaultMessage": "Data"
   },
+  "XHnwCD": {
+    "defaultMessage": "<VenueSingular></VenueSingular> time zone:"
+  },
   "XIcSUF": {
     "defaultMessage": "WPA2 Passphrase:"
   },
   "XJDHyq": {
     "defaultMessage": "AP-{smartZone} connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-{smartZone} connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
+  "XKMIBW": {
+    "defaultMessage": "You cannot enable the DHCP service because the network is activated in a Mesh enabled <VenueSingular></VenueSingular>."
+  },
   "XKQMCK": {
     "defaultMessage": "Simplify network management with centralized control, enhanced automation, and improved programmability for local networks."
-  },
-  "XKzN1Q": {
-    "defaultMessage": "Modifying the AP management VLAN for managing traffic will cause a reboot of all AP devices within this venue. Please note that incorrect settings between APs and switches could result in losing access to your APs. Are you sure you want to continue?"
   },
   "XLPDAJ": {
     "defaultMessage": "Speed test skipped as virtual client and AP management interface are in same subnet and is not supported"
@@ -12665,9 +12723,6 @@
   "XV7bW2": {
     "defaultMessage": "Failed (Revert Canceled)"
   },
-  "XVQg49": {
-    "defaultMessage": "The following list will only display the connected switch under the venue."
-  },
   "XVSDkc": {
     "defaultMessage": "Policy Set {name} was deleted"
   },
@@ -12719,9 +12774,6 @@
   },
   "XcDRqs": {
     "defaultMessage": "GameCube"
-  },
-  "XcHSI8": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
   },
   "XcUyXW": {
     "defaultMessage": "Mgmt IP"
@@ -12850,9 +12902,6 @@
   "Xw6sU/": {
     "defaultMessage": "Show Expired"
   },
-  "XwYgzD": {
-    "defaultMessage": "Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP"
-  },
   "XwfVqh": {
     "defaultMessage": "Channel Range ({radio})"
   },
@@ -12884,14 +12933,17 @@
   "Y+NFht": {
     "defaultMessage": "We did not find any MSP licenses bound to this account. If you think this is a mistake, please try again or contact Ruckus Support or your VAR."
   },
-  "Y3JiGW": {
-    "defaultMessage": "Switches should belong to the same model family and venue"
+  "Y1FZb+": {
+    "defaultMessage": "Each AP in this <venueSingular></venueSingular> is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required"
   },
   "Y4DCYe": {
     "defaultMessage": "AP Version"
   },
   "Y4r4lF": {
     "defaultMessage": "Directed Multicast Traffic From Network"
+  },
+  "Y57042": {
+    "defaultMessage": "Manually update firmware per <venueSingular></venueSingular>"
   },
   "Y5CC1f": {
     "defaultMessage": "Reactivate this customer \"{formattedName}\"?"
@@ -12981,6 +13033,9 @@
   "YLraaM": {
     "defaultMessage": "You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting"
   },
+  "YMA4zv": {
+    "defaultMessage": "<VenuePlural></VenuePlural>:"
+  },
   "YMD6en": {
     "defaultMessage": "Add another ePDG"
   },
@@ -13023,11 +13078,11 @@
   "YU6nNH": {
     "defaultMessage": "For Switch clients segmentation"
   },
-  "YUO99D": {
-    "defaultMessage": "Moving this device to a new venue will reset AFC geolocation. 6GHz operation will remain in low power mode until geolocation information is reestablished."
-  },
   "YUfJ9H": {
     "defaultMessage": "The number of CPU cores, memory, or physical ports on the SmartEdges do not meet the requirements for High Availability. {br}Please ensure the devices have matching specifications to establish a reliable HA configurations."
+  },
+  "YV/Coi": {
+    "defaultMessage": "Rejected by FCC DB due to no available channels"
   },
   "YW6xQe": {
     "defaultMessage": "Radio Band"
@@ -13053,9 +13108,6 @@
   },
   "YbCXak": {
     "defaultMessage": "{severity} Incidents"
-  },
-  "YbP2Pl": {
-    "defaultMessage": "Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points"
   },
   "YdQxfw": {
     "defaultMessage": "Contact Support"
@@ -13089,6 +13141,9 @@
   },
   "Yi8ew9": {
     "defaultMessage": "since first login"
+  },
+  "YiZPXs": {
+    "defaultMessage": "Activate on <VenueSingular></VenueSingular>"
   },
   "YjQDjM": {
     "defaultMessage": "Add Template"
@@ -13263,8 +13318,8 @@
   "Z4WqBL": {
     "defaultMessage": "Remove Secondary Server"
   },
-  "Z4fbCC": {
-    "defaultMessage": "Venues ({count})"
+  "Z5jFpT": {
+    "defaultMessage": "No networks activated on <VenueSingular></VenueSingular> ({venueName})"
   },
   "Z8971h": {
     "defaultMessage": "Verified"
@@ -13372,11 +13427,11 @@
     "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue",
     "description": "Translation string - Transient Issue"
   },
+  "ZMoczs": {
+    "defaultMessage": "Spaces"
+  },
   "ZNM0ht": {
     "defaultMessage": "Do not proceed unless all the switches have the minimum FW version running (or) have been manually upgraded. All members must be running the same FW version."
-  },
-  "ZOYRTo": {
-    "defaultMessage": "Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added."
   },
   "ZOZNDn": {
     "defaultMessage": "Downlink Bandwidth for LTE"
@@ -13426,9 +13481,6 @@
   "ZVQne/": {
     "defaultMessage": "{data} : gateway should be empty when relay is enabled."
   },
-  "ZWd/mu": {
-    "defaultMessage": "Venues & APs ({apCount})"
-  },
   "ZWz5If": {
     "defaultMessage": "Network Info"
   },
@@ -13443,9 +13495,6 @@
   },
   "ZYtHID": {
     "defaultMessage": "LACP/LAG: Keep Ap Settings"
-  },
-  "ZZ3bxQ": {
-    "defaultMessage": "Note that this will affect the service on all venues and APs that the network is activated on."
   },
   "ZZJJYD": {
     "defaultMessage": "Failed ({count} / {percent}%)"
@@ -13624,14 +13673,8 @@
   "a29A5/": {
     "defaultMessage": "The client isolation service will be disabled and VLAN ID will be set to 1 for the checked networks."
   },
-  "a2ACr8": {
-    "defaultMessage": "Same as Venue"
-  },
   "a3R8Tr": {
     "defaultMessage": "Lower 5 GHz - Indoor AP channel selection"
-  },
-  "a3u/wa": {
-    "defaultMessage": "<ul> <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li> <li>The selected CLI profiles cannot contain overlapping switch models</li> </ul>"
   },
   "a4/rKq": {
     "defaultMessage": "<br></br> {deletingGuestPass} {deletingDPSK} <br></br> {confirmation}"
@@ -13768,6 +13811,9 @@
   "aVqg31": {
     "defaultMessage": "day"
   },
+  "aWpBzj": {
+    "defaultMessage": "Show more"
+  },
   "aXVbF0": {
     "defaultMessage": "Select Template ..."
   },
@@ -13847,6 +13893,9 @@
   "aheQdn": {
     "defaultMessage": "Last Name"
   },
+  "aih3XX": {
+    "defaultMessage": "Designated APs in this <venueSingular></venueSingular> are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP"
+  },
   "aimq5t": {
     "defaultMessage": "Upload Limit"
   },
@@ -13904,6 +13953,9 @@
   "aodZny": {
     "defaultMessage": "The Community name cannot contain spaces, single quotes('), double quotes(\"), or pound signs(#)."
   },
+  "aoiRg0": {
+    "defaultMessage": "Selected time will apply to each <venueSingular></venueSingular> according to own time-zone"
+  },
   "aomuMd": {
     "defaultMessage": "{rateLimiting} Mbps"
   },
@@ -13933,6 +13985,9 @@
   },
   "as76Qf": {
     "defaultMessage": "Firmware Type:"
+  },
+  "at+sIw": {
+    "defaultMessage": "Choose which version to schedule the <venueSingular></venueSingular> to:"
   },
   "auEU4B": {
     "defaultMessage": "Tunneled ({clusterNames})"
@@ -14064,6 +14119,9 @@
   "bIqjmO": {
     "defaultMessage": "TACACS+ Server"
   },
+  "bJPCyc": {
+    "defaultMessage": "Part Number Description"
+  },
   "bJSxGU": {
     "defaultMessage": "Channel selection method (5 GHz)"
   },
@@ -14115,9 +14173,6 @@
   "bQaOC6": {
     "defaultMessage": "PoE Budget"
   },
-  "bRQPAP": {
-    "defaultMessage": "2.4 GHz radio setting for {scope} has \"Auto Channel Selection\" set as \"{channelSelectionMode}\", however \"Background Scan\" feature is disabled for this Venue. To effectively use \"{channelSelectionMode}\" as channel selection algorithm, it recommended to enable \"Background Scan\" feature with default scan timer as 20 seconds."
-  },
   "bRu/Qu": {
     "defaultMessage": "Legacy Device"
   },
@@ -14127,6 +14182,9 @@
   "bS/cRP": {
     "defaultMessage": "Venues"
   },
+  "bSqm6d": {
+    "defaultMessage": "When grand floor=0"
+  },
   "bT9NBq": {
     "defaultMessage": "Assoc Failure (STA Not Auth\\'d)"
   },
@@ -14135,9 +14193,6 @@
   },
   "bUO4il": {
     "defaultMessage": "Enable DFS channels"
-  },
-  "bUu1Lo": {
-    "defaultMessage": "Config Template: It allows MSP users to create templates for networks, venues, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties."
   },
   "bVzeaJ": {
     "defaultMessage": "While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}."
@@ -14165,9 +14220,6 @@
   },
   "bYMaeE": {
     "defaultMessage": "Adv"
-  },
-  "bZOjOB": {
-    "defaultMessage": "Mesh AP cannot be moved to a different venue"
   },
   "bZp7LM": {
     "defaultMessage": "Enable BSS Coloring"
@@ -14214,9 +14266,6 @@
   "bep9C3": {
     "defaultMessage": "Public Key"
   },
-  "bfRrld": {
-    "defaultMessage": "No channels available"
-  },
   "bfaXRz": {
     "defaultMessage": "Slot {slotNumber}"
   },
@@ -14231,9 +14280,6 @@
   },
   "bh/fRy": {
     "defaultMessage": "Switch Configuration"
-  },
-  "bhIl+g": {
-    "defaultMessage": "Venue Details"
   },
   "bhP9BC": {
     "defaultMessage": "Favicon: {imageName}"
@@ -14307,6 +14353,9 @@
   "btDLmY": {
     "defaultMessage": "Common name"
   },
+  "btse+n": {
+    "defaultMessage": "<venuePlural></venuePlural>"
+  },
   "bttrc9": {
     "defaultMessage": "Revert scheduled for {scheduledAt} is in progress"
   },
@@ -14349,11 +14398,17 @@
   "c/Ho8k": {
     "defaultMessage": "Latest available AP firmware version will be used when this recommendation is applied."
   },
+  "c/kidW": {
+    "defaultMessage": "Top <VenuePlural></VenuePlural> with poor experience"
+  },
   "c0+F3U": {
     "defaultMessage": "Disassociated because the information in the Power Capability element is unacceptable"
   },
   "c0V3xu": {
     "defaultMessage": "Cisco"
+  },
+  "c0zuO5": {
+    "defaultMessage": "- Applies to all newly added <venuePlural></venuePlural> automatically"
   },
   "c1NYGC": {
     "defaultMessage": "Authentication Method"
@@ -14499,6 +14554,9 @@
   "cPk5H+": {
     "defaultMessage": "Traceroute"
   },
+  "cQtFvl": {
+    "defaultMessage": "<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, <venuePlural></venuePlural>, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or <venueSingular></venueSingular>).</p> <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>"
+  },
   "cR/5Jp": {
     "defaultMessage": "Signal strength(RSSI)"
   },
@@ -14524,14 +14582,14 @@
   "cSd5xs": {
     "defaultMessage": "Add CLI Template"
   },
-  "cSr9cE": {
-    "defaultMessage": "6 GHz radio operating in low power mode"
-  },
   "cSruYE": {
     "defaultMessage": "Passphrase Format"
   },
   "cTD1CD": {
     "defaultMessage": "Internal Server Error"
+  },
+  "cTEYbE": {
+    "defaultMessage": "Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models."
   },
   "cUB5Wh": {
     "defaultMessage": "Please enter To"
@@ -14550,9 +14608,6 @@
   },
   "cVyu0h": {
     "defaultMessage": "<p>No specific root cause.</p>"
-  },
-  "cW/3Xw": {
-    "defaultMessage": "Selected Venues are already on this release"
   },
   "cW0D1K": {
     "defaultMessage": "Target AP Name"
@@ -14638,9 +14693,6 @@
   "clWB9j": {
     "defaultMessage": "To Client:"
   },
-  "cm2A5S": {
-    "defaultMessage": "Venue Code"
-  },
   "cmEYig": {
     "defaultMessage": "Manage Components"
   },
@@ -14702,9 +14754,6 @@
   },
   "cvh99j": {
     "defaultMessage": "Wired Client"
-  },
-  "cwzwJR": {
-    "defaultMessage": "Back to venue details"
   },
   "cy/7Xh": {
     "defaultMessage": "Manage Passphrase Devices"
@@ -14818,9 +14867,6 @@
   "dDj5ME": {
     "defaultMessage": "IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC"
   },
-  "dDl7sW": {
-    "defaultMessage": "[Pending response from the AFC server]"
-  },
   "dEAAC5": {
     "defaultMessage": "External MAC Auth"
   },
@@ -14836,6 +14882,9 @@
   },
   "dGWDOo": {
     "defaultMessage": "SNMPv2 Privilege: Read-only"
+  },
+  "dGZR4P": {
+    "defaultMessage": "Pending Activations"
   },
   "dGdeUi": {
     "defaultMessage": "Please enter valid domain(s)",
@@ -14855,6 +14904,9 @@
   },
   "dHkpd2": {
     "defaultMessage": "Please define attribute(s) in CLI commands"
+  },
+  "dI+J1N": {
+    "defaultMessage": "Please note that during the firmware update, the switches in this <venueSingular></venueSingular> will reboot, and your network will be unavailable for customer operation."
   },
   "dIQHzY": {
     "defaultMessage": "Delegated Admins ({delegatedAdminCount})"
@@ -14961,6 +15013,9 @@
   },
   "dYPZKZ": {
     "defaultMessage": "Unclassified"
+  },
+  "dYalm5": {
+    "defaultMessage": "Add <VenueSingular></VenueSingular>"
   },
   "dZMyr3": {
     "defaultMessage": "Background scan: Enabled"
@@ -15070,9 +15125,6 @@
   "dvOgRm": {
     "defaultMessage": "Version 2"
   },
-  "dw8DRw": {
-    "defaultMessage": "Wait for response"
-  },
   "dwDQ8B": {
     "defaultMessage": "<li>Click {link} to enable client load balancing AI Ops recommendation.</li>"
   },
@@ -15157,9 +15209,6 @@
   "e8145i": {
     "defaultMessage": "{n} of {d} APs above {threshold}"
   },
-  "e9AgOJ": {
-    "defaultMessage": "See details."
-  },
   "e9RseL": {
     "defaultMessage": "Accepted invitation succesfully. Page will reload to update the user profile"
   },
@@ -15230,6 +15279,9 @@
   "eMVQ7V": {
     "defaultMessage": "Add Guest"
   },
+  "eN2MNk": {
+    "defaultMessage": "If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the <venueSingular></venueSingular>’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label."
+  },
   "eNdwf/": {
     "defaultMessage": "No matched VLANs"
   },
@@ -15267,6 +15319,9 @@
   "eTe/B5": {
     "defaultMessage": "<p>The following are not supported:</p> <ul> <li>802.1X with EAP-TLS and EAP-SIM</li> <li>Authentication with WEP/WPA3 encryption</li> <li>DPSK</li> <li>Hotspot 2.0 Access/Onboarding</li> <li>MAC authentication</li> <li>OWE</li> <li>Social Media Login</li> <li>WeChat</li> <li>WISPr with external service provider</li> </ul>"
   },
+  "eTrSs0": {
+    "defaultMessage": "- Applies only to the selected MSP Customers and their <venuePlural></venuePlural>."
+  },
   "eUYm+t": {
     "defaultMessage": "Audio Tx"
   },
@@ -15297,6 +15352,9 @@
   "eYb14m": {
     "defaultMessage": "Policy {name} was {editMode, select, true {updated} other {added}}"
   },
+  "eYm2yp": {
+    "defaultMessage": "Please select a <VenueSingular></VenueSingular>"
+  },
   "eZfcug": {
     "defaultMessage": "CLI Profiles"
   },
@@ -15315,6 +15373,9 @@
   "ecsrvt": {
     "defaultMessage": "802.11 Deauthentication (Deauthentication_STA)"
   },
+  "edIgfO": {
+    "defaultMessage": "Select <venuePlural></venuePlural>"
+  },
   "edMpvL": {
     "defaultMessage": "Expanded Inner EAP"
   },
@@ -15329,9 +15390,6 @@
   },
   "efBg3C": {
     "defaultMessage": "RADIUS Failures"
-  },
-  "egVuI2": {
-    "defaultMessage": "You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue."
   },
   "ego1te": {
     "defaultMessage": "Wi-Fi Subscription"
@@ -15492,6 +15550,12 @@
   "f0W26f": {
     "defaultMessage": "Revoked"
   },
+  "f0lbZ8": {
+    "defaultMessage": "There are one or more legacy devices in selected <venuePlural></venuePlural> ({apModels})."
+  },
+  "f2EaX6": {
+    "defaultMessage": "A CLI configuration profile has been applied to this <venueSingular></venueSingular> so it cannot be selected."
+  },
   "f2eDR3": {
     "defaultMessage": "Band Operation Mode"
   },
@@ -15512,9 +15576,6 @@
   },
   "f5+eri": {
     "defaultMessage": "Cluster Interface Settings"
-  },
-  "f6OOak": {
-    "defaultMessage": "All members must be running 08.0.90d (UFI) at a minimum (or) they should have ‘Cloud Ready’ mentioned on the label. If not, upgrade their FW to the venue’s firmware version mentioned above before onboarding."
   },
   "f6isDn": {
     "defaultMessage": "Value must between 2-14400 minutes or 1-240 hours"
@@ -15636,9 +15697,6 @@
   "fO6qJ+": {
     "defaultMessage": "AP Reboot by User"
   },
-  "fOPDV8": {
-    "defaultMessage": "Check for the venue’s Wi-Fi features not supported by earlier versions or AP models."
-  },
   "fP58qy": {
     "defaultMessage": "Auto Cell Sizing (5 GHz)"
   },
@@ -15696,9 +15754,6 @@
   },
   "fZulpc": {
     "defaultMessage": "Trace Route"
-  },
-  "fZx8yp": {
-    "defaultMessage": "Schedule for Network \"{NetworkName}\" in Venue \"{VenueName}\""
   },
   "fbe+7N": {
     "defaultMessage": "LLDP Hold Time"
@@ -15850,6 +15905,9 @@
   "g2VfPU": {
     "defaultMessage": "Exception DSCP Values"
   },
+  "g2avsI": {
+    "defaultMessage": "You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br> Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br> The total number of VLAN members per pool is 64 (including ranges)<br></br> IF DHCP/NAT is enabled on a <venueSingular></venueSingular>, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>"
+  },
   "g3Yz+8": {
     "defaultMessage": "Start IP Address"
   },
@@ -15867,6 +15925,9 @@
   },
   "g6Dqvq": {
     "defaultMessage": "Nest Camera"
+  },
+  "g6R4l1": {
+    "defaultMessage": "RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>, with the full optimization criteria, where the channel bandwidth and AP Tx power will be included in the optimization plan. A new recommendation for this <venueSingular></venueSingular> will be generated only if a better channel plan can be found within the next 24 hours."
   },
   "g7Tiob": {
     "defaultMessage": "Edit VLAN & Radio"
@@ -15904,6 +15965,9 @@
   "gFsQzB": {
     "defaultMessage": "Ask Anything"
   },
+  "gG9TPN": {
+    "defaultMessage": "Currently using LAN port settings of the <venueSingular></venueSingular> ({venue})"
+  },
   "gGHTDd": {
     "defaultMessage": "Custom String List ( {count}/{count_limit} )"
   },
@@ -15912,9 +15976,6 @@
   },
   "gGgAaq": {
     "defaultMessage": "Edit RADIUS Attribute"
-  },
-  "gGtESL": {
-    "defaultMessage": "Please select a Venue"
   },
   "gHWqQU": {
     "defaultMessage": "Mesh APs automatically select the best uplink"
@@ -15939,9 +16000,6 @@
   },
   "gK3+nz": {
     "defaultMessage": "Channelization: Channel Width (5 GHz)"
-  },
-  "gKA6Yi": {
-    "defaultMessage": "When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference. When it is disabled, only the channel plan will be optimized, using the currently configured venue channel bandwidth and Tx power."
   },
   "gKltCY": {
     "defaultMessage": "Root AP"
@@ -16025,9 +16083,6 @@
   "gYBqVb": {
     "defaultMessage": "Edit Google App"
   },
-  "gYMKtz": {
-    "defaultMessage": "RUCKUS AI is currently working on optimizing this venue, without the full optimization criteria, where the channel bandwidth and AP Tx power will not be included in the optimization plan. A new recommendation for this venue will be generated only if a better channel plan can be found within the next 24 hours."
-  },
   "gZQYFe": {
     "defaultMessage": "Airtime Busy is unusually high in 6 GHz in {scope}."
   },
@@ -16085,6 +16140,9 @@
   "gj3ZYh": {
     "defaultMessage": "Apply Static Routes"
   },
+  "gj4xdq": {
+    "defaultMessage": "Specific <VenuePlural></VenuePlural>"
+  },
   "gjiMB/": {
     "defaultMessage": "Support link image"
   },
@@ -16097,9 +16155,6 @@
   },
   "gjvdoj": {
     "defaultMessage": "Chassis ID"
-  },
-  "gkJhL2": {
-    "defaultMessage": "Switch must be running 08.0.90d (UFI) at a minimum (or) the switch should have ‘Cloud Ready’ mentioned on the label. If not, upgrade the switch FW to the venue’s firmware version mentioned above before onboarding."
   },
   "gkYlJa": {
     "defaultMessage": "DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3."
@@ -16170,20 +16225,17 @@
   "guunZt": {
     "defaultMessage": "Assign"
   },
-  "gwLoQk": {
-    "defaultMessage": "Switches have not been on boarded in your SmartZone or there is <b>no RUCKUS switch</b> in your network"
-  },
   "gxdipN": {
     "defaultMessage": "Auto Channel Selection: Mode (Upper 5 GHz)"
+  },
+  "gyWgD3": {
+    "defaultMessage": "- Schedule is based on <venuePlural></venuePlural> local time-zone"
   },
   "gzml2A": {
     "defaultMessage": "Last Run"
   },
   "h/XfYm": {
     "defaultMessage": "Resident Portals ({count})"
-  },
-  "h/mqKt": {
-    "defaultMessage": "A list of the networks that have been activated on this venue."
   },
   "h035Ig": {
     "defaultMessage": "Port Speed"
@@ -16231,8 +16283,8 @@
   "h7xti1": {
     "defaultMessage": "April"
   },
-  "h8NnAN": {
-    "defaultMessage": "Only 1 rogue AP profile can be activate at a venue. Are you sure you want to change the rogue AP profile to this venue?"
+  "h81wE8": {
+    "defaultMessage": "Some access points may not be compatible with certain Wi-Fi features in this <venueSingular></venueSingular>."
   },
   "h8X9hC": {
     "defaultMessage": "All APs"
@@ -16243,6 +16295,9 @@
   "h9vCBR": {
     "defaultMessage": "1 Hour"
   },
+  "hAiuAU": {
+    "defaultMessage": "To change the admin password in <venueSingular></venueSingular> setting, please go to <VenueSingular></VenueSingular> > <VenueSingular></VenueSingular> Configuration > Switch Configuration > AAA"
+  },
   "hBlHi5": {
     "defaultMessage": "Password must be more 8 or more characters long"
   },
@@ -16252,9 +16307,6 @@
   "hCcATy": {
     "defaultMessage": "Use this port as Core Port"
   },
-  "hCooY2": {
-    "defaultMessage": "Currently using LAN port settings of the venue ({venue})"
-  },
   "hDAjXs": {
     "defaultMessage": "Custom String"
   },
@@ -16263,9 +16315,6 @@
   },
   "hDMRzb": {
     "defaultMessage": "The password needs to:<br></br> <ul> <li>Be 8 to 64 characters long</li> <li>Include both uppercase and lowercase characters (ABC, xyz)</li> <li>Include at least one number (0-9)</li> <li>Include at least one symbol (@, #, $, %, etc. use of \"!\" is not allowed)</li> </ul> Password cannot: <ul> <li>Contain spaces</li> </ul>"
-  },
-  "hDPBQc": {
-    "defaultMessage": "- Applies only to the selected MSP Customers and their venues."
   },
   "hEsZtC": {
     "defaultMessage": "Add Host"
@@ -16385,9 +16434,6 @@
   "hWxQGa": {
     "defaultMessage": "Authentication Type"
   },
-  "hWyVfE": {
-    "defaultMessage": "Created Venue"
-  },
   "hX99Ux": {
     "defaultMessage": "Access Control Components"
   },
@@ -16419,14 +16465,8 @@
   "hfAjaa": {
     "defaultMessage": "Switch Subscriptions"
   },
-  "hh6kLw": {
-    "defaultMessage": "- Select the venues or specific switches that will have this configuration applied onto them<br></br> - Only operational switches are displayed here"
-  },
   "hhjlgD": {
     "defaultMessage": "Latest Certificate"
-  },
-  "hhyhI6": {
-    "defaultMessage": "To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA"
   },
   "hifF2M": {
     "defaultMessage": "Administrators ({adminCount})"
@@ -16604,6 +16644,9 @@
   "i2IR0C": {
     "defaultMessage": "Group Type"
   },
+  "i2noHN": {
+    "defaultMessage": "There are one or more devices in selected <venuePlural></venuePlural> ({apModels})."
+  },
   "i3/yeT": {
     "defaultMessage": "Certificate Information"
   },
@@ -16615,6 +16658,9 @@
   },
   "i5FGYm": {
     "defaultMessage": "Maximum Floor"
+  },
+  "i5YIKx": {
+    "defaultMessage": "Are you sure you want to update the firmware version on devices in all selected <venuePlural></venuePlural>?"
   },
   "i5bVOD": {
     "defaultMessage": "Network Name:"
@@ -16640,6 +16686,9 @@
   "i7T4Zm": {
     "defaultMessage": "Hits"
   },
+  "i8vcF1": {
+    "defaultMessage": "Your GPS coordinates are outside the <venueSingular></venueSingular>: {venueName}. Are you sure you want to place the device in this new position?"
+  },
   "iAMjUL": {
     "defaultMessage": "Rate limiting"
   },
@@ -16659,11 +16708,11 @@
     "defaultMessage": "Users just need to accept Terms and Conditions in order to access the network",
     "description": "Description for Click-Through"
   },
+  "iCLMmz": {
+    "defaultMessage": "The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future"
+  },
   "iCcA19": {
     "defaultMessage": "Apply selected templates to the customers below"
-  },
-  "iChz4G": {
-    "defaultMessage": "Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required"
   },
   "iCpuph": {
     "defaultMessage": "Clients"
@@ -16743,6 +16792,9 @@
   "iOw/7z": {
     "defaultMessage": "base-time"
   },
+  "iQHlqG": {
+    "defaultMessage": "No RRM recommendation as <venueSingular></venueSingular> has no APs"
+  },
   "iR7f5o": {
     "defaultMessage": "Top 3 applications in terms of users last week were {label0}, {label1} and {label2}."
   },
@@ -16800,9 +16852,6 @@
   "ieZef1": {
     "defaultMessage": "You are currently delegated to a 3rd party administrator. please remove the delegation and try again or contact Ruckus Support or your VAR."
   },
-  "iefNO4": {
-    "defaultMessage": "To utilize the {featureName}, ensure that the access points on the venue ({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from"
-  },
   "ieoHks": {
     "defaultMessage": "The mesh STA has received a Mesh Peering Close message requesting to close the mesh peering"
   },
@@ -16829,9 +16878,6 @@
   },
   "ils6sH": {
     "defaultMessage": "For optimal test results, you are asked to"
-  },
-  "imtazw": {
-    "defaultMessage": "Please select venue"
   },
   "inQwR8": {
     "defaultMessage": "Client NDI"
@@ -16905,9 +16951,6 @@
   },
   "iyBEYY": {
     "defaultMessage": "Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn't have PoE capability."
-  },
-  "izzgo+": {
-    "defaultMessage": "This device not added to any venue"
   },
   "j+3Knb": {
     "defaultMessage": "Chat with Support"
@@ -17005,8 +17048,8 @@
   "jD8hrO": {
     "defaultMessage": "SSID Rate Limiting: Uplink"
   },
-  "jECRS5": {
-    "defaultMessage": "RUCKUS AI is currently working on optimizing this venue, with the full optimization criteria, where the channel bandwidth and AP Tx power will be included in the optimization plan. A new recommendation for this venue will be generated only if a better channel plan can be found within the next 24 hours."
+  "jEPY60": {
+    "defaultMessage": "<VenueSingular></VenueSingular> with SmartEdge deployed"
   },
   "jFXt41": {
     "defaultMessage": "Model Name"
@@ -17143,9 +17186,6 @@
   "jbyIro": {
     "defaultMessage": "Tenant account ID is invalid"
   },
-  "jcGO0+": {
-    "defaultMessage": "The SD-LAN service is running on one or some of the selected venues. Are you sure you want to deactivate?"
-  },
   "jcO1nb": {
     "defaultMessage": "Copy Output"
   },
@@ -17182,6 +17222,9 @@
   "jhz7Wq": {
     "defaultMessage": "Infinite"
   },
+  "jiKHnm": {
+    "defaultMessage": "Enabling mesh for a <venueSingular></venueSingular> is a global configuration and once mesh links are formed (automatically), it cannot be undone."
+  },
   "jm+/Ge": {
     "defaultMessage": "SNMPv3 Privilege: Read-only"
   },
@@ -17191,14 +17234,23 @@
   "jmDHkG": {
     "defaultMessage": "Syslog: Primary Server Protocol"
   },
+  "jmIkVH": {
+    "defaultMessage": "RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the ‘Switch Settings’ of <VenueSingular></VenueSingular>."
+  },
   "jmR7QH": {
     "defaultMessage": "Using speedtest.net servers"
+  },
+  "jnjY2i": {
+    "defaultMessage": "The SD-LAN service is running on one or some of the selected <venuePlural></venuePlural>. Are you sure you want to deactivate?"
   },
   "jnzQzj": {
     "defaultMessage": "Last 7 Days"
   },
   "joqjs+": {
     "defaultMessage": "Certificate Template Name"
+  },
+  "jp/B/w": {
+    "defaultMessage": "Define how this network will be activated on <venueSingular></venueSingular> \"{venueName}\""
   },
   "jppnn8": {
     "defaultMessage": "Create adaptive policies for user and device connectivity on wired or wireless networks"
@@ -17248,9 +17300,6 @@
   },
   "jwQxpg": {
     "defaultMessage": "Optimized Connectivity Experience: RSSI-based Association Rejection Threshold"
-  },
-  "jweA+l": {
-    "defaultMessage": "This option enables current and future beta features for this account across all venues, networks, and users.{br} When disabled, any configuration related to beta features will remain available until deleted."
   },
   "jwhET3": {
     "defaultMessage": "Application"
@@ -17348,9 +17397,6 @@
   "kB4V15": {
     "defaultMessage": "MSP Customers"
   },
-  "kBGtxC": {
-    "defaultMessage": "A CLI configuration profile with overlapping switch models has been applied to this venue so it cannot be selected."
-  },
   "kBJUtE": {
     "defaultMessage": "Video"
   },
@@ -17394,6 +17440,9 @@
   "kJCLzI": {
     "defaultMessage": "TACACS+ Servers"
   },
+  "kJZKE6": {
+    "defaultMessage": "Enable the <b>Property management</b>service for the <venueSingular></venueSingular> on the <venueSingular></venueSingular> configuration page"
+  },
   "kJfqcR": {
     "defaultMessage": "Multicast Frames"
   },
@@ -17405,6 +17454,9 @@
   },
   "kL8ytN": {
     "defaultMessage": "Switch Serial Number"
+  },
+  "kLZHv8": {
+    "defaultMessage": "Are you sure you want to downgrade the firmware version on devices in this <venueSingular></venueSingular>?"
   },
   "kM6XaM": {
     "defaultMessage": "Export to CSV"
@@ -17500,9 +17552,6 @@
   "kb+E69": {
     "defaultMessage": "Rules({ruleCount})"
   },
-  "kbMnL8": {
-    "defaultMessage": "Use Venue Settings"
-  },
   "kbQiPy": {
     "defaultMessage": "Channel Width(Upper 5 GHz)"
   },
@@ -17513,6 +17562,9 @@
   "kbnOQq": {
     "defaultMessage": "OS or Manufacturer"
   },
+  "kc6sOU": {
+    "defaultMessage": "Migration assistant will migrate ZoneDirector configuration from the selected backup file and create a new <venueSingular></venueSingular>."
+  },
   "kc8f8d": {
     "defaultMessage": "RADIUS Service Options: RFC5580"
   },
@@ -17521,9 +17573,6 @@
   },
   "kdKvLA": {
     "defaultMessage": "Basic User"
-  },
-  "keHrYr": {
-    "defaultMessage": "{ count, plural, one {Venue} other {Venues} }"
   },
   "keJaJz": {
     "defaultMessage": "Letters, numbers and symbols can be used"
@@ -17550,6 +17599,9 @@
   "khwOhh": {
     "defaultMessage": "Invited by"
   },
+  "kiU90S": {
+    "defaultMessage": "Moving to this <venueSingular></venueSingular> involves a firmware version downgrade. Please consider the impact on AP stability before proceeding."
+  },
   "kkHagW": {
     "defaultMessage": "Favicon"
   },
@@ -17565,8 +17617,14 @@
   "klcc9Y": {
     "defaultMessage": "COMMSCOPE RUCKUS logo"
   },
+  "kmhJ75": {
+    "defaultMessage": "<style> You must go to the <link>property configuration page</link> of <VenueSingular></VenueSingular> to enable property management before creating Personal Identity. </style>"
+  },
   "kmrE95": {
     "defaultMessage": "2 weeks"
+  },
+  "kn+gBz": {
+    "defaultMessage": "Wi-Fi country code is used to indicate the available channels and power levels for use by access points at a <venueSingular></venueSingular>. In most use cases the Wi-Fi country code is identical to the location of <venueSingular></venueSingular> and need not be modified. If needed, you may select an alternate country code that is appropriate for your location."
   },
   "kn9KM9": {
     "defaultMessage": "Run Cluster & SmartEdge configuration wizard"
@@ -17703,6 +17761,9 @@
   "l9JdDM": {
     "defaultMessage": "STA Disassoc"
   },
+  "l9rhJB": {
+    "defaultMessage": "Networks running the SD-LAN on this <venueSingular></venueSingular>:"
+  },
   "lAEqAQ": {
     "defaultMessage": "More Details"
   },
@@ -17732,6 +17793,9 @@
   },
   "lDFm+B": {
     "defaultMessage": "Create Root CA"
+  },
+  "lE7cvC": {
+    "defaultMessage": "Since a previous {status} has failed, you have the option to delete this, in order for RUCKUS AI to re-run the recommendation algorithm for this <venueSingular></venueSingular> in the next 24 hours."
   },
   "lF9uO1": {
     "defaultMessage": "Mobile Phone Already Registered"
@@ -17783,6 +17847,9 @@
   },
   "lNda3L": {
     "defaultMessage": "At least one of the following links should be defined: \"Contact Support link , Open a Case link\" you can not hide both of the links from help menu."
+  },
+  "lP6AYn": {
+    "defaultMessage": "Configure a <VenueSingular></VenueSingular> using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added."
   },
   "lPKfjk": {
     "defaultMessage": "Rebooting"
@@ -18016,6 +18083,9 @@
   "m6WOAM": {
     "defaultMessage": "The PoE Utilization measures the percentage of the switches that utilize less power than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of PoE Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
   },
+  "m6hFL1": {
+    "defaultMessage": "Select <VenuePlural></VenuePlural>"
+  },
   "m6kHxu": {
     "defaultMessage": "OS Type"
   },
@@ -18073,9 +18143,6 @@
   "mFatVd": {
     "defaultMessage": "Please enter hour"
   },
-  "mGM/LP": {
-    "defaultMessage": "To enable the property management for a venue, please go to the Venue configuration/property management page to enable it."
-  },
   "mH4HmO": {
     "defaultMessage": "Change Recovery Network Passphrase"
   },
@@ -18091,8 +18158,14 @@
   "mIUrqU": {
     "defaultMessage": "After upgrade, check the version again and make sure the switch is running UFI image."
   },
+  "mJHfPr": {
+    "defaultMessage": "<ul> <li>Once CLI profiles are applied, the <venueSingular></venueSingular> can no longer accept regular profiles</li> <li>The selected CLI profiles cannot contain overlapping switch models</li> </ul>"
+  },
   "mJMpnI": {
     "defaultMessage": "Layer 3 Policy"
+  },
+  "mKIDsp": {
+    "defaultMessage": "Upgrade preference saved for each <venueSingular></venueSingular> based on local time-zone of <venueSingular></venueSingular>"
   },
   "mKOwxM": {
     "defaultMessage": "Standard power [Geo Location not set]"
@@ -18105,9 +18178,6 @@
   },
   "mMBc1K": {
     "defaultMessage": "<p>This incident can be caused due to the following reasons:</p> <ol> <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li> <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li> <li>In 5 GHz band, APs might select overlapping channels to avoid channels with DFS events.</li> </ol>"
-  },
-  "mMSHmE": {
-    "defaultMessage": "Select Venues"
   },
   "mN9DKO": {
     "defaultMessage": "RDNSS Selection"
@@ -18133,11 +18203,17 @@
   "mOfOjv": {
     "defaultMessage": "RA Throttling"
   },
+  "mPUyP7": {
+    "defaultMessage": "Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties."
+  },
   "mQ63k2": {
     "defaultMessage": "Core Port"
   },
   "mQbCtp": {
     "defaultMessage": "Management Frame Protection (MFP) is defined in 802.11w to protect 802.11 Robust Management frames, including Disassociation, Deauthentication, and Robust Action frames. <ul> <li>Optional allows legacy devices that do not support the 802.11w standard to associate with the SSID while also allowing devices that support 802.11w to use the 802.11w features.</li> <li>Required will prevent clients that do not support 802.11w from associating.</li> </ul>"
+  },
+  "mRWoXx": {
+    "defaultMessage": "<VenueSingular></VenueSingular> Management"
   },
   "mRzCUD": {
     "defaultMessage": "Rogue AP MAC"
@@ -18341,9 +18417,6 @@
   "n/qhwR": {
     "defaultMessage": "CTS Abuse"
   },
-  "n/vWlL": {
-    "defaultMessage": "Applied at venue"
-  },
   "n1RvLH": {
     "defaultMessage": "Select Pool"
   },
@@ -18395,6 +18468,9 @@
   "n9icR8": {
     "defaultMessage": "Stack Name"
   },
+  "nATZsZ": {
+    "defaultMessage": "Select the <VenueSingular></VenueSingular> where you want to segment the devices (identities):"
+  },
   "nAoOiT": {
     "defaultMessage": "<li>High multicast/broadcast (MC/BC) traffic on WLANs.</li>"
   },
@@ -18440,9 +18516,6 @@
   },
   "nINcPU": {
     "defaultMessage": "Channel Range (6 GHz)"
-  },
-  "nJ4upb": {
-    "defaultMessage": "TLS Enhanced Key: RSA 3072/ECDSA P-256"
   },
   "nJ836a": {
     "defaultMessage": "networks"
@@ -18579,9 +18652,6 @@
   "nhKqj3": {
     "defaultMessage": "Only numbers can be used"
   },
-  "niDeNV": {
-    "defaultMessage": "Venue RRM Health"
-  },
   "nijCnW": {
     "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
     "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
@@ -18622,9 +18692,6 @@
   },
   "noTj55": {
     "defaultMessage": "<p>To diagnose this issue further, check the following situations:</p> <ol> <li>High RF interference, airtime utilization, or other poor RF conditions, which disrupts normal channel access.</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Were the WLAN settings (especially DPSK) recently modified?</li> </ol>"
-  },
-  "npU8Td": {
-    "defaultMessage": "- Schedule is based on venues local time-zone"
   },
   "npVP+k": {
     "defaultMessage": "LAN Ports"
@@ -18702,6 +18769,9 @@
   "nxITdi": {
     "defaultMessage": "Reset & Recover \"{edgeName}\"?"
   },
+  "nxy5iZ": {
+    "defaultMessage": "{OwnVenues} <venuePlural></venuePlural>"
+  },
   "nyO1Sh": {
     "defaultMessage": "Wireless Clients List"
   },
@@ -18763,11 +18833,11 @@
   "oAzpTF": {
     "defaultMessage": "<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>"
   },
+  "oB7ksX": {
+    "defaultMessage": "AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten."
+  },
   "oBLPsx": {
     "defaultMessage": "MDI Power"
-  },
-  "oCqS+P": {
-    "defaultMessage": "Select the Venue where you want to segment the devices (identities):"
   },
   "oD++4F": {
     "defaultMessage": "Disk & Memory"
@@ -18821,17 +18891,11 @@
   "oJnspG": {
     "defaultMessage": "Add another device"
   },
-  "oJqFFx": {
-    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn't enable DHCP service"
-  },
   "oJsHQW": {
     "defaultMessage": "Suspended"
   },
   "oKhFOV": {
     "defaultMessage": "Auto Channel Selection: Mode (Lower 5 GHz)"
-  },
-  "oLVL82": {
-    "defaultMessage": "Venue/Property Units"
   },
   "oLejFI": {
     "defaultMessage": "AP Model"
@@ -18888,6 +18952,9 @@
   "oTabD0": {
     "defaultMessage": "Ethernet only"
   },
+  "oUIyMp": {
+    "defaultMessage": "6 GHz radio operating in Low Power Indoor Mode."
+  },
   "oUWADl": {
     "defaultMessage": "No"
   },
@@ -18906,14 +18973,14 @@
   "oahdgo": {
     "defaultMessage": "Background Scan (5 GHz)"
   },
+  "oajYZi": {
+    "defaultMessage": "Cluster of {count} <VenuePlural></VenuePlural>"
+  },
   "oavy3S": {
     "defaultMessage": "Wi-Fi Radio Settings"
   },
   "ob4aTr": {
     "defaultMessage": "Command Authorization"
-  },
-  "obpIrr": {
-    "defaultMessage": "Mesh is not enabled at the venue where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the venue, you will be able to set the AP's mesh role and select the uplink AP."
   },
   "oc+y+9": {
     "defaultMessage": "Trusted Ports:"
@@ -18936,6 +19003,9 @@
   "ogvi9f": {
     "defaultMessage": "Please enter Mesh PSK"
   },
+  "ohiWy4": {
+    "defaultMessage": "Only 1 rogue AP profile can be activate at a <venueSingular></venueSingular>. Are you sure you want to change the rogue AP profile to this <venueSingular></venueSingular>?"
+  },
   "oi80JX": {
     "defaultMessage": "Key Performance Indications"
   },
@@ -18944,9 +19014,6 @@
   },
   "oir8uG": {
     "defaultMessage": "Firmware Update - Validating Image"
-  },
-  "oj0+Jq": {
-    "defaultMessage": "You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br> Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br> The total number of VLAN members per pool is 64 (including ranges)<br></br> IF DHCP/NAT is enabled on a venue, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>"
   },
   "ojxMGa": {
     "defaultMessage": "In Setup Phase"
@@ -18965,6 +19032,9 @@
   },
   "on2xYX": {
     "defaultMessage": "GeoLoc"
+  },
+  "onCBqf": {
+    "defaultMessage": "Designated APs in this <venueSingular></venueSingular> are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed"
   },
   "ooCnVf": {
     "defaultMessage": "HEX"
@@ -18995,6 +19065,9 @@
   },
   "ou8jxS": {
     "defaultMessage": "No pending invitations"
+  },
+  "ouJBlF": {
+    "defaultMessage": "spaces"
   },
   "ouMukc": {
     "defaultMessage": "ChannelFly: Full Optimization Period (Lower 5 GHz)"
@@ -19125,9 +19198,6 @@
   },
   "pAnEZ9": {
     "defaultMessage": "Please enter the Mesh Network Name"
-  },
-  "pB0Uss": {
-    "defaultMessage": "Show more available firmware"
   },
   "pBd7xL": {
     "defaultMessage": "<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>"
@@ -19325,6 +19395,9 @@
   "pkwhS+": {
     "defaultMessage": "Port Count"
   },
+  "ple8yd": {
+    "defaultMessage": "The selected <venueSingular></venueSingular> already has a SmartEdge"
+  },
   "pmqws2": {
     "defaultMessage": "User-Class"
   },
@@ -19353,6 +19426,9 @@
   "pq900d": {
     "defaultMessage": "<p>Client connection attempts are failing because the device is attempting to use a previously expired authentication key management (AKM) credential. This issue should be a transient problem in the network and should self-correct.</p>"
   },
+  "pqFbB9": {
+    "defaultMessage": "A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected."
+  },
   "pqKz+h": {
     "defaultMessage": "Slow"
   },
@@ -19374,11 +19450,17 @@
   "pvLg/r": {
     "defaultMessage": "Subnet: {subnet}"
   },
+  "pvMpsH": {
+    "defaultMessage": "This network is running the SD-LAN service on this <venueSingular></venueSingular>. Are you sure you want to deactivate it?"
+  },
   "pvZVcq": {
     "defaultMessage": "Firmware must always be copied to primary flash partition as shown in the example."
   },
   "pvdwRv": {
     "defaultMessage": "To support DHCP snooping and/or ARP inspection, please select the trusted ports for each switch model you deploy"
+  },
+  "pvlLAQ": {
+    "defaultMessage": "<VenueSingular></VenueSingular> firmware version for ICX {venueCategory} Series:"
   },
   "pwdIjX": {
     "defaultMessage": "{fromDevice} to {toDevice}:"
@@ -19493,8 +19575,8 @@
   "qBEmW6": {
     "defaultMessage": "<p>System has detected the AP(s) are underperforming w.r.t Wi-Fi Radio spatial streams due to insufficient power available on PoE port. This can occur due to following reasons:</p> <ol> <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li> <li>Faulty cables, Wrong cable types and very long cables can lead to power deterioration supplied to AP.</li> </ol>"
   },
-  "qBnfE9": {
-    "defaultMessage": "<section> <p>* The following LAN Port settings can’t work because DHCP is enabled.</p> <p>You cannot edit LAN Port setting on this device because it has assigned to the venue which already has enabled DHCP service.</p> </section>"
+  "qCwFAl": {
+    "defaultMessage": "Choose which version to update the <venueSingular></venueSingular> to:"
   },
   "qDeDN9": {
     "defaultMessage": "Switch Reports"
@@ -19558,9 +19640,6 @@
   "qPjj7z": {
     "defaultMessage": "MSP Licenses Detected"
   },
-  "qQ6P9N": {
-    "defaultMessage": "Activated in venues"
-  },
   "qRKljG": {
     "defaultMessage": "AP - applying configuration"
   },
@@ -19593,6 +19672,9 @@
   },
   "qUSdBm": {
     "defaultMessage": "Processor Frequency"
+  },
+  "qVGRIE": {
+    "defaultMessage": "Quantity"
   },
   "qWBAzj": {
     "defaultMessage": "Assoc DoS Prevention"
@@ -19637,6 +19719,9 @@
   "qci724": {
     "defaultMessage": "No reported incidents"
   },
+  "qdc1+B": {
+    "defaultMessage": "<VenuePlural></VenuePlural> & APs ({apCount})"
+  },
   "qeL6Qz": {
     "defaultMessage": "AP MAC:"
   },
@@ -19676,6 +19761,9 @@
   "qjab/z": {
     "defaultMessage": "LACP (Dynamic)"
   },
+  "qkCGMQ": {
+    "defaultMessage": "RUCKUS DHCP service automatically creates and assigns a new DHCP-Guest Service and DHCP Pool for those Guest WLAN related <venuePlural></venuePlural> that do not have a specified DHCP Service. Please refer to the DHCP Service at each <VenueSingular></VenueSingular> for more information."
+  },
   "qkVO3o": {
     "defaultMessage": "Use comma to separate multiple DSCP values"
   },
@@ -19694,9 +19782,6 @@
   },
   "qle0Kb": {
     "defaultMessage": "802.11 Deauthentication"
-  },
-  "qmqF0n": {
-    "defaultMessage": "5 GHz radio setting for {scope} has \"Auto Channel Selection\" set as \"{channelSelectionMode}\", however \"Background Scan\" feature is disabled for this Venue. To effectively use \"{channelSelectionMode}\" as channel selection algorithm, it recommended to enable \"Background Scan\" feature with default scan timer as 20 seconds."
   },
   "qmxtis": {
     "defaultMessage": "You Have Unsaved Changes"
@@ -19730,6 +19815,9 @@
   },
   "qrxZDT": {
     "defaultMessage": "Data Encipherment"
+  },
+  "qsDGC5": {
+    "defaultMessage": "If Rogue AP Detection is OFF for a <venueSingular></venueSingular> and you activate a policy, Rogue detection will be turned ON for the <venueSingular></venueSingular> automatically."
   },
   "qtjy4O": {
     "defaultMessage": "Hmmmm... we couldn’t find any match for \"{searchVal}\""
@@ -19809,9 +19897,6 @@
   "r3nC+X": {
     "defaultMessage": "WLAN configuration errors"
   },
-  "r4uGOc": {
-    "defaultMessage": "Select the venue where you want to apply the SD-LAN:"
-  },
   "r5D4iv": {
     "defaultMessage": "Syslog: Primary Server address"
   },
@@ -19822,11 +19907,11 @@
     "defaultMessage": "Start value must be lower than end value",
     "description": "Validation - range checks"
   },
+  "r7uyfU": {
+    "defaultMessage": "You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting"
+  },
   "r8/S+8": {
     "defaultMessage": "Professional"
-  },
-  "r9BKz9": {
-    "defaultMessage": "Moving to Venue: <b>{venueName}</b> will change the AP management VLAN and reboot this AP device. Incorrect settings between APs and switches could result in AP access loss. Are you sure you want to continue?"
   },
   "r9gciS": {
     "defaultMessage": "{networkType} - {authMethod}"
@@ -19851,9 +19936,6 @@
   },
   "rEE9w1": {
     "defaultMessage": "Enable this when requested by RUCKUS support team. By enabling this, you are granting RUCKUS support with temporary administrator-level access."
-  },
-  "rEIBVX": {
-    "defaultMessage": "<style>You must go to <link>Venue's property configuration page</link> to enable property management before creating Personal Identity.</style>"
   },
   "rEK643": {
     "defaultMessage": "Multi-Factor Authentication was activated for this account"
@@ -19909,9 +19991,6 @@
   },
   "rMaVjw": {
     "defaultMessage": "Disassoc Due to Busy AP"
-  },
-  "rN1O7W": {
-    "defaultMessage": "If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label."
   },
   "rNy0rO": {
     "defaultMessage": "Client Flow Data Logging"
@@ -20061,6 +20140,9 @@
   "rou3PY": {
     "defaultMessage": "Detected by AP MAC"
   },
+  "rpWhSP": {
+    "defaultMessage": "Mesh is not enabled at the <venueSingular></venueSingular> where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the <venueSingular></venueSingular>, you will be able to set the AP's mesh role and select the uplink AP."
+  },
   "rplWY8": {
     "defaultMessage": "IPv4 DHCP Snooping"
   },
@@ -20152,6 +20234,9 @@
   "s+A1bO": {
     "defaultMessage": "Your network is already running in an optimal configuration and we don’t have any AI Operations to recommend currently."
   },
+  "s+CKT8": {
+    "defaultMessage": "The switch admin password will be set same as the <venueSingular></venueSingular> setting. Are you sure you want to proceed?"
+  },
   "s+m0We": {
     "defaultMessage": "Core Network VLAN: C-VLAN"
   },
@@ -20229,6 +20314,9 @@
     "defaultMessage": "Chat with <b>{botName}</b><br></br> and unlock the <b>power of AI</b>",
     "description": "SubTitle for Melissa Chatbot widget"
   },
+  "sGl55g": {
+    "defaultMessage": "Select <venuePlural></venuePlural>:"
+  },
   "sHTa6r": {
     "defaultMessage": "Scheduled Days"
   },
@@ -20255,6 +20343,9 @@
   },
   "sJpKWq": {
     "defaultMessage": "Subnet mask"
+  },
+  "sK7Jyf": {
+    "defaultMessage": "<VenueSingular></VenueSingular> with the property management enabled"
   },
   "sKlfYJ": {
     "defaultMessage": "Avg. Rate"
@@ -20291,12 +20382,6 @@
   },
   "sNqZBV": {
     "defaultMessage": "TTG+PDG"
-  },
-  "sPXlDD": {
-    "defaultMessage": "{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience."
-  },
-  "sQltSv": {
-    "defaultMessage": "Upgrade preference saved for each venue based on venue’s local time-zone"
   },
   "sRQW96": {
     "defaultMessage": "DHCP Done",
@@ -20354,9 +20439,6 @@
   },
   "sb6MY9": {
     "defaultMessage": "Subnet Allocation Option"
-  },
-  "sbb2v/": {
-    "defaultMessage": "Firmware downgrade started on devices in the selected venue."
   },
   "sbfG1h": {
     "defaultMessage": "Ethernet Only"
@@ -20522,6 +20604,9 @@
   "t1FRTJ": {
     "defaultMessage": "Specific E-mail Contacts"
   },
+  "t1xHtu": {
+    "defaultMessage": "The max-number of <venuePlural></venuePlural> in a syslog server policy profile is 64."
+  },
   "t2QgBk": {
     "defaultMessage": "802.11 Disassociation (Disassociation_STA)"
   },
@@ -20561,6 +20646,9 @@
   "t9cPOy": {
     "defaultMessage": "Top 5 SmartEdges by Traffic"
   },
+  "tA3bWe": {
+    "defaultMessage": "{count} <VenuePlural></VenuePlural>"
+  },
   "tABiSQ": {
     "defaultMessage": "Enable:"
   },
@@ -20599,6 +20687,9 @@
   },
   "tGO/Vn": {
     "defaultMessage": "Variable Name"
+  },
+  "tHLzQ8": {
+    "defaultMessage": "Create and apply a configuration profile to this switch's <venueSingular></venueSingular> to add/edit VLANs"
   },
   "tHS6Vs": {
     "defaultMessage": "Value must be between 1 and 365"
@@ -20673,9 +20764,6 @@
   "tShbyC": {
     "defaultMessage": "Identity"
   },
-  "tSpgfA": {
-    "defaultMessage": "Choose which version to update the venue to:"
-  },
   "tT2D9t": {
     "defaultMessage": "Edit User"
   },
@@ -20684,9 +20772,6 @@
   },
   "tT9PKF": {
     "defaultMessage": "Add Layer 3 Rule"
-  },
-  "tTU3pO": {
-    "defaultMessage": "Venue's local time-zone is applied to the selection below."
   },
   "tTdsHz": {
     "defaultMessage": "Group {name} was updated"
@@ -20715,6 +20800,9 @@
   "tXuKsm": {
     "defaultMessage": "Allowed Network"
   },
+  "tZSAsy": {
+    "defaultMessage": "[Wait for AFC server response]"
+  },
   "taS9eS": {
     "defaultMessage": "The IP addresses you entered conflict with existing authentication server configuration in another network. Please change the IP address."
   },
@@ -20727,8 +20815,14 @@
   "tc5x73": {
     "defaultMessage": "Available firmware"
   },
+  "tcUR0+": {
+    "defaultMessage": "Currently settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)"
+  },
   "tdJKed": {
     "defaultMessage": "Open the RUCKUS mobile app"
+  },
+  "tdoSNZ": {
+    "defaultMessage": "<VenueSingular></VenueSingular>"
   },
   "tf1lIh": {
     "defaultMessage": "Free"
@@ -20836,6 +20930,9 @@
   "txNtRh": {
     "defaultMessage": "DDoS Rate-limiting Settings"
   },
+  "txcVlH": {
+    "defaultMessage": "Only 1 rogue AP classification profile can be active at any <venueSingular></venueSingular> at any time."
+  },
   "txoKTH": {
     "defaultMessage": "Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster."
   },
@@ -20890,12 +20987,6 @@
   },
   "u2r7Xi": {
     "defaultMessage": "RWG"
-  },
-  "u3ZEby": {
-    "defaultMessage": "Please select Venue"
-  },
-  "u3u9Sv": {
-    "defaultMessage": "Venue with the property management enabled"
   },
   "u4xqtn": {
     "defaultMessage": "CCC"
@@ -20971,6 +21062,9 @@
   },
   "uHNmTc": {
     "defaultMessage": "Cellular Radio Settings: Data Roaming Secondary SIM"
+  },
+  "uISSPC": {
+    "defaultMessage": "To utilize the {featureName}, ensure that the access points on the <venueSingular></venueSingular> ({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from"
   },
   "uIvHLb": {
     "defaultMessage": "STP BPDU Guard"
@@ -21056,6 +21150,9 @@
   "uWN4Cd": {
     "defaultMessage": "Revocation Date"
   },
+  "uWWnR4": {
+    "defaultMessage": "Optimization option cannot be modified when RRM recommendations are applied across any of the radios of the same <venueSingular></venueSingular>. Please revert them in case you still prefer to change the optimization option for current recommendation."
+  },
   "uWddQs": {
     "defaultMessage": "OFF now"
   },
@@ -21070,6 +21167,9 @@
   },
   "uZfS5N": {
     "defaultMessage": "Wi-Fi Configuration"
+  },
+  "uain7Y": {
+    "defaultMessage": "If the members are not running FI 08.0.92d (UFI), then they must be upgraded to the <venueSingular></venueSingular>’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label."
   },
   "uak6fU": {
     "defaultMessage": "It is probably our fault, but let’s try again or go to left menu"
@@ -21140,10 +21240,6 @@
   "ukFhky": {
     "defaultMessage": "Retry firmware update"
   },
-  "uliJ05": {
-    "defaultMessage": "The cellular AP cannot be moved to the venue which doesn’t enable DHCP service",
-    "description": "Validation - Cellular AP Dhcp checks"
-  },
   "uln7eT": {
     "defaultMessage": "Zoom Out"
   },
@@ -21155,9 +21251,6 @@
   },
   "umxyzM": {
     "defaultMessage": "Enter the email of the administrator you need to re-send an invitation to:"
-  },
-  "unHN3q": {
-    "defaultMessage": "Activate on Venue"
   },
   "unpr24": {
     "defaultMessage": "The VLAN for Personal Identity Network Auth Page"
@@ -21270,14 +21363,8 @@
   "v7LZp1": {
     "defaultMessage": "(video)"
   },
-  "v8d+Jo": {
-    "defaultMessage": "No RRM recommendation as venue is unqualified"
-  },
   "v9+jd5": {
     "defaultMessage": "EAP failures are high in {scope} impacting connectivity for {impact} of clients."
-  },
-  "v9K0mo": {
-    "defaultMessage": "No devices added yet to this venue"
   },
   "v9QAvq": {
     "defaultMessage": "Ping"
@@ -21287,9 +21374,6 @@
   },
   "vAh5g6": {
     "defaultMessage": "Use Your Own Portal"
-  },
-  "vB0l3L": {
-    "defaultMessage": "This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively."
   },
   "vBRj9K": {
     "defaultMessage": "VLANs to activate on this port:"
@@ -21314,9 +21398,6 @@
   },
   "vD7L3m": {
     "defaultMessage": "Go to MSP Subscriptions"
-  },
-  "vD9vOh": {
-    "defaultMessage": "The switch admin password will be set same as the venue setting. Are you sure you want to proceed?"
   },
   "vE1TLo": {
     "defaultMessage": "Only DHCP can be restarted"
@@ -21590,6 +21671,9 @@
   "w0edPi": {
     "defaultMessage": "LAN {index}"
   },
+  "w0i0IQ": {
+    "defaultMessage": "<li>Enable ChannelFly for the <venueSingular></venueSingular>.</li>"
+  },
   "w0jeMV": {
     "defaultMessage": "Sub-option 150 with VLAN ID"
   },
@@ -21608,6 +21692,9 @@
   "w43oC6": {
     "defaultMessage": "4-Way Handshake - Frame 4"
   },
+  "w5/LgE": {
+    "defaultMessage": "TLS Enhanced Key"
+  },
   "w54Pz2": {
     "defaultMessage": "The email address you entered is already defined for another recipient. Please use an unique address."
   },
@@ -21616,6 +21703,9 @@
   },
   "w6vmP5": {
     "defaultMessage": "{apCount} APs"
+  },
+  "w6zMRq": {
+    "defaultMessage": "{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}"
   },
   "w74+c5": {
     "defaultMessage": "Update Available"
@@ -21801,6 +21891,9 @@
   "wjKE15": {
     "defaultMessage": "2.4 GHz radio setting for {scope} has \"Background Scan Timer\" set as {currentValue}. Recommended setting for \"Background Scan Timer\" is {recommendedValue} to effectively use \"Background Scan\" feature."
   },
+  "wjw+QK": {
+    "defaultMessage": "AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten."
+  },
   "wk2gIX": {
     "defaultMessage": "Trusted"
   },
@@ -21852,9 +21945,6 @@
   },
   "wtFwsn": {
     "defaultMessage": "<p>Identifying the sources of external interference is the key to resolving this issue:</p> <ol> {params} </ol>"
-  },
-  "wtJdS+": {
-    "defaultMessage": "Last Venue"
   },
   "wtgFhC": {
     "defaultMessage": "Certificate Signing"
@@ -22059,9 +22149,6 @@
   "xM0AqG": {
     "defaultMessage": "AP-{smartZone} Connection Uptime"
   },
-  "xMr1ia": {
-    "defaultMessage": "No networks activated on Venue ({venueName})"
-  },
   "xPdvvL": {
     "defaultMessage": "Logged Group Members ({memberCount})"
   },
@@ -22104,11 +22191,11 @@
   "xVG+pL": {
     "defaultMessage": "Same AP"
   },
+  "xVwZzE": {
+    "defaultMessage": "- Select the <venuePlural></venuePlural> or specific switches that will have this configuration applied onto them<br></br> - Only operational switches are displayed here"
+  },
   "xWVr7p": {
     "defaultMessage": "Average Time To Connect"
-  },
-  "xXDHjy": {
-    "defaultMessage": "Add Venue"
   },
   "xXLewc": {
     "defaultMessage": "Update user details is unsuccessful"
@@ -22299,6 +22386,9 @@
   "y3Ug49": {
     "defaultMessage": "AP Heartbeat Lost"
   },
+  "y3lQR8": {
+    "defaultMessage": "Select the <venuePlural></venuePlural> and APs where the mDNS Proxy Service will be applied:"
+  },
   "y3xbhj": {
     "defaultMessage": "below"
   },
@@ -22343,6 +22433,9 @@
   },
   "y99cMc": {
     "defaultMessage": "You can choose only APs that already connected to the cloud"
+  },
+  "y9DQfk": {
+    "defaultMessage": "2.4 GHz radio setting for {scope} has \"Auto Channel Selection\" set as \"{channelSelectionMode}\", however \"Background Scan\" feature is disabled for this <VenueSingular></VenueSingular>. To effectively use \"{channelSelectionMode}\" as channel selection algorithm, it recommended to enable \"Background Scan\" feature with default scan timer as 20 seconds."
   },
   "y9NChq": {
     "defaultMessage": "RID"
@@ -22482,9 +22575,6 @@
   "yQg16M": {
     "defaultMessage": "Evolved Packet Data Gateway (ePDG)"
   },
-  "yR0TZl": {
-    "defaultMessage": "AI-Driven Cloud RRM will be applied at the venue level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten."
-  },
   "yRL7VQ": {
     "defaultMessage": "RSRP"
   },
@@ -22538,9 +22628,6 @@
   },
   "yd86hL": {
     "defaultMessage": "Multi-Factor Authentication Setup"
-  },
-  "ydLU1G": {
-    "defaultMessage": "Define how this network will be activated on venue \"{venueName}\""
   },
   "yePmTu": {
     "defaultMessage": "Enable Beta"
@@ -22608,6 +22695,9 @@
   "ynEB7i": {
     "defaultMessage": "Segment No."
   },
+  "ynYS4n": {
+    "defaultMessage": "Please select <venuePlural></venuePlural>"
+  },
   "yo3++Z": {
     "defaultMessage": "Change to default connection"
   },
@@ -22659,9 +22749,6 @@
   },
   "yyIu9V": {
     "defaultMessage": "The variables had reach to the maximum total 200 entries."
-  },
-  "yyVIf0": {
-    "defaultMessage": "Venue (AP configure AP Group change)"
   },
   "yydJyp": {
     "defaultMessage": "The total upload traffic limit of all the devices per unit on wireless and wired connections"
@@ -22723,9 +22810,6 @@
   "z6pEwa": {
     "defaultMessage": "Please select at least two channels"
   },
-  "z70IRn": {
-    "defaultMessage": "RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the Venue’s ‘Switch Settings’."
-  },
   "z7KUHa": {
     "defaultMessage": "RADIUS Servers"
   },
@@ -22734,9 +22818,6 @@
   },
   "z8gOSw": {
     "defaultMessage": "Application Tokens"
-  },
-  "zAaWs1": {
-    "defaultMessage": "To enable the client admission control, please make sure the band balancing or load balancing in the venue is disabled."
   },
   "zAkzsG": {
     "defaultMessage": "Admin Password"
@@ -22771,9 +22852,6 @@
   "zG/44N": {
     "defaultMessage": "RADIUS Access Challenge"
   },
-  "zI1owl": {
-    "defaultMessage": "Venues ({venuesCount})"
-  },
   "zI5cW9": {
     "defaultMessage": "AP SNMP"
   },
@@ -22785,6 +22863,9 @@
   },
   "zIq/Ye": {
     "defaultMessage": "Total Connections"
+  },
+  "zJ1UWj": {
+    "defaultMessage": "Select <VenuePlural></VenuePlural> / APs to test"
   },
   "zK+27r": {
     "defaultMessage": "Pass"
@@ -22814,6 +22895,9 @@
   },
   "zMfjpJ": {
     "defaultMessage": "Standard power [No channels available]"
+  },
+  "zMkZNQ": {
+    "defaultMessage": "space"
   },
   "zNBU+2": {
     "defaultMessage": "Import Logo"
@@ -22917,9 +23001,6 @@
   "zbWLrX": {
     "defaultMessage": "5.5 mbps"
   },
-  "zdTtMo": {
-    "defaultMessage": "Create <b>DPSK networks</b> and activate them on the venue"
-  },
   "zdi83H": {
     "defaultMessage": "This will delete all data associated with the certificate template, including issued certificates. Certificates issued from this template will begin failing RADIUS authentication."
   },
@@ -22937,6 +23018,9 @@
   },
   "zg0sQG": {
     "defaultMessage": "AP initializing"
+  },
+  "zgGC8u": {
+    "defaultMessage": "Subscription Term"
   },
   "zgJJ4Y": {
     "defaultMessage": "Delete {formattedEntityName}"
@@ -23038,6 +23122,9 @@
   },
   "ztq89h": {
     "defaultMessage": "Minimum required version"
+  },
+  "ztzUhJ": {
+    "defaultMessage": "Wait for AFC server response"
   },
   "zucAIi": {
     "defaultMessage": "DPSK Passphrase Details"

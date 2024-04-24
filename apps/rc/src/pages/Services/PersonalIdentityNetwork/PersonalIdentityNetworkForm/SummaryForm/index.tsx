@@ -48,8 +48,8 @@ export const SummaryForm = () => {
 
   const alertMsg = <FormattedMessage
     defaultMessage={
-      'For segment assignment for <sub5b>AP wired</sub5b>,\
-      please go to the <sub5b>Venue/ property Units page</sub5b> to assign an AP\
+      'For segment assignment for <sub5b>AP wired</sub5b>, please go to the\
+      <sub5b><VenueSingular></VenueSingular>/ property Units page</sub5b> to assign an AP\
       for the specific unit / identity.'}
 
     values={{

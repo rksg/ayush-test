@@ -205,7 +205,7 @@ export function RadioSettingsForm (props:{
             type='error'
             message={<>
               <span style={{ marginRight: '30px' }}>
-                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a venue height to be set for standard power operation.' })}
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
               </span>
               <Button type='link'
                 data-testid='set-it-up-button'
