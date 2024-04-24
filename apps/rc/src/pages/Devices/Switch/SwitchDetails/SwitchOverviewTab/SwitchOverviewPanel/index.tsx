@@ -26,24 +26,25 @@ export function SwitchOverviewPanel (props:{
   const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
   const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
   return <>
-    <Button
-      style={{ marginLeft: '20px' }}
-      type='link'
-      size='small'
-      onClick={() => {
+    <div style={{ textAlign: 'right' }}>
+      <Button
+        style={{ marginLeft: '20px' }}
+        type='link'
+        size='small'
+        onClick={() => {
 
-        const transformedSwitchRows: SwitchInfo[] = [{
-          switchId: switchDetail.id,
-          venueId: switchDetail.venueId,
-          stackMembers: stackMember
-        }]
-        setBlinkData(transformedSwitchRows)
-        setBlinkDrawerVisible(true)
+          const transformedSwitchRows: SwitchInfo[] = [{
+            switchId: switchDetail.id,
+            venueId: switchDetail.venueId,
+            stackMembers: stackMember
+          }]
+          setBlinkData(transformedSwitchRows)
+          setBlinkDrawerVisible(true)
 
-      }}>
-      {$t({ defaultMessage: 'Blink LEDs' })}
-    </Button>
-
+        }}>
+        {$t({ defaultMessage: 'Blink LEDs' })}
+      </Button>
+    </div>
     <GridRow>
       <GridCol col={{ span: 24 }}>
         <SwitchFrontRearView stackMember={stackMember} />
