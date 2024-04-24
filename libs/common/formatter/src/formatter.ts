@@ -103,7 +103,7 @@ function durationFormat (milliseconds: number, format: 'short' | 'long', { $t }:
 
   return duration1
     ? $t(combineDuration, { duration1, duration2 }).trim()
-    : '0'
+    : $t(mapping.milliseconds, { milliseconds: 0 })
 }
 
 function numberFormat (base: number, units: string[], value: number) {

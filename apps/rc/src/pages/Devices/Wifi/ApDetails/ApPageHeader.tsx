@@ -136,7 +136,7 @@ function ApPageHeader () {
         {
           AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
-          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo}/>
+          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
         }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
