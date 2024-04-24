@@ -254,7 +254,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
-    getVlanPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
+    getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolVenues),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
@@ -327,7 +327,7 @@ export const {
   useAddVlanPoolPolicyTemplateMutation,
   useUpdateVlanPoolPolicyTemplateMutation,
   useDelVlanPoolPolicyTemplateMutation,
-  useGetVlanPoolVenuesQuery,
+  useGetVlanPoolTemplateVenuesQuery,
   useAddSyslogPolicyTemplateMutation,
   useDelSyslogPolicyTemplateMutation,
   useGetSyslogPolicyTemplateListQuery,
