@@ -364,34 +364,12 @@ export function TimelineChart ({
           symbol: 'circle',
           symbolSize: 8,
           animation: false,
-          data: checkRollup(config, startDate) ? [] : getSeriesData(data, key, series, toggles),
+          data: getSeriesData(data, key, series, toggles),
           itemStyle: {
             color: getSeriesItemColor
           },
           clip: true,
-          cursor: 'pointer',
-          markArea: {
-            silent: true,
-            itemStyle: {
-              color: 'transparent'
-            },
-            data: [
-              [
-                {
-                  name: checkRollup(config, startDate) ? GranularityText : '',
-                  xAxis: 'min',
-                  yAxis: 'min',
-                  label: {
-                    offset: [0, 12]
-                  }
-                },
-                {
-                  xAxis: 'max',
-                  yAxis: 'max'
-                }
-              ]
-            ]
-          }
+          cursor: 'pointer'
         })
         : ({
           type: 'custom',

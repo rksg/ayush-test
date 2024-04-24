@@ -100,7 +100,7 @@ export function TimeLine (props: TimeLineProps) {
       [type]: !toggle
     })
   const toggleIcon = (
-    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, disabled?: boolean
+    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, druidRollup?: boolean
   ) => {
     if (noData) {
       return <Tooltip
@@ -118,11 +118,14 @@ export function TimeLine (props: TimeLineProps) {
         style={{ cursor: 'pointer' }}
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
-    ) : (
+    ) : (<Tooltip
+      title={druidRollup
+        ? $t({ defaultMessage: 'Data granularity at this level is not available.' }) : ''}>
       <UI.StyledPlusSquareOutlined
         style={{ cursor: 'pointer' }}
-        onClick={() => disabled ? '' : onExpandToggle(type, expandObj[type])}
+        onClick={() => druidRollup ? '' : onExpandToggle(type, expandObj[type])}
       />
+    </Tooltip>
     )
   }
 
