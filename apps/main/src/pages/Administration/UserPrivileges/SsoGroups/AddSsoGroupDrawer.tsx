@@ -104,7 +104,7 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
         ]}
         children={<Input />}
       />}
-    <PrivilegeGroupSelector setSelected={() => void {}}/>
+    <PrivilegeGroupSelector />
   </Form>
 
   return (

@@ -184,7 +184,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
         >
           {editData.email}
         </Form.Item>
-        <PrivilegeGroupSelector setSelected={() => void {}} disabled={editNameOnly}/>
+        <PrivilegeGroupSelector disabled={editNameOnly}/>
       </Form>
     </Drawer>
   )

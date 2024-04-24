@@ -12,7 +12,7 @@ import { roleStringMap }              from '@acx-ui/user'
 
 export interface PrivilegeGroupSelectorProps {
       disabled?: boolean;
-      setSelected: (selected: PrivilegeGroup) => void
+      setSelected?: (selected: PrivilegeGroup) => void
   }
 
 const PrivilegeGroupSelector = (props: PrivilegeGroupSelectorProps) => {
@@ -29,7 +29,7 @@ const PrivilegeGroupSelector = (props: PrivilegeGroupSelectorProps) => {
 
   const handleChange = (value: string) => {
     const selected = privilegeGroupList?.find(p => p.name === value) as PrivilegeGroup
-    setSelected(selected)
+    setSelected?.(selected)
   }
 
   return (
