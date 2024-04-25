@@ -13,7 +13,7 @@ import { baseEventAlarmApi } from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { getMetaList, isJson } from './utils'
+import { getMetaList } from './utils'
 
 export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
   endpoints: (build) => ({
@@ -84,17 +84,22 @@ export const getAggregatedList = function (
   return {
     ...baseList,
     data: baseList.data.map((base) => {
-      let message = isJson(base.message) ? JSON.parse(base.message).message_template : base.message
-      let msgMeta = metaList.data.find((d) => d.id === base.id)
-      const result = { ...base, ...msgMeta } as Alarm
-      const placeholder = '@@'
-      const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g'))||[]
-      for (const match of matches) {
-        const key = match.replace(placeholder, '') as keyof Alarm
-        message = message.replace(match, result[key])
+      try {
+        let message = JSON.parse(base.message).message_template
+        let msgMeta = metaList.data.find((d) => d.id === base.id)
+        const result = { ...base, ...msgMeta } as Alarm
+        const placeholder = '@@'
+        const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g')) || []
+        for (const match of matches) {
+          const key = match.replace(placeholder, '') as keyof Alarm
+          message = message.replace(match, result[key])
+        }
+        result.message = message
+        return result
+      } catch {
+        let msgMeta = metaList.data.find((d) => d.id === base.id)
+        return { ...base, ...msgMeta } as Alarm
       }
-      result.message = message
-      return result
     })
   }
 }
