@@ -117,7 +117,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return (
             <div>
               {row.apUpRssi && <span style={{ paddingRight: '30px' }}>
-                <SignalDownIcon />{row.apDownRssi}
+                <SignalDownIcon />{row.apUpRssi}
               </span>}
               {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
