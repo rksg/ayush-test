@@ -165,6 +165,15 @@ export function validateEdgeDirection (edges: Link[], nodeMap: Record<string, No
 
   let uniqueValues: { [key: string]: boolean } = {}
   const uniqueEdges: Link[] = []
+
+  if(calibrateEdges.length < edges.length){
+    edges.forEach((edge: Link) => {
+      if(!isVisited(edge)){
+        calibrateEdges.push(edge)
+      }
+    })
+  }
+
   calibrateEdges.forEach((item: Link) => {
     if (!uniqueValues[item.to]) {
       uniqueValues[item.to] = true
