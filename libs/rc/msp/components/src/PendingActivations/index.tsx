@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
@@ -9,6 +11,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { get }                        from '@acx-ui/config'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
 import {
@@ -24,9 +27,17 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
+import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
+
 const PendingActivationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [activationData, setActivationData] = useState<EntitlementActivations>()
+
+  const isActivatePendingActivationEnabled =
+    useIsSplitOn(Features.ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE)
+
+  const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
 
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
@@ -52,20 +63,29 @@ const PendingActivationsTable = () => {
       dataIndex: 'orderAcxRegistrationCode',
       key: 'orderAcxRegistrationCode',
       render: function (_, row) {
-        return <Button
+        return isActivatePendingActivationEnabled ? <Button
           type='link'
           onClick={() => {
             const urlSupportActivation = 'http://support.ruckuswireless.com/register_code/' +
               row.orderAcxRegistrationCode
             window.open(urlSupportActivation, '_blank')
           }}
-        >{row.orderAcxRegistrationCode}</Button>
+        >{row.orderAcxRegistrationCode}</Button> : row.orderAcxRegistrationCode
       }
     },
     {
       title: $t({ defaultMessage: 'Part Number' }),
       dataIndex: 'productCode',
-      key: 'productCode'
+      key: 'productCode',
+      render: function (_, row) {
+        return <Button
+          type='link'
+          onClick={() => {
+            setDrawerActivateVisible(true)
+            setActivationData(row)
+          }}
+        >{row.productCode}</Button>
+      }
     },
     {
       title: $t({ defaultMessage: 'Part Number Description' }),
@@ -138,6 +158,12 @@ const PendingActivationsTable = () => {
         dataSource={pendingActivationResults?.data}
         rowKey='orderId'
       />
+      {drawerActivateVisible && <ActivatePurchaseDrawer
+        visible={drawerActivateVisible}
+        setVisible={setDrawerActivateVisible}
+        activationData={activationData}
+      />}
+
     </Loader>
   )
 }
