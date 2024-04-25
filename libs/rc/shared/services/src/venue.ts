@@ -10,6 +10,7 @@ import {
   DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
+  SwitchRbacUrlsInfo,
   FloorPlanDto,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -708,8 +709,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueSwitchAAAServerList: build.query<
     TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const listReq = createHttpRequest(urlsInfo.getAaaServerList, params)
         return {
           ...listReq,
           body: payload

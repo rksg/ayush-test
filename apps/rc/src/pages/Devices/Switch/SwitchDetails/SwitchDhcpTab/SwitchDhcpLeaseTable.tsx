@@ -11,11 +11,20 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-export function SwitchDhcpLeaseTable () {
+export function SwitchDhcpLeaseTable (props: {
+  venueId?: string
+}) {
   const { $t } = useIntl()
   const { switchId, tenantId } = useParams()
+  const { venueId } = props
 
-  const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({ params: { switchId, tenantId } })
+  const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({
+    params: { switchId, tenantId, venueId },
+    payload: {
+      troubleshootingType: 'dhcp-server-lease-table'
+    },
+    enableRbac: true
+  })
 
   const columns: TableProps<SwitchDhcpLease>['columns'] = [
     {

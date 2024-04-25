@@ -35,9 +35,14 @@ export function SwitchDhcpPoolTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpPoolsQuery,
     defaultPayload: {},
+    apiParams: { venueId: switchDetail?.venueId },
     sorter: {
       sortField: 'poolName',
       sortOrder: 'DESC'
+    },
+    enableRbac: true,
+    option: {
+      skip: !switchDetail?.venueId
     }
   })
 
@@ -50,9 +55,24 @@ export function SwitchDhcpPoolTable () {
   const handleSavePool = async (values: SwitchDhcp) => {
     try {
       if (selected) { // Edit
-        await updateDhcpServer({ params, payload: values }).unwrap()
+        await updateDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId,
+            dhcpServerId: selected
+          },
+          payload: values,
+          enableRbac: true
+        }).unwrap()
       } else { // Add
-        await createDhcpServer({ params, payload: values }).unwrap()
+        await createDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId
+          },
+          payload: values,
+          enableRbac: true
+        }).unwrap()
       }
       setSelected(undefined)
       setDrawerVisible(false)
@@ -121,7 +141,14 @@ export function SwitchDhcpPoolTable () {
           numOfEntities: selectedRows.length
         },
         onOk: () => {
-          deleteDhcpServers({ params, payload: selectedRows.map(r => r.id) })
+          deleteDhcpServers({
+            params: {
+              ...params,
+              venueId: switchDetail?.venueId
+            },
+            payload: selectedRows.map(r => r.id),
+            enableRbac: true
+          })
           clearSelection()
         }
       })
@@ -153,6 +180,7 @@ export function SwitchDhcpPoolTable () {
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}
         editPoolId={selected}
+        venueId={switchDetail?.venueId}
         onSavePool={handleSavePool}
         onClose={()=>setDrawerVisible(false)}
       />

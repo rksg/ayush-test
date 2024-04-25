@@ -351,6 +351,13 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServers',
     newApi: true
   },
+  getDhcpLeases: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/debugRequests/dhcp-server-lease-table',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/'+
+      'troubleshootingResult/dhcp-server-lease-table',
+    newApi: true
+  },
   dhcpLeaseTable: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
@@ -358,8 +365,8 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateDhcpServerState: {
-    method: 'patch',
-    url: '/venues/:venueId/switches/:switchId/dhcpServerStates',
+    method: 'PATCH',
+    url: '/venues/:venueId/switches/:switchId/dhcpServerState',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
     newApi: true
   },
@@ -386,7 +393,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateLag: {
     method: 'put',
-    url: '/venues/:venueId/switches/:switchId/lags/:id',
+    url: '/venues/:venueId/switches/:switchId/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag',
     newApi: true
   },
@@ -398,7 +405,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteLag: {
     method: 'delete',
-    url: '/venues/:venueId/switches/:switchId/lags/:id',
+    url: '/venues/:venueId/switches/:switchId/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag/:lagId',
     newApi: true
   }

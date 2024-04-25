@@ -14,8 +14,17 @@ import { TransferItem }      from 'antd/lib/transfer'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip, Transfer } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                                 from '@acx-ui/icons'
+import {
+  Button,
+  Drawer,
+  Modal,
+  showActionModal,
+  StepsFormLegacy,
+  Tooltip,
+  Transfer
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -25,7 +34,8 @@ import {
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useSwitchDetailHeaderQuery,
   useSwitchPortlistQuery,
-  useUpdateLagMutation } from '@acx-ui/rc/services'
+  useUpdateLagMutation
+} from '@acx-ui/rc/services'
 import {
   SwitchVlanUnion,
   EditPortMessages,
@@ -51,6 +61,7 @@ interface SwitchLagProps {
   visible: boolean
   isEditMode: boolean
   editData: Lag[]
+  venueId?: string
   setVisible: (visible: boolean) => void
   type?: string
   params?: SwitchLagParams
@@ -59,7 +70,7 @@ interface SwitchLagProps {
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, setVisible, isEditMode, editData } = props
+  const { visible, setVisible, isEditMode, editData, venueId } = props
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
   const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
@@ -74,16 +85,26 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     sortOrder: 'ASC'
   }
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
-  const lagList = useGetLagListQuery({ params: { tenantId, switchId } })
+  const lagList = useGetLagListQuery({
+    params: { tenantId, switchId, venueId },
+    enableRbac: true
+  }, { skip: !venueId })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchConfigurationProfileByVenue]
     = useLazyGetSwitchConfigurationProfileByVenueQuery()
+
   const { data: switchDetailHeader } =
   useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
   const { data: switchesDefaultVlan }
-  = useGetDefaultVlanQuery({ params: { tenantId }, payload: [switchId] })
+  = useGetDefaultVlanQuery({
+    params: { tenantId },
+    payload: [switchId],
+    enableRbac: true
+  }, { skip: !venueId })
 
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
@@ -109,12 +130,20 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   useEffect(() => {
     const setVlanData = async () => {
       const venueId = switchDetailHeader?.venueId
-      const switchVlans = await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
+      const switchVlans = await getSwitchVlan({
+        params: { tenantId, switchId, venueId },
+        options: { skip: !venueId },
+        enableRbac: true
+      }, true).unwrap()
       const vlansByVenue = await getVlansByVenue({
-        params: { tenantId, venueId: venueId }
+        params: { tenantId, venueId },
+        options: { skip: !venueId },
+        enableRbac: true
       }, true).unwrap()
       const switchProfile = await getSwitchConfigurationProfileByVenue({
-        params: { tenantId, venueId: venueId }
+        params: { tenantId, venueId },
+        options: { skip: !venueId },
+        enableRbac: true
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
@@ -213,15 +242,26 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       try {
         let payload = {
           ...value,
+          ..._.omit(value, 'portsType'),
           lagId: editData[0].lagId,
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
           taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
-        delete payload.portsType
+
         setLoading(true)
-        await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
+        await updateLag({
+          params: {
+            tenantId,
+            switchId,
+            venueId,
+            lagId: editData[0].id
+          },
+          payload,
+          enableRbac: true
+        }).unwrap()
+
         setLoading(false)
         onClose()
       } catch (err) {
@@ -237,7 +277,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
-        await addLag({ params: { tenantId, switchId }, payload }).unwrap()
+        await addLag({
+          params: { tenantId, switchId, venueId },
+          payload,
+          enableRbac: true
+        }).unwrap()
         onClose()
       } catch (err) {
         console.log(err) // eslint-disable-line no-console

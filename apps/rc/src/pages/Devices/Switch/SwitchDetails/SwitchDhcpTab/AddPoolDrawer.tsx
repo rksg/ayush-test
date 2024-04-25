@@ -22,6 +22,7 @@ export function AddPoolDrawer (props: {
   visible: boolean,
   isLoading?: boolean,
   editPoolId?: SwitchDhcp['id'],
+  venueId?: string,
   onSavePool?: (values: SwitchDhcp)=>void,
   onClose?: ()=>void
 }) {
@@ -43,9 +44,11 @@ export function AddPoolDrawer (props: {
     if(props.visible && props.editPoolId) {
       getDhcpServer({
         params: {
-          tenantId: params.tenantId,
+          ...params,
+          venueId: props.venueId,
           dhcpServerId: props.editPoolId
-        }
+        },
+        enableRbac: true
       }).unwrap().then(value => {
         form.setFieldsValue(value)
         setDhcpOptionList(value.dhcpOptions)
