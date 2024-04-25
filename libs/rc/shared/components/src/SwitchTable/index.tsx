@@ -163,7 +163,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
-  const enableSwitchBlinkLed = true//useIsSplitOn(Features.SWITCH_BLINK_LED)
+  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []

@@ -6,9 +6,12 @@ import {
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { stackMembersData } from './__tests__/fixtures'
+import { stackMembersData, switchDetailSwitchOnline } from './__tests__/fixtures'
 
 import { SwitchOverviewPanel } from '.'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import userEvent from '@testing-library/user-event'
+import { SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE } from '@acx-ui/rc/utils'
 
 jest.mock('@acx-ui/analytics/components', () => ({
   SwitchesTrafficByVolume: () =>
@@ -28,6 +31,14 @@ jest.mock('./SwitchFrontRearView', () => ({
   SwitchFrontRearView: () =>
     <div data-testid={'rc-SwitchFrontRearView'} title='SwitchFrontRearView' />
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  SwitchBlinkLEDsDrawer: () =>
+    <div data-testid={'rc-SwitchBlinkLEDsDrawer'} />
+}))
+
+
+
 
 describe('SwitchOverviewTab', () => {
   const filters : AnalyticsFilter = {
@@ -60,5 +71,29 @@ describe('SwitchOverviewTab', () => {
     expect(await screen.findAllByTestId('rc-TopPorts')).toHaveLength(4)
   })
 
+  it('should render switch blink LEDs correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenantId',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview'
+    }
+    render(<Provider>
+      <SwitchOverviewPanel
+       filters={filters}
+       stackMember={stackMembersData}
+       switchDetail={switchDetailSwitchOnline} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
+      }
+    })
+    const blinkLedsButton = await screen.findByText('Blink LEDs')
+    expect(blinkLedsButton).toBeVisible()
+    await userEvent.click(blinkLedsButton)
+    expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer'))
+  })
 }
 )

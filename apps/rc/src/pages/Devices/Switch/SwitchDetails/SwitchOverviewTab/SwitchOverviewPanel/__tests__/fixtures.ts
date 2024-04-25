@@ -1,4 +1,4 @@
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus } from '@acx-ui/rc/utils'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus, SwitchViewModel } from '@acx-ui/rc/utils'
 
 export const stackMembersData = [
   {
@@ -474,6 +474,41 @@ export const switchDetailSatckOnline = {
   tenantId: 'f2e4a77d49914dc7b1bcb0dfc21b9a74',
   family: 'ICX7150-C12P',
   numOfPorts: 16
+}
+
+
+const switchDetailSwitchOnline: SwitchViewModel = {
+  type: 'device',
+  isStack: true,
+  rearModule: 'none',
+  switchMac: 'c0:c5:20:98:b9:67',
+  switchName: 'ICX7150-C12 Router',
+  model: 'ICX7150-C12P',
+  id: 'c0:c5:20:98:b9:67',
+  syncDataEndTime: '2023-01-16T06:07:09Z',
+  firmwareVersion: 'SPR09010e',
+  clientCount: 1,
+  serialNumber: 'FEK3216Q05B',
+  ipAddress: '10.206.33.13',
+  cliApplied: false,
+  subnetMask: '255.255.254.0',
+  venueName: 'My-Venue',
+  name: 'ICX7150-C12 Router',
+  suspendingDeployTime: '',
+  switchType: SWITCH_TYPE.ROUTER,
+  configReady: true,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
+  venueId: '7231da344778480d88f37f0cca1c534f',
+  syncedSwitchConfig: true,
+  defaultGateway: '10.206.33.254',
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK3216Q02P' },
+    { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
+  ],
+  uptime: '7 days, 7:36:21.00',
+  formStacking: false,
+  floorplanId: '94bed28abef24175ab58a3800d01e24a',
+  unitId: 1
 }
 
 export const switchDetailSwitchOffline = {

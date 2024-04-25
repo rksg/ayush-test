@@ -6,14 +6,28 @@ import { useIntl } from 'react-intl'
 import { SwitchesTrafficByVolume }                                                                     from '@acx-ui/analytics/components'
 import { SwitchStatusByTime }                                                                          from '@acx-ui/analytics/components'
 import { Button, GridCol, GridRow }                                                                    from '@acx-ui/components'
-import { SwitchBlinkLEDsDrawer, SwitchInfo, TopologyFloorPlanWidget }                                  from '@acx-ui/rc/components'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
+import {
+  SwitchBlinkLEDsDrawer,
+  SwitchInfo,
+  TopologyFloorPlanWidget
+}
+  from '@acx-ui/rc/components'
+import {
+  NetworkDevice,
+  NetworkDevicePosition,
+  ShowTopologyFloorplanOn,
+  StackMember,
+  SwitchStatusEnum,
+  SwitchViewModel
+}
+  from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                           from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                        from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
@@ -25,26 +39,32 @@ export function SwitchOverviewPanel (props:{
   const { $t } = useIntl()
   const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
   const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
+  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
+
   return <>
-    <div style={{ textAlign: 'right' }}>
-      <Button
-        style={{ marginLeft: '20px' }}
-        type='link'
-        size='small'
-        onClick={() => {
+    {enableSwitchBlinkLed &&
+      <div style={{ textAlign: 'right' }}>
+        <Button
+          style={{ marginLeft: '20px' }}
+          type='link'
+          size='small'
+          disabled={ switchDetail?.deviceStatus!== SwitchStatusEnum.OPERATIONAL}
+          onClick={() => {
 
-          const transformedSwitchRows: SwitchInfo[] = [{
-            switchId: switchDetail.id,
-            venueId: switchDetail.venueId,
-            stackMembers: stackMember
-          }]
-          setBlinkData(transformedSwitchRows)
-          setBlinkDrawerVisible(true)
+            const transformedSwitchRows: SwitchInfo[] = [{
+              switchId: switchDetail.id,
+              venueId: switchDetail.venueId,
+              stackMembers: stackMember
+            }]
+            setBlinkData(transformedSwitchRows)
+            setBlinkDrawerVisible(true)
 
-        }}>
-        {$t({ defaultMessage: 'Blink LEDs' })}
-      </Button>
-    </div>
+          }}>
+          {$t({ defaultMessage: 'Blink LEDs' })}
+        </Button>
+      </div>
+    }
+
     <GridRow>
       <GridCol col={{ span: 24 }}>
         <SwitchFrontRearView stackMember={stackMember} />
@@ -64,12 +84,13 @@ export function SwitchOverviewPanel (props:{
       { filters && <SwitchWidgets filters={{ ...filters }}/> }
     </GridRow>
 
-    <SwitchBlinkLEDsDrawer
-      visible={blinkDrawerVisible}
-      setVisible={setBlinkDrawerVisible}
-      switches={blinkData}
-      isStack={stackMember.length > 0}
-    />
+    {enableSwitchBlinkLed &&
+      <SwitchBlinkLEDsDrawer
+        visible={blinkDrawerVisible}
+        setVisible={setBlinkDrawerVisible}
+        switches={blinkData}
+        isStack={stackMember.length > 0}
+      />}
   </>
 }
 
