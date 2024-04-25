@@ -32,6 +32,7 @@ import {
   singleVlansByVenue
 } from './__tests__/fixtures'
 import { EditPortDrawer } from './editPortDrawer'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const params = {
   venueId: 'venue-id',
@@ -229,6 +230,7 @@ describe('EditPortDrawer', () => {
     })
 
     it('should cycle PoE correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
       render(<Provider>
         <EditPortDrawer
           visible={true}

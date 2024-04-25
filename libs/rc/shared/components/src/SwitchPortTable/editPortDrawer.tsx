@@ -149,7 +149,7 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
-  const cyclePoeFFEnabled = !useIsSplitOn(Features.G_MAP)
+  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const [loading, setLoading] = useState<boolean>(true)
 
   const defaultVlanName = 'DEFAULT-VLAN'
@@ -598,9 +598,14 @@ export function EditPortDrawer ({
 
   const onCyclePoe = async () => {
     const venueId = selectedPorts[0].venueId
-    const payload = selectedPorts.map(port=>port.portIdentifier)
+    const payload = switches.map((switchId) => ({
+      switchId: switchId,
+      ports: selectedPorts
+        .filter(p => p.switchSerial === switchId)
+        .map(p => p.portIdentifier)
+    }))
     await cyclePoe({
-      params: { venueId, switchId },
+      params: { venueId },
       payload
     }).unwrap()
   }

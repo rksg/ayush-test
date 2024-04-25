@@ -130,7 +130,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   portsPowerCycle: {
     method: 'post',
-    url: '/venues/:venueId/switches/:switchId/powerCycleRequests',
+    url: '/venues/:venueId/switches/powerCycleRequests',
     newApi: true
   },
   getVlansByVenue: {
