@@ -15,6 +15,12 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { PortalDemo } from '../PortalDemo'
 
+const templatePayload = () => ({
+  fields: ['id', 'name'],
+  filters: {},
+  pageSize: 1024
+})
+
 const PortalSettingForm = (props: { resetDemoField: () => void }) => {
   const { resetDemoField } = props
   const { $t } = useIntl()
@@ -24,10 +30,13 @@ const PortalSettingForm = (props: { resetDemoField: () => void }) => {
   const [ getPortalTemplateList ] = useLazyGetEnhancedPortalTemplateListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = isTemplate ? (await getPortalList({ params }, true).unwrap()).data
+    const list = !isTemplate ? (await getPortalList({ params }, true).unwrap()).data
       .filter((n) => n.id !== params.serviceId)
       .map((n) => n.serviceName):
-      (await getPortalTemplateList({ params }, true).unwrap()).data
+      (await getPortalTemplateList(
+        { params, payload: templatePayload()
+        }, true)
+        .unwrap()).data
         .filter((n) => n.id !== params.serviceId)
         .map((n) => n.name)
 
