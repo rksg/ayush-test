@@ -50,6 +50,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
 
   const { visible, setVisible, activationData } = props
   const [resetField, setResetField] = useState(false)
+  const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
   const [form] = useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
 
@@ -62,21 +63,25 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     onClose()
   }
 
-  const handleActivate = () => { {
-    let payload = {
-      region: form.getFieldValue(['region']),
-      startDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
-      endDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
-      orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
-    }
+  const handleActivate = async () => {
+    try {
+      await form.validateFields()
+      let payload = {
+        region: form.getFieldValue(['region']),
+        startDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
+        endDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
+        orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
+      }
 
-    activatePurchase({ payload, params: { orderId: activationData?.orderId } })
-      .then(() => {
-        setVisible(false)
-        resetFields()
-      })
-  }
-  setVisible(false)
+      activatePurchase({ payload, params: { orderId: activationData?.orderId } })
+        .then(() => {
+          setVisible(false)
+          resetFields()
+        })
+      setVisible(false)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   const regionList = getRegions().map((item) => ({
@@ -115,7 +120,12 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     <Form.Item
       name='region'
       label={$t({ defaultMessage: 'Select the region for your RUCKUS One hosted cloud servicese' })}
-      rules={[{ required: true }]}
+      rules={[
+        {
+          required: true,
+          message: $t({ defaultMessage: 'Please select a region' })
+        }
+      ]}
     >
       <Radio.Group style={{ width: '100%' }}>
         <SpaceWrapper full direction='vertical' size='small'>
@@ -144,7 +154,6 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       children={
         <DatePicker
           format={formatter(DateFormatEnum.DateFormat)}
-          // disabled={!customDate}
           disabledDate={(current) => {
             return current && current < moment().endOf('day')
           }}
@@ -159,26 +168,24 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
 
     <div style={{ position: 'fixed', bottom: '75px' }}>
       <Checkbox style={{ marginBottom: '8px' }}
-        // onChange={handleTermAndConditionChange}
-      >
+        onChange={(e)=>setTermsAndConditions(e.target.checked)} >
         {$t({ defaultMessage: 'I accept the Terms and Conditions.' })}
       </Checkbox>
       <div><label>{$t({ defaultMessage:
           'By checking accept, you hereby acknowledge and agree to the following' })}</label></div>
       <div><Button type='link'
-        // onClick={() => {onAddAppToken()}}
+        // onClick={() => {onClickTermsAndConditions()}}
       >
         {$t({ defaultMessage: 'RUCKUS One Terms and Conditions.' })}
       </Button></div>
-
-
     </div>
 
   </Form>
 
   const footer =<div>
     <Button
-      onClick={async () => handleActivate()}
+      onClick={handleActivate}
+      disabled={!isTermsAndConditionsChecked}
       type='primary'>
       {$t({ defaultMessage: 'Activate' })}
     </Button>
