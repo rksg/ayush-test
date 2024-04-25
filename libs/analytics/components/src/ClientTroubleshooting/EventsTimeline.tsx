@@ -105,7 +105,9 @@ export function TimeLine (props: TimeLineProps) {
       return <Tooltip
         title={noData
           ? $t({ defaultMessage: 'No APs Available' })
-          : $t({ defaultMessage: 'Data granularity at this level is not available.' })}
+          : <UI.TooltipTextWrapper>
+            {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+          </UI.TooltipTextWrapper>}
         placement='top'
       >
         <UI.StyledDisabledPlusSquareOutline
@@ -160,12 +162,11 @@ export function TimeLine (props: TimeLineProps) {
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                {checkRollup(config?.value, startDate)
-                  ? null : config.showCount ? (
-                    <UI.TimelineCount>
-                      {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
-                    </UI.TimelineCount>
-                  ) : null}
+                {config.showCount ? (
+                  <UI.TimelineCount>
+                    {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
+                  </UI.TimelineCount>
+                ) : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 (config.value === TYPES.ROAMING

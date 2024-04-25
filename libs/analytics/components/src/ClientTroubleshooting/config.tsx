@@ -216,7 +216,7 @@ export const ClientTroubleShootingConfig = {
       ] as ChartMapping[]
     },
     {
-      title: defineMessage({ defaultMessage: 'Connection Quality' }), //hide
+      title: defineMessage({ defaultMessage: 'Connection Quality' }),
       value: TYPES.CONNECTION_QUALITY,
       showCount: false,
       chartMapping: [
