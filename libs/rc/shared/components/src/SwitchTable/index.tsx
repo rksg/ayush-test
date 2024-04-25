@@ -54,7 +54,7 @@ import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { SwitchBlinkLEDsDrawer, SwitchInfo }                           from '../SwitchBlinkLEDsDrawer'
+import { SwitchBlinkLEDsDrawer, SwitchInfo }               from '../SwitchBlinkLEDsDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
 
