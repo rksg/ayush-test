@@ -51,3 +51,12 @@ export async function handleCallbackWhenActivitySuccess (
     console.error(error)
   }
 }
+
+export function isJson (str: string) {
+  try {
+    JSON.parse(str)
+    return true
+  } catch (error) {
+    return false
+  }
+}
