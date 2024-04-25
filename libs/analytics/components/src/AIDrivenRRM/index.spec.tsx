@@ -1,4 +1,5 @@
 import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
+import * as config                            from '@acx-ui/config'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -13,6 +14,9 @@ import { api }                                                            from '
 
 import { AIDrivenRRM } from '.'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -21,6 +25,10 @@ const pathFilters: PathFilter = {
 }
 
 describe('AIDrivenRRM dashboard', () => {
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
+
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
@@ -129,6 +137,7 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('There are 0 recommendations for 0 zones covering 0 possible RRM combinations. Currently, 0 zones are optimized.')).toBeVisible()
   })
   it('renders no data for switch path', async () => {
+    get.mockReturnValue('true')
     const switchPathFilters = {
       ...pathFilters,
       path: [
