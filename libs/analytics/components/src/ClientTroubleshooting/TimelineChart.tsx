@@ -82,11 +82,11 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   hasXaxisLabel?: boolean;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
-  onClick?: Function
+  onClick?: Function;
   index?: React.Attributes['key'];
   popoverRef?: RefObject<HTMLDivElement>;
-  startDate: string;
-  config: TimelineItem;
+  startDate?: string;
+  config?: TimelineItem;
 }
 
 export const getSeriesData = (
@@ -379,7 +379,8 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: checkRollup(config, startDate) ? [] : getSeriesData(data, key, series, toggles),
+          data: ((config && startDate) && checkRollup(config, startDate))
+            ? [] : getSeriesData(data, key, series, toggles),
           clip: true,
           cursor: (key === 'incidents') ? 'pointer' : 'crosshair',
           markArea: {
@@ -390,7 +391,8 @@ export function TimelineChart ({
             data: [
               [
                 {
-                  name: checkRollup(config, startDate) ? GranularityText : '',
+                  name: ((config && startDate) && checkRollup(config, startDate))
+                    ? GranularityText : '',
                   xAxis: 'min',
                   yAxis: 'min',
                   label: {
@@ -476,7 +478,7 @@ export function TimelineChart ({
       max: chartBoundary[1],
       splitLine: {
         show: false,
-        lineStyle: { color: cssStr('--acx-primary-black') }
+        lineStyle: { color: cssStr('--acx-neutrals-20') }
       },
       axisPointer: {
         show: hasData,

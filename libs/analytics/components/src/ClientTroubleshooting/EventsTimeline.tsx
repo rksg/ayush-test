@@ -102,9 +102,11 @@ export function TimeLine (props: TimeLineProps) {
   const toggleIcon = (
     isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, druidRollup?: boolean
   ) => {
-    if (noData) {
+    if (noData || druidRollup) {
       return <Tooltip
-        title={$t({ defaultMessage: 'No APs Available' })}
+        title={noData
+          ? $t({ defaultMessage: 'No APs Available' })
+          : $t({ defaultMessage: 'Data granularity at this level is not available.' })}
         placement='top'
       >
         <UI.StyledDisabledPlusSquareOutline
@@ -118,15 +120,10 @@ export function TimeLine (props: TimeLineProps) {
         style={{ cursor: 'pointer' }}
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
-    ) : (<Tooltip
-      title={druidRollup
-        ? $t({ defaultMessage: 'Data granularity at this level is not available.' }) : ''}>
-      <UI.StyledPlusSquareOutlined
-        style={{ cursor: 'pointer' }}
-        onClick={() => druidRollup ? '' : onExpandToggle(type, expandObj[type])}
-      />
-    </Tooltip>
-    )
+    ) : <UI.StyledPlusSquareOutlined
+      style={{ cursor: 'pointer' }}
+      onClick={() => onExpandToggle(type, expandObj[type])}
+    />
   }
 
   const TimelineData = getTimelineData(events, incidents, toggles)
@@ -146,8 +143,8 @@ export function TimeLine (props: TimeLineProps) {
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <React.Fragment key={index}>
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => {
+            return <React.Fragment key={index}>
               <Col span={3}>
                 {toggleIcon(
                   expandObj[config?.value as keyof TimelineData],
@@ -165,7 +162,7 @@ export function TimeLine (props: TimeLineProps) {
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
                 {checkRollup(config, startDate)
-                  ? null :config.showCount ? (
+                  ? null : config.showCount ? (
                     <UI.TimelineCount>
                       {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
                     </UI.TimelineCount>
@@ -215,7 +212,7 @@ export function TimeLine (props: TimeLineProps) {
                   </React.Fragment>
                 ))}
             </React.Fragment>
-          ))}
+          })}
         </Row>
       </Col>
       <Col flex='auto'>
