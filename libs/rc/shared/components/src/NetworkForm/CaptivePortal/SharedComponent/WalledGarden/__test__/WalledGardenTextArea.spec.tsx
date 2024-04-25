@@ -39,14 +39,6 @@ const MockNetworkType = [{
   enableDefaultWalledGarden: true
 }]
 
-const exemptionList = [
-  GuestNetworkTypeEnum.WISPr,
-  GuestNetworkTypeEnum.Cloudpath
-]
-
-function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
-  return exemptionList.includes(guestNetworkTypeEnum)
-}
 
 describe('WalledGardenTextArea Unit Test', () => {
   describe('Test under feature toggle enabled', () => {
@@ -189,27 +181,6 @@ describe('WalledGardenTextArea Unit Test', () => {
       })
     })
   })
-  describe('Test under feature toggle disabled', () => {
-    beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-    })
-    it('Check that is WalledGardenTextArea rendered correctly if feature toggle disabled', () => {
-      MockNetworkType.filter((network) =>
-        isExemption(network.guestNetworkTypeEnum)
-      ).forEach((network) => {
-        render(WalledGardenTextAreaNormalTestCase(network))
-        expect(screen.getByTestId('walled-garden-fullblock')).toBeInTheDocument()
-        cleanup()
-      })
-      MockNetworkType.filter((network) =>
-        !isExemption(network.guestNetworkTypeEnum)
-      ).forEach((network) => {
-        render(WalledGardenTextAreaNormalTestCase(network))
-        expect(screen.queryByTestId('walled-garden-fullblock')).not.toBeInTheDocument()
-        cleanup()
-      })
-    })
-  })
 })
 
 
@@ -228,7 +199,6 @@ function WalledGardenTextAreaNormalTestCase (props: WalledGardenProps) {
       <StepsFormLegacy>
         <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
-            guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
@@ -248,7 +218,6 @@ function WalledGardenTextAreaCloneModeTestCase (props: WalledGardenProps) {
       <StepsFormLegacy>
         <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
-            guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
@@ -268,7 +237,6 @@ function WalledGardenTextAreaEditModeTestCase (props: WalledGardenProps) {
       <StepsFormLegacy>
         <StepsFormLegacy.StepForm>
           <WalledGardenTextArea
-            guestNetworkTypeEnum={props.guestNetworkTypeEnum}
             enableDefaultWalledGarden={props.enableDefaultWalledGarden} />
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
