@@ -1,4 +1,8 @@
-import { crrmText } from './utils'
+import { get } from '@acx-ui/config'
+
+import { crrmText, isDataRetained } from './utils'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 describe('crrmText', () => {
   it('should return correct text for current configuration', () => {
@@ -186,3 +190,15 @@ describe('crrmText', () => {
   })
 })
 
+describe('isDataRetained', () => {
+  beforeEach(() => jest.mocked(get).mockReturnValue('380'))
+  it('should return true', () => {
+    expect(isDataRetained('2023-05-17T07:04:11.663Z')).toBeTruthy()
+  })
+  it('should return false', () => {
+    expect(isDataRetained('2021-05-17T07:04:11.663Z')).toBeFalsy()
+  })
+  it('should handle undefined', () => {
+    expect(isDataRetained(undefined)).toBeTruthy()
+  })
+})
