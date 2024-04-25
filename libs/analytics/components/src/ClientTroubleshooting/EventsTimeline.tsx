@@ -24,8 +24,7 @@ import {
   RoamingConfigParam,
   RoamingTimeSeriesData,
   DisplayEvent,
-  ALL,
-  TimelineItem
+  ALL
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
@@ -60,9 +59,9 @@ type CoordDisplayEvent = DisplayEvent & {
   y: number
 }
 
-export const checkRollup = (config: TimelineItem, startDate: string) => {
+export const checkRollup = (value: string, startDate: string) => {
   return overlapsRollup(startDate)
-  && (config.value === 'roaming' || config.value === 'connectionQuality')
+  && (value === 'roaming' || value === 'connectionQuality')
 }
 
 export function TimeLine (props: TimeLineProps) {
@@ -151,7 +150,7 @@ export function TimeLine (props: TimeLineProps) {
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
                     && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
-                  (checkRollup(config, startDate)
+                  (checkRollup(config?.value, startDate)
                     ? true : false)
                 )}
               </Col>
@@ -161,7 +160,7 @@ export function TimeLine (props: TimeLineProps) {
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                {checkRollup(config, startDate)
+                {checkRollup(config?.value, startDate)
                   ? null : config.showCount ? (
                     <UI.TimelineCount>
                       {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
@@ -258,7 +257,7 @@ export function TimeLine (props: TimeLineProps) {
                 popoverRef={popoverRef}
                 onChartReady={onChartReady}
                 startDate={startDate}
-                config={config}
+                value={config?.value}
               />
             </Col>
           ))}

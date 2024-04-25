@@ -54,8 +54,7 @@ import {
   QUALITY,
   ROAMING,
   INCIDENTS,
-  ALL,
-  TimelineItem
+  ALL
 } from './config'
 import { checkRollup }                     from './EventsTimeline'
 import * as UI                             from './styledComponents'
@@ -86,7 +85,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   index?: React.Attributes['key'];
   popoverRef?: RefObject<HTMLDivElement>;
   startDate?: string;
-  config?: TimelineItem;
+  value?: string;
 }
 
 export const getSeriesData = (
@@ -325,7 +324,7 @@ export function TimelineChart ({
   popoverRef,
   onChartReady,
   startDate,
-  config,
+  value,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -379,7 +378,7 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: ((config && startDate) && checkRollup(config, startDate))
+          data: ((value && startDate) && checkRollup(value, startDate))
             ? [] : getSeriesData(data, key, series, toggles),
           clip: true,
           cursor: (key === 'incidents') ? 'pointer' : 'crosshair',
@@ -391,7 +390,7 @@ export function TimelineChart ({
             data: [
               [
                 {
-                  name: ((config && startDate) && checkRollup(config, startDate))
+                  name: ((value && startDate) && checkRollup(value, startDate))
                     ? GranularityText : '',
                   xAxis: 'min',
                   yAxis: 'min',
