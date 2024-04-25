@@ -53,6 +53,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
   const [form] = useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
+  const isActivationEnddatePassed = moment(activationData?.spaEndDate).isBefore(new Date())
 
   const onClose = () => {
     setVisible(false)
@@ -69,7 +70,6 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       let payload = {
         region: form.getFieldValue(['region']),
         startDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
-        endDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
         orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
       }
 
@@ -154,8 +154,13 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       children={
         <DatePicker
           format={formatter(DateFormatEnum.DateFormat)}
+          disabled={isActivationEnddatePassed}
+          defaultValue={isActivationEnddatePassed
+            ? moment(activationData?.spaEndDate)
+            : moment(new Date())}
           disabledDate={(current) => {
-            return current && current < moment().endOf('day')
+            return current && (current < moment().endOf('day') ||
+            current > moment(activationData?.spaEndDate).endOf('day'))
           }}
           style={{ width: '300px' }}
         />
