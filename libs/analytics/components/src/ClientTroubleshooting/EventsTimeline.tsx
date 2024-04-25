@@ -108,7 +108,7 @@ export function TimeLine (props: TimeLineProps) {
           : <UI.TooltipTextWrapper>
             {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
           </UI.TooltipTextWrapper>}
-        placement='top'
+        placement='topLeft'
       >
         <UI.StyledDisabledPlusSquareOutline
           style={{ cursor: 'not-allowed' }}

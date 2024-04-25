@@ -343,5 +343,5 @@ export const PcapSpin = styled(Spin)`
 `
 
 export const TooltipTextWrapper = styled.div`
-  width: 100px;
+  width: 130px;
 `
