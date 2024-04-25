@@ -2,6 +2,7 @@ import { RefObject, useEffect, useRef, useState } from 'react'
 
 import { Col, Row }                            from 'antd'
 import { DropTargetMonitor, useDrop, XYCoord } from 'react-dnd'
+import { useParams }                           from 'react-router-dom'
 
 import { Card }                                                                   from '@acx-ui/components'
 import { FloorPlanDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
@@ -68,10 +69,12 @@ function GalleryCard (props: {
   } = { ...props }
 
   const [imageUrl, setImageUrl] = useState('')
+  const { venueId } = useParams()
 
   useEffect(() => {
     if (floorPlan?.imageId) {
-      const response = loadImageWithJWT(floorPlan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorPlan?.imageId}/urls`
+      const response = loadImageWithJWT(floorPlan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })
