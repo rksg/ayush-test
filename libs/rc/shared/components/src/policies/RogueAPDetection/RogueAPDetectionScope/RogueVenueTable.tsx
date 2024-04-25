@@ -136,7 +136,7 @@ export const RogueVenueTable = () => {
       sorter: true,
       render: (_, row) => {
         if (row.rogueDetection?.enabled) {
-          return <div style={{ textAlign: 'center' }}>
+          return <div style={{ textAlign: 'center', whiteSpace: 'pre-wrap' }}>
             <div>ON</div>
             <div>({row.rogueDetection.policyName})</div>
           </div>

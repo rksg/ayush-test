@@ -3,10 +3,19 @@ import React from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Card, Table, TableProps }                                                       from '@acx-ui/components'
-import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery }                 from '@acx-ui/rc/services'
-import { defaultSort, sortProp, useConfigTemplate, useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
+import { Card, Table, TableProps }                                       from '@acx-ui/components'
+import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
+import {
+  ConfigTemplateType,
+  defaultSort,
+  sortProp,
+  useConfigTemplate,
+  useTableQuery,
+  VenueRoguePolicyType
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../configTemplates/ConfigTemplateLink'
 
 const defaultPayload = {
   fields: [
@@ -44,6 +53,11 @@ const RogueAPDetectionVenueDetail = () => {
       sorter: true,
       fixed: 'left',
       render: (_, row, __, highlightFn) => {
+        if (isTemplate) {
+          // eslint-disable-next-line max-len
+          return renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id, highlightFn(row.name))
+        }
+
         return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
           {highlightFn(row.name)}
         </TenantLink>
