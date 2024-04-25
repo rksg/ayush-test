@@ -1,6 +1,6 @@
-import { Form, Input, Tooltip, Typography, Row } from 'antd'
-import { useIntl }                               from 'react-intl'
-import styled                                    from 'styled-components/macro'
+import { Form, Input, Tooltip, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
+import styled                               from 'styled-components/macro'
 
 import { Drawer }              from '@acx-ui/components'
 import {
@@ -90,7 +90,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
                   { $t({ defaultMessage: 'Open the app, then select "Add Account"' }) }
                 </Typography.Text>
               </li>
-              <li>
+              {/* <li>
                 <Typography.Text>
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
@@ -109,6 +109,14 @@ export const AuthApp = styled((props: AuthAppProps) => {
                     </Typography.Text>
                   </Row>
                 </UI.QRCodeImgWrapper>
+              </li> */}
+              <li>
+                <div><Typography.Text>
+                  { $t({ defaultMessage: 'Enter this key into the app:' }) }
+                </Typography.Text></div>
+                <div><Typography.Text strong>
+                  { data?.key ?? '' }
+                </Typography.Text></div>
               </li>
               <li>
                 <Typography.Text>

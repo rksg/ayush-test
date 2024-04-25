@@ -1,4 +1,5 @@
 import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
+import * as config                            from '@acx-ui/config'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -13,6 +14,9 @@ import { api }                                    from '../Recommendations/servi
 
 import { AIOperations } from '.'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -21,6 +25,9 @@ const pathFilters: PathFilter = {
 }
 
 describe('AIOperations dashboard', () => {
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('renders recommendation', async () => {
@@ -60,6 +67,7 @@ describe('AIOperations dashboard', () => {
   })
 
   it('renders no data for switch path', async () => {
+    get.mockReturnValue('true')
     const switchPathFilters = {
       ...pathFilters,
       path: [
