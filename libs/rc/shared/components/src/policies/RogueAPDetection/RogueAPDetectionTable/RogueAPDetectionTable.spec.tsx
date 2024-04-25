@@ -109,10 +109,6 @@ describe('RogueAPDetectionTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),

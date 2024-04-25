@@ -158,23 +158,3 @@ export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
 
-export enum WifiScopes {
-  READ = 'wifi-r',
-  CREATE = 'wifi-c',
-  UPDATE = 'wifi-u',
-  DELETE = 'wifi-d'
-}
-
-export enum SwitchScopes {
-  READ = 'switch-r',
-  CREATE = 'switch-c',
-  UPDATE = 'switch-u',
-  DELETE = 'switch-d'
-}
-
-export enum EdgeScopes {
-  READ = 'edge-r',
-  CREATE = 'edge-c',
-  UPDATE = 'edge-u',
-  DELETE = 'edge-d'
-}

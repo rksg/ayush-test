@@ -4,8 +4,6 @@ import {
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
-  CommonUrlsInfo,
-  Policy,
   RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
@@ -714,34 +712,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    policyList: build.query<TableResult<Policy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
-        return {
-          ...policyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile',
-            'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile',
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool',
-            'PatchVlanPool',
-            'DeleteVlanPools',
-            ...clientIsolationMutationUseCases
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
-    }),
     addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
@@ -816,7 +786,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...aaaDetailReq
         }
@@ -2511,7 +2481,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
 })
 
 export const {
-  usePolicyListQuery,
   useMacRegListsQuery,
   useSearchMacRegListsQuery,
   useLazySearchMacRegListsQuery,

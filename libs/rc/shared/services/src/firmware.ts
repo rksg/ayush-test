@@ -19,7 +19,8 @@ import {
   ApModelFamily,
   FirmwareVenuePerApModel,
   ApModelFirmware,
-  VenueApModelFirmwaresUpdatePayload
+  UpdateFirmwarePerApModelPayload,
+  UpdateFirmwareSchedulePerApModelPayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -211,6 +212,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getSwitchLatestFirmwareList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchDefaultFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchDefaultFirmwareList, params)
         return {
           ...req
         }
@@ -467,9 +477,20 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<VenueApModelFirmwaresUpdatePayload>>({
+    patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, params)
         return {
           ...req,
           body: payload
@@ -498,6 +519,7 @@ export const {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchDefaultFirmwareListQuery,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
@@ -522,7 +544,8 @@ export const {
   useLazyGetScheduledFirmwareQuery,
   useGetVenueApModelFirmwareListQuery,
   useGetAllApModelFirmwareListQuery,
-  usePatchVenueApModelFirmwaresMutation
+  usePatchVenueApModelFirmwaresMutation,
+  useUpdateVenueSchedulesPerApModelMutation
 } = firmwareApi
 
 

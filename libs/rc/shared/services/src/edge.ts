@@ -182,7 +182,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.getPortConfig : EdgeUrlsInfo.getPortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req
         }
@@ -201,7 +203,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.updatePortConfig : EdgeUrlsInfo.updatePortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req,
           body: payload
@@ -835,40 +839,24 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
     }),
     getEdgeClusterNetworkSettings: build.query<ClusterNetworkSettings, RequestPayload>({
-      queryFn: async ({ params }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const result = {} as ClusterNetworkSettings
-        const getClusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeCluster, params)
-        const clusterInfo = (await fetchWithBQ(getClusterReq)).data as EdgeCluster
-        result.virtualIpSettings = clusterInfo?.virtualIpSettings?.virtualIps
-        const lagSettings = []
-        const portSettings = []
-        for(let edge of clusterInfo.smartEdges) {
-          const apiParams = {
-            venueId: params?.venueId,
-            edgeClusterId: params?.clusterId,
-            serialNumber: edge.serialNumber
-          }
-          const getEdgeLagReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagList, apiParams)
-          const edgeLagData = (await fetchWithBQ(getEdgeLagReq)).data as PaginationQueryResult<EdgeLag>
-          if(edgeLagData.content) {
-            lagSettings.push({
-              serialNumber: edge.serialNumber,
-              lags: edgeLagData.content
-            })
-          }
-          const getEdgePortReq = createHttpRequest(EdgeUrlsInfo.getPortConfig, apiParams)
-          const edgePortData = (await fetchWithBQ(getEdgePortReq)).data as EdgePortConfig
-          if(edgePortData) {
-            portSettings.push({
-              serialNumber: edge.serialNumber,
-              ports: edgePortData.ports
-            })
-          }
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterNetworkSettings, params)
+        return {
+          ...req
         }
-        result.lagSettings = lagSettings
-        result.portSettings = portSettings
-        return { data: result }
-      }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
       queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {

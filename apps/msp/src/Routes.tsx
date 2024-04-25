@@ -1,11 +1,11 @@
 import { useContext, useEffect, useReducer, useState } from 'react'
 
-import { Brand360 }                                                  from '@acx-ui/analytics/components'
-import { ConfigProvider, Loader, PageNotFound }                      from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                       from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }          from '@acx-ui/msp/components'
-import { checkMspRecsForIntegrator }                                 from '@acx-ui/msp/services'
+import { Brand360 }                                         from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -14,7 +14,9 @@ import {
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
   useConfigTemplateVisibilityMap,
-  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  VLANPoolForm,
+  VLANPoolDetail
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -28,6 +30,7 @@ import {
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
@@ -68,6 +71,7 @@ function Init () {
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -84,7 +88,6 @@ export default function MspRoutes () {
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,6 +136,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
+      {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
@@ -168,6 +172,7 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
+        <Route path=':activeTab' element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
@@ -294,6 +299,29 @@ export function ConfigTemplatesRoutes () {
               oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<VLANPoolForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<VLANPoolForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<VLANPoolDetail />}
           />
         </>}
       </Route>

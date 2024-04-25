@@ -55,11 +55,21 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortConfig: {
     method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/portConfigs',
+    newApi: true
+  },
+  updatePortConfig: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/portConfigs',
+    newApi: true
+  },
+  getPortConfigDeprecated: {
+    method: 'get',
     url: '/edges/:serialNumber/portConfigs',
     oldUrl: '/api/edges/:serialNumber/portConfig',
     newApi: true
   },
-  updatePortConfig: {
+  updatePortConfigDeprecated: {
     method: 'PATCH',
     url: '/edges/:serialNumber/portConfigs',
     oldUrl: '/api/edges/:serialNumber/portConfig',
@@ -285,6 +295,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   getEdgeCluster: {
     method: 'get',
     url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
+  },
+  getEdgeClusterNetworkSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
   },
   patchEdgeClusterNetworkSettings: {

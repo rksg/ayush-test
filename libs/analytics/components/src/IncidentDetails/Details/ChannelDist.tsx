@@ -4,6 +4,7 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 import { get }                                           from '@acx-ui/config'
+import { hasPermission }                                 from '@acx-ui/user'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
 import { ChannelConfig }                  from '../ChannelConfig'
@@ -13,7 +14,7 @@ import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
 import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
-import MuteIncident from './MuteIncident'
+import { MuteIncident } from './MuteIncident'
 
 export const controllerType = get('IS_MLISA_SA')
   ? { smartZone: 'Controller' }
@@ -86,7 +87,7 @@ export const ChannelDist = (incident: Incident) => {
           }
         ]}
         subTitle={shortDescription(incident)}
-        extra={[<MuteIncident incident={incident} />]}
+        extra={hasPermission() ? [<MuteIncident incident={incident} />] : []}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>

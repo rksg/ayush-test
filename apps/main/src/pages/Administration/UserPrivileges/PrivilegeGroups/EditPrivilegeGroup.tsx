@@ -22,6 +22,7 @@ import {
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
+  useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,
   useGetVenuesQuery,
   useUpdatePrivilegeGroupMutation
@@ -127,8 +128,10 @@ export function EditPrivilegeGroup () {
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
   const isOnboardedMsp = location ?? false
+  const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
@@ -208,8 +211,9 @@ export function EditPrivilegeGroup () {
           ? policyEntities : undefined
       }
 
-      await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
-        payload: privilegeGroupData }).unwrap()
+      isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
+        : await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
+          payload: privilegeGroupData }).unwrap()
 
       navigate(linkToPrivilegeGroups)
     } catch (error) {
@@ -220,7 +224,7 @@ export function EditPrivilegeGroup () {
   useEffect(() => {
     if (privilegeGroup) {
       const delegation = privilegeGroup.delegation || false
-      form.setFieldValue('name', privilegeGroup.name)
+      form.setFieldValue('name', isClone ? (privilegeGroup.name + ' - copy') : privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
       setDisplayMspScope(delegation)
@@ -228,10 +232,12 @@ export function EditPrivilegeGroup () {
       const venues = (venuesList?.data.filter(venue =>
         privilegeGroup?.policies?.map(p => p.entityInstanceId).includes(venue.id)) || [])
       setVenues(venues)
-      setSelectedScope( venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
-      form.setFieldValue('mspvenues', venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
+      const venueRadioButton = venues.length > 0
+        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES
+      setSelectedScope(venueRadioButton)
+      isOnboardedMsp
+        ? form.setFieldValue('mspvenues', venueRadioButton)
+        : form.setFieldValue('scope', venueRadioButton)
 
       const ecCustomers = (customerList?.data.filter(customer =>
         privilegeGroup?.policyEntityDTOS?.map(p => p.tenantId).includes(customer.id)) || [])
@@ -260,10 +266,11 @@ export function EditPrivilegeGroup () {
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
-  const DisplaySelectedVenues = () => {
+  function DisplaySelectedVenues (ownScope: boolean) {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
+    return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
+      marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -341,7 +348,7 @@ export function EditPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(true)}
     </>
   }
 
@@ -392,7 +399,7 @@ export function EditPrivilegeGroup () {
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(false)}
 
       <Form.Item
         name='mspscope'
@@ -465,7 +472,7 @@ export function EditPrivilegeGroup () {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 64 },
+                { max: 128 },
                 { validator: (_, value) => systemDefinedNameValidator(value) }
               ]}
               children={<Input />}
@@ -473,11 +480,9 @@ export function EditPrivilegeGroup () {
             <Form.Item
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
-              rules={[
-                { min: 2 },
-                { max: 64 }
-              ]}
-              children={<Input />}
+              children={
+                <Input.TextArea rows={4} maxLength={180} />
+              }
             />
             <CustomRoleSelector />
           </Col>
@@ -508,7 +513,9 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Administrators' })}
+      title={isClone ? intl.$t({ defaultMessage: 'Clone Privilege Group' })
+        : intl.$t({ defaultMessage: 'Edit Privilege Group' })
+      }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },
         { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },
