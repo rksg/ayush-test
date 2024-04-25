@@ -107,12 +107,19 @@ export function Brand360 () {
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
   const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
+  /*
+      skip timeseries query if
+      - ssid regex still loading
+      - rc api for properties still loading
+      - no tenantids implies no data in table
+  */
+  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
   const {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(
     { ...chartPayload, tenantIds },
-    { skip: ssidSkip || propertiesLoading }
+    { skip: skipTSQuery }
   )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
@@ -124,7 +131,7 @@ export function Brand360 () {
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
-  { skip: ssidSkip || propertiesLoading })
+  { skip: skipTSQuery })
   const {
     data: currData,
     ...currResults
@@ -133,7 +140,7 @@ export function Brand360 () {
     tenantIds,
     granularity: 'all'
   },
-  { skip: ssidSkip || propertiesLoading }
+  { skip: skipTSQuery }
   )
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, propertiesData, venuesData]}>

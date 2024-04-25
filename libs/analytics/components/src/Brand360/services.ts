@@ -122,7 +122,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         `,
-        variables: getRequestPayload(payload)
+        variables: getRequestPayload({ granularity, ...payload })
       }),
       transformResponse: (res: { franchisorTimeseries: FranchisorTimeseries }) => res
         .franchisorTimeseries
