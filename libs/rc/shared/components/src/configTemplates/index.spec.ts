@@ -52,7 +52,7 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.VLAN_POOL]: true,
       [ConfigTemplateType.WIFI_CALLING]: true,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
-      [ConfigTemplateType.ROGUE_AP_DETECTION]: false
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: true
     })
   })
 
