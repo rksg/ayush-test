@@ -1,4 +1,14 @@
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus, SwitchViewModel } from '@acx-ui/rc/utils'
+import {
+  STACK_MEMBERSHIP,
+  SwitchStatusEnum,
+  SWITCH_TYPE,
+  SwitchPortStatus,
+  StackMember,
+  NetworkDevice,
+  DeviceTypes,
+  DeviceStates,
+  NetworkDeviceType
+} from '@acx-ui/rc/utils'
 
 export const stackMembersData = [
   {
@@ -53,7 +63,7 @@ export const stackMembersData = [
     poeUtilization: 15400,
     order: '3'
   }
-]
+] as StackMember[]
 
 export const ports =[
   {
@@ -477,7 +487,7 @@ export const switchDetailSatckOnline = {
 }
 
 
-const switchDetailSwitchOnline: SwitchViewModel = {
+export const switchDetailSwitchOnline = {
   type: 'device',
   isStack: true,
   rearModule: 'none',
@@ -645,3 +655,18 @@ export const breakoutPorts = [
     status: 'Down'
   }
 ] as SwitchPortStatus[]
+
+
+export const currentSwitchDevice = {
+  type: DeviceTypes.Switch,
+  category: 'Switch',
+  name: 'Switch001',
+  mac: 'C0:C5:20:7E:A5:01',
+  serial: 'D0D5408E5E02',
+  id: 'C0:C5:20:7E:A5:01',
+  states: DeviceStates.Regular,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
+  networkDeviceType: NetworkDeviceType.switch,
+  serialNumber: '',
+  childCount: 3
+} as NetworkDevice

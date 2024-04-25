@@ -3,9 +3,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { SwitchesTrafficByVolume }                                                                     from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                                                                          from '@acx-ui/analytics/components'
-import { Button, GridCol, GridRow }                                                                    from '@acx-ui/components'
+import { SwitchesTrafficByVolume }  from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }       from '@acx-ui/analytics/components'
+import { Button, GridCol, GridRow } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   SwitchBlinkLEDsDrawer,
   SwitchInfo,
@@ -21,13 +22,12 @@ import {
   SwitchViewModel
 }
   from '@acx-ui/rc/utils'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                           from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                        from '@acx-ui/utils'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import type { AnalyticsFilter }              from '@acx-ui/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
@@ -48,7 +48,7 @@ export function SwitchOverviewPanel (props:{
           style={{ marginLeft: '20px' }}
           type='link'
           size='small'
-          disabled={ switchDetail?.deviceStatus!== SwitchStatusEnum.OPERATIONAL}
+          disabled={switchDetail?.deviceStatus!== SwitchStatusEnum.OPERATIONAL}
           onClick={() => {
 
             const transformedSwitchRows: SwitchInfo[] = [{

@@ -1,4 +1,7 @@
-import { Provider } from '@acx-ui/store'
+import userEvent from '@testing-library/user-event'
+
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   render,
   screen
@@ -6,12 +9,14 @@ import {
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { stackMembersData, switchDetailSwitchOnline } from './__tests__/fixtures'
+import {
+  currentSwitchDevice,
+  stackMembersData,
+  switchDetailSwitchOnline
+} from './__tests__/fixtures'
 
 import { SwitchOverviewPanel } from '.'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import userEvent from '@testing-library/user-event'
-import { SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE } from '@acx-ui/rc/utils'
+
 
 jest.mock('@acx-ui/analytics/components', () => ({
   SwitchesTrafficByVolume: () =>
@@ -57,7 +62,11 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview'
     }
     render(<Provider>
-      <SwitchOverviewPanel filters={filters} stackMember={stackMembersData} />
+      <SwitchOverviewPanel
+        filters={filters}
+        stackMember={stackMembersData}
+        switchDetail={switchDetailSwitchOnline}
+        currentSwitchDevice={currentSwitchDevice} />
     </Provider>, {
       route: {
         params,
@@ -81,9 +90,10 @@ describe('SwitchOverviewTab', () => {
     }
     render(<Provider>
       <SwitchOverviewPanel
-       filters={filters}
-       stackMember={stackMembersData}
-       switchDetail={switchDetailSwitchOnline} />
+        filters={filters}
+        stackMember={stackMembersData}
+        currentSwitchDevice={currentSwitchDevice}
+        switchDetail={switchDetailSwitchOnline} />
     </Provider>, {
       route: {
         params,
@@ -93,7 +103,7 @@ describe('SwitchOverviewTab', () => {
     const blinkLedsButton = await screen.findByText('Blink LEDs')
     expect(blinkLedsButton).toBeVisible()
     await userEvent.click(blinkLedsButton)
-    expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer'))
+    expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer')).toBeVisible()
   })
 }
 )
