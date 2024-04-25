@@ -21,14 +21,14 @@ export const calcGranularityForBrand360 = (
   }
 }
 
-export const getDomainFilters = (tenantIds: string[]) => {
+const getDomainFilters = (tenantIds: string[]) => {
   if (tenantIds.length === 0) {
     return emptyFilter
   } else {
     return tenantIds.reduce((acc, id) => {
-      const domianNode: [FilterNameNode] = generateDomainFilter(id)
-      acc.networkNodes?.push(domianNode)
-      acc.switchNodes?.push(domianNode)
+      const domainNode: [FilterNameNode] = generateDomainFilter(id)
+      acc.networkNodes?.push(domainNode)
+      acc.switchNodes?.push(domainNode)
       return acc
     }, { networkNodes: [], switchNodes: [] } as NodesFilter)
   }
@@ -88,7 +88,7 @@ const getRequestPayload = (payload: BrandTimeseriesPayload & IncidentsToggleFilt
     granularity: granularity || calcGranularityForBrand360(start, end),
     severity: { gt: 0.9, lte: 1 },
     code: incidentsToggle(payload),
-    filter: { ...getDomainFilters(tenantIds as string[]) }
+    filter: getDomainFilters(tenantIds as string[])
   }
 }
 
@@ -122,7 +122,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         `,
-        variables: { ...getRequestPayload(payload) }
+        variables: getRequestPayload(payload)
       }),
       transformResponse: (res: { franchisorTimeseries: FranchisorTimeseries }) => res
         .franchisorTimeseries

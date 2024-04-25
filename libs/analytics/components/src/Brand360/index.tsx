@@ -106,12 +106,12 @@ export function Brand360 () {
   const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
-  const xMlisaTenantIds = tableResults?.map(({ tenantId }) => tenantId)
+  const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
   const {
     data: chartData,
     ...chartResults
   } = useFetchBrandTimeseriesQuery(
-    { ...chartPayload, tenantIds: xMlisaTenantIds },
+    { ...chartPayload, tenantIds },
     { skip: ssidSkip || propertiesLoading }
   )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
@@ -120,7 +120,7 @@ export function Brand360 () {
     ...prevResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
-    tenantIds: xMlisaTenantIds,
+    tenantIds,
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
@@ -130,7 +130,7 @@ export function Brand360 () {
     ...currResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
-    tenantIds: xMlisaTenantIds,
+    tenantIds,
     granularity: 'all'
   },
   { skip: ssidSkip || propertiesLoading }
