@@ -477,12 +477,6 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
     newApi: true
   },
-  getSwitchProfileList: {
-    method: 'post',
-    url: '/switchProfiles/query',
-    oldUrl: '/api/viewmodel/:tenantId/switch/profilelist',
-    newApi: true
-  },
   addSwitchConfigProfile: {
     method: 'post',
     url: '/switchProfiles',
