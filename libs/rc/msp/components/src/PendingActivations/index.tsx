@@ -33,11 +33,9 @@ const PendingActivationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [activationData, setActivationData] = useState<EntitlementActivations>()
-
+  const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
   const isActivatePendingActivationEnabled =
     useIsSplitOn(Features.ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE)
-
-  const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
 
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }

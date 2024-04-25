@@ -146,6 +146,10 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       label={$t({ defaultMessage:
             'Select Starting Date for your RUCKUS One hosted cloud services' })}
       style={{ marginTop: '30px' }}
+      initialValue={isActivationEnddatePassed
+        ? moment(activationData?.spaEndDate)
+        : moment(new Date())}
+
       rules={[
         { required: true,
           message: $t({ defaultMessage: 'Please select starting date' })
@@ -155,9 +159,6 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
         <DatePicker
           format={formatter(DateFormatEnum.DateFormat)}
           disabled={isActivationEnddatePassed}
-          defaultValue={isActivationEnddatePassed
-            ? moment(activationData?.spaEndDate)
-            : moment(new Date())}
           disabledDate={(current) => {
             return current && (current < moment().endOf('day') ||
             current > moment(activationData?.spaEndDate).endOf('day'))
