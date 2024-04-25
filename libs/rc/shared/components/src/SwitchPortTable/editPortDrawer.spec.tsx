@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -32,7 +33,6 @@ import {
   singleVlansByVenue
 } from './__tests__/fixtures'
 import { EditPortDrawer } from './editPortDrawer'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const params = {
   venueId: 'venue-id',
