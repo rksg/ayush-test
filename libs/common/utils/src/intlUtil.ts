@@ -2,6 +2,7 @@ import { OnErrorFn, IntlErrorCode }                           from '@formatjs/in
 import { createIntl, createIntlCache, IntlConfig, IntlShape } from 'react-intl'
 
 import { AccountVertical, getJwtTokenPayload } from './jwtToken'
+import { LocaleContextType }                   from './locales'
 
 const globalIntlCache = createIntlCache()
 
@@ -16,7 +17,11 @@ export const onIntlError: OnErrorFn = (error) => {
   console.error(error)
 }
 
-export function getReSkinningElements (supportReSkinning = false, intl?: IntlShape) {
+export function getReSkinningElements (
+  supportReSkinning = false, locale?: Pick<LocaleContextType, 'lang' | 'messages'>
+) {
+  // eslint-disable-next-line max-len
+  const intl = locale ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache) : null
   const { acx_account_vertical } = getJwtTokenPayload()
   return acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ? {
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
@@ -37,11 +42,7 @@ export function setUpIntl (config?: IntlConfig) {
     return
   }
 
-  config = {
-    defaultRichTextElements: getReSkinningElements(),
-    onError: onIntlError,
-    ...config
-  }
+  config = { onError: onIntlError, ...config }
   intl = createIntl(config, globalIntlCache)
 }
 

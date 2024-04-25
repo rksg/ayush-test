@@ -38,11 +38,11 @@ export function ConfigProvider (props: ConfigProviderProps) {
   const { supportReSkinning } = props
   moment.locale(props.lang)
   return (
-    <LocaleProvider lang={props.lang}>
+    <LocaleProvider lang={props.lang} supportReSkinning={supportReSkinning}>
       <LocaleContext.Consumer>
         {locale => (
           <IntlProvider locale={locale.lang}
-            defaultRichTextElements={getReSkinningElements(supportReSkinning)}
+            defaultRichTextElements={getReSkinningElements(supportReSkinning, locale)}
             messages={locale.messages}
             onError={onIntlError}
           >

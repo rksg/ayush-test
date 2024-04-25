@@ -129,7 +129,7 @@ describe('IntlUtils', () => {
         expect(ret[fnName]()).toEqual(expected[fnName])
       }
 
-      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, intlUtil.getIntl())
+      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(retWithIntl[fnName]()).toEqual(expected[fnName])
@@ -152,7 +152,7 @@ describe('IntlUtils', () => {
         expect(ret[fnName]()).toEqual(expected[fnName])
       }
 
-      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, intlUtil.getIntl())
+      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(retWithIntl[fnName]()).toEqual(expected[fnName])
