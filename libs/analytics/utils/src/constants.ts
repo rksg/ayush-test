@@ -173,13 +173,21 @@ export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
 export const PERMISSION_FRANCHISOR = 'franchisor'
 
 export enum RolesEnum {
-  ADMIN = 'admin',
-  NETWORK_ADMIN = 'network-admin',
-  REPORT_ONLY = 'report-only'
+  PRIME_ADMINISTRATOR = 'admin',
+  ADMINISTRATOR = 'network-admin',
+  BUSSINESS_INSIGHTS_USER = 'report-only',
+  IT_HELPDESK = 'it-helpdesk',
+  READ_ONLY = 'read-only',
+  REPORTS_USER = 'reports-user',
+  DATA_STUDIO_USER = 'data-studio-user',
 }
 
 export const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.ADMIN]: defineMessage({ defaultMessage: 'Admin' }),
-  [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Admin' }),
-  [RolesEnum.REPORT_ONLY]: defineMessage({ defaultMessage: 'Report Only' })
+  [RolesEnum.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
+  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [RolesEnum.BUSSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
+  [RolesEnum.IT_HELPDESK]: defineMessage({ defaultMessage: 'IT Helpdesk' }),
+  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
+  [RolesEnum.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),
+  [RolesEnum.DATA_STUDIO_USER]: defineMessage({ defaultMessage: 'Data Studio User' })
 }

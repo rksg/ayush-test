@@ -24,7 +24,7 @@ const Disclaimer = (props: object) => {
   return (<><Paragraph {...props}>
     {$t({ defaultMessage: 'By inviting a 3rd party user, you are explicitly granting access to someone outside of your organization into this RUCKUS Analytics service account. Please ensure that you have the necessary authorization to do so.' })}
   </Paragraph><Paragraph {...props}>
-    {$t({ defaultMessage: 'Do note that if the Admin role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user a Network Admin or Report Only role.' })}
+    {$t({ defaultMessage: 'Do note that if the Prime Administrator role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user a Administrator or Report Only role.' })}
   </Paragraph></>)
   /* eslint-enable max-len */
 }
