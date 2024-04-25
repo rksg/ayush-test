@@ -8,6 +8,7 @@ import { HealthPage } from '..'
 
 import { OverviewTab }         from './OverviewTab'
 import { useSwitchCountQuery } from './OverviewTab/SummaryBoxes/services'
+import { WiredTab }            from './WiredTab'
 
 export function HealthTabs () {
   const { $t } = useIntl()
@@ -48,9 +49,7 @@ export function HealthTabs () {
       <HealthPage />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
-      <div>
-        Health Wired Page
-      </div>
+      <WiredTab/>
     </Tabs.TabPane>
   </Tabs>
 }

@@ -26,6 +26,11 @@ jest.mock('./OverviewTab', () => ({
   OverviewTab: () => <div>Mocked OverviewTab</div>
 }))
 
+jest.mock('./WiredTab', () => ({
+  OverviewTab: () => <div>Mocked WiredTab</div>
+}))
+
+
 const params = { activeTab: 'overview', tenantId: 'tenant-id' }
 
 describe('HealthTabs', () => {
