@@ -25,7 +25,10 @@ interface SelectCustomerDrawerProps {
 
 const customerListPayload = {
   fields: ['name', 'id'],
-  filters: { tenantType: [AccountType.MSP_EC] },
+  filters: {
+    tenantType: [AccountType.MSP_EC, AccountType.MSP_REC,
+      AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'

@@ -1,5 +1,10 @@
+import { createContext } from 'react'
+
 import { isEmpty }       from 'lodash'
 import { defineMessage } from 'react-intl'
+
+import { VenueExtended, VenueRadioCustomization } from '@acx-ui/rc/utils'
+
 
 export interface SelectItemOption {
 	value: string,
@@ -139,3 +144,8 @@ export function split5GChannels (radio5GChannels: string[]) {
 
   return { lower5GChannels, upper5GChannels }
 }
+
+export const VenueRadioContext = createContext({} as {
+  venue?: VenueExtended,
+  venueRadio?: VenueRadioCustomization
+})

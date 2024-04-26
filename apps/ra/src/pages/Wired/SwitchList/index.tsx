@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { useSwitchtListQuery, Switch }                     from '@acx-ui/analytics/services'
+import { useSwitchListQuery, Switch }                      from '@acx-ui/analytics/services'
 import { defaultSort, sortProp  }                          from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange } from '@acx-ui/components'
 import { formatter }                                       from '@acx-ui/formatter'
@@ -15,7 +15,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
   const { timeRange } = useDateRange()
   const [searchString, setSearchString] = useState(searchVal)
 
-  const results = useSwitchtListQuery({
+  const results = useSwitchListQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
@@ -27,7 +27,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
     setSearchString(search.searchString!)
   }
 
-  const switchesTablecolumnHeaders: TableProps<Switch>['columns'] = [
+  const switchesTableColumnHeaders: TableProps<Switch>['columns'] = [
     {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
@@ -79,7 +79,7 @@ export function SwitchList ({ searchVal = '' }: { searchVal?: string }) {
 
   return <Loader states={[results]}>
     <Table<Switch>
-      columns={switchesTablecolumnHeaders}
+      columns={switchesTableColumnHeaders}
       dataSource={data as unknown as Switch[]}
       pagination={pagination}
       settingsId='switches-list-table'

@@ -1,48 +1,31 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Form, Typography } from 'antd'
-import { useIntl }          from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
-import { Table, TableProps }                                          from '@acx-ui/components'
-import { SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
+import { Table, TableProps }             from '@acx-ui/components'
+import { ApSnmpActionType, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import { HasAllPrivilegeEnabled } from './PrivilegeForm'
+import SnmpAgentFormContext       from './SnmpAgentFormContext'
 import SnmpV3AgentDrawer          from './SnmpV3AgentDrawer'
 
 
-type SnmpAgentV3TableProps = {
-  data: SnmpV3Agent[]
-}
 
-const initSnmpV3Agent = {
-  userName: '',
-  authProtocol: SnmpAuthProtocolEnum.SHA,
-  authPassword: '',
-  privacyProtocol: SnmpPrivacyProtocolEnum.None,
-  readPrivilege: false,
-  trapPrivilege: false
-}
-
-const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
+const SnmpAgentV3Table = () => {
   const { $t } = useIntl()
-  const { data } = props
-  const form = Form.useFormInstance()
+  const { state, dispatch } = useContext(SnmpAgentFormContext)
 
   const [ tableData, setTableData ] = useState<SnmpV3Agent[]>([])
-  const [ drawerState, setDrawerState ] = useState({
-    visible: false,
-    isEditMode: false,
-    curData: initSnmpV3Agent,
-    othersData: [] as SnmpV3Agent[]
-  })
-  const drawerVisible = drawerState.visible
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const editIdxRef = useRef(-1)
 
   useEffect(() => {
-    if (data) {
-      setTableData(data)
+    const snmpV3List = state?.snmpV3Agents
+    if (snmpV3List) {
+      setTableData(snmpV3List)
     }
-  }, [data])
+  }, [state])
 
   const columns: TableProps<SnmpV3Agent>['columns'] = [
     {
@@ -83,108 +66,60 @@ const SnmpAgentV3Table = (props: SnmpAgentV3TableProps) => {
     }
   ]
 
-  const rowActions: TableProps<SnmpV3Agent>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedRows) => selectedRows.length === 1,
-      disabled: drawerVisible,
-      onClick: (selectedRows, clearSelection) => {
-        const selectedData = { ...selectedRows[0] }
-        const idx = tableData.findIndex(r => r.userName === selectedData.userName)
-        const others = tableData.filter(r => r.userName !== selectedData.userName)
+  const rowActions: TableProps<SnmpV3Agent>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    visible: (selectedRows) => selectedRows.length === 1,
+    disabled: drawerVisible,
+    onClick: (selectedRows, clearSelection) => {
+      const selectedData = { ...selectedRows[0] }
+      const idx = tableData.findIndex(r => r.userName === selectedData.userName)
 
-        editIdxRef.current = idx
+      editIdxRef.current = idx
+      setDrawerVisible(true)
 
-        setDrawerState({
-          ...drawerState,
-          isEditMode: true,
-          curData: selectedData,
-          othersData: others,
-          visible: true
-        })
-
-        clearSelection()
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      disabled: drawerVisible,
-      onClick: (selectedRows, clearSelection) => {
-        const keys = selectedRows.map(row => row.userName)
-        const newData = tableData.filter(r => keys.indexOf(r.userName) === -1)
-        setTableData(newData)
-        clearSelection()
-        // update form data
-        form.setFieldValue('snmpV3Agents', newData)
-      }
+      clearSelection()
     }
-  ]
+  }, {
+    label: $t({ defaultMessage: 'Delete' }),
+    disabled: drawerVisible,
+    onClick: (selectedRows, clearSelection) => {
+      dispatch({
+        type: ApSnmpActionType.DELETE_SNMP_V3,
+        payload: {
+          names: selectedRows.map(row => row.userName)
+        }
+      })
 
-  const handleAddAction = () => {
-    editIdxRef.current = -1
-
-    setDrawerState({
-      ...drawerState,
-      isEditMode: false,
-      curData: initSnmpV3Agent,
-      othersData: tableData,
-      visible: true
-    })
-  }
-
-  const actions = [
-    {
-      label: $t({ defaultMessage: 'Add SNMPv3 Agent' }),
-      onClick: handleAddAction,
-      disabled: drawerVisible || HasAllPrivilegeEnabled(tableData)
+      clearSelection()
     }
-  ]
+  }]
 
-  const handleSnmpV3AgentUpdate = (changedData: SnmpV3Agent) => {
-    const newData = [ ...tableData ]
-    const editIdx = editIdxRef.current
-
-    if (editIdx === -1) {
-      newData.push(changedData)
-    } else {
-      newData.splice(editIdx, 1, changedData)
+  const actions = [{
+    label: $t({ defaultMessage: 'Add SNMPv3 Agent' }),
+    disabled: drawerVisible || HasAllPrivilegeEnabled(tableData),
+    onClick: () => {
+      editIdxRef.current = -1
+      setDrawerVisible(true)
     }
+  }]
 
-    setTableData(newData)
 
-    setDrawerState({
-      ...drawerState,
-      othersData: newData
-    })
-    // update form data
-    form.setFieldValue('snmpV3Agents', newData)
-  }
-
-  const handleDrawerCancel = () => {
-    setDrawerState({
-      ...drawerState,
-      visible: false
-    })
-  }
-
-  return (
-    <>
-      <SnmpV3AgentDrawer
-        {...drawerState}
-        onDataChanged={handleSnmpV3AgentUpdate}
-        onCancel={handleDrawerCancel}
-      />
-      <Typography.Title level={4}>{$t({ defaultMessage: 'SNMPv3 Agent' })}</Typography.Title>
-      <Table
-        columns={columns}
-        dataSource={tableData}
-        rowKey='userName'
-        actions={actions}
-        rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }}
-      />
-    </>
-  )
+  return (<>
+    <SnmpV3AgentDrawer
+      visible={drawerVisible}
+      setVisible={setDrawerVisible}
+      editIndex={editIdxRef.current}
+    />
+    <Typography.Title level={4}>{$t({ defaultMessage: 'SNMPv3 Agent' })}</Typography.Title>
+    <Table
+      columns={columns}
+      dataSource={tableData}
+      rowKey='userName'
+      actions={actions}
+      rowActions={rowActions}
+      rowSelection={{ type: 'checkbox' }}
+    />
+  </>)
 }
 
 export default SnmpAgentV3Table

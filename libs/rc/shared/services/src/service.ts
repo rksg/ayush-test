@@ -85,36 +85,6 @@ const defaultDpskVersioningHeaders = {
 
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
-    serviceList: build.query<TableResult<Service>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const serviceListReq = createHttpRequest(CommonUrlsInfo.getServicesList, params)
-        return {
-          ...serviceListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            ...mDnsProxyMutationUseCases,
-            'AddWifiCallingServiceProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles',
-            'Update Portal Service Profile',
-            'Delete Portal Service Profile',
-            'Delete Portal Service Profiles',
-            'AddDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
         const cloudpathListReq = createHttpRequest(
@@ -931,7 +901,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,

@@ -176,6 +176,7 @@ export const mockedRecommendationCRRM = {
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '06/26/2023 06:04',
   originalValue: [
     {
@@ -394,6 +395,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   code: 'c-crrm-channel5g-auto',
   status: 'new',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',
@@ -447,6 +449,7 @@ export const mockedRecommendationCRRMApplied = { // this fixture is used to test
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',

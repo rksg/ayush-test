@@ -5,8 +5,10 @@ import { impactedArea }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
+import { hasPermission }                        from '@acx-ui/user'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+import { isDataRetained } from '../utils'
 
 import { CrrmValues }                                       from './CrrmValues'
 import { CrrmValuesExtra }                                  from './CrrmValuesExtra'
@@ -43,7 +45,7 @@ export const CrrmDetails = () => {
         { text: $t(recommendationTypeMapping.crrm.title),
           link: recommendationTypeMapping.crrm.link }
       ]}
-      extra={[<RecommendationSetting recommendationDetails={details} />]}
+      extra={hasPermission() ? [<RecommendationSetting recommendationDetails={details} />] : []}
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>
@@ -55,7 +57,7 @@ export const CrrmDetails = () => {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
-        <CloudRRMGraph details={details}/>
+        { details && isDataRetained(details.dataEndTime) && <CloudRRMGraph details={details}/>}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <CrrmValuesExtra details={details}/>

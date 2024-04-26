@@ -31,7 +31,8 @@ export function SwitchDetailsCard (props: {
     ...dateFilter,
     filter: {
       switchNodes: [[{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
-        { type: 'switchGroup', name: switchDetail?.venueId }]]
+        { type: 'switchGroup', name: switchDetail?.venueId }]],
+      networkNodes: [[]]
     }
   } as AnalyticsFilter
 

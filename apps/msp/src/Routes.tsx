@@ -30,6 +30,7 @@ import {
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
@@ -70,6 +71,7 @@ function Init () {
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -86,7 +88,6 @@ export default function MspRoutes () {
 
   const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -135,6 +136,7 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
+      {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
@@ -170,6 +172,7 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
+        <Route path=':activeTab' element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>

@@ -10,6 +10,17 @@ import { GridDataRow } from './'
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
 export const SWITCH_SERIAL_PATTERN_INCLUDED_8100=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
 
+export const SwitchPortViewModelQueryFields = [
+  'portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
+  'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
+  'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
+  'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
+  'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+  'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
+  'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
+  'crcErr', 'inDiscard', 'mediaType', 'poeUsage',
+  'neighborMacAddress', 'vsixIngressAclName', 'vsixEgressAclName'
+]
 
 export enum IP_ADDRESS_TYPE {
   STATIC = 'static',
@@ -837,3 +848,5 @@ export interface CliProfileFamily {
   family: string,
   model: CliProfileModel[]
 }
+
+
