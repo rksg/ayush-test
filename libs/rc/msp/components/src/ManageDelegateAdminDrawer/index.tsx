@@ -152,7 +152,7 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      sorter: { compare: sortProp('name', defaultSort) },
+      sorter: { compare: sortProp('email', defaultSort) },
       searchable: true
     },
     {
