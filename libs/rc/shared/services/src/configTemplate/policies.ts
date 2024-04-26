@@ -23,7 +23,8 @@ import {
   RogueAPDetectionContextType,
   EnhancedRoguePolicyType,
   RogueAPDetectionTempType,
-  VenueRoguePolicyType, VenueRogueAp
+  VenueRoguePolicyType, VenueRogueAp,
+  VenueSyslogSettingType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -299,6 +300,14 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getVenueTemplateSyslogSettings: build.query<VenueSyslogSettingType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings),
+      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
+    }),
+    updateVenueTemplateSyslogSettings: build.mutation<VenueSyslogSettingType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings),
+      invalidatesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
+    }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addRoguePolicy),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
@@ -393,6 +402,8 @@ export const {
   useGetSyslogPolicyTemplateQuery,
   useUpdateSyslogPolicyTemplateMutation,
   useGetVenueTemplateForSyslogPolicyQuery,
+  useGetVenueTemplateSyslogSettingsQuery,
+  useUpdateVenueTemplateSyslogSettingsMutation,
   useAddRoguePolicyTemplateMutation,
   useGetRoguePolicyTemplateQuery,
   useGetRoguePolicyTemplateListQuery,
