@@ -33,7 +33,8 @@ export function APDetailsCard (props: {
       networkNodes: [[
         { type: 'zone', name: apDetail?.venueId },
         { type: 'AP', name: apDetail?.apMac as string }
-      ]]
+      ]],
+      switchNodes: [[]]
     }
   } as AnalyticsFilter
 

@@ -3,11 +3,11 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/services'
+import { showActionModal, showToast, Table, TableProps }                 from '@acx-ui/components'
+import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
-  RogueAPDetectionActionTypes,
+  RogueAPDetectionActionTypes, useConfigTemplate,
   useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
@@ -37,6 +37,7 @@ const defaultPayload = {
 
 export const RogueVenueTable = () => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
@@ -109,6 +110,7 @@ export const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
       key: 'aggregatedApStatus',
+      disable: isTemplate,
       align: 'center',
       sorter: true,
       render: (_, row) => {
@@ -119,6 +121,7 @@ export const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'Switches' }),
       dataIndex: 'switches',
       key: 'switches',
+      disable: isTemplate,
       align: 'center',
       sorter: true,
       render: (_, row) => {
@@ -133,7 +136,7 @@ export const RogueVenueTable = () => {
       sorter: true,
       render: (_, row) => {
         if (row.rogueDetection?.enabled) {
-          return <div style={{ textAlign: 'center' }}>
+          return <div style={{ textAlign: 'center', whiteSpace: 'pre-wrap' }}>
             <div>ON</div>
             <div>({row.rogueDetection.policyName})</div>
           </div>
@@ -169,7 +172,7 @@ export const RogueVenueTable = () => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenueRoguePolicyQuery,
+    useQuery: isTemplate ? useGetVenueRoguePolicyTemplateQuery :useVenueRoguePolicyQuery,
     defaultPayload
   })
 

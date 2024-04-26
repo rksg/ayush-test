@@ -15,7 +15,10 @@ export interface WiredSummaryResult {
   switchDHCP: {
     attemptCount: number
     successCount: number
-  }
+  },
+  switchCpuUtilizationPct: number
+  stormPortCount: number
+  portCount: number
 }
 
 export const api = dataApi.injectEndpoints({
@@ -36,6 +39,9 @@ export const api = dataApi.injectEndpoints({
                   attemptCount
                   successCount
                 }
+                switchCpuUtilizationPct
+                stormPortCount
+                portCount
               }
             }
           }`,

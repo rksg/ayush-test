@@ -384,10 +384,8 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 12 }}>
