@@ -130,7 +130,9 @@ export function SwitchOverviewTab () {
           currentSwitchDevice={currentSwitchDevice} />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
-        <SwitchOverviewPorts />
+        <SwitchOverviewPorts
+          switchDetail={switchDetail}
+        />
       </Tabs.TabPane>
       {supportRoutedInterfaces &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>

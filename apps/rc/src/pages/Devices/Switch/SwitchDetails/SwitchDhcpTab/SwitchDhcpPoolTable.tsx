@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetDhcpPoolsQuery,
   useDeleteDhcpServersMutation,
@@ -25,6 +26,8 @@ import { AddPoolDrawer } from './AddPoolDrawer'
 export function SwitchDhcpPoolTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [ createDhcpServer, { isLoading: isCreating } ] = useCreateDhcpServerMutation()
   const [ updateDhcpServer, { isLoading: isUpdating } ] = useUpdateDhcpServerMutation()
   const [ deleteDhcpServers ] = useDeleteDhcpServersMutation()
@@ -40,7 +43,7 @@ export function SwitchDhcpPoolTable () {
       sortField: 'poolName',
       sortOrder: 'DESC'
     },
-    enableRbac: true,
+    enableRbac: isSwitchRbacEnabled,
     option: {
       skip: !switchDetail?.venueId
     }
@@ -62,7 +65,7 @@ export function SwitchDhcpPoolTable () {
             dhcpServerId: selected
           },
           payload: values,
-          enableRbac: true
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else { // Add
         await createDhcpServer({
@@ -71,7 +74,7 @@ export function SwitchDhcpPoolTable () {
             venueId: switchDetail?.venueId
           },
           payload: values,
-          enableRbac: true
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
       setSelected(undefined)
@@ -147,7 +150,7 @@ export function SwitchDhcpPoolTable () {
               venueId: switchDetail?.venueId
             },
             payload: selectedRows.map(r => r.id),
-            enableRbac: true
+            enableRbac: isSwitchRbacEnabled
           })
           clearSelection()
         }

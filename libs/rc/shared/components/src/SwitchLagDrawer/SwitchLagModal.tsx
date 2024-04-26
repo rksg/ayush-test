@@ -61,7 +61,6 @@ interface SwitchLagProps {
   visible: boolean
   isEditMode: boolean
   editData: Lag[]
-  venueId?: string
   setVisible: (visible: boolean) => void
   type?: string
   params?: SwitchLagParams
@@ -70,7 +69,7 @@ interface SwitchLagProps {
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { visible, setVisible, isEditMode, editData, venueId } = props
+  const { visible, setVisible, isEditMode, editData } = props
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
   const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
@@ -87,24 +86,29 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
-  const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
+  const { data: switchDetailHeader } =
+  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+
+  const portList = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
   const lagList = useGetLagListQuery({
-    params: { tenantId, switchId, venueId },
-    enableRbac: true
-  }, { skip: !venueId })
+    params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, { skip: !switchDetailHeader?.venueId })
+
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchConfigurationProfileByVenue]
     = useLazyGetSwitchConfigurationProfileByVenueQuery()
 
-  const { data: switchDetailHeader } =
-  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: switchesDefaultVlan }
-  = useGetDefaultVlanQuery({
-    params: { tenantId },
+  const { data: switchesDefaultVlan } = useGetDefaultVlanQuery({
+    params: { tenantId, venueId: switchDetailHeader?.venueId },
     payload: [switchId],
-    enableRbac: true
-  }, { skip: !venueId })
+    enableRbac: isSwitchRbacEnabled
+  }, { skip: !switchDetailHeader?.venueId })
 
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
@@ -133,17 +137,17 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       const switchVlans = await getSwitchVlan({
         params: { tenantId, switchId, venueId },
         options: { skip: !venueId },
-        enableRbac: true
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
       const vlansByVenue = await getVlansByVenue({
         params: { tenantId, venueId },
         options: { skip: !venueId },
-        enableRbac: true
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
       const switchProfile = await getSwitchConfigurationProfileByVenue({
         params: { tenantId, venueId },
         options: { skip: !venueId },
-        enableRbac: true
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
@@ -215,7 +219,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       setDefaultVlanId(defaultVlan)
       form.setFieldValue('untaggedVlan', defaultVlan)
     }
-  }, [switchesDefaultVlan])
+  }, [form, isEditMode, switchesDefaultVlan])
 
   const onClose = () => {
     setVisible(false)
@@ -255,11 +259,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           params: {
             tenantId,
             switchId,
-            venueId,
+            venueId: switchDetailHeader?.venueId,
             lagId: editData[0].id
           },
           payload,
-          enableRbac: true
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
 
         setLoading(false)
@@ -278,9 +282,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         }
         delete payload.portsType
         await addLag({
-          params: { tenantId, switchId, venueId },
+          params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
           payload,
-          enableRbac: true
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
         onClose()
       } catch (err) {

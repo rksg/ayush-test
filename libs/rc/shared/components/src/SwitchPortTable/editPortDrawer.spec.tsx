@@ -109,7 +109,12 @@ const initPortValue = {
 
 const transformSubmitValue = (updateValue?: object) => {
   return {
-    params: { tenantId: 'tenant-id' },
+    enableRbac: undefined,
+    option: { skip: false },
+    params: {
+      tenantId: 'tenant-id',
+      venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+    },
     payload: [{
       switchId: 'c0:c5:20:aa:32:79',
       port: {
@@ -415,7 +420,12 @@ describe('EditPortDrawer', () => {
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: undefined,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: '58:fb:96:0e:82:8a',
           port: {
@@ -552,7 +562,12 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: undefined,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -805,7 +820,12 @@ describe('EditPortDrawer', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: undefined,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -1065,7 +1085,12 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('Applied at venue')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: undefined,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {

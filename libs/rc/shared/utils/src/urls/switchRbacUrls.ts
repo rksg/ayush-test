@@ -67,7 +67,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortsSetting: {
     method: 'post',
-    url: '/venues/:venueId/portSettings',
+    url: '/venues/:venueId/switches/portSettings',
     oldUrl: '/api/switch/tenant/:tenantId/port/switches/ports',
     newApi: true
   },
@@ -179,7 +179,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   savePortsSetting: {
     method: 'put',
-    url: '/venues/:venueId/portSettings',
+    url: '/venues/:venueId/switches/portSettings',
     oldUrl: '/api/switch/tenant/:tenantId/port/switches',
     newApi: true
   },
@@ -366,7 +366,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateDhcpServerState: {
     method: 'PATCH',
-    url: '/venues/:venueId/switches/:switchId/dhcpServerState',
+    url: '/venues/:venueId/switches/:switchId/dhcpServerStates',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
     newApi: true
   },

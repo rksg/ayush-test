@@ -4,6 +4,7 @@ import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useLazyGetDhcpServerQuery }                   from '@acx-ui/rc/services'
 import {
   getDhcpOptionList,
@@ -29,6 +30,8 @@ export function AddPoolDrawer (props: {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcpOption>()
   const [dhcpOptionList, setDhcpOptionList] = useState<SwitchDhcpOption[]>()
@@ -48,7 +51,7 @@ export function AddPoolDrawer (props: {
           venueId: props.venueId,
           dhcpServerId: props.editPoolId
         },
-        enableRbac: true
+        enableRbac: isSwitchRbacEnabled
       }).unwrap().then(value => {
         form.setFieldsValue(value)
         setDhcpOptionList(value.dhcpOptions)

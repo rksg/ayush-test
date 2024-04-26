@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetDhcpLeasesQuery
 } from '@acx-ui/rc/services'
@@ -18,12 +19,14 @@ export function SwitchDhcpLeaseTable (props: {
   const { switchId, tenantId } = useParams()
   const { venueId } = props
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({
     params: { switchId, tenantId, venueId },
-    payload: {
+    ...( isSwitchRbacEnabled ? { payload: {
       troubleshootingType: 'dhcp-server-lease-table'
-    },
-    enableRbac: true
+    } } : {}),
+    enableRbac: isSwitchRbacEnabled
   })
 
   const columns: TableProps<SwitchDhcpLease>['columns'] = [

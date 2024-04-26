@@ -4,6 +4,7 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
 import { showActionModal, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useGetSwitchQuery,
   useUpdateDhcpServerStateMutation
@@ -25,6 +26,7 @@ export function SwitchDhcpTab () {
   const navigate = useNavigate()
   const { activeTab, activeSubTab, serialNumber, switchId, tenantId } = useParams()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
@@ -62,10 +64,10 @@ export function SwitchDhcpTab () {
         content: $t({ defaultMessage: `
           This switch can no longer act as a DHCP client once DHCP server is enabled.` }),
         onOk: () => {
-          updateDhcpServerState({ ////// 404, checking with BE
+          updateDhcpServerState({
             params: { tenantId, switchId, venueId: switchDetail?.venueId },
             payload: { state: checked },
-            enableRbac: true,
+            enableRbac: isSwitchRbacEnabled,
             option: {
               skip: !switchDetail?.venueId
             }
@@ -74,10 +76,10 @@ export function SwitchDhcpTab () {
       })
       return
     } else {
-      updateDhcpServerState({ ////// 404, checking with BE
+      updateDhcpServerState({
         params: { tenantId, switchId, venueId: switchDetail?.venueId },
         payload: { state: checked },
-        enableRbac: true,
+        enableRbac: isSwitchRbacEnabled,
         option: {
           skip: !switchDetail?.venueId
         }

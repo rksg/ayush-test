@@ -17,7 +17,6 @@ import {
   SwitchVlan,
   SwitchVlanUnion,
   PortSettingModel,
-  PortsSetting,
   Vlan
 } from '@acx-ui/rc/utils'
 import { store }   from '@acx-ui/store'
@@ -362,103 +361,103 @@ export const getPortVenueVlans = (vlans:Vlan[], port: SwitchPortViewModel) => {
   }
 }
 
-export const getMultipleVlanValueLegacy = ( // TODO: rewrite
-  selectedPorts: SwitchPortViewModel[],
-  vlans: Vlan[],
-  portsSetting: PortsSetting,
-  defaultVlan: string,
-  switchesDefaultVlan?: SwitchDefaultVlan[]
-) => {
-  const ports = selectedPorts?.map((p) => p.portIdentifier)
-  const initPortVlans = [] as PortVlan[]
-  const result = {
-    tagged: new Array(ports.length).fill(undefined),
-    untagged: new Array(ports.length).fill(undefined),
-    voice: portsSetting?.response?.map(p => p.voiceVlan)
-  }
+// export const getMultipleVlanValueLegacy = ( // TODO: rewrite
+//   selectedPorts: SwitchPortViewModel[],
+//   vlans: Vlan[],
+//   portsSetting: PortsSetting,
+//   defaultVlan: string,
+//   switchesDefaultVlan?: SwitchDefaultVlan[]
+// ) => {
+//   const ports = selectedPorts?.map((p) => p.portIdentifier)
+//   const initPortVlans = [] as PortVlan[]
+//   const result = {
+//     tagged: new Array(ports.length).fill(undefined),
+//     untagged: new Array(ports.length).fill(undefined),
+//     voice: portsSetting?.response?.map(p => p.voiceVlan)
+//   }
 
-  const portsProfileVlans = {
-    tagged: new Array(ports.length).fill(undefined),
-    untagged: new Array(ports.length).fill(undefined)
-  }
+//   const portsProfileVlans = {
+//     tagged: new Array(ports.length).fill(undefined),
+//     untagged: new Array(ports.length).fill(undefined)
+//   }
 
-  // Check Vlan
-  vlans?.filter(v => v.switchFamilyModels)
-    .forEach((item: Vlan) => {
-      selectedPorts.forEach((p, index: number) => {
-        const requestPort = '1' + p.portIdentifier.slice(1)
-        const model = item?.switchFamilyModels?.find(i => i.model === p.switchModel) ?? false
-        if (model) {
-          if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) {
-            const vlanId = item.vlanId.toString()
-            if (!result.tagged[index]) {
-              result.tagged[index] = [vlanId]
-              portsProfileVlans.tagged[index] = [vlanId]
-            } else {
-              result.tagged[index].push(vlanId)
-              portsProfileVlans.tagged[index].push(vlanId)
-            }
-          }
-          if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
-            result.untagged[index] = item.vlanId
-            portsProfileVlans.untagged[index] = item.vlanId
-          }
-        }
-      })
-    })
-  // Check port
-  portsSetting?.response?.forEach((item: PortSettingModel) => {
-    selectedPorts.forEach((p: SwitchPortViewModel, index: number) => {
-      if (item.port === p.portIdentifier && item.switchMac === p.switchSerial) {
-        if (isPortOverride(item)) {
-          result.tagged[index] = item.taggedVlans
-          result.untagged[index] = item.untaggedVlan
-        } else {
-          // default
-          if (!result.tagged[index]) {
-            result.tagged[index] = ''
-          }
-          if (!result.untagged[index]) {
-            result.untagged[index]
-              = switchesDefaultVlan?.filter(s =>
-                s.switchId === item.switchMac)?.[0]?.defaultVlanId.toString()
-          }
-        }
-      }
-    })
-  })
+//   // Check Vlan
+//   vlans?.filter(v => v.switchFamilyModels)
+//     .forEach((item: Vlan) => {
+//       selectedPorts.forEach((p, index: number) => {
+//         const requestPort = '1' + p.portIdentifier.slice(1)
+//         const model = item?.switchFamilyModels?.find(i => i.model === p.switchModel) ?? false
+//         if (model) {
+//           if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) {
+//             const vlanId = item.vlanId.toString()
+//             if (!result.tagged[index]) {
+//               result.tagged[index] = [vlanId]
+//               portsProfileVlans.tagged[index] = [vlanId]
+//             } else {
+//               result.tagged[index].push(vlanId)
+//               portsProfileVlans.tagged[index].push(vlanId)
+//             }
+//           }
+//           if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
+//             result.untagged[index] = item.vlanId
+//             portsProfileVlans.untagged[index] = item.vlanId
+//           }
+//         }
+//       })
+//     })
+//   // Check port
+//   portsSetting?.response?.forEach((item: PortSettingModel) => {
+//     selectedPorts.forEach((p: SwitchPortViewModel, index: number) => {
+//       if (item.port === p.portIdentifier && item.switchMac === p.switchSerial) {
+//         if (isPortOverride(item)) {
+//           result.tagged[index] = item.taggedVlans
+//           result.untagged[index] = item.untaggedVlan
+//         } else {
+//           // default
+//           if (!result.tagged[index]) {
+//             result.tagged[index] = ''
+//           }
+//           if (!result.untagged[index]) {
+//             result.untagged[index]
+//               = switchesDefaultVlan?.filter(s =>
+//                 s.switchId === item.switchMac)?.[0]?.defaultVlanId.toString()
+//           }
+//         }
+//       }
+//     })
+//   })
 
-  portsSetting?.response?.forEach((item: PortSettingModel, index: number) => {
-    const defaultVlan = switchesDefaultVlan?.filter(
-      s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
+//   portsSetting?.response?.forEach((item: PortSettingModel, index: number) => {
+//     const defaultVlan = switchesDefaultVlan?.filter(
+//       s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
 
-    initPortVlans.push({
-      untagged: result.untagged[index],
-      tagged: result.tagged[index] || [],
-      voice: item.voiceVlan,
-      isDefaultVlan: item.voiceVlan === defaultVlan
-    })
-  })
+//     initPortVlans.push({
+//       untagged: result.untagged[index],
+//       tagged: result.tagged[index] || [],
+//       voice: item.voiceVlan,
+//       isDefaultVlan: item.voiceVlan === defaultVlan
+//     })
+//   })
 
-  const untagEqual = _.uniq(result.untagged)?.length <= 1
-  const tagEqual = _.uniq(result.tagged.map(t => (t || '')?.toString()))?.length <= 1
-  const voiceVlanEqual = _.uniq(result.voice)?.length <= 1
+//   const untagEqual = _.uniq(result.untagged)?.length <= 1
+//   const tagEqual = _.uniq(result.tagged.map(t => (t || '')?.toString()))?.length <= 1
+//   const voiceVlanEqual = _.uniq(result.voice)?.length <= 1
 
-  return {
-    tagged: tagEqual ? result.tagged?.[0] : null,
-    untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
-    voice: voiceVlanEqual ? result.voice?.[0] : '',
-    initPortVlans: initPortVlans,
-    isTagEqual: tagEqual,
-    isUntagEqual: untagEqual,
-    portsProfileVlans: portsProfileVlans
-  }
-}
+//   return {
+//     tagged: tagEqual ? result.tagged?.[0] : null,
+//     untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
+//     voice: voiceVlanEqual ? result.voice?.[0] : '',
+//     initPortVlans: initPortVlans,
+//     isTagEqual: tagEqual,
+//     isUntagEqual: untagEqual,
+//     portsProfileVlans: portsProfileVlans
+//   }
+// }
 
 export const getMultipleVlanValue = ( // TODO: rewrite
   selectedPorts: SwitchPortViewModel[],
   vlans: Vlan[],
-  portsSetting: PortsSetting,
+  portsSetting: PortSettingModel[],
   defaultVlan: string,
   switchesDefaultVlan?: SwitchDefaultVlan[]
 ) => {
@@ -505,7 +504,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
       })
     })
   // Check port
-  portsSetting?.response?.forEach((item: PortSettingModel) => {
+  portsSetting?.forEach((item: PortSettingModel) => {
     selectedPorts.forEach((p: SwitchPortViewModel, index: number) => {
       if (item.port === p.portIdentifier && item.switchMac === p.switchSerial) {
         if (isPortOverride(item)) {
@@ -530,7 +529,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     })
   })
 
-  portsSetting?.response?.forEach((item: PortSettingModel, index: number) => {
+  portsSetting?.forEach((item: PortSettingModel, index: number) => {
     const defaultVlan = switchesDefaultVlan?.filter(
       s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
 

@@ -46,7 +46,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
   const { data, isLoading } = useGetLagListQuery({
     params: { tenantId, switchId, venueId: switchDetail?.venueId },
-    enableRbac: true
+    enableRbac: isSwitchRbacEnabled
   }, {
     skip: !switchDetail?.venueId || isSwitchDetailLoading
   })
@@ -133,7 +133,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       onOk: async () => {
         await deleteLag({
           params: { tenantId, switchId, venueId: switchDetail?.venueId, lagId: row.id },
-          enableRbac: true
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       },
       onCancel: async () => {}
@@ -171,7 +171,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
         children={
           <Loader
             states={[
-              { isLoading }
+              { isLoading: isLoading || isSwitchDetailLoading }
             ]}
           >
             <Table
@@ -194,7 +194,6 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       { switchDetail && <SwitchLagModal
         isEditMode={isEditMode}
         editData={row}
-        venueId={switchDetail?.venueId || ''}
         visible={modalVisible}
         setVisible={setModalVisible}
       />}

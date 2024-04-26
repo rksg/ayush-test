@@ -192,7 +192,8 @@ export function useTableQuery <
       page: 1,
       pageSize: TABLE_MAX_PAGE_SIZE
     },
-    customHeaders: option?.customHeaders
+    customHeaders: option?.customHeaders,
+    enableRbac: option?.enableRbac
   }, option.option)
 
   useEffect(() => {
