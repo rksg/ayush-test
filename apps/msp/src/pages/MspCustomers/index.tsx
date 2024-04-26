@@ -620,7 +620,7 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && selEcTenantIds.length === 1
+        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && selEcTenantIds.length === 1)
           ? <ManageDelegateAdminDrawer
             visible={drawerAssignEcMspAdminsVisible}
             setVisible={setDrawerAssignEcMspAdminsVisible}
