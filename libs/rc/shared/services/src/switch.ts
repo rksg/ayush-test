@@ -1170,7 +1170,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params)
         return {
           ...req,
           body: payload
