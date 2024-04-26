@@ -410,6 +410,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
+    cyclePoe: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.portsPowerCycle, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -903,6 +912,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    blinkLeds: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     ping: build.mutation<TroubleshootingResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.ping, params)
@@ -1152,7 +1170,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params)
         return {
           ...req,
           body: payload
@@ -1321,6 +1339,7 @@ export const {
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,
   useLazyGetPortsSettingQuery,
+  useCyclePoeMutation,
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
   useGetDefaultVlanQuery,
@@ -1378,6 +1397,7 @@ export const {
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
+  useBlinkLedsMutation,
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,
