@@ -7,27 +7,9 @@ import { RogueApUrls }                     from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { detailContent } from '../__tests__/fixtures'
+
 import { RogueAPDetectionDetailView } from './RogueAPDetectionDetailView'
-
-
-const detailContent = {
-  venues: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue'
-    }
-  ],
-  name: 'Default profile',
-  rules: [
-    {
-      name: 'Same Network Rule',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 1
-    }
-  ],
-  id: 'policyId1'
-}
 
 const emptyDetailContent = {
   rules: [
@@ -138,15 +120,15 @@ describe('RogueAPDetectionDetailView', () => {
 
     await screen.findByText(/classification rules/i)
 
-    screen.getByText(1)
+    screen.getByText(detailContent.rules.length)
 
     await screen.findByText(/venue name/i)
 
     await screen.findByText(/instance \(3\)/i)
 
-    await screen.findByRole('cell', {
+    expect(await screen.findByRole('cell', {
       name: 'test-venue2'
-    })
+    })).toBeVisible()
   })
 
   it('should render empty RogueAPDetectionDetailView successfully', async () => {
