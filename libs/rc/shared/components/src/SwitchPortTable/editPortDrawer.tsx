@@ -608,6 +608,7 @@ export function EditPortDrawer ({
       params: { venueId },
       payload
     }).unwrap()
+    onClose()
   }
 
   const resetFields = async () => {
