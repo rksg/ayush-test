@@ -115,6 +115,7 @@ export enum Features {
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
   SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
+  SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   SWITCH_EDIT_PORTS_FROM_PANEL = 'acx-ui-edit-ports-from-panel',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
