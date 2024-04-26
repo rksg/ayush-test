@@ -408,5 +408,10 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/lags/:lagId',
     oldUrl: '/api/switch/tenant/:tenantId/lag/:lagId',
     newApi: true
+  },
+  getJwtToken: {
+    method: 'get',
+    url: '/switches/:serialNumber/jwtToken', // TODO: Karen - Need backend support
+    newApi: true
   }
 }

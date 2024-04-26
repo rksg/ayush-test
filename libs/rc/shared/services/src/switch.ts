@@ -174,7 +174,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
-    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({
+    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({ // RBAC only
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
       },
@@ -688,10 +688,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getJwtToken: build.query<JwtToken, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
-        return {
-          ...req
+      query: ({ params, enableRbac }) => {
+        if (enableRbac) {
+          const headers = customHeaders.v1 //TODO: Karen - check with backend
+          const req = createHttpRequest(SwitchRbacUrlsInfo.getJwtToken, params, headers)
+          return {
+            ...req
+          }
+        } else {
+          const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
+          return {
+            ...req
+          }
         }
       }
     }),
