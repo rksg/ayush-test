@@ -35,7 +35,7 @@ const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.LIST]: 'list'
 }
 
-export const serviceTypePathMapping: Record<ServiceType, string> = {
+const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.EDGE_DHCP]: 'edgeDhcp',

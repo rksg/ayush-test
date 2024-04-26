@@ -58,11 +58,6 @@ export function generateDpskManagementBreadcrumb () {
   ]
 }
 
-export function generateDpskBreadcrumb (): { text: string, link?: string }[] {
-  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  return isDPSKAdmin ? generateDpskManagementBreadcrumb() : generateServicesBreadcrumb()
-}
-
 function generateServicesBreadcrumb () {
   const { $t } = getIntl()
   return [
@@ -75,7 +70,9 @@ function generateServicesBreadcrumb () {
 }
 
 function generateServiceListBreadcrumb (type: ServiceType) {
-  if (type === ServiceType.DPSK) return generateDpskBreadcrumb()
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
+  if (type === ServiceType.DPSK && isDPSKAdmin) return generateDpskManagementBreadcrumb()
 
   const { $t } = getIntl()
   return [
