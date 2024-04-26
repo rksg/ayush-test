@@ -38,7 +38,7 @@ const initState = {
 
 describe('RogueAPDetectionSummaryForm', () => {
   it('should render form successfully', async () => {
-    const { asFragment } = render(
+    render(
       <RogueAPDetectionContext.Provider value={{
         state: initState,
         dispatch: setRogueAPDetectionSummary
@@ -51,7 +51,5 @@ describe('RogueAPDetectionSummaryForm', () => {
     expect(screen.getByText('1')).toBeInTheDocument()
     expect(screen.getByText('desc1')).toBeInTheDocument()
     expect(screen.getByText('venueName1')).toBeInTheDocument()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -55,7 +55,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   )
 
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const clientAdmissionControlFlag = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportStickyClient = stickyClientFlag
 
   const loadBalancingMethods = [
@@ -195,9 +194,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be
                 allowed to enable client admission control. Make sure that load balancing is enabled on network configuration.` })}
               placement='right'>
-              {clientAdmissionControlFlag &&
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
-              }
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
             </Tooltip>
           </Space>
           <Form.Item
@@ -328,9 +325,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be
                 allowed to enable client admission control.` })}
               placement='right'>
-              {clientAdmissionControlFlag &&
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
-              }
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
             </Tooltip>
           </Space>
           <Form.Item

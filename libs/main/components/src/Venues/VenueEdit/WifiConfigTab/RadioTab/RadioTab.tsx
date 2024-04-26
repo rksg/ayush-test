@@ -33,7 +33,6 @@ export function RadioTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
-  const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
@@ -66,7 +65,7 @@ export function RadioTab () {
       </>
     )
   }] : []),
-  ...(supoortClientAdmissionControl? [{
+  {
     title: clientAdmissionControlTitle,
     content: (
       <>
@@ -84,7 +83,7 @@ export function RadioTab () {
         <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
       </>
     )
-  }]: []),
+  },
   {
     title: externalTitle,
     content: (

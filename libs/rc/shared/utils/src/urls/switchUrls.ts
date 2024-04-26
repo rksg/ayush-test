@@ -404,6 +404,16 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
     newApi: true
   },
+  debugRequests: {
+    method: 'post',
+    url: '/switches/:switchId/debugRequests',
+    newApi: true
+  },
+  blinkLeds: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/debugRequests',
+    newApi: true
+  },
   ping: {
     method: 'post',
     url: '/switches/:switchId/debugRequests',
