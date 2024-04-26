@@ -117,7 +117,12 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       <Table<MspEc>
         columns={columns}
         dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        settingsId='msp-apply-template-table'
         rowKey='id'
+        enableApiFilter={true}
         rowSelection={hasAccess() && {
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
@@ -144,7 +149,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
         visible={true}
         onClose={onClose}
         footer={footer}

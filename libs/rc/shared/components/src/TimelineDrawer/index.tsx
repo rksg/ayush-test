@@ -4,9 +4,11 @@ import { Divider }                    from 'antd'
 import { TextAreaRef }                from 'antd/lib/input/TextArea'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Drawer, Descriptions, Timeline, TimelineItem } from '@acx-ui/components'
-import { Activity }                                     from '@acx-ui/rc/utils'
-import { noDataDisplay }                                from '@acx-ui/utils'
+import { Drawer, Descriptions } from '@acx-ui/components'
+import { Activity }             from '@acx-ui/rc/utils'
+import { noDataDisplay }        from '@acx-ui/utils'
+
+import { Timeline, TimelineItem } from '../Timeline'
 
 import * as UI from './styledComponents'
 
@@ -55,12 +57,15 @@ export const TimelineDrawer = (props: DrawerProps) => {
     }
   })
 
+  const getWidth = () => props.activity?.steps?.some(step => step.id === 'CheckApCompatibilities') ?
+    648 : props.width
+
   return <Drawer
     title={$t(props.title)}
     visible={props.visible}
     onClose={props.onClose}
     onBackClick={props.onBackClick}
-    width={props.width}
+    width={getWidth()}
     children={<>
       <Descriptions>{
         props.data.map(({ title, value }, i) => <Descriptions.Item
@@ -71,7 +76,11 @@ export const TimelineDrawer = (props: DrawerProps) => {
       }</Descriptions>
       {props.activity?.steps && props.activity?.steps.length > 0 && <>
         <Divider/>
-        <Timeline items={activityErrorDetails ?? []} status={props.activity?.status}/>
+        <Timeline
+          requestId={props.activity?.requestId ?? ''}
+          items={activityErrorDetails ?? []}
+          status={props.activity?.status}
+        />
       </>}
     </>}
   />

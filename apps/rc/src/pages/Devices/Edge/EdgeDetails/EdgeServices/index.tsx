@@ -26,6 +26,10 @@ export const EdgeServices = () => {
   const params = useParams()
   const { serialNumber } = params
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const settingsId = 'edge-services-table'
@@ -47,8 +51,21 @@ export const EdgeServices = () => {
   const [restartServices] = usePatchEdgeDhcpServiceMutation()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
-    setCurrentData(data)
-    setDrawerVisible(true)
+    switch (data.serviceType) {
+      case EdgeServiceTypeEnum.DHCP:
+        setDrawerVisible(isEdgeHaReady && isEdgeDhcpHaReady)
+        break
+      case EdgeServiceTypeEnum.FIREWALL:
+        setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
+        break
+      case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+        setDrawerVisible(isEdgePinReady)
+        break
+      default:
+        setCurrentData(data)
+        setDrawerVisible(true)
+        break
+    }
   }
 
   const columns: TableProps<EdgeService>['columns'] = [
@@ -187,7 +204,7 @@ export const EdgeServices = () => {
     },
     {
       label: $t({ defaultMessage: 'Restart' }),
-      disabled: isRestartBtnDisable,
+      disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }

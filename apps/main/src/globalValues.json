@@ -15,5 +15,7 @@
   "HOW_TO_VIDEOS": "https://www.youtube.com/playlist?list=PLySwoo7u9-KLJteXD3vhjK20eDQDp7NoP",
   "NEW_API_DOMAIN_NAME": "api.dev.ruckus.cloud",
   "STATIC_ASSETS": "",
-  "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/"
+  "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/",
+  "MIB_FILES": "https://docs.ruckus.cloud/mib/",
+  "DRUID_RETAIN_PERIOD_DAYS": "90"
 }

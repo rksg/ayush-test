@@ -23,7 +23,9 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
-    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId,
+    useCertificateTemplate: data.useCertificateTemplate,
+    certificateTemplateId: data.certificateTemplateId
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {
@@ -79,7 +81,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...{
         wlan: {
           wlanSecurity: wlanSecurity,
-          managementFrameProtection
+          managementFrameProtection,
+          macAddressAuthenticationConfiguration: data.wlan?.macAddressAuthenticationConfiguration
         }
       }
     }

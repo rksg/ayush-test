@@ -6,6 +6,8 @@ export type TimeStampRange = [TimeStamp, TimeStamp]
 
 export type TimelineStatus = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL'
 
+export interface StatusIconProps { status: TimelineStatus, description?: string }
+
 export enum RolesEnum {
   PRIME_ADMIN = 'PRIME_ADMIN',
   ADMINISTRATOR = 'ADMIN',
@@ -38,4 +40,25 @@ export const browserSupportedLocales: Record<string, string> = {
   'de-DE': 'de-DE',
   'zh': 'zh-TW',
   'zh-TW': 'zh-TW'
+}
+
+export enum WifiScopes {
+  READ = 'wifi-r',
+  CREATE = 'wifi-c',
+  UPDATE = 'wifi-u',
+  DELETE = 'wifi-d'
+}
+
+export enum SwitchScopes {
+  READ = 'switch-r',
+  CREATE = 'switch-c',
+  UPDATE = 'switch-u',
+  DELETE = 'switch-d'
+}
+
+export enum EdgeScopes {
+  READ = 'edge-r',
+  CREATE = 'edge-c',
+  UPDATE = 'edge-u',
+  DELETE = 'edge-d'
 }

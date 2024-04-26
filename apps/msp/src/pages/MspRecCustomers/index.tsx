@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   SelectIntegratorDrawer
@@ -32,7 +32,6 @@ import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
-  EntitlementNetworkDeviceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, useNavigate, useTenantLink, useParams, TenantLink } from '@acx-ui/react-router-dom'
@@ -40,6 +39,7 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, noDataDisplay }                                             from '@acx-ui/utils'
 
+import HspContext                  from '../../HspContext'
 import { AssignEcMspAdminsDrawer } from '../MspCustomers/AssignEcMspAdminsDrawer'
 
 export function MspRecCustomers () {
@@ -49,12 +49,9 @@ export function MspRecCustomers () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isAssignMultipleEcEnabled = useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
      && isPrimeAdmin
-  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
   const MAX_ALLOWED_SELECTED_EC = 200
 
   const [ecTenantId, setTenantId] = useState('')
@@ -70,6 +67,11 @@ export function MspRecCustomers () {
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
@@ -210,6 +212,7 @@ export function MspRecCustomers () {
       dataIndex: 'status',
       key: 'status',
       sorter: true,
+      width: 80,
       render: function (_, row) {
         return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
       }
@@ -221,6 +224,7 @@ export function MspRecCustomers () {
       align: 'center',
       key: 'mspAdminCount',
       sorter: true,
+      width: 140,
       onCell: (data) => {
         return (isPrimeAdmin || isAdmin) && !userProfile?.support ? {
           onClick: () => {
@@ -243,6 +247,7 @@ export function MspRecCustomers () {
         : $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
+      width: 130,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
           onClick: () => {
@@ -253,7 +258,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = (techPartnerAssignEcsEanbled && row.integratorCount !== undefined)
+        const val = techPartnerAssignEcsEanbled
           ? mspUtils.transformTechPartnerCount(row.integratorCount)
           : row?.integrator ? mspUtils.transformTechPartner(row.integrator, techParnersData)
             : noDataDisplay
@@ -269,6 +274,7 @@ export function MspRecCustomers () {
         : $t({ defaultMessage: 'Installer' }),
       dataIndex: 'installer',
       key: 'installer',
+      width: 120,
       onCell: (data: MspEc) => {
         return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
           onClick: () => {
@@ -280,7 +286,7 @@ export function MspRecCustomers () {
         } : {}
       },
       render: function (_: React.ReactNode, row: MspEc) {
-        const val = (techPartnerAssignEcsEanbled && row.installerCount !== undefined)
+        const val = techPartnerAssignEcsEanbled
           ? mspUtils.transformTechPartnerCount(row.installerCount)
           : row?.installer ? mspUtils.transformTechPartner(row.installer, techParnersData)
             : noDataDisplay
@@ -290,95 +296,63 @@ export function MspRecCustomers () {
         )
       }
     }]),
-    ...(isDeviceAgnosticEnabled ? [
-      {
-        title: $t({ defaultMessage: 'Installed Devices' }),
-        dataIndex: 'apswLicenseInstalled',
-        key: 'apswLicenseInstalled',
-        render: function (_: React.ReactNode, row: MspEc) {
-          return <div style={{ textAlign: 'center' }}>
-            {mspUtils.transformInstalledDevice(row.entitlements)}</div>
-        }
-      },
-      {
-        title: <div style={{ textAlign: 'center' }}>
-          <div>{$t({ defaultMessage: 'Assigned Device' })}</div>
-          <div>{$t({ defaultMessage: 'Subscriptions' })}</div></div>,
-        dataIndex: 'apswLicense',
-        key: 'apswLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return <div style={{ textAlign: 'center' }}>
-            {mspUtils.transformDeviceEntitlement(row.entitlements)}</div>
-        }
-      },
-      {
-        title: <div style={{ textAlign: 'center' }}>
-          <div>{$t({ defaultMessage: 'Device Subscriptions' })}</div>
-          <div>{$t({ defaultMessage: 'Utilization' })}</div></div>,
-        dataIndex: 'apswLicensesUtilization',
-        key: 'apswLicensesUtilization',
-        render: function (data: React.ReactNode, row: MspEc) {
-          return <div style={{ textAlign: 'center' }}>
-            {mspUtils.transformDeviceUtilization(row.entitlements)}</div>
-
-        }
+    {
+      title: $t({ defaultMessage: 'Installed Devices' }),
+      dataIndex: 'apswLicenseInstalled',
+      key: 'apswLicenseInstalled',
+      align: 'center',
+      sorter: true,
+      width: 140,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return mspUtils.transformInstalledDevice(row.entitlements)
       }
-    ] : [
-      {
-        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-        dataIndex: 'wifiLicense',
-        key: 'wifiLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformApEntitlement(row)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
-        dataIndex: 'wifiLicensesUtilization',
-        key: 'wifiLicensesUtilization',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformUtilization(row, EntitlementNetworkDeviceType.WIFI)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Switch Licenses' }),
-        dataIndex: 'switchLicense',
-        key: 'switchLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return mspUtils.transformSwitchEntitlement(row)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'SmartEdge Licenses' }),
-        dataIndex: 'edgeLicenses',
-        key: 'edgeLicenses',
-        sorter: true,
-        show: edgeEnabled,
-        render: function (data: React.ReactNode, row: MspEc) {
-          return row?.edgeLicenses ? row?.edgeLicenses : 0
-        }
-      }]),
+    },
+    {
+      title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+      dataIndex: 'apswLicense',
+      key: 'apswLicense',
+      align: 'center',
+      sorter: true,
+      width: 230,
+      render: function (data: React.ReactNode, row: MspEc) {
+        return mspUtils.transformDeviceEntitlement(row.entitlements)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+      dataIndex: 'apswLicensesUtilization',
+      key: 'apswLicensesUtilization',
+      align: 'center',
+      sorter: true,
+      width: 230,
+      render: function (data: React.ReactNode, row: MspEc) {
+        return mspUtils.transformDeviceUtilization(row.entitlements)
+
+      }
+    },
     {
       title: $t({ defaultMessage: 'No-License Devices' }),
       dataIndex: 'creationDate',
       key: 'creationDate',
+      align: 'center',
       sorter: true,
+      width: 150,
       render: function (_, row) {
-        return <div style={{ textAlign: 'center' }}>
-          {mspUtils.transformOutOfComplianceDevices(row.entitlements)}</div>
+        return mspUtils.transformOutOfComplianceDevices(row.entitlements)
       }
     },
     {
-      title: <div style={{ textAlign: 'center' }}>
-        <div>{$t({ defaultMessage: 'License Expiration' })}</div>
-        <div>{$t({ defaultMessage: 'Devices / Days' })}</div></div>,
+      title: () => (
+        <>
+          { $t({ defaultMessage: 'License Expiration' }) }
+          <Table.SubTitle children={$t({ defaultMessage: 'Devices / Days' })} />
+        </>
+      ),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
+      align: 'center',
       sorter: true,
+      width: 150,
       render: function (_, row) {
         return <div style={{ textAlign: 'center' }}>
           {mspUtils.transformFutureOutOfComplianceDevices(row.entitlements)}</div>
@@ -442,7 +416,7 @@ export function MspRecCustomers () {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'EC' }),
+              entityName: $t({ defaultMessage: 'Property' }),
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
@@ -538,7 +512,7 @@ export function MspRecCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Brand Properties' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'My Customers' }) }]}
         extra={isAdmin ?
           [
@@ -548,7 +522,7 @@ export function MspRecCustomers () {
             <MspTenantLink to='/dashboard/mspreccustomers/create'>
               <Button
                 hidden={userProfile?.support || !onBoard}
-                type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+                type='primary'>{$t({ defaultMessage: 'Add Property' })}</Button>
             </MspTenantLink>
           ]
           : [

@@ -68,6 +68,8 @@ export interface UserProfile {
   initials?: string
   fullName: string
   preferredLanguage?: string
+  customRoleName?: string
+  scopes?: []
 }
 
 export type GuestErrorRes = {
@@ -155,3 +157,4 @@ export interface BetaStatus {
 export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
+

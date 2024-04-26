@@ -46,7 +46,6 @@ export function useMenuConfig () {
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
@@ -54,6 +53,11 @@ export function useMenuConfig () {
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -62,7 +66,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    ...(isAdmin ? [{
+    {
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -90,7 +94,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Network Assurance' }),
           children: [
             {
-              uri: '/analytics/health',
+              uri: `/analytics/health${isSwitchHealthEnabled ? '/overview' : ''}`,
               label: $t({ defaultMessage: 'Health' })
             },
             ...(isAnltAdvTier ? [{
@@ -108,7 +112,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    }]: []),
+    },
     {
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
@@ -328,10 +332,15 @@ export function useMenuConfig () {
               uri: '/administration/accountSettings',
               label: $t({ defaultMessage: 'Settings' })
             },
-            ...(isAdministratorAccessible ? [{
-              uri: '/administration/administrators',
-              label: $t({ defaultMessage: 'Administrators' })
-            }] : []),
+            ...(isAdministratorAccessible ? [
+              isAbacToggleEnabled ? {
+                uri: '/administration/userPrivileges',
+                label: $t({ defaultMessage: 'Users & Privileges' })
+              } : {
+                uri: '/administration/administrators',
+                label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
             {
               uri: '/administration/notifications',
               label: $t({ defaultMessage: 'Notifications' })
@@ -343,6 +352,10 @@ export function useMenuConfig () {
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
+            },
+            {
+              uri: '/administration/webhooks',
+              label: $t({ defaultMessage: 'Webhooks' })
             },
             {
               uri: '/administration/onpremMigration',

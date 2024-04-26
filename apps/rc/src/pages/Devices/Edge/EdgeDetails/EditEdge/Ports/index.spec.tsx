@@ -1,23 +1,37 @@
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeEditContext, EdgePortTabEnum }                          from '@acx-ui/rc/components'
-import { edgeApi }                                                   from '@acx-ui/rc/services'
-import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
+import { EdgeEditContext, EdgePortTabEnum }                                                                             from '@acx-ui/rc/components'
+import { edgeSdLanApi }                                                                                                 from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                              from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                                                              from '@acx-ui/test-utils'
+
+import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
 
 import Ports from './index'
 
-const { mockEdgeData, mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockedEdgeLagList } = EdgeLagFixtures
+const { mockedSdLanDataList } = EdgeSdLanFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('../ClusterNavigateWarning', () => ({
+  ...jest.requireActual('../ClusterNavigateWarning'),
+  ClusterNavigateWarning: () => <div data-testid='ClusterNavigateWarning' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  EdgePortsGeneralBase: () => <div data-testid='EdgePortsGeneralBase' />
+}))
+const updateRequestSpy = jest.fn()
 
-const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const defaultContextData = {
   activeSubTab: {
     key: EdgePortTabEnum.PORTS_GENERAL,
@@ -31,6 +45,7 @@ const defaultContextData = {
   setActiveSubTab: jest.fn(),
   setFormControl: jest.fn()
 }
+
 describe('EditEdge - Ports', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab:string }
 
@@ -41,25 +56,87 @@ describe('EditEdge - Ports', () => {
       activeTab: 'ports',
       activeSubTab: EdgePortTabEnum.PORTS_GENERAL
     }
-    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeSdLanApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getEdge.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
-      ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeList))
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataList }))
       ),
-      rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgePortStatusList.url,
-        (req, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
+      rest.patch(
+        EdgeUrlsInfo.updatePortConfig.url,
+        (_, res, ctx) => {
+          updateRequestSpy()
+          return res(ctx.status(202))
+        }
       )
     )
+  })
+
+  it('should render successfully', async () => {
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={{
+              clusterInfo: mockEdgeClusterList.data[0],
+              portData: mockEdgePortConfig.ports,
+              portStatus: mockEdgePortStatus,
+              lagData: mockedEdgeLagList.content,
+              isFetching: false,
+              isCluster: true
+            } as unknown as EditEdgeDataContextType}
+          >
+            <Ports />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    expect(screen.getByTestId('ClusterNavigateWarning')).toBeVisible()
+    expect(screen.getByTestId('EdgePortsGeneralBase')).toBeVisible()
+  })
+
+  it('should submit successfully', async () => {
+    const { result } = renderHook(() => Form.useForm())
+    jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
+    render(
+      <Provider>
+        <EdgeEditContext.EditContext.Provider
+          value={defaultContextData}
+        >
+          <EditEdgeDataContext.Provider
+            value={{
+              clusterInfo: mockEdgeClusterList.data[0],
+              portData: mockEdgePortConfig.ports,
+              portStatus: mockEdgePortStatus,
+              lagData: mockedEdgeLagList.content,
+              isFetching: false,
+              isCluster: false
+            } as unknown as EditEdgeDataContextType}
+          >
+            <Ports />
+          </EditEdgeDataContext.Provider>
+        </EdgeEditContext.EditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    expect(screen.queryByTestId('ClusterNavigateWarning')).toBe(null)
+    expect(screen.getByTestId('EdgePortsGeneralBase')).toBeVisible()
+    result.current[0].setFieldsValue({
+      port1: [mockEdgePortConfig.ports[0]],
+      port2: [mockEdgePortConfig.ports[1]],
+      port3: [mockEdgePortConfig.ports[2]]
+    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    await waitFor(() => expect(updateRequestSpy).toHaveBeenCalledTimes(1))
   })
 
   it('should navigate to edge list when cancel', async () => {
@@ -68,7 +145,18 @@ describe('EditEdge - Ports', () => {
         <EdgeEditContext.EditContext.Provider
           value={defaultContextData}
         >
-          <Ports />
+          <EditEdgeDataContext.Provider
+            value={{
+              clusterInfo: mockEdgeClusterList.data[0],
+              portData: mockEdgePortConfig.ports,
+              portStatus: mockEdgePortStatus,
+              lagData: mockedEdgeLagList.content,
+              isFetching: false,
+              isCluster: false
+            } as unknown as EditEdgeDataContextType}
+          >
+            <Ports />
+          </EditEdgeDataContext.Provider>
         </EdgeEditContext.EditContext.Provider>
       </Provider>, {
         route: {
@@ -76,41 +164,9 @@ describe('EditEdge - Ports', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
-
-    expect(await screen.findByRole('tab', { name: 'Ports General', selected: true })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge`,
-      hash: '',
-      search: ''
-    })
-  })
-
-  it('switch tab', async () => {
-    render(
-      <Provider>
-        <EdgeEditContext.EditContext.Provider
-          value={defaultContextData}
-        >
-          <Ports />
-        </EdgeEditContext.EditContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(await screen.findByText(/IP Address: 10.206.78.152/)).toBeVisible()
-
-    await userEvent.click(await screen.findByRole('tab', { name: 'Sub-Interface' }))
-    expect(mockedUsedNavigate).toBeCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
       hash: '',
       search: ''
     })

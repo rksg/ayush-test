@@ -21,9 +21,11 @@ import {
   fakeIncidentAirtimeTx,
   IncidentCode
 }                         from '@acx-ui/analytics/utils'
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Provider }                       from '@acx-ui/store'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures               from './__tests__/fixtures'
 import { AirtimeB }                from './AirtimeB'
@@ -49,15 +51,19 @@ import { SwitchPoePd }             from './SwitchPoePd'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
 
-jest.mock('../Insights', () => ({
-  Insights: () => <div data-testid='insights' />
-}))
+
+jest.mock('./MuteIncident', () => ({ MuteIncident: () => <div data-testid='muteIncident' /> }))
+jest.mock('../Insights', () => ({ Insights: () => <div data-testid='insights' /> }))
 jest.mock('../NetworkImpact')
 jest.mock('../IncidentDetails/TimeSeries')
+
 jest.mock('../ChannelConfig', () => ({
   ChannelConfig: () => <div data-testid='channelConfig' />
 }))
-jest.mock('../Charts/ChannelDistributionHeatmap')
+jest.mock('../Charts/ChannelDistributionHeatmap', () => ({
+  ...jest.requireActual('../Charts/ChannelDistributionHeatmap'),
+  ChannelDistributionHeatMap: () => <div data-testid='channelDistributionHeatMap' />
+}))
 jest.mock('../Charts/RssDistributionChart', () => ({
   RssDistributionChart: () => <div data-testid='rssDistributionChart' />
 }))
@@ -68,11 +74,18 @@ jest.mock('../Charts/PoePdTable', () => ({
   PoePdTable: () => <div data-testid='poePdTable' />
 }))
 jest.mock('../Charts/ImpactedSwitchVLANsTable', () => ({
-  ImpactedSwitchVLANsTable: () => <div data-testid='ImpactedSwitchVLANsTable' />
+  ImpactedSwitchVLANsTable: () => <div data-testid='impactedSwitchVLANsTable' />
+}))
+jest.mock('../Charts/ImpactedSwitchVLANDetails', () => ({
+  ImpactedSwitchVLANsDetails: () => <div data-testid='impactedSwitchVLANsDetails' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
+jest.mock('../Charts/SwitchDetail', () => ({
+  SwitchDetail: () => <div data-testid='switchDetail' />
+}))
+
 describe('Test', () => {
   fixtures.mockTimeSeries()
   fixtures.mockNetworkImpact()
@@ -160,8 +173,8 @@ describe('Test', () => {
         component: SwitchMemoryHigh,
         fakeIncident: fakeIncidentSwitchMemory,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
-        charts: []
+        hasTimeSeries: true,
+        charts: ['switchDetail']
       },
       {
         component: SwitchPoePd,
@@ -175,7 +188,7 @@ describe('Test', () => {
         fakeIncident: fakeIncidentPoePd,
         hasNetworkImpact: false,
         hasTimeSeries: false,
-        charts: []
+        charts: ['impactedSwitchVLANsTable']
       },
       {
         component: Ttc,
@@ -189,7 +202,7 @@ describe('Test', () => {
         fakeIncident: fakeIncidentChannelDist, // 5g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: []
+        charts: ['channelDistributionHeatMap']
       },
       {
         component: ChannelDist,
@@ -197,7 +210,7 @@ describe('Test', () => {
           code: 'p-channeldist-suboptimal-plan-24g' as IncidentCode }, // 2.4g
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: []
+        charts: ['channelDistributionHeatMap']
       },
       {
         component: NetTime,
@@ -297,6 +310,8 @@ describe('Test', () => {
         const { asFragment } = render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
+
+        expect(screen.getByTestId('muteIncident')).toBeVisible()
         expect(screen.getByTestId('insights')).toBeVisible()
         if (test.hasNetworkImpact) {
           // eslint-disable-next-line jest/no-conditional-expect
@@ -313,9 +328,21 @@ describe('Test', () => {
           expect(screen.queryByTestId('timeseries')).toBeNull()
         }
         test.charts.forEach(chart => {
-          expect(screen.getByTestId(chart)).toBeVisible()
+          expect(screen.getAllByTestId(chart).length).toBeGreaterThanOrEqual(1)
         })
         expect(asFragment()).toMatchSnapshot()
+      })
+      it(`should hide mute for ${test.component.name} when role = READ_ONLY`, () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        const profile = getUserProfile()
+        setUserProfile({ ...profile, profile: {
+          ...profile.profile, roles: [RolesEnum.READ_ONLY]
+        } })
+        const params = { incidentId: test.fakeIncident.id }
+        render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
       })
     })
   })

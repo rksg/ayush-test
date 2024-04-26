@@ -2,21 +2,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                                                                               from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgeSubInterfaceFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                       from '@acx-ui/store'
+import { edgeApi }                                                                             from '@acx-ui/rc/services'
+import { EdgeClusterTableDataType, EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 
 import { VirtualIp } from '.'
 
 const { mockEdgeClusterList, mockEdgeCluster } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgeSubInterfaceFixtures
+const { mockLanInterfaces } = EdgePortConfigFixtures
 
 const mockedFinishFn = jest.fn()
 
@@ -26,12 +25,6 @@ jest.mock('@acx-ui/rc/services', () => ({
     data: mockLanInterfaces,
     isLoading: false
   })
-}))
-jest.mock('./InterfaceTable', () => ({
-  InterfaceTable: () => <div data-testid='interface-table' />
-}))
-jest.mock('./SelectInterfaceDrawer', () => ({
-  SelectInterfaceDrawer: () => <div data-testid='select-interface-drawer' />
 }))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -69,39 +62,20 @@ describe('Edit Edge Cluster - VirtualIp', () => {
       })
     expect(screen.getByText('Please select the node interfaces and assign virtual IPs for seamless failover :')).toBeVisible()
     expect(await screen.findByRole('textbox', { name: 'Virtual IP Address' })).toBeVisible()
-    expect(await screen.findByRole('button', { name: 'Add another virtual IP' })).toBeVisible()
     expect(screen.getByText('HA Timeout')).toBeVisible()
-    expect(screen.getByTestId('select-interface-drawer')).toBeVisible()
-  })
-
-  it('should add new VipInfoCard when clicking "Add another virtual IP"', async () => {
-    render(
-      <Provider>
-        <VirtualIp />
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
-    await userEvent.click(await screen.findByRole('button', { name: 'Add another virtual IP' }))
-    await waitFor(
-      async () =>
-        expect((await screen.findAllByRole('textbox', { name: 'Virtual IP Address' })).length).toBe(2)
-    )
-    expect(await screen.findByRole('button', { name: 'delete' })).toBeVisible()
   })
 
   it('should render correctly when having existed data', async () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    expect((await screen.findAllByTestId('interface-table')).length).toBe(2)
     const vips = await screen.findAllByRole('textbox', { name: 'Virtual IP Address' })
     expect(vips[0]).toHaveValue('192.168.13.1')
     expect(vips[1]).toHaveValue('192.168.14.1')
@@ -111,14 +85,13 @@ describe('Edit Edge Cluster - VirtualIp', () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    expect((await screen.findAllByTestId('interface-table')).length).toBe(2)
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedFinishFn).toBeCalledWith({
       virtualIpSettings: mockEdgeCluster.virtualIpSettings
@@ -129,7 +102,7 @@ describe('Edit Edge Cluster - VirtualIp', () => {
     render(
       <Provider>
         <VirtualIp
-          currentCluster={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
           currentVipConfig={mockEdgeCluster.virtualIpSettings}
         />
       </Provider>

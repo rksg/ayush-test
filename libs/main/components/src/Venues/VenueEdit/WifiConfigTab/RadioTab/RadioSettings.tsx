@@ -123,7 +123,7 @@ export function RadioSettings () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { tenantId, venueId } = useParams()
+  const { tenantId, venueId, wifiRadioTab } = useParams()
 
   const formRef = useRef<StepsFormLegacyInstance<VenueRadioCustomization>>()
   const isTriBandRadioRef = useRef<boolean>(false)
@@ -390,6 +390,9 @@ export function RadioSettings () {
     if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
       handleChange()
     }
+    if (wifiRadioTab) {
+      onTabChange(wifiRadioTab)
+    }
   }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
@@ -588,12 +591,18 @@ export function RadioSettings () {
   }
 
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    update5gData(data)
+    const validationResult = await validationFields() as any
+    if (validationResult?.errorFields) return
 
+    update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
@@ -663,10 +672,13 @@ export function RadioSettings () {
       tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
+
+    const errors = formRef?.current?.getFieldsError().find((field) => field.errors.length > 0)
+
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings,
+      updateWifiRadio: errors ? () => {} : handleUpdateRadioSettings,
       discardWifiRadioChanges: handleDiscard
     })
   }

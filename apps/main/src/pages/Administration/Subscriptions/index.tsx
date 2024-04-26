@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
 import { Alert, Button, Space } from 'antd'
+import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
@@ -30,11 +31,13 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { filterByAccess }                  from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
+import { SubscriptionTabs }   from './SubscriptionsTab'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -69,10 +72,14 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'future',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
-const SubscriptionTable = () => {
+export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
@@ -102,7 +109,6 @@ const SubscriptionTable = () => {
         title: $t({ defaultMessage: 'Subscription' }),
         dataIndex: 'deviceType',
         key: 'deviceType',
-        // fixed: 'left',
         filterMultiple: false,
         filterValueNullable: true,
         filterable: licenseTypeOpts.filter(o =>
@@ -197,9 +203,13 @@ const SubscriptionTable = () => {
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'active'
-          ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+        if (row.status === 'active') {
+          return $t({ defaultMessage: 'Active' })
+        } else if (row.status === 'future') {
+          return $t({ defaultMessage: 'Future' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
       }
     }
   ]
@@ -237,15 +247,16 @@ const SubscriptionTable = () => {
     }
   ]
 
-  const GetStatus = (expirationDate: string) => {
+  const GetStatus = (effectiveDate: string, expirationDate: string) => {
     const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
-    return remainingDays < 0 ? 'expired' : 'active'
+    const isFuture = moment(new Date()).isBefore(effectiveDate)
+    return remainingDays < 0 ? 'expired' : isFuture ? 'future' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      status: GetStatus(response?.expirationDate)
+      status: GetStatus(response?.effectiveDate, response?.expirationDate)
     }
   }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
 
@@ -280,11 +291,16 @@ const SubscriptionTable = () => {
 }
 
 const Subscriptions = () => {
+  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const { tenantType } = getJwtTokenPayload()
+
   return (
-    <SpaceWrapper fullWidth size='large' direction='vertical'>
-      <SubscriptionHeader />
-      <SubscriptionTable />
-    </SpaceWrapper>
+    (isPendingActivationEnabled && tenantType === AccountType.REC)
+      ? <SubscriptionTabs />
+      : <SpaceWrapper fullWidth size='large' direction='vertical'>
+        <SubscriptionHeader />
+        <SubscriptionTable />
+      </SpaceWrapper>
   )
 }
 

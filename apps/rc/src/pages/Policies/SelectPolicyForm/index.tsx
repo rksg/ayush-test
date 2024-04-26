@@ -1,20 +1,36 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery, useGetEnhancedIdentityProviderListQuery }         from '@acx-ui/rc/services'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard,
+  StepsFormLegacy,
+  RadioCardCategory
+} from '@acx-ui/components'
+import {
+  Features,
+  TierFeatures,
+  useIsSplitOn,
+  useIsTierAllowed
+} from '@acx-ui/feature-toggle'
+import {
+  useGetApSnmpViewModelQuery,
+  useGetIdentityProviderListQuery,
+  useGetWifiOperatorListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  policyTypeLabelMapping
+  policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeDescMapping }                            from '../contentsMap'
 import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
+import { PROFILE_MAX_COUNT as WIFI_OPERATOR_MAX_COUNT }     from '../WifiOperator/constants'
 
 interface policyOption {
   type: PolicyType,
@@ -38,7 +54,13 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }, { skip: !supportApSnmp }).data?.totalCount || 0
-  const IdentityProviderTotalCount = useGetEnhancedIdentityProviderListQuery({
+  const WifiOperatorTotalCount = useGetWifiOperatorListQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
+  const IdentityProviderTotalCount = useGetIdentityProviderListQuery({
     params,
     payload: {
       fields: ['id']
@@ -46,6 +68,7 @@ export default function SelectPolicyForm () {
   }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -79,6 +102,11 @@ export default function SelectPolicyForm () {
 
   if (supportHotspot20R1) {
     sets.push({
+      type: PolicyType.WIFI_OPERATOR,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
+    })
+    sets.push({
       type: PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
       disabled: (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
@@ -98,6 +126,10 @@ export default function SelectPolicyForm () {
 
   if(cloudpathBetaEnabled) {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if (isCertificateTemplateEnabled) {
+    sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
   }
 
   return (

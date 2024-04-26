@@ -17,6 +17,7 @@ import { EdgeOverview } from '.'
 const { mockEdgeData: currentEdge } = EdgeGeneralFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -78,6 +79,14 @@ describe('Edge Detail Overview', () => {
             ctx.json(mockEdgeLagStatusList)
           )
         }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeClusterList)
+          )
+        }
       )
     )
   })
@@ -120,7 +129,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/ports-general',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports',
         hash: '',
         search: ''
       })
@@ -223,7 +232,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/lag',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/lags',
         hash: '',
         search: ''
       })

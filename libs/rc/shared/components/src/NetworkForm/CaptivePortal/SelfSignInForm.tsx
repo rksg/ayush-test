@@ -24,6 +24,7 @@ import {
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../styledComponents'
@@ -46,6 +47,7 @@ export function SelfSignInForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const [
@@ -162,6 +164,10 @@ export function SelfSignInForm () {
       }
       form.setFieldValue('allowSign', allowedSignValueTemp)
       setAllowedSignValue(allowedSignValueTemp)
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
@@ -378,10 +384,8 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 12 }}>

@@ -28,8 +28,6 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
-} from '@acx-ui/msp/services'
-import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
@@ -41,7 +39,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -54,7 +53,8 @@ import {
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
   AssignActionEnum,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -206,6 +206,7 @@ export function ManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -607,8 +608,7 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        service_expiration_date: expirationDate
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -618,8 +618,15 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+
+      if (originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {
@@ -642,7 +649,8 @@ export function ManageCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -688,14 +696,18 @@ export function ManageCustomer () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} {intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -855,6 +867,7 @@ export function ManageCustomer () {
           style={{ width: '300px' }}
           rules={[
             { required: true },
+            { max: 255 },
             { validator: (_, value) => emailRegExp(value) },
             { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
           ]}
@@ -865,6 +878,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'First Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -875,6 +890,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'Last Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -893,7 +910,8 @@ export function ManageCustomer () {
                   !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
                   && <Option
                     key={label}
-                    value={value}>{intl.$t(roleDisplayText[value])}
+                    value={value}>
+                    {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                   </Option>
                 ))
               }
@@ -1280,7 +1298,10 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -1373,6 +1394,8 @@ export function ManageCustomer () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1429,6 +1452,8 @@ export function ManageCustomer () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst

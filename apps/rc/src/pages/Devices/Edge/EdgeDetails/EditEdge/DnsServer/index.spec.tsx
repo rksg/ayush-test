@@ -1,22 +1,26 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi }                           from '@acx-ui/rc/services'
 import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
+import { Provider, store }                   from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 
+import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
+
 import DnsServer from './index'
 
-const { mockEdgeDnsServersData } = EdgeGeneralFixtures
+const { mockEdgeDnsServersData, mockEdgeClusterList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const updateRequestSpy = jest.fn()
 
 describe('EditEdge dns servers', () => {
   let params: { tenantId: string, serialNumber: string }
@@ -26,14 +30,14 @@ describe('EditEdge dns servers', () => {
       serialNumber: '000000000000'
     }
 
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        EdgeUrlsInfo.getDnsServers.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDnsServersData))
-      ),
       rest.patch(
         EdgeUrlsInfo.updateDnsServers.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          updateRequestSpy()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -41,7 +45,15 @@ describe('EditEdge dns servers', () => {
   it('should create DnsServer successfully', async () => {
     render(
       <Provider>
-        <DnsServer />
+        <EditEdgeDataContext.Provider
+          value={{
+            clusterInfo: mockEdgeClusterList.data[1],
+            dnsServersData: mockEdgeDnsServersData,
+            isDnsServersDataFetching: false
+          } as unknown as EditEdgeDataContextType}
+        >
+          <DnsServer />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/dns' }
       })
@@ -56,7 +68,15 @@ describe('EditEdge dns servers', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <DnsServer />
+        <EditEdgeDataContext.Provider
+          value={{
+            clusterInfo: mockEdgeClusterList.data[1],
+            dnsServersData: mockEdgeDnsServersData,
+            isDnsServersDataFetching: false
+          } as unknown as EditEdgeDataContextType}
+        >
+          <DnsServer />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/dns' }
       })
@@ -72,7 +92,15 @@ describe('EditEdge dns servers', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <DnsServer />
+        <EditEdgeDataContext.Provider
+          value={{
+            clusterInfo: mockEdgeClusterList.data[1],
+            dnsServersData: mockEdgeDnsServersData,
+            isDnsServersDataFetching: false
+          } as unknown as EditEdgeDataContextType}
+        >
+          <DnsServer />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/dns' }
       })
@@ -82,6 +110,7 @@ describe('EditEdge dns servers', () => {
     fireEvent.change(secondary, { target: { value: '5.6.7.8' } })
     const applyButton = screen.getByRole('button', { name: 'Apply DNS Server' })
     await user.click(applyButton)
+    await waitFor(() => expect(updateRequestSpy).toHaveBeenCalledTimes(1))
   })
 
 })
@@ -110,7 +139,15 @@ describe('EditEdge dns servers fail case', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <DnsServer />
+        <EditEdgeDataContext.Provider
+          value={{
+            clusterInfo: mockEdgeClusterList.data[1],
+            dnsServersData: mockEdgeDnsServersData,
+            isDnsServersDataFetching: false
+          } as unknown as EditEdgeDataContextType}
+        >
+          <DnsServer />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/dns' }
       })

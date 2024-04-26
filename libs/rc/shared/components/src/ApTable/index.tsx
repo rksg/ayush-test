@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, f
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
-import _                       from 'lodash'
+import { find }                from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -43,7 +43,6 @@ import {
   TableResult,
   usePollingTableQuery,
   APExtendedGrouped,
-  AFCMaxPowerRender,
   AFCPowerStateRender,
   AFCStatusRender,
   getFilters,
@@ -59,7 +58,7 @@ import { RequestPayload }                                                 from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApFeatureCompatibility, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibilityDrawer'
+import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
@@ -215,10 +214,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           apCompatibilities = apCompatibilitiesResponse.apCompatibilities
         }
 
-        if (apCompatibilities.length > 0) {
+        if (apCompatibilities?.length > 0) {
           apIds.forEach((id:string) => {
-            const apIncompatible = _.find(apCompatibilities, ap => id===ap.id)
-            apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            const apIncompatible = find(apCompatibilities, ap => id===ap.id)
+            if (apIncompatible) {
+              apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
+            }
           })
           if (hasGroupBy) {
             tableQuery.data.data?.forEach(item => {
@@ -416,7 +417,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       {
         key: 'uptime',
         title: $t({ defaultMessage: 'Up Time' }),
-        dataIndex: 'uptime',
+        dataIndex: 'apStatusData.APSystem.uptime',
         sorter: true,
         render: (data: React.ReactNode, row: APExtended) => {
           const uptime = row.apStatusData?.APSystem?.uptime
@@ -519,15 +520,6 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </>
         )
       }
-    },
-    { key: 'afcMaxPower',
-      title: $t({ defaultMessage: 'AFC Max Power' }),
-      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
-      }
     }
     ]: []),
     ...(enableApCompatibleCheck ? [{
@@ -545,7 +537,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       show: false,
       sorter: false,
       render: (_: React.ReactNode, row: APExtended) => {
-        return (<ApFeatureCompatibility
+        return (<ApCompatibilityFeature
           count={row?.incompatible}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
@@ -561,13 +553,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const isActionVisible = (
     selectedRows: APExtended[],
-    { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
+    { selectOne, deviceStatus }: { selectOne?: boolean, deviceStatus?: string[] }) => {
     let visible = true
-    if (isOperational) {
-      visible = selectedRows.every(ap => ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
-    }
     if (selectOne) {
-      visible = visible && selectedRows.length === 1
+      visible = selectedRows.length === 1
+    }
+    if (visible && deviceStatus && deviceStatus.length > 0) {
+      visible = selectedRows.every(ap => deviceStatus.includes(ap.deviceStatus))
     }
     return visible
   }
@@ -585,14 +577,14 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
-  // ACX-25402: Waiting for integration with group by table
-  //   label: $t({ defaultMessage: 'Delete AP Group' }),
-  //   onClick: async (rows, clearSelection) => {
-  //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
-  //   }
-  // }, {
+    // ACX-25402: Waiting for integration with group by table
+    //   label: $t({ defaultMessage: 'Delete AP Group' }),
+    //   onClick: async (rows, clearSelection) => {
+    //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
+    //   }
+    // }, {
     label: $t({ defaultMessage: 'Reboot' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
         showToast({
@@ -611,7 +603,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
     onClick: (rows) => {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
@@ -782,6 +774,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
+        isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
       />
     </Loader>

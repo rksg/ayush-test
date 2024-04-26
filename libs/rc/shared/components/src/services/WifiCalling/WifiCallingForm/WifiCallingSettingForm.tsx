@@ -5,9 +5,18 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm }                                                                                            from '@acx-ui/components'
-import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery }                                     from '@acx-ui/rc/services'
-import { QosPriorityEnum, WifiCallingActionTypes, servicePolicyNameRegExp, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
+import { StepsForm }                                                     from '@acx-ui/components'
+import {
+  useGetEnhancedWifiCallingServiceListQuery, useGetEnhancedWifiCallingServiceTemplateListQuery,
+  useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
+} from '@acx-ui/rc/services'
+import {
+  QosPriorityEnum,
+  WifiCallingActionTypes,
+  servicePolicyNameRegExp,
+  wifiCallingQosPriorityLabelMapping,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -15,6 +24,18 @@ import EpdgTable from './EpdgTable'
 
 type WifiCallingSettingFormProps = {
   edit?: boolean
+}
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'qosPriority',
+    'tenantId',
+    'epdgs',
+    'networkIds'
+  ]
 }
 
 const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
@@ -26,11 +47,18 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const {
     state, dispatch
   } = useContext(WifiCallingFormContext)
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
-    skip: !useParams().hasOwnProperty('serviceId')
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetWifiCallingServiceQuery,
+    useGetWifiCallingServiceTemplateQuery,
+    !useParams().hasOwnProperty('serviceId')
+  )
 
-  const { data: dataList } = useGetWifiCallingServiceListQuery({ params: useParams() })
+  const { data: dataList } = useConfigTemplateQueryFnSwitcher(
+    useGetEnhancedWifiCallingServiceListQuery,
+    useGetEnhancedWifiCallingServiceTemplateListQuery,
+    false,
+    defaultPayload
+  )
 
   const handleServiceName = (serviceName: string) => {
     dispatch({
@@ -118,8 +146,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             { min: 2 },
             { max: 32 },
             { validator: async (rule, value) => {
-              if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
-                profile.serviceName === value) !== -1
+              if (!edit && value && dataList?.data.length && dataList?.data.findIndex((profile) =>
+                profile.name === value) !== -1
               ) {
                 return Promise.reject(
                   $t({ defaultMessage: 'The wifi calling service with that name already exists' })

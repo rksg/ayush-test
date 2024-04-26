@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 
 import { Divider, Form, Select } from 'antd'
-import { replace }               from 'lodash'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, PasswordInput }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drawer, PasswordInput }   from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   SwitchViewModel,
   getAdminPassword,
   getSwitchModel,
-  getStackMemberStatus
+  getStackMemberStatus,
+  isFirmwareSupportAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -36,6 +36,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
+  const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
 
   const parserUnitDetialsData = (count = 0) => {
     const unitDetails = switchDetail?.unitDetails && switchDetail?.unitDetails[count]
@@ -61,7 +62,9 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
       : $t({ defaultMessage: 'Dynamic (DHCP)' })
   }
   const dnsParser = (dns:string) => {
-    return replace(dns, /,/g, '\r\n')
+    const dnsList = dns.split(',').slice(0, 4)
+    return (<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      {dnsList.map(val => <li>{val}</li>)}</ul>)
   }
   return <Drawer
     width={'450px'}
@@ -81,10 +84,10 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         />
         <Form.Item
           label={$t({ defaultMessage: 'Description' })}
-          children={switchDetail.venueDescription || $t({ defaultMessage: 'None' })}
+          children={switchDetail.description || $t({ defaultMessage: 'None' })}
         />
         <Divider/>
-        { enableSwitchAdminPassword && <Form.Item
+        { enableSwitchAdminPassword && isSupportAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
           children={getAdminPassword(switchDetail, PasswordInput)}
         />}

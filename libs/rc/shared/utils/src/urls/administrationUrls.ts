@@ -169,6 +169,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/entitlement',
     newApi: true
   },
+  getEntitlementsActivations: {
+    method: 'post',
+    url: '/entitlements/orders/query',
+    newApi: true
+  },
   refreshLicensesData: {
     method: 'get',
     url: '/entitlements/summaries?refresh=true',
@@ -240,6 +245,51 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getAdminGroupLastLogins: {
     method: 'get',
     url: '/events/adminGroups/:adminGroupId/latestLogins',
+    newApi: true
+  },
+  getCustomRoles: {
+    method: 'get',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  addCustomRole: {
+    method: 'post',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  updateCustomRole: {
+    method: 'put',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
+  deleteCustomRole: {
+    method: 'delete',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
+  getOnePrivilegeGroup: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  addPrivilegeGroup: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  updatePrivilegeGroup: {
+    method: 'put',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  deletePrivilegeGroup: {
+    method: 'delete',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
     newApi: true
   }
 }

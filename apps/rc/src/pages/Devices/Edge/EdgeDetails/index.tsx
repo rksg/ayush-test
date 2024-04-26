@@ -1,4 +1,5 @@
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
 
 import { EdgeDetailsPageHeader } from './EdgeDetailsPageHeader'
 import { EdgeDhcp }              from './EdgeDhcp'
@@ -17,7 +18,7 @@ const tabs = {
 
 export default function EdgeDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return <>
     <EdgeDetailsPageHeader />

@@ -12,13 +12,13 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockNetworkSaveData, mockDeepNetworkList } from '../../__tests__/fixtures'
+import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
 import { EdgeSdLanP2ActivatedNetworksTable } from '.'
 
 const mockedSetFieldValue = jest.fn()
 const mockedOnChangeFn = jest.fn()
-const mockedGetNetworkDeepList = jest.fn()
+const mockedGetNetworkViewmodelList = jest.fn()
 const { click } = userEvent
 
 jest.mock('../../../NetworkForm/AddNetworkModal', () => ({
@@ -29,7 +29,7 @@ jest.mock('../../../NetworkForm/AddNetworkModal', () => ({
 describe('Edge SD-LAN ActivatedNetworksTable', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-    mockedGetNetworkDeepList.mockReset()
+    mockedGetNetworkViewmodelList.mockReset()
     mockedOnChangeFn.mockReset()
     store.dispatch(networkApi.util.resetApiState())
 
@@ -39,15 +39,18 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
+        CommonUrlsInfo.getVenueNetworkList.url,
         (_req, res, ctx) => {
-          mockedGetNetworkDeepList()
-          return res(ctx.json(mockDeepNetworkList))
+          mockedGetNetworkViewmodelList()
+          return res(ctx.json({
+            data: mockNetworkViewmodelList,
+            page: 0,
+            totalCount: mockNetworkViewmodelList.length
+          }))
         }
       )
     )
   })
-
   it('should correctly render', async () => {
     render(
       <Provider>
@@ -86,14 +89,10 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       {
         id: 'network_3',
         name: 'MockedNetwork 3',
-        type: NetworkTypeEnum.OPEN
+        nwSubType: NetworkTypeEnum.OPEN
       },
       false,
-      [{
-        id: 'network_2',
-        name: 'MockedNetwork 2',
-        type: NetworkTypeEnum.PSK
-      }])
+      ['network_2'])
   })
   it('should correctly activate by switcher', async () => {
     render(
@@ -112,14 +111,10 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       {
         id: 'network_2',
         name: 'MockedNetwork 2',
-        type: NetworkTypeEnum.PSK
+        nwSubType: NetworkTypeEnum.PSK
       },
       true,
-      [{
-        id: 'network_2',
-        name: 'MockedNetwork 2',
-        type: NetworkTypeEnum.PSK
-      }])
+      ['network_2'])
   })
 
   it('can change column header title by props', async () => {
@@ -156,6 +151,20 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     await checkPageLoaded()
     await userEvent.click(screen.getByRole('button', { name: 'Add Wi-Fi Network' }))
     expect(screen.queryByTestId('AddNetworkModal')).toBeVisible()
+  })
+  it('should grey out OWE transition network', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanP2ActivatedNetworksTable
+          venueId='mocked-venue'
+          isGuestTunnelEnabled={false}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await checkPageLoaded()
+    const switchBtn = within(await screen.findByRole('row', { name: /MockedNetwork 6/i }))
+      .getByRole('switch')
+    expect(switchBtn).toBeDisabled()
   })
 
   describe('Guest tunnel enabled', () => {
@@ -220,33 +229,32 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
         {
           id: 'network_4',
           name: 'MockedNetwork 4',
-          type: NetworkTypeEnum.CAPTIVEPORTAL
+          nwSubType: NetworkTypeEnum.CAPTIVEPORTAL
         },
         false,
         [])
     })
 
     it('should grey out vlan pooling network tunnel to DMZ', async () => {
-      const withVlanPoolEnabled = _.cloneDeep(mockDeepNetworkList)
-      withVlanPoolEnabled.response.forEach((item) => {
-        if (item.type === NetworkTypeEnum.CAPTIVEPORTAL) {
-          item.wlan = {
-            advancedCustomization: {
-              vlanPool: {
-                name: '',
-                vlanMembers: []
-              }
-            }
+      const withVlanPoolEnabled = _.cloneDeep(mockNetworkViewmodelList)
+      withVlanPoolEnabled.forEach((item) => {
+        if (item.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
+          item.vlanPool = {
+            name: ''
           }
         }
       })
 
       mockServer.use(
         rest.post(
-          CommonUrlsInfo.getNetworkDeepList.url,
+          CommonUrlsInfo.getVenueNetworkList.url,
           (_req, res, ctx) => {
-            mockedGetNetworkDeepList()
-            return res(ctx.json(withVlanPoolEnabled))
+            mockedGetNetworkViewmodelList()
+            return res(ctx.json({
+              data: withVlanPoolEnabled,
+              page: 0,
+              totalCount: withVlanPoolEnabled.length
+            }))
           }
         )
       )
@@ -273,8 +281,8 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 })
 
 const checkPageLoaded = async (): Promise<HTMLElement[]> => {
-  await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+  await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
   const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-  expect(rows.length).toBe(4)
+  expect(rows.length).toBe(7)
   return rows
 }

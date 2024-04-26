@@ -5,13 +5,14 @@ import { PageHeader, Button, GridRow, Loader, GridCol }              from '@acx-
 import { useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  getPolicyDetailsLink,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate, usePolicyListBreadcrumb
+  useConfigTemplateQueryFnSwitcher,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
 
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'
@@ -28,14 +29,16 @@ export function AAAPolicyDetail () {
         title={queryResults.data?.name||''}
         breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.AAA,
-            oper: PolicyOperation.EDIT,
-            policyId: params.policyId as string
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button></TenantLink>
+          <PolicyConfigTemplateLinkSwitcher
+            type={PolicyType.AAA}
+            oper={PolicyOperation.EDIT}
+            policyId={params.policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ])}
       />
       <GridRow>
@@ -53,15 +56,5 @@ export function AAAPolicyDetail () {
 }
 
 export function useGetAAAPolicyInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const requestPayload = { params }
-  const aaaPolicyResult = useGetAAAProfileDetailQuery(requestPayload, {
-    skip: isTemplate
-  })
-  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery(requestPayload, {
-    skip: !isTemplate
-  })
-
-  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
+  return useConfigTemplateQueryFnSwitcher(useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery)
 }

@@ -14,10 +14,10 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse,
   cloudPathDataNone,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathForm } from './CloudpathForm'
@@ -45,10 +45,6 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -63,24 +59,50 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Cloudpath Captive portal network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: false, cloneMode: true, data: { ...cloudPathDataNone.wlan }
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: true, data: { ...cloudPathDataNone.wlan }
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <CloudpathForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByRole('checkbox', {
       name: /use mac authentication during reconnection/i
     })).toBeChecked()
   })
   it('should render Cloudpath Captive portal network successfully', async () => {
-    render(<Provider><NetworkFormContext.Provider
-      value={{
-        editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
-      }}
-    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
-      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <CloudpathForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
     expect(await screen.findByRole('checkbox', {
       name: /use mac authentication during reconnection/i
     })).toBeChecked()

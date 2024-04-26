@@ -48,7 +48,11 @@ export function useMenuConfig () {
   const [search] = useSearchParams()
   const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
-  const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
+  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -105,7 +109,7 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Network Assurance' }),
             children: [
               {
-                uri: '/health',
+                uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
                 label: $t({ defaultMessage: 'Health' })
               },
               ...(hasManageServiceGuardPermission ? [
@@ -277,16 +281,15 @@ export function useMenuConfig () {
           children: [
             ...(hasManageMlisaPermission ? [
               {
-                uri: legacyLink('/analytics/admin/onboarded', search),
-                label: $t({ defaultMessage: 'Onboarded Systems' }),
-                openNewTab: true
+                uri: '/admin/onboarded',
+                label: $t({ defaultMessage: 'Onboarded Systems' })
               },
               {
-                uri: isUsersPageEnabled
-                  ? '/analytics/admin/users'
+                uri: isNewUserRolesEnabled
+                  ? '/admin/users'
                   : legacyLink('/analytics/admin/users', search),
                 label: $t({ defaultMessage: 'Users' }),
-                openNewTab: !isUsersPageEnabled
+                openNewTab: !isNewUserRolesEnabled
               }
             ] : []),
             ...(hasManageLabelPermission ? [
@@ -303,9 +306,8 @@ export function useMenuConfig () {
                 openNewTab: true
               },
               {
-                uri: legacyLink('/analytics/admin/support', search),
-                label: $t({ defaultMessage: 'Support' }),
-                openNewTab: true
+                uri: '/admin/support',
+                label: $t({ defaultMessage: 'Support' })
               },
               {
                 uri: legacyLink('/analytics/admin/license', search),
@@ -320,9 +322,8 @@ export function useMenuConfig () {
             },
             ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
               {
-                uri: legacyLink('/analytics/admin/webhooks', search),
-                label: $t({ defaultMessage: 'Webhooks' }),
-                openNewTab: true
+                uri: '/admin/webhooks',
+                label: $t({ defaultMessage: 'Webhooks' })
               }
             ] : [])
           ]

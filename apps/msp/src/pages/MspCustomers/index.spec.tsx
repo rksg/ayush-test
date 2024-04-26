@@ -306,32 +306,6 @@ describe('MspCustomers', () => {
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })
-  it('should render correctly when feature flag turned off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(await screen.findByText('My Customers')).toBeVisible()
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
-    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
-    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
-    expect(screen.getByText('Switch Licenses')).toBeVisible()
-    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    expect(screen.getByText('Active From')).toBeVisible()
-    expect(screen.getByText('Service Expires On')).toBeVisible()
-    expect(screen.queryByText('Tenant ID')).toBeNull()
-
-    expect(screen.queryByText('Installed Devices')).toBeNull()
-    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
-  })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
@@ -687,6 +661,7 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
   })
   it('should open dialog when integrator link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -707,6 +682,7 @@ describe('MspCustomers', () => {
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

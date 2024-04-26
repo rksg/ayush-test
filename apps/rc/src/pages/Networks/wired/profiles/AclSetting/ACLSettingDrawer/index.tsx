@@ -12,9 +12,17 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                     from '@acx-ui/user'
+import { Drawer, Table, TableProps } from '@acx-ui/components'
+import {
+  Acl,
+  AclExtendedRule,
+  AclStandardRule,
+  checkAclName,
+  defaultSort,
+  sortProp,
+  validateDuplicateAclName
+} from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
@@ -22,7 +30,7 @@ import { ACLRuleModal } from './ACLRuleModal'
 
 export interface ACLSettingDrawerProps {
   rule?: Acl
-  setRule: (r: Acl) => void
+  setRule: (oldRule: Acl, newRule: Acl) => void
   editMode: boolean
   visible: boolean
   setVisible: (v: boolean) => void
@@ -90,7 +98,7 @@ interface ACLSettingFormProps {
   form: FormInstance<Acl>
   editMode: boolean
   rule?: Acl
-  setRule: (r: Acl) => void
+  setRule: (oldRule: Acl, newRule: Acl) => void
   aclType: string
   setAclType: (r: string) => void
   aclsTable: Acl[]
@@ -118,6 +126,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       title: $t({ defaultMessage: 'Sequence #' }),
       dataIndex: 'sequence',
       key: 'sequence',
+      sorter: { compare: sortProp('sequence', defaultSort) },
+      defaultSortOrder: 'ascend',
       width: 100
     },
     {
@@ -247,7 +257,11 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         layout='vertical'
         form={form}
         onFinish={(data: Acl) => {
-          setRule(data)
+          if(editMode && rule){
+            setRule(rule, data)
+          }else{
+            setRule({} as Acl, data)
+          }
           form.resetFields()
         }}
       >
@@ -261,14 +275,15 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
+          validateFirst
           rules={[
             { required: true },
-            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
+            { validator: (_, value) => checkAclName(value) },
             { validator: (_, value) => editMode ?
-              validateDuplicateAclName(value, aclsTable.filter(item => item.aclRules === value)) :
+              validateDuplicateAclName(value, aclsTable.filter(item => item.name !== rule?.name)) :
               validateDuplicateAclName(value, aclsTable) }
           ]}
-          children={<Input style={{ width: '400px' }} disabled={editMode}/>}
+          children={<Input style={{ width: '400px' }} />}
         />
         <Form.Item
           name='aclType'

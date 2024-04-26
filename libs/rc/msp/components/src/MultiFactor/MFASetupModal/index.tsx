@@ -36,6 +36,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
     // redirect to login page
     const token = sessionStorage.getItem('jwt')?? null
     sessionStorage.removeItem('jwt')
+    sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
     window.location.href = token? `/logout?token=${token}` : '/logout'
   }
 
@@ -58,7 +59,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const disableBtn = mfaEnabled && !otpToggle && !authAppToggle
 
   return <Modal
-    title={$t({ defaultMessage: 'Multi-Factors Authentication Setup' })}
+    title={$t({ defaultMessage: 'Multi-Factor Authentication Setup' })}
     width={510}
     visible={true}
     okText={$t({ defaultMessage: 'Log in' })}

@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -61,7 +62,7 @@ const editPortVlans = async (
   }
 
   if (inputUntagged) {
-    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLAN' }))
     const untaggedTabPanel = await within(dialog).findByRole('tabpanel', { hidden: false })
     const untaggedInput = await within(untaggedTabPanel).findByTestId('untagged-input')
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
@@ -73,10 +74,16 @@ const editPortVlans = async (
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
 }))
+const mockedCyclePoe = jest.fn().mockImplementation(() => ({
+  unwrap: jest.fn()
+}))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useSavePortsSettingMutation: () => [
     mockedSavePortsSetting, { reset: jest.fn() }
+  ],
+  useCyclePoeMutation: () => [
+    mockedCyclePoe, { reset: jest.fn() }
   ]
 }))
 
@@ -124,6 +131,7 @@ describe('EditPortDrawer', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockedSavePortsSetting.mockClear()
+    mockedCyclePoe.mockClear()
     setDrawerVisible.mockClear()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
@@ -169,6 +177,8 @@ describe('EditPortDrawer', () => {
         (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(SwitchUrlsInfo.portsPowerCycle.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -217,6 +227,35 @@ describe('EditPortDrawer', () => {
           poeClass: 'UNSET'
         })
       )
+    })
+
+    it('should cycle PoE correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      const poeEnableButton = await screen.findAllByTestId('poeEnable')
+      expect(poeEnableButton[0]).toBeChecked()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Cycle PoE' }))
+      expect(mockedCyclePoe).toHaveBeenCalled()
     })
 
     it('should customized VLAN correctly', async () => {
@@ -543,7 +582,7 @@ describe('EditPortDrawer', () => {
       const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
-      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLANs' }))
+      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLAN' }))
       const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
 

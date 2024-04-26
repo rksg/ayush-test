@@ -24,7 +24,9 @@ import {
   sortPortFunction,
   isSameModelFamily,
   convertInputToUppercase,
-  isL3FunctionSupported
+  isL3FunctionSupported,
+  isFirmwareVersionAbove10,
+  isFirmwareSupportAdminPassword
 } from '.'
 
 const switchRow ={
@@ -282,18 +284,32 @@ describe('switch.utils', () => {
   })
 
   describe('Test getClientIpAddr function', () => {
-    const data = {
+    const legacyDefaultData = {
       clientIpv4Addr: '0.0.0.0',
       clientIpv6Addr: '0:0:0:0:0:0:0:0'
     } as SwitchClient
+
+    const defaultData = {
+      clientIpv4Addr: '',
+      clientIpv6Addr: ''
+    } as SwitchClient
     it('should render correctly', async () => {
-      expect(getClientIpAddr(data)).toBe('--')
+      expect(getClientIpAddr(legacyDefaultData)).toBe('--')
+      expect(getClientIpAddr(defaultData)).toBe('--')
       expect(getClientIpAddr({
-        ...data,
+        ...legacyDefaultData,
         clientIpv4Addr: '192.168.1.1'
       })).toBe('192.168.1.1')
       expect(getClientIpAddr({
-        ...data,
+        ...legacyDefaultData,
+        clientIpv6Addr: '1:0:0:0:0:0:0:0'
+      })).toBe('1:0:0:0:0:0:0:0')
+      expect(getClientIpAddr({
+        ...defaultData,
+        clientIpv4Addr: '192.168.1.1'
+      })).toBe('192.168.1.1')
+      expect(getClientIpAddr({
+        ...defaultData,
         clientIpv6Addr: '1:0:0:0:0:0:0:0'
       })).toBe('1:0:0:0:0:0:0:0')
     })
@@ -359,6 +375,31 @@ describe('switch.utils', () => {
     })
   })
 
+  describe('Test isFirmwareVersionAbove10 function', () => {
+    it('should render correctly', async () => {
+      expect(isFirmwareVersionAbove10('SPR09010j_cd1')).toBe(false)
+      expect(isFirmwareVersionAbove10('SPR09010j_cd2')).toBe(false)
+      expect(isFirmwareVersionAbove10('SPR09010f')).toBe(false)
+
+      expect(isFirmwareVersionAbove10('SPR10020_rc35')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010c_cd1')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010c_cd2_b4')).toBe(true)
+      expect(isFirmwareVersionAbove10('SPR10010b_rc88')).toBe(true)
+    })
+  })
+
+  describe('Test isFirmwareSupportAdminPassword function', () => {
+    it('should render correctly', async () => {
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010j_cd2')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR09010f')).toBe(false)
+
+      expect(isFirmwareSupportAdminPassword('SPR10020_rc35')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd1')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010c_cd2_b4')).toBe(true)
+      expect(isFirmwareSupportAdminPassword('SPR10010b_rc88')).toBe(false)
+    })
+  })
 
   describe('Test convertInputToUppercase function', () => {
     it('should render correctly', async () => {

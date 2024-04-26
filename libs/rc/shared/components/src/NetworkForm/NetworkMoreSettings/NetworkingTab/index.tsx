@@ -5,6 +5,7 @@ import { useIntl, defineMessage }                         from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { RadiusOptionsForm }                  from '../../../RadiusOptionsForm'
@@ -34,9 +35,7 @@ export function NetworkingTab (props: {
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
-  const ambFlag = useIsSplitOn(Features.WIFI_AMB_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
-  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
@@ -67,16 +66,12 @@ export function NetworkingTab (props: {
     }
   }, [enableAirtimeDecongestion, enableJoinRSSIThreshold])
 
-  let networkWPASecuredList = [
+  const networkWPASecuredList = [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise]
-
-  if (enableWPA3_80211R) {
-    networkWPASecuredList = networkWPASecuredList.concat([
-      WlanSecurityEnum.WPA23Mixed,
-      WlanSecurityEnum.WPA3])
-  }
+    WlanSecurityEnum.WPA2Enterprise,
+    WlanSecurityEnum.WPA23Mixed,
+    WlanSecurityEnum.WPA3]
 
   const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
     networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false
@@ -91,24 +86,22 @@ export function NetworkingTab (props: {
 
   return (
     <>
-      {ambFlag &&
-        <UI.FieldLabel width={labelWidth}>
-          <Space align='start'>
-            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
-            <Tooltip.Question
-              title={agileMultibandTooltipContent}
-              placement='right'
-              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
-          </Space>
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}/>
-        </UI.FieldLabel>
-      }
+      <UI.FieldLabel width={labelWidth}>
+        <Space align='start'>
+          {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+          <Tooltip.Question
+            title={agileMultibandTooltipContent}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}/>
+      </UI.FieldLabel>
 
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
@@ -184,7 +177,18 @@ export function NetworkingTab (props: {
         </UI.LabelOfInput>
         <Form.Item
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
-          label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+          label={
+            <>
+              {$t({ defaultMessage: 'Client Inactivity Timeout' })}
+              <Tooltip
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'The max value for Wi-Fi 6E and Wi-Fi 7 AP models is 4200.' })}
+                placement='bottom'
+              >
+                <QuestionMarkCircleOutlined/>
+              </Tooltip>
+            </>
+          }
           initialValue={120}
           rules={[{
             type: 'number', max: 86400, min: 60,

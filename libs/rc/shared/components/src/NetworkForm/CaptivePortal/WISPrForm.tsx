@@ -478,7 +478,7 @@ export function WISPrForm () {
           extra={networkSecurityDescription()}
           children={
             <Select
-              placeholder={$t({ defaultMessage: 'Select...' })}
+              placeholder={$t({ defaultMessage: 'None' })}
               options={networkSecurityOptions}
               onChange={(selected: string) => {
                 let security = data?.wlan?.wlanSecurity
@@ -610,10 +610,8 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} />
+        <BypassCaptiveNetworkAssistantCheckbox />
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&

@@ -55,7 +55,8 @@ import {
   SwitchVlan,
   downloadFile,
   SEARCH,
-  SORTER
+  SORTER,
+  SwitchPortViewModelQueryFields
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -102,7 +103,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           fetchWithBQ(genStackMemberPayload(arg, id))
         ))
         stacks.forEach((id:string, index:number) => {
-          stackMembers[id] = allStacksMember[index]?.data.data
+          stackMembers[id] = allStacksMember[index]?.data?.data
         })
 
         const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {
@@ -408,6 +409,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+    }),
+    cyclePoe: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.portsPowerCycle, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -835,14 +845,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
           body: {
             fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
-            filters: { id: _.uniq(list.data.map(c=>c.switchId)) },
+            filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
           }
         }
         const switchesQuery = await fetchWithBQ(switchesInfo)
         const switches = switchesQuery.data as TableResult<SwitchRow>
 
-        const aggregatedList = aggregatedSwitchClientData(list, switches)
+
+        const switchPortsInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchPortlist, arg.params),
+          body: {
+            fields: SwitchPortViewModelQueryFields,
+            filters: { portId: _.uniq(list.data.map(c=>c.switchPortId)) },
+            pageSize: 10000
+          }
+        }
+        const switchPortsQuery = await fetchWithBQ(switchPortsInfo)
+        const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
+
+        const aggregatedList = aggregatedSwitchClientData(list, switches, switchPorts)
 
         return listQuery.data
           ? { data: aggregatedList }
@@ -887,6 +909,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
         return {
           ...req
+        }
+      }
+    }),
+    blinkLeds: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -1139,7 +1170,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params)
         return {
           ...req,
           body: payload
@@ -1273,11 +1304,14 @@ const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
 
 const aggregatedSwitchClientData = (
   clients: TableResult<SwitchClient>,
-  switches: TableResult<SwitchRow>
+  switches: TableResult<SwitchRow>,
+  switchPortsQuery?: TableResult<SwitchPortViewModel>
 ) => {
   const data:SwitchClient[] = clients.data.map(item => {
     const target = switches.data.find(s => s.id === item.switchId)
-    return { ...item, switchId: target ? item.switchId : '' } // use switchId to mark non-exist switch
+    const switchPortStatus = switchPortsQuery?.data.find(p => p.portId === item.switchPortId)
+    const switchId = target ? item.switchId : ''
+    return switchPortsQuery ? { ...item, switchId, switchPortStatus } : { ...item, switchId } // use switchId to mark non-exist switch
   })
   return {
     ...clients,
@@ -1305,6 +1339,7 @@ export const {
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,
   useLazyGetPortsSettingQuery,
+  useCyclePoeMutation,
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
   useGetDefaultVlanQuery,
@@ -1362,6 +1397,7 @@ export const {
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
+  useBlinkLedsMutation,
   usePingMutation,
   useTraceRouteMutation,
   useIpRouteMutation,

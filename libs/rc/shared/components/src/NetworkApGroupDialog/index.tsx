@@ -38,7 +38,8 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum
+  WlanSecurityEnum, NetworkTypeEnum,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -88,9 +89,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
-  const { wlan } = network || {}
+  const { wlan, type } = network || {}
 
   const [form] = Form.useForm()
 
@@ -196,7 +198,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
     const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
     const apGroupVlanPool = apgroup?.vlanPoolId ? {
-      name: apgroup.vlanPoolName || '',
+      name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
       id: apgroup.vlanPoolId || '',
       vlanMembers: []
     } : wlan?.advancedCustomization?.vlanPool
@@ -292,6 +294,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   function validateRadioBandForDsaeNetwork (radios: string[]) {
     if (wlan?.wlanSecurity
+         && type === NetworkTypeEnum.DPSK
          && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
          && radios.length
          && radios.length === 1
@@ -361,7 +364,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 )}
               </Form.Item>
 
-              <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
+              <Radio disabled={isTemplate} value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.List name='apgroups'>

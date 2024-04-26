@@ -45,7 +45,7 @@ describe('Edge venue firmware list', () => {
   beforeEach(async () => {
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
-      rest.get(
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (req, res, ctx) => res(ctx.json(venueFirmwareList))
       ),

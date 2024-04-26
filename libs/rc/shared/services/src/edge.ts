@@ -5,6 +5,7 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
+  ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
   EdgeCluster,
@@ -14,6 +15,7 @@ import {
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNodesPortsInfo,
   EdgePasswordDetail,
   EdgePortConfig,
   EdgePortInfo,
@@ -21,6 +23,7 @@ import {
   EdgePortTypeEnum,
   EdgePortWithStatus,
   EdgeResourceUtilizationData,
+  EdgeSerialNumber,
   EdgeService,
   EdgeStaticRouteConfig,
   EdgeStatus,
@@ -38,6 +41,7 @@ import {
   TableResult,
   TraceRouteEdge,
   downloadFile,
+  getEdgePortIpModeEnumValue,
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
@@ -178,7 +182,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.getPortConfig : EdgeUrlsInfo.getPortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req
         }
@@ -197,7 +203,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.updatePortConfig : EdgeUrlsInfo.updatePortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req,
           body: payload
@@ -720,6 +728,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           if(item.edgeList) {
             tmp.children = item.edgeList
             delete item.edgeList
+            if (tmp.children.length < 2)
+              // remove the HA status for 1 node case
+              tmp.children.forEach((edgeStat: EdgeStatus) => delete edgeStat.haStatus)
             EdgeStatusTransformer(tmp.children)
           }
           return tmp
@@ -816,6 +827,58 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    patchEdgeClusterNetworkSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterNetworkSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterNetworkSettings: build.query<ClusterNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterNetworkSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { edgeIds } = payload as { edgeIds: EdgeSerialNumber[] }
+        const result = {} as EdgeNodesPortsInfo
+
+        for(let edgeId of edgeIds) {
+          const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
+          const params = { serialNumber: edgeId }
+          const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+          const edgePortList = await fetchWithBQ({ ...edgePortListReq, body: {} })
+          tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
+
+          const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+          const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: {} })
+          tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
+          // filter ports
+          result[edgeId] = convertToEdgePortInfo(tmp, true)
+        }
+
+        return { data: result }
+      }
     })
   })
 })
@@ -834,26 +897,53 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
   return data
 }
 
-const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[]) => {
-  return interfaces.map(item => {
+const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], physicalOnly?: boolean) => {
+  const data = interfaces.map(item => {
+    const isPhysicalPort = item.hasOwnProperty('interfaceName')
+    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
+
     let portName = ''
-    if (item.hasOwnProperty('interfaceName')) {
-      portName = (item as EdgePortStatus).interfaceName ?? ''
+    let id = ''
+    let portType: EdgePortTypeEnum
+    let isLagMember = false
+    if (isPhysicalPort) {
+      const ifData = (item as EdgePortStatus)
+      id = ifData.portId
+      portName = ifData.interfaceName ?? ''
+      portType = ifData.type ?? ''
+      isLagMember = !!lagList?.some(lag =>
+        (lag as EdgeLagStatus).lagMembers?.some(member =>
+          member.name === ifData.interfaceName))
     } else {
-      portName = (item as EdgeLagStatus).name
+      const ifData = (item as EdgeLagStatus)
+      id = `${ifData.lagId}`
+      portName = ifData.name
+      portType = ifData.portType
     }
-    return {
+
+    return (physicalOnly && !isPhysicalPort) ? '' : {
       serialNumber: item.serialNumber ?? '',
+      id,
       portName,
+      portType,
+      isLag: !isPhysicalPort,
+      isLagMember,
+      ipMode: getEdgePortIpModeEnumValue(item.ipMode),
       ip: item.ip ?? '',
-      subnet: item.subnet ?? ''
+      mac: item.mac ?? '',
+      subnet: item.subnet ?? '',
+      isCorePort: item.isCorePort === 'Enabled',
+      portEnabled: item.adminStatus === 'Enabled'
     }
   })
+
+  return data.filter(d => !!d) as EdgePortInfo[]
 }
 
 export const {
   useAddEdgeMutation,
   useGetEdgeQuery,
+  useLazyGetEdgeQuery,
   usePingEdgeMutation,
   useTraceRouteEdgeMutation,
   useUpdateEdgeMutation,
@@ -864,6 +954,7 @@ export const {
   useGetDnsServersQuery,
   useUpdateDnsServersMutation,
   useGetPortConfigQuery,
+  useLazyGetPortConfigQuery,
   useUpdatePortConfigMutation,
   useGetSubInterfacesQuery,
   useAddSubInterfacesMutation,
@@ -873,6 +964,7 @@ export const {
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery,
+  useLazyGetEdgePortsStatusListQuery,
   useGetEdgeSubInterfacesStatusListQuery,
   useRebootEdgeMutation,
   useFactoryResetEdgeMutation,
@@ -891,6 +983,7 @@ export const {
   useAddEdgeLagMutation,
   useDeleteEdgeLagMutation,
   useGetEdgeLagListQuery,
+  useLazyGetEdgeLagListQuery,
   useAddLagSubInterfacesMutation,
   useGetLagSubInterfacesQuery,
   useDeleteLagSubInterfacesMutation,
@@ -905,5 +998,9 @@ export const {
   useDeleteEdgeClusterMutation,
   useGetAllInterfacesByTypeQuery,
   usePatchEdgeClusterMutation,
-  useGetEdgeClusterQuery
+  useGetEdgeClusterQuery,
+  usePatchEdgeClusterNetworkSettingsMutation,
+  useGetEdgeClusterNetworkSettingsQuery,
+  useGetEdgesPortStatusQuery,
+  useLazyGetEdgesPortStatusQuery
 } = edgeApi

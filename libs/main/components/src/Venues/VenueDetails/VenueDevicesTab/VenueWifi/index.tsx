@@ -117,7 +117,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return (
             <div>
               {row.apUpRssi && <span style={{ paddingRight: '30px' }}>
-                <SignalDownIcon />{row.apDownRssi}
+                <SignalDownIcon />{row.apUpRssi}
               </span>}
               {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
@@ -273,7 +273,7 @@ export function VenueWifi () {
               iconStyle={{
                 height: '16px',
                 width: '16px',
-                marginRight: '3px',
+                marginRight: '6px',
                 marginBottom: '-3px',
                 color: cssStr('--acx-accents-orange-50')
               }} />

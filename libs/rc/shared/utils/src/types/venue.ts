@@ -369,7 +369,7 @@ export interface AclRule {
 	destination?: string,
 	sequence: number
 	action: 'permit' | 'deny',
-	protocol: 'ip' | 'tcp' | 'udp'
+	protocol: 'ip' | 'tcp' | 'udp' | 'ipv6'
 	specificSrcNetwork?: string
 	specificDestNetwork?: string
 	sourcePort?: string | null
@@ -377,7 +377,7 @@ export interface AclRule {
 }
 
 export interface Acl {
-	aclType: 'standard' | 'extended'
+	aclType: 'standard' | 'extended' | 'IPv6'
 	id: string,
 	name: string,
 	aclRules: AclRule[]
@@ -743,99 +743,15 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
+export interface ApEnhancedKey {
+  tlsKeyEnhancedModeEnabled: boolean
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
-	useVenueSettings: boolean
-}
-
-export interface Node {
-    type?: DeviceTypes;
-    name: string;
-    category: number | string;
-    id?: string;
-    mac?: string;
-    serial?: string;
-    serialNumber?: string;
-    states?: DeviceStates,
-    childCount?: number;
-    symbol?: string;
-    symbolOffset?: Array<number>;
-	status?: DeviceStatus;
-	label?: string;
-	cloudPort?: string;
-	isConnectedCloud?: boolean;
-}
-
-export interface UINode {
-	id: string,
-    label?: string,
-    config: Node,
-    depth?: number,
-    expanded?: boolean,
-	x?: number,
-	y?: number
-}
-export interface Link {
-	id?: string;
-    source: string;
-    target: string;
-	from: string;
-    to: string;
-    connectionType?: string;
-    connectionStatus?: ConnectionStatus; // this needs to be enum
-    connectionStates?: ConnectionStates; // this needs to be enum
-    poeEnabled?: boolean;
-    linkSpeed?: string;
-    poeUsed?: number;
-    poeTotal?: number;
-    connectedPort?: string;
-	angle?: number;
-}
-export interface GraphData {
-    type: string;
-    categories: Array<Object>;
-    nodes: Array<Node>;
-    edges: Array<Link>;
-}
-
-export interface TopologyData {
-	nodes: Array<Node>;
-    edges: Array<Link>;
-}
-
-export enum ConnectionStatus {
-	Good='Good',
-    Degraded='Degraded',
-    Unknown='Unknown'
-}
-
-export enum DeviceStatus {
-	Operational='Operational',
-	Disconnected='Disconnected',
-	Degraded='Degraded',
-    Unknown='Unknown'
-}
-
-export enum DeviceStates {
-	Regular='Regular',
-	Hover='Hover',
-}
-
-export enum ConnectionStates {
-	Regular='Regular',
-	Hover='Hover',
-}
-
-export enum DeviceTypes {
-	Switch='Switch',
-	SwitchStack='SwitchStack',
-	Ap='Ap',
-	ApWired='ApWired',
-	ApMeshRoot='ApMeshRoot',
-	ApMesh='ApMesh',
-	Unknown='Unknown',
-	Cloud='Cloud'
+	useVenueSettings: boolean,
+	keepAp?: boolean
 }
 
 export interface MdnsFencingWirelessRule {
@@ -904,7 +820,7 @@ export enum SignalStrengthLevel {
 export interface ApFeatureSet {
   featureName: string,
   requiredFw?: string,
-  requiredModel?: string[]
+  supportedModelFamilies?: string[]
 }
 
 export interface ApCompatibilityFeatureResponse {

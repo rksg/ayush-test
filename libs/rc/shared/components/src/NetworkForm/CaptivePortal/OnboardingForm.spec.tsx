@@ -13,7 +13,6 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse,
   portalList,
   externalProviders
 } from '../__tests__/fixtures'
@@ -48,10 +47,6 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -67,7 +62,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
         res(ctx.json([]))
       ),
-      rest.post(PortalUrlsInfo.savePortal.url,
+      rest.post(PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => res(ctx.json({
           requestId: 'request-id', id: 'test', serviceName: 'test' }))
       ),
