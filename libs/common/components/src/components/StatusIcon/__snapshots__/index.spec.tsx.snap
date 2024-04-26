@@ -12,7 +12,7 @@ exports[`StatusIcon render FAIL StatusIcon 1`] = `
 exports[`StatusIcon render INPROGRESS StatusIcon 1`] = `
 <DocumentFragment>
   <svg
-    class="styledComponents__InProgressIcon-sc-1px55aj-3 dRYGR"
+    class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
     data-testid="InProgress"
   />
 </DocumentFragment>
