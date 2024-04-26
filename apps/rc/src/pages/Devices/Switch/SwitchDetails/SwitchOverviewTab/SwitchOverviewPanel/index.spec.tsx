@@ -1,4 +1,7 @@
-import { Provider } from '@acx-ui/store'
+import userEvent from '@testing-library/user-event'
+
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   render,
   screen
@@ -6,9 +9,14 @@ import {
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { stackMembersData } from './__tests__/fixtures'
+import {
+  currentSwitchDevice,
+  stackMembersData,
+  switchDetailSwitchOnline
+} from './__tests__/fixtures'
 
 import { SwitchOverviewPanel } from '.'
+
 
 jest.mock('@acx-ui/analytics/components', () => ({
   SwitchesTrafficByVolume: () =>
@@ -28,6 +36,14 @@ jest.mock('./SwitchFrontRearView', () => ({
   SwitchFrontRearView: () =>
     <div data-testid={'rc-SwitchFrontRearView'} title='SwitchFrontRearView' />
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  SwitchBlinkLEDsDrawer: () =>
+    <div data-testid={'rc-SwitchBlinkLEDsDrawer'} />
+}))
+
+
+
 
 describe('SwitchOverviewTab', () => {
   const filters : AnalyticsFilter = {
@@ -46,7 +62,11 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview'
     }
     render(<Provider>
-      <SwitchOverviewPanel filters={filters} stackMember={stackMembersData} />
+      <SwitchOverviewPanel
+        filters={filters}
+        stackMember={stackMembersData}
+        switchDetail={switchDetailSwitchOnline}
+        currentSwitchDevice={currentSwitchDevice} />
     </Provider>, {
       route: {
         params,
@@ -60,5 +80,30 @@ describe('SwitchOverviewTab', () => {
     expect(await screen.findAllByTestId('rc-TopPorts')).toHaveLength(4)
   })
 
+  it('should render switch blink LEDs correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenantId',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview'
+    }
+    render(<Provider>
+      <SwitchOverviewPanel
+        filters={filters}
+        stackMember={stackMembersData}
+        currentSwitchDevice={currentSwitchDevice}
+        switchDetail={switchDetailSwitchOnline} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
+      }
+    })
+    const blinkLedsButton = await screen.findByText('Blink LEDs')
+    expect(blinkLedsButton).toBeVisible()
+    await userEvent.click(blinkLedsButton)
+    expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer')).toBeVisible()
+  })
 }
 )
