@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { MspEcTierEnum, MspUrlsInfo }                             from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -40,7 +40,8 @@ const list = {
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
       switchLicenses: 1,
-      edgeLicenses: 1
+      edgeLicenses: 1,
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -68,7 +69,8 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
-      accountType: 'TRIAL'
+      accountType: 'TRIAL',
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -105,7 +107,8 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     },
     {
       assignedMspEcList: [],
@@ -132,7 +135,8 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     }
   ]
 }
