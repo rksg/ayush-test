@@ -22,6 +22,7 @@ import {
   SwitchViewModel
 }
   from '@acx-ui/rc/utils'
+import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 import type { AnalyticsFilter }              from '@acx-ui/utils'
 
@@ -42,7 +43,7 @@ export function SwitchOverviewPanel (props:{
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   return <>
-    {enableSwitchBlinkLed &&
+    {enableSwitchBlinkLed && hasPermission() &&
       <div style={{ textAlign: 'right' }}>
         <Button
           style={{ marginLeft: '20px' }}

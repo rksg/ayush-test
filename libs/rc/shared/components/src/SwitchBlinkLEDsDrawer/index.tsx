@@ -68,7 +68,8 @@ export const SwitchBlinkLEDsDrawer = (props: SwitchBlinkLEDsProps) => {
       <Button
         key='okBtn'
         type='primary'
-        onClick={onApply}>
+        onClick={() => form.submit()}
+      >
         {$t({ defaultMessage: 'Start' })}
       </Button>
     </Space>
