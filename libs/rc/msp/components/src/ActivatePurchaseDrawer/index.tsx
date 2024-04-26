@@ -94,22 +94,26 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       children={
         <Descriptions colon={false} labelWidthPercent={40} >
           <Descriptions.Item
+            style={{ paddingBottom: '2px' }}
             label={$t({ defaultMessage: 'SPA Activation Code' })}
             children={<div style={{ fontWeight: 650 }}>
               {activationData?.orderAcxRegistrationCode}</div>}
           />
           <Descriptions.Item
+            style={{ paddingBottom: '2px' }}
             label={$t({ defaultMessage: 'Part Number' })}
             children={<div style={{ fontWeight: 650 }}>
               {activationData?.productCode}</div>}
           />
 
           <Descriptions.Item
+            style={{ paddingBottom: '2px' }}
             label={$t({ defaultMessage: 'Part Number Description' })}
             children={<div style={{ fontWeight: 650 }}>
               {activationData?.productName}</div>}
           />
           <Descriptions.Item
+            style={{ paddingBottom: '2px' }}
             label={$t({ defaultMessage: 'Quantity' })}
             children={<div style={{ fontWeight: 650 }}>
               {activationData?.quantity}</div>}
@@ -171,24 +175,28 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       label={$t({ defaultMessage:
         '(End Date is auto-calculated based on the selected Start Date)' })}
     />
+  </Form>
 
-    <div style={{ position: 'fixed', bottom: '75px' }}>
-      <Checkbox style={{ marginBottom: '8px' }}
+  const footer =<div>
+    <div style={{ marginBottom: '20px' }}>
+      <Checkbox
+        checked={isTermsAndConditionsChecked}
+        style={{ marginBottom: '8px' }}
         onChange={(e)=>setTermsAndConditions(e.target.checked)} >
         {$t({ defaultMessage: 'I accept the Terms and Conditions.' })}
       </Checkbox>
       <div><label>{$t({ defaultMessage:
           'By checking accept, you hereby acknowledge and agree to the following' })}</label></div>
       <div><Button type='link'
-        // onClick={() => {onClickTermsAndConditions()}}
+        onClick={() => {
+          setTermsAndConditions(true)
+          const urlTaC = 'https://support.ruckuswireless.com/ruckus-one-terms-and-conditions'
+          window.open(urlTaC, '_blank')
+        }}
       >
         {$t({ defaultMessage: 'RUCKUS One Terms and Conditions.' })}
       </Button></div>
     </div>
-
-  </Form>
-
-  const footer =<div>
     <Button
       onClick={handleActivate}
       disabled={!isTermsAndConditionsChecked}

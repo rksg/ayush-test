@@ -7,8 +7,7 @@ import {
   Button,
   Loader,
   Table,
-  TableProps,
-  showToast
+  TableProps
 } from '@acx-ui/components'
 import { get }                        from '@acx-ui/config'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
@@ -16,11 +15,9 @@ import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
 import {
   useRefreshEntitlementsMutation,
-  useInternalRefreshEntitlementsMutation,
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdministrationUrlsInfo,
   EntitlementActivations
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -43,9 +40,7 @@ const PendingActivationsTable = () => {
   const { data: pendingActivationResults }
     = useGetEntitlementActivationsQuery({ params: useParams(), payload: pendingActivationPayload })
 
-  const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
-  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
 
   const columns: TableProps<EntitlementActivations>['columns'] = [
     {
@@ -120,15 +115,7 @@ const PendingActivationsTable = () => {
 
   const refreshFunc = async () => {
     try {
-      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-      if (isNewApi === false) {
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Successfully refreshed.'
-          })
-        })
-      }
+      await (refreshEntitlement)({ params }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

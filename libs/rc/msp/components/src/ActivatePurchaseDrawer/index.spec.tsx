@@ -1,12 +1,14 @@
 
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { ActivatePurchaseDrawer } from './'
@@ -58,7 +60,7 @@ describe('Activate Purchase Drawer', () => {
   beforeEach(async () => {
     jest.spyOn(services, 'usePatchEntitlementsActivationsMutation')
     mockServer.use(
-      rest.put(
+      rest.patch(
         AdministrationUrlsInfo.patchEntitlementsActivations.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
@@ -97,5 +99,50 @@ describe('Activate Purchase Drawer', () => {
     expect(screen.getByRole('button', { name: 'Activate' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
+  it('cancel should close correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <ActivatePurchaseDrawer
+          visible={true}
+          activationData={fakeActivationData}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
 
+    expect(screen.getByText('Activate Purchase')).toBeVisible()
+    const cancel = screen.getByRole('button', { name: 'Cancel' })
+
+    await userEvent.click(cancel)
+    expect(mockedCloseDrawer).toHaveBeenCalled()
+  })
+  it('should save correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <ActivatePurchaseDrawer
+          visible={true}
+          activationData={fakeActivationData}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Activate Purchase')).toBeVisible()
+    await userEvent.click(screen.getAllByRole('radio')[0])
+    await userEvent.click(screen.getByRole('checkbox'))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Activate' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('button', { name: 'Activate' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+    await waitFor(()=>
+      expect(services.usePatchEntitlementsActivationsMutation).toHaveLastReturnedWith(value))
+    expect(mockedCloseDrawer).toHaveBeenCalled()
+  })
 })
