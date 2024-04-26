@@ -51,12 +51,13 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
-function Init () {
+export function Init () {
   const {
     state
   } = useContext(HspContext)
 
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -72,8 +73,9 @@ function Init () {
 
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const { tenantType } = getJwtTokenPayload()
 
