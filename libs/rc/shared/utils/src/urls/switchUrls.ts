@@ -128,6 +128,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/port/switch/:serialNumber/ports',
     newApi: true
   },
+  portsPowerCycle: {
+    method: 'post',
+    url: '/venues/:venueId/switches/powerCycleRequests',
+    newApi: true
+  },
   getVlansByVenue: {
     method: 'get',
     url: '/venues/:venueId/switchProfiles/vlans',
