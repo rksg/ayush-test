@@ -10,7 +10,8 @@ export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, Pol
   [ConfigTemplateType.LAYER_3_POLICY]: PolicyType.LAYER_3_POLICY,
   [ConfigTemplateType.DEVICE_POLICY]: PolicyType.DEVICE_POLICY,
   [ConfigTemplateType.APPLICATION_POLICY]: PolicyType.APPLICATION_POLICY,
-  [ConfigTemplateType.SYSLOG]: PolicyType.SYSLOG
+  [ConfigTemplateType.SYSLOG]: PolicyType.SYSLOG,
+  [ConfigTemplateType.ROGUE_AP_DETECTION]: PolicyType.ROGUE_AP_DETECTION
 }
 
 export const configTemplateServiceTypeMap: Partial<Record<ConfigTemplateType, ServiceType>> = {

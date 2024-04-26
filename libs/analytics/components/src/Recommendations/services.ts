@@ -23,6 +23,7 @@ import {
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 import { CRRMStates }                   from './states'
+import { isDataRetained }               from './utils'
 
 export type CrrmListItem = {
   id: string
@@ -47,6 +48,7 @@ export type CrrmList = {
 export type CrrmKpi = {
   recommendation: {
     status: StateType
+    dataEndTime: string
     kpi_number_of_interfering_links: RecommendationKpi['']
   }
 }
@@ -216,9 +218,12 @@ export function extractBeforeAfter (value: CrrmListItem['kpis']) {
 
 export const getCrrmInterferingLinksText = (
   status: StateType,
+  dataEndTime: string,
   kpi_number_of_interfering_links: RecommendationKpi['']
 ) => {
   const { $t } = getIntl()
+  if (!isDataRetained(dataEndTime))
+    return $t({ defaultMessage: 'Beyond data retention period' })
   if (status === 'reverted') return $t(states.reverted.text)
   if (status === 'applyfailed') return $t(states.applyfailed.text)
   if (status === 'revertfailed') return $t(states.revertfailed.text)
@@ -560,17 +565,18 @@ export const api = recommendationApi.injectEndpoints({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status ${kpiHelper(code!, status)}
+              id status dataEndTime ${kpiHelper(code!, status)}
             }
           }
         `,
         variables: { id }
       }),
       transformResponse: (response: CrrmKpi) => {
-        const { status, kpi_number_of_interfering_links } = response.recommendation
+        const { status, dataEndTime, kpi_number_of_interfering_links } = response.recommendation
         return {
           text: getCrrmInterferingLinksText(
             status,
+            dataEndTime,
             kpi_number_of_interfering_links!
           )
         }

@@ -37,7 +37,8 @@ import {
   useDeleteWifiCallingServiceTemplateMutation,
   useDeletePortalTemplateMutation,
   useDelVlanPoolPolicyTemplateMutation,
-  useDelSyslogPolicyTemplateMutation
+  useDelSyslogPolicyTemplateMutation,
+  useDelRoguePolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -296,7 +297,11 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deletePortalTemplate ] = useDeletePortalTemplateMutation()
   const [ deleteWifiCalling ] = useDeleteWifiCallingServiceTemplateMutation()
   const [ deleteVlanPoolTemplate ] = useDelVlanPoolPolicyTemplateMutation()
+<<<<<<< HEAD
   const [ deleteSyslogTemplate ] = useDelSyslogPolicyTemplateMutation()
+=======
+  const [ deleteRogueAP ] = useDelRoguePolicyTemplateMutation()
+>>>>>>> d47e7ab4cb3c6dda92184f0cb302dba529dff9e2
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -312,6 +317,10 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.PORTAL]: deletePortalTemplate,
     [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling,
     [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate,
+<<<<<<< HEAD
     [ConfigTemplateType.SYSLOG]: deleteSyslogTemplate
+=======
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAP
+>>>>>>> d47e7ab4cb3c6dda92184f0cb302dba529dff9e2
   }
 }

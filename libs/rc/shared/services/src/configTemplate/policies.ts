@@ -19,7 +19,11 @@ import {
   SyslogPolicyDetailType,
   VenueSyslogPolicyType,
   ConfigTemplateUrlsInfo,
-  SyslogPolicyListType
+  SyslogPolicyListType,
+  RogueAPDetectionContextType,
+  EnhancedRoguePolicyType,
+  RogueAPDetectionTempType,
+  VenueRoguePolicyType, VenueRogueAp
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -29,8 +33,10 @@ import {
   AccessControlTemplateUseCases, ApplicationTemplateUseCases,
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
   useCasesToRefreshSyslogTemplateList,
-  useCasesToRefreshVlanPoolTemplateList
+  useCasesToRefreshVlanPoolTemplateList,
+  useCasesToRefreshRogueAPTemplateList
 } from './constants'
+import { venueConfigTemplateApi } from './venue'
 
 export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -292,6 +298,59 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
       providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addRoguePolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getRoguePolicy),
+      providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
+    }),
+    getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList),
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshRogueAPTemplateList, () => {
+            api.dispatch(configTemplateApi.util.invalidateTags([
+              { type: 'RogueApTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    updateRoguePolicyTemplate: build.mutation<RogueAPDetectionTempType, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateRoguePolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy),
+      invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+    }),
+    getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRogueAp),
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueTemplateRogueAp',
+            'UpdateVenueTemplateDenialOfServiceProtection'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueRogueAp),
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
     })
   })
 })
@@ -333,5 +392,13 @@ export const {
   useGetSyslogPolicyTemplateListQuery,
   useGetSyslogPolicyTemplateQuery,
   useUpdateSyslogPolicyTemplateMutation,
-  useGetVenueTemplateForSyslogPolicyQuery
+  useGetVenueTemplateForSyslogPolicyQuery,
+  useAddRoguePolicyTemplateMutation,
+  useGetRoguePolicyTemplateQuery,
+  useGetRoguePolicyTemplateListQuery,
+  useUpdateRoguePolicyTemplateMutation,
+  useDelRoguePolicyTemplateMutation,
+  useGetVenueRoguePolicyTemplateQuery,
+  useGetVenueRogueApTemplateQuery,
+  useUpdateVenueRogueApTemplateMutation
 } = policiesConfigTemplateApi

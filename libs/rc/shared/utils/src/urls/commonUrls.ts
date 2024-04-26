@@ -123,12 +123,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wifi-calling-profile',
     newApi: true
   },
-  getServicesList: {
-    method: 'post',
-    url: '/serviceProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/serviceProfiles',
-    newApi: true
-  },
   getVenuesList: {
     method: 'post',
     url: '/venues/query',
@@ -249,6 +243,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/files/uploadurls',
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    newApi: true
+  },
+  getVenueSpecificUploadURL: {
+    method: 'post',
+    url: '/venues/:venueId/signurls/uploadurls',
     newApi: true
   },
   getAllDevices: {
@@ -437,12 +436,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
     oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
       'configurationHistory/detail/:transactionId',
-    newApi: true
-  },
-  getPoliciesList: {
-    method: 'post',
-    url: '/policyProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/policyProfiles',
     newApi: true
   },
   getApDetailHeader: {

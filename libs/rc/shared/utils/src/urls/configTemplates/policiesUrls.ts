@@ -219,5 +219,40 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/syslogServerProfiles/query',
     newApi: true
+  },
+  addRoguePolicy: {
+    method: 'post',
+    url: '/templates/rogueApPolicyProfiles',
+    newApi: true
+  },
+  getRoguePolicy: {
+    method: 'get',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  getEnhancedRoguePolicyList: {
+    method: 'post',
+    url: '/templates/rogueApPolicyProfiles/query',
+    newApi: true
+  },
+  updateRoguePolicy: {
+    method: 'put',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  deleteRogueApPolicy: {
+    method: 'delete',
+    url: '/templates/rogueApPolicyProfiles/:templateId',
+    newApi: true
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/templates/venues/:venueId/rogueApSettings',
+    newApi: true
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/templates/venues/:venueId/rogueApSettings',
+    newApi: true
   }
 }

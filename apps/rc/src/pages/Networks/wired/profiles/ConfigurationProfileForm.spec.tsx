@@ -46,7 +46,7 @@ describe('Wired', () => {
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(SwitchUrlsInfo.getSwitchProfileList.url,
+      rest.post(SwitchUrlsInfo.getProfiles.url,
         (_, res, ctx) => res(ctx.json(profilesExistResponse))
       ),
       rest.post(CommonUrlsInfo.getVenuesList.url,

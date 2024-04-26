@@ -93,6 +93,12 @@ export const useCasesToRefreshSyslogTemplateList = [
   'DeleteSyslogServerProfileTemplate'
 ]
 
+export const useCasesToRefreshRogueAPTemplateList = [
+  'AddRogueApPolicyProfileTemplate',
+  'UpdateRogueApPolicyProfileTemplate',
+  'DeleteRogueApPolicyProfileTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   ...useCasesToRefreshNetworkTemplateList,
@@ -104,5 +110,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshVlanPoolTemplateList,
   ...useCasesToRefreshRadiusServerTemplateList,
   ...useCasesToRefreshWifiCallingTemplateList,
-  ...useCasesToRefreshSyslogTemplateList
+  ...useCasesToRefreshSyslogTemplateList,
+  ...useCasesToRefreshRogueAPTemplateList
 ]

@@ -13,13 +13,12 @@ import {
   PolicyType,
   RogueApConstant,
   RogueAPDetailContextType,
-  getPolicyRoutePath,
   PolicyOperation,
-  getPolicyDetailsLink,
-  getPolicyListRoutePath
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
 import RogueAPDetectionVenueDetail   from './RogueAPDetectionVenueDetail'
@@ -31,31 +30,25 @@ export const RogueAPDetectionDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
-  // eslint-disable-next-line max-len
-  const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
+
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
         extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.ROGUE_AP_DETECTION,
-            oper: PolicyOperation.EDIT,
-            policyId: params.policyId as string
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          </TenantLink>
+          <PolicyConfigTemplateLinkSwitcher
+            type={PolicyType.ROGUE_AP_DETECTION}
+            oper={PolicyOperation.EDIT}
+            policyId={params.policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ]) : []}
       />
 

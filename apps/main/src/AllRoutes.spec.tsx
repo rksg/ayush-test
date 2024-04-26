@@ -12,6 +12,12 @@ import AllRoutes from './AllRoutes'
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useStreamActivityMessagesQuery: jest.fn(),
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
+}))
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
+  useStreamActivityMessagesQuery: jest.fn(),
   useGetMspEcProfileQuery: () => ({ data: {
     msp_label: '',
     name: '',
@@ -19,8 +25,10 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} }),
-  useGetTenantDetailsQuery: () => ({ data: {} })
+  useGetBrandingDataQuery: () => ({ data: {
+    msp_label: '',
+    name: ''
+  } })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
