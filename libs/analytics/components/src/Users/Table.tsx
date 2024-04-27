@@ -21,18 +21,10 @@ type DisplayUser = ManagedUser & {
 }
 
 export const messages = {
-  title: defineMessage({
-    defaultMessage: '{usersCount, plural, one {User} other {Users}}'
-  }),
-  editUser: defineMessage({ defaultMessage: 'Edit User' }),
-  save: defineMessage({ defaultMessage: 'Save' }),
-  cancel: defineMessage({ defaultMessage: 'Cancel' }),
   refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
   refreshFailure: defineMessage({ defaultMessage: 'Refresh user details is unsuccessful' }),
   deleteSuccessful: defineMessage({ defaultMessage: 'Deleted user details successfully' }),
   deleteFailure: defineMessage({ defaultMessage: 'Delete user details is unsuccessful' }),
-  editUserSuccess: defineMessage({ defaultMessage: 'Updated user details successfully' }),
-  editUserFailure: defineMessage({ defaultMessage: 'Update user details is unsuccessful' }),
   deleteModalContent: defineMessage({
     defaultMessage: 'Do you really want to remove {firstName} {lastName}?'
   }),
@@ -56,9 +48,6 @@ export const messages = {
   }),
   deleteText: defineMessage({
     defaultMessage: 'Delete'
-  }),
-  ssoDisclaimer: defineMessage({
-    defaultMessage: 'At this time, only Azure AD is officially supported'
   })
 }
 
@@ -127,7 +116,7 @@ const getUserActions = (
     user.userId === selectedRow?.id ||
     (tenantId !== accountId && selectedRow?.accountId !== accountId))
 
-  const isDeleteDisbaled = (user.userId === selectedRow?.id ||
+  const isDeleteDisabled = (user.userId === selectedRow?.id ||
       (tenantId !== accountId && selectedRow?.accountId !== accountId))
 
   const rowActionKey = [
@@ -138,7 +127,7 @@ const getUserActions = (
     },
     {
       label: $t(editText),
-      tooltip: isEditDisabled ? $t(disabledEditText) : $t(editText),
+      tooltip: isEditDisabled ? $t(disabledEditText) : '',
       disabled: isEditDisabled,
       onClick: () => {
         setDrawerType('edit')
@@ -147,8 +136,8 @@ const getUserActions = (
     },
     {
       label: $t(deleteText),
-      tooltip: isDeleteDisbaled ? $t(disabledDeleteText) : $t(deleteText),
-      disabled: isDeleteDisbaled,
+      tooltip: isDeleteDisabled ? $t(disabledDeleteText) : '',
+      disabled: isDeleteDisabled,
       onClick: () => handleDeleteUser()
     }
   ]
@@ -212,7 +201,7 @@ export const UsersTable = ({
     }
   ]
 
-  if(isUsersPageEnabled) {
+  if (isUsersPageEnabled) {
     actions.push({
       label: isEditMode
         ? $t({ defaultMessage: 'Configure SSO' })
