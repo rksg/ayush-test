@@ -282,6 +282,7 @@ export const UsersTable = ({
       selectedRow as ManagedUser,
       { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }
     )}
+    searchableWidth={450}
     rowSelection={{
       type: 'radio',
       selectedRowKeys: selectedRow ? [ selectedRow.id ] : [],
