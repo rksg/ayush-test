@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { CancelCircle }                   from '@acx-ui/icons'
 import { useGetMspEcWithVenuesListQuery } from '@acx-ui/msp/services'
 import { MspEcWithVenue }                 from '@acx-ui/msp/utils'
 import { AccountType }                    from '@acx-ui/utils'
@@ -43,12 +44,18 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
+  const [totalCount, setTotalCount] = useState<number>(0)
 
+  // function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
+  //   const selectedVenueIds = selected.flatMap(ec => ec.children).filter(venue => venue.selected)
+  //     .map(venue => venue.id)
+  //   const allVenueIds = mspEcs.flatMap(ec => ec.children.map(venue => venue.id))
+  //   return selectedVenueIds.filter(id => allVenueIds.includes(id))
+  // }
   function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
-    const selectedVenueIds = selected.flatMap(ec => ec.children).filter(venue => venue.selected)
-      .map(venue => venue.id)
-    const allVenueIds = mspEcs.flatMap(ec => ec.children.map(venue => venue.id))
-    return selectedVenueIds.filter(id => allVenueIds.includes(id))
+    const customerIds = selected.filter(ec => ec.children.some(venue => venue.selected))
+      .map(ec => ec.id)
+    return customerIds
   }
 
   const { data: customerList }
@@ -70,6 +77,12 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     setSelected(selectedVenues ?? [])
     resetFields()
     setVisible(false)
+  }
+
+  const clearSelection = () => {
+    setSelectedRows([])
+    setSelectedKeys([])
+    setTotalCount(selected.length)
   }
 
   const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
@@ -104,6 +117,8 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     if (customerList?.data) {
       const selectKeys = getSelectedKeys(customerList?.data as MspEcWithVenue[], selected)
       setSelectedKeys(selectKeys)
+      setSelectedRows(selected)
+      setTotalCount(selected.length)
     }
   }, [customerList?.data])
 
@@ -111,6 +126,14 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   <UI.ExpanderTableWrapper>
     <Space direction='vertical'>
       <Loader >
+        <UI.SelectedCount hidden={totalCount === 0}>
+          {$t({ defaultMessage: '{totalCount} selected' }, {
+            totalCount
+          })}
+          <CancelCircle
+            style={{ marginLeft: '6px' }}
+            onClick={clearSelection}/>
+        </UI.SelectedCount>
         <Table
           columns={columns}
           dataSource={customerList?.data}
@@ -120,11 +143,14 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
-              setSelectedKeys(selectedRowKeys.filter(id =>
-                !customerList?.data.map(ec => ec.id).includes(id as string)))
+              // setSelectedKeys(selectedRowKeys.filter(id =>
+              //   !customerList?.data.map(ec => ec.id).includes(id as string)))
+              setSelectedKeys(selectedRowKeys)
+              setTotalCount(getSelectedVenues(selRows).length)
             },
             checkStrictly: false
           }}
+          tableAlertRender={false}
         />
       </Loader>
     </Space>

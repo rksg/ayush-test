@@ -90,7 +90,10 @@ export const ExpanderTableWrapper = styled.div`
   }
 `
 export const SelectedCount = styled.div`
-  line-height: var(--acx-body-5-line-height);
-  font-size: var(--acx-body-5-font-size);
-  color: var(--acx-accents-blue-50);
+  line-height: 16px;
+  padding: 10px 16px 10px 16px;
+  font-size: var(--acx-body-4-font-size);
+  background-color: var(--acx-accents-blue-10);
+  margin-bottom: -36px;
+  z-index: 10000;
 `
