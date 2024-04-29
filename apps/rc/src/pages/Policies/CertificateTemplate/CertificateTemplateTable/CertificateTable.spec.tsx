@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CertificateUrls }                                                        from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateUrls }                                         from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -135,7 +135,14 @@ describe('CertificateTable', () => {
   })
 
   it('should show fewer column when templateId exist', async () => {
-    render(<Provider><CertificateTable templateId='123'/></Provider>)
+    const certificateTemplate = {
+      id: 'templateId',
+      name: 'templateName',
+      caType: 'caType',
+      keyLength: 123,
+      algorithm: AlgorithmType.SHA_256
+    }
+    render(<Provider><CertificateTable templateData={certificateTemplate}/></Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row')
