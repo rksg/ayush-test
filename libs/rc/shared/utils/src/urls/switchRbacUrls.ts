@@ -380,7 +380,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   associateCliTemplate: {
     method: 'put',
-    url: '/venues/:venueId/cliTemplates/:clitemplateId',
+    url: '/venues/:venueId/cliTemplates/:templateId',
     newApi: true
   },
   getLagList: {
