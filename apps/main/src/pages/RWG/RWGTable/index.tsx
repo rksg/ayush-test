@@ -21,13 +21,14 @@ function useColumns (
       title: $t({ defaultMessage: 'Gateway' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
         return (
-          <TenantLink to={`/ruckus-wan-gateway/${row.rwgId}/gateway-details/overview`}>
+          <TenantLink
+            to={`/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
             {searchable ? highlightFn(row.name) : row.name}</TenantLink>
         )
       }

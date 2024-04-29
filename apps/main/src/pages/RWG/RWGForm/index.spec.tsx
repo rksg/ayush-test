@@ -272,7 +272,7 @@ describe('Gateway Form', () => {
     await userEvent.click(await screen.findByText('Back to Gateway details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.gatewayId}/gateway-details/overview`,
+      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.venueId}/${params.gatewayId}/gateway-details/overview`,
       hash: '',
       search: ''
     })

@@ -53,7 +53,7 @@ export function RWGForm () {
   const { tenantId, gatewayId, venueId, action } = useParams()
   const { data } = useGetRwgQuery({ params: { tenantId, gatewayId, venueId } },
     { skip: !gatewayId })
-  const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}/gateway-details`)
+  const basePath = useTenantLink(`/ruckus-wan-gateway/${venueId}/${gatewayId}/gateway-details`)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
 
