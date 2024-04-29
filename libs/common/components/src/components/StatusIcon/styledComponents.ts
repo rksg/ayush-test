@@ -30,10 +30,15 @@ export const PendingsIcon = styled(Pending)`
   }
 `
 export const InProgressIcon = styled(InProgress)`
+  @keyframes rotate {
+    0% {transform:rotate(0deg);}
+    100% {transform:rotate(360deg);}
+  }  
   circle {
     fill: var(--acx-neutrals-60);
     stroke: var(--acx-neutrals-60);
   }
+  animation: rotate 1s linear infinite;
 `
 
 export const Dash = styled.div`

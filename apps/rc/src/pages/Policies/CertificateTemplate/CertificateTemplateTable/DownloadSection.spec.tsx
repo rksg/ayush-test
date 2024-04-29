@@ -41,7 +41,7 @@ describe('DownloadDrawer', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        CertificateUrls.downloadCertificate.url,
+        CertificateUrls.downloadCertificate.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ data: 'certificate' }))
       ),
       rest.get(
@@ -49,7 +49,7 @@ describe('DownloadDrawer', () => {
         (req, res, ctx) => res(ctx.json({ data: 'certificate' }))
       ),
       rest.get(
-        CertificateUrls.downloadCA.url,
+        CertificateUrls.downloadCA.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ data: 'certificate' }))
       ),
       rest.get(
@@ -76,19 +76,62 @@ describe('DownloadDrawer', () => {
     await userEvent.click(downloadPublicKeyPem)
     const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
     await userEvent.click(downloadPublicKeyDer)
-    await waitFor(() => expect(mockDownloadCertificate).toHaveBeenCalled())
 
     const downloadChain = screen.getAllByRole('button', { name: 'Download PEM' })[1]
     await userEvent.click(downloadChain)
     const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
     await userEvent.click(downloadChainPkcs7)
-    await waitFor(() => expect(mockDownloadCertificateChain).toHaveBeenCalled())
+    await waitFor(() => expect(mockDownloadCertificateChain).toBeCalledTimes(2))
 
-    const downloadPrivate = screen.getAllByRole('button', { name: 'Download' })[0]
-    await userEvent.click(downloadPrivate)
-    const downloadP12 = screen.getAllByRole('button', { name: 'Download' })[1]
+    const privateKeyBtn = screen.getByRole('button', { name: 'Download' })
+    await userEvent.click(privateKeyBtn)
+    const modalDownloadBtn = await screen.findByRole('button', { name: 'Download Private Key' })
+    expect(modalDownloadBtn).toBeInTheDocument()
+    await userEvent.click(modalDownloadBtn)
+
+    // eslint-disable-next-line max-len
+    const downloadP12WithoutChainBtn = screen.getByRole('button', { name: 'Download Without Chain' })
+    await userEvent.click(downloadP12WithoutChainBtn)
+    const downloadBtn = await screen.findByRole('button', { name: 'Download P12' })
+    expect(downloadBtn).toBeInTheDocument()
+    await userEvent.click(downloadBtn)
+
+    const downloadP12 = screen.getByRole('button', { name: 'Download With Chain' })
     await userEvent.click(downloadP12)
-    await waitFor(() => expect(mockDownloadCertificate).toBeCalledTimes(4))
+    const downloadBtn2 = await screen.findByRole('button', { name: 'Download P12' })
+    expect(downloadBtn2).toBeInTheDocument()
+    await userEvent.click(downloadBtn2)
+    await waitFor(() => expect(mockDownloadCertificate).toBeCalledTimes(5))
+  })
+
+  it('should render certificate correctly without private key', async () => {
+    render(
+      <Provider>
+        <DownloadSection
+          setRawInfoDrawer={() => { }}
+          setUploadDrawerOpen={() => { }}
+          type={CertificateCategoryType.CERTIFICATE}
+          data={{ ...certificate, privateKeyBase64: '' }}
+        />
+      </Provider>
+    )
+
+    expect(screen.queryByText('Delete')).toBeNull()
+    const downloadPublicKeyPem = screen.queryAllByRole('button', { name: 'Download PEM' })[0]
+    expect(downloadPublicKeyPem).toBeInTheDocument()
+    const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
+    expect(downloadPublicKeyDer).toBeInTheDocument()
+    const downloadChain = screen.queryAllByRole('button', { name: 'Download PEM' })[1]
+    expect(downloadChain).toBeInTheDocument()
+    const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
+    expect(downloadChainPkcs7).toBeInTheDocument()
+    const privateKeyBtn = screen.queryByRole('button', { name: 'Download' })
+    expect(privateKeyBtn).toBeNull()
+    const downloadP12noChainBtn = screen.queryByRole('button', { name: 'Download Without Chain' })
+    expect(downloadP12noChainBtn).toBeNull()
+    const downloadP12Btn = screen.queryByRole('button', { name: 'Download With Chain' })
+    expect(downloadP12Btn).toBeNull()
+    expect(screen.queryAllByText('N/A')).toHaveLength(2)
   })
 
   it('should handle certificate authority download button click', async () => {
@@ -108,18 +151,61 @@ describe('DownloadDrawer', () => {
     await userEvent.click(downloadPublicKeyPem)
     const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
     await userEvent.click(downloadPublicKeyDer)
-    await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(2))
 
     const downloadChain = screen.getAllByRole('button', { name: 'Download PEM' })[1]
     await userEvent.click(downloadChain)
     const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
     await userEvent.click(downloadChainPkcs7)
-    await waitFor(() => expect(mockDownloadCAChain).toHaveBeenCalled())
+    await waitFor(() => expect(mockDownloadCAChain).toBeCalledTimes(2))
 
-    const downloadPrivate = screen.getAllByRole('button', { name: 'Download' })[0]
-    await userEvent.click(downloadPrivate)
-    const downloadP12 = screen.getAllByRole('button', { name: 'Download' })[1]
+    const privateKeyBtn = screen.getByRole('button', { name: 'Download' })
+    await userEvent.click(privateKeyBtn)
+    const modalDownloadBtn = await screen.findByRole('button', { name: 'Download Private Key' })
+    expect(modalDownloadBtn).toBeInTheDocument()
+    await userEvent.click(modalDownloadBtn)
+
+    // eslint-disable-next-line max-len
+    const downloadP12noChainBtn = screen.getByRole('button', { name: 'Download Without Chain' })
+    await userEvent.click(downloadP12noChainBtn)
+    const downloadBtn = await screen.findByRole('button', { name: 'Download P12' })
+    expect(downloadBtn).toBeInTheDocument()
+    await userEvent.click(downloadBtn)
+
+    const downloadP12 = screen.getByRole('button', { name: 'Download With Chain' })
     await userEvent.click(downloadP12)
-    await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(4))
+    const downloadBtn2 = await screen.findByRole('button', { name: 'Download P12' })
+    expect(downloadBtn2).toBeInTheDocument()
+    await userEvent.click(downloadBtn2)
+    await waitFor(() => expect(mockDownloadCA).toBeCalledTimes(5))
+  })
+
+  it('should render CA correctly without private key', async () => {
+    render(
+      <Provider>
+        <DownloadSection
+          setRawInfoDrawer={() => { }}
+          setUploadDrawerOpen={() => { }}
+          type={CertificateCategoryType.CERTIFICATE_AUTHORITY}
+          data={{ ...certificateAuthority, privateKeyBase64: '' }}
+        />
+      </Provider>
+    )
+
+    expect(screen.queryByText('Delete')).toBeNull()
+    const downloadPublicKeyPem = screen.queryAllByRole('button', { name: 'Download PEM' })[0]
+    expect(downloadPublicKeyPem).toBeInTheDocument()
+    const downloadPublicKeyDer = screen.getByRole('button', { name: 'Download DER' })
+    expect(downloadPublicKeyDer).toBeInTheDocument()
+    const downloadChain = screen.queryAllByRole('button', { name: 'Download PEM' })[1]
+    expect(downloadChain).toBeInTheDocument()
+    const downloadChainPkcs7 = screen.getByRole('button', { name: 'Download PKCS7' })
+    expect(downloadChainPkcs7).toBeInTheDocument()
+    const privateKeyBtn = screen.queryByRole('button', { name: 'Upload' })
+    expect(privateKeyBtn).toBeInTheDocument()
+    const downloadP12noChainBtn = screen.queryByRole('button', { name: 'Download Without Chain' })
+    expect(downloadP12noChainBtn).toBeNull()
+    const downloadP12Btn = screen.queryByRole('button', { name: 'Download With Chain' })
+    expect(downloadP12Btn).toBeNull()
+    expect(screen.queryAllByText('N/A')).toHaveLength(1)
   })
 })

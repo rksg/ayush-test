@@ -251,6 +251,29 @@ export interface NewEntitlementSummary {
   summary: EntitlementSummary[];
 }
 
+export interface EntitlementPendingActivations {
+  data: EntitlementActivations[],
+}
+
+export interface EntitlementActivations {
+  orderId: string,
+  salesOrderId: string,
+  productName: string,
+  productCode: string,
+  productId: string,
+  quantity: number,
+  registeredQuantity: number,
+  remainingQuantity: number,
+  spaStartDate: string,
+  spaEndDate: string,
+  productCategory: string,
+  productClass: string,
+  orderSoNumber: string,
+  orderCreateDate: string,
+  orderRegistrationCode: string,
+  orderAcxRegistrationCode:string
+}
+
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
 
 export interface AdminGroup {

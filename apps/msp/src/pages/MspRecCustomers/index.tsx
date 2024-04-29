@@ -13,6 +13,7 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
+  ManageDelegateAdminDrawer,
   SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
 import {
@@ -59,6 +60,7 @@ export function MspRecCustomers () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -534,13 +536,20 @@ export function MspRecCustomers () {
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && !isIntegrator && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={() => {}}
-        tenantId={ecTenantId}
-        tenantType={tenantType}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={ecTenantId}
+          tenantType={tenantType}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={ecTenantId}
+          tenantType={tenantType}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}

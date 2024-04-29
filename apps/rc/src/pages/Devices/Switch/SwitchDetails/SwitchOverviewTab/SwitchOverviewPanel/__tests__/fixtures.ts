@@ -1,4 +1,14 @@
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus } from '@acx-ui/rc/utils'
+import {
+  STACK_MEMBERSHIP,
+  SwitchStatusEnum,
+  SWITCH_TYPE,
+  SwitchPortStatus,
+  StackMember,
+  NetworkDevice,
+  DeviceTypes,
+  DeviceStates,
+  NetworkDeviceType
+} from '@acx-ui/rc/utils'
 
 export const stackMembersData = [
   {
@@ -53,7 +63,7 @@ export const stackMembersData = [
     poeUtilization: 15400,
     order: '3'
   }
-]
+] as StackMember[]
 
 export const ports =[
   {
@@ -476,6 +486,41 @@ export const switchDetailSatckOnline = {
   numOfPorts: 16
 }
 
+
+export const switchDetailSwitchOnline = {
+  type: 'device',
+  isStack: true,
+  rearModule: 'none',
+  switchMac: 'c0:c5:20:98:b9:67',
+  switchName: 'ICX7150-C12 Router',
+  model: 'ICX7150-C12P',
+  id: 'c0:c5:20:98:b9:67',
+  syncDataEndTime: '2023-01-16T06:07:09Z',
+  firmwareVersion: 'SPR09010e',
+  clientCount: 1,
+  serialNumber: 'FEK3216Q05B',
+  ipAddress: '10.206.33.13',
+  cliApplied: false,
+  subnetMask: '255.255.254.0',
+  venueName: 'My-Venue',
+  name: 'ICX7150-C12 Router',
+  suspendingDeployTime: '',
+  switchType: SWITCH_TYPE.ROUTER,
+  configReady: true,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
+  venueId: '7231da344778480d88f37f0cca1c534f',
+  syncedSwitchConfig: true,
+  defaultGateway: '10.206.33.254',
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK3216Q02P' },
+    { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
+  ],
+  uptime: '7 days, 7:36:21.00',
+  formStacking: false,
+  floorplanId: '94bed28abef24175ab58a3800d01e24a',
+  unitId: 1
+}
+
 export const switchDetailSwitchOffline = {
   deviceType: 'DVCNWTYPE_SWITCH',
   suspendingDeployTime: '',
@@ -610,3 +655,18 @@ export const breakoutPorts = [
     status: 'Down'
   }
 ] as SwitchPortStatus[]
+
+
+export const currentSwitchDevice = {
+  type: DeviceTypes.Switch,
+  category: 'Switch',
+  name: 'Switch001',
+  mac: 'C0:C5:20:7E:A5:01',
+  serial: 'D0D5408E5E02',
+  id: 'C0:C5:20:7E:A5:01',
+  states: DeviceStates.Regular,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
+  networkDeviceType: NetworkDeviceType.switch,
+  serialNumber: '',
+  childCount: 3
+} as NetworkDevice

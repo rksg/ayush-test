@@ -390,9 +390,12 @@ export function RadioSettings () {
     if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
       handleChange()
     }
+    if (wifiRadioTab) {
+      onTabChange(wifiRadioTab)
+    }
   }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 
-  const [currentTab, setCurrentTab] = useState(wifiRadioTab ? wifiRadioTab : 'Normal24GHz')
+  const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)

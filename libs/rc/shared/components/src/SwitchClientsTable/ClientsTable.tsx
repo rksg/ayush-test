@@ -6,7 +6,6 @@ import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
-
   FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
@@ -21,6 +20,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }        from '@acx-ui/types'
+import { hasPermission }         from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -195,7 +195,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled) { // FF
+        if (!portLinkEnabled || !hasPermission()) { // FF
           return row['switchPort']
         }
 
