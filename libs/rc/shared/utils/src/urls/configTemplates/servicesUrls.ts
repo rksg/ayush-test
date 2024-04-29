@@ -103,7 +103,7 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteWifiCalling: {
     method: 'delete',
-    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    url: '/templates/wifiCallingServiceProfiles/:templateId',
     newApi: true
   }
 }
