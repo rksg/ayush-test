@@ -374,14 +374,23 @@ export function PortalSettings () {
     }
     if (preferredProvider) {
       if (isOtherProvider) {
-        portal.preferredWisprProvider = {
-          providerName: values.preferredWisprProvider?.providerName as string,
-          apiKey: '',
-          apiSecret: '',
-          customExternalProvider: true,
-          auth: values.preferredWisprProvider?.auth,
-          acct: values.preferredWisprProvider?.acct
-        }
+        portal.preferredWisprProvider = values.preferredWisprProvider?.providerName
+          ? {
+            providerName: values.preferredWisprProvider?.providerName as string,
+            apiKey: '',
+            apiSecret: '',
+            customExternalProvider: true,
+            auth: values.preferredWisprProvider?.auth,
+            acct: values.preferredWisprProvider?.acct
+          }
+          : {
+            providerName: mspLabel?.preferredWisprProvider?.providerName as string,
+            apiKey: '',
+            apiSecret: '',
+            customExternalProvider: true,
+            auth: mspLabel?.preferredWisprProvider?.auth,
+            acct: mspLabel?.preferredWisprProvider?.acct
+          }
       } else {
         portal.preferredWisprProvider = {
           providerName: preferredProvider,
