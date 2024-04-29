@@ -23,7 +23,6 @@ export const certificateExpirationLabel: Record<ExpirationType, string> = {
 }
 
 export const algorithmLabel: Record<AlgorithmType, MessageDescriptor> = {
-  [AlgorithmType.SHA_1]: defineMessage({ defaultMessage: 'SHA-1' }),
   [AlgorithmType.SHA_256]: defineMessage({ defaultMessage: 'SHA-256' }),
   [AlgorithmType.SHA_384]: defineMessage({ defaultMessage: 'SHA-384' }),
   [AlgorithmType.SHA_512]: defineMessage({ defaultMessage: 'SHA-512' })
