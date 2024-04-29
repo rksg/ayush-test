@@ -24,9 +24,9 @@ export function useRwgActions () {
         confirmationText: $t({ defaultMessage: 'Delete' })
       },
       onOk: () => { rows.length === 1 ?
-        deleteGateway({ params: { tenantId, rwgId: rows[0].id } })
+        deleteGateway({ params: { tenantId, rwgId: rows[0].rwgId } })
           .then(callBack) :
-        deleteGateway({ params: { tenantId }, payload: rows.map(item => item.id) })
+        deleteGateway({ params: { tenantId }, payload: rows.map(item => item.rwgId) })
           .then(callBack)
       }
     })
