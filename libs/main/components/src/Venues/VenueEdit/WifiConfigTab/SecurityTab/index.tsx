@@ -368,7 +368,7 @@ export function SecurityTab () {
             initialValue={false}
             switchStyle={{}}
             triggerDirtyFunc={setTriggerRogueAPDetection}
-            hidden={!isConfigTemplateEnabledByType}
+            hidden={isTemplate && !isConfigTemplateEnabledByType}
           >
             <Form.Item
               label={<>
