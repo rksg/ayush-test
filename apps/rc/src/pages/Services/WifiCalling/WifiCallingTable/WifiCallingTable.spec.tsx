@@ -90,10 +90,6 @@ describe('WifiCallingTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getServicesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),

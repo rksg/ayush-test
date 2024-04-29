@@ -16,7 +16,9 @@ import {
   useConfigTemplateVisibilityMap,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   VLANPoolForm,
-  VLANPoolDetail
+  VLANPoolDetail,
+  RogueAPDetectionForm,
+  RogueAPDetectionDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -172,6 +174,7 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
+        <Route path=':activeTab' element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
@@ -280,22 +283,19 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.CREATE
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE
             })}
             element={<WifiCallingForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.EDIT
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT
             })}
             element={<WifiCallingConfigureForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.DETAIL
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
           />
@@ -321,6 +321,26 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE
+            })}
+            element={<RogueAPDetectionForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT
+            })}
+            element={<RogueAPDetectionForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL
+            })}
+            element={<RogueAPDetectionDetailView />}
           />
         </>}
       </Route>

@@ -103,4 +103,20 @@ describe('Select Service Form', () => {
 
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
   })
+
+  it('should not render edge-pin with the HA-FF ON and pin-HA-FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_HA_TOGGLE
+        || featureFlag !== Features.EDGE_PIN_HA_TOGGLE
+    })
+
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText('Personal Identity Network')).toBeNull()
+  })
 })

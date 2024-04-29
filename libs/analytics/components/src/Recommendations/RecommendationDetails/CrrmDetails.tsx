@@ -8,6 +8,7 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 import { hasPermission }                        from '@acx-ui/user'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
+import { isDataRetained } from '../utils'
 
 import { CrrmValues }                                       from './CrrmValues'
 import { CrrmValuesExtra }                                  from './CrrmValuesExtra'
@@ -56,7 +57,7 @@ export const CrrmDetails = () => {
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <CrrmValues details={details}/>
-        <CloudRRMGraph details={details}/>
+        { details && isDataRetained(details.dataEndTime) && <CloudRRMGraph details={details}/>}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <CrrmValuesExtra details={details}/>

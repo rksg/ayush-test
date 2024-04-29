@@ -1,4 +1,5 @@
 import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
+import * as config                            from '@acx-ui/config'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -13,6 +14,9 @@ import { api }                                                            from '
 
 import { AIDrivenRRM } from '.'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
+
 const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -21,23 +25,23 @@ const pathFilters: PathFilter = {
 }
 
 describe('AIDrivenRRM dashboard', () => {
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
+
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+    jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+      .mockImplementation(() => true)
+  })
 
   it('renders recommendation', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmListResult
-    })
-
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: {
-        recommendation: crrmListResult.recommendations[0]
-      }
+      data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: '' } }
     })
 
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText('3')).toBeVisible()
@@ -50,51 +54,32 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
   })
   it('renders recommendation with second crrmkpi', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmListResult
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: {
-        recommendation: crrmListResult.recommendations[1]
-      }
+      data: { recommendation: { ...crrmListResult.recommendations[1], dataEndTime: '' } }
     })
 
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+
     expect(await screen.findByText('Reverted')).toBeVisible()
   })
   it('renders recommendation with third crrmkpi', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmListResult
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: {
-        recommendation: crrmListResult.recommendations[2]
-      }
+      data: { recommendation: { ...crrmListResult.recommendations[2], dataEndTime: '' } }
     })
 
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+
     expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
   })
-
   it('renders unknown recommendations', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmUnknownListResult
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmUnknownListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: {
-        recommendation: crrmUnknownListResult.recommendations[0]
-      }
+      data: { recommendation: { ...crrmUnknownListResult.recommendations[0], dataEndTime: '' } }
     })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -111,18 +96,12 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
   })
   it('renders unknown recommendations with second crrmKpi', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmUnknownListResult
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmUnknownListResult })
     mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
-      data: {
-        recommendation: crrmUnknownListResult.recommendations[1]
-      }
+      data: { recommendation: { ...crrmUnknownListResult.recommendations[1], dataEndTime: '' } }
     })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+
     expect(await screen.findByText('Reverted')).toBeVisible()
     expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
     // eslint-disable-next-line max-len
@@ -138,10 +117,8 @@ describe('AIDrivenRRM dashboard', () => {
         recommendations: crrmUnknownListResult.recommendations.filter(row => row.code === 'unknown')
       }
     })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(screen.queryByText('No Data')).toBeNull()
     expect(screen.queryByText(
@@ -159,8 +136,8 @@ describe('AIDrivenRRM dashboard', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are 0 recommendations for 0 zones covering 0 possible RRM combinations. Currently, 0 zones are optimized.')).toBeVisible()
   })
-
   it('renders no data for switch path', async () => {
+    get.mockReturnValue('true')
     const switchPathFilters = {
       ...pathFilters,
       path: [
@@ -179,7 +156,6 @@ describe('AIDrivenRRM dashboard', () => {
       'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()
   })
-
   it('handles no zones', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', {
       data: {
@@ -199,18 +175,24 @@ describe('AIDrivenRRM dashboard', () => {
       'Currently RUCKUS AI cannot provide RRM optimizations as zones are not found on your network.'
     )).toBeVisible()
   })
-
   it('handles no licenses', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CrrmList', {
-      data: crrmNoLicenseListResult
-    })
-    render(<AIDrivenRRM pathFilters={pathFilters} />, {
-      route: true,
-      wrapper: Provider
-    })
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmNoLicenseListResult })
+
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // eslint-disable-next-line max-len
+
     expect(await screen.findByText('Update My Licenses')).toBeVisible()
+  })
+  it('should handle when data retention period passed', async () => {
+    const spy = jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+      .mockImplementation(() => false)
+    mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
+    mockGraphqlQuery(recommendationUrl, 'CrrmKpi', {
+      data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: 'dataEndTime' } }
+    })
+    render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+    expect(await screen.findByText('Beyond data retention period')).toBeInTheDocument()
+    expect(spy).toBeCalledWith('dataEndTime')
   })
 })

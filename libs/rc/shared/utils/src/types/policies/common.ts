@@ -67,11 +67,6 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
 }
 
-export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
-  [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [PolicyTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
-}
-
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {
   [CertificateAcceptType.PEM]: 'pem',
   [CertificateAcceptType.DER]: 'der',

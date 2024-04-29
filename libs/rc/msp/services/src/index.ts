@@ -700,6 +700,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getBrandingData: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getUserProfilePver: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -985,6 +994,7 @@ export const {
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
+  useGetBrandingDataQuery,
   useLazyGetUserProfilePverQuery,
   useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
