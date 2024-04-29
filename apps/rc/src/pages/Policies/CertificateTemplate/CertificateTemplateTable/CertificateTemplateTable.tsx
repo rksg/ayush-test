@@ -147,7 +147,8 @@ export default function CertificateTemplateTable () {
     {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: ['onboard', 'commonNamePattern'],
-      key: 'commonName',
+      key: 'certificateTemplateOnboard.commonNamePattern',
+      sorter: true,
       searchable: true
     },
     {
