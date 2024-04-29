@@ -181,8 +181,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteSwitches, params)
         return {
           ...req,
           body: payload
@@ -219,8 +220,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     syncData: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.syncData, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.syncData, params)
         return {
           ...req,
           body: payload
@@ -228,21 +230,38 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     syncSwitchesData: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
-        return {
-          ...req,
-          body: payload
+      query: ({ params, payload, enableRbac }) => {
+        if (enableRbac) {
+          const req = createHttpRequest(SwitchRbacUrlsInfo.syncSwitchesData, params)
+          return {
+            ...req,
+            body: payload
+          }
+        } else {
+          const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
+          return {
+            ...req,
+            body: payload
+          }
         }
       }
     }),
     retryFirmwareUpdate: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
-        return {
-          ...req,
-          body: payload
+      query: ({ params, payload, enableRbac }) => {
+        if (enableRbac) {
+          const req = createHttpRequest(SwitchRbacUrlsInfo.retryFirmwareUpdate, params)
+          return {
+            ...req
+          }
+        } else {
+          const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
+          return {
+            ...req,
+            body: payload
+          }
         }
+
+
       }
     }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({

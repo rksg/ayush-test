@@ -139,8 +139,15 @@ export function StackForm () {
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
+  const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+
   const { data: venuesList, isLoading: isVenuesListLoading } =
-  useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
+    useGetSwitchVenueVersionListQuery({
+      params: { tenantId }, payload: defaultPayload, enableRbac: isSwitchRbacEnabled
+    })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
@@ -168,10 +175,6 @@ export function StackForm () {
   const [rowKey, setRowKey] = useState(2)
 
   const dataFetchedRef = useRef(false)
-
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
-  const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },

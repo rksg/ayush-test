@@ -36,7 +36,6 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchVenueVersionList: {
     method: 'post',
     url: '/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
     newApi: true
   },
   getSwitchAvailableFirmwareList: {

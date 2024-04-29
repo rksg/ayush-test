@@ -268,7 +268,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   syncData: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/deviceRequests',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/sync',
     newApi: true
   },
   syncSwitchesData: {
@@ -279,7 +278,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   retryFirmwareUpdate: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/firmwareUpgrade',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/upgrade',
     newApi: true
   },
   getTroubleshooting: {

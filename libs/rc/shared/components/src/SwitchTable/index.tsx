@@ -207,9 +207,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
-        const switchIdList = rows
+        const switchRows = rows
           .filter(row => isFirmwareSupportAdminPassword(row?.firmware ?? ''))
-          .map(row => row.id)
 
         const callback = () => {
           clearSelection?.()
@@ -218,7 +217,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             content: $t({ defaultMessage: 'Start admin password sync' })
           })
         }
-        switchAction.doSyncAdminPassword(switchIdList, callback)
+        switchAction.doSyncAdminPassword(switchRows, callback)
       }
     })
   }
@@ -353,11 +352,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return row.isFirstLevel ? row.extIp || noDataDisplay : ''
       }
     }] : [])
-      // { // TODO: Waiting for TAG feature support
-      //   key: 'tags',
-      //   title: $t({ defaultMessage: 'Tags' }),
-      //   dataIndex: 'tags'
-      // }
     ] as TableProps<SwitchRow>['columns']
   }, [$t, filterableKeys])
 

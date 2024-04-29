@@ -29,6 +29,7 @@ export function CloudMessageBanner () {
   const navigate = useNavigate()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -84,7 +85,7 @@ export function CloudMessageBanner () {
   }
 
   const checkSwitchScheduleExists = async () => {
-    return await getSwitchVenueVersionList({ params })
+    return await getSwitchVenueVersionList({ params, enableRbac: isSwitchRbacEnabled })
       .unwrap()
       .then(result => {
         const upgradeVenueViewList = result?.data ?? []
