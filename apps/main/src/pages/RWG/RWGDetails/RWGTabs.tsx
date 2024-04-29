@@ -8,7 +8,7 @@ function RWGTabs (props:{ gatewayDetail: RWG }) {
   const { $t } = useIntl()
   const params = useParams()
   const { gatewayDetail } = props
-  const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayDetail?.id}/gateway-details`)
+  const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayDetail?.rwgId}/gateway-details`)
   const navigate = useNavigate()
 
   const onTabChange = (tab: string) =>
