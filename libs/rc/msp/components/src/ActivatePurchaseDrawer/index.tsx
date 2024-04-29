@@ -188,6 +188,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       <div><label>{$t({ defaultMessage:
           'By checking accept, you hereby acknowledge and agree to the following' })}</label></div>
       <div><Button type='link'
+        size={'small'}
         onClick={() => {
           setTermsAndConditions(true)
           const urlTaC = 'https://support.ruckuswireless.com/ruckus-one-terms-and-conditions'
