@@ -96,18 +96,21 @@ export default function CertificateAuthorityTable () {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: 'commonName',
       searchable: true,
+      sorter: true,
       key: 'commonName'
     },
     {
       title: $t({ defaultMessage: 'SHA Fingerprint' }),
       dataIndex: 'publicKeyShaThumbprint',
       searchable: true,
+      sorter: true,
       key: 'publicKeyShaThumbprint'
     },
     {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expireDate',
       key: 'expireDate',
+      sorter: true,
       render: (_, { expireDate }) => {
         return moment(expireDate).format(EXPIRATION_DATE_FORMAT)
       }
