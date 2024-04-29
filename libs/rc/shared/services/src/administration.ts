@@ -500,6 +500,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
     }),
+    patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
@@ -833,6 +842,7 @@ export const {
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
   useGetEntitlementActivationsQuery,
+  usePatchEntitlementsActivationsMutation,
   useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
   useConvertNonVARToMSPMutation,
