@@ -11,12 +11,24 @@ import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery,
-  useGetVenueApEnhancedKeyQuery, useUpdateVenueApEnhancedKeyMutation,
-  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation
+  useUpdateVenueRogueApMutation,
+  useGetVenueApEnhancedKeyQuery,
+  useUpdateVenueApEnhancedKeyMutation,
+  useGetVenueTemplateDoSProtectionQuery,
+  useUpdateVenueTemplateDoSProtectionMutation,
+  useEnhancedRoguePoliciesQuery,
+  useGetRoguePolicyTemplateListQuery,
+  useGetVenueRogueApTemplateQuery,
+  useUpdateVenueRogueApTemplateMutation
 } from '@acx-ui/rc/services'
-import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                                     from '@acx-ui/react-router-dom'
+import {
+  VenueDosProtection,
+  VenueMessages,
+  redirectPreviousPage,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext }                                                                from '../..'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
@@ -41,6 +53,23 @@ export interface SecuritySettingContext {
 
 const { Option } = Select
 
+const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
+const DEFAULT_PROFILE_NAME = 'Default profile'
+
+const DEFAULT_OPTIONS = [{
+  id: DEFAULT_POLICY_ID,
+  name: DEFAULT_PROFILE_NAME
+}]
+
+const DEFAULT_PAYLOAD = {
+  searchString: '',
+  fields: [
+    'id',
+    'name'
+  ],
+  page: 1, pageSize: 1000
+}
+
 export function SecurityTab () {
   const { $t } = useIntl()
   const params = useParams()
@@ -48,14 +77,6 @@ export function SecurityTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
-
-  const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
-  const DEFAULT_PROFILE_NAME = 'Default profile'
-
-  const DEFAULT_OPTIONS = [{
-    id: DEFAULT_POLICY_ID,
-    name: DEFAULT_PROFILE_NAME
-  }]
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -72,14 +93,20 @@ export function SecurityTab () {
     )
 
   const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
+    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
+    useUpdateVenueRogueApMutation,
+    useUpdateVenueRogueApTemplateMutation
+  )
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
     useGetVenueTemplateDoSProtectionQuery
   )
 
-  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params }, { skip: isTemplate })
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
+    useGetVenueRogueApQuery,
+    useGetVenueRogueApTemplateQuery
+  )
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
@@ -93,22 +120,9 @@ export function SecurityTab () {
   const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
   const [triggerTlsEnhancedKey, setTriggerTlsEnhancedKey] = useState(false)
 
-  const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
-    selectFromResult ({ data }) {
-      if (data?.length === 0) {
-        return {
-          selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
-          selected: DEFAULT_OPTIONS.find((item) =>
-            item.id === DEFAULT_POLICY_ID
-          )
-        }
-      }
-      return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        selected: data?.find((item) => item.id === formRef.current?.getFieldValue('roguePolicyId'))
-      }
-    }
-  })
+  const { selectOptions, selected } = useGetRoguePolicyInstances(
+    formRef.current?.getFieldValue('roguePolicyId')
+  )
 
   useEffect(() => {
     if (selectOptions.length > 0) {
@@ -155,6 +169,7 @@ export function SecurityTab () {
       tlsEnhancedKeyEnabled: venueApEnhancedKeyData.tlsKeyEnhancedModeEnabled
     })
   }, [venueApEnhancedKeyData])
+
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
@@ -451,3 +466,28 @@ const FieldsetItem = ({
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
+
+// eslint-disable-next-line max-len
+const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useEnhancedRoguePoliciesQuery,
+    useGetRoguePolicyTemplateListQuery,
+    false,
+    DEFAULT_PAYLOAD
+  )
+
+  if (data?.totalCount === 0) {
+    return {
+      selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
+      selected: DEFAULT_OPTIONS.find((item) =>
+        item.id === DEFAULT_POLICY_ID
+      )
+    }
+  }
+  return {
+    selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+    selected: data?.data.find((item) =>
+      item.id === policyId
+    )
+  }
+}

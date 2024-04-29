@@ -182,6 +182,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
 
 describe('Topology AP Card', () => {
   it('should render correctly', async () => {
+    const services = require('@acx-ui/analytics/components')
+    const spy = jest.spyOn(services, 'useIncidentsBySeverityQuery')
     const params = {
       tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
       venueId: '7231da344778480d88f37f0cca1c534f',
@@ -202,6 +204,13 @@ describe('Topology AP Card', () => {
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
 
     expect(asFragment()).toMatchSnapshot()
+    expect(spy).toBeCalledWith(expect.objectContaining({ filter: {
+      networkNodes: [[
+        { name: apDetail.venueId, type: 'zone' },
+        { name: apDetail.apMac.toUpperCase(), type: 'AP' }
+      ]],
+      switchNodes: [[]]
+    } }), expect.anything())
   })
 
   it('should show empty traffic data', async () => {

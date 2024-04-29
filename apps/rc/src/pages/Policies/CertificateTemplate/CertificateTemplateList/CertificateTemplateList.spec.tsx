@@ -47,6 +47,7 @@ describe('CertificateTemplateList', () => {
           path: '/:tenantId/policies/certificateTemplate/list'
         }
       })
+
     expect(await screen.findByText('Certificate Template (3)')).toBeInTheDocument()
     expect(await screen.findByText('Certificate Authority (3)')).toBeInTheDocument()
     expect(await screen.findByText('Certificate (2)')).toBeInTheDocument()
