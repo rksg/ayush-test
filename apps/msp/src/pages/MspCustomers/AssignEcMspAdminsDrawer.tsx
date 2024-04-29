@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useMspAdminListQuery,
   useAssignMultiMspEcDelegatedAdminsMutation
@@ -18,7 +19,9 @@ import {
   MspAdministrator
 } from '@acx-ui/msp/utils'
 import {
-  roleDisplayText
+  defaultSort,
+  roleDisplayText,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum } from '@acx-ui/types'
@@ -43,6 +46,7 @@ interface AssignedMultiEcMspAdmins {
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
@@ -98,18 +102,19 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      sorter: true,
+      sorter: { compare: sortProp('email', defaultSort) },
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Role' }),
+      title: isAbacToggleEnabled
+        ? $t({ defaultMessage: 'Privilege Group' }) : $t({ defaultMessage: 'Role' }),
       dataIndex: 'role',
       key: 'role',
       sorter: false,

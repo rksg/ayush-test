@@ -723,6 +723,19 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.mspEcTenantId
+        }
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivilegeGroups, params, CUSTOM_HEADER, true)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
     getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
@@ -850,6 +863,7 @@ export const {
   useAddCustomRoleMutation,
   useUpdateCustomRoleMutation,
   useDeleteCustomRoleMutation,
+  useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
   useAddPrivilegeGroupMutation,
