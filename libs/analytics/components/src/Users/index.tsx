@@ -9,9 +9,11 @@ import {
   useRefreshUserDetailsMutation,
   useGetTenantSettingsQuery,
   useDeleteUserResourceGroupMutation,
-  useDeleteInvitationMutation
+  useDeleteInvitationMutation,
+  useBrand360Config,
+  DisplayUser
 } from '@acx-ui/analytics/services'
-import type { Settings, ManagedUser }         from '@acx-ui/analytics/utils'
+import type { Settings }                      from '@acx-ui/analytics/utils'
 import { Loader, showToast, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { getIntl }                            from '@acx-ui/utils'
@@ -68,11 +70,13 @@ export const useUsers = () => {
   const isUsersPageEnabled = useIsSplitOn(Features.RUCKUS_AI_USERS_TOGGLE)
   const [openDrawer, setOpenDrawer] = useState(false)
   const [drawerType, setDrawerType] = useState<DrawerType>('edit')
-  const [selectedRow, setSelectedRow] = useState<ManagedUser | null>(null)
-  const usersQuery = useGetUsersQuery()
+  const [selectedRow, setSelectedRow] = useState<DisplayUser | null>(null)
   const [refreshUserDetails, refreshResponse] = useRefreshUserDetailsMutation()
   const [deleteUserResourceGroup, deleteUserResponse] = useDeleteUserResourceGroupMutation()
   const [deleteInvitation, deleteInvitationResponse] = useDeleteInvitationMutation()
+
+  const { names: { brand } } = useBrand360Config()
+  const usersQuery = useGetUsersQuery(brand)
 
   const [visible, setVisible] = useState(false)
   const settingsQuery = useGetTenantSettingsQuery()
@@ -132,7 +136,7 @@ export const useUsers = () => {
   ].some(Boolean)
 
   const [count, setCount] = useState(usersQuery.data?.length || 0)
-  useEffect(() => { setCount(usersQuery.data?.length || 0) }, [usersQuery])
+  useEffect(() => { setCount(usersQuery.data?.length || 0) }, [usersQuery.data?.length])
 
   const title = defineMessage({
     defaultMessage: 'Users {count, select, null {} other {({count})}}',
@@ -152,7 +156,9 @@ export const useUsers = () => {
       isUsersPageEnabled={isUsersPageEnabled}
       isEditMode={isEditMode}
       setVisible={setVisible}
-      onDisplayRowChange={(dataSource) => setCount(dataSource.length)}
+      onDisplayRowChange={
+        useCallback((dataSource: DisplayUser[]) => setCount(dataSource.length), [])
+      }
     />
     <UserDrawer
       opened={openDrawer}

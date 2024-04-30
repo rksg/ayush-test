@@ -33,6 +33,14 @@ jest.mock('../Users', () => ({
   })
 }))
 
+jest.mock('../Webhooks', () => ({
+  ...jest.requireActual('../Webhooks'),
+  useWebhooks: () => ({
+    title: 'Webhooks (0)',
+    component: <div data-testid='Webhooks' />
+  })
+}))
+
 describe('AccountManagement', () => {
   it('should render', async () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,
@@ -44,7 +52,7 @@ describe('AccountManagement', () => {
     expect(await screen.findByText('Support')).toBeVisible()
     expect(await screen.findByText('Licenses')).toBeVisible()
     expect(await screen.findByText('Schedules')).toBeVisible()
-    expect(await screen.findByText('Webhooks')).toBeVisible()
+    expect(await screen.findByText('Webhooks (0)')).toBeVisible()
   })
   it('should handle tab click', async () => {
     render(<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>,

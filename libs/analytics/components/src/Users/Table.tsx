@@ -2,23 +2,14 @@ import { useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { useBrand360Config } from '@acx-ui/analytics/services'
+import { DisplayUser } from '@acx-ui/analytics/services'
 import {
   defaultSort,
   getUserProfile,
-  ManagedUser,
-  sortProp,
-  roleStringMap
+  sortProp
 } from '@acx-ui/analytics/utils'
-import { Table, TableProps }      from '@acx-ui/components'
-import { noDataDisplay, getIntl } from '@acx-ui/utils'
-
-type DisplayUser = ManagedUser & {
-  displayInvitationState: string
-  displayInvitor: string
-  displayRole: string
-  displayType: string
-}
+import { Table, TableProps } from '@acx-ui/components'
+import { getIntl }           from '@acx-ui/utils'
 
 export const messages = {
   refreshSuccessful: defineMessage({ defaultMessage: 'Refreshed user details successfully' }),
@@ -51,52 +42,8 @@ export const messages = {
   })
 }
 
-const getDisplayType = (type: ManagedUser['type'], franchisor: string) => {
-  const { $t } = getIntl()
-  switch (type) {
-    case 'tenant':
-      return $t({ defaultMessage: '3rd Party' })
-    case 'super-tenant':
-      return franchisor
-    default:
-      return $t({ defaultMessage: 'Internal' })
-  }
-}
-
-const getDisplayState = (
-  state: NonNullable<ManagedUser['invitation']>['state'] | undefined
-) => {
-  const { $t } = getIntl()
-  switch (state) {
-    case 'accepted':
-      return $t({ defaultMessage: 'Accepted' })
-    case 'rejected':
-      return $t({ defaultMessage: 'Rejected' })
-    case 'pending':
-      return $t({ defaultMessage: 'Pending' })
-    default:
-      return noDataDisplay
-  }
-}
-
-const transformUsers = (
-  users: ManagedUser[] | undefined,
-  franchisor: string
-): DisplayUser[] => {
-  const { $t } = getIntl()
-  if (!users) return []
-  return users.map(user => ({
-    ...user,
-    displayRole: $t(roleStringMap[user.role]),
-    displayType: getDisplayType(user.type, franchisor),
-    displayInvitationState: getDisplayState(user.invitation?.state),
-    displayInvitor: user.invitation
-      ? [user.invitation.inviterUser.firstName, '', user.invitation.inviterUser.lastName].join(' ')
-      : noDataDisplay
-  }))
-}
 const getUserActions = (
-  selectedRow: ManagedUser,
+  selectedRow: DisplayUser,
   { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }: {
     refreshUserDetails: CallableFunction,
     setOpenDrawer: CallableFunction,
@@ -146,9 +93,9 @@ const getUserActions = (
 }
 
 interface UsersTableProps {
-  data?: ManagedUser[]
+  data?: DisplayUser[]
   setOpenDrawer: CallableFunction
-  selectedRow: ManagedUser | null
+  selectedRow: DisplayUser | null
   setSelectedRow: CallableFunction
   refreshUserDetails: CallableFunction
   handleDeleteUser: CallableFunction
@@ -181,8 +128,6 @@ export const UsersTable = ({
   }, [openDrawer, setSelectedRow])
 
   const { $t } = useIntl()
-  const { names: { brand } } = useBrand360Config()
-  const users = transformUsers(data, brand)
 
   const actions = [
     {
@@ -276,10 +221,10 @@ export const UsersTable = ({
     rowKey={'id'}
     settingsId='users-table'
     columns={columns}
-    dataSource={users}
+    dataSource={data}
     actions={actions}
     rowActions={getUserActions(
-      selectedRow as ManagedUser,
+      selectedRow as DisplayUser,
       { refreshUserDetails, setOpenDrawer, handleDeleteUser, setDrawerType }
     )}
     searchableWidth={450}
@@ -287,7 +232,7 @@ export const UsersTable = ({
       type: 'radio',
       selectedRowKeys: selectedRow ? [ selectedRow.id ] : [],
       onChange: (
-        _, selectedRows: ManagedUser[]
+        _, selectedRows: DisplayUser[]
       ) => {
         setOpenDrawer(false)
         setSelectedRow(selectedRows[0])

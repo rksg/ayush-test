@@ -7,8 +7,8 @@ import { Provider, rbacApiURL }                                     from '@acx-u
 import { findTBody, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 import { noDataDisplay }                                            from '@acx-ui/utils'
 
-import { mockMangedUsers } from './__tests__/fixtures'
-import { UsersTable }      from './Table'
+import { mockDisplayUsers } from './__tests__/fixtures'
+import { UsersTable }       from './Table'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -40,7 +40,7 @@ describe('UsersTable', () => {
   })
   it('should render table correctly', async () => {
     render(<UsersTable
-      data={mockMangedUsers}
+      data={mockDisplayUsers}
       selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -87,8 +87,8 @@ describe('UsersTable', () => {
   })
   it('should handle the edit callback', async () => {
     render(<UsersTable
-      data={[mockMangedUsers[0]]}
-      selectedRow={mockMangedUsers[0]}
+      data={[mockDisplayUsers[0]]}
+      selectedRow={mockDisplayUsers[0]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
       handleDeleteUser={handleDeleteUser}
@@ -112,8 +112,8 @@ describe('UsersTable', () => {
   })
   it('should handle the delete callback', async () => {
     render(<UsersTable
-      data={[mockMangedUsers[0]]}
-      selectedRow={mockMangedUsers[0]}
+      data={[mockDisplayUsers[0]]}
+      selectedRow={mockDisplayUsers[0]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
       handleDeleteUser={handleDeleteUser}
@@ -137,8 +137,8 @@ describe('UsersTable', () => {
   })
   it('should handle the refresh callback', async () => {
     render(<UsersTable
-      data={[mockMangedUsers[1]]}
-      selectedRow={mockMangedUsers[1]}
+      data={[mockDisplayUsers[1]]}
+      selectedRow={mockDisplayUsers[1]}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
       handleDeleteUser={handleDeleteUser}
@@ -162,7 +162,7 @@ describe('UsersTable', () => {
   })
   it('should disable edit and delete for the same user', async () => {
     render(<UsersTable
-      data={mockMangedUsers}
+      data={mockDisplayUsers}
       selectedRow={selectedRow}
       setSelectedRow={setSelectedRow}
       refreshUserDetails={refreshUserDetails}
@@ -209,7 +209,11 @@ describe('UsersTable', () => {
       resourceGroupName: 'default',
       updatedAt: '2023-09-22T07:31:11.844Z',
       type: null,
-      invitation: null
+      invitation: null,
+      displayRole: 'Admin',
+      displayType: 'Internal',
+      displayInvitationState: '--',
+      displayInvitor: '--'
     }
     render(<UsersTable
       data={[user]}

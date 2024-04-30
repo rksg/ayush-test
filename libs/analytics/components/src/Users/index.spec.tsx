@@ -17,7 +17,7 @@ import {
   findTBody
 } from '@acx-ui/test-utils'
 
-import { mockMangedUsers } from './__tests__/fixtures'
+import { mockManagedUsers } from './__tests__/fixtures'
 
 import { useUsers } from '.'
 
@@ -90,10 +90,11 @@ const mockDeleteInvitationResponse = (data = {}) => {
 describe('Users Page', () => {
   beforeEach(() => {
     store.dispatch(rbacApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
   afterEach(() => message.destroy())
   it('should render correctly', async () => {
-    mockRbacUserResponse(mockMangedUsers)
+    mockRbacUserResponse(mockManagedUsers)
     mockSSOResponse()
     const Component = () => {
       const { component } = useUsers()
@@ -129,7 +130,7 @@ describe('Users Page', () => {
     expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
   })
   it('should handle refresh user details correctly', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
+    mockRbacUserResponse([mockManagedUsers[0]])
     mockRefreshUserResponse({ userId: '1111' })
     mockSSOResponse()
     const Component = () => {
@@ -148,7 +149,7 @@ describe('Users Page', () => {
     expect(await screen.findByText('Refreshed user details successfully')).toBeVisible()
   })
   it('should handle delete user details correctly for internal user', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
+    mockRbacUserResponse([mockManagedUsers[0]])
     mockDeleteUserDetailsResponse({ data: 'ok' })
     mockSSOResponse()
     const Component = () => {
@@ -173,7 +174,7 @@ describe('Users Page', () => {
     expect(await screen.findByText('Deleted user details successfully')).toBeVisible()
   })
   it('should handle delete user details failure correctly for internal user', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
+    mockRbacUserResponse([mockManagedUsers[0]])
     mockSSOResponse()
     mockServer.use(
       rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
@@ -201,7 +202,7 @@ describe('Users Page', () => {
 
   // eslint-disable-next-line max-len
   it('should handle delete user details failure with error message correctly for internal user', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
+    mockRbacUserResponse([mockManagedUsers[0]])
     mockSSOResponse()
     const error = { status: 422, message: 'error message' }
     mockServer.use(
@@ -232,7 +233,7 @@ describe('Users Page', () => {
     expect(await screen.findByText(message)).toBeVisible()
   })
   it('should handle delete invitation correctly for external user', async () => {
-    mockRbacUserResponse([mockMangedUsers[2]])
+    mockRbacUserResponse([mockManagedUsers[2]])
     mockDeleteInvitationResponse({ data: 'ok' })
     mockSSOResponse()
     const Component = () => {
@@ -256,7 +257,7 @@ describe('Users Page', () => {
     expect(await screen.findByText('Deleted user details successfully')).toBeVisible()
   })
   it('should open drawer to edit user', async () => {
-    mockRbacUserResponse([mockMangedUsers[0]])
+    mockRbacUserResponse([mockManagedUsers[0]])
     mockSSOResponse()
     mockRGResponse()
     const Component = () => {
@@ -301,9 +302,25 @@ describe('Users Page', () => {
     await userEvent.click(await screen.findByText('Add Third Party'))
     expect(await screen.findByTestId('userDrawer')).toHaveTextContent('invite3rdParty')
   })
-  it('should show ConfigureSSO button correctly when ruckus-ai-sso-toggle is enabled', async () => {
+  it('should show Setup SSO button when ruckus-ai-sso-toggle is enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockRbacUserResponse(mockMangedUsers)
+    mockRbacUserResponse(mockManagedUsers)
+    mockSSOResponse()
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByRole('img', { name: 'loader' }))
+    const updateSSOBtn = await screen.findByText('Setup SSO')
+    expect(updateSSOBtn).toBeVisible()
+    fireEvent.click(updateSSOBtn)
+    expect(await screen.findByTestId('importSSOFileDrawer')).toBeVisible()
+  })
+  it('should show Configure SSO button when ruckus-ai-sso-toggle is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockRbacUserResponse(mockManagedUsers)
     mockSSOResponse('samlFile')
     const Component = () => {
       const { component } = useUsers()
@@ -317,9 +334,9 @@ describe('Users Page', () => {
     fireEvent.click(updateSSOBtn)
     expect(await screen.findByTestId('importSSOFileDrawer')).toBeVisible()
   })
-  it('should hide ConfigureSSO correctly when ruckus-ai-sso-toggle is disabled', async () => {
+  it('should hide Configure SSO when ruckus-ai-sso-toggle is disabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockRbacUserResponse(mockMangedUsers)
+    mockRbacUserResponse(mockManagedUsers)
     mockSSOResponse('samlFile')
     const Component = () => {
       const { component } = useUsers()

@@ -8,7 +8,7 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useOnboardedSystems } from '../OnboardedSystems'
 import { Support }             from '../Support'
 import { useUsers }            from '../Users'
-import { WebhooksTable }       from '../Webhooks'
+import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -73,8 +73,7 @@ const useTabs = () : Tab[] => {
   }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
-    title: $t({ defaultMessage: 'Webhooks' }),
-    component: <WebhooksTable />
+    ...useWebhooks()
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,

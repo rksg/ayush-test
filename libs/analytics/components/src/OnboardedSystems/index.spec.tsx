@@ -1,27 +1,20 @@
 import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
-import { Map }     from 'immutable'
-import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { PERMISSION_MANAGE_MLISA, Tenant, UserProfile, setUserProfile }                     from '@acx-ui/analytics/utils'
+import { PERMISSION_MANAGE_MLISA, UserProfile, setUserProfile }                             from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
-import { mockSmartZoneList } from './__tests__/fixtures'
-import { OnboardedSystem }   from './services'
+import { mockSmartZoneList, tenants } from './__tests__/fixtures'
+import { FormattedOnboardedSystem }   from './services'
 
-import { useOnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
+import { useOnboardedSystems, TooltipContent } from '.'
 
 const services = require('./services')
 jest.mock('./services', () => ({
   ...jest.requireActual('./services')
 }))
-
-const tenants = [
-  { id: 'id1', name: 'account1', permissions: { [PERMISSION_MANAGE_MLISA]: true } },
-  { id: 'id2', name: 'account2', permissions: { [PERMISSION_MANAGE_MLISA]: true } }
-] as unknown as Tenant[]
 
 describe('OnboardedSystems', () => {
   beforeEach(() => {
@@ -187,15 +180,7 @@ describe('OnboardedSystems', () => {
       return component
     }
     render(<Component/>, { wrapper: Provider, route: {} })
-    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'])
-  })
-})
-
-describe('formatSmartZone', () => {
-  it('should generate correct formatted data', () => {
-    const tenantsMap = Map(tenants.map(t => [get(t, 'id'), t]))
-    expect(formatSmartZone(
-      mockSmartZoneList as OnboardedSystem[], tenants[0].id, tenantsMap)).toMatchSnapshot()
+    expect(services.useFetchSmartZoneListQuery).toBeCalledWith({ tenantId: 'id1', tenants })
   })
 })
 
