@@ -169,9 +169,8 @@ export default function ConnectionMeteringTable () {
     setPropertyMap(map)
   }, [propertyConfigs])
 
-  const rowActions: TableProps<ConnectionMetering>['rowActions'] = []
-  if (hasPermission({ scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE] })) {
-    rowActions.push({
+  const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
+    {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -184,12 +183,10 @@ export default function ConnectionMeteringTable () {
         })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
-    })
-  }
-
-  if (hasPermission({ scopes: [WifiScopes.DELETE, EdgeScopes.DELETE] })) {
-    rowActions.push({
+      disabled: (selectedItems => selectedItems.length > 1),
+      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE]
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -215,9 +212,10 @@ export default function ConnectionMeteringTable () {
                 console.log(e)
               })
           })
-      }
-    })
-  }
+      },
+      scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE]
+    }
+  ]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -260,13 +258,15 @@ export default function ConnectionMeteringTable () {
       <Table
         enableApiFilter
         columns={useColumns(venueMap, propertyMap)}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasPermission({
+          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+        }) && { type: 'radio' }}
       />
     </Loader>
   )
