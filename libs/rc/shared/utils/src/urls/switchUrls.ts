@@ -128,6 +128,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/port/switch/:serialNumber/ports',
     newApi: true
   },
+  portsPowerCycle: {
+    method: 'post',
+    url: '/venues/:venueId/switches/powerCycleRequests',
+    newApi: true
+  },
   getVlansByVenue: {
     method: 'get',
     url: '/venues/:venueId/switchProfiles/vlans',
@@ -404,6 +409,16 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
     newApi: true
   },
+  debugRequests: {
+    method: 'post',
+    url: '/switches/:switchId/debugRequests',
+    newApi: true
+  },
+  blinkLeds: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/debugRequests',
+    newApi: true
+  },
   ping: {
     method: 'post',
     url: '/switches/:switchId/debugRequests',
@@ -475,12 +490,6 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switches/:switchId/dhcpServerStateSettings',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
-    newApi: true
-  },
-  getSwitchProfileList: {
-    method: 'post',
-    url: '/switches/profiles/query',
-    oldUrl: '/api/viewmodel/:tenantId/switch/profilelist',
     newApi: true
   },
   addSwitchConfigProfile: {

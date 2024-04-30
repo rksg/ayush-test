@@ -159,8 +159,21 @@ const activations = {
     productCode: 'aaa',
     quantity: 100,
     spaEndDate: '2024-12-01',
+    productClass: 'ACX-ESNT-NEW',
     orderCreateDate: '2024-03-03',
     orderAcxRegistrationCode: 'ABC123'
+  },
+  {
+    orderId: 'a0EO3000001ZfR7MAK',
+    salesOrderId: 'a0FO3000000xJ0DMAU',
+    productName: 'RUCKUS One Trial REC 90-Day',
+    productCode: 'CLD-R1-TMP090-REC',
+    quantity: 100,
+    spaStartDate: '2024-04-22',
+    spaEndDate: '2024-07-22',
+    productClass: 'ACX-TRIAL-NEW',
+    orderCreateDate: '2024-04-22T08:53:05.000+0000',
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
   }]
 }
 
@@ -301,5 +314,17 @@ describe('PendingActivations', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /ABC123/i }))
     expect(mockedWindowOpen).toBeCalled()
+  })
+
+  it('should open drawer correctly when part number clicked', async () => {
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(await screen.findByRole('button', { name: /aaa/i }))
+    expect(await screen.findByText('Activate Purchase')).toBeVisible()
   })
 })

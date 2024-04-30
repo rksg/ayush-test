@@ -33,7 +33,6 @@ export enum CertificateStatusType {
 }
 
 export enum AlgorithmType {
-  SHA_1 = 'SHA_1',
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
@@ -90,7 +89,8 @@ export interface CertificateTemplate {
   certificateCount?: number
   certificateNames?: string[]
   chromebook?: Chromebook,
-  networkIds?: string[]
+  networkIds?: string[],
+  variables?: string[]
 }
 
 export interface OnboardCA {
@@ -201,6 +201,7 @@ export interface Certificate {
   chain?: string
   details?: string
   description?: string
+  enrollmentType?: EnrollmentType
 }
 
 export interface CertificateFormData {
@@ -222,4 +223,10 @@ export enum CertificateAcceptType {
   PKCS7 = 'application/x-pkcs7-certificates',
   PKCS8 = 'application/pkcs8',
   PKCS12 = 'application/x-pkcs12'
+}
+
+export enum EnrollmentType {
+  NONE = 'NONE',
+  CHROMEBOOK = 'CHROMEBOOK',
+  SCEP = 'SCEP'
 }
