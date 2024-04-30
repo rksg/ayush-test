@@ -34,7 +34,7 @@ function BetaFeaturesDrawer (
     })
   }
 
-  const drawerTitle = $t({ defaultMessage: 'RUCKUS One Beta Features' })
+  const drawerTitle = $t({ defaultMessage: 'RUCKUS One Early Access Features' })
   const footer =<div>
     <Button type='primary'
       onClick={() => {
@@ -75,7 +75,7 @@ function BetaFeaturesDrawer (
     width={props.width}
     children={
       <UI.ListWrapper>
-        <p>{$t({ defaultMessage: 'No beta features to show' })} </p>
+        <p>{$t({ defaultMessage: 'No early access features to show' })} </p>
       </UI.ListWrapper>
     }
     footer={footer}

@@ -31,7 +31,7 @@ function R1BetaTermsConditionDrawer (
     showActionModal({
       type: 'info',
       width: 450,
-      title: $t({ defaultMessage: 'Enabling Beta Features' }),
+      title: $t({ defaultMessage: 'Enabling Early Access Features' }),
       content: $t(MessageMapping.enable_r1_beta_logout_dialog_msg),
       okText: $t({ defaultMessage: 'Log Out Now' }),
       onOk: async () => {
@@ -56,7 +56,7 @@ function R1BetaTermsConditionDrawer (
 
   return <Drawer
     destroyOnClose={resetField}
-    title={$t({ defaultMessage: 'RUCKUS One Beta Terms & Conditions' })}
+    title={$t({ defaultMessage: 'RUCKUS One Early Access Terms & Conditions' })}
     visible={visible}
     onClose={onClose}
     width={'430px'}

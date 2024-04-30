@@ -53,7 +53,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
           route: { params }
         })
       const formItem = await screen.findByRole('checkbox',
-        { name: /Enable RUCKUS One Beta features/i })
+        { name: /Enable RUCKUS One Early Access features/i })
       expect(formItem).not.toBeChecked()
       await userEvent.click(formItem)
       const drawer = await screen.findByRole('dialog')
@@ -78,10 +78,11 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
+    const formItem = screen.getByRole('checkbox',
+      { name: /Enable RUCKUS One Early Access features/i })
     expect(formItem).toBeChecked()
     await userEvent.click(formItem)
-    const disableBtn = await screen.findByRole('button', { name: 'Disable Beta Features' })
+    const disableBtn = await screen.findByRole('button', { name: 'Disable Early Access Features' })
     expect(disableBtn).toBeVisible()
     await userEvent.click(disableBtn)
     await waitFor(() => expect(disableBtn).not.toBeVisible())
@@ -99,7 +100,8 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    const formItem = screen.getByRole('checkbox', { name: /Enable RUCKUS One Beta features/i })
+    const formItem = screen.getByRole('checkbox',
+      { name: /Enable RUCKUS One Early Access features/i })
     expect(formItem).not.toBeChecked()
     await userEvent.click(formItem)
     const drawer = await screen.findByRole('dialog')
@@ -122,7 +124,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    const currentBeta = await screen.findByRole('link', { name: 'Current beta features' })
+    const currentBeta = await screen.findByRole('link', { name: 'Current early access features' })
     await userEvent.click(currentBeta)
     await screen.findAllByRole('dialog')
     // TODO: Test case is unable to find the 'dialog' roles so below
