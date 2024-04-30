@@ -181,6 +181,7 @@ interface ApplyTemplateConfirmationDrawerProps {
 function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
   const { ecNames, templateNames, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
+  const [loading, setLoading ] = useState(false)
 
   const content =
     <Space direction='vertical'>
@@ -196,7 +197,17 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
     <Button onClick={onBack}>
       {$t({ defaultMessage: 'Back' })}
     </Button>
-    <Button onClick={onApply} type='primary'>
+    <Button
+      onClick={async () => {
+        setLoading(true)
+        try {
+          await onApply()
+        } finally {
+          setLoading(false)
+        }
+      }}
+      loading={loading}
+      type='primary'>
       {$t({ defaultMessage: 'Apply Template' })}
     </Button>
     <Button onClick={onCancel}>

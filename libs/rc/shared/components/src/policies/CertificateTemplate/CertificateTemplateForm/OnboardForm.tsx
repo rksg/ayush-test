@@ -146,7 +146,7 @@ export default function OnboardForm ({ editMode = false }) {
         </GridRow>
       </Section>
       <GridRow>
-        <GridCol col={{ span: 10 }}>
+        <GridCol col={{ span: 12 }}>
           <Button type='link'
             style={{ maxWidth: 120 }}
             onClick={() => setShowMoreSettings(!showMoreSettings)}>
