@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                    from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useAdaptivePolicySetLisByQueryQuery,
-  useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
+  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetDpskListQuery,
   useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -24,6 +24,7 @@ export default function AdaptivePolicySetTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
@@ -62,6 +63,21 @@ export default function AdaptivePolicySetTable () {
           getDpsksLoading: isLoading
         }
       }, skip: !isCloudpathEnabled
+    })
+
+  // eslint-disable-next-line max-len
+  const { certificateTemplateList, getCertificateTemplateLoading } = useGetCertificateTemplatesQuery(
+    {
+      payload: { pageSize: 10000 }
+    }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const certificateTemplateList = new Map(data?.data.map((template) =>
+          [template.id, template.name]))
+        return {
+          certificateTemplateList,
+          getCertificateTemplateLoading: isLoading
+        }
+      }, skip: !isCertificateTemplateEnabled
     })
 
   function useColumns () {
@@ -119,7 +135,13 @@ export default function AdaptivePolicySetTable () {
             .filter(id => dpskList.has(id))
             .map(id => dpskList.get(id) ?? '') ?? []
 
-          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments]}
+          const certTemplateAssignments = row.externalAssignments
+            .map(assignment => assignment.identityId).flat()
+            .filter(id => certificateTemplateList.has(id))
+            .map(id => certificateTemplateList.get(id) ?? '') ?? []
+
+          // eslint-disable-next-line max-len
+          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments, ...certTemplateAssignments]}
             displayText={row.assignmentCount}
             totalCountOfItems={row.assignmentCount}/>
         }
@@ -151,7 +173,7 @@ export default function AdaptivePolicySetTable () {
         name,
         [
           // eslint-disable-next-line max-len
-          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'Mac Registration Lists or DPSK' }) }
+          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'other services' }) }
         ],
         async () => {
           deletePolicy({ params: { policySetId: selectedRow.id } })
@@ -191,7 +213,8 @@ export default function AdaptivePolicySetTable () {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: getMacListLoading || getDpsksLoading, isFetching: isDeletePolicyUpdating }
+      { isLoading: getMacListLoading || getDpsksLoading || getCertificateTemplateLoading,
+        isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         enableApiFilter
