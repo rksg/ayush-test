@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { EdgeLag }                                                                 from '../..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }  from './__tests__/fixtures'
-import { mockEdgePortConfig } from './__tests__/fixtures/portsConfig'
+import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
+import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootForStatus,
   allowResetForStatus,
@@ -13,6 +13,7 @@ import {
   getIpWithBitMask,
   getSuggestedIpRange,
   isAllPortsLagMember,
+  isInterfaceInVRRPSetting,
   lanPortsubnetValidator,
   optionSorter,
   validateClusterInterface,
@@ -22,6 +23,8 @@ import {
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+
 describe('Edge utils', () => {
 
   it('should get good service health', () => {
@@ -243,6 +246,22 @@ describe('Edge utils', () => {
     }
     // eslint-disable-next-line max-len
     expect(mockErrorFn).toBeCalledWith('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')
+  })
+
+  it('Test isInterfaceInVRRPSetting true', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port2',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeTruthy()
+  })
+
+  it('Test isInterfaceInVRRPSetting false', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port3',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeFalsy()
   })
 })
 
