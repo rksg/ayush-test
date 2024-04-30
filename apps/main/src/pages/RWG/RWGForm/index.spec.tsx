@@ -219,7 +219,7 @@ describe('Gateway Form', () => {
     fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('FQDN / IP must be at least 2 characters')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid URL')).toBeVisible()
 
   })
 
