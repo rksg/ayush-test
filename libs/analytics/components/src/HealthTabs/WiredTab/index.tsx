@@ -1,12 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter, categoryTabs }      from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs }                from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }                  from '@acx-ui/utils'
+import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Tabs }                        from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import * as UI from '../../Health/styledComponents'
 
+import Kpis             from './Kpi'
 import { SummaryBoxes } from './SummaryBoxes'
 
 const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
@@ -45,7 +46,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
         </UI.ThresholdTitle>
       </GridCol>
       <GridCol col={{ span: 24 }}>
-        KPI page go here
+        <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
       </GridCol>
     </GridRow>
   )
