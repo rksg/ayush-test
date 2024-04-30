@@ -68,7 +68,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
   const { serialNumber } = props
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
-  const { clusterId } = useGetEdgeListQuery(
+  const { clusterId, venueId } = useGetEdgeListQuery(
     { payload: {
       fields: [
         'name',
@@ -81,19 +81,35 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     {
       skip: !serialNumber,
       selectFromResult: ({ data }) => ({
-        clusterId: data?.data[0].clusterId
+        clusterId: data?.data[0].clusterId,
+        venueId: data?.data[0].venueId
       })
     }
   )
 
   const {
-    data: generalSettings,
-    isLoading: isGeneralSettingsLoading,
-    isFetching: isGeneralSettingsFetching
+    generalSettings,
+    isGeneralSettingsLoading,
+    isGeneralSettingsFetching
   } = useGetEdgeQuery({
-    params: { serialNumber }
+    params: {
+      edgeClusterId: clusterId,
+      venueId,
+      serialNumber
+    }
   }, {
-    skip: !serialNumber
+    skip: !serialNumber || !venueId || !clusterId,
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      generalSettings: {
+        venueId: venueId,
+        clusterId: clusterId,
+        serialNumber: serialNumber,
+        ...data
+      } as EdgeGeneralSetting,
+      isGeneralSettingsLoading: isLoading,
+      isGeneralSettingsFetching: isFetching,
+      ...data
+    })
   })
 
   const {
