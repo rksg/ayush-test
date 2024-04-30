@@ -17,17 +17,18 @@ import { createHttpRequest } from '@acx-ui/utils'
 export const rwgApi = baseRWGApi.injectEndpoints({
   endpoints: (build) => ({
     rwgList: build.query<TableResult<RWG>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const rwgListReq = createHttpRequest(CommonUrlsInfo.getRwgList, params)
         return {
-          ...rwgListReq
+          ...rwgListReq,
+          body: payload
         }
       },
       transformResponse: ({ response }) => {
         return {
-          data: response,
-          totalCount: response.length,
-          page: 0
+          data: response.items,
+          totalCount: response.totalSizes,
+          page: response.totalPages
         }
       },
       keepUnusedDataFor: 0,

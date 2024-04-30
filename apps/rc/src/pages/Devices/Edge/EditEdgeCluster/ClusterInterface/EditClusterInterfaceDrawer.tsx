@@ -9,8 +9,10 @@ import {
   EdgeIpModeEnum,
   EdgePortInfo,
   EdgePortTypeEnum,
+  VirtualIpSetting,
   edgePortIpValidator,
   getEdgePortIpFromStatusIp,
+  isInterfaceInVRRPSetting,
   optionSorter,
   subnetMaskIpRegExp,
   validateUniqueIp
@@ -27,12 +29,13 @@ interface EditClusterInterfaceDrawerProps {
   interfaceList?: EdgePortInfo[]
   editData?: ClusterInterfaceTableType
   allNodeData?: ClusterInterfaceTableType[]
+  vipConfig?: VirtualIpSetting[]
 }
 
 export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProps) => {
   const {
     visible, setVisible, handleFinish: finish, interfaceList, editData,
-    allNodeData
+    allNodeData, vipConfig = []
   } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -45,7 +48,7 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
     }
   }, [editData])
 
-  const interfaceOprionts = interfaceList?.filter(item =>
+  const interfaceOptions = interfaceList?.filter(item =>
     !item.portName.includes('.') &&
     !item.isCorePort &&
     !item.isLagMember &&
@@ -124,8 +127,30 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
             children={
               <Select
                 onChange={handleInterfaceChange}
-                options={interfaceOprionts}
-              />
+              >
+                {
+                  interfaceOptions?.map(item => (
+                    isInterfaceInVRRPSetting(
+                      editData?.serialNumber ?? '',
+                      item.value,
+                      vipConfig) ?
+                      <Select.Option
+                        key={item.value}
+                        value={item.value}
+                        // eslint-disable-next-line max-len
+                        title={$t({ defaultMessage: 'This interface has already been configured as a VRRP interface' })}
+                        children={item.label}
+                        disabled
+                      />
+                      :
+                      <Select.Option
+                        key={item.value}
+                        value={item.value}
+                        children={item.label}
+                      />
+                  ))
+                }
+              </Select>
             }
           />
         </Col>

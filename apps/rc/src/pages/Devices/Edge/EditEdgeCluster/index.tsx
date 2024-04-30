@@ -68,6 +68,7 @@ const EditEdgeCluster = () => {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       content: <ClusterInterface
         currentClusterStatus={currentClusterStatus}
+        currentVipConfig={currentCluster?.virtualIpSettings}
       />
     }
   }
