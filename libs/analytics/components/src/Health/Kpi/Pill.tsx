@@ -18,23 +18,23 @@ import GenericError from '../../GenericError'
 import * as UI      from '../styledComponents'
 
 
-export type PillData = { success: number, total: number }
+export type PillData = { success: number, total: number, length?: number }
 
 export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
   window: { startDate: string, endDate: string }
 ) : PillData => {
-  const [success, total] = data
+  const filteredData = data
     .filter((_, index) =>
       moment(time[index]).isBetween(
         moment(window.startDate), moment(window.endDate), undefined, '[]'
       )
     )
-    .reduce(([success, total], datum) => (
-      datum && datum.length && (datum[0] !== null && datum[1] !== null )
-        ? [success + datum[0], total + datum[1]] : [success, total]
-    ), [0, 0])
-  return { success, total }
+  const [success, total] = filteredData.reduce(([success, total], datum) => (
+    datum && datum.length && (datum[0] !== null && datum[1] !== null )
+      ? [success + datum[0], total + datum[1]] : [success, total]
+  ), [0, 0])
+  return { success, total, length: filteredData.length }
 }
 
 export const tranformHistResponse = (
@@ -84,10 +84,10 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   })
   const queryResults = histogram ? histogramQuery : timeseriesQuery
 
-  const { success, total } = queryResults.data as PillData
+  const { success, total, length } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) : 0
 
-  return { queryResults, percent }
+  return { queryResults, percent, length }
 }
 
 function HealthPill ({ filters, kpi, timeWindow, threshold }: {
@@ -101,12 +101,14 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { queryResults, percent } = usePillQuery({
     kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
-  const { success, total } = queryResults.data as PillData
+  const { success, total, length } = queryResults.data as PillData
 
   const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
+      avgSuccessCount: countFormat(Math.round(success/(length || 1))),
+      avgTotalCount: countFormat(Math.round(total/(length || 1))) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
