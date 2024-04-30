@@ -31,7 +31,7 @@ export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
     <PortSettingView />
   </Form.Item>
 
-  useEffect(() => onInit?.(), [])
+  useEffect(() => onInit?.(), [onInit])
 
   return (
     <TypeForm

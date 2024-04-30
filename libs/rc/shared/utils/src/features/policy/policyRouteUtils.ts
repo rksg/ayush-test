@@ -32,7 +32,7 @@ const operationPathMapping: Record<PolicyOperation, string> = {
   [PolicyOperation.LIST]: 'list'
 }
 
-const typePathMapping: Record<PolicyType, string> = {
+export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.AAA]: 'aaa',
   [PolicyType.ACCESS_CONTROL]: 'accessControl',
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
@@ -61,7 +61,7 @@ export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
   const { type, oper } = props
   const paths = ['policies']
 
-  paths.push(typePathMapping[type])
+  paths.push(policyTypePathMapping[type])
   paths.push(operationPathMapping[oper])
   if (hasTab(props)) {
     paths.push(':activeTab')
@@ -97,7 +97,7 @@ function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
 
 export function getAdaptivePolicyDetailRoutePath (oper: PolicyOperation): string {
   const paths = ['policies']
-  paths.push(typePathMapping[PolicyType.ADAPTIVE_POLICY])
+  paths.push(policyTypePathMapping[PolicyType.ADAPTIVE_POLICY])
   paths.push(':templateId')
   paths.push(operationPathMapping[oper])
   return paths.join('/')
