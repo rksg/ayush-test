@@ -204,7 +204,9 @@ exports[`WiredTab should render correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
-        KPI page go here
+        <div>
+          Kpi Section
+        </div>
       </div>
     </div>
   </div>
@@ -415,7 +417,9 @@ exports[`WiredTab should render correctly with filter passed as props 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
-        KPI page go here
+        <div>
+          Kpi Section
+        </div>
       </div>
     </div>
   </div>
