@@ -15,7 +15,8 @@ import { Path }                                  from '@acx-ui/react-router-dom'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { mockedRogueApPoliciesList, policyListContent, venueTable } from '../__tests__/fixtures'
+import RogueAPDetectionContext                                      from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm'
 
@@ -23,29 +24,6 @@ import { RogueAPDetectionForm } from './RogueAPDetectionForm'
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
 }
-
-const policyListContent = [
-  {
-    id: 'policyId1',
-    name: 'test',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1664790827392,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  },
-  {
-    id: 'be62604f39aa4bb8a9f9a0733ac07add',
-    name: 'test6',
-    description: '',
-    numOfRules: 1,
-    lastModifier: 'FisrtName 1649 LastName 1649',
-    lastUpdTime: 1667215711375,
-    numOfActiveVenues: 0,
-    activeVenues: []
-  }
-]
 
 const detailContent = {
   venues: [
@@ -85,53 +63,6 @@ const detailContent = {
     }
   ],
   id: 'policyId1'
-}
-
-const venueTable = {
-  fields: [
-    'country',
-    'city',
-    'name',
-    'switches',
-    'id',
-    'aggregatedApStatus',
-    'rogueDetection',
-    'status'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      aggregatedApStatus: {
-        '1_01_NeverContactedCloud': 10
-      },
-      status: '1_InSetupPhase',
-      rogueDetection: {
-        policyId: '14d6ee52df3a48988f91558bac54c1ae',
-        policyName: 'Default profile',
-        enabled: false
-      }
-    },
-    {
-      id: '4ca20c8311024ac5956d366f15d96e03',
-      name: 'test-venue2',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      aggregatedApStatus: {
-        '2_00_Operational': 5
-      },
-      status: '1_InSetupPhase',
-      rogueDetection: {
-        policyId: 'policyId1',
-        policyName: 'Default policyId1 profile',
-        enabled: true
-      }
-    }
-  ]
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -307,6 +238,10 @@ describe('RogueAPDetectionForm', () => {
         (_, res, ctx) => res(
           ctx.json(policyListContent)
         )
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
       )
     )
   })
@@ -378,7 +313,7 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyTestName-modify' } })
+      { target: { value: 'policyTestName-modify-new' } })
 
     await addRuleWithoutEdit('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
@@ -386,13 +321,11 @@ describe('RogueAPDetectionForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    await screen.findByRole('heading', { name: 'Scope', level: 3 })
-
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByText(/venues \(0\)/i)
 
-    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+    await screen.findByRole('heading', { name: 'Summary' })
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })

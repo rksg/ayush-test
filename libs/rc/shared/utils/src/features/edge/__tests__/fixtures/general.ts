@@ -128,7 +128,8 @@ export const mockEdgeData = {
   description: 'This is description rr',
   edgeName: 'edgeName',
   name: 'edgeName',
-  tags: ['tag1', 'tag2']
+  tags: ['tag1', 'tag2'],
+  clusterId: 'clusterId_1'
 }
 
 
