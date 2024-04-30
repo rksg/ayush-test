@@ -14,7 +14,8 @@ import {
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
-  useAdaptivePolicyListQuery
+  useAdaptivePolicyListQuery,
+  useSearchInProgressWorkflowListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -101,7 +102,7 @@ function useCardData (): CardDataProps[] {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   return [
     {
       type: PolicyType.AAA,
@@ -210,6 +211,16 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useSearchInProgressWorkflowListQuery({
+        params: { ...params, excludeContent: 'true' }
+      }, { skip: !isWorkflowEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
+      disabled: !isWorkflowEnabled
     }
   ]
 }

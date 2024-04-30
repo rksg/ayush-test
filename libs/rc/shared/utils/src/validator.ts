@@ -1146,3 +1146,12 @@ export function validateByteLength (value: string, maxLength: number) {
   return Promise.resolve()
 }
 
+export function EnrollmentPortalURLNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^([a-zA-Z0-9/]*)([a-zA-Z0-9]{1,})$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}

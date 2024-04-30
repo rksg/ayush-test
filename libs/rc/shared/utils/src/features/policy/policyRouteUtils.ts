@@ -7,6 +7,11 @@ export enum MacRegistrationDetailsTabKey {
   MAC_REGISTRATIONS = 'macRegistrations'
 }
 
+export enum WorkflowDetailsTabKey {
+  OVERVIEW = 'overview',
+  VERSION_HISTORY = 'versionHistory'
+}
+
 export enum PolicyOperation {
   CREATE,
   EDIT,
@@ -22,7 +27,7 @@ export interface PolicyRoutePathProps {
 export interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
-  activeTab?: MacRegistrationDetailsTabKey; // Union the other policies tab keys if needed
+  activeTab?: MacRegistrationDetailsTabKey | WorkflowDetailsTabKey; // Union the other policies tab keys if needed
 }
 
 const operationPathMapping: Record<PolicyOperation, string> = {
@@ -50,7 +55,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ADAPTIVE_POLICY_SET]: 'adaptivePolicySet',
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
   [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
-  [PolicyType.CONNECTION_METERING]: 'connectionMetering'
+  [PolicyType.CONNECTION_METERING]: 'connectionMetering',
+  [PolicyType.WORKFLOW]: 'workflow'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
@@ -86,6 +92,8 @@ export function getSelectPolicyRoutePath (prefixSlash = false): string {
 
 function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
   if (type === PolicyType.MAC_REGISTRATION_LIST && oper === PolicyOperation.DETAIL) {
+    return true
+  } else if (type === PolicyType.WORKFLOW && oper === PolicyOperation.DETAIL) {
     return true
   }
   return false

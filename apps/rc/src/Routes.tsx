@@ -1,5 +1,5 @@
-import { PageNotFound }                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { PageNotFound }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import {
   RogueAPDetectionDetailView,
   RogueAPDetectionForm,
@@ -15,7 +15,7 @@ import {
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   SyslogDetailView, SyslogForm, DHCPForm, PortalForm, ClientIsolationForm,
   NetworkForm, DHCPDetail,
-  AccessControlDetail, AccessControlTable
+  AccessControlDetail, AccessControlTable, WorkflowFormMode
 } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -89,6 +89,9 @@ import TunnelProfileDetail                  from './pages/Policies/TunnelProfile
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
 import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
+import WorkflowDetails                      from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                     from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                        from './pages/Policies/Workflow/WorkflowTable'
 import DHCPTable                            from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                              from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHCPDetail'
@@ -508,6 +511,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -750,6 +754,27 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
+      }
+      {isWorkflowEnabled &&
+      <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
+          element={<WorkflowTable/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
+          element={<WorkflowDetails />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.CREATE} />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.EDIT} />}
+        /> </>
+
       }
     </Route>
   )

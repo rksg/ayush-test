@@ -1,0 +1,57 @@
+
+import { useIntl } from 'react-intl'
+
+import { Button, PageHeader }      from '@acx-ui/components'
+import { useGetWorkflowByIdQuery } from '@acx-ui/rc/services'
+import {
+  getPolicyListRoutePath,
+  getPolicyDetailsLink,
+  PolicyOperation,
+  PolicyType,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import {
+  useParams,
+  TenantLink
+} from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+
+import WorkflowTabs from './WorkflowTabs'
+
+function WorkflowPageHeader () {
+  const { $t } = useIntl()
+  const { policyId } = useParams()
+
+  const { data } = useGetWorkflowByIdQuery({ params: { id: policyId } })
+  return (
+    <PageHeader
+      title={data?.name || ''}
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }, {
+          text: $t({ defaultMessage: 'Workflows' }),
+          link: getPolicyRoutePath({ type: PolicyType.WORKFLOW , oper: PolicyOperation.LIST })
+        }
+      ]}
+      extra={
+        filterByAccess([
+          <Button type='default'>{$t({ defaultMessage: 'Preview' })}</Button>,
+          <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.WORKFLOW,
+              oper: PolicyOperation.EDIT,
+              policyId: policyId!
+            })}
+          >
+            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>
+        ])}
+      footer={<WorkflowTabs/>}
+    />
+  )
+}
+
+export default WorkflowPageHeader
