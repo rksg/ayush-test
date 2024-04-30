@@ -82,10 +82,10 @@ describe('Kpi Section', () => {
         filters={{ ...filters, filter, endDate: sampleTS.data[2] as unknown as string }}
       />
     </Provider></Router>)
-    expect(await screen.findAllByText(/Time-series chart goes here/i)).toHaveLength(1)
+    expect(await screen.findAllByText(/Time-series chart for/i)).toHaveLength(1)
 
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)
-    expect(await screen.findAllByText(/Time-series chart goes here/i)).toHaveLength(2)
+    expect(await screen.findAllByText(/Time-series chart for/i)).toHaveLength(2)
   })
 })

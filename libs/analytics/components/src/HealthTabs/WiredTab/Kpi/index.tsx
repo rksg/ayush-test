@@ -63,15 +63,15 @@ function KpiSection (props: {
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
               <GridCol col={{ span: 5 }}>
-                Health Pill goes here
+                Health Pill for <b>{kpi}</b>
               </GridCol>
               <GridCol col={{ span: 19 }}>
-                Time-series chart goes here
+                Time-series chart for <b>{kpi}</b>
               </GridCol>
             </GridRow>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
-            Histogram goes here
+            Histogram for <b>{kpi}</b>
           </GridCol>
         </GridRow>
       ))}
