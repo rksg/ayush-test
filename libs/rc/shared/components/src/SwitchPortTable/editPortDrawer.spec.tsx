@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { switchApi }              from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -116,7 +116,7 @@ const initPortValue = {
 
 const transformSubmitValue = (updateValue?: object) => {
   return {
-    enableRbac: undefined,
+    enableRbac: false,
     option: { skip: false },
     params: {
       tenantId: 'tenant-id',
@@ -193,6 +193,7 @@ describe('EditPortDrawer', () => {
 
   describe('single edit', () => {
     it('should apply edit data correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -235,7 +236,7 @@ describe('EditPortDrawer', () => {
     })
 
     it('should cycle PoE correctly', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -459,7 +460,7 @@ describe('EditPortDrawer', () => {
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        enableRbac: undefined,
+        enableRbac: false,
         option: { skip: false },
         params: {
           tenantId: 'tenant-id',
@@ -601,7 +602,7 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        enableRbac: undefined,
+        enableRbac: false,
         option: { skip: false },
         params: {
           tenantId: 'tenant-id',
@@ -859,7 +860,7 @@ describe('EditPortDrawer', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        enableRbac: undefined,
+        enableRbac: false,
         option: { skip: false },
         params: {
           tenantId: 'tenant-id',
@@ -1124,7 +1125,7 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('Applied at venue')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        enableRbac: undefined,
+        enableRbac: false,
         option: { skip: false },
         params: {
           tenantId: 'tenant-id',

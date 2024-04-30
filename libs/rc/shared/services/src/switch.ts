@@ -455,8 +455,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     cyclePoe: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.portsPowerCycle, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.portsPowerCycle, params, headers)
         return {
           ...req,
           body: payload
@@ -467,11 +469,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(
-          switchUrls.getDefaultVlan,
-          params,
-          headers
-        )
+        const req = createHttpRequest(switchUrls.getDefaultVlan, params, headers)
         payload = enableRbac
           ? payload
           : { isDefault: true, switchIds: payload }
@@ -506,7 +504,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getSwitchVlans: build.query<Vlan[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getSwitchVlans, params, headers)
         return {
@@ -808,7 +806,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     addVlan: build.mutation<Vlan, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.addVlan, params, headers)
         return {

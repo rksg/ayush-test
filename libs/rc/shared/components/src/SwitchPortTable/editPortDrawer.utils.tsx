@@ -136,8 +136,8 @@ export const updateSwitchVlans = (
   ]))
 
   const profileVlan = [
-    ...switchVlans.profileVlan, {
-      profileLevel: true, defaultVlan: false, vlanId: vlan.vlanId,
+    ...(switchVlans.profileVlan ?? []), {
+      profileLevel: true, defaultVlan: false, vlanId: Number(vlan.vlanId),
       ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
     }] as SwitchVlan[]
 

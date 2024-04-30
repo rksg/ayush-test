@@ -117,8 +117,6 @@ export function EditPortDrawer ({
   onBackClick?: () => void
 }) {
   const { $t } = getIntl()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
   const [form] = Form.useForm()
   const { useWatch } = Form
   const {
@@ -152,6 +150,7 @@ export function EditPortDrawer ({
 
   const { tenantId, venueId, serialNumber } = useParams()
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [loading, setLoading] = useState<boolean>(true)
 
   const defaultVlanName = 'DEFAULT-VLAN'
@@ -663,7 +662,8 @@ export function EditPortDrawer ({
     }))
     await cyclePoe({
       params: { venueId },
-      payload
+      payload,
+      enableRbac: isSwitchRbacEnabled
     }).unwrap()
     onClose()
   }

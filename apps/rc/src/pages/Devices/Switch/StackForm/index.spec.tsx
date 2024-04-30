@@ -3,7 +3,7 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import { CommonUrlsInfo,
   FirmwareUrlsInfo,
@@ -170,7 +170,7 @@ describe('Switch Stack Form - Add', () => {
   })
 
   it('should handle add stack by stack switches', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
