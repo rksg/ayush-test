@@ -493,6 +493,9 @@ export function NetworkForm (props:{
             })
           }
         } }).unwrap()
+        .catch(err => {
+          console.log(err) // eslint-disable-line no-console
+        })
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response

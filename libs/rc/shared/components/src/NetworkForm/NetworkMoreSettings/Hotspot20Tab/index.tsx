@@ -145,6 +145,9 @@ export function Hotspot20Tab (props: {
 
   const rowActions: TableProps<Hotspot20ConnectionCapability>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    visible: (selectedRows) => {
+      return selectedRows.length === 1
+    },
     onClick: ([editRow]: Hotspot20ConnectionCapability[], clearSelection: () => void) => {
       setEditMode(true)
       setConnectionCapabilityDrawerVisible(true)
@@ -397,23 +400,6 @@ export function Hotspot20Tab (props: {
 
   return (
     <>
-      <UI.FieldLabel width={labelWidth}>
-        <Space align='start'>
-          {$t({ defaultMessage: 'Enable RFC 5580 (Location Data)' })}
-          <Tooltip.Question
-            title={enableRfc5580Tooltip}
-            placement='right'
-            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-          />
-        </Space>
-        <Form.Item
-          name='enableRfc5580'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}/>
-      </UI.FieldLabel>
-
       <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
         <UI.LabelOfInput style={{ left: '165px' }}>
           { $t({ defaultMessage: 'Minutes' }) }
@@ -496,7 +482,7 @@ export function Hotspot20Tab (props: {
           rowKey={getRowKey}
           actions={filterByAccess(actions)}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           pagination={{ defaultPageSize: connectionCapabilities?.length, hideOnSinglePage: true }}
         />}
       </div>
