@@ -66,7 +66,9 @@ const defaultPayload = {
     'description',
     'numOfRules',
     'venueIds',
-    'venueCount'
+    'venueCount',
+    'rules',
+    'rule'
   ]
 }
 

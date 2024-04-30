@@ -17,6 +17,8 @@ export interface WiredSummaryResult {
     successCount: number
   },
   switchCpuUtilizationPct: number
+  stormPortCount: number
+  portCount: number
 }
 
 export const api = dataApi.injectEndpoints({
@@ -38,6 +40,8 @@ export const api = dataApi.injectEndpoints({
                   successCount
                 }
                 switchCpuUtilizationPct
+                stormPortCount
+                portCount
               }
             }
           }`,

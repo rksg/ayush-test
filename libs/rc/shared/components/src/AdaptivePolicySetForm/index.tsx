@@ -14,10 +14,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, PrioritizedPolicy
+  PolicyType, PrioritizedPolicy,
+  useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -49,6 +49,7 @@ export function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
   const [addPrioritizedPolicy] = useAddPrioritizedPolicyMutation()
   const [deletePrioritizedPolicy] = useDeletePrioritizedPolicyMutation()
   const [getPrioritizedPolicies] = useLazyGetPrioritizedPoliciesQuery()
+  const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY_SET)
 
   useEffect(() => {
     if(data && editMode) {
@@ -140,15 +141,7 @@ export function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
         title={editMode
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy Set' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
-            link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy
         editMode={editMode}
