@@ -204,11 +204,10 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             />
           </>}
           rules={[
-            {
-              required: true,
-              message: $t({ defaultMessage: 'Please enter email' })
-            },
-            { validator: (_, value) => sfdcEmailRegExp(value) }
+            { required: true },
+            { max: 255 },
+            { validator: (_, value) => sfdcEmailRegExp(value) },
+            { message: $t({ defaultMessage: 'Please enter a valid email address!' }) }
           ]}>
           <Input
             placeholder={$t({ defaultMessage: 'Enter email address' })}
