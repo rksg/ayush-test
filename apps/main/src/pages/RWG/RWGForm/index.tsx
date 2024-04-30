@@ -23,7 +23,8 @@ import {
   redirectPreviousPage,
   whitespaceOnlyRegExp,
   RWG,
-  excludeSpaceRegExp
+  excludeSpaceRegExp,
+  domainNameRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -193,8 +194,7 @@ export function RWGForm () {
                   label={$t({ defaultMessage: 'FQDN / IP' })}
                   rules={[
                     { type: 'string', required: true },
-                    { min: 2, transform: (value) => value.trim() },
-                    { max: 64, transform: (value) => value.trim() }
+                    { validator: (_, value) => domainNameRegExp(value) }
                   ]}
                   children={<Input />}
                 />
