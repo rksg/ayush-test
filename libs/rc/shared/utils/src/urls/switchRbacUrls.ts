@@ -236,25 +236,21 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getStaticRoutes: {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
-    oldUrl: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId',
     newApi: true
   },
   addStaticRoute: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
-    oldUrl: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId',
     newApi: true
   },
   updateStaticRoute: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId/staticRoutes/:staticRouteId',
-    oldUrl: '/api/switch/tenant/:tenantId/staticRoute',
     newApi: true
   },
   deleteStaticRoutes: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/staticRoutes',
-    oldUrl: '/api/switch/tenant/:tenantId/staticRoutes',
     newApi: true
   },
   reboot: {

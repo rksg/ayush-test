@@ -946,6 +946,7 @@ export function StackForm () {
                     {readOnly &&
                       <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                     <SwitchStackSetting
+                      switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       deviceOnline={deviceOnline}

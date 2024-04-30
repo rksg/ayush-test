@@ -863,8 +863,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitchStaticRoutes: build.query<StaticRoute[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getStaticRoutes, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getStaticRoutes, params, headers)
         return {
           ...req
         }
@@ -872,31 +874,37 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addStaticRoute, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     updateSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateStaticRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateStaticRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     deleteSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteStaticRoutes, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
