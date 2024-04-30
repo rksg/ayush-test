@@ -55,8 +55,7 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
-    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
 
@@ -135,7 +134,7 @@ function Layout () {
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
-        { isHospitality &&
+        { isHspSupportEnabled && isReSkinning &&
           <UI.VerticalTitle>
             <Typography.Title level={3}>
               {$t({ defaultMessage: 'Hospitality Edition' })}
