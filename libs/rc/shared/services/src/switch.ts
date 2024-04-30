@@ -57,7 +57,8 @@ import {
   downloadFile,
   SEARCH,
   SORTER,
-  SwitchPortViewModelQueryFields
+  SwitchPortViewModelQueryFields,
+  TroubleshootingResponse
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -406,11 +407,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
     addSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       }
     }),
@@ -738,17 +741,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getJwtToken: build.query<JwtToken, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        if (enableRbac) {
-          const headers = customHeaders.v1 //TODO: Karen - check with backend
-          const req = createHttpRequest(SwitchRbacUrlsInfo.getJwtToken, params, headers)
-          return {
-            ...req
-          }
-        } else {
-          const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
-          return {
-            ...req
-          }
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getJwtToken, params, headers)
+        return {
+          ...req
         }
       }
     }),
@@ -763,11 +760,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     updateSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateSwitch, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -978,63 +977,83 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getTroubleshooting, params, headers)
         return {
           ...req
         }
+      },
+      transformResponse: (res: TroubleshootingResult | TroubleshootingResponse) => {
+        if ('requestId' in res) {
+          return res as TroubleshootingResult
+        } else {
+          return { response: res as TroubleshootingResponse, requestId: '' }
+        }
       }
     }),
-    getTroubleshootingClean: build.query<{}, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
+    getTroubleshootingClean: build.query<{}, RequestPayload>({ // TODO: Karen, Need backend check the API
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getTroubleshootingClean, params, headers)
         return {
           ...req
         }
       }
     }),
     blinkLeds: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params)
+      query: ({ params, payload }) => { // RBAC
+        const headers = customHeaders.v1
+        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     ping: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.ping, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.traceRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.ipRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.macAddressTable, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

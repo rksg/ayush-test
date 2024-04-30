@@ -426,8 +426,11 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload })
-        .unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
         .then(() => {
           const transformedSwitchData = transformSwitchData(switchData as Switch)
           const updatedFields = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData)

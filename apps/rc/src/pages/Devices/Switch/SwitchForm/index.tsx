@@ -118,6 +118,7 @@ export function SwitchForm () {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const switchListPayload = {
     searchString: '',
@@ -238,7 +239,11 @@ export function SwitchForm () {
           ...defaultAddSwitchPayload,
           ...values
         }
-        await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
+        await addSwitch({
+          params: { tenantId, venueId: values.venueId },
+          payload,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -278,8 +283,11 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { tenantId, switchId } , payload })
-        .unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId: values.venueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
         .then(() => {
           const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
           const noChange = updatedFields.length === 0

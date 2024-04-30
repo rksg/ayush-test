@@ -170,24 +170,25 @@ export class Switch {
   }
 }
 
-export interface TroubleshootingResult {
-  requestId: string
-  response: {
-      latestResultResponseTime: string
-      result: string
-      pingIp: string
-      syncing: boolean
-      traceRouteTarget: string
-      traceRouteTtl: number
-      troubleshootingType: TroubleshootingType
-      macAddressTablePortIdentify: string
-      macAddressTableVlanId: string
-      macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
-      dhcpServerLeaseList?: SwitchDhcpLease[]
-  }
+export interface TroubleshootingResponse {
+  latestResultResponseTime: string
+  result: string
+  pingIp: string
+  syncing: boolean
+  traceRouteTarget: string
+  traceRouteTtl: number
+  troubleshootingType: TroubleshootingType
+  macAddressTablePortIdentify: string
+  macAddressTableVlanId: string
+  macAddressTableAddress: string,
+  macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+  dhcpServerLeaseList?: SwitchDhcpLease[]
 }
 
+export interface TroubleshootingResult {
+  requestId: string
+  response: TroubleshootingResponse
+}
 export interface PingSwitch {
   targetHost: string
 }

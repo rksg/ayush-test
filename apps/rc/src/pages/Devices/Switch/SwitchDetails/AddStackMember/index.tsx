@@ -126,6 +126,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [tableData, setTableData] = useState(defaultArray)
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {
@@ -242,7 +243,11 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId: switchDetail.venueId },
+        payload: stackPayload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

@@ -80,13 +80,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addSwitch: {
     method: 'post',
     url: '/venues/:venueId/switches',
-    oldUrl: '/api/switch/tenant/:tenantId/switch',
     newApi: true
   },
   updateSwitch: {
     method: 'put',
     url: '/venues/:venueId/switches/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch',
     newApi: true
   },
   convertToStack: {
@@ -283,40 +281,31 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getTroubleshooting: {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/debugRequests/:troubleshootingType',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingResult' +
-      '/:troubleshootingType',
     newApi: true
   },
   getTroubleshootingClean: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/debugRequests/:troubleshootingType',
-    oldMethod: 'get',
-    // eslint-disable-next-line max-len
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
     newApi: true
   },
   ping: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/ping',
     newApi: true
   },
   traceRoute: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/trace-route',
     newApi: true
   },
   ipRoute: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/route-table',
     newApi: true
   },
   macAddressTable: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/debugRequests',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table',
     newApi: true
   },
   getDhcpPools: {
