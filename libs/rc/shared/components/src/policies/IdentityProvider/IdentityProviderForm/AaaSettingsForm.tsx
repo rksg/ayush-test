@@ -4,8 +4,9 @@ import { Col, Form, Row, Space, Switch } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { StepsForm, Subtitle }        from '@acx-ui/components'
-import { AAAInstance }                from '@acx-ui/rc/components'
 import { IdentityProviderActionType } from '@acx-ui/rc/utils'
+
+import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 

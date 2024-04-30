@@ -98,7 +98,7 @@ const WifiOperatorMutationUseCases = [
 const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
-  'DeleteHotspot20IdentityProviders'
+  'DeleteHotspot20IdentityProvider'
 ]
 
 const L2AclUseCases = [
@@ -1225,6 +1225,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.activateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -1284,18 +1293,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
-    /*
-    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
+    getRadiusServers: build.query<TableResult<AAAViewModalType>,RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
+        const req = createHttpRequest(IdentityProviderUrls.getRadiusServers, params)
         return {
           ...req,
           body: payload
         }
+      }/*,
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      extraOptions: { maxRetries: 5 }
+      */
     }),
-    */
+
+    activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
@@ -2565,11 +2610,13 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  // HS2.0 Wi-Fi Operator
   useAddWifiOperatorMutation,
   useUpdateWifiOperatorMutation,
   useDeleteWifiOperatorMutation,
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,
@@ -2577,6 +2624,10 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetRadiusServersQuery,
+  useActivateIdentityProviderRadiusMutation,
+  useDeactivateIdentityProviderRadiusMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

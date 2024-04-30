@@ -16,6 +16,8 @@ import {
   useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
   useActivateCertificateTemplateMutation,
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
@@ -35,7 +37,9 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  CommonResult,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -51,6 +55,7 @@ import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
 import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
@@ -75,6 +80,7 @@ export const MLOContext = createContext({} as MLOContextType)
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
     aaa {AAA Settings}
+    hotspot20 {Hotspot 2.0 Settings}
     dpsk {DPSK Settings}
     other {Settings}
     guest {Portal Type}
@@ -129,6 +135,8 @@ export function NetworkForm (props:{
     useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
   )
   const activateCertificateTemplate = useCertificateTemplateActivation()
+  const activateHotspot20NetworkOperator = useWifiOperatorActivation()
+  const activateHotspot20NetworkProvider = useIdentityProviderActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -471,12 +479,23 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId',
-            'certificateTemplateId']))
-      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
-      // eslint-disable-next-line max-len
-      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
-      const hasResult = certResponse ?? networkResponse?.response
-      if (hasResult && payload.venues) {
+            'certificateTemplateId',
+            'hotspot20Settings.wifiOperator',
+            'hotspot20Settings.identityProviders']))
+      const result = await addNetworkInstance({ params, payload,
+        callback: async (res: CommonResult) => {
+          if (saveState.type === NetworkTypeEnum.HOTSPOT20) {
+            await activateHotspot20NetworkOperator(
+              res.response?.id, saveState.hotspot20Settings?.wifiOperator)
+            saveState.hotspot20Settings?.identityProviders?.forEach(async (id) => {
+              await activateHotspot20NetworkProvider(res.response?.id, id)
+            })
+          }
+        } }).unwrap()
+        .catch(err => {
+          console.log(err) // eslint-disable-line no-console
+        })
+      if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
@@ -603,6 +622,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}
@@ -686,6 +706,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}
@@ -813,4 +834,26 @@ function useCertificateTemplateActivation () {
     }
 
   return activateCertificateTemplate
+}
+
+function useWifiOperatorActivation () {
+  const [activate] = useActivateWifiOperatorOnWifiNetworkMutation()
+  const activateWifiOperator =
+    async (wifiNetworkId?: string, operatorId?: string) => {
+      return wifiNetworkId && operatorId ?
+        await activate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
+    }
+
+  return activateWifiOperator
+}
+
+function useIdentityProviderActivation () {
+  const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
+  const activateIdentityProvider =
+    async (wifiNetworkId?: string, providerId?: string) => {
+      return wifiNetworkId && providerId ?
+        await activate({ params: { wifiNetworkId, providerId } }).unwrap() : null
+    }
+
+  return activateIdentityProvider
 }
