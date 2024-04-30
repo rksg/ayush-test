@@ -46,12 +46,6 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
   const [totalCount, setTotalCount] = useState<number>(0)
 
-  // function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
-  //   const selectedVenueIds = selected.flatMap(ec => ec.children).filter(venue => venue.selected)
-  //     .map(venue => venue.id)
-  //   const allVenueIds = mspEcs.flatMap(ec => ec.children.map(venue => venue.id))
-  //   return selectedVenueIds.filter(id => allVenueIds.includes(id))
-  // }
   function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
     const customerIds = selected.filter(ec => ec.children.some(venue => venue.selected))
       .map(ec => ec.id)
@@ -82,7 +76,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const clearSelection = () => {
     setSelectedRows([])
     setSelectedKeys([])
-    setTotalCount(selected.length)
+    setTotalCount(0)
   }
 
   const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
@@ -131,7 +125,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
             totalCount
           })}
           <CancelCircle
-            style={{ marginLeft: '6px' }}
+            style={{ marginLeft: '6px', marginBottom: '-4px' }}
             onClick={clearSelection}/>
         </UI.SelectedCount>
         <Table
@@ -143,14 +137,11 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
-              // setSelectedKeys(selectedRowKeys.filter(id =>
-              //   !customerList?.data.map(ec => ec.id).includes(id as string)))
               setSelectedKeys(selectedRowKeys)
               setTotalCount(getSelectedVenues(selRows).length)
             },
             checkStrictly: false
           }}
-          tableAlertRender={false}
         />
       </Loader>
     </Space>
