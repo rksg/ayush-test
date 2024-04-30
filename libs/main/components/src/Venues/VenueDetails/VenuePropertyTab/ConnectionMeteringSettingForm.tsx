@@ -13,6 +13,8 @@ import {
   BillingCycleType,
   ConnectionMetering
 } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }          from '@acx-ui/user'
 
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
@@ -164,7 +166,8 @@ export function ConnectionMeteringSettingForm (
               />
             </Form.Item>
           </Col>
-          <Col span={3}>
+          <Col span={3}>{
+            hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
             <Button
               style={{ marginLeft: '5px', height: '100%' }}
               type={'link'}
@@ -172,6 +175,7 @@ export function ConnectionMeteringSettingForm (
             >
               {$t({ defaultMessage: 'Add' })}
             </Button>
+          }
           </Col>
         </Row>
         {profileId && profileMap.has(profileId) &&

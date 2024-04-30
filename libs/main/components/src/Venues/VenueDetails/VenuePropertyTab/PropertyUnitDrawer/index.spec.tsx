@@ -7,7 +7,7 @@ import { apApi, venueApi }                                                      
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                from '@acx-ui/store'
 import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
-import { RolesEnum }                                                                      from '@acx-ui/types'
+import { EdgeScopes, RolesEnum, WifiScopes }                                              from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
@@ -61,8 +61,9 @@ const userProfile = {
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
-  detailLevel: 'su'
-} as UserProfileInterface
+  detailLevel: 'su',
+  scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, EdgeScopes.CREATE, EdgeScopes.READ]
+} as unknown as UserProfileInterface
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)

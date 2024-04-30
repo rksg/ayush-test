@@ -40,7 +40,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -168,8 +169,9 @@ export default function ConnectionMeteringTable () {
     setPropertyMap(map)
   }, [propertyConfigs])
 
-  const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
-    {
+  const rowActions: TableProps<ConnectionMetering>['rowActions'] = []
+  if (hasPermission({ scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE] })) {
+    rowActions.push({
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -183,8 +185,11 @@ export default function ConnectionMeteringTable () {
         clearSelection()
       },
       disabled: (selectedItems => selectedItems.length > 1)
-    },
-    {
+    })
+  }
+
+  if (hasPermission({ scopes: [WifiScopes.DELETE, EdgeScopes.DELETE] })) {
+    rowActions.push({
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -211,8 +216,8 @@ export default function ConnectionMeteringTable () {
               })
           })
       }
-    }
-  ]
+    })
+  }
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -244,6 +249,7 @@ export default function ConnectionMeteringTable () {
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
             })}
+            scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE]}
           >
             <Button type='primary'>
               { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
