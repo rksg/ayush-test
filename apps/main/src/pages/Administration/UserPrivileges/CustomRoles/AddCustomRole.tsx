@@ -20,6 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CustomRole,
+  specialCharactersRegExp,
   systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
@@ -128,7 +129,8 @@ export function AddCustomRole () {
             { required: true },
             { min: 2 },
             { max: 128 },
-            { validator: (_, value) => systemDefinedNameValidator(value) }
+            { validator: (_, value) => systemDefinedNameValidator(value) },
+            { validator: (_, value) => specialCharactersRegExp(value) }
           ]}
           validateFirst
           hasFeedback
@@ -138,8 +140,11 @@ export function AddCustomRole () {
           name='description'
           label={intl.$t({ defaultMessage: 'Role Description' })}
           style={{ width: '300px' }}
+          rules={[
+            { max: 180 }
+          ]}
           children={
-            <Input.TextArea rows={4} maxLength={180} />
+            <Input.TextArea rows={4} />
           }
         />
       </StepsForm.StepForm>

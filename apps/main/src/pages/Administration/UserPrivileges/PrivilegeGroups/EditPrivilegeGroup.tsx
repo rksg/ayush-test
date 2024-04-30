@@ -34,6 +34,7 @@ import {
   PrivilegePolicyObjectType,
   Venue,
   VenueObjectList,
+  specialCharactersRegExp,
   systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
@@ -473,15 +474,19 @@ export function EditPrivilegeGroup () {
                 { required: true },
                 { min: 2 },
                 { max: 128 },
-                { validator: (_, value) => systemDefinedNameValidator(value) }
+                { validator: (_, value) => systemDefinedNameValidator(value) },
+                { validator: (_, value) => specialCharactersRegExp(value) }
               ]}
               children={<Input />}
             />
             <Form.Item
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
+              rules={[
+                { max: 180 }
+              ]}
               children={
-                <Input.TextArea rows={4} maxLength={180} />
+                <Input.TextArea rows={4} />
               }
             />
             <CustomRoleSelector />
