@@ -72,3 +72,28 @@ export const VenueList = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
  `
+export const ExpanderTableWrapper = styled.div`
+  .ant-table-row-level-0 {
+    background-color: var(--acx-neutrals-20);
+    .ant-table-cell {
+      background-color: var(--acx-neutrals-20);
+    }
+  } 
+  .ant-table-row-level-1 {
+    background-color: var(--acx-primary-white);
+    .ant-table-cell {
+      background-color: var(--acx-primary-white);
+    }
+  } 
+  .ant-pro-table {
+    width: 292px;
+  }
+`
+export const SelectedCount = styled.div`
+  line-height: 16px;
+  padding: 10px 16px 10px 16px;
+  font-size: var(--acx-body-4-font-size);
+  background-color: var(--acx-accents-blue-10);
+  margin-bottom: -36px;
+  z-index: 10000;
+`
