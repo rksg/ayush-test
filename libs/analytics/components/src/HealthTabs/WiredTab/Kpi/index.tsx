@@ -9,14 +9,11 @@ import {
 } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
-  kpisForTab,
+  wiredKPIsForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
-
-const isMLISA = get('IS_MLISA_SA')
 
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
@@ -96,7 +93,7 @@ function KpiSection (props: {
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab]
+  const { kpis } = wiredKPIsForTab()[tab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })

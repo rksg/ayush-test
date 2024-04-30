@@ -86,6 +86,6 @@ describe('Kpi Section', () => {
 
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)
-    expect(await screen.findAllByText(/Time-series chart goes here/i)).toHaveLength(6)
+    expect(await screen.findAllByText(/Time-series chart goes here/i)).toHaveLength(2)
   })
 })
