@@ -38,6 +38,7 @@ import {
   TableQuery,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
+  isFirmwareSupportAdminPassword,
   transformSwitchUnitStatus,
   FILTER,
   SEARCH,
@@ -47,11 +48,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey }        from '@acx-ui/user'
-import { exportMessageMapping, getIntl }                     from '@acx-ui/utils'
+import { SwitchScopes }                                      from '@acx-ui/types'
+import { filterByAccess }                                    from '@acx-ui/user'
+import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
+import { SwitchBlinkLEDsDrawer, SwitchInfo }               from '../SwitchBlinkLEDsDrawer'
 import { SwitchCliSession }                                from '../SwitchCliSession'
 import { useSwitchActions }                                from '../useSwitchActions'
 
@@ -59,6 +62,7 @@ import {
   getGroupableConfig
 } from './config'
 import { SwitchTabContext } from './context'
+import * as UI              from './styledComponents'
 import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
@@ -75,7 +79,7 @@ export const SwitchStatus = (
       switchStatusString = $t({ defaultMessage: 'Online' })
     }
     return (
-      <span>
+      <span data-testid='switch-status'>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
           text={showText ? switchStatusString : ''}
         />
@@ -92,17 +96,17 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
   SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
-  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, R1 is not able to show custom passwords that are set on the switch.' })
+  CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware', 'extIp'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
     'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword', 'adminPassword'
+    'syncedAdminPassword', 'adminPassword', 'extIp'
   ]
 }
 
@@ -121,7 +125,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const { showAllColumns, searchable, filterableKeys } = props
+  const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
   const { setSwitchCount } = useContext(SwitchTabContext)
@@ -146,7 +150,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ]
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword', 'extIp' ],
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -157,12 +162,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
+  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
 
   const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
+    key, value: name, label: <UI.FilterBadge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -184,6 +191,11 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   })
   const [stackTooltip, setStackTooltip] = useState('')
 
+  const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
+  const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
+
+
+
   const getPasswordTooltip = (row: SwitchRow) => {
     if (!(row?.configReady && row?.syncedSwitchConfig)) {
       return $t(PasswordTooltip.SYNCING)
@@ -191,6 +203,17 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       return $t(PasswordTooltip.CUSTOM)
     }
     return $t(PasswordTooltip.SYNCED)
+  }
+
+  const handleBlinkLeds = (switchRows: SwitchRow[])=> {
+
+    const transformedSwitchRows: SwitchInfo[] = switchRows.map(row => ({
+      switchId: row.id,
+      venueId: row.venueId
+    }))
+    setBlinkData(transformedSwitchRows)
+    setBlinkDrawerVisible(true)
+
   }
 
   const handleClickMatchPassword = (rows: SwitchRow[], clearSelection: () => void) => {
@@ -201,7 +224,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
-        const switchIdList = rows.map(row => row.id)
+        const switchIdList = rows
+          .filter(row => isFirmwareSupportAdminPassword(row?.firmware ?? ''))
+          .map(row => row.id)
+
         const callback = () => {
           clearSelection?.()
           showToast({
@@ -266,12 +292,15 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       disabled: true,
       show: false,
       render: (data:boolean, row:SwitchRow) => {
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
         const isShowPassword = row?.configReady && row?.syncedSwitchConfig && row?.syncedAdminPassword
-        return <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
-          <Tooltip title={getPasswordTooltip(row)}>{
-            getAdminPassword(row, PasswordInput)
-          }</Tooltip>
-        </div>
+        return isSupportAdminPassword
+          ? <div onClick={e=> isShowPassword ? e.stopPropagation() : e}>
+            <Tooltip title={getPasswordTooltip(row)}>{
+              getAdminPassword(row, PasswordInput)
+            }</Tooltip>
+          </div>
+          : noDataDisplay
       }
     }] : []),
     {
@@ -300,11 +329,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'firmware',
       sorter: true
     },
-    // { TODO: Health scope
-    //   key: 'incidents',
-    //   title: $t({ defaultMessage: 'Incidents' }),
-    //   dataIndex: 'incidents',
-    // },
     ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
@@ -334,7 +358,18 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
-    }
+    },
+    ...( enableSwitchExternalIp ? [{
+      key: 'extIp',
+      title: $t({ defaultMessage: 'Ext. IP Address' }),
+      dataIndex: 'extIp',
+      sorter: true,
+      searchable: searchable,
+      show: false,
+      render: (_: React.ReactNode, row: SwitchRow) => {
+        return row.isFirstLevel ? row.extIp || noDataDisplay : ''
+      }
+    }] : [])
       // { // TODO: Waiting for TAG feature support
       //   key: 'tags',
       //   title: $t({ defaultMessage: 'Tags' }),
@@ -352,6 +387,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
       const serialNumber = selectedRows[0].serialNumber
@@ -365,11 +401,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
-    key: getShowWithoutRbacCheckKey('EnableCliSessionButton'),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
-      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+      const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      const isOperational = row.deviceStatus === SwitchStatusEnum.OPERATIONAL
+      return !(isOperational || isUpgradeFail)
     },
     onClick: async (rows) => {
       const row = rows[0]
@@ -396,8 +433,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL
-        return !row?.syncedAdminPassword && isConfigSynced && isOperational
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+          row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        const isSupportAdminPassword = isFirmwareSupportAdminPassword(row?.firmware ?? '')
+        return !row?.syncedAdminPassword && isConfigSynced && isOperational && isSupportAdminPassword
       }).length === 0
     },
     onClick: handleClickMatchPassword
@@ -419,8 +458,21 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }
       switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
     }
-  }, {
+  },
+  ...(enableSwitchBlinkLed ? [{
+    label: $t({ defaultMessage: 'Blink LEDs' }),
+    disabled: (rows: SwitchRow[]) => {
+      return rows.filter((row: SwitchRow) => {
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+            row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        return !isOperational
+      }).length > 0
+    },
+    onClick: handleBlinkLeds
+  }] : []),
+  {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
@@ -466,93 +518,101 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }
 
   return <Loader states={[tableQuery]}>
-    <Table<SwitchRow>
-      {...props}
-      settingsId='switch-table'
-      columns={columns}
-      dataSource={tableData}
-      getAllPagesData={tableQuery.getAllPagesData}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
-      enableApiFilter={true}
-      searchableWidth={220}
-      filterableWidth={140}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={searchable !== false ? {
-        type: 'checkbox',
-        renderCell: (checked, record, index, originNode) => {
-          return record.isFirstLevel
-            ? originNode
-            : null
-        },
-        getCheckboxProps: (record) => ({
-          disabled: !record.isFirstLevel
-        }),
-        onChange (selectedRowKeys, selectedRows) {
-          const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
+    <div data-testid='switch-table'>
+      <Table<SwitchRow>
+        {...props}
+        settingsId={settingsId}
+        columns={columns}
+        dataSource={tableData}
+        getAllPagesData={tableQuery.getAllPagesData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
+        searchableWidth={220}
+        filterableWidth={140}
+        rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={searchable !== false ? {
+          type: 'checkbox',
+          renderCell: (checked, record, index, originNode) => {
+            return record.isFirstLevel
+              ? originNode
+              : null
+          },
+          getCheckboxProps: (record) => ({
+            disabled: !record.isFirstLevel
+          }),
+          onChange (selectedRowKeys, selectedRows) {
+            const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
 
-          setStackTooltip('')
-          if(!!hasStack) {
-            setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
-          } else if(!!notOperational) {
-            setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
-          } else if(!!invalid) {
-            setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            setStackTooltip('')
+            if(!!hasStack) {
+              setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+            } else if(!!notOperational) {
+              setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+            } else if(!!invalid) {
+              setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+            }
+          }
+        } : undefined}
+        actions={filterByAccess(props.enableActions ? [{
+          label: $t({ defaultMessage: 'Add Switch' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Add Stack' }),
+          onClick: () => {
+            navigate(`${linkToEditSwitch.pathname}/stack/add`)
+          }
+        }, {
+          label: $t({ defaultMessage: 'Import from file' }),
+          onClick: () => {
+            setImportVisible(true)
           }
         }
-      } : undefined}
-      actions={filterByAccess(props.enableActions ? [{
-        label: $t({ defaultMessage: 'Add Switch' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Add Stack' }),
-        onClick: () => {
-          navigate(`${linkToEditSwitch.pathname}/stack/add`)
-        }
-      }, {
-        label: $t({ defaultMessage: 'Import from file' }),
-        onClick: () => {
-          setImportVisible(true)
-        }
-      }
-      ] : [])}
-      iconButton={exportDevice ? {
-        icon: <DownloadOutlined />,
-        disabled,
-        tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-        onClick: exportCsv
-      } : undefined}
-    />
-    <SwitchCliSession
-      modalState={cliModalState}
-      setIsModalOpen={setCliModalOpen}
-      serialNumber={cliData.serialNumber}
-      jwtToken={cliData.token}
-      switchName={cliData.switchName}
-    />
-    <ImportFileDrawer
-      type={ImportFileDrawerType.Switch}
-      title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={50}
-      acceptType={['csv']}
-      templateLink={importTemplateLink}
-      visible={importVisible}
-      isLoading={importResult.isLoading}
-      importError={importResult.error as FetchBaseQueryError}
-      importRequest={async (formData) => {
-        await importCsv({ params, payload: formData }
-        ).unwrap().then(() => {
-          setImportVisible(false)
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-      }}
-      onClose={() => setImportVisible(false)}
-    />
+        ] : [])}
+        iconButton={exportDevice ? {
+          icon: <DownloadOutlined />,
+          disabled,
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: exportCsv
+        } : undefined}
+      />
+      <SwitchCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={cliData.serialNumber}
+        jwtToken={cliData.token}
+        switchName={cliData.switchName}
+      />
+      <SwitchBlinkLEDsDrawer
+        visible={blinkDrawerVisible}
+        setVisible={setBlinkDrawerVisible}
+        switches={blinkData}
+        isStack={false}
+      />
+      <ImportFileDrawer
+        type={ImportFileDrawerType.Switch}
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={50}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
+        visible={importVisible}
+        isLoading={importResult.isLoading}
+        importError={importResult.error as FetchBaseQueryError}
+        importRequest={async (formData) => {
+          await importCsv({ params, payload: formData }
+          ).unwrap().then(() => {
+            setImportVisible(false)
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+        }}
+        onClose={() => setImportVisible(false)}
+      />
+    </div>
   </Loader>
 })

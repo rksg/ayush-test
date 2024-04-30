@@ -41,7 +41,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
+import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
 import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'

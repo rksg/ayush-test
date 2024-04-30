@@ -10,7 +10,7 @@ import {
   TableColumn
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams }                                            from '@acx-ui/rc/components'
+import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -25,13 +25,12 @@ import {
   DpskDetailsTabKey,
   getServiceListRoutePath,
   PassphraseFormatEnum,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  displayDefaultAccess
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
-
-import { displayDefaultAccess } from '../utils'
 
 const defaultPayload = {
   filters: {}
@@ -46,13 +45,14 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
+  const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
     search: defaultSearch,
-    apiParams: dpskNewConfigFlowParams
+    apiParams: {},
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
@@ -65,7 +65,7 @@ export default function DpskTable () {
         { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
       ],
       async () => deleteDpsk({
-        params: { serviceId: selectedRow.id, ...dpskNewConfigFlowParams }
+        params: { serviceId: selectedRow.id }
       }).then(callback)
     )
   }
@@ -123,7 +123,7 @@ export default function DpskTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
-          settingsId='dpsk-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

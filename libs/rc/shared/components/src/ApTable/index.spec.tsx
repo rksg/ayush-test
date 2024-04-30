@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi }                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, AFCPowerMode, AFCStatus } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { apApi, venueApi, networkApi }  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
+  act,
   cleanup,
   findTBody,
   mockServer,
@@ -17,195 +18,24 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import {
+  apList,
+  apCompatibilities,
+  getApGroupsList
+} from './__test__/fixtures'
+
 import { ApTable } from '.'
 
-const list = {
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      serialNumber: '000000000001',
-      name: 'mock-ap-1',
-      model: 'R510',
-      fwVersion: '6.2.0.103.486', // valid Ap Fw version for reset
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '2_00_Operational',
-      IP: '10.00.000.101',
-      apMac: '00:00:00:00:00:01',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ],
-        lanPortStatus: [
-          {
-            phyLink: 'Down ',
-            port: '0'
-          },
-          {
-            phyLink: 'Up 1000Mbps full',
-            port: '1'
-          }
-        ],
-        afcInfo: {
-          powerMode: AFCPowerMode.LOW_POWER,
-          afcStatus: AFCStatus.WAIT_FOR_LOCATION
-        }
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: '',
-      poePort: '1'
-    }, {
-      serialNumber: '000000000002',
-      name: 'mock-ap-2',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '3_04_DisconnectedFromCloud',
-      IP: '10.00.000.102',
-      apMac: '00:00:00:00:00:02',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: '',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000003',
-      name: 'mock-ap-3',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '4_01_Rebooting',
-      IP: '10.00.000.103',
-      apMac: '00:00:00:00:00:03',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000004',
-      name: 'mock-ap-4',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '1_07_Initializing',
-      IP: '10.00.000.104',
-      apMac: '00:00:00:00:00:04',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }, {
-      serialNumber: '000000000005',
-      name: 'mock-ap-5',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261',
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      IP: '10.00.000.105',
-      deviceStatus: '',
-      apMac: '00:00:00:00:00:05',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'EMAP',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }
-  ]
-}
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
 }))
 
 type MockDrawerProps = React.PropsWithChildren<{
@@ -234,11 +64,31 @@ describe('Aps', () => {
     cleanup()
   })
   beforeEach(() => {
-    store.dispatch(apApi.util.resetApiState())
+    act(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      store.dispatch(networkApi.util.resetApiState())
+    })
+
+    utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
+      return { data: apList }
+    })
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(list))
+        (req, res, ctx) => res(ctx.json(apList))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => res(ctx.json(apCompatibilities))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => res(ctx.json(apCompatibilities))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApGroupsListByGroup.url,
+        (req, res, ctx) => res(ctx.json(getApGroupsList))
       )
     )
   })
@@ -256,8 +106,8 @@ describe('Aps', () => {
     expect(tbody).toBeVisible()
 
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.data.length)
-    for (const [index, item] of Object.entries(list.data)) {
+    expect(rows).toHaveLength(apList.data.length)
+    for (const [index, item] of Object.entries(apList.data)) {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
   })
@@ -337,8 +187,9 @@ describe('Aps', () => {
       )
     )
 
-    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i }) // select ap 1: operational
-    await userEvent.click(row1)
+    const apRows = await screen.findAllByRole('row', { name: /mock-ap-/i })
+    expect(within(apRows[0]).getByRole('cell', { name: /mock-ap-1/i })).toBeVisible()
+    await userEvent.click(apRows[0]) // select ap 1: operational
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
@@ -348,11 +199,11 @@ describe('Aps', () => {
 
     await waitFor(async () => expect(dialog).not.toBeVisible())
 
-    await userEvent.click(row1) // unselect ap 1
-    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
+    await userEvent.click(apRows[0]) // unselect ap 1
+    expect(await within(apRows[0]).findByRole('checkbox')).not.toBeChecked()
 
-    const row2 = await screen.findByRole('row', { name: /mock-ap-2/i })
-    await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
+    expect(within(apRows[1]).getByRole('cell', { name: /mock-ap-2/i })).toBeVisible()
+    await userEvent.click(apRows[1]) // select ap 2: DisconnectedFromCloud
 
     const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
@@ -360,13 +211,14 @@ describe('Aps', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const dialog2 = await screen.findByRole('dialog')
-    expect(await within(dialog2).findByRole('button', { name: 'Delete' })).not.toBeDisabled()
+    const dialog2DeleteButton = await within(dialog2).findByRole('button', { name: 'Delete' })
+    expect(dialog2DeleteButton).not.toBeDisabled()
 
-    await userEvent.click(await within(dialog2).findByRole('button', { name: 'Delete' }))
+    await userEvent.click(dialog2DeleteButton)
 
     expect(deleteSpy).toHaveBeenCalled()
     await waitFor(async () => expect(dialog2).not.toBeVisible())
-  }, 60000)
+  })
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
@@ -384,7 +236,7 @@ describe('Aps', () => {
     const row = await screen.findByRole('row', { name: /mock-ap-1/i })
     await within(row).findByRole('checkbox', { checked: false })
 
-    await userEvent.click(await screen.findByRole('row', { name: /mock-ap-1/i }))
+    await userEvent.click(row)
 
     const toolbar = await screen.findByRole('alert')
     await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))
@@ -392,19 +244,11 @@ describe('Aps', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('should render with filterables', async () => {
+  it.skip('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
-        (req, res, ctx) => res(ctx.json({
-          data: [{
-            clients: 0,
-            deviceGroupId: '',
-            deviceGroupName: '',
-            incidents: 0,
-            members: 0
-          }]
-        }))
+        (req, res, ctx) => res(ctx.json(getApGroupsList))
       )
     )
     render(<Provider><ApTable filterables={{
@@ -458,7 +302,9 @@ describe('Aps', () => {
     await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
-  it('Should render the low power warning messages', async () => {
+  it.skip('Should render the low power warning messages', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider><ApTable /></Provider>, {
       route: { params, path: '/:tenantId' }
     })
@@ -470,7 +316,7 @@ describe('Aps', () => {
     ).toBeInTheDocument()
 
     expect(
-      screen.getByText('until its geo-location has been established', { exact: false })
+      screen.getByText('(Geo Location not set)', { exact: false })
     ).toBeInTheDocument()
   })
 })

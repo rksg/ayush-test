@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 
 import {
   Box,
@@ -23,14 +23,19 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Button,
-  Modal
+  Modal,
+  showActionModal
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
+import { useLazyGetTimezoneQuery } from '@acx-ui/rc/services'
 import {
   NetworkVenue,
-  fetchVenueTimeZone,
   transformTimezoneDifference,
   NetworkVenueScheduler,
-  NetworkSaveData
+  NetworkSaveData,
+  getVenueTimeZone,
+  SchedulerTypeEnum,
+  ITimeZone
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -47,14 +52,6 @@ interface SchedulingModalProps extends AntdModalProps {
   }
   network?: { name: string } | null | NetworkSaveData
   formName: string
-}
-
-interface Timezone {
-  dstOffset: number,
-  rawOffset: number,
-  status: string,
-  timeZoneId: string,
-  timeZoneName: string
 }
 
 interface schedule {
@@ -79,19 +76,21 @@ const dayIndex: indexDayType = {
 export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const { $t } = useIntl()
 
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+
   const [scheduleList, setScheduleList] = useState<schedule[]>([])
   const [checkedList, setCheckedList] = useState<CheckboxValueType[][]>([])
   const [indeterminate, setIndeterminate] = useState<boolean[]>([])
   const [checkAll, setCheckAll] = useState<boolean[]>([])
   const [timeTicks, setTimeTicks] = useState<string[]>([])
   const [disabled, setDisabled] = useState<boolean>(true)
-  const [timezone, setTimezone] = useState<Timezone>({
+  const [timezone, setTimezone] = useState<ITimeZone>({
     dstOffset: 0,
     rawOffset: 0,
-    status: '',
     timeZoneId: '',
     timeZoneName: ''
   })
+  const [getTimezone] = useLazyGetTimezoneQuery()
 
   const { networkVenue, venue, network, formName } = props
 
@@ -117,13 +116,12 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   const arrCheckAll = [...checkAll]
   const arrIndeterminate = [...indeterminate]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initialValues = (scheduler: NetworkVenueScheduler) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let map: { [key: string]: any } = scheduler
     for (let key in map) {
       if(key === 'type'){
-        if(map[key] === 'ALWAYS_ON'){
+        if(map[key] === SchedulerTypeEnum.ALWAYS_ON){
           for (let daykey in dayIndex) {
             form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
             arrCheckAll[dayIndex[daykey]] = true
@@ -157,7 +155,9 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
   useEffect(() => {
     const getTimeZone = async (venueLatitude: string, venueLongitude: string) => {
-      const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+      const timeZone = isMapEnabled ?
+        await getTimezone({ params: { lat: venueLatitude, lng: venueLongitude } }).unwrap() :
+        getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
       setTimezone(timeZone)
     }
 
@@ -173,19 +173,14 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       _genTimeTicks()
     }
 
-    if(networkVenue?.scheduler){
-      if(networkVenue?.scheduler.type === 'CUSTOM'){
-        setDisabled(false)
-      }else{
-        setDisabled(true)
-      }
+    const scheduler = networkVenue?.scheduler
+    if (scheduler) {
+      const type = scheduler.type
+      setDisabled(type !== SchedulerTypeEnum.CUSTOM)
+      form.setFieldValue(['scheduler', 'type'], type)
 
-      form.setFieldValue(['scheduler', 'type'], networkVenue?.scheduler.type)
-
-      initialValues(networkVenue?.scheduler)
-    }
-
-    if(networkVenue?.scheduler === undefined){
+      initialValues(scheduler)
+    } else { //networkVenue?.scheduler === undefined)
       setDisabled(true)
       for (let daykey in dayIndex) {
         form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
@@ -197,9 +192,65 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
 
   const [loading, setLoading] = useState(false)
 
+  const showAlwaysOnConfirmDialog = () => {
+    const title = $t({ defaultMessage: 'Network Scheduling' })
+    const message = $t({ defaultMessage: 'All time slots are marked as available - network will be configured with 24/7 availability' })
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: message,
+      onOk: () => {
+        form.setFieldValue('scheduler', { type: SchedulerTypeEnum.ALWAYS_ON })
+        form.submit()
+      },
+      onCancel: () => {
+        setLoading(false)
+      }
+    })
+  }
+  const showAlwaysOffConfirmDialog = () => {
+    const title = $t({ defaultMessage: 'Network Scheduling' })
+    const message = $t({ defaultMessage: 'Network is configured to be unavailable at all times. Do you want to continue?' })
+
+    showActionModal({
+      type: 'confirm',
+      title: title,
+      content: message,
+      onOk: () => {
+        form.setFieldValue('scheduler', { type: SchedulerTypeEnum.ALWAYS_OFF })
+        form.submit()
+      },
+      onCancel: () => (
+        setLoading(false)
+      )
+    })
+  }
+
+  const checkScheduleData = (weekDaysSlots: string[]) => {
+    const selectAllDays = weekDaysSlots.filter( v => v.length === 96)
+    const unSelectAllDays = weekDaysSlots.filter( v => v.length === 0)
+
+    if (selectAllDays.length === 7) {
+      showAlwaysOnConfirmDialog()
+    } else if (unSelectAllDays.length === 7) {
+      showAlwaysOffConfirmDialog()
+    } else {
+      form.submit()
+    }
+  }
+
   const onOk = () => {
     setLoading(true)
-    form.submit()
+    const { scheduler } = form.getFieldsValue()
+    const { type, ...weekDays } = scheduler || {}
+
+    if (type === SchedulerTypeEnum.ALWAYS_ON) {
+      form.submit()
+    } else if (type === SchedulerTypeEnum.CUSTOM) {
+      const weekDaysSlots: string[] = Object.values(weekDays)
+      checkScheduleData(weekDaysSlots)
+    }
   }
   const convertToTimeFromSlotIndex = (index: number): string => {
     let hour = Math.floor(index / 4)
@@ -261,7 +312,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   }
 
   const onTypeChange = (e: RadioChangeEvent) => {
-    if(e.target.value === 'ALWAYS_ON'){
+    if(e.target.value === SchedulerTypeEnum.ALWAYS_ON){
       setDisabled(true)
       for (let daykey in dayIndex) {
         form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
@@ -287,6 +338,10 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
   }
 
   let selectedItems: string[] = []
+  const memoUniqSchedule = useMemo(() => (schedule: string[], selectedItems: string[], daykey: string) => {
+    return _.uniq(_.xor(schedule, selectedItems.filter((item: string) => item.indexOf(daykey) > -1))) || []
+  }, [])
+
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
@@ -329,10 +384,8 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       selectedItems = _.uniq(selectedItems)
       for (let daykey in dayIndex) {
         const schedule = form.getFieldValue(['scheduler', daykey]) || []
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if(selectedItems.filter((item: any) => item.indexOf(daykey) > -1)){
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          let uniqSchedule = _.uniq(_.xor(schedule, selectedItems.filter((item: any) => item.indexOf(daykey) > -1)))
+        if(selectedItems.filter((item: string) => item.indexOf(daykey) > -1)){
+          let uniqSchedule = memoUniqSchedule(schedule, selectedItems, daykey)
 
           form.setFieldValue(['scheduler', daykey], uniqSchedule)
           if(uniqSchedule && uniqSchedule.length === 96){
@@ -362,6 +415,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
         okText={$t({ defaultMessage: 'Apply' })}
         maskClosable={true}
+        destroyOnClose={true}
         keyboard={false}
         closable={true}
         width={1280}
@@ -398,9 +452,16 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
               </Col>
             </Row>
             <Card type='inner'
-              title={<><span>{$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}</span>
-                <Button type='link' onClick={showModal}><UI.TipSpan>See tips</UI.TipSpan></Button></>}
-              extra={<>Venue time zone: <b>{transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})</b></>}
+              title={<>
+                <span>{$t({ defaultMessage: 'Mark/ unmark areas to change network availability' })}</span>
+                <Button type='link' onClick={showModal}>
+                  <UI.TipSpan>{$t({ defaultMessage: 'See tips' })}</UI.TipSpan>
+                </Button></>}
+              extra={<>
+                {$t({ defaultMessage: 'Venue time zone:' })} <b>
+                  {transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})
+                </b>
+              </>}
               style={{ pointerEvents: ( disabled ? 'none' : 'auto' ), opacity: ( disabled ? '0.5' : '1.0' ) }}
             >
               <Spin spinning={loading}>
@@ -474,13 +535,14 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         </Form>
       </Modal>
 
-      <Modal
+      {isModalOpen && <Modal
         title='Network Scheduler Tips'
         width={800}
         cancelButtonProps={{ style: { display: 'none' } }}
         visible={isModalOpen}
         onOk={handleOk}
         maskClosable={false}
+        destroyOnClose={true}
         keyboard={false}
         closable={false}
       >
@@ -525,7 +587,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         />
         </p>
         <p>- {$t({ defaultMessage: 'All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started' })}</p>
-      </Modal>
+      </Modal>}
     </>
   )
 }

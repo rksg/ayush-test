@@ -23,13 +23,16 @@ import {
 
 
 describe('Test apGroupPipes.utils', () => {
+  const vlanPoolingNameMap = [
+    { key: '1c061cf2649344adaf1e79a9d624a451', value: 'pool1' }
+  ]
   it('transformVLAN', async () => {
-    let view = render(transformVLAN(networkVenue_allAps, network))
+    let view = render(transformVLAN(networkVenue_allAps, network, vlanPoolingNameMap))
 
     expect(screen.getByText('VLAN-1 (Default)')).toBeDefined()
 
     view.unmount()
-    view = render(transformVLAN(networkVenue_apgroup, network))
+    view = render(transformVLAN(networkVenue_apgroup, network, vlanPoolingNameMap))
 
     expect(screen.getByText('VLAN Pool: pool1 (Custom)')).toBeDefined()
 
@@ -41,7 +44,7 @@ describe('Test apGroupPipes.utils', () => {
       apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
       apGroupName: 'APs not assigned to any group',
       vlanId: 1
-    }] }, network))
+    }] }, network, vlanPoolingNameMap))
 
     expect(screen.getByText('VLAN-1 (Custom)')).toBeDefined()
 
@@ -52,8 +55,8 @@ describe('Test apGroupPipes.utils', () => {
       isDefault: true,
       apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
       apGroupName: 'APs not assigned to any group',
-      vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
-      vlanPoolName: 'pool1'
+      vlanPoolId: '1c061cf2649344adaf1e79a9d624a451'//,
+      //vlanPoolName: 'pool1'
     }, {
       apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
       apGroupName: 'ewrw',
@@ -61,7 +64,7 @@ describe('Test apGroupPipes.utils', () => {
       radioTypes: [ RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       isDefault: false,
       vlanId: 1
-    }] }, network))
+    }] }, network, vlanPoolingNameMap))
 
     expect(screen.getByText('Per AP Group')).toBeDefined()
 
@@ -129,8 +132,8 @@ describe('Test apGroupPipes.utils', () => {
       isDefault: true,
       apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
       apGroupName: 'APs not assigned to any group',
-      vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
-      vlanPoolName: 'pool1'
+      vlanPoolId: '1c061cf2649344adaf1e79a9d624a451'//,
+      //vlanPoolName: 'pool1'
     }, {
       apGroupId: '9150b159b5f748a1bbf55dab35a60bce',
       apGroupName: 'ewrw',
@@ -185,6 +188,7 @@ describe('Test apGroupPipes.utils', () => {
 
     expect(screen.getByText('24/7')).toBeDefined()
 
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 })

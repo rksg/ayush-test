@@ -53,14 +53,14 @@ describe('cloud Message Banner', () => {
         (_, res, ctx) => res(ctx.json(cloudVersion))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url,
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (_, res, ctx) => res(ctx.json(scheduleVersion))
       ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
       ),
-      rest.get(
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (_, res, ctx) => res(ctx.json(venueEdgeFirmwareList))
       )

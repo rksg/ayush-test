@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+
 import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS,
@@ -12,6 +13,10 @@ import {
 } from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
 import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
   AIOutlined,
   AISolid,
   AccountCircleOutlined,
@@ -20,6 +25,8 @@ import {
   AdminSolid,
   BulbOutlined,
   BulbSolid,
+  LocationOutlined,
+  LocationSolid,
   RocketOutlined,
   RocketSolid,
   SpeedIndicatorOutlined,
@@ -28,9 +35,24 @@ import {
   SwitchSolid,
   WiFi
 } from '@acx-ui/icons'
+import { useSearchParams } from '@acx-ui/react-router-dom'
+
+const legacyLink = (uri: string, search: URLSearchParams) => {
+  const selectedTenants = search.get('selectedTenants')
+  if (!selectedTenants) return uri
+  return ''.concat(uri, '?selectedTenants=', decodeURIComponent(selectedTenants))
+}
+
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const [search] = useSearchParams()
   const userProfile = getUserProfile()
+  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
+  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
   const currentAccountPermissions = userProfile.selectedTenant.permissions
   const hasViewAnalyticsPermissions =
     currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
@@ -87,7 +109,7 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Network Assurance' }),
             children: [
               {
-                uri: '/health',
+                uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
                 label: $t({ defaultMessage: 'Health' })
               },
               ...(hasManageServiceGuardPermission ? [
@@ -121,28 +143,37 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(hasViewAnalyticsPermissions
-      ? [{
-        label: $t({ defaultMessage: 'Clients' }),
-        inactiveIcon: AccountCircleOutlined,
-        activeIcon: AccountCircleSolid,
-        children: [
-          {
-            type: 'group' as const,
-            label: $t({ defaultMessage: 'Wireless' }),
-            children: [
-              {
-                uri: '/users/wifi/clients',
-                label: $t({ defaultMessage: 'Wireless Clients List' })
-              },
-              {
-                uri: '/users/wifi/reports',
-                label: $t({ defaultMessage: 'Wireless Clients Report' })
-              }
-            ]
-          }
-        ]
-      }] : []),
+    ...(hasViewAnalyticsPermissions && isZonesPageEnabled
+      ? [
+        {
+          uri: '/zones',
+          label: $t({ defaultMessage: 'Zones' }),
+          inactiveIcon: LocationOutlined,
+          activeIcon: LocationSolid
+        }
+      ]
+      : []),
+    {
+      label: $t({ defaultMessage: 'Clients' }),
+      inactiveIcon: AccountCircleOutlined,
+      activeIcon: AccountCircleSolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Wireless' }),
+          children: [
+            {
+              uri: '/users/wifi/clients',
+              label: $t({ defaultMessage: 'Wireless Clients List' })
+            },
+            {
+              uri: '/users/wifi/reports',
+              label: $t({ defaultMessage: 'Wireless Clients Report' })
+            }
+          ]
+        }
+      ]
+    },
     ...(hasViewAnalyticsPermissions ? [
       {
         label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -164,6 +195,29 @@ export function useMenuConfig () {
               {
                 uri: '/devices/wifi/reports/airtime',
                 label: $t({ defaultMessage: 'Airtime Utilization Report' })
+              }
+            ]
+          },
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Wi-Fi Networks' }),
+            children: [
+              {
+                uri: '/networks/wireless',
+                label: $t({ defaultMessage: 'Wi-Fi Networks List' }),
+                isActiveCheck: new RegExp('^/networks/wireless(?!(/reports))')
+              },
+              {
+                uri: '/networks/wireless/reports/wlans',
+                label: $t({ defaultMessage: 'WLANs Report' })
+              },
+              {
+                uri: '/networks/wireless/reports/applications',
+                label: $t({ defaultMessage: 'Applications Report' })
+              },
+              {
+                uri: '/networks/wireless/reports/wireless',
+                label: $t({ defaultMessage: 'Wireless Report' })
               }
             ]
           }
@@ -207,7 +261,7 @@ export function useMenuConfig () {
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
           ...(hasViewAnalyticsPermissions ? [
             {
-              uri: '/analytics/occupancy',
+              uri: legacyLink('/analytics/occupancy', search),
               label: $t({ defaultMessage: 'Occupancy' }),
               openNewTab: true
             }
@@ -227,50 +281,49 @@ export function useMenuConfig () {
           children: [
             ...(hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/onboarded',
-                label: $t({ defaultMessage: 'Onboarded Systems' }),
-                openNewTab: true
+                uri: '/admin/onboarded',
+                label: $t({ defaultMessage: 'Onboarded Systems' })
               },
               {
-                uri: '/analytics/admin/users',
+                uri: isNewUserRolesEnabled
+                  ? '/admin/users'
+                  : legacyLink('/analytics/admin/users', search),
                 label: $t({ defaultMessage: 'Users' }),
-                openNewTab: true
+                openNewTab: !isNewUserRolesEnabled
               }
             ] : []),
             ...(hasManageLabelPermission ? [
               {
-                uri: '/analytics/admin/labels',
+                uri: legacyLink('/analytics/admin/labels', search),
                 label: $t({ defaultMessage: 'Labels' }),
                 openNewTab: true
               }
             ] : []),
             ...(hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/resourceGroups',
+                uri: legacyLink('/analytics/admin/resourceGroups', search),
                 label: $t({ defaultMessage: 'Resource Groups' }),
                 openNewTab: true
               },
               {
-                uri: '/analytics/admin/support',
-                label: $t({ defaultMessage: 'Support' }),
-                openNewTab: true
+                uri: '/admin/support',
+                label: $t({ defaultMessage: 'Support' })
               },
               {
-                uri: '/analytics/admin/license',
+                uri: legacyLink('/analytics/admin/license', search),
                 label: $t({ defaultMessage: 'Licenses' }),
                 openNewTab: true
               }
             ] : []),
             {
-              uri: '/analytics/admin/schedules',
+              uri: legacyLink('/analytics/admin/schedules', search),
               label: $t({ defaultMessage: 'Schedules' }),
               openNewTab: true
             },
             ...(hasViewAnalyticsPermissions && hasManageMlisaPermission ? [
               {
-                uri: '/analytics/admin/webhooks',
-                label: $t({ defaultMessage: 'Webhooks' }),
-                openNewTab: true
+                uri: '/admin/webhooks',
+                label: $t({ defaultMessage: 'Webhooks' })
               }
             ] : [])
           ]

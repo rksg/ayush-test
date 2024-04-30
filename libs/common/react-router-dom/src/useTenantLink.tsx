@@ -19,16 +19,10 @@ export type TenantType = 't' | 'v'
 export function useTenantLink (to: To, tenantType: TenantType = 't') {
   const isRa = get('IS_MLISA_SA')
   const { tenantId } = useParams()
-  if (isRa) {
-    if (typeof to === 'string') {
-      to = to.replace('analytics', '')
-    } else {
-      if (to.pathname) {
-        to.pathname = to.pathname.replace('analytics', '')
-      }
-    }
-  }
   const path: Partial<Path> = resolvePath(to)
+  if (isRa) {
+    path.pathname = path.pathname?.replace('/analytics', '')
+  }
   path.pathname = _.trim(path.pathname, '/')
   const search = new URLSearchParams(useLocation().search)
   const newSearch = new URLSearchParams(path.search)

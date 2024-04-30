@@ -1,5 +1,3 @@
-import { screen } from '@testing-library/react'
-
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
@@ -10,7 +8,7 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { render } from '@acx-ui/test-utils'
+import { render,screen } from '@acx-ui/test-utils'
 
 import {
   ConnectionMeteringLink,
@@ -133,7 +131,7 @@ describe('Common Link Helper', () => {
   it('should render NetworkSegmentationLink correctly', async () => {
     render(
       <NetworkSegmentationLink
-        nsgId={'nsg-id'}
+        id={'nsg-id'}
         name={'nsg-name'}
       />,
       { route: { params } }

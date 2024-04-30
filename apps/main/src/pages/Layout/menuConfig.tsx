@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                              from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps }                                            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -41,18 +41,23 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -61,7 +66,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    ...(isAdmin ? [{
+    {
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -74,10 +79,11 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(recommendationsEnabled ? [{
+            ...(crrmEnabled ? [{
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }, {
+            }] : []),
+            ...(recommendationsEnabled ? [{
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
             }] : [])
@@ -88,7 +94,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Network Assurance' }),
           children: [
             {
-              uri: '/analytics/health',
+              uri: `/analytics/health${isSwitchHealthEnabled ? '/overview' : ''}`,
               label: $t({ defaultMessage: 'Health' })
             },
             ...(isAnltAdvTier ? [{
@@ -106,7 +112,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    }]: []),
+    },
     {
       uri: '/venues',
       label: $t({ defaultMessage: 'Venues' }),
@@ -173,12 +179,16 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Points List' }),
-              isActiveCheck: new RegExp('^/devices/wifi(?!(/reports))')
+              label: $t({ defaultMessage: 'AP List' }),
+              isActiveCheck: new RegExp('^/devices/wifi(?!(/[reports|apgroup]))')
             },
+            ...(showApGroupTable? [{
+              uri: '/devices/wifi/apgroups',
+              label: $t({ defaultMessage: 'AP Group List' })
+            }] : []),
             {
               uri: '/devices/wifi/reports/aps',
-              label: $t({ defaultMessage: 'Access Points Report' })
+              label: $t({ defaultMessage: 'AP Report' })
             },
             {
               uri: '/devices/wifi/reports/airtime',
@@ -322,10 +332,15 @@ export function useMenuConfig () {
               uri: '/administration/accountSettings',
               label: $t({ defaultMessage: 'Settings' })
             },
-            ...(isAdministratorAccessible ? [{
-              uri: '/administration/administrators',
-              label: $t({ defaultMessage: 'Administrators' })
-            }] : []),
+            ...(isAdministratorAccessible ? [
+              isAbacToggleEnabled ? {
+                uri: '/administration/userPrivileges',
+                label: $t({ defaultMessage: 'Users & Privileges' })
+              } : {
+                uri: '/administration/administrators',
+                label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
             {
               uri: '/administration/notifications',
               label: $t({ defaultMessage: 'Notifications' })
@@ -338,10 +353,14 @@ export function useMenuConfig () {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            ...(isCloudMoteEnabled ? [{
+            {
+              uri: '/administration/webhooks',
+              label: $t({ defaultMessage: 'Webhooks' })
+            },
+            {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
-            }] : []),
+            },
             ...(isRadiusClientEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })

@@ -71,6 +71,23 @@ export const getAllCallQoeTests = {
           startTime: '2023-04-11T04:40:20.000Z'
         }
       ]
+    },
+    {
+      id: 85,
+      name: 'Test call',
+      meetings: [
+        {
+          id: 85,
+          zoomMeetingId: '97992181330',
+          status: 'INVALID',
+          invalidReason: 'SYSTEM_ERROR',
+          joinUrl: 'https://zoom.us/j/97992181330?pwd=VXZ4YWZlZkJRZlg1QmtwazJtcVhRdz09',
+          participantCount: 2,
+          mos: 4,
+          createdTime: '2023-04-12T09:56:58.000Z',
+          startTime: null
+        }
+      ]
     }
   ],
   noData: []

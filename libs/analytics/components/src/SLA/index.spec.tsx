@@ -1,4 +1,5 @@
 import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
+import * as config                            from '@acx-ui/config'
 import { BrowserRouter as Router  }           from '@acx-ui/react-router-dom'
 import { Provider, dataApiURL }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }   from '@acx-ui/test-utils'
@@ -6,6 +7,8 @@ import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
 import { SLA } from '.'
 
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 const pathFilters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -15,11 +18,12 @@ const pathFilters: PathFilter = {
 }
 
 describe('SLA', () => {
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
   it('should render',async () => {
     mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
       data: {} })
-    mockGraphqlQuery(dataApiURL, 'APCountForNode', {
-      data: { network: { node: { apCount: 0 } } } })
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [] } } } })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
@@ -35,6 +39,7 @@ describe('SLA', () => {
   })
 
   it('renders no data for switch path', async () => {
+    get.mockReturnValue('true')
     const switchPathFilters = {
       ...pathFilters,
       path: [

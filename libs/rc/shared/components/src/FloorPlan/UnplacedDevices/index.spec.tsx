@@ -1,12 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent, screen } from '@testing-library/react'
-import userEvent             from '@testing-library/user-event'
-import { DndProvider }       from 'react-dnd'
-import { HTML5Backend }      from 'react-dnd-html5-backend'
+import userEvent        from '@testing-library/user-event'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { render }                                                                          from '@acx-ui/test-utils'
+import { fireEvent, screen ,render }                                                       from '@acx-ui/test-utils'
 
 
 import { NetworkDeviceContext } from '..'

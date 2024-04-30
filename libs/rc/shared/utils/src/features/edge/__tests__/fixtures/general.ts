@@ -1,0 +1,511 @@
+import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNetworkSettings }                                                                                                                                                         from '../../../../types/edge'
+
+export const mockEdgeList = {
+  fields: [
+    'name','deviceStatus','type','model','serialNumber','ip',
+    'ports','venueName','venueId','tags','clusterId'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      name: 'Smart Edge 1',
+      deviceStatus: '2_00_Operational',
+      type: 'Virtual',
+      model: 'model 1',
+      serialNumber: '0000000001',
+      ip: '0.0.0.0',
+      ports: '80',
+      venueName: 'Venue 1',
+      venueId: '00001',
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'cluster-1'
+    },
+    {
+      name: 'Smart Edge 2',
+      deviceStatus: '2_00_Operational',
+      type: 'Virtual',
+      model: 'model 1',
+      serialNumber: '0000000002',
+      ip: '0.0.0.0',
+      ports: '80',
+      venueName: 'Venue 1',
+      venueId: '00001',
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'cluster-2'
+    },
+    {
+      name: 'Smart Edge 3',
+      deviceStatus: '2_00_Operational',
+      type: 'Virtual',
+      model: 'model 1',
+      serialNumber: '0000000003',
+      ip: '0.0.0.0',
+      ports: '80',
+      venueName: 'Venue 1',
+      venueId: '00001',
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'cluster-3'
+    },
+    {
+      name: 'Smart Edge 4',
+      deviceStatus: '2_00_Operational',
+      type: 'Virtual',
+      model: 'model 1',
+      serialNumber: '0000000004',
+      ip: '0.0.0.0',
+      ports: '80',
+      venueName: 'Venue 1',
+      venueId: '00001',
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'cluster-4'
+    },
+    {
+      name: 'Smart Edge 5',
+      deviceStatus: '1_01_NeverContactedCloud',
+      type: 'Virtual',
+      model: 'model 1',
+      serialNumber: '0000000005',
+      ip: '0.0.0.0',
+      ports: '80',
+      venueName: 'Venue 1',
+      venueId: '00001',
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'cluster-5'
+    }
+  ]
+}
+
+export const mockEdgeServiceList = {
+  fields: null,
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2',
+      serviceName: 'DHCP-1',
+      serviceId: 'dhcp-1',
+      serviceType: EdgeServiceTypeEnum.DHCP,
+      status: 'Up',
+      currentVersion: '',
+      targetVersion: ''
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F3',
+      serviceName: 'NSG-1',
+      serviceId: 'nsg-1',
+      serviceType: EdgeServiceTypeEnum.NETWORK_SEGMENTATION,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F4',
+      serviceName: 'FIREWALL-1',
+      serviceId: 'firewall-1',
+      serviceType: EdgeServiceTypeEnum.FIREWALL,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: '2.2.1'
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F5',
+      serviceName: 'SDLAN-1',
+      serviceId: 'sdlan-1',
+      serviceType: EdgeServiceTypeEnum.SD_LAN,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
+    }
+  ]
+}
+
+export const mockEdgeData = {
+  serialNumber: '96123456789',
+  venueId: '66e6694ca3334997998c42def9326797',
+  edgeGroupId: '',
+  description: 'This is description rr',
+  edgeName: 'edgeName',
+  name: 'edgeName',
+  tags: ['tag1', 'tag2']
+}
+
+
+export const mockEdgeDnsServersData = {
+  primary: '1.1.1.1',
+  secondary: '2.2.2.2'
+}
+
+export const mockStaticRoutes = {
+  routes: [
+    {
+      id: 'row1',
+      destIp: '10.100.120.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.2.1'
+    },
+    {
+      id: 'row2',
+      destIp: '10.100.2.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.1.1'
+    }
+  ]
+}
+
+export const mockEdgeClusterList = {
+  fields: [
+    'tenantId', 'clusterId', 'name', 'virtualIp', 'venueId', 'venueName',
+    'clusterStatus', 'edgeList'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      tenantId: 'tenantId_1',
+      clusterId: 'clusterId_1',
+      name: 'Edge Cluster 1',
+      virtualIp: '1.1.1.1,1.1.1.2',
+      venueId: 'mock_venue_1',
+      venueName: 'venue_1',
+      clusterStatus: ClusterStatusEnum.CLUSTER_READY,
+      edgeList: [
+        {
+          name: 'Smart Edge 1',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-1',
+          ip: '0.0.0.0',
+          ports: '3',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949424
+        },
+        {
+          name: 'Smart Edge 2',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-2',
+          ip: '0.0.0.0',
+          ports: '3',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          cpuCores: 2,
+          cpuUsedPercentage: 25,
+          memoryUsedKb: 4626208,
+          memoryTotalKb: 7949420
+        }
+      ]
+    },
+    {
+      tenantId: 'tenantId_2',
+      clusterId: 'clusterId_2',
+      name: 'Edge Cluster 2',
+      virtualIp: '1.1.1.1,1.1.1.2',
+      venueId: '0000000002',
+      venueName: 'venue_2',
+      clusterStatus: 'test',
+      edgeList: [
+        {
+          name: 'Smart Edge 4',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-4',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+        },
+        {
+          name: 'Smart Edge 5',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-5',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+        }
+      ]
+    },{
+      tenantId: 'tenantId_3',
+      clusterId: 'clusterId_3',
+      name: 'Edge Cluster 3',
+      virtualIp: '1.1.1.1,1.1.1.2',
+      venueId: '0000000003',
+      venueName: 'venue_3',
+      clusterStatus: ClusterStatusEnum.CLUSTER_READY,
+      edgeList: [
+        {
+          name: 'Smart Edge 4',
+          deviceStatus: '1_01_NeverContactedCloud',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-4',
+          ip: '0.0.0.0',
+          ports: '2',
+          venueName: 'Venue 3',
+          venueId: '0000000003',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+        }
+      ]
+    },{
+      tenantId: 'tenantId_4',
+      clusterId: 'clusterId_4',
+      name: 'Edge Cluster 4',
+      virtualIp: '1.1.1.1,1.1.1.2',
+      venueId: '0000000004',
+      venueName: 'venue_4',
+      clusterStatus: ClusterStatusEnum.CLUSTER_IS_FORMING,
+      edgeList: [
+        {
+          name: 'Smart Edge 6',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-6',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_GETTING_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+        },
+        {
+          name: 'Smart Edge 7',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-7',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_GETTING_READY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+        }
+      ]
+    },{
+      tenantId: 'tenantId_5',
+      clusterId: 'clusterId_5',
+      name: 'Edge Cluster 5',
+      virtualIp: '1.1.1.1,1.1.1.2',
+      venueId: '0000000005',
+      venueName: 'venue_5',
+      clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      edgeList: [
+        {
+          name: 'Smart Edge 8',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-8',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_UNHEALTHY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+        },
+        {
+          name: 'Smart Edge 9',
+          deviceStatus: '2_00_Operational',
+          type: 'Virtual',
+          model: 'model 1',
+          serialNumber: 'serialNumber-9',
+          ip: '0.0.0.0',
+          ports: '80',
+          venueName: 'Venue 1',
+          venueId: 'mock_venue_1',
+          tags: ['Tag1', 'Tag2'],
+          clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_UNHEALTHY,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+        }
+      ]
+    }
+  ]
+}
+
+export const mockEdgeCluster = {
+  id: 'clusterId_1',
+  name: 'Edge Cluster 1',
+  smartEdges: [
+    {
+      serialNumber: 'serialNumber-1',
+      name: 'Smart Edge 1'
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      name: 'Smart Edge 2'
+    }
+  ],
+  virtualIpSettings: {
+    virtualIps: [
+      {
+        virtualIp: '192.168.13.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port2'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port2'
+          }
+        ],
+        timeoutSeconds: 6
+      },
+      {
+        virtualIp: '192.168.14.1',
+        ports: [
+          {
+            serialNumber: 'serialNumber-1',
+            portName: 'port3'
+          },
+          {
+            serialNumber: 'serialNumber-2',
+            portName: 'port3'
+          }
+        ],
+        timeoutSeconds: 6
+      }
+    ]
+  }
+}
+
+export const mockedHaNetworkSettings = {
+  lagSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    lags: [{
+      id: 0,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    lags: [{
+      id: 1,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.10.10.1',
+      subnet: '255.255.0.0',
+      gateway: '127.1.1.0',
+      corePortEnabled: false,
+      natEnabled: false,
+      lagEnabled: true
+    }]
+  }],
+  portSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:00',
+      enabled: false,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.1.1.1',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:01',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.3',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
+      interfaceName: 'port2'
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:02',
+      enabled: false,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:03',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
+      interfaceName: 'port2'
+    }]
+  }],
+  virtualIpSettings: [{
+    virtualIp: '1.1.1.1',
+    ports: [{
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      portName: 'port2'
+    }, {
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+      portName: 'port2'
+    }],
+    timeoutSeconds: 6
+  }]
+} as ClusterNetworkSettings

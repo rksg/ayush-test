@@ -85,7 +85,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -99,7 +99,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -559,7 +559,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -573,7 +573,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -1033,7 +1033,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -1047,7 +1047,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -1510,6 +1510,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -1523,7 +1524,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -1537,10 +1538,11 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -1590,6 +1592,7 @@ Array [
         ],
         "id": "00:00:00:00:00:02",
         "name": "name2",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_9DB",
@@ -1632,6 +1635,7 @@ Array [
         ],
         "id": "00:00:00:00:00:03",
         "name": "name3",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_FULL",
@@ -1687,6 +1691,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -1738,6 +1743,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -1795,6 +1801,7 @@ Array [
         ],
         "id": "00:00:00:00:00:06",
         "name": "name6",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_8DB",
@@ -1833,6 +1840,7 @@ Array [
         ],
         "id": "00:00:00:00:00:07",
         "name": "name7",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_10DB",
@@ -1866,6 +1874,7 @@ Array [
         ],
         "id": "00:00:00:00:00:08",
         "name": "name8",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_MIN",
@@ -1900,6 +1909,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",
@@ -1986,6 +1996,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -1999,7 +2010,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -2013,10 +2024,11 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -2165,6 +2177,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -2216,6 +2229,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -2378,6 +2392,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",
@@ -2459,6 +2474,7 @@ Array [
         ],
         "id": "00:00:00:00:00:00",
         "name": "name0",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_MIN",
@@ -2472,7 +2488,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -2486,10 +2502,11 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
+        "showTooltip": true,
         "symbolSize": 24,
         "txPower": Array [
           "_FULL",
@@ -2638,6 +2655,7 @@ Array [
         ],
         "id": "00:00:00:00:00:04",
         "name": "name4",
+        "showTooltip": true,
         "symbolSize": 60,
         "txPower": Array [
           "_4DB",
@@ -2689,6 +2707,7 @@ Array [
         ],
         "id": "00:00:00:00:00:05",
         "name": "name5",
+        "showTooltip": true,
         "symbolSize": 48,
         "txPower": Array [
           "_6DB",
@@ -2854,6 +2873,7 @@ Array [
         ],
         "id": "00:00:00:00:00:09",
         "name": "name9",
+        "showTooltip": true,
         "symbolSize": 36,
         "txPower": Array [
           "_FULL",
@@ -2915,9 +2935,9 @@ AP 4,00:00:00:00:00:04,5 GHz,FALSE,36,36,80 MHz,80 MHz,Full,Full
 "
 `;
 
-exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li><li>Tx Power (radio 5 GHz): <b>Full</b>Tx Power (radio 6(5) GHz): <b>Min</b></li></ul></div>"`;
+exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b></li><li>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b></li><li>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li><li>Tx Power (radio 5 GHz): <b>Full</b></li><li>Tx Power (radio 6(5) GHz): <b>Min</b></li></ul></div>"`;
 
-exports[`tooltipFormatter should match snapshot 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li></ul></div>"`;
+exports[`tooltipFormatter should match snapshot 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 bcSDhp\\"><ul>AP Name: <b>ap</b><li>Channel number (radio 5 GHz): <b>48</b></li><li>Channel number (radio 6(5) GHz): <b>124</b></li><li>Bandwidth (radio 5 GHz): <b>20 MHz</b></li><li>Bandwidth (radio 6(5) GHz): <b>40 MHz</b></li></ul></div>"`;
 
 exports[`trimGraph should return correct trimed graph data 1`] = `
 Object {
@@ -2999,7 +3019,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -3013,7 +3033,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -3463,7 +3483,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -3477,7 +3497,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -3776,6 +3796,76 @@ Object {
       ],
       "value": Array [
         36,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`trimGraph should return correct trimed graph data 3`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
       ],
     },
   ],

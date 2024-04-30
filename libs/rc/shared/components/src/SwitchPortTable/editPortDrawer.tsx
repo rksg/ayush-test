@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Form, Input, Row, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                                      from 'antd/lib/select'
-import _                                                          from 'lodash'
+import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                     from 'antd/lib/select'
+import _                                                         from 'lodash'
 
 import {
   Alert,
@@ -14,6 +14,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -27,7 +28,8 @@ import {
   useLazyGetVlansByVenueQuery,
   useLazyGetVenueRoutedListQuery,
   useSwitchDetailHeaderQuery,
-  useSavePortsSettingMutation
+  useSavePortsSettingMutation,
+  useCyclePoeMutation
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -147,6 +149,7 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
+  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const [loading, setLoading] = useState<boolean>(true)
   const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
@@ -191,8 +194,8 @@ export function EditPortDrawer ({
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
-
-  const [ drawerAclVisible, setDrawerAclVisible ] = useState(false)
+  const [drawerAclVisible, setDrawerAclVisible] = useState(false)
+  const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -204,6 +207,7 @@ export function EditPortDrawer ({
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
+  const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
@@ -336,7 +340,7 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (!isSwitchDetailLoading && switchesDefaultVlan) {
+    if (switchesDefaultVlan && !isSwitchDetailLoading) {
       resetFields()
       setData()
     }
@@ -358,8 +362,9 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-    setUseVenueSettings(portSetting.revert)
-    setLldpQosList(portSetting.lldpQos || [])
+    setUseVenueSettings(portSetting?.revert)
+    setLldpQosList(portSetting?.lldpQos || [])
+    setCyclePoeEnable(portSetting.poeEnable)
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -402,6 +407,7 @@ export function EditPortDrawer ({
     const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
+    setCyclePoeEnable(portsSetting?.response?.filter(s => s?.poeEnable)?.length > 0)
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
@@ -466,6 +472,7 @@ export function EditPortDrawer ({
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
+      case 'cyclePoe': return disablePoeCapability || !cyclePoeEnable
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
         return isMultipleEdit && !checkboxEnabled
@@ -498,7 +505,9 @@ export function EditPortDrawer ({
         name={`${field}Checkbox`}
         valuePropName='checked'
         initialValue={false}
-        children={<Checkbox disabled={getOverrideDisabled(field)} />}
+        children={<Checkbox
+          data-testid={`${field}-override-checkbox`}
+          disabled={getOverrideDisabled(field)} />}
       />}
       { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
       { content }
@@ -611,6 +620,21 @@ export function EditPortDrawer ({
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+  }
+
+  const onCyclePoe = async () => {
+    const venueId = selectedPorts[0].venueId
+    const payload = switches.map((switchId) => ({
+      switchId: switchId,
+      ports: selectedPorts
+        .filter(p => p.switchSerial === switchId)
+        .map(p => p.portIdentifier)
+    }))
+    await cyclePoe({
+      params: { venueId },
+      payload
+    }).unwrap()
+    onClose()
   }
 
   const resetFields = async () => {
@@ -772,6 +796,16 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+      {
+        cyclePoeFFEnabled && <>
+          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+            {$t({ defaultMessage: 'Cycle PoE' })}
+          </Button>
+          <UI.DrawerFooterDivider>
+            <Divider type='vertical' />
+          </UI.DrawerFooterDivider>
+        </>
+      }
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -793,7 +827,7 @@ export function EditPortDrawer ({
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
-      isFetching: isPortsSettingUpdating
+      isFetching: isPortsSettingUpdating || isCyclePoeUpdating
     }]}>
       {
         isCloudPort && <Alert
@@ -809,20 +843,16 @@ export function EditPortDrawer ({
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
-        <Row style={{ height: '80px' }}>
-          <Col flex='auto'>
-            <Form layout='vertical'>
-              <Form.Item
-                label={$t({ defaultMessage: 'Selected Port' })}
-                children={<Space style={{ fontSize: '16px' }}>
-                  {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
-                </Space>
-                }
-              />
-            </Form>
-          </Col>
-          { !isMultipleEdit && <Col flex='250px'>
-            <UI.FormItem>
+        <UI.HorizontalFormItemLayout>
+          <Form.Item
+            label={$t({ defaultMessage: 'Selected Port' })}
+            labelCol={{ span: 24 }}
+            children={<Space style={{ fontSize: '16px' }}>
+              {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
+            </Space>
+            }
+          />
+          { !isMultipleEdit &&
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
                 rules={[
@@ -831,9 +861,8 @@ export function EditPortDrawer ({
                 initialValue=''
                 children={<Input />}
               />
-            </UI.FormItem>
-          </Col>}
-        </Row>
+          }
+        </UI.HorizontalFormItemLayout>
 
         <UI.ContentDivider />
 
@@ -848,7 +877,7 @@ export function EditPortDrawer ({
               name='portVlansCheckbox'
               valuePropName='checked'
               initialValue={false}
-              children={<Checkbox />}
+              children={<Checkbox data-testid='portVlans-override-checkbox' />}
             />
           </Space>}
           <div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
@@ -902,6 +931,7 @@ export function EditPortDrawer ({
                 <Form.Item
                   name='profileName'
                   hidden
+                  children={<></>}
                 />
               </UI.PortStatus>
             }
@@ -953,14 +983,14 @@ export function EditPortDrawer ({
                   name='voiceVlan'
                   noStyle
                   children={
-                    <>
+                    <Space data-testid='voice-vlan' size={4}>
                       <span> {$t({ defaultMessage: 'Set as Voice VLAN:' })} </span>
                       {
                         voiceVlan
                           ? $t({ defaultMessage: 'Yes (VLAN-ID: {voiceVlan})' }, { voiceVlan })
                           : $t({ defaultMessage: 'No' })
                       }
-                    </>
+                    </Space>
                   }
                 />
               </UI.VoiceVlan> :
@@ -1024,6 +1054,7 @@ export function EditPortDrawer ({
                       initialValue={false}
                     >
                       <Switch
+                        data-testid='port-enable-checkbox'
                         disabled={getFieldDisabled('portEnable')}
                         className={
                           getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
@@ -1051,6 +1082,7 @@ export function EditPortDrawer ({
                     initialValue={false}
                   >
                     <Switch
+                      data-testid='poeEnable'
                       disabled={getFieldDisabled('poeEnable')}
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
@@ -1311,7 +1343,7 @@ export function EditPortDrawer ({
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
         )}
 
-        <Space style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
@@ -1320,7 +1352,7 @@ export function EditPortDrawer ({
             setLldpQosList={setLldpQosList}
             vlansOptions={vlansOptions}
           />
-        </Space>
+        </div>
 
         <ACLSettingDrawer
           visible={drawerAclVisible}
@@ -1334,7 +1366,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='ingressAcl'
-              label={$t({ defaultMessage: 'Ingress ACL' })}
+              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
@@ -1359,7 +1391,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'ingressAcl', $t({ defaultMessage: 'Ingress ACL' })
+          'ingressAcl', $t({ defaultMessage: 'Ingress ACL (IPv4)' })
         )}
 
         { getFieldTemplate(
@@ -1367,7 +1399,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='egressAcl'
-              label={$t({ defaultMessage: 'Egress ACL' })}
+              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
@@ -1391,7 +1423,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+          'egressAcl', $t({ defaultMessage: 'Egress ACL (IPv4)' })
         )}
 
         {getFieldTemplate(

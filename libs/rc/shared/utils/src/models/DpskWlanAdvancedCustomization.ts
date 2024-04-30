@@ -279,6 +279,8 @@ export class DpskWlanAdvancedCustomization {
 
     this.multiLinkOperationEnabled = false
 
+    this.qosMirroringEnabled = true
+
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()

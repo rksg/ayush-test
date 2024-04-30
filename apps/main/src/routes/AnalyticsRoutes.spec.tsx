@@ -81,14 +81,12 @@ export const fetchServiceGuardTest = {
   }
 }
 
-
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
   AIAnalytics: () => <div data-testid='aiAnalytics' />,
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentDetails: () => <div data-testid='incidentDetails' />,
   IncidentListPage: () => <div data-testid='incidentListPage' />,
-  IncidentListPageLegacy: () => <div data-testid='incidentListPageLegacy' />,
   VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
   useVideoCallQoe: () => ({
     component: <div data-testid='VideoCallQoePage' />
@@ -101,7 +99,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
   ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>,
   RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
-  CrrmDetails: () => <div data-testid='CrrmDetails'/>
+  CrrmDetails: () => <div data-testid='CrrmDetails'/>,
+  UnknownDetails: () => <div data-testid='UnknownDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -202,6 +201,15 @@ test('should navigate to analytics/recommendations/crrm/:id', () => {
     }
   })
   expect(screen.getByTestId('CrrmDetails')).toBeVisible()
+})
+test('should navigate to analytics/recommendations/crrm/unknown/*', () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/recommendations/crrm/unknown/*',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('UnknownDetails')).toBeVisible()
 })
 test('should navigate to analytics/recommendations/aiOps', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
@@ -335,12 +343,27 @@ test('should navigate to analytics/videoCallQoe', () => {
   expect(screen.getByTestId('networkAssurance')).toBeVisible()
 })
 
+test('allow access to analytics for READ_ONLY', () => {
+  const profile = getUserProfile()
+  setUserProfile({ ...profile, profile: {
+    ...profile.profile, roles: [RolesEnum.READ_ONLY]
+  } })
+  const { container } = render(<AnalyticsRoutes />, {
+    wrapper: Provider,
+    route: {
+      path: '/tenantId/t/analytics',
+      wrapRoutes: false
+    }
+  })
+  expect(container).not.toBeEmptyDOMElement()
+})
+
 describe('RBAC', () => {
   beforeEach(() => setUserProfile({
     allowedOperations: [],
     profile: {
       ...getUserProfile().profile,
-      roles: [RolesEnum.READ_ONLY]
+      roles: [RolesEnum.GUEST_MANAGER]
     }
   }))
   it('non-admin no access to analytics', async () => {

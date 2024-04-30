@@ -29,7 +29,7 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export type DonutChartData = {
   value: number,
   name: string,
-  color: string,
+  color: string
 }
 
 interface DonutChartOptionalProps {
@@ -252,7 +252,7 @@ export function DonutChart ({
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
-      textStyle: styles[props.size].title,
+      textStyle: { ...styles[props.size].title, width: 80, overflow: 'break' },
       subtextStyle: styles[props.size].value
     },
     legend: {

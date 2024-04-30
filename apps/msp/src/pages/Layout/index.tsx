@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+
+import { useIntl } from 'react-intl'
 
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { AdminSolid }             from '@acx-ui/icons'
+import { HomeSolid }              from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -16,19 +20,21 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import {
-  useMspEntitlementListQuery,
-  useGetTenantDetailQuery
-} from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
-import { isDelegationMode }                                             from '@acx-ui/utils'
+import { useGetTenantDetailQuery, useMspEntitlementListQuery }                      from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
+import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
+import { getJwtTokenPayload, isDelegationMode, AccountType }                        from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 import { useMenuConfig } from './menuConfig'
+import * as UI           from './styledComponents'
 
 function Layout () {
+  const { $t } = useIntl()
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [hasLicense, setHasLicense] = useState(false)
@@ -38,17 +44,34 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
-
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
+  const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
+
+  const isShowBrand360 =
+    isBrand360Enabled &&
+    (tenantType === AccountType.MSP_INTEGRATOR ||
+    tenantType === AccountType.MSP_NON_VAR)
+
+  const indexPath = isGuestManager
+    ? '/users/guestsManager'
+    : isShowBrand360
+      ? '/brand360'
+      : '/dashboard'
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -67,12 +90,14 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (!isSupportToMspDashboardAllowed && (userProfile?.support || userProfile?.dogfood)) {
+      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
+      if (!isSupportToMspDashboardAllowed &&
+        (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
       }
-      setDogfood(userProfile?.dogfood && !userProfile?.support)
+      setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
     if (mspEntitlement?.length && mspEntitlement?.length > 0) {
       setHasLicense(true)
@@ -90,6 +115,19 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
+        {isHspSupportEnabled && <TenantLink to='/dashboard'>
+          <UI.Home>
+            <LayoutUI.Icon children={<AdminSolid />} />
+            {$t({ defaultMessage: 'My Account' })}
+          </UI.Home></TenantLink>}
+        { showSupportHomeButton && (
+          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Support Home' }) }
+            </UI.Home>
+          </a>)
+        }
         <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
@@ -110,10 +148,10 @@ function Layout () {
   )
 }
 
-function LayoutWithSplitProvider () {
-  return <SplitProvider>
-    <Layout />
-  </SplitProvider>
-}
+export default Layout
 
-export default LayoutWithSplitProvider
+export function LayoutWithConfigTemplateContext () {
+  return <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+    <Outlet />
+  </ConfigTemplateContext.Provider>
+}

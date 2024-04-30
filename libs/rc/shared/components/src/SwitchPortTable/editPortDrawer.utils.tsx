@@ -257,7 +257,7 @@ export const checkPortEditStatusLegacy = (
 }
 
 export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
-  return portSettings?.filter(s => !s.poeCapability)?.length > 0
+  return portSettings?.filter(s => !s?.poeCapability)?.length > 0
 }
 
 export const getOverrideFields = (fieldsValue: PortSettingModel) => {

@@ -4,7 +4,7 @@ import { Col, Form, Input, Radio, Row, Space, Typography } from 'antd'
 import { defineMessage, useIntl }                          from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                      from '@acx-ui/components'
+import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }                       from '@acx-ui/components'
 import { useApViewModelQuery, useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }                            from '@acx-ui/rc/utils'
 
@@ -25,6 +25,7 @@ export function IpSettings () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(ApEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
   const formRef = useRef<StepsFormLegacyInstance<APNetworkSettings>>()
 
@@ -93,9 +94,11 @@ export function IpSettings () {
       setCurrentIpType(ipSettings.ipType || IpTypeEnum.DYNAMIC)
       setInitData(ipSettings)
       setFormInitializing(false)
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('IP-Settings')))])
     }
 
-  }, [getApIpSettings?.isLoading, currentAP])
+  }, [getApIpSettings, currentAP, setReadyToScroll])
 
 
   const handleUpdateIpSettings = async (values: APNetworkSettings) => {

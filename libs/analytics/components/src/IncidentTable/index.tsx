@@ -15,7 +15,7 @@ import {
   Incident,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  shortDescription,
+  longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
@@ -24,7 +24,10 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+
+import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
   useIncidentsListQuery,
@@ -78,6 +81,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const { $t } = useIntl()
   const { metadata, id } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const { rootCauseText, rootCauseValues } = rootCauses
   const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
     ...productNames,
@@ -89,7 +93,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const wlanInfo = (dominant && dominant.ssid)
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
     : ''
-  const desc = shortDescription(props.selectedIncidentToShowDescription)
+  const desc = longDescription(props.selectedIncidentToShowDescription)
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>
@@ -100,7 +104,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
         {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
       </UI.IncidentRootCauses>
       <div>
-        <FormattedMessage {...rootCauses} values={values} />
+        <FormattedMessage {...rootCauseText} values={{ ...values, ...rootCauseValues }} />
         <Button type='link' onClick={gotoIncident} size='small'>
           {$t({ defaultMessage: 'More Details' })}
         </Button>
@@ -118,8 +122,9 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
 export function IncidentTable ({ filters }: {
    filters: IncidentFilter }) {
   const intl = useIntl()
+  const toggles = useIncidentToggles()
   const { $t } = intl
-  const queryResults = useIncidentsListQuery(filters)
+  const queryResults = useIncidentsListQuery({ ...filters, toggles })
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
@@ -227,7 +232,7 @@ export function IncidentTable ({ filters }: {
       width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
-      sorter: { compare: sortProp('impactedClients', clientImpactSort) },
+      sorter: { compare: sortProp('impactedClientCount', defaultSort) },
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center'
     },
@@ -237,7 +242,11 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
+        return <Tooltip
+          placement='top'
+          title={formattedPath(value.path, value.sliceValue)}
+          dottedUnderline={true}
+        >
           {highlightFn(value.scope)}
         </Tooltip>
       },
@@ -262,7 +271,7 @@ export function IncidentTable ({ filters }: {
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
@@ -270,7 +279,7 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={{
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
@@ -297,7 +306,7 @@ export function IncidentTable ({ filters }: {
             children={$t({ defaultMessage: 'Show Muted Incidents' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => record.isMuted ? 'table-row-disabled' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />

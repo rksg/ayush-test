@@ -34,11 +34,12 @@ export const EdgeDhcp = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
     { params: { edgeId: serialNumber } },
     {
-      skip: !!!serialNumber,
+      skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data }) => ({
         isLeaseTimeInfinite: data?.leaseTime === -1
       })
@@ -48,19 +49,23 @@ export const EdgeDhcp = () => {
     fields: [
       'id',
       'dhcpId',
+      'poolId',
       'poolName',
       'subnetMask',
       'poolRange',
       'gateway',
-      'edgeIds'
+      'edgeId',
+      'utilization'
     ],
-    filters: { edgeIds: [serialNumber] },
+    filters: { edgeId: [serialNumber] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
+  const settingsId = 'edge-dhcp-pools-table'
   const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
-    defaultPayload: getDhcpPoolStatsPayload
+    defaultPayload: getDhcpPoolStatsPayload,
+    pagination: { settingsId }
   })
 
   const getDhcpHostStatsPayload = {
@@ -71,7 +76,7 @@ export const EdgeDhcp = () => {
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   },{
-    skip: !isEdgeReady
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady
   })
   const { hasNsg } = useGetEdgeServiceListQuery({
     payload: {
@@ -79,7 +84,7 @@ export const EdgeDhcp = () => {
       filters: { edgeId: [serialNumber] }
     }
   }, {
-    skip: !isEdgeReady,
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
     selectFromResult: ({ data, isLoading }) => ({
       hasNsg: isLoading || data?.data.some(
         service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION
@@ -94,7 +99,7 @@ export const EdgeDhcp = () => {
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} />
+      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} settingsId={settingsId} />
     },
     leases: {
       title: $t(
@@ -116,7 +121,7 @@ export const EdgeDhcp = () => {
         onOk: () => {
           if((poolTableQuery.data?.totalCount || 0) > 0) {
             const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = poolTableQuery.data?.data[0].edgeIds || []
+            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
             const payload = {
               edgeIds: [
                 ...edgeIds.filter(id => id !== serialNumber)

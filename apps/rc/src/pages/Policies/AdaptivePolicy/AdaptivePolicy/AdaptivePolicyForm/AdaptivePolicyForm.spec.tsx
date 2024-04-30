@@ -1,17 +1,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }        from '@acx-ui/rc/services'
 import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
   render,
   screen,
-  within
+  waitFor,
+  within,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 
@@ -26,6 +29,8 @@ import {
 import AdaptivePolicyForm from './AdaptivePolicyForm'
 
 const mockedUsedNavigate = jest.fn()
+const mockAddConditions = jest.fn()
+const mockCreatePolicy = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -33,6 +38,9 @@ jest.mock('react-router-dom', () => ({
 
 describe('AdaptivePolicyForm', () => {
   beforeEach(() => {
+    mockCreatePolicy.mockClear()
+    mockAddConditions.mockClear()
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
@@ -79,6 +87,8 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByText(templateList?.content[0]?.ruleType)
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -96,13 +106,19 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.post(
         RulesManagementUrlsInfo.createPolicy.url,
-        (req, res, ctx) => res(ctx.json({
-          id: 'policy_id'
-        }))
+        (req, res, ctx) => {
+          mockCreatePolicy()
+          return res(ctx.json({
+            id: 'policy_id'
+          }))
+        }
       ),
       rest.post(
         RulesManagementUrlsInfo.addConditions.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          mockAddConditions()
+          return res(ctx.json({}))
+        }
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
@@ -154,6 +170,12 @@ describe('AdaptivePolicyForm', () => {
 
     await userEvent.click(screen.getByText('Apply'))
 
+    await waitFor(()=>{
+      expect(mockCreatePolicy).toBeCalled()
+    })
+    await waitFor(()=>{
+      expect(mockAddConditions).toBeCalled()
+    })
     await screen.findByText('Policy testPolicy was added')
 
     expect(mockedUsedNavigate).toBeCalled()

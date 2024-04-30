@@ -1,11 +1,11 @@
 
 import { useState, useEffect } from 'react'
 
-import { Row, Col, Form, Select, Input } from 'antd'
+import { Row, Col, Form, Input } from 'antd'
 
-import { Card }        from '@acx-ui/components'
-import { TrustedPort } from '@acx-ui/rc/utils'
-import { getIntl }     from '@acx-ui/utils'
+import { Card, Select } from '@acx-ui/components'
+import { TrustedPort }  from '@acx-ui/rc/utils'
+import { getIntl }      from '@acx-ui/utils'
 
 import { VlanTrustPortInterface } from './index'
 export interface PortsType {
@@ -96,6 +96,7 @@ export function TrustedPortsStep (props: {
                   children={
                     <Select
                       mode='multiple'
+                      showArrow
                       options={[
                         ...portsModule1,
                         ...portsModule2,

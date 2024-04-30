@@ -9,11 +9,13 @@ import { Cascader, Button, Loader }           from '@acx-ui/components'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
 import { ConnectionEventPopover }                                     from './ConnectionEvent'
 import { FormattedEvent, History }                                    from './EventsHistory'
 import { TimeLine }                                                   from './EventsTimeline'
-import { useClientInfoQuery }                                         from './services'
+import { useClientInfoQuery, useClientIncidentsInfoQuery }            from './services'
 import * as UI                                                        from './styledComponents'
 
 
@@ -66,7 +68,13 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
   const { startDate, endDate, range } = useDateFilter()
-  const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
+  const toggles = useIncidentToggles()
+  const payload = { startDate, endDate, range, clientMac }
+  const clientQuery = useClientInfoQuery(payload)
+  const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
+  const data = clientQuery.data && incidentsQuery.data
+    ? { ...clientQuery.data, ...incidentsQuery.data }
+    : undefined
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
   const [popoverVisible, setPopoverVisible] = useState(false)
@@ -94,7 +102,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     chartsRef.current = active
   })
 
-  const isMaxEventError = results.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+  const isMaxEventError = clientQuery.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
 
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>
@@ -153,9 +161,9 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           )}
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
-              <Loader states={[results]}>
+              <Loader states={[clientQuery, incidentsQuery]}>
                 <TimeLine
-                  data={results.data}
+                  data={data}
                   filters={filters}
                   setEventState={setEventState}
                   setVisible={setPopoverVisible}
@@ -189,11 +197,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <Loader states={[results]} >
+          <Loader states={[clientQuery, incidentsQuery]} >
             <History
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
-              data={results.data}
+              data={data}
               filters={filters}
               onPanelCallback={onPanelCallback}
             />

@@ -1,13 +1,19 @@
-import { APMeshRole, ApDeviceStatusEnum }               from '../constants'
-import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                                       from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                                    from '../models/DeviceGps'
-import { DhcpApInfo }                                   from '../models/DhcpApInfo'
-import { ExternalAntenna }                              from '../models/ExternalAntenna'
-import { VenueLanPort }                                 from '../models/VenueLanPort'
+import { APMeshRole, ApDeviceStatusEnum } from '../constants'
+import {
+  ApAntennaTypeEnum,
+  ApDeep,
+  ApPacketCaptureStateEnum,
+  ApPosition,
+  BandModeEnum,
+  CapabilitiesApModel,
+  DeviceGps,
+  DhcpApInfo,
+  ExternalAntenna,
+  PoeModeEnum,
+  VenueLanPort
+} from '../models'
 
-import { ApVenueStatusEnum } from '.'
+import { ApVenueStatusEnum, CountAndNames } from '.'
 
 export interface IpSettings {
   ipType?: string,
@@ -20,6 +26,7 @@ export interface IpSettings {
 export interface APSystem extends IpSettings {
   uptime?: number
   secureBootEnabled?: boolean
+  managementVlan?: number
 }
 
 export interface APNetworkSettings extends IpSettings {
@@ -93,7 +100,8 @@ export interface APExtended extends AP {
   switchSerialNumber?: string,
   switchId?: string,
   switchName?: string,
-  rogueCategory?: { [key: string]: number }
+  rogueCategory?: { [key: string]: number },
+  incompatible?: number
 }
 
 export interface CelluarInfo {
@@ -174,11 +182,19 @@ export interface ApDetails {
 }
 
 export interface ApGroup {
-  aps?: ApDeep[],
   id: string,
-  isDefault: boolean,
   name: string,
-  venueId: string
+  isDefault: boolean,
+  venueId: string,
+  aps?: ApDeep[]
+}
+
+export interface ApGroupViewModel extends ApGroup {
+  venueName?: string,
+  members?: CountAndNames,
+  networks?: CountAndNames,
+  clients?: number,
+  incidents?: unknown
 }
 
 export interface AddApGroup {
@@ -193,6 +209,14 @@ export interface VenueDefaultApGroup {
   isDefault: boolean,
   venueId: string,
   aps?: ApDeep[]
+}
+
+export interface ApGroupDetailHeader {
+  title: string
+  headers: {
+    members: number
+    networks: number
+  }
 }
 
 export interface ApDetailHeader {
@@ -223,7 +247,7 @@ export interface APMesh {
   apStatusData?: {
     APRadio?: Array<RadioProperties>
   },
-  clients?: { count: number, names: string[] },
+  clients?: CountAndNames,
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -309,7 +333,13 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
-  support11AX?: boolean
+  support11AX?: boolean,
+  supportAntennaType?: boolean,
+  antennaTypeCapabilities?: ApAntennaTypeEnum[],
+  defaultAntennaType?: ApAntennaTypeEnum,
+  supportBandCombination?: boolean,
+  bandCombinationCapabilities?: BandModeEnum[],
+  defaultBandCombination?: BandModeEnum
 }
 
 export interface PingAp {
@@ -347,6 +377,16 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBandModeSettings {
+  bandMode: BandModeEnum,
+  useVenueSettings: boolean
+}
+
+export type ApAntennaTypeSettings = {
+  antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
 }
 
@@ -489,9 +529,36 @@ export type MeshUplinkAp = {
   neighbors: MeshApNeighbor[]
 }
 
+export interface AFCProps {
+  featureFlag?: boolean,
+  isAFCEnabled? : boolean,
+  afcInfo?: AFCInfo
+}
+
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
+}
+
 export type AFCInfo = {
+  afcStatus?: AFCStatus,
+  availableChannel?: number,
+  availableChannels?: number[],
+  geoLocation?: GeoLocation,
   powerMode?: AFCPowerMode,
-  afcStatus?: AFCStatus
+  minPowerDbm?: number,
+  maxPowerDbm?: number
+}
+
+export interface GeoLocation {
+  height?: number,
+  lateralUncertainty?: number,
+  latitude?: number,
+  longitude?: number,
+  source?: string,
+  verticalUncertainty?: number
 }
 
 export enum AFCPowerMode {
@@ -503,13 +570,9 @@ export enum AFCStatus {
   AFC_NOT_REQUIRED = 'AFC_NOT_REQUIRED',
   WAIT_FOR_LOCATION = 'WAIT_FOR_LOCATION',
   WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
+  AFC_SERVER_FAILURE = 'AFC_SERVER_FAILURE',
   REJECTED = 'REJECTED',
   PASSED = 'PASSED'
-}
-
-export interface LowPowerAPQuantity {
-  lowPowerAPCount: number,
-  allAPCount: number
 }
 
 export interface ApStatus {

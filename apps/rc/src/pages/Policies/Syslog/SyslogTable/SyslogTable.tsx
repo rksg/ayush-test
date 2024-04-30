@@ -16,13 +16,12 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-import { PROFILE_MAX_COUNT }                           from '../constants'
+import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -47,9 +46,11 @@ export default function SyslogTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
+  const settingsId = 'policies-syslog-table'
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
@@ -111,7 +112,7 @@ export default function SyslogTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
-          settingsId='policies-syslog-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

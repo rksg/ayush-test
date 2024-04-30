@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
 import {
   Form,
@@ -14,17 +14,26 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                from '@acx-ui/icons'
 import {
   useUpdateSwitchMutation,
-  useSwitchDetailHeaderQuery,
-  useGetSwitchQuery,
-  useLazyGetSwitchVenueVersionListQuery
+  useGetSwitchQuery
 } from '@acx-ui/rc/services'
-import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SwitchViewModel, checkVersionAtLeast09010h } from '@acx-ui/rc/utils'
+import {
+  Switch,
+  SwitchTable,
+  getSwitchModel,
+  checkVersionAtLeast09010h,
+  SwitchViewModel,
+  convertInputToUppercase
+} from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-
-import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog } from '../../SwitchForm/blockListRelatedTsb.util'
+import { SwitchDetailsContext }                        from '..'
+import { validatorSwitchModel, validatorUniqueMember } from '../../StackForm'
+import {
+  getTsbBlockedSwitch,
+  showTsbBlockedSwitchErrorDialog
+} from '../../SwitchForm/blockListRelatedTsb.util'
 
 import {
   TableContainer,
@@ -34,12 +43,17 @@ import {
 export interface AddStackMemberProps {
   visible: boolean
   setVisible: (v: boolean) => void
+  maxMembers: number
+  venueFirmwareVersion: string
 }
 
 export default function AddStackMember (props: AddStackMemberProps) {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, maxMembers, venueFirmwareVersion } = props
   const [form] = Form.useForm<Switch>()
+
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader, switchQuery, switchDetailViewModelQuery } = switchDetailsContextData
 
   const onClose = () => {
     setVisible(false)
@@ -55,6 +69,9 @@ export default function AddStackMember (props: AddStackMemberProps) {
       children={
         <AddMemberForm
           form={form}
+          maxMembers={maxMembers}
+          switchDetail={switchDetailHeader}
+          venueFirmwareVersion={venueFirmwareVersion}
         />
       }
       footer={
@@ -68,6 +85,12 @@ export default function AddStackMember (props: AddStackMemberProps) {
               await form.validateFields()
               form.submit()
               onClose()
+
+              setTimeout(() => {
+                switchDetailViewModelQuery?.refetch()
+                switchQuery?.refetch()
+              }, 1500)
+
             } catch (error) {
               if (error instanceof Error) throw error
             }
@@ -80,25 +103,22 @@ export default function AddStackMember (props: AddStackMemberProps) {
 
 interface DefaultVlanFormProps {
   form: FormInstance<Switch>
+  maxMembers: number
+  switchDetail: SwitchViewModel
+  venueFirmwareVersion: string
 }
 
 function AddMemberForm (props: DefaultVlanFormProps) {
   const { $t } = useIntl()
   const { tenantId, switchId, stackList } = useParams()
-  const { form } = props
-  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+  const { form, maxMembers, switchDetail, venueFirmwareVersion } = props
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
   const [rowKey, setRowKey] = useState(1)
-  const [venueFW, setVenueFW] = useState('')
-  const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
   const { data: switchData } =
     useGetSwitchQuery({ params: { tenantId, switchId } })
-  const { data: switchDetail } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
-  const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', disabled: false }
@@ -122,14 +142,17 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value) },
-            { validator: (_, value) => validatorUniqueMember(value) }
+            { validator: (_, value) => validatorSwitchModel(value, switchDetail?.activeSerial) },
+            { validator: (_, value) => validatorUniqueMember(value, [
+              ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
+              ...(switchData?.stackMembers || [])
+            ]) }
           ]}
           validateFirst
         ><Input
             data-testid={`serialNumber${row.key}`}
             onBlur={() => handleChange(row, index)}
-            style={{ textTransform: 'uppercase' }}
+            onInput={convertInputToUppercase}
             disabled={row.disabled}
           />
         </Form.Item>)
@@ -167,70 +190,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     }
   ]
 
-  useEffect(() => {
-    if(switchDetail?.stackMembers){
-      setMaxMembers(12 - switchDetail?.stackMembers.length)
-    }
-
-    if (switchDetail) {
-      setVenueVersion(switchDetail)
-    }
-
-  }, [form, switchDetail])
-
-  const setVenueVersion = async (switchDetail: SwitchViewModel) => {
-    return switchDetail.venueName ?
-      await getSwitchVenueVersionList({
-        params: { tenantId }, payload: {
-          firmwareType: '',
-          firmwareVersion: '',
-          searchString: switchDetail.venueName,
-          updateAvailable: ''
-        }
-      }).unwrap()
-        .then(result => {
-          if (Array.isArray(result?.data) && result?.data.length > 0) {
-            setVenueFW(result.data[0]?.switchFirmwareVersion?.id)
-          }
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        }) : {}
-  }
-
-
-  const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
-    if (serialNumber && !re.test(serialNumber)) {
-      return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
-    }
-
-    const model = getSwitchModel(serialNumber) || ''
-
-    return modelNotSupportStack.indexOf(model) > -1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            "Serial number is invalid since it's not support stacking"
-        })
-      )
-      : Promise.resolve()
-  }
-
-  const validatorUniqueMember = (serialNumber: string) => {
-    const member = switchDetail?.stackMembers || []
-    const memberExistCount = member.concat(tableData).filter((item) => {
-      return item.id === serialNumber
-    }).length
-    return memberExistCount > 1
-      ? Promise.reject(
-        $t({
-          defaultMessage:
-            'Serial number is invalid since it\'s not unique in stack'
-        })
-      )
-      : Promise.resolve()
-  }
-
   const handleDelete = (index: number, row: SwitchTable) => {
     setTableData(tableData.filter((item) => item.key !== row.key))
   }
@@ -259,7 +218,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const onSaveStackMember = async () => {
-    if (!checkVersionAtLeast09010h(venueFW) && isBlockingTsbSwitch) {
+    if (!checkVersionAtLeast09010h(venueFirmwareVersion) && isBlockingTsbSwitch) {
       if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
@@ -271,7 +230,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         enableStack: true,
         spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
-          ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
+          ...(switchData?.stackMembers?.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
         ]
       }

@@ -1592,7 +1592,7 @@ export const apR760DeviceRadio = {
     changeInterval: 33
   },
   apRadioParamsDual5G: {
-    enabled: false,
+    enabled: true,
     lower5gEnabled: true,
     upper5gEnabled: true,
     radioParamsLower5G: {

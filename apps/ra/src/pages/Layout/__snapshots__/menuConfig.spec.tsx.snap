@@ -1,845 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useMenuConfig should not return Administration menu item 1`] = `
-Array [
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Dashboard",
-      },
-    ],
-    "uri": "/dashboard",
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Incidents",
-              },
-            ],
-            "uri": "/incidents",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI-Driven RRM",
-              },
-            ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AI Analytics",
-          },
-        ],
-        "type": "group",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Health",
-              },
-            ],
-            "uri": "/health",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Service Validation",
-              },
-            ],
-            "uri": "/serviceValidation",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Config Change",
-              },
-            ],
-            "uri": "/configChange",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Network Assurance",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "AI Assurance",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AppInsights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Wireless",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/devices/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/devices/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/devices/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Data Studio",
-          },
-        ],
-        "uri": "/dataStudio",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Reports",
-          },
-        ],
-        "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Business Insights",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "adminItem": true,
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Schedules",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/schedules",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Account Management",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Administration",
-      },
-    ],
-  },
-]
-`;
-
-exports[`useMenuConfig should not return Administration-related menu items for franchisor setting 1`] = `
-Array [
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Dashboard",
-      },
-    ],
-    "uri": "/dashboard",
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Incidents",
-              },
-            ],
-            "uri": "/incidents",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI-Driven RRM",
-              },
-            ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AI Analytics",
-          },
-        ],
-        "type": "group",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Health",
-              },
-            ],
-            "uri": "/health",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Service Validation",
-              },
-            ],
-            "uri": "/serviceValidation",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Config Change",
-              },
-            ],
-            "uri": "/configChange",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Network Assurance",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "AI Assurance",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AppInsights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Wireless",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/devices/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/devices/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/devices/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Data Studio",
-          },
-        ],
-        "uri": "/dataStudio",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Reports",
-          },
-        ],
-        "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Business Insights",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "adminItem": true,
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Onboarded Systems",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Users",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Labels",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/labels",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Resource Groups",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/resourceGroups",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Support",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Licenses",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/license",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Schedules",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/schedules",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Webhooks",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Account Management",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Administration",
-      },
-    ],
-  },
-]
-`;
-
 exports[`useMenuConfig should not return Administration-related menu items for manage-label 1`] = `
 Array [
   Object {
@@ -1076,6 +236,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -1198,8 +406,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -1228,8 +435,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -1258,403 +464,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Account Management",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Administration",
-      },
-    ],
-  },
-]
-`;
-
-exports[`useMenuConfig should not return Administration-related menu items for manage-mlisa 1`] = `
-Array [
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Dashboard",
-      },
-    ],
-    "uri": "/dashboard",
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Incidents",
-              },
-            ],
-            "uri": "/incidents",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI-Driven RRM",
-              },
-            ],
-            "uri": "/recommendations/crrm",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "AI Operations",
-              },
-            ],
-            "uri": "/recommendations/aiOps",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AI Analytics",
-          },
-        ],
-        "type": "group",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Health",
-              },
-            ],
-            "uri": "/health",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Service Validation",
-              },
-            ],
-            "uri": "/serviceValidation",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Config Change",
-              },
-            ],
-            "uri": "/configChange",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Network Assurance",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "AI Assurance",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AppInsights (coming soon)",
-          },
-        ],
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Video Call QoE",
-          },
-        ],
-        "uri": "/videoCallQoe",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients List",
-              },
-            ],
-            "uri": "/users/wifi/clients",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wireless Clients Report",
-              },
-            ],
-            "uri": "/users/wifi/reports",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Wireless",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Clients",
-      },
-    ],
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/devices/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/devices/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/devices/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Data Studio",
-          },
-        ],
-        "uri": "/dataStudio",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Reports",
-          },
-        ],
-        "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Business Insights",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "adminItem": true,
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Labels",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/labels",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Schedules",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/schedules",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [
@@ -1689,257 +499,6 @@ Array [
     },
     "children": Array [
       Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Data Studio",
-          },
-        ],
-        "uri": "/dataStudio",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Reports",
-          },
-        ],
-        "uri": "/reports",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Business Insights",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "adminItem": true,
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Onboarded Systems",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Users",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Labels",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/labels",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Resource Groups",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/resourceGroups",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Support",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Licenses",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/license",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Schedules",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/schedules",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Account Management",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Administration",
-      },
-    ],
-  },
-]
-`;
-
-exports[`useMenuConfig should not return Config Change, Service Validation & Video Call QoE 1`] = `
-Array [
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Dashboard",
-      },
-    ],
-    "uri": "/dashboard",
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Incidents",
-              },
-            ],
-            "uri": "/incidents",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AI Analytics",
-          },
-        ],
-        "type": "group",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Health",
-              },
-            ],
-            "uri": "/health",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Config Change",
-              },
-            ],
-            "uri": "/configChange",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Network Assurance",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "AI Assurance",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "AppInsights (coming soon)",
-          },
-        ],
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "App Experience",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
         "children": Array [
           Object {
             "label": Array [
@@ -1981,107 +540,6 @@ Array [
     ],
   },
   Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/wifi\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points List",
-              },
-            ],
-            "uri": "/devices/wifi",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Access Points Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/aps",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Airtime Utilization Report",
-              },
-            ],
-            "uri": "/devices/wifi/reports/airtime",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Access Points",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wi-Fi",
-      },
-    ],
-  },
-  Object {
-    "activeIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "isActiveCheck": /\\^\\\\/devices\\\\/switch\\(\\?!\\(\\\\/reports\\)\\)/,
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Switch List",
-              },
-            ],
-            "uri": "/devices/switch",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Wired Report",
-              },
-            ],
-            "uri": "/devices/switch/reports/wired",
-          },
-        ],
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Switches",
-          },
-        ],
-        "type": "group",
-      },
-    ],
-    "inactiveIcon": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "label": Array [
-      Object {
-        "type": 0,
-        "value": "Wired",
-      },
-    ],
-  },
-  Object {
     "activeIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
@@ -2104,16 +562,6 @@ Array [
           },
         ],
         "uri": "/reports",
-      },
-      Object {
-        "label": Array [
-          Object {
-            "type": 0,
-            "value": "Occupancy",
-          },
-        ],
-        "openNewTab": true,
-        "uri": "/analytics/occupancy",
       },
     ],
     "inactiveIcon": Object {
@@ -2143,8 +591,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -2183,8 +630,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -2205,16 +651,6 @@ Array [
             ],
             "openNewTab": true,
             "uri": "/analytics/admin/schedules",
-          },
-          Object {
-            "label": Array [
-              Object {
-                "type": 0,
-                "value": "Webhooks",
-              },
-            ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
           },
         ],
         "label": Array [
@@ -2476,6 +912,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -2568,7 +1052,7 @@ Array [
           },
         ],
         "openNewTab": true,
-        "uri": "/analytics/occupancy",
+        "uri": "/analytics/occupancy?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==",
       },
     ],
     "inactiveIcon": Object {
@@ -2598,8 +1082,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -2638,8 +1121,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -2668,8 +1150,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [
@@ -2931,6 +1412,54 @@ Array [
         ],
         "type": "group",
       },
+      Object {
+        "children": Array [
+          Object {
+            "isActiveCheck": /\\^\\\\/networks\\\\/wireless\\(\\?!\\(\\\\/reports\\)\\)/,
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wi-Fi Networks List",
+              },
+            ],
+            "uri": "/networks/wireless",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "WLANs Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wlans",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Applications Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/applications",
+          },
+          Object {
+            "label": Array [
+              Object {
+                "type": 0,
+                "value": "Wireless Report",
+              },
+            ],
+            "uri": "/networks/wireless/reports/wireless",
+          },
+        ],
+        "label": Array [
+          Object {
+            "type": 0,
+            "value": "Wi-Fi Networks",
+          },
+        ],
+        "type": "group",
+      },
     ],
     "inactiveIcon": Object {
       "$$typeof": Symbol(react.forward_ref),
@@ -3053,8 +1582,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -3093,8 +1621,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -3123,8 +1650,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [

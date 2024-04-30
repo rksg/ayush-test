@@ -148,6 +148,14 @@ export const showActivityToast = (
   }
 }
 
+const getLinkText = (tx: Transaction) => {
+  if(tx.linkData){
+    const linkAlias = tx.linkData.find(i => i.name == 'linkAlias')
+    return linkAlias?.value
+  }
+  return undefined
+}
+
 export const showTxToast = (tx: Transaction) => {
   const intl = getIntl()
   if (tx.attributes && tx.attributes.name) {
@@ -200,11 +208,13 @@ export const showTxToast = (tx: Transaction) => {
       ...config,
       link: {
         onClick: () => routeToPage(msg.data?.link as string, msg.data?.queryParams as QueryParams),
-        text: msg.data.isSwitchConfig ? 'Check Status' : undefined
+        text: getLinkText(tx)
       }
     }
   }
-  showToast(config)
+  if (!skipToast(tx)) {
+    showToast(config)
+  }
 }
 
 const getToastMessage = (tx: Transaction): string => {
@@ -257,4 +267,15 @@ const getTabViewParams = (tx:Transaction) => {
     _.template(rcToastTemplates[method].tabView)(tx)
 
   return (_.isEmpty(tabId))? null : { tabView: tabId }
+}
+
+const skipToast = (tx: Transaction): boolean => {
+  if (tx.useCase === 'ImportApsCsv' && tx.status === 'FAIL' &&
+  ((tx.steps?.find((step) => {
+    return step.id === 'PostProcessedImportAps'
+  })?.status !== 'IN_PROGRESS'))) {
+    return true
+  } else {
+    return false
+  }
 }

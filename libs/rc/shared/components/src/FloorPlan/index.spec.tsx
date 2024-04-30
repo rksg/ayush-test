@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { Form }         from 'antd'
 import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -162,7 +163,7 @@ describe('Floor Plans', () => {
         (req, res, ctx) => res(ctx.json(venueRogueAp))
       ),
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))
@@ -176,8 +177,11 @@ describe('Floor Plans', () => {
   })
   it('Floor Plans should render correctly', async () => {
 
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
-    </DndProvider></Provider>, {
+    const { asFragment } = await render(<Provider>
+      <Form>
+        <DndProvider backend={HTML5Backend}><FloorPlan /></DndProvider>
+      </Form>
+    </Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
@@ -235,8 +239,11 @@ describe('Floor Plans', () => {
 
   it('Floor Plans should render gallery correctly', async () => {
 
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
-    </DndProvider></Provider>, {
+    const { asFragment } = await render(<Provider>
+      <Form>
+        <DndProvider backend={HTML5Backend}><FloorPlan /></DndProvider>
+      </Form>
+    </Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
@@ -308,8 +315,8 @@ describe('Floor Plans', () => {
       )
     )
 
-    render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
-    </DndProvider></Provider>, {
+    render(<Provider><Form><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Form></Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 

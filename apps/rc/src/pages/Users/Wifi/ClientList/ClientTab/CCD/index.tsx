@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useState } from 'react'
+import { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { Divider, Form, Input, Select, Space } from 'antd'
 import { DefaultOptionType }                   from 'antd/lib/select'
@@ -28,7 +28,7 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined) => {
+export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<unknown> | undefined) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
@@ -51,11 +51,12 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
   const [viewerStatus, setViewerStatus] = useState<CcdResultViewerProps>({})
 
   const [selectedApsInfo, setSelectedApsInfo] = useState<ApInfo[]>()
-  const [currentViewApMac, setCurrentViewApMac] = useState<string>('')
-  const [currentCcdApMac, setCurrentCcdApMac] = useState<string>('')
+  const [currentViewApIndex, setCurrentViewApIndex] = useState<number>(0)
+
+  const [ccdReportApInfoList, setCcdReportApInfoList] = useState<ApInfo[]>([])
+  const ccdApInfoListRef = useRef<ApInfo[]>([])
 
   useEffect(() => {
-
     setCcdControlContext({
       isTracing: false,
       viewStatus: {} as CcdResultViewerProps
@@ -85,7 +86,7 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
     setSelectedApsDisplayText(undefined)
     setSelectedAps(undefined)
     setSelectedApsInfo(undefined)
-    setCurrentViewApMac('')
+    setCurrentViewApIndex(0)
   }
 
   const handleSelectAps = (selectAps: string[], selectApGroups: string[]) => {
@@ -105,10 +106,44 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
 
   const handleSelectedApsInfo = (apsInfo: ApInfo[]) => {
     const apInfoList = apsInfo || []
-    const curViewAp = apInfoList[0]?.apMac?.toUpperCase() || ''
     setSelectedApsInfo(apInfoList)
-    setCurrentViewApMac(curViewAp)
   }
+
+  const handleCleanAllCcdAps = () => {
+    ccdApInfoListRef.current = []
+    setCcdReportApInfoList([])
+    setCurrentViewApIndex(0)
+  }
+
+  const handleAddCcdAP = (apMac: string) => {
+    const curCcdApInfoList = [ ...ccdApInfoListRef.current ]
+
+    let newCcdApInfo = selectedApsInfo?.find((apInfo: ApInfo) => apInfo?.apMac === apMac)
+    if (!newCcdApInfo) {
+      newCcdApInfo = { apMac: apMac }
+    }
+
+    const newCcdApInfoList = curCcdApInfoList.concat(newCcdApInfo)
+    ccdApInfoListRef.current = newCcdApInfoList
+    setCcdReportApInfoList(newCcdApInfoList)
+    setCurrentViewApIndex(newCcdApInfoList.length - 1)
+  }
+
+  const handleResetCcdButtons = () => {
+    setIsTracing(false)
+    const statusData = {
+      ...viewerStatus,
+      state: 'RESET_BUTTONS'
+    }
+
+    setViewerStatus(statusData)
+
+    setCcdControlContext({
+      isTracing: false,
+      viewStatus: { ...statusData }
+    })
+  }
+
 
   const handleSwitchDiagnosis = async () => {
     const wantToStart = !isTracing
@@ -120,11 +155,13 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
       clientMac: ConvertToStandardMacAddress(clientMac),
       ...((selectedAps && selectedAps.length > 0)? { aps: selectedAps } : {})
     }
+
     const statusData = {
       ...viewerStatus,
       state,
       venueId,
-      payload
+      payload,
+      historicalIndex: undefined
     }
 
     setViewerStatus(statusData)
@@ -148,7 +185,8 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
       ...viewerStatus,
       state,
       venueId,
-      payload
+      payload,
+      historicalIndex: undefined
     }
 
     setViewerStatus(statusData)
@@ -167,7 +205,8 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
     setSelectedApsDisplayText(undefined)
     setSelectedAps(undefined)
     setSelectedApsInfo(undefined)
-    setCurrentViewApMac('')
+
+    handleCleanAllCcdAps()
 
     setIsValid(false)
     form.resetFields()
@@ -175,7 +214,8 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
       ...viewerStatus,
       state: 'CLEAR',
       venueId: undefined,
-      payload: undefined
+      payload: undefined,
+      historicalIndex: undefined
     })
   }
 
@@ -190,7 +230,7 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
       visible={showSelectApsDraw}
       venueId={venueId}
       updateSelectAps={(aps: string[], apGroups: string[]) => handleSelectAps(aps, apGroups)}
-      updateSelectApsInfo={(apsInfo: ApInfo[]) => handleSelectedApsInfo(apsInfo)}
+      updateSelectApsInfo={(apsInfos: ApInfo[]) => handleSelectedApsInfo(apsInfos)}
       onCancel={() => setShowSelectApsDraw(false)}
     />
     <Form form={form}
@@ -293,20 +333,30 @@ const ClientConnectionDiagnosis = (props: unknown, ref: Ref<unknown> | undefined
     <CcdResultContainer>
       <div style={{ width: '250px' }}>
         <ApInfoCards
-          apInfos={selectedApsInfo}
-          selectedApMac={currentViewApMac}
-          setSelectedApMac={(apMac: string) => setCurrentViewApMac(apMac)}
-          ccdApMac={currentCcdApMac}
+          apInfos={ccdReportApInfoList || []}
+          disabled={isTracing}
+          selectedApIndex={currentViewApIndex}
+          onSelectApChanged={(index: number) => {
+            setCurrentViewApIndex(index)
+            setViewerStatus({
+              ...viewerStatus,
+              state: 'HISTORICAL',
+              venueId: undefined,
+              payload: undefined,
+              historicalIndex: index
+            })
+          }}
+
         />
       </div>
       <div >
         <CcdResultViewer {...viewerStatus}
-          currentViewAp={currentViewApMac}
-          updateCcdAp={(apMac: string) => setCurrentCcdApMac(apMac)}/>
+          addCcdAp={handleAddCcdAP}
+          cleanCcdAps={handleCleanAllCcdAps}
+          resetCcdButtons={handleResetCcdButtons}
+        />
       </div>
     </CcdResultContainer>
     }
   </>)
-}
-
-export default forwardRef(ClientConnectionDiagnosis)
+})

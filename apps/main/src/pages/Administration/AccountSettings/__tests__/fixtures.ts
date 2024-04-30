@@ -30,6 +30,25 @@ export const fakeUserProfile = {
   preferredLanguage: 'en-US'
 } as UserProfile
 
+export const fakeTenantDetails = {
+  id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: ['825910','333815','825720','919107','836842'] },
+  preferences: { global: { mapRegion: 'UA' } },
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: 'REC'
+}
+
 export const fakeTenantDelegation = [
   {
     id: '23450f81d5c34d6caf166329aef67e45',
@@ -65,9 +84,7 @@ export const fakeMspEcProfile = {
 }
 
 export const fakeRecoveryPassphrase = {
-  psk: '3577576417249799',
-  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
-  obsolete: false
+  passphrase: '3577576417249799'
 }
 
 export const fakePreference = {

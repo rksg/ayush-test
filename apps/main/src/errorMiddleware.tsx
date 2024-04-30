@@ -3,9 +3,9 @@ import React from 'react'
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal }                    from '@acx-ui/components'
-import { CatchErrorResponse }                                                     from '@acx-ui/rc/utils'
-import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal } from '@acx-ui/utils'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
+import { CatchErrorResponse }                                                                 from '@acx-ui/rc/utils'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
 type QueryMeta = {
   response?: Response,
@@ -34,7 +34,7 @@ export type ErrorAction = {
     // FETCH_ERROR
     error: string
     status: string
-  } | string)
+  } | string | number)
 })
 
 interface ErrorMessageType {
@@ -45,8 +45,13 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo'
+  'clientInfo',
+  'clientPcap'
 ]
+
+const isIntDevMode =
+  window.location.hostname.includes('int.ruckus.cloud') &&
+  window.location.search.includes('devMode=true')
 
 export const errorMessage = {
   SERVER_ERROR: {
@@ -115,7 +120,7 @@ export const getErrorContent = (action: ErrorAction) => {
   const { $t } = intl
   const queryMeta = action.meta?.baseQueryMeta
   const status = (queryMeta?.response) ? queryMeta.response.status :
-    (typeof action.payload === 'string') ? undefined :
+    (typeof action.payload !== 'object') ? undefined :
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
@@ -125,12 +130,14 @@ export const getErrorContent = (action: ErrorAction) => {
   let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
   if (typeof action.payload === 'string') {
     errors = action.payload
-  } else if('data' in action.payload) {
-    errors = action.payload.data
-  } else if ('error' in action.payload) {
-    errors = action.payload.error
-  } else if ('message' in action.payload) {
-    errors = action.payload.message
+  } else if (typeof action.payload === 'object') {
+    if('data' in action.payload) {
+      errors = action.payload.data
+    } else if ('error' in action.payload) {
+      errors = action.payload.error
+    } else if ('message' in action.payload) {
+      errors = action.payload.message
+    }
   }
   let needLogout = false
   let callback = undefined
@@ -161,7 +168,9 @@ export const getErrorContent = (action: ErrorAction) => {
     case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
-      callback = () => window.location.reload()
+      if (!isIntDevMode) {
+        callback = () => window.location.reload()
+      }
       break
     case 422:
       const countryInvalid // TODO: check error format
@@ -185,7 +194,7 @@ export const getErrorContent = (action: ErrorAction) => {
     }
     else if ('errors' in errors) { // CatchErrorDetails
       const errorsMessageList = errors.errors.map(err=>err.message)
-      content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+      content = <>{errorsMessageList.map(msg=><p key={msg}>{msg}</p>)}</>
     }
   }
 
@@ -234,7 +243,7 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
 
-  if (action?.payload && typeof action.payload !== 'string' && 'meta' in action.payload
+  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
     && action.meta && !action.meta?.baseQueryMeta) {
     // baseQuery (for retry API)
     const payload = action.payload as { meta?: QueryMeta }
@@ -247,10 +256,8 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }
-    if (needLogout && !isDevModeOn) {
-      const token = sessionStorage.getItem('jwt')?? null
-      sessionStorage.removeItem('jwt')
-      window.location.href = token? `/logout?token=${token}` : '/logout'
+    if (needLogout && !isDevModeOn && !isIntDevMode) {
+      userLogout()
     }
   }
   return next(action)

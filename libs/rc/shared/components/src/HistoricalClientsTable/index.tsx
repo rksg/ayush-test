@@ -16,7 +16,8 @@ import { TenantLink, useParams }                  from '@acx-ui/react-router-dom
 import { RequestPayload }                         from '@acx-ui/types'
 import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function GetCols (intl: ReturnType<typeof useIntl>) {
+  const { networkId } = useParams()
   const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
@@ -27,13 +28,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     fixed: 'left',
     render: (_, { hostname, disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
-        startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
+        startDate: moment((disconnectTime as number) * 1000).subtract(8, 'hours').format(),
         endDate: moment((disconnectTime as number) * 1000).format(),
         range: DateRange.custom
       })
       /* eslint-disable max-len */
       return <TenantLink
-        to={`/users/wifi/clients/${clientMac}/details/overview?hostname=${hostname}&clientStatus=historical&period=${period}`}
+        to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
       >
         {hostname ? hostname : '--'}
       </TenantLink>
@@ -76,17 +77,18 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         {row?.apName}
       </TenantLink>
       : row?.apName
-  }, {
+  },
+  ...(networkId ? [] : [{
     key: 'ssid',
     title: intl.$t({ defaultMessage: 'Last SSID' }),
     dataIndex: 'ssid',
     sorter: true,
-    render: (_, row) => row?.networkId
+    render: (_: React.ReactNode, row: Client) => row?.networkId
       ? <TenantLink to={`/networks/wireless/${row?.networkId}/network-details/overview`}>
         {row?.ssid}
       </TenantLink>
       : row?.ssid
-  }, {
+  }]), {
     key: 'disconnectTime',
     title: intl.$t({ defaultMessage: 'Last Seen' }),
     dataIndex: 'disconnectTime',
@@ -128,12 +130,15 @@ export function HistoricalClientsTable
     params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
       params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
         params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
-          defaultFilters
+          params.networkId ? { ...defaultFilters, networkId: [params.networkId] } :
+            defaultFilters
 
   const HistoricalClientsTable = () => {
+    const settingsId = 'historical-clients-table'
     const tableQuery = useTableQuery({
       useQuery: useGetHistoricalClientListQuery,
-      defaultPayload: defaultHistoricalClientPayload
+      defaultPayload: defaultHistoricalClientPayload,
+      pagination: { settingsId }
     })
 
     useEffect(() => {
@@ -151,8 +156,8 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
-            settingsId='historical-clients-table'
-            columns={getCols(useIntl())}
+            settingsId={settingsId}
+            columns={GetCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
@@ -184,7 +189,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   return (
     <Table
       settingsId='historical-clients-table'
-      columns={getCols(useIntl())}
+      columns={GetCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}
       rowKey='clientMac'

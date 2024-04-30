@@ -3,12 +3,20 @@ import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput }                                            from '@acx-ui/components'
-import { useGetVenueQuery, useGetVenueSettingsQuery }                                     from '@acx-ui/rc/services'
-import { ApDetails, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed, useApContext } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                     from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                          from '@acx-ui/user'
-
+import { Drawer, Descriptions, PasswordInput }                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery, useGetApCapabilitiesQuery } from '@acx-ui/rc/services'
+import {
+  ApDetails,
+  ApVenueStatusEnum,
+  ApViewModel,
+  DeviceGps,
+  gpsToFixed,
+  useApContext,
+  Capabilities,
+  APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
+import { TenantLink }            from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import * as UI                  from './styledComponents'
@@ -24,9 +32,13 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
   const { tenantId } = useApContext()
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
+
   const { data: venueData } = useGetVenueQuery({
     params: { tenantId, venueId: currentAP?.venueId }
   },
@@ -44,6 +56,28 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const onClose = () => {
     setVisible(false)
   }
+
+  const displayAFCInfo = () => {
+
+    let displayContent = (<></>)
+
+    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
+    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === currentAP.model)
+    const enableAFC = apValidChannels?.afcEnabled
+    const apRadioDeploy = currentAP?.apRadioDeploy
+
+    if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
+      displayContent = (<Descriptions.Item
+        label={$t({ defaultMessage: 'AFC Power State' })}
+        children={
+          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
+        }
+      />)
+    }
+
+    return displayContent
+  }
+
 
   const PropertiesTab = () => {
     return (<>
@@ -167,6 +201,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             currentAP?.fwVersion || '--'
           }
         />
+        {displayAFCInfo()}
       </Descriptions>
       {
         currentAP?.isMeshEnable && (

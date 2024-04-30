@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { venueApi }                              from '@acx-ui/rc/services'
+import { rwgApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -49,9 +49,6 @@ jest.mock('./GatewayOverviewTab', () => ({
     data-testid={'rc-GatewayOverviewTab'}
     title='GatewayOverviewTab' />
 }))
-jest.mock('./DNSRecordsTab', () => ({
-  DNSRecordsTab: () => <div data-testid={'rc-DNSRecordsTab'} title='DNSRecordsTab' />
-}))
 
 const mockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -59,12 +56,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-
 describe('RWGDetails', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(rwgApi.util.resetApiState())
   })
 
   it('should render correctly', async () => {
@@ -84,7 +80,7 @@ describe('RWGDetails', () => {
       route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:gatewayId/gateway-details/:activeTab' }
     })
     expect(await screen.findByText('ruckusdemos')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(2)
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
 
     await fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
 
@@ -109,36 +105,7 @@ describe('RWGDetails', () => {
       route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:gatewayId/gateway-details/:activeTab' }
     })
     expect(await screen.findByText('ruckusdemos')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(2)
-
-  })
-
-  it('should navidate to dns records correctly', async () => {
-    const params = {
-      tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
-      gatewayId: 'bbc41563473348d29a36b76e95c50381',
-      activeTab: 'overview'
-    }
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getGateway.url,
-        (req, res, ctx) => res(ctx.json(gatewayResponse))
-      )
-    )
-    render(<Provider><RWGDetails /></Provider>, {
-      // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:gatewayId/gateway-details/:activeTab' }
-    })
-    expect(await screen.findByText('ruckusdemos')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(2)
-
-    fireEvent.click(await screen.findByText('DNS Records (0)'))
-    expect(mockNavigate).toHaveBeenCalledWith({
-      // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.gatewayId}/gateway-details/dnsRecords`,
-      hash: '',
-      search: ''
-    })
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
 
   })
 

@@ -1,6 +1,7 @@
 import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
+import { getUserProfile, RolesEnum }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }                   from '@acx-ui/components'
 import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
 import { TenantLink }                         from '@acx-ui/react-router-dom'
@@ -9,13 +10,20 @@ import * as UI from './styledComponents'
 
 const useLinkData = () => {
   const { $t } = useIntl()
-  const linkData = [
-    { title: 'Dashboard', to: '/dashboard' },
-    { title: 'Incidents', to: '/incidents' },
-    { title: 'Network Assurance', to: '/health' },
-    { title: 'Reports', to: '/reports' },
-    { title: 'Data Studio', to: '/dataStudio' }
-  ]
+  const { selectedTenant: { role } } = getUserProfile()
+  const linkData = role === RolesEnum.REPORT_ONLY
+    ? [
+      { title: 'Data Studio', to: '/dataStudio' },
+      { title: 'Reports', to: '/reports' }
+    ]
+    : [
+      { title: 'Dashboard', to: '/dashboard' },
+      { title: 'Incidents', to: '/incidents' },
+      { title: 'Clients', to: '/users/wifi/clients' },
+      { title: 'APs', to: '/devices/wifi' },
+      { title: 'Switches', to: '/devices/switch' },
+      { title: 'Wi-Fi Networks', to: '/networks/wireless' }
+    ]
 
   const data = linkData.map(val => <TenantLink to={val.to}>
     {$t({ defaultMessage: '{title}' }, { title: val.title })}

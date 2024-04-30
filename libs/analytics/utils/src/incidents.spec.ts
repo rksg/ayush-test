@@ -14,8 +14,10 @@ import {
   formattedPath,
   impactedArea,
   shortDescription,
+  longDescription,
   incidentScope,
-  getThreshold
+  getThreshold,
+  normalizeNodeType
 } from './incidents'
 
 import type { Incident } from './types/incidents'
@@ -60,7 +62,7 @@ describe('shortDescription', () => {
         { type: 'network', name: 'Network' },
         { type: 'zone', name: 'Venue 1' }
       ],
-      sliceType: 'zoneName',
+      sliceType: normalizeNodeType('zoneName'),
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident)).toEqual('EAP failures are unusually high in Venue: Venue 1')
@@ -75,11 +77,33 @@ describe('shortDescription', () => {
         { type: 'network', name: 'Network' },
         { type: 'zone', name: 'Venue 1' }
       ],
-      sliceType: 'zoneName',
+      sliceType: normalizeNodeType('zoneName'),
       sliceValue: 'Venue 1'
     })
     expect(shortDescription(incident))
       .toEqual('Time to connect is greater than 2 seconds in Venue: Venue 1')
+  })
+})
+
+describe('longDescription', () => {
+  const incident = fakeIncident({
+    id: '1',
+    code: 'eap-failure',
+    startTime: '2022-08-12T00:00:00.000Z',
+    endTime: '2022-08-12T01:00:00.000Z',
+    path: [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'Venue 1' }
+    ]
+  })
+  it('should return correct value', () => {
+    expect(longDescription({ ...incident, clientCount: 10, impactedClientCount: 5 }))
+      // eslint-disable-next-line max-len
+      .toEqual('EAP failures are high in Venue: Venue 1 impacting connectivity for 50% of clients.')
+  })
+  it('should return correct value when no impacted client', () => {
+    expect(longDescription({ ...incident, clientCount: null, impactedApCount: null }))
+      .toEqual('EAP failures are unusually high in Venue: Venue 1')
   })
 })
 
@@ -153,6 +177,11 @@ describe('impactedArea', () => {
     const sliceValue = 'AP'
     expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
+  it('return correct value for controller incident', () => {
+    const apPath = [...path, { type: 'controller', name: 'MAC_ADDRESS' }] as NetworkPath
+    const sliceValue = 'Controller Name'
+    expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (MAC_ADDRESS)`)
+  })
   it('returns sliceValue when node name same as sliceValue', () => {
     const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as NetworkPath
     const sliceValue = 'AP'
@@ -225,8 +254,10 @@ describe('impactValues', () => {
 
 describe('getThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(fakeIncidentTtc))
+    expect(getThreshold(omit(fakeIncidentTtc, 'slaThreshold') as typeof fakeIncidentTtc))
       .toEqual(kpiConfig.timeToConnect.histogram.initialThreshold)
+    expect(getThreshold({ ...fakeIncidentTtc, slaThreshold: 10000.0 }))
+      .toEqual(10000.0)
   })
   it('should return undefined when code does not match', () => {
     expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)

@@ -10,7 +10,8 @@ import {
   Loader,
   Tabs,
   StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsFormLegacyInstance,
+  AnchorContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
@@ -49,6 +50,8 @@ export function LanPorts () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails, apCapabilities: apCaps } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
+
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
@@ -119,6 +122,8 @@ export function LanPorts () {
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
         setFormInitializing(false)
+
+        setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
       }
       setData()
     }

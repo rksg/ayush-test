@@ -24,7 +24,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MigrationResultType,
-  ZdConfigurationType
+  ZdConfigurationType,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 
 type SummaryFormProps = {
@@ -127,12 +129,14 @@ const SummaryForm = (props: SummaryFormProps) => {
       title: $t({ defaultMessage: 'Status' }),
       key: 'state',
       dataIndex: 'state',
+      sorter: { compare: sortProp('state', defaultSort) },
+      defaultSortOrder: 'descend',
       render: (_, row) => {
         return row.state ?? '--'
       }
     },
     {
-      title: $t({ defaultMessage: 'Failure Reason' }),
+      title: $t({ defaultMessage: 'Validation Failure Reason' }),
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {

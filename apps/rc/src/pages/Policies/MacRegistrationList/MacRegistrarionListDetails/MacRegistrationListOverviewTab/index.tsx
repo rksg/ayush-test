@@ -10,8 +10,7 @@ import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
-
-import { returnExpirationString } from '../../MacRegistrationListUtils'
+import { returnExpirationString } from '@acx-ui/rc/utils'
 
 import { NetworkTable } from './NetworkTable'
 

@@ -24,14 +24,110 @@ exports[`AP floorplan should render correctly 1`] = `
       />
     </div>
     <div
-      style="position: relative; margin: 0px auto; width: calc(100%);"
+      class="sc-idiyUo cZKUFO"
     >
-      <img
-        alt="TEST_2"
-        data-testid="floorPlanImage"
-        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-        style="max-height: 100%; width: 100%;"
-      />
+      <div
+        class="sc-dIouRR cDjWRG"
+        style="margin: 0px auto;"
+      >
+        <img
+          alt="TEST_2"
+          data-testid="floorPlanImage"
+          src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+          style="max-height: 100%; width: 100%;"
+        />
+      </div>
+    </div>
+    <div
+      alignbottom="1"
+      class="ant-space ant-space-vertical sc-dmRaPn jCZBvj"
+      style="right: 5rem; bottom: 0rem;"
+    >
+      <div
+        class="ant-space-item"
+        style="margin-bottom: 0px;"
+      >
+        <button
+          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          data-testid="image-zoom-in"
+          type="button"
+        >
+          <svg
+            data-testid="MagnifyingGlassPlusOutlined"
+          />
+        </button>
+      </div>
+      <span
+        class="ant-space-item-split"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          class="ant-divider ant-divider-horizontal"
+          role="separator"
+          style="line-height: 0px; margin: 0px;"
+        />
+      </span>
+      <div
+        class="ant-space-item"
+        style="margin-bottom: 0px;"
+      >
+        <button
+          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          data-testid="image-zoom-out"
+          type="button"
+        >
+          <svg
+            data-testid="MagnifyingGlassMinusOutlined"
+          />
+        </button>
+      </div>
+      <span
+        class="ant-space-item-split"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          class="ant-divider ant-divider-horizontal"
+          role="separator"
+          style="line-height: 0px; margin: 0px;"
+        />
+      </span>
+      <div
+        class="ant-space-item"
+        style="margin-bottom: 0px;"
+      >
+        <button
+          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          data-testid="image-zoom-original"
+          type="button"
+        >
+          <svg
+            data-testid="SearchFullOutlined"
+          />
+        </button>
+      </div>
+      <span
+        class="ant-space-item-split"
+        style="margin-bottom: 0px;"
+      >
+        <div
+          class="ant-divider ant-divider-horizontal"
+          role="separator"
+          style="line-height: 0px; margin: 0px;"
+        />
+      </span>
+      <div
+        class="ant-space-item"
+      >
+        <button
+          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          data-testid="image-zoom-fit"
+          type="button"
+        >
+          <svg
+            data-testid="SearchFitOutlined"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </DocumentFragment>

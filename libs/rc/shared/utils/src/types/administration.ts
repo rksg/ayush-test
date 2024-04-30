@@ -33,7 +33,8 @@ export enum TenantAuthenticationType {
   saml = 'SAML',
   oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
   oauth2_oidc = 'OAUTH2_OIDC',
-  ldap = 'LDAP'
+  ldap = 'LDAP',
+  google_workspace = 'GOOGLE_WORKSPACE'
 }
 
 export enum SamlFileType {
@@ -64,8 +65,7 @@ export interface TenantDelegationResponse {
 }
 
 export interface RecoveryPassphrase {
-  tenantId: string
-  psk: string
+  passphrase: string
 }
 
 export interface TenantPreferenceSettingValue {
@@ -111,6 +111,9 @@ export interface TenantDetails {
   updatedDate: string;
   upgradeGroup: string;
   preferences?: string;
+  tenantMFA?: {
+    mfaStatus: string
+  }
 }
 
 export enum AdministrationDelegationType {
@@ -202,6 +205,8 @@ export interface TenantAuthentications {
   tenant?: string;
   url?: string;
   scopes?: string;
+  domains?: string[];
+  samlSignatureEnabled?: boolean;
 }
 
 export interface Entitlement {
@@ -246,4 +251,102 @@ export interface NewEntitlementSummary {
   summary: EntitlementSummary[];
 }
 
+export interface EntitlementPendingActivations {
+  data: EntitlementActivations[],
+}
+
+export interface EntitlementActivations {
+  orderId: string,
+  salesOrderId: string,
+  productName: string,
+  productCode: string,
+  productId: string,
+  quantity: number,
+  registeredQuantity: number,
+  remainingQuantity: number,
+  spaStartDate: string,
+  spaEndDate: string,
+  productCategory: string,
+  productClass: string,
+  orderSoNumber: string,
+  orderCreateDate: string,
+  orderRegistrationCode: string,
+  orderAcxRegistrationCode:string
+}
+
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
+
+export interface AdminGroup {
+  id?: string,
+  name?: string,
+  groupId?: string,
+  role?: RolesEnum,
+  customRole?: CustomRole,
+  loggedInMembers?: number,
+  processingPriority?: number,
+  swapPriority?: boolean,
+  sourceGroupId?: string
+}
+
+export interface CustomRole {
+  id?: string,
+  name?: RolesEnum,
+  description?: string,
+  type?: string,
+  frameworkRO?: boolean,
+  createdDate?: string,
+  updatedDate?: string,
+  scopes?: string[],
+  preDefinedRole?: string
+}
+
+export interface AdminGroupLastLogins {
+  count?: number,
+  lastLoginList?: groupMembers[]
+}
+
+export interface groupMembers {
+  email?: string,
+  lastLoginDate?: string
+}
+
+export interface PrivilegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  role?: CustomRole,
+  roleName?: string,
+  scope?: string,
+  memberCount?: number,
+  allCustomers?: boolean,
+  delegation?: boolean,
+  policies?: PrivilegePolicy[],
+  policyEntityDTOS?: PrivilegePolicyEntity[]
+}
+
+export enum PrivilegePolicyObjectType {
+  OBJ_TYPE_VENUE = 'com.ruckus.cloud.venue.model.venue'
+}
+
+export enum CustomGroupType {
+  SYSTEM = 'System',
+  CUSTOM = 'Custom'
+}
+
+export interface PrivilegePolicy
+{
+  entityInstanceId?: string,
+  objectType?: string
+}
+
+export interface PrivilegePolicyEntity
+{
+  tenantId?: string,
+  objectList?: VenueObjectList
+}
+
+export interface VenueObjectList
+{
+  'com.ruckus.cloud.venue.model.venue'?: string[]
+}

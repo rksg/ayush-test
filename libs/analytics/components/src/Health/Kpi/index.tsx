@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
+import { useIntl }  from 'react-intl'
 
 import {
   KpiThresholdType,
@@ -13,9 +14,10 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader } from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
-import type { AnalyticsFilter }     from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
+import { hasPermission }                    from '@acx-ui/user'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -84,6 +86,8 @@ function KpiSection (props: {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
+  const [ loadMore, setLoadMore ] = useState<boolean>(true)
+  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -95,9 +99,10 @@ function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
-      {kpis.map((kpi) => (
+      {displayKpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
@@ -131,6 +136,7 @@ function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
+                disabled={!hasPermission()}
               />
             ) : (
               <BarChart
@@ -142,6 +148,17 @@ function KpiSection (props: {
           </GridCol>
         </GridRow>
       ))}
+      { loadMore &&
+      <GridRow style={{ height: '80px' }}>
+        <GridCol col={{ span: 24 }}>
+          <Button
+            type='default'
+            onClick={() => setLoadMore(false)}
+            style={{ maxWidth: 150, margin: '0 auto' }}
+          >{$t({ defaultMessage: 'View more' })}</Button>
+        </GridCol>
+      </GridRow>
+      }
     </>
   )
 }

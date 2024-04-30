@@ -1,15 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { apApi }                               from '@acx-ui/rc/services'
 import { WifiUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { ClientContext } from '..'
 
 import { mockApListByApGroup, mockVenueList } from './__tests__/fixtures'
 
-import ClientConnectionDiagnosis from '.'
+import { ClientConnectionDiagnosis } from '.'
 
 
 const params = {
@@ -27,6 +28,7 @@ describe('CCD', () => {
   const mockGetApGroupFn = jest.fn()
 
   beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.post(
         WifiUrlsInfo.getCcdSupportApGroups.url.replace('?venueId=:venueId', ''),

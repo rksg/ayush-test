@@ -4,7 +4,8 @@ import {
   getFilterPayload,
   IncidentFilter,
   incidentSeverities,
-  incidentCodes
+  IncidentsToggleFilter,
+  incidentsToggle
 } from '@acx-ui/analytics/utils'
 import { dataApi } from '@acx-ui/store'
 
@@ -21,7 +22,10 @@ interface Response <IncidentsBySeverityData> {
 }
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsBySeverity: build.query<IncidentsBySeverityData, IncidentFilter>({
+    incidentsBySeverity: build.query<
+      IncidentsBySeverityData,
+      IncidentFilter & IncidentsToggleFilter
+    >({
       query: (payload) => ({
         document: gql`
         query IncidentsBySeverityWidget(
@@ -47,15 +51,58 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          code: payload.code ?? incidentCodes,
+          code: incidentsToggle(payload),
           ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>
         response.network.hierarchyNode,
       providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    incidentsListBySeverity: build.query<IncidentsBySeverityData[], any>({
+      query: (payload) => ({
+        document: gql`
+        query IncidentsBySeverityWidget(
+          ${Object.keys(payload.paths).map((key) => `
+          $${key}: [HierarchyNodeInput],`).join('')}
+          $start: DateTime,
+          $end: DateTime,
+          $code: [String]
+        ) {
+          network(start: $start, end: $end) {
+            ${Object.keys(payload.paths).map((key, i) => `
+              incidentCount${i}: hierarchyNode(path: $${key}) {
+                ...fields
+              }
+            `).join('')}
+          }
+        }
+
+        fragment fields on HierarchyNode {
+          ${Object.entries(incidentSeverities)
+          .map(
+            ([name, { gt, lte }]) => `
+              ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
+            `
+          )
+          .join('')}
+          }
+        `,
+        variables: {
+          ...payload.variables,
+          code: incidentsToggle(payload)
+        }
+      }),
+      transformResponse: (response: Response<IncidentsBySeverityData>) => {
+        return Object.values(response.network)
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
 
-export const { useIncidentsBySeverityQuery } = api
+export const {
+  useIncidentsBySeverityQuery,
+  useIncidentsListBySeverityQuery,
+  useLazyIncidentsListBySeverityQuery } = api

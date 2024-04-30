@@ -14,19 +14,21 @@ import {
   Button
 } from '@acx-ui/components'
 import {
-  useVlanPoolListQuery
-} from '@acx-ui/rc/services'
-import {
   getVlanString,
   NetworkApGroup,
   NetworkSaveData,
+  VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import { VlanDate } from '../index'
 
-export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGroup, wlan?:NetworkSaveData['wlan'], onChange: (data: VlanDate) => void }) {
+export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
+  apgroup: NetworkApGroup,
+  wlan?: NetworkSaveData['wlan'],
+  vlanPoolSelectOptions?: VlanPool[],
+  onChange: (data: VlanDate) => void
+}) {
   const { $t } = useIntl()
 
   const [isEditMode, setEditMode] = useState(false)
@@ -35,9 +37,9 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
   const apGroupVlanPool = apGroupVlanType === VlanType.Pool
-    ? apgroup.vlanPoolName
+    ? apgroup.vlanPoolId
       ? {
-        name: apgroup.vlanPoolName || '',
+        name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
         id: apgroup.vlanPoolId || '',
         vlanMembers: []
       }
@@ -56,14 +58,6 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const [editingVlan, setEditingVlan] = useState<VlanDate>(initVlanData)
   const [vlanLabel, setVlanLabel] = useState('')
   const [disabledApply, setDisabledApply] = useState(false)
-
-  const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolSelectOptions: data
-      }
-    }
-  })
 
   useEffect(() => {
     // onChange(selectedVlan)

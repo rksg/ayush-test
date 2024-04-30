@@ -145,13 +145,13 @@ describe('Gateway Form', () => {
     fireEvent.change(gatewayInput, { target: { value: 'ruckusdemos1' } })
     fireEvent.blur(gatewayInput)
 
-    const hostnameInput = await screen.findByLabelText('Hostname')
-    await fireEvent.change(hostnameInput, { target: { value: 'https://test.com' } })
+    const URLInput = screen.getByLabelText('URL')
+    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
 
-    const usernameInput = await screen.findByLabelText('Username')
+    const usernameInput = screen.getByLabelText('Username')
     await fireEvent.change(usernameInput, { target: { value: 'newUser' } })
 
-    const passwordInput = await screen.findByLabelText('Password')
+    const passwordInput = screen.getByLabelText('Password')
     await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
@@ -185,8 +185,6 @@ describe('Gateway Form', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     await waitFor(() => expect(mockFn).toBeCalled())
 
     const venueInput = await screen.findByLabelText('Gateway Name')
@@ -217,14 +215,13 @@ describe('Gateway Form', () => {
 
     expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
 
-    const gatewayInput1 = await screen.findByLabelText('Gateway Name')
-    fireEvent.change(gatewayInput1, { target: { value: '"test"with' } })
-    fireEvent.blur(gatewayInput1)
+    fireEvent.change(gatewayInput, { target: { value: '"test"with' } })
+    fireEvent.blur(gatewayInput)
 
     expect(await screen.findByText('Please enter a valid Name')).toBeVisible()
 
 
-    const password = await screen.findByLabelText('Password')
+    const password = screen.getByLabelText('Password')
     fireEvent.change(password, { target: { value: 'temp' } })
     fireEvent.blur(password)
 
@@ -241,7 +238,7 @@ describe('Gateway Form', () => {
         route: { params, path: '/:tenantId/t/ruckus-wan-gateway/add' }
       })
 
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click(screen.getByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/ruckus-wan-gateway`,
       hash: '',
@@ -274,8 +271,6 @@ describe('Gateway Form', () => {
         // eslint-disable-next-line max-len
         route: { params }
       })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(() => expect(mockFn).toBeCalled())
 

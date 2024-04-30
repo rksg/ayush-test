@@ -10,6 +10,7 @@ import { FormTable }               from './FormTable'
 import { GroupTable }              from './GroupTable'
 import { MultipleSorterTable }     from './MultipleSorterTable'
 import { MultiSelectTable }        from './MultiSelectTable'
+import { NestedTable }             from './NestedTable'
 import { NoSelectedBarTable }      from './NoSelectedBarTable'
 import { SelectAllPagesTable }     from './SelectAllPagesTable'
 import { SingleSelectTable }       from './SingleSelectTable'
@@ -31,7 +32,8 @@ storiesOf('Table', module)
   .add('Compact Table With Borders in Rows', CompactTableWithBorders)
   .add('Form Table', FormTable)
   .add('Group Table', GroupTable)
+  .add('Nested Table', NestedTable)
   .add('Table With Icon Button', TableWithIconButton)
   .add('Two Tables with stickyPagination', TwoTablesStickyPaging)
-  .add('Table Without stickyPagination', TableNoStickyPagination)
+  .add('Table Pagination', TableNoStickyPagination)
 export {}

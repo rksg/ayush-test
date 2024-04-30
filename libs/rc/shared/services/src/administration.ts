@@ -23,7 +23,12 @@ import {
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary,
-  TenantAuthentications
+  TenantAuthentications,
+  AdminGroup,
+  AdminGroupLastLogins,
+  CustomRole,
+  PrivilegeGroup,
+  EntitlementPendingActivations
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -37,7 +42,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
@@ -483,6 +489,26 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return result
       }
     }),
+    getEntitlementActivations: build.query<EntitlementPendingActivations, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+    }),
+    patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
@@ -568,6 +594,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    patchTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
@@ -576,7 +611,191 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAdminGroups: build.query<AdminGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addGroup',
+            'patchGroup',
+            'deleteGroups'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'ADMINGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+
+    }),
+    deleteAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAdminGroupLastLogins: build.query<AdminGroupLastLogins, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroupLastLogins, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
+    }),
+    getCustomRoles: build.query<CustomRole[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getCustomRoles, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'CUSTOMROLE_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addCustomRole',
+            'updateCustomRole',
+            'deleteCustomRole'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'CUSTOMROLE_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.mspEcTenantId
+        }
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivilegeGroups, params, CUSTOM_HEADER, true)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
+    getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
+    getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addPrivilegeGroup',
+            'updatePrivilegeGroup',
+            'deletePrivilegeGroup'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addPrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addPrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updatePrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updatePrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deletePrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deletePrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
   })
 })
 
@@ -622,6 +841,8 @@ export const {
   useDeleteNotificationRecipientMutation,
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
+  useGetEntitlementActivationsQuery,
+  usePatchEntitlementsActivationsMutation,
   useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
   useConvertNonVARToMSPMutation,
@@ -631,5 +852,21 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  usePatchTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation,
+  useGetAdminGroupsQuery,
+  useDeleteAdminGroupsMutation,
+  useAddAdminGroupsMutation,
+  useUpdateAdminGroupsMutation,
+  useGetAdminGroupLastLoginsQuery,
+  useGetCustomRolesQuery,
+  useAddCustomRoleMutation,
+  useUpdateCustomRoleMutation,
+  useDeleteCustomRoleMutation,
+  useGetMspEcPrivilegeGroupsQuery,
+  useGetOnePrivilegeGroupQuery,
+  useGetPrivilegeGroupsQuery,
+  useAddPrivilegeGroupMutation,
+  useUpdatePrivilegeGroupMutation,
+  useDeletePrivilegeGroupMutation
 } = administrationApi

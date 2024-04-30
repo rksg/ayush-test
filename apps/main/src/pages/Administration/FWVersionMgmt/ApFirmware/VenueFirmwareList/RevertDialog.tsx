@@ -14,13 +14,12 @@ import {
 } from '@acx-ui/rc/utils'
 
 import {
-  getVersionLabel
+  getVersionLabel, isBetaFirmware
 } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
 export interface RevertDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -28,11 +27,9 @@ export interface RevertDialogProps {
 }
 
 export function RevertDialog (props: RevertDialogProps) {
-  const { $t } = useIntl()
   const intl = useIntl()
   const [form] = useForm()
-  const { visible, onSubmit, onCancel, data, availableVersions } = props
-  // eslint-disable-next-line max-len
+  const { onSubmit, onCancel, data, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
 
   useEffect(() => {
@@ -70,10 +67,10 @@ export function RevertDialog (props: RevertDialogProps) {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Revert Now' })}
-      visible={visible}
+      title={intl.$t({ defaultMessage: 'Revert Now' })}
+      visible={true}
       width={560}
-      okText={$t({ defaultMessage: 'Run Revert' })}
+      okText={intl.$t({ defaultMessage: 'Run Revert' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
     >
@@ -84,10 +81,10 @@ export function RevertDialog (props: RevertDialogProps) {
         <Form.Item>
           <Typography style={{ fontWeight: 700 }}>
             { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
+              intl.$t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
           </Typography>
           <Typography style={{ fontWeight: 700 }}>
-            {$t({ defaultMessage: 'Select one previous version:' })}
+            {intl.$t({ defaultMessage: 'Select one previous version:' })}
           </Typography>
           <Radio.Group
             style={{ margin: 12 }}
@@ -97,17 +94,18 @@ export function RevertDialog (props: RevertDialogProps) {
             value={selectedVersion}>
             <Space direction={'vertical'}>
               { availableVersions?.map(v =>
-                <Radio value={v.name} key={v.name}>{getVersionLabel(intl, v)}</Radio>)}
+                <Radio value={v.name} key={v.name}>
+                  {getVersionLabel(intl, v, isBetaFirmware(v.category))}
+                </Radio>)
+              }
             </Space>
           </Radio.Group>
-          <UI.Section>
-            <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
-              { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
-            </UI.Ul>
-          </UI.Section>
+          <UI.Ul>
+            { // eslint-disable-next-line max-len
+              <UI.Li>{intl.$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
+            { // eslint-disable-next-line max-len
+              <UI.Li>{intl.$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
+          </UI.Ul>
         </Form.Item>
       </Form>
     </Modal>

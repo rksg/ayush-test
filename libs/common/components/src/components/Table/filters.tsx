@@ -1,10 +1,19 @@
-import { Select }     from 'antd'
+import React from 'react'
+
+import { Checkbox, Select }    from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import {
   BaseOptionType,
   DefaultOptionType
 } from 'antd/lib/select'
 import { FilterValue } from 'antd/lib/table/interface'
+import _               from 'lodash'
+import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
+
+import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
+
+import { RangePicker } from '../DatePicker'
 
 import * as UI from './styledComponents'
 
@@ -20,6 +29,35 @@ function hasChildrenColumn <RecordType> (
   return !!(column as RecordWithChildren<RecordType>).children
 }
 
+interface RangePickerProps {
+  filterValues: Filter,
+  setFilterValues: Function
+}
+
+function RangePickerComp (props: RangePickerProps) {
+  const { filterValues, setFilterValues } = props
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  return <UI.FilterRangePicker>
+    <RangePicker
+      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+      onDateApply={(date: DateFilter) => {
+        const period = getDateRangeFilter(date.range, date.startDate, date.endDate)
+        const filters = {
+          ...filterValues,
+          ...(date.range === DateRange.allTime ?
+            { fromTime: undefined, toTime: undefined } :
+            { fromTime: moment(period.startDate).toISOString(),
+              toTime: moment(period.endDate).toISOString() })
+        }
+        setFilterValues(filters)
+        setDateFilter(date)
+      }}
+      selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
+      showAllTime
+    />
+  </UI.FilterRangePicker>
+}
+
 export function getFilteredData <RecordType> (
   dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
   filterValues: Filter,
@@ -29,9 +67,9 @@ export function getFilteredData <RecordType> (
 ): RecordType[] | undefined {
   const isRowMatching = (row: RecordType): Boolean => {
     for (const column of activeFilters) {
-      const key = column.dataIndex as keyof RecordType
+      const key = (column.filterKey || column.dataIndex) as keyof RecordType
       const filteredValue = filterValues[key as keyof Filter]!
-      if (!filteredValue.includes(row[key] as unknown as string)) {
+      if (!filteredValue.includes(_.get(row, key) as unknown as string)) {
         return false
       }
     }
@@ -74,10 +112,12 @@ export function renderSearch <RecordType> (
     placeholder={placeHolderText}
     title={placeHolderText}
     style={{ width }}
+    maxLength={64}
     value={searchValue}
     allowClear
   />
 }
+
 export function renderFilter <RecordType> (
   column: TableColumn<RecordType, 'text'>,
   index: number,
@@ -87,6 +127,33 @@ export function renderFilter <RecordType> (
   enableApiFilter: boolean,
   width: number
 ) {
+  const renderCheckbox = (column: TableColumn<RecordType, 'text'>) => {
+    return <Checkbox
+      key={index}
+      checked={(filterValues[column?.filterKey as keyof Filter] === undefined &&
+        column?.defaultFilteredValue?.[0] as boolean) ||
+        !!filterValues[column?.filterKey as keyof Filter]?.[0]}
+      onChange={(e: CheckboxChangeEvent) => {
+        const isChecked = e.target.checked
+        if (column.filterValueNullable === false) {
+          setFilterValues({ ...filterValues, [key]: undefined })
+        } else {
+          setFilterValues({ ...filterValues, [key]: [isChecked] })
+        }
+      }}>{column?.filterComponent?.label}</Checkbox>
+  }
+
+  const filterTypeComp = {
+    checkbox: renderCheckbox(column),
+    rangepicker: <RangePickerComp
+      key='range-picker'
+      filterValues={filterValues}
+      setFilterValues={setFilterValues}
+    />
+  }
+  type Type = keyof typeof filterTypeComp
+
+
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (typeof value !== 'undefined' && !data.includes(value)) {
@@ -100,24 +167,32 @@ export function renderFilter <RecordType> (
         const { children } = hasChildrenColumn(datum) ? datum : { children: undefined }
         if (children) {
           for (const child of children) {
-            addToFilter(data, child[key] as unknown as string)
+            addToFilter(data, _.get(child, key) as unknown as string)
           }
         }
-        addToFilter(data, datum[key] as unknown as string)
+        addToFilter(data, _.get(datum, key) as unknown as string)
         return data
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
-  return <UI.FilterSelect
+  const getValue = (value: unknown | string[], filterValueArray: undefined | boolean) => {
+    if (filterValueArray && value) {
+      return Array.isArray(value) ? (value as string[]).join(',') : value
+    }
+    return value
+  }
+
+  return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
     mode={column.filterMultiple === false ? undefined : 'multiple'}
     showSearch={column?.filterSearchable ?? undefined}
-    value={filterValues[key as keyof Filter]}
-    onChange={(value: unknown) => {
+    value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
+    onChange={(value: unknown | string) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-      const filterValue = Array.isArray(value) ? value : [value]
+      const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
+      const filterValue = Array.isArray(value) ? value : filterArrayValue
       let filters = {} as Filter
 
       if (column.filterValueNullable === false &&
@@ -134,7 +209,8 @@ export function renderFilter <RecordType> (
       setFilterValues(filters)
     }}
     filterOption={filterOption}
-    placeholder={column.title as string}
+    dropdownMatchSelectWidth={false}
+    placeholder={column.filterPlaceholder ?? column.title as string}
     showArrow
     allowClear
     style={{ width }}
@@ -142,7 +218,7 @@ export function renderFilter <RecordType> (
     {options?.map((option, index) =>
       <Select.Option
         value={option.key}
-        key={option.key ?? index}
+        key={`key-${index}-${option.key}`}
         data-testid={`option-${option.key}`}
         title={option.value}
         children={option.label ?? option.value}

@@ -2,12 +2,13 @@ import React, { useMemo, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                        from '@acx-ui/analytics/utils'
-import type { Incident }                          from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table, SearchBar  }      from '@acx-ui/components'
-import type { TableColumn, ColumnType }           from '@acx-ui/components'
-import { TenantLink }                             from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
+import { aggregateDataBy }                                    from '@acx-ui/analytics/utils'
+import type { Incident }                                      from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table }                              from '@acx-ui/components'
+import type { TableHighlightFnArgs, TableColumn, ColumnType } from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
+import { getIntl, encodeParameter, DateFilter, DateRange }    from '@acx-ui/utils'
 
 import {
   ImpactedAP,
@@ -16,7 +17,8 @@ import {
   useImpactedClientsQuery
 } from './services'
 
-export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
+export interface ImpactedDrawerProps extends
+  Pick<Incident, 'id' | 'impactedStart' | 'impactedEnd'> {
   impactedCount: number
   visible: boolean
   onClose: () => void
@@ -38,23 +40,38 @@ export interface AggregatedImpactedClient {
   ssid: string[]
   hostname: string[]
   username: string[]
+  osType: string[]
 }
 
 export function column <RecordType> (
   column: keyof RecordType,
   columnProps: Partial<ColumnType<RecordType>> = {}
-): Partial<ColumnType<RecordType>> {
+): TableColumn<RecordType> {
+  const { $t, formatList } = getIntl()
+
   function sorter (a: RecordType, b: RecordType) {
     const dataA = a[column] as unknown as RecordType[keyof RecordType][]
     const dataB = b[column] as unknown as RecordType[keyof RecordType][]
     return dataA[0] > dataB[0]? 1 : -1
   }
 
-  function render (_: React.ReactNode, row: RecordType) {
-    const data = row[column] as unknown as RecordType[keyof RecordType][]
-    return <span title={data.join(', ')}>
-      {`${data[0]} ${data.length > 1 ? `(${data.length})` : ''}`}
-    </span>
+  function render (
+    _: React.ReactNode,
+    row: RecordType,
+    __: number,
+    highlightFn: TableHighlightFnArgs
+  ) {
+    const data = row[column] as unknown as string[]
+    const text = $t(
+      {
+        defaultMessage: '{name}{count, plural, one {} other { ({count})}}',
+        description: 'Translation strings - nil)'
+      },
+      { name: data[0], count: data.length }
+    )
+    return <span
+      title={formatList(data, { style: 'narrow', type: 'conjunction' })}
+    >{columnProps.searchable ? highlightFn(text) : text}</span>
   }
 
   return {
@@ -74,12 +91,14 @@ const tooltips = {
 }
 
 export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (props) => {
-  const { $t } = useIntl()
+  const { $t, formatList } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   }, { selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
@@ -97,31 +116,53 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
       render: (_, { mac, hostname }) =>
         <TenantLink
           to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
-        >{hostname}</TenantLink>
+          title={formatList(hostname, { style: 'narrow', type: 'conjunction' })}
+        >{$t(
+            {
+              defaultMessage: '{hostname}{count, plural, one {} other { ({count})}}',
+              description: 'Translation strings - nil)'
+            },
+            { hostname: hostname[0], count: hostname.length }
+          )}
+        </TenantLink>
     }),
-    column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
+    column('mac', {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      searchable: true
+    }),
     column('username', {
       title: $t({ defaultMessage: 'Username' }),
       tooltip: tooltips.username
     }),
-    column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
-    column('ssid', { title: $t({ defaultMessage: 'Network' }) })
-  ] as TableColumn<AggregatedImpactedClient>[], [$t])
+    column('manufacturer', {
+      title: $t({ defaultMessage: 'Manufacturer' }),
+      searchable: true
+    }),
+    column('osType', { title: $t({ defaultMessage: 'OS Type' }) }),
+    column('ssid', {
+      title: $t({ defaultMessage: 'Network' }),
+      searchable: true
+    })
+  ] as TableColumn<AggregatedImpactedClient>[], [$t, period, formatList])
 
-  // TODO: use search from table component
   return <Drawer
-    width={'650px'}
+    width={'800px'}
     title={$t(
-      { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
+      {
+        defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}',
+        description: 'Translation strings - Impacted, Client, Clients)'
+      },
       { count: props.impactedCount }
     )}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
-      <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedClient>
         rowKey='mac'
         columns={columns}
+        onFilterChange={(_, { searchString }) => setSearch(searchString || '')}
+        searchableWidth={370}
+        enableApiFilter
         dataSource={queryResults.data}
       />
     </Loader>}
@@ -129,12 +170,14 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
 }
 
 export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
-  const { $t } = useIntl()
+  const { $t, formatList } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedAPsQuery({
     id: props.id,
     search,
-    n: 100
+    n: 100,
+    impactedStart: props.impactedStart,
+    impactedEnd: props.impactedEnd
   },{ selectFromResult: (states) => ({
     ...states,
     data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)
@@ -143,28 +186,52 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const columns = useMemo(() => [
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
-      render: (_, { name, mac }) =>
-        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
+      searchable: true,
+      render: (_, { name, mac }, __, highlightFn) =>
+        <TenantLink
+          to={`devices/wifi/${mac}/details/${get('IS_MLISA_SA') ? 'ai': 'overview'}`}
+          title={formatList(name, { style: 'narrow', type: 'conjunction' })}
+        >{highlightFn($t(
+            {
+              defaultMessage: '{name}{count, plural, one {} other { ({count})}}',
+              description: 'Translation strings - nil)'
+            },
+            { name: name[0], count: name.length }
+          ))}
+        </TenantLink>
     }),
-    column('model', { title: $t({ defaultMessage: 'Model' }) }),
-    column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
-    column('version', { title: $t({ defaultMessage: 'Version' }) })
-  ] as TableColumn<AggregatedImpactedAP>[], [$t])
+    column('model', {
+      title: $t({ defaultMessage: 'Model' }),
+      searchable: true
+    }),
+    column('mac', {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      searchable: true
+    }),
+    column('version', {
+      title: $t({ defaultMessage: 'Version' }),
+      searchable: true
+    })
+  ] as TableColumn<AggregatedImpactedAP>[], [$t, formatList])
 
-  // TODO: use search from table component
   return <Drawer
     width={'600px'}
     title={$t(
-      { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
+      {
+        defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}',
+        description: 'Translation strings - Impacted, AP, APs)'
+      },
       { count: props.impactedCount }
     )}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
-      <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedAP>
         rowKey='mac'
         columns={columns}
+        onFilterChange={(_, { searchString }) => setSearch(searchString || '')}
+        searchableWidth={390}
+        enableApiFilter
         dataSource={queryResults.data}/>
     </Loader>}
   />

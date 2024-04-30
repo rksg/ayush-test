@@ -61,7 +61,9 @@ const defaultPayload = {
     'nwSubType',
     'venues',
     'id'
-  ]
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
 
 export function NetworkTable (props: { networkIds?: string[] }) {

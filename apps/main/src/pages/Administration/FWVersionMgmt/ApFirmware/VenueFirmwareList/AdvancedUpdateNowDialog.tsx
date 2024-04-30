@@ -1,28 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Radio, RadioChangeEvent, Space } from 'antd'
 import { DefaultOptionType }              from 'antd/lib/select'
-import { useIntl }                        from 'react-intl'
+import { defineMessage, useIntl }         from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
 import {
-  EolApFirmware,
   FirmwareCategory,
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
-import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
+import { findMaxActiveABFVersion, findMaxEolABFVersions, getActiveApModels, getVersionLabel, isBetaFirmware, MaxABFVersionMap } from '../../FirmwareUtils'
 
-import * as UI                          from './styledComponents'
-import { firmwareNote1, firmwareNote2 } from './UpdateNowDialog'
-import { useApEolFirmware }             from './useApEolFirmware'
+import * as UI                                                                                       from './styledComponents'
+import { firmwareNote1, firmwareNote2 }                                                              from './UpdateNowDialog'
+import { EolApFirmwareGroup, getRemainingApModels, UpgradableApModelsAndFamilies, useApEolFirmware } from './useApEolFirmware'
 
-type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
+const abfLabelMessage = defineMessage({ defaultMessage: 'Available firmware' })
+// eslint-disable-next-line max-len
+const abfLabelMessageWithApModelFamilies = defineMessage({ defaultMessage: 'Available firmware for {families} AP' })
+
+type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'> | null
 
 export interface AdvancedUpdateNowDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
@@ -30,32 +32,57 @@ export interface AdvancedUpdateNowDialogProps {
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  // eslint-disable-next-line max-len
-  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
+  const {
+    getAvailableEolApFirmwareGroups,
+    getEolABFOtherVersionsOptions,
+    getDefaultEolVersionLabel,
+    findUpgradableApModelsAndFamilies
+  } = useApEolFirmware()
   const intl = useIntl()
-  const { visible, onSubmit, onCancel, data: venuesData = [], availableVersions } = props
-  const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
+  const { onSubmit, onCancel, data: venuesData = [], availableVersions } = props
+  const eolApFirmwareGroups = getAvailableEolApFirmwareGroups(venuesData)
   const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
-    { [key: string]: UpdateNowRequestWithoutVenues | null }
+    { [abfName: string]: UpdateNowRequestWithoutVenues }
   >()
 
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
-  // eslint-disable-next-line max-len
-  const activeApModels = venuesData.filter(venue => venue.apModels).map(venue => venue.apModels).flat()
-  const uniqueActiveApModels = [...new Set(activeApModels)].join(', ')
 
-  const getUpdateNowRequestPayload = () => {
+  // eslint-disable-next-line max-len
+  const [upgradableApModelsAndFamilies, setUpgradableApModelsAndFamilies] = useState<UpgradableApModelsAndFamilies>()
+  const maxABFVersions: MaxABFVersionMap = useMemo(() => {
+    const eolABFVersions = findMaxEolABFVersions(venuesData)
+    const activeABFVersons = findMaxActiveABFVersion(venuesData)
+
+    return {
+      ...eolABFVersions,
+      active: { ...activeABFVersons, latestVersion: '' }
+    }
+  }, [venuesData])
+
+  const compactUpdateNowRequestPayload = () => {
     return Object.values(updateNowRequestPayload ?? {})
       .filter(value => value !== null && value.firmwareVersion !== '')
   }
 
   useEffect(() => {
-    setDisableSave(getUpdateNowRequestPayload().length === 0)
+    setDisableSave(compactUpdateNowRequestPayload().length === 0)
   }, [updateNowRequestPayload])
+
+  useEffect(() => {
+    if (!updateNowRequestPayload || !maxABFVersions) return
+
+    const targetVersions: string[] = []
+    Object.keys(maxABFVersions).forEach(abfId => {
+      // eslint-disable-next-line max-len
+      targetVersions.push(updateNowRequestPayload?.[abfId]?.firmwareVersion ?? maxABFVersions[abfId].maxVersion)
+    })
+
+    setUpgradableApModelsAndFamilies(findUpgradableApModelsAndFamilies(targetVersions, venuesData))
+  }, [updateNowRequestPayload, maxABFVersions])
 
   const otherActiveVersionOptions = otherActiveVersions.map((version) => {
     return {
@@ -65,7 +92,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   })
 
   const createRequest = (): UpdateNowRequest[] => {
-    return getUpdateNowRequestPayload().map(req => {
+    return compactUpdateNowRequestPayload().map(req => {
       return { ...req, venueIds: venuesData.map(venue => venue.id) }
     })
   }
@@ -80,7 +107,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
     onCancel()
   }
 
-  const updateSelectedABF = (abfId: string, value: UpdateNowRequestWithoutVenues | null) => {
+  const updateSelectedABF = (abfId: string, value: UpdateNowRequestWithoutVenues) => {
     setUpdateNowRequestPayload((current) => ({
       ...(current ?? {}),
       [abfId]: value
@@ -90,7 +117,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   return (
     <Modal
       title={intl.$t({ defaultMessage: 'Update Now' })}
-      visible={visible}
+      visible={true}
       width={560}
       okText={intl.$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
@@ -98,35 +125,47 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
-      { defaultActiveVersion &&
-        <UI.Section>
+      <UI.Section key='active'>{
+        defaultActiveVersion
+          ?
           <ABFSelector
-            categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Available firmware' })}
+            abfName={'active'}
+            upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
-            apModels={uniqueActiveApModels}
             otherVersions={otherActiveVersionOptions}
             update={updateSelectedABF}
           />
-        </UI.Section>
+          : <ABFUpgradeWarning
+            abfName={'active'}
+            apModels={getActiveApModels(venuesData)}
+            upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+            isLegacyABF={false}
+          />
       }
-      { eolApFirmwares.length > 0
-        ? eolApFirmwares.map((eol: EolApFirmware) => {
-          return (
-            <UI.Section key={eol.name}>
-              <ABFSelector
-                categoryId={eol.name}
-                abfLabel={intl.$t({ defaultMessage: 'Available firmware for legacy devices' })}
+      </UI.Section>
+      { eolApFirmwareGroups.length > 0
+        ? eolApFirmwareGroups.map((eol: EolApFirmwareGroup) => {
+          return <UI.Section key={eol.name}>
+            {eol.isUpgradable
+              ? <ABFSelector
+                abfName={eol.name}
+                upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+                defaultChecked={true}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
-                apModels={eol.apModels?.join(', ')}
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
-            </UI.Section>
-          )
+              : <ABFUpgradeWarning
+                abfName={eol.name}
+                apModels={eol.apModels}
+                upgradableApModelsAndFamilies={upgradableApModelsAndFamilies}
+                isLegacyABF={true}
+              />
+            }
+          </UI.Section>
         })
         : null
       }
@@ -170,36 +209,41 @@ export function filteredOtherActiveVersions (availableVersions?: FirmwareVersion
 }
 
 interface ABFSelectorProps {
-  categoryId: string
-  abfLabel: string
+  abfName: string
+  upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
   defaultChecked?: boolean
   defaultVersionId: string
   defaultVersionLabel: string
-  apModels?: string
   otherVersions?: DefaultOptionType[]
-  update: (abfId: string, value: UpdateNowRequestWithoutVenues | null) => void
+  update: (abfId: string, value: UpdateNowRequestWithoutVenues ) => void
 }
 
 function ABFSelector (props: ABFSelectorProps) {
-  const { categoryId, abfLabel, defaultChecked = false, defaultVersionId, defaultVersionLabel,
-    otherVersions = [], update, apModels = '' } = props
+  const { abfName, upgradableApModelsAndFamilies, defaultChecked = false,
+    defaultVersionId, defaultVersionLabel, otherVersions = [], update } = props
   const { $t } = useIntl()
   const [ selectedVersion, setSelectedVersion ] = useState(defaultChecked ? defaultVersionId : '')
+  const targetUpgradableAbfInfo = upgradableApModelsAndFamilies?.[abfName]
+  const abfLabel = (targetUpgradableAbfInfo?.familyNames ?? []).length > 0
+    // eslint-disable-next-line max-len
+    ? $t(abfLabelMessageWithApModelFamilies, { families: targetUpgradableAbfInfo!.familyNames.join(', ') })
+    : $t(abfLabelMessage)
+  const apModels = (targetUpgradableAbfInfo?.apModels ?? []).join(', ')
 
-  const getFirmwareResult = (): UpdateNowRequestWithoutVenues | null => {
+  const getFirmwareResult = (): UpdateNowRequestWithoutVenues => {
     if (!selectedVersion) return null
 
     return {
-      firmwareCategoryId: categoryId,
+      firmwareCategoryId: abfName,
       firmwareVersion: selectedVersion
     } as UpdateNowRequestWithoutVenues
   }
 
   const doUpdate = () => {
-    update(categoryId, getFirmwareResult())
+    update(abfName, getFirmwareResult())
   }
 
-  const onSelectModeChange = (e: RadioChangeEvent) => {
+  const onSelectedVersionChange = (e: RadioChangeEvent) => {
     setSelectedVersion(e.target.value)
   }
 
@@ -213,15 +257,15 @@ function ABFSelector (props: ABFSelectorProps) {
       ({ apModels
         ? apModels
         // eslint-disable-next-line max-len
-        : <span className='empty'>{$t({ defaultMessage: 'No Access Point in selected venue(s)' })}</span>
+        : <span className='empty'>{$t({ defaultMessage: 'No affected AP for this upgrade' })}</span>
       })
     </UI.TitleActive>
     <UI.ValueContainer>
       <Radio.Group
-        onChange={onSelectModeChange}
+        onChange={onSelectedVersionChange}
         value={selectedVersion}
       >
-        <Space direction={'vertical'}>
+        <Space direction={'vertical'} size={12}>
           <Radio key={defaultVersionId} value={defaultVersionId}>
             {defaultVersionLabel}
           </Radio>
@@ -238,4 +282,33 @@ function ABFSelector (props: ABFSelectorProps) {
       </Radio.Group>
     </UI.ValueContainer>
   </>)
+}
+
+interface ABFUpgradeWarningProp {
+  abfName: string
+  apModels: string[]
+  upgradableApModelsAndFamilies?: UpgradableApModelsAndFamilies
+  isLegacyABF: boolean
+}
+export function ABFUpgradeWarning (props: ABFUpgradeWarningProp) {
+  const { abfName, apModels, upgradableApModelsAndFamilies, isLegacyABF } = props
+  const { $t } = useIntl()
+  const remainingApModels = getRemainingApModels(abfName, apModels, upgradableApModelsAndFamilies)
+
+  if (remainingApModels.length === 0) return null
+
+  // eslint-disable-next-line max-len
+  const legacyDevicesMessage = defineMessage({ defaultMessage: 'There are one or more legacy devices in selected venues ({apModels}).' })
+  // eslint-disable-next-line max-len
+  const activeDevicesMessage = defineMessage({ defaultMessage: 'There are one or more devices in selected venues ({apModels}).' })
+
+  return <>
+    <div>{
+      $t(isLegacyABF
+        ? legacyDevicesMessage
+        : activeDevicesMessage,
+      { apModels: remainingApModels.join(', ') })
+    }</div>
+    <div>{$t({ defaultMessage: 'No available firmware.' })}</div>
+  </>
 }

@@ -1,0 +1,118 @@
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import { Loader, PageHeader, Tabs }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { CommonOperation, Device, EdgeStatusEnum, getUrl }    from '@acx-ui/rc/utils'
+import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+
+import { ClusterDetails }   from './ClusterDetails'
+import { ClusterInterface } from './ClusterInterface'
+import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
+import { VirtualIp }        from './VirtualIp'
+
+
+const EditEdgeCluster = () => {
+  const { $t } = useIntl()
+  const { activeTab, clusterId } = useParams()
+  const navigate = useNavigate()
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const basePath = useTenantLink(getUrl({
+    feature: Device.EdgeCluster,
+    oper: CommonOperation.Edit,
+    params: { id: clusterId }
+  }))
+  const {
+    currentClusterStatus,
+    isClusterStatusLoading,
+    isAllNodesNeverContactedCloud = true
+  } = useGetEdgeClusterListQuery({ payload: {
+    filters: { clusterId: [clusterId], isCluster: [true] }
+  } },{
+    selectFromResult: ({ data, isLoading }) => {
+      const currentClusterStatus = data?.data[0]
+      return {
+        currentClusterStatus,
+        isClusterStatusLoading: isLoading,
+        isAllNodesNeverContactedCloud: currentClusterStatus?.edgeList?.length ===
+        currentClusterStatus?.edgeList?.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length
+      }
+    }
+  })
+  const { data: currentCluster, isLoading: isClusterLoading } = useGetEdgeClusterQuery({
+    params: {
+      venueId: currentClusterStatus?.venueId,
+      clusterId: clusterId
+    }
+  }, {
+    skip: !currentClusterStatus?.venueId
+  })
+
+  const basicTabs = {
+    'cluster-details': {
+      title: $t({ defaultMessage: 'Cluster Details' }),
+      content: <ClusterDetails
+        currentClusterStatus={currentClusterStatus}
+      />
+    },
+    'virtual-ip': {
+      title: $t({ defaultMessage: 'Virtual IP' }),
+      content: <VirtualIp
+        currentClusterStatus={currentClusterStatus}
+        currentVipConfig={currentCluster?.virtualIpSettings}
+      />
+    },
+    'cluster-interface': {
+      title: $t({ defaultMessage: 'Cluster Interface' }),
+      content: <ClusterInterface
+        currentClusterStatus={currentClusterStatus}
+      />
+    }
+  }
+
+  const clusterTabs = !isEdgeDhcpHaReady
+    ? basicTabs
+    : Object.assign(basicTabs, { dhcp: {
+      title: $t({ defaultMessage: 'DHCP' }),
+      content: <EdgeClusterDhcp />
+    } })
+
+  const onTabChange = (finalTabs: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${finalTabs}`
+    })
+  }
+
+  return (
+    <Loader states={[{ isLoading: isClusterStatusLoading || isClusterLoading }]}>
+      <PageHeader
+        title={$t({ defaultMessage: 'Configure {name}' }, { name: currentClusterStatus?.name })}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
+        ]}
+        footer={
+          <Tabs onChange={onTabChange} activeKey={activeTab}>
+            {
+              Object.entries(clusterTabs).map(([k, v]) =>
+                (
+                  <Tabs.TabPane
+                    tab={v.title}
+                    key={k}
+                    disabled={
+                      k !== 'cluster-details' && isAllNodesNeverContactedCloud
+                    }
+                  />
+                ))
+            }
+          </Tabs>
+        }
+      />
+      {clusterTabs[activeTab as keyof typeof clusterTabs]?.content}
+    </Loader>
+  )
+}
+
+export default EditEdgeCluster

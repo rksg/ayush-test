@@ -9,6 +9,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
+  getWifiNetworksList: {
+    method: 'post',
+    url: '/wifiNetworks/query',
+    newApi: true
+  },
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',
@@ -60,6 +65,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/activity/query',
     newApi: true
   },
+  getActivityApCompatibilitiesList: {
+    method: 'post',
+    url: '/apCompatibilities/activities/:activityId/query',
+    newApi: true
+  },
   getEventList: {
     method: 'post',
     url: '/events/query',
@@ -101,7 +111,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
-  getApGroupList: {
+  getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
@@ -111,18 +121,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/wifiCallingProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/wifi-calling-profile',
-    newApi: true
-  },
-  getVlanPoolList: {
-    method: 'get',
-    url: '/vlanPools',
-    oldUrl: '/api/tenant/:tenantId/wifi/vlan-pool',
-    newApi: true
-  },
-  getServicesList: {
-    method: 'post',
-    url: '/serviceProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/serviceProfiles',
     newApi: true
   },
   getVenuesList: {
@@ -247,6 +245,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
   },
+  getVenueSpecificUploadURL: {
+    method: 'post',
+    url: '/venues/:venueId/signurls/uploadurls',
+    newApi: true
+  },
   getAllDevices: {
     method: 'post',
     url: '/venues/:venueId/devices',
@@ -287,6 +290,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/ledSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    newApi: true
+  },
+  getVenueApModelBandModeSettings: {
+    method: 'get',
+    url: '/venues/:venueId/apModelBandModeSettings',
+    newApi: true
+  },
+  updateVenueApModelBandModeSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
   getVenueBssColoring: {
@@ -341,11 +354,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
-  validateRadius: {
-    // [New API] no mapping found
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/venues/:venueId/dosProtectionSettings',
@@ -381,6 +389,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/rogueApSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    newApi: true
+  },
+  getVenueApEnhancedKey: {
+    method: 'get',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
+    newApi: true
+  },
+  updateVenueApEnhancedKey: {
+    method: 'put',
+    url: '/venues/:venueId/apTlsKeyEnhancedModeSettings',
     newApi: true
   },
   getRoguePolicies: {
@@ -420,34 +438,16 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
       'configurationHistory/detail/:transactionId',
     newApi: true
   },
-  getPoliciesList: {
-    method: 'post',
-    url: '/policyProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/policyProfiles',
-    newApi: true
-  },
   getApDetailHeader: {
     method: 'get',
     url: '/aps/:serialNumber/headerDetails',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
-  getClientSessionHistory: {
-    method: 'post',
-    url: '/reports/clients/sessionHistories',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientSessionHistory',
-    newApi: true
-  },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
     oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
-    newApi: true
-  },
-  getHistoricalStatisticsReportsV2: {
-    method: 'post',
-    url: '/reports/clients/statistics',
-    oldUrl: '/api/reporting/tenant/:tenantId/report/clientStats/v2',
     newApi: true
   },
   getGuestsList: {
@@ -466,6 +466,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
   getExternalProviders: {
@@ -569,24 +574,24 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/rwgs/:gatewayId/details',
     newApi: true
   },
-  getDNSRecords: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dnsrecords',
-    newApi: true
-  },
-  getDNSRecord: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
-    newApi: true
-  },
-  deleteDnsRecords: {
-    method: 'delete',
-    url: '/rwgs/:gatewayId/dnsrecords/:dnsRecordId',
-    newApi: true
-  },
-  addUpdateDnsRecord: {
+  addExportSchedules: {
     method: 'post',
-    url: '/rwgs/:gatewayId/dnsrecords',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  updateExportSchedules: {
+    method: 'put',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getExportSchedules: {
+    method: 'get',
+    url: '/reports/exportSchedules',
+    newApi: true
+  },
+  getTimezone: {
+    method: 'get',
+    url: '/timezones?location=:lat,:lng',
     newApi: true
   }
 }

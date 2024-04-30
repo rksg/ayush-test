@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Space }              from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
@@ -17,6 +17,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
+  PendingActivations,
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
 import {
@@ -25,8 +26,8 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }                                   from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { MspAssignmentSummary, MspEntitlementSummary }    from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   dateSort,
   defaultSort,
@@ -37,7 +38,11 @@ import {
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                        from '@acx-ui/types'
+import { hasRoles }                                                         from '@acx-ui/user'
+
+import HspContext from '../../HspContext'
 
 import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
 import * as UI                       from './styledComponent'
@@ -51,15 +56,27 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'EXPIRED',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'FUTURE',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
 export function Subscriptions () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/mspLicenses', 'v')
+
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isMspSelfAssignmentEnabled = useIsSplitOn(Features.MSP_SELF_ASSIGNMENT)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const { tenantId } = useParams()
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -161,6 +178,8 @@ export function Subscriptions () {
       render: function (_, row) {
         if( row.status === 'VALID') {
           return $t({ defaultMessage: 'Active' })
+        } else if ( row.status === 'FUTURE') {
+          return $t({ defaultMessage: 'Future' })
         } else {
           return $t({ defaultMessage: 'Expired' })
         }
@@ -201,12 +220,16 @@ export function Subscriptions () {
       assigned: number;
       courtesy: number;
       tooltip: string;
+      trial: boolean;
     } }
 
     deviceTypeList.forEach(item => {
-      const deviceType = item.value
-      const summaryData = data.filter(n => n.deviceType === deviceType)
-      const assignedData = assignedSummary.filter(n => n.deviceType === deviceType)
+      const isApswTrial = item.value === EntitlementDeviceType.MSP_APSW_TEMP
+      const deviceType = !isApswTrial ? item.value : EntitlementDeviceType.MSP_APSW
+      const summaryData =
+        data.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
+      const assignedData =
+        assignedSummary.filter(n => n.deviceType === deviceType && n.trial === isApswTrial)
       let quantity = 0
       let used = 0
       let courtesy = 0
@@ -225,12 +248,13 @@ export function Subscriptions () {
         })
 
         // including to display 0 quantity.
-        result[deviceType] = {
+        result[item.value] = {
           total: quantity,
           used: used,
           assigned: assigned,
           courtesy: courtesy,
-          tooltip: getCourtesyTooltip(quantity, courtesy)
+          tooltip: getCourtesyTooltip(quantity, courtesy),
+          trial: isApswTrial
         }
       }
     })
@@ -266,38 +290,25 @@ export function Subscriptions () {
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
 
-        {isMspSelfAssignmentEnabled
-          ? <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
-            {
-              subscriptionDeviceTypeList.map((item) => {
-                const summary = summaryData[item.value]
-                return summary ? <MspSubscriptionUtilizationWidget
-                  key={item.value}
-                  deviceType={item.value}
-                  title={item.label}
-                  total={summary.total}
-                  assigned={summary.assigned}
-                  used={summary.used}
-                  tooltip={summary.tooltip}
-                /> : ''
-              })
-            }
-          </SpaceWrapper>
-          : <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
-            {
-              subscriptionDeviceTypeList.map((item) => {
-                const summary = summaryData[item.value]
-                return summary ? <SubscriptionUtilizationWidget
-                  key={item.value}
-                  deviceType={item.value}
-                  title={item.label}
-                  total={summary.total}
-                  used={summary.used}
-                /> : ''
-              })
-            }
-          </SpaceWrapper>
-        }
+        <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+          {
+            subscriptionDeviceTypeList.map((item) => {
+              const summary = summaryData[item.value]
+              const showUtilBar = summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              return showUtilBar ? <MspSubscriptionUtilizationWidget
+                key={item.value}
+                deviceType={item.value}
+                title={item.label}
+                total={summary.total}
+                assigned={summary.assigned}
+                used={summary.used}
+                trial={summary.trial}
+                tooltip={summary.tooltip}
+              /> : ''
+            })
+          }
+        </SpaceWrapper>
       </>
     )
   }
@@ -335,41 +346,68 @@ export function Subscriptions () {
     )
   }
 
+  const tabs = {
+    mspSubscriptions: {
+      title: $t({ defaultMessage: 'MSP Subscriptions' }),
+      content: <>
+        <SubscriptionUtilization />
+        <SubscriptionTable />
+      </>,
+      visible: true
+    },
+    assignedSubscriptions: {
+      title: $t({ defaultMessage: 'MSP Assigned Subscriptions' }),
+      content: <>
+        <SubscriptionUtilization />
+        <AssignedSubscriptionTable />
+      </>,
+      visible: true
+    },
+    pendingActivations: {
+      title: $t({ defaultMessage: 'Pending Activations' }),
+      content: <PendingActivations />,
+      visible: isPendingActivationEnabled
+    }
+  }
+
   const onTabChange = (tab: string) => {
     setActiveTab(tab === 'assignedSubscriptions')
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
   }
 
   return (
     <>
       <PageHeader
-        title={isMspSelfAssignmentEnabled
-          ? $t({ defaultMessage: 'Subscriptions' }) : $t({ defaultMessage: 'MSP Subscriptions' })}
+        title={$t({ defaultMessage: 'Subscriptions' })}
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive || !isMspSelfAssignmentEnabled}
+              hidden={!isAssignedActive || !isAdmin}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
-          <TenantLink to='/dashboard'>
+          !isHspSupportEnabled ? <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          </TenantLink> : null
         ]}
       />
-      {isMspSelfAssignmentEnabled && <Tabs
+      <Tabs
         defaultActiveKey='mspSubscriptions'
+        type='card'
         onChange={onTabChange}
       >
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'MSP Subscriptions' })}
-          key='mspSubscriptions' />
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
-          key='assignedSubscriptions' />
-      </Tabs>}
-
-      <SubscriptionUtilization />
-      {(isAssignedActive && isMspSelfAssignmentEnabled)
-        ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
+        {
+          Object.entries(tabs).map((item) =>
+            item[1].visible &&
+            <Tabs.TabPane
+              key={item[0]}
+              tab={item[1].title}
+              children={item[1].content}
+            />)
+        }
+      </Tabs>
     </>
   )
 }

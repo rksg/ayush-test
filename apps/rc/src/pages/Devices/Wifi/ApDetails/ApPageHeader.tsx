@@ -7,6 +7,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
@@ -30,10 +31,12 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
+
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -78,7 +81,9 @@ function ApPageHeader () {
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }].filter(item => currentApOperational || item.key === 'delete')}
+      }].filter(item => (currentApOperational || item.key === 'delete' ||
+        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+      ))}
     />
   )
 
@@ -128,7 +133,11 @@ function ApPageHeader () {
         ])
       ]}
       footer={<>
-        {isAPLowPower(ApStatusData?.afcInfo) && <LowPowerBannerAndModal parent='ap' />}
+        {
+          AFC_Featureflag && afcEnabled &&
+          isAPLowPower(ApStatusData?.afcInfo) &&
+          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
+        }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}
     />

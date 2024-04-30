@@ -48,6 +48,7 @@ const FirewallTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+  const settingsId = 'services-firewall-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeFirewallViewDataListQuery,
     defaultPayload: {},
@@ -57,7 +58,8 @@ const FirewallTable = () => {
     },
     search: {
       searchTargetFields: ['firewallName']
-    }
+    },
+    pagination: { settingsId }
   })
   const { edgeOptions } = useGetEdgeListQuery(
     { payload: edgeOptionsDefaultPayload },
@@ -182,7 +184,7 @@ const FirewallTable = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
-      render: (data, row) =>
+      render: (__, row) =>
         (row?.edgeIds?.length)
           ? <Row justify='center'>
             <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
@@ -309,7 +311,7 @@ const FirewallTable = () => {
         ]}
       >
         <Table
-          settingsId='services-firewall-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'checkbox' }}

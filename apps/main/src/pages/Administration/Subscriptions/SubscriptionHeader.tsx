@@ -5,8 +5,8 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { Features, TierFeatures, useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SpaceWrapper, SubscriptionUtilizationWidget }            from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -62,7 +62,7 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
@@ -86,6 +86,9 @@ export const SubscriptionHeader = () => {
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Subscription Utilization' })}
             </Subtitle>
+            <h4 style={{ marginTop: '-8px' }}>
+              {$t({ defaultMessage: 'Paid, Assigned & Trial' })}
+            </h4>
           </Col>
           <Col span={12}>
             <SpaceWrapper full justifycontent='flex-end' size='large'>
@@ -105,7 +108,9 @@ export const SubscriptionHeader = () => {
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.filter(data =>
-              data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+              (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
+               data.value !== EntitlementDeviceType.ANALYTICS
+            )
               .map((item) => {
                 const summary = summaryData[item.value]
                 return summary ? <SubscriptionUtilizationWidget

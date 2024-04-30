@@ -1,0 +1,651 @@
+import React, { ReactNode, useEffect, useState } from 'react'
+
+import { Form, Switch }           from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
+
+import {
+  Alert,
+  Loader,
+  showActionModal,
+  Table,
+  TableProps,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import {
+  useAddNetworkVenueMutation,
+  useAddNetworkVenuesMutation,
+  useUpdateNetworkVenueMutation,
+  useDeleteNetworkVenueMutation,
+  useDeleteNetworkVenuesMutation,
+  useNetworkVenueListQuery,
+  useNetworkVenueTableQuery,
+  useNetworkVenueTableV2Query,
+  useNetworkVenueListV2Query,
+  useAddNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueCityListQuery,
+  useAddNetworkVenueTemplatesMutation,
+  useDeleteNetworkVenuesTemplateMutation,
+  useScheduleSlotIndexMap,
+  useGetVLANPoolPolicyViewModelListQuery
+} from '@acx-ui/rc/services'
+import {
+  useTableQuery,
+  NetworkSaveData,
+  NetworkVenue,
+  Venue,
+  generateDefaultNetworkVenue,
+  aggregateApGroupPayload,
+  RadioTypeEnum,
+  SchedulingModalState,
+  IsNetworkSupport6g,
+  ApGroupModalState,
+  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  KeyValue, VLANPoolViewModelType
+} from '@acx-ui/rc/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
+import { transformToCityListOptions } from '@acx-ui/utils'
+
+import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
+import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
+import {
+  NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import {
+  NetworkVenueScheduleDialog
+} from '../../NetworkVenueScheduleDialog'
+import {
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling } from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { useGetNetwork }         from '../services'
+
+import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
+
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id',
+    'description',
+    'city',
+    'country',
+    'networks',
+    'aggregatedApStatus',
+    'radios',
+    'aps',
+    'activated',
+    'vlan',
+    'scheduling',
+    'switches',
+    'switchClients',
+    'latitude',
+    'longitude',
+    'mesh',
+    'status',
+    'isOweMaster',
+    'owePairNetworkId'
+  ],
+  searchTargetFields: ['name']
+}
+
+const defaultArray: Venue[] = []
+/* eslint-disable max-len */
+const notificationMessage = defineMessage({
+  defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+})
+
+interface schedule {
+  [key: string]: string
+}
+
+export function NetworkVenuesTab () {
+  const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const settingsId = 'network-venues-table'
+  const tableQuery = useTableQuery({
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
+      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId }
+  })
+
+  const { cityFilterOptions } = useGetVenueCityList()
+
+  const [tableData, setTableData] = useState(defaultArray)
+  const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+  const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
+    visible: false
+  })
+  const [systemNetwork, setSystemNetwork] = useState(false)
+
+  const params = useParams()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+
+  const networkQuery = useGetNetwork()
+  const [
+    addNetworkVenue,
+    { isLoading: isAddNetworkUpdating }
+  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
+  const [
+    deleteNetworkVenue,
+    { isLoading: isDeleteNetworkUpdating }
+  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
+
+  const getCurrentVenue = (row: Venue) => {
+    if (!row.activated.isActivated) {
+      return
+    }
+    const network = networkQuery.data
+    const venueId = row.id
+    let venue = row.deepVenue
+    if (!venue) {
+      venue = network?.venues?.find(v => v.venueId === venueId)
+    }
+    return venue
+  }
+
+  useEffect(()=>{
+    if (tableQuery.data && networkQuery.data) {
+      const data: React.SetStateAction<Venue[]> = []
+      tableQuery.data.data.forEach(item => {
+        const activatedVenue = item.deepVenue || networkQuery.data?.venues?.find(
+          i => i.venueId === item.id
+        )
+        data.push({
+          ...item,
+          deepVenue: activatedVenue,
+          // work around of read-only records from RTKQ
+          activated: activatedVenue ? { isActivated: true } : { ...item.activated }
+        })
+        if (supportOweTransition) {
+          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
+        }
+      })
+
+      setTableData(data)
+    }
+  }, [tableQuery.data, networkQuery.data, supportOweTransition])
+
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
+
+  const activateNetwork = async (checked: boolean, row: Venue) => {
+    // TODO: Service
+    // if (checked) {
+    //   if (row.allApDisabled) {
+    //     manageAPGroups(row);
+    //   }
+    // }
+    const network = networkQuery.data
+    const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
+
+    if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
+      newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
+    }
+
+    let deactivateNetworkVenueId = ''
+    if (!checked && network?.venues) {
+      network?.venues.forEach((venue: NetworkVenue) => {
+        if (venue.venueId === row.id || venue.id === row.id) {
+          deactivateNetworkVenueId = venue.id ? venue.id : row.id
+        }
+      })
+    }
+
+    if (!row.allApDisabled || !checked) {
+      if (checked) { // activate
+        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+      } else { // deactivate
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
+          if (!deactivateNetworkVenueId) {
+            tableData.forEach((venue: Venue) => {
+              if (venue && venue.id === row.id) {
+                deactivateNetworkVenueId = venue.deepVenue!.id ?? ''
+              }
+            })
+          }
+          deleteNetworkVenue({
+            params: {
+              tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
+            }
+          })
+        })
+      }
+    }
+  }
+
+  const handleAddNetworkVenues = (networkVenues: NetworkVenue[], clearSelection: () => void) => {
+    if (networkVenues.length > 0) {
+      addNetworkVenues({ payload: networkVenues }).then(clearSelection)
+    } else {
+      clearSelection()
+    }
+  }
+
+  const handleDeleteNetworkVenues = (networkVenueIds: string[], clearSelection: () => void) => {
+    if (networkVenueIds.length > 0) {
+      deleteNetworkVenues({ payload: networkVenueIds }).then(clearSelection)
+    } else {
+      clearSelection()
+    }
+  }
+
+  const activateSelected = (activatingVenues: Venue[]) => {
+    const enabledNotActivatedVenueNames: string[] = []
+    const network = networkQuery.data
+    const networkVenues = network?.venues || []
+    const newActivatedVenues: NetworkVenue[] = []
+
+    activatingVenues.forEach(venue => {
+      const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
+
+      if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
+        newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
+      }
+      const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
+      if (!alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
+        if (!venue.activated.isDisabled && !venue.activated.isActivated) {
+          newActivatedVenues.push(newNetworkVenue)
+        }
+      }
+
+      if (venue.allApDisabled) {
+        enabledNotActivatedVenueNames.push(venue.name)
+      }
+    })
+
+    if (enabledNotActivatedVenueNames.length > 0) {
+      showActionModal({
+        type: 'info',
+        title: $t({ defaultMessage: 'Your Attention is Required' }),
+        content: (<>
+          <div>
+            {$t(
+              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { count: enabledNotActivatedVenueNames.length }
+            )}
+          </div>
+          {enabledNotActivatedVenueNames.map(venue =>(<div key={venue}> {venue} </div>))}
+        </>)
+      })
+    }
+
+    return newActivatedVenues
+  }
+
+  const deActivateSelected = (deActivatingVenues: Venue[]) => {
+    const network = networkQuery.data
+    const networkVenues = network?.venues || []
+    const selectedVenuesIds: string[] = []
+
+    deActivatingVenues.forEach(venue => {
+      const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
+      if (alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
+        const { id } = alreadyActivatedVenue
+        if (!venue.activated.isDisabled && id && venue.activated.isActivated === true) {
+          selectedVenuesIds.push(id)
+        }
+      }
+    })
+
+    return selectedVenuesIds
+  }
+
+  const activation = (selectedRows:Venue[]) => {
+    const enabled = selectedRows.some((item)=>{
+      return item.mesh && item.mesh.enabled && networkQuery.data && networkQuery.data.enableDhcp
+    })
+    return !enabled
+  }
+  const rowActions: TableProps<Venue>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Activate' }),
+      visible: activation,
+      onClick: (rows, clearSelection) => {
+        const networkVenues = activateSelected(rows)
+        handleAddNetworkVenues(networkVenues, clearSelection)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Deactivate' }),
+      visible: activation,
+      onClick: (rows, clearSelection) => {
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, rows.map(item => item.id), () => {
+          const deActivateNetworkVenueIds = deActivateSelected(rows)
+          handleDeleteNetworkVenues(deActivateNetworkVenueIds, clearSelection)
+        })
+      }
+    }
+  ]
+
+  const columns: TableProps<Venue>['columns'] = [
+    {
+      key: 'name',
+      title: $t({ defaultMessage: 'Venue' }),
+      dataIndex: 'name',
+      sorter: true,
+      searchable: true,
+      fixed: 'left'
+    },
+    {
+      key: 'city',
+      title: $t({ defaultMessage: 'City' }),
+      dataIndex: 'city',
+      filterKey: 'city',
+      filterable: cityFilterOptions || false,
+      sorter: true
+    },
+    {
+      key: 'country',
+      title: $t({ defaultMessage: 'Country' }),
+      dataIndex: 'country',
+      sorter: true
+    },
+    {
+      key: 'networks',
+      title: $t({ defaultMessage: 'Networks' }),
+      dataIndex: ['networks', 'count'],
+      align: 'center',
+      render: function (_, { networks }) { return networks?.count ? networks?.count : 0 }
+    },
+    {
+      key: 'aggregatedApStatus',
+      title: $t({ defaultMessage: 'Wi-Fi APs' }),
+      dataIndex: 'aggregatedApStatus',
+      align: 'center',
+      render: function (_, row) {
+        if (!row.aggregatedApStatus) { return 0 }
+        return Object
+          .values(row.aggregatedApStatus)
+          .reduce((a, b) => a + b, 0)
+      }
+    },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Venue) {
+        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
+        if (Boolean(row.activated?.isActivated)) {
+          return getNetworkTunnelInfo(destinationsInfo)
+        } else {
+          return ''
+        }
+      }
+    }]: []),
+    {
+      key: 'activated',
+      title: $t({ defaultMessage: 'Activated' }),
+      dataIndex: ['activated', 'isActivated'],
+      align: 'center',
+      render: function (_, row) {
+        let disabled = false
+        // eslint-disable-next-line max-len
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
+          disabled = true
+        } else if (systemNetwork) {
+          disabled = true
+          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
+        }else{
+          title = ''
+        }
+        return <Tooltip
+          title={title}
+          placement='bottom'>
+          <Switch
+            checked={Boolean(row.activated?.isActivated)}
+            disabled={disabled}
+            onClick={(checked, event) => {
+              activateNetwork(checked, row)
+              event.stopPropagation()
+            }}
+          />
+        </Tooltip>
+      }
+    },
+    {
+      key: 'vlan',
+      title: $t({ defaultMessage: 'VLAN' }),
+      dataIndex: 'vlan',
+      render: function (_, row) {
+        return transformVLAN(
+          getCurrentVenue(row),
+          networkQuery.data as NetworkSaveData,
+          vlanPoolingNameMap,
+          (e) => handleClickApGroups(row, e),
+          systemNetwork)
+      }
+    },
+    {
+      key: 'aps',
+      title: $t({ defaultMessage: 'APs' }),
+      dataIndex: 'aps',
+      width: 80,
+      render: function (_, row) {
+        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork, row.incompatible)
+      }
+    },
+    {
+      key: 'radios',
+      title: $t({ defaultMessage: 'Radios' }),
+      dataIndex: 'radios',
+      width: 140,
+      render: function (_, row) {
+        return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+      }
+    },
+    {
+      key: 'scheduling',
+      title: $t({ defaultMessage: 'Scheduling' }),
+      dataIndex: 'scheduling',
+      render: function (_, row) {
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), systemNetwork)
+      }
+    }
+  ]
+
+  const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setScheduleModalState({
+      visible: true,
+      venue: row,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleClickApGroups = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setApGroupModalState({
+      visible: true,
+      venueName: row.name,
+      network: networkQuery.data,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleCancel = () => {
+    setApGroupModalState({
+      visible: false
+    })
+    setScheduleModalState({
+      visible: false
+    })
+  }
+
+
+  const handleFormFinish = (name: string, newData: FormFinishInfo) => {
+    if (name === 'networkApGroupForm') {
+      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      const payload = aggregateApGroupPayload(newData, oldData)
+
+      updateNetworkVenue({ params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id
+      }, payload: payload }).then(()=>{
+        setApGroupModalState({
+          visible: false
+        })
+      })
+    }
+  }
+
+  const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
+    let data = _.cloneDeep(scheduleModalState.networkVenue)
+
+    const scheduler = info.values?.scheduler
+    const { type, ...weekdaysData } = scheduler || {}
+
+    let tmpScheduleList: schedule = { type }
+
+    if (type === SchedulerTypeEnum.ALWAYS_OFF) {
+      activateNetwork(false, scheduleModalState.venue! as Venue)
+      setScheduleModalState({
+        visible: false
+      })
+      return
+    }
+
+    if (type === SchedulerTypeEnum.CUSTOM) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let map: { [key: string]: any } = weekdaysData
+      for (let key in map) {
+        let scheduleList: string[] = []
+        for(let i = 0; i < 96; i++){
+          scheduleList.push('0')
+        }
+        map[key].forEach((item: string) => {
+          const value = parseInt(item.split('_')[1], 10)
+          scheduleList[value] = '1'
+        })
+        tmpScheduleList[key] = scheduleList.join('')
+      }
+    }
+
+    const payload = _.assign(data, { scheduler: tmpScheduleList })
+
+    updateNetworkVenue({ params: {
+      tenantId: params.tenantId,
+      networkVenueId: payload.id
+    }, payload: payload }).then(()=>{
+      setScheduleModalState({
+        visible: false
+      })
+    })
+  }
+
+  return (
+    <Loader states={[
+      tableQuery,
+      networkQuery,
+      { isLoading: false, isFetching: isAddNetworkUpdating },
+      { isLoading: false, isFetching: isDeleteNetworkUpdating }
+    ]}>
+      {
+        !networkQuery.data?.venues?.length &&
+        <Alert message={$t(notificationMessage)} type='info' showIcon closable />
+      }
+      <Table
+        settingsId={settingsId}
+        rowKey='id'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && !systemNetwork && {
+          type: 'checkbox'
+        }}
+        columns={columns}
+        dataSource={tableData}
+        pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
+        enableApiFilter={true}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+      />
+      <Form.Provider
+        onFormFinish={handleFormFinish}
+      >
+        <NetworkApGroupDialog
+          {...apGroupModalState}
+          tenantId={params.tenantId}
+          formName='networkApGroupForm'
+          onCancel={handleCancel}
+        />
+      </Form.Provider>
+      <Form.Provider
+        onFormFinish={handleScheduleFormFinish}
+      >
+        <NetworkVenueScheduleDialog
+          {...scheduleModalState}
+          formName='networkVenueScheduleForm'
+          network={networkQuery.data}
+          onCancel={handleCancel}
+        />
+      </Form.Provider>
+    </Loader>
+  )
+}
+
+function useGetVenueCityList () {
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: !isTemplate
+  })
+
+  const venueCityList = useGetVenueCityListQuery({ params }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: transformToCityListOptions(data)
+    }),
+    skip: isTemplate
+  })
+
+  return isTemplate ? venueCityListTemplate : venueCityList
+}

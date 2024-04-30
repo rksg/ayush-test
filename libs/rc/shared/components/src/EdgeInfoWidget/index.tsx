@@ -7,6 +7,7 @@ import { Button, GridCol, GridRow }                             from '@acx-ui/co
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { useGetDnsServersQuery, useGetEdgePasswordDetailQuery } from '@acx-ui/rc/services'
 import {
+  EdgeClusterStatus,
   EdgePortStatus,
   EdgeResourceUtilizationEnum,
   EdgeStatus
@@ -23,6 +24,7 @@ import { Styles }             from './styledComponents'
 interface EdgeInfoWidgetProps {
   className?: string
   currentEdge: EdgeStatus | undefined
+  currentCluster: EdgeClusterStatus | undefined
   edgePortsSetting: EdgePortStatus[] | undefined
   isEdgeStatusLoading: boolean
   isPortListLoading: boolean
@@ -33,6 +35,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
   const {
     className,
     currentEdge,
+    currentCluster,
     edgePortsSetting,
     isEdgeStatusLoading,
     isPortListLoading,
@@ -46,7 +49,18 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
     setVisible(true)
   }
 
-  const { data: dnsServers } = useGetDnsServersQuery({ params: { serialNumber } })
+  const { data: dnsServers } = useGetDnsServersQuery(
+    {
+      params: {
+        venueId: currentEdge?.venueId,
+        edgeClusterId: currentEdge?.clusterId,
+        serialNumber
+      }
+    },
+    {
+      skip: !currentEdge
+    }
+  )
 
   const { data: userProfile } = useUserProfileContext()
   const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
@@ -109,6 +123,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
         visible={visible}
         setVisible={setVisible}
         currentEdge={currentEdge}
+        currentCluster={currentCluster}
         dnsServers={dnsServers}
         passwordDetail={passwordDetail}
       />

@@ -8,8 +8,8 @@ import { ClientDualTable }                                                      
 import { UNSAFE_NavigationContext as NavigationContext }                             from '@acx-ui/react-router-dom'
 import { getIntl }                                                                   from '@acx-ui/utils'
 
-import ClientConnectionDiagnosis from './CCD'
-import { CcdResultViewerProps }  from './CCD/CcdResultViewer'
+import { ClientConnectionDiagnosis } from './CCD'
+import { CcdResultViewerProps }      from './CCD/CcdResultViewer'
 
 import type { History, Transition } from 'history'
 
@@ -78,7 +78,7 @@ export function ClientTab () {
     localStorage.setItem('client-tab', value)
   }
 
-  return (isSupportCCD?
+  return (isSupportCCD ?
     <ClientContext.Provider value={{
       ccdControlContext: ccdControlContext,
       setCcdControlContext: setCcdControlContext

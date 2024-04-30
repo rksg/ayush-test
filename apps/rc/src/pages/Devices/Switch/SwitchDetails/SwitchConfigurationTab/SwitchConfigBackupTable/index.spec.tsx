@@ -4,8 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { switchApi }                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,6 +17,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import { SwitchDetailsContext } from '../..'
+import { networkApGroup }       from '../../__tests__/fixtures'
 
 import { SwitchConfigBackupTable } from '.'
 
@@ -70,6 +72,7 @@ describe('SwitchConfigBackupTable', () => {
   afterEach(() => jest.restoreAllMocks())
 
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.get(
         SwitchUrlsInfo.downloadSwitchConfig.url,
@@ -90,11 +93,15 @@ describe('SwitchConfigBackupTable', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(networkApGroup))
       )
     )
   })
 
-  it('should render correctly: Backup, Restore, Download and Delete', async () => {
+  it('should render correctly: Backup, Restore and Download', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData: {
@@ -131,7 +138,33 @@ describe('SwitchConfigBackupTable', () => {
     const restoreDialog = await screen.findByRole('dialog')
     await userEvent.click(await within(restoreDialog).findByRole('button', { name: 'Restore' }))
     await waitFor(async () => expect(restoreDialog).not.toBeVisible())
+    expect(await screen.findByText(/Manual_20230111181247 was restored/)).toBeVisible()
+  })
 
+  it('should render correctly: Delete', async () => {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData: {
+          currentSwitchOperational: true,
+          switchName: 'FEK3224R0AG'
+        },
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchConfigBackupTable />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.totalCount)
+
+    const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
     await userEvent.click(row1)
     await userEvent.click(row2)
@@ -340,15 +373,14 @@ describe('SwitchConfigBackupTable', () => {
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(inRestoreProgressList.data.length)
+    expect(within(rows[0]).getByRole('cell', { name: /Manual_20230111181247/i })).toBeVisible()
+    await userEvent.click(await within(rows[0]).findByRole('checkbox')) //Manual_20230111181247
 
-    const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
-    await userEvent.click(await within(row1).findByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /SCHEDULED_1/i })).toBeVisible()
+    await userEvent.click(await within(rows[1]).findByRole('checkbox')) //SCHEDULED_1
 
-    const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
-    await userEvent.click(await within(row2).findByRole('checkbox'))
-
-    const row3 = await screen.findByRole('row', { name: /testBackup/i })
-    await userEvent.click(await within(row3).findByRole('checkbox'))
+    expect(within(rows[2]).getByRole('cell', { name: /testBackup/i })).toBeVisible()
+    await userEvent.click(await within(rows[2]).findByRole('checkbox')) //testBackup
     expect(await screen.findByRole('button', { name: 'Restore' })).toBeDisabled()
   })
 

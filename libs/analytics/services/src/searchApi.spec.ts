@@ -1,12 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { store, dataApiSearchURL } from '@acx-ui/store'
-import { mockGraphqlQuery }        from '@acx-ui/test-utils'
+import { store, dataApiSearchURL, dataApiURL } from '@acx-ui/store'
+import { mockGraphqlQuery }                    from '@acx-ui/test-utils'
 
-import { apListFixture, searchFixture } from './__tests__/fixtures'
 import {
-  searchApi
-} from './searchApi'
+  apListFixture,
+  searchFixture,
+  switchListFixture,
+  wifiNetworksFixture,
+  clientNetworksFixture
+} from './__tests__/fixtures'
+import { searchApi, networkSearchApi } from './searchApi'
 
 describe('Search API', () => {
 
@@ -32,21 +36,106 @@ describe('Search API', () => {
     expect(data).toMatchObject(searchFixture.search)
   })
 
-  it('apList api should return the data', async () => {
+  it('report-only: search api should return the data', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: {
+        search: {
+          aps: searchFixture.search.aps
+        }
+      }
+    })
+    const searchPayload = {
+      start: '2023-04-06T15:26:21+05:30',
+      end: '2023-04-06T15:29:48+05:30',
+      query: 'sometext',
+      limit: 100,
+      isReportOnly: true
+    }
+    const { status, data, error } = await store.dispatch(
+      searchApi.endpoints.search.initiate(searchPayload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject({
+      aps: searchFixture.search.aps
+    })
+  })
+
+  it('apList api should return the data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
       data: apListFixture
     })
     const payload = {
       start: '2023-04-06T15:26:21+05:30',
       end: '2023-04-06T15:29:48+05:30',
       metric: 'traffic',
+      query: 'sometext',
       limit: 100
     }
     const { status, data, error } = await store.dispatch(
-      searchApi.endpoints.apList.initiate(payload))
+      networkSearchApi.endpoints.apList.initiate(payload))
 
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')
-    expect(data).toMatchObject(apListFixture.search)
+    expect(data).toMatchObject(apListFixture.network.search)
+  })
+
+  it('switchList api should return the data', async () => {
+    mockGraphqlQuery(dataApiSearchURL, 'Search', {
+      data: switchListFixture
+    })
+    const payload = {
+      start: '2023-04-06T15:26:21+05:30',
+      end: '2023-04-06T15:29:48+05:30',
+      query: 'sometext',
+      metric: 'traffic',
+      limit: 100
+    }
+    const { status, data, error } = await store.dispatch(
+      searchApi.endpoints.switchList.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject(switchListFixture.search)
+  })
+
+  it('wifiNetworks api should return the data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: wifiNetworksFixture
+    })
+    const payload = {
+      start: '2023-04-06T15:26:21+05:30',
+      end: '2023-04-06T15:29:48+05:30',
+      query: 'sometext',
+      metric: 'traffic',
+      limit: 100
+    }
+    const { status, data, error } = await store.dispatch(
+      networkSearchApi.endpoints.networkList.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject(wifiNetworksFixture.network.search)
+  })
+
+  it('clientNetworks api should return the data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: {
+        network: clientNetworksFixture
+      }
+    })
+    const payload = {
+      start: '2023-04-06T15:26:21+05:30',
+      end: '2023-04-06T15:29:48+05:30',
+      query: '',
+      limit: 100,
+      filter: {}
+    }
+    const { status, data, error } = await store.dispatch(
+      networkSearchApi.endpoints.networkClientList.initiate(payload))
+
+    expect(error).toBeUndefined()
+    expect(status).toBe('fulfilled')
+    expect(data).toMatchObject(clientNetworksFixture.search)
   })
 })

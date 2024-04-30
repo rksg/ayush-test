@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
@@ -42,6 +43,7 @@ export interface ImpactedClients {
 export interface ImpactedClient {
   mac: string | string[]
   manufacturer: string | string[]
+  osType: string | string[]
   ssid: string | string[]
   hostname: string | string[]
   username: string | string[]
@@ -60,11 +62,13 @@ export interface PieChartPayload {
   queryFilter: string
 }
 
-export type ImpactedNodesAndWlans = {
+export type ImpactedEntities = {
   network: {
     hierarchyNode: {
       nodes?: Array<{ key: string, value: number, name: string | null }>,
       wlans: Array<{ key: string, value: number }>
+      osManufacturers: Array<{ key: string, value: number }>,
+      events?: Array<{ key: string, value: number }>
     }
   }
 }
@@ -78,16 +82,21 @@ export const pieChartQuery = (
   const apNode = find(path, { type: 'AP' })
   switch (type) {
     case 'connectionFailure': {
-      return apNode
-        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
-        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }
-      wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
+      return (apNode
+        ? ''
+        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }`
+      ) + `
+      wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }
+      osManufacturers: topNManufacturersByConnFailure(n: 6, stage: "${stageFilter}") { key value }
+      events: topNEventsByConnFailure(n: 6, stage:"${stageFilter}") { key value }`
     }
     case 'ttc': {
-      return apNode
-        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
-        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }
-        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
+      return (apNode
+        ? ''
+        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }`
+      ) + `
+        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }
+        osManufacturers: topNManufacturersByTTC(n: 6, stage: "${stageFilter}") { key value }`
     }
     default: {
       return ''
@@ -176,6 +185,7 @@ export const api = dataApi.injectEndpoints({
                 ssid
                 hostname
                 username
+                osType
               }`
         }
         return {
@@ -201,7 +211,7 @@ export const api = dataApi.injectEndpoints({
       }
     }),
 
-    pieChart: build.query<ImpactedNodesAndWlans, PieChartPayload>({
+    pieChart: build.query<ImpactedEntities, PieChartPayload>({
       query: payload => {
         const { filter, queryType, queryFilter } = payload
         const innerQuery = pieChartQuery(filter, queryType, queryFilter)

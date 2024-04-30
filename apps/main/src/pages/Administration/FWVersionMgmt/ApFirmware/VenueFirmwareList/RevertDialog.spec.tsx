@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi } from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -31,6 +32,7 @@ import { VenueFirmwareList } from '.'
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
@@ -78,7 +80,7 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(updateButton)
 
     const confirmDialog = await screen.findByRole('dialog')
-    const updateVenueButton = await screen.findByText('Run Revert')
+    const updateVenueButton = within(confirmDialog).getByText('Run Revert')
     await userEvent.click(updateVenueButton)
     await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })

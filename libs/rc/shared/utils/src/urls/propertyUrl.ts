@@ -13,6 +13,7 @@ type PropertyUrlType =
   'getPropertyUnitList' |
   'updatePropertyUnit' |
   'deletePropertyUnits' |
+  'notifyPropertyUnits' |
   'getResidentPortalList' |
   'getResidentPortalsQuery' |
   'addResidentPortal' |
@@ -22,7 +23,8 @@ type PropertyUrlType =
   'getResidentPortalLogo' |
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
-  'deleteResidentPortalFavicon'
+  'deleteResidentPortalFavicon' |
+  'bulkUpdateUnitProfile'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -82,6 +84,11 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units'
   },
+  notifyPropertyUnits: {
+    method: 'post',
+    newApi: true,
+    url: '/venues/:venueId/units/notifications'
+  },
   getResidentPortalList: {
     method: 'get',
     newApi: true,
@@ -131,5 +138,10 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/residentPortals/:serviceId/files/favIcon'
+  },
+  bulkUpdateUnitProfile: {
+    method: 'put',
+    newApi: true,
+    url: '/venues/:venueId/units/qosProfileAssignments/:profileId'
   }
 }

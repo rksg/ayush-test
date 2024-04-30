@@ -1,5 +1,5 @@
-import { Divider as AntDivider, Form as AntdForm } from 'antd'
-import styled                                      from 'styled-components/macro'
+import { Divider as AntDivider, Form as AntdForm, Space } from 'antd'
+import styled                                             from 'styled-components/macro'
 
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 
@@ -68,6 +68,20 @@ export const FormItem = styled(AntdForm.Item)`
         background: var(--acx-accents-blue-50);
       }
     }
+  }
+`
+
+export const HorizontalFormItemLayout = styled(Space)`
+  display: flex;
+  > .ant-space-item {
+    flex-basis: 50%;
+    &:only-child {
+      flex-basis: 100%;
+    }
+  }
+
+  label {
+    height: auto;
   }
 `
 
@@ -153,5 +167,12 @@ export const VoiceVlanSwitch = styled.div`
     .ant-switch-handle::before {
       background-color: var(--acx-semantics-red-50);
     }
+  }
+`
+
+export const DrawerFooterDivider = styled.div`
+  .ant-divider-vertical {
+    height: 30px;
+    border-color: var(--acx-primary-black);
   }
 `

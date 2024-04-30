@@ -48,15 +48,11 @@ import {
   AccessControlUrls,
   DpskMutationResult,
   DpskDownloadNewFlowPassphrasesPayload,
-  convertDpskNewFlowUrl,
   DpskDownloadPassphrasesPayload,
   DpskPassphrasesClientPayload,
-  DpskNewFlowPassphraseClient
-} from '@acx-ui/rc/utils'
-import {
+  DpskNewFlowPassphraseClient,
   CloudpathServer,
-  ApplicationPolicy,
-  AccessControlProfile
+  ApplicationPolicy
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -82,38 +78,13 @@ const mDnsProxyMutationUseCases = [
   'DeactivateMulticastDnsProxyServiceProfileAps'
 ]
 
+const defaultDpskVersioningHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v2+json',
+  'Accept': 'application/vnd.ruckus.v2+json'
+}
+
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
-    serviceList: build.query<TableResult<Service>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const serviceListReq = createHttpRequest(CommonUrlsInfo.getServicesList, params)
-        return {
-          ...serviceListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            ...mDnsProxyMutationUseCases,
-            'AddWifiCallingServiceProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles',
-            'Update Portal Service Profile',
-            'Delete Portal Service Profile',
-            'Delete Portal Service Profiles',
-            'AddDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
         const cloudpathListReq = createHttpRequest(
@@ -133,17 +104,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         )
         return {
           ...applicationPolicyListReq
-        }
-      }
-    }),
-    accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
-      query: ({ params }) => {
-        const accessControlProfileListReq = createHttpRequest(
-          AccessControlUrls.getAccessControlProfileList,
-          params
-        )
-        return {
-          ...accessControlProfileListReq
         }
       }
     }),
@@ -226,21 +186,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...dhcpDetailReq
         }
       },
-      transformResponse (dhcpProfile: DHCPSaveData) {
-        _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
-            pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
-          }else{
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
-
-          // eslint-disable-next-line max-len
-          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
-        })
-        return dhcpProfile
-      },
+      transformResponse: transformDhcpResponse,
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
@@ -433,10 +379,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
-          PortalUrlsInfo.savePortal, params
+          PortalUrlsInfo.createPortal, params
         )
         return {
           ...createPortalReq,
@@ -542,7 +488,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskReq = createDpskHttpRequest(DpskUrls.addDpsk, params)
         return {
           ...createDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -552,7 +498,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const updateDpskReq = createDpskHttpRequest(DpskUrls.updateDpsk, params)
         return {
           ...updateDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -560,9 +506,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskListReq = createNewTableHttpRequest({
-          apiInfo: transferDpskNewConfigApiInfo(DpskUrls.getDpskList, params),
+          apiInfo: DpskUrls.getDpskList,
           params,
-          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams
+          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams,
+          headers: defaultDpskVersioningHeaders
         })
 
         return {
@@ -593,7 +540,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           ...getDpskListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Dpsk', id: 'LIST' }],
@@ -617,7 +564,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const getDpskReq = createDpskHttpRequest(DpskUrls.getDpsk, params)
         return {
           ...getDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
@@ -627,7 +574,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.deleteDpsk, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -637,7 +584,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskPassphrasesReq = createDpskHttpRequest(DpskUrls.addPassphrase, params)
         return {
           ...createDpskPassphrasesReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
@@ -647,7 +594,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskPassphrasesReq = createDpskHttpRequest(DpskUrls.updatePassphrase, params)
         return {
           ...createDpskPassphrasesReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -661,7 +608,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           ...getDpskListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }],
@@ -673,7 +620,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'UPDATE_DPSK_PASSPHRASE',
             'DELETE_DPSK_PASSPHRASE',
             'UPDATE_DPSK_PASSPHRASES',
-            'IMPORT_DPSK_PASSPHRASES'
+            'IMPORT_DPSK_PASSPHRASES',
+            'CREATE_PASSPHRASE_DEVICES',
+            'DELETE_PASSPHRASE_DEVICES'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'DpskPassphrase', id: 'LIST' }
@@ -698,7 +647,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.deletePassphrase, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
@@ -708,7 +657,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.revokePassphrases, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       // eslint-disable-next-line max-len
@@ -716,10 +665,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDpskPassphraseDevices: build.query<DPSKDeviceInfo[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.getNewFlowPassphraseDevices
-          : DpskUrls.getPassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.getPassphraseDevices, params)
         return {
           ...req
         }
@@ -729,7 +675,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'CREATE_PASSPHRASE_DEVICES',
-            'DELETE_PASSPHRASE_DEVICES'
+            'DELETE_PASSPHRASE_DEVICES',
+            'CREATE_DPSK_PASSPHRASE',
+            'CREATE_DPSK_PASSPHRASES',
+            'UPDATE_DPSK_PASSPHRASE',
+            'DELETE_DPSK_PASSPHRASE',
+            'UPDATE_DPSK_PASSPHRASES',
+            'IMPORT_DPSK_PASSPHRASES'
           ], () => {
             // eslint-disable-next-line max-len
             api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
@@ -739,35 +691,30 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     updateDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.updateNewFlowPassphraseDevices
-          : DpskUrls.updatePassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.updatePassphraseDevices, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.deleteNewFlowPassphraseDevices
-          : DpskUrls.deletePassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.deletePassphraseDevices, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createDpskHttpRequest(DpskUrls.uploadPassphrases, params, {
+        const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
           'Content-Type': undefined
         })
+
         return {
           ...req,
           body: payload
@@ -805,7 +752,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     downloadNewFlowPassphrases: build.query<Blob, RequestPayload<DpskDownloadNewFlowPassphrasesPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
+        const req = createDpskHttpRequest(
           DpskUrls.exportNewFlowPassphrases,
           {
             ...params,
@@ -835,26 +782,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     getPassphraseClient: build.query<DpskPassphraseClient | undefined, RequestPayload<DpskPassphrasesClientPayload>>({
       query: ({ params, payload }) => {
-        const isNewFlow = isDpskNewFlow(params)
-
-        const apiInfo = DpskUrls[isNewFlow ? 'getNewFlowPassphraseClient' : 'getPassphraseClient']
-        const apiParams = isNewFlow ? {
+        const apiInfo = DpskUrls['getPassphraseClient']
+        const apiParams = {
           ...params,
           networkId: payload!.networkId,
           mac: payload!.mac
-        } : params
+        }
 
-        const req = createHttpRequest(apiInfo, apiParams)
+        const req = createDpskHttpRequest(apiInfo, apiParams)
 
         return {
-          ...req,
-          ...(isNewFlow ? {} : { body: payload })
+          ...req
         }
       },
-      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, meta, arg) {
-        if (!isDpskNewFlow(arg.params)) return result as DpskPassphraseClient
-
-        if (_.isEmpty(result)) return undefined
+      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient) {
+        if (_.isEmpty(result)) return {} as DpskPassphraseClient
 
         const res = result as DpskNewFlowPassphraseClient
 
@@ -863,7 +805,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           username: res.username,
           passphrase: res.passphrase,
           numberOfDevices: res.numberOfDevices,
-          clientMac: res.devices.map(device => device.mac),
+          clientMac: res.devices?.map(device => device.mac) ?? [],
           createdDate: res.createdDate,
           expirationDate: res.expirationDate
         } as DpskPassphraseClient
@@ -959,11 +901,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
@@ -1008,7 +948,7 @@ export const {
   useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
-  useSavePortalMutation,
+  useCreatePortalMutation,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,
@@ -1020,25 +960,37 @@ export const {
   useGetEnhancedPortalProfileListQuery
 } = serviceApi
 
-function isDpskNewFlow (params?: Params<string>): boolean {
-  return params?.isNewConfigFlow === 'y'
-}
-
-export type DpskNewConfigFlowParamsValue = 'y' | 'n'
-
-export function transferDpskNewConfigApiInfo (apiInfo: ApiInfo, params?: Params<string>): ApiInfo {
-  if (!isDpskNewFlow(params)) return apiInfo
-
-  return { ...apiInfo, url: convertDpskNewFlowUrl(apiInfo.url) }
-}
-
 export function createDpskHttpRequest (
   apiInfo: ApiInfo,
   params?: Params<string>,
   customHeaders?: Record<string, unknown>,
   ignoreDelegation?: boolean
 ) {
-  const newApiInfo = transferDpskNewConfigApiInfo(apiInfo, params)
+  const defaultHeaders = {
+    'Content-Type': 'application/vnd.ruckus.v2+json',
+    'Accept': 'application/vnd.ruckus.v2+json'
+  }
 
-  return createHttpRequest(newApiInfo, params, customHeaders, ignoreDelegation)
+  return createHttpRequest(
+    apiInfo,
+    params,
+    { ...defaultHeaders, ...customHeaders },
+    ignoreDelegation
+  )
+}
+
+export function transformDhcpResponse (dhcpProfile: DHCPSaveData) {
+  _.each(dhcpProfile.dhcpPools, (pool)=>{
+    if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
+      pool.leaseUnit = LeaseUnit.MINUTES
+      pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+    }else{
+      pool.leaseUnit = LeaseUnit.HOURS
+      pool.leaseTime = pool.leaseTimeHours
+    }
+
+    // eslint-disable-next-line max-len
+    pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
+  })
+  return dhcpProfile
 }

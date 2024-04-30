@@ -13,10 +13,9 @@ import {
 
 import * as UI from './styledComponents'
 
-import type { SelectProps  } from 'antd'
+import type { SelectProps } from 'antd'
 
 interface ChangeSlotDialogProps {
-  visible: boolean,
   onCancel: () => void,
   onSubmit: (data: { valueDays: string[], valueTimes: string[] }) => void,
   days: string[],
@@ -27,11 +26,11 @@ const { Option } = Select
 
 export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   const { $t } = useIntl()
-  const { visible, onSubmit, onCancel, days, times } = props
+  const { onSubmit, onCancel, days, times } = props
   const [valueDays, setValueDays] = useState<string[]>([])
-  const [disabledDays, setDisabledDays] = useState(false)
+  const [disabledDays, setDisabledDays] = useState(isDaysDisabled(days))
   const [valueTimes, setValueTimes] = useState<string[]>([])
-  const [disabledTimes, setDisabledTimes] = useState(false)
+  const [disabledTimes, setDisabledTimes] = useState(isTimesDisabled(times))
   const [disableSave, setDisableSave] = useState(true)
 
   useEffect(() => {
@@ -43,8 +42,13 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     }
   }, [days, times])
 
-  // eslint-disable-next-line max-len
-  const dayOptions = AVAILABLE_DAYS.map(item => <Option key={item.value} value={item.value} disabled={disabledDays && !valueDays.includes(item.value)}>{item.label}</Option>) ?? []
+  const dayOptions = AVAILABLE_DAYS.map(item => {
+    return <Option
+      key={item.value}
+      value={item.value}
+      disabled={disabledDays && !valueDays.includes(item.value)}
+    >{item.label}</Option>
+  }) ?? []
 
   const selectDaysProps: SelectProps = {
     mode: 'multiple',
@@ -52,11 +56,8 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     value: valueDays,
     children: dayOptions,
     onChange: (newValue: string[]) => {
-      if (newValue.length >=3) {
-        setDisabledDays(true)
-      } else {
-        setDisabledDays(false)
-      }
+      setDisabledDays(isDaysDisabled(newValue))
+
       setValueDays(newValue)
       if (newValue.length === 0 || valueTimes.length ===0) {
         setDisableSave(true)
@@ -64,12 +65,16 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
         setDisableSave(false)
       }
     },
-    placeholder: 'Select Item...'
-    // maxTagCount: 1
+    placeholder: $t({ defaultMessage: 'Select Item...' })
   }
 
-  // eslint-disable-next-line max-len
-  const timeOptions = AVAILABLE_SLOTS.map(item => <Option key={item.value} value={item.value} disabled={disabledTimes && !valueTimes.includes(item.value)}>{item.label}</Option>) ?? []
+  const timeOptions = AVAILABLE_SLOTS.map(item => {
+    return <Option
+      key={item.value}
+      value={item.value}
+      disabled={disabledTimes && !valueTimes.includes(item.value)}
+    >{item.label}</Option>
+  }) ?? []
 
   const selectTimesProps: SelectProps = {
     mode: 'multiple',
@@ -77,20 +82,16 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
     value: valueTimes,
     children: timeOptions,
     onChange: (newValue: string[]) => {
-      if (newValue.length >=3) {
-        setDisabledTimes(true)
-      } else {
-        setDisabledTimes(false)
-      }
+      setDisabledTimes(isTimesDisabled(newValue))
+
       setValueTimes(newValue)
-      if (valueDays.length === 0 || newValue.length ===0) {
+      if (valueDays.length === 0 || newValue.length === 0) {
         setDisableSave(true)
       } else {
         setDisableSave(false)
       }
     },
-    placeholder: 'Select Item...'
-    // maxTagCount: 1
+    placeholder: $t({ defaultMessage: 'Select Item...' })
   }
 
   const triggerSubmit = () => {
@@ -110,7 +111,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   return (
     <Modal
       title={$t({ defaultMessage: 'Change preferred update slot' })}
-      visible={visible}
+      visible={true}
       width={440}
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
@@ -137,4 +138,12 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       </UI.FieldGroup>
     </Modal>
   )
+}
+
+function isDaysDisabled (days: string[]): boolean {
+  return days.length >= 3
+}
+
+function isTimesDisabled (times: string[]): boolean {
+  return times.length >= 3
 }

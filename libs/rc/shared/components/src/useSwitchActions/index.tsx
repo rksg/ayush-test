@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { showActionModal }         from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useDeleteSwitchesMutation,
+  useBatchDeleteSwitchMutation,
   useRebootSwitchMutation,
   useSyncDataMutation,
   useSyncSwitchesDataMutation,
@@ -19,7 +22,9 @@ import {
 
 export function useSwitchActions () {
   const { $t } = useIntl()
+  const rbacApiToggle = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
+  const [ batchDeleteSwitch ] = useBatchDeleteSwitchMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
   const [ syncData ] = useSyncDataMutation()
   const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
@@ -43,9 +48,16 @@ export function useSwitchActions () {
         confirmationText: !shouldHideConfirmation(rows) ? 'Delete' : undefined
       },
       onOk: () => {
-        const switchIdList = rows.map(item => item.id || item.serialNumber)
-        deleteSwitches({ params: { tenantId }, payload: switchIdList })
-          .then(callBack)
+        if(!rbacApiToggle) {
+          const switchIdList = rows.map(item => item.id || item.serialNumber)
+          deleteSwitches({ params: { tenantId }, payload: switchIdList })
+            .then(callBack)
+        } else {
+          const groups = _.groupBy(rows, 'venueId')
+          const requests = Object.keys(groups).map(key => ({ params: { venueId: key } , payload: groups[key].map(item => item.id || item.serialNumber) }))
+          batchDeleteSwitch(requests)
+            .then(callBack)
+        }
       }
     })
   }

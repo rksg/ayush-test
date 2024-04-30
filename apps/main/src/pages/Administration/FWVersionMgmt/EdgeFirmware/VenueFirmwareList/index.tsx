@@ -10,6 +10,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
@@ -33,11 +34,11 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   compareVersions,
   getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   toUserDate
 } from '../../FirmwareUtils'
@@ -63,6 +64,7 @@ export function VenueFirmwareList () {
   const [updateModalVisible, setUpdateModalVisible] = useState(false)
   const [preferenceModalVisible, setPreferenceModalVisible] = useState(false)
   const [changeScheduleModal, setChangeScheduleModal] = useState(false)
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
@@ -126,8 +128,7 @@ export function VenueFirmwareList () {
       dataIndex: 'updatedDate',
       sorter: { compare: sortProp('updatedDate', dateSort) },
       render: function (_, row) {
-        if (!row.updatedDate) return '--'
-        return toUserDate(row.updatedDate)
+        return toUserDate(row.updatedDate || noDataDisplay)
       }
     },
     ...(
@@ -208,9 +209,17 @@ export function VenueFirmwareList () {
             okText: $t({ defaultMessage: 'Skip' }),
             cancelText: $t({ defaultMessage: 'Cancel' }),
             onOk () {
-              skipSchedule({
-                payload: selectedRows.map((row) => row.id)
-              }).then(clearSelection)
+              const requests = []
+              try {
+                for(let row of selectedRows) {
+                  requests.push(skipSchedule({
+                    params: { venueId: row.id }
+                  }))
+                }
+                Promise.all(requests).then(() => clearSelection())
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
             },
             onCancel () {}
           })
@@ -224,13 +233,18 @@ export function VenueFirmwareList () {
   }
 
   const handleUpdateModalSubmit = async (data: string) => {
+    const requests = []
     const payload = {
-      venueIds: venueIds,
       version: data
     }
     try {
-      await updateNow({ payload }).unwrap()
-      setSelectedRowKeys([])
+      for(let venueId of venueIds) {
+        requests.push(updateNow({
+          params: { venueId },
+          payload
+        }))
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -253,10 +267,16 @@ export function VenueFirmwareList () {
   }
 
   const handleChangeScheduleModalSubmit = async (data: EdgeUpdateScheduleRequest) => {
-    const payload = { ...data, venueIds }
+    const requests = []
+    const payload = { ...data }
     try {
-      await updateSchedule({ payload }).unwrap()
-      setSelectedRowKeys([])
+      for(let venueId of venueIds) {
+        requests.push(updateSchedule({
+          params: { venueId },
+          payload
+        }))
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -272,7 +292,7 @@ export function VenueFirmwareList () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[
+        actions={filterByAccess([
           ...(
             isScheduleUpdateReady ? [
               {
@@ -281,7 +301,7 @@ export function VenueFirmwareList () {
               }
             ] : []
           )
-        ]}
+        ])}
       />
       <UpdateNowDialog
         visible={updateModalVisible}

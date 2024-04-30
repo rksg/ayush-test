@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { renderHook, render } from '@testing-library/react'
-import { MemoryRouter }       from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
 import { get }                                               from '@acx-ui/config'
+import { renderHook, render }                                from '@acx-ui/test-utils'
 import { resetRanges, fixedEncodeURIComponent, NetworkPath } from '@acx-ui/utils'
 
 import {
@@ -12,7 +12,9 @@ import {
   getSelectedNodePath,
   pathToFilter,
   defaultNetworkPath,
-  isSwitchPath
+  isSwitchPath,
+  isApPath,
+  isApOrSwitchPath
 } from './analyticsFilter'
 
 const network = { type: 'network', name: 'Network' }
@@ -166,6 +168,8 @@ describe('useAnalyticsFilter', () => {
   })
 
   it('should set path to default when path is health and selected node is switch for R1', () => {
+    mockGet.mockReturnValueOnce('true')
+
     const filter = {
       path: [
         { type: 'switchGroup', name: 'switchGroup' }
@@ -174,7 +178,11 @@ describe('useAnalyticsFilter', () => {
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
     function Component () {
-      const { filters, pathFilters } = useAnalyticsFilter()
+      const { filters, pathFilters } = useAnalyticsFilter({
+        revertToDefaultURLs: {
+          noSwitchSupportURLs: ['/ai/health', '/analytics/health']
+        }
+      })
       return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
     }
     const { asFragment } = render(
@@ -201,7 +209,52 @@ describe('useAnalyticsFilter', () => {
     }
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
-        pathname: '/ai/health',
+        pathname: '/ai/health/wireless',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is ' +
+    'health overview and selected node is switch for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/health/overview',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should set path to default when path is wired report and selected node is ap for RAI', () => {
+    const filter = {
+      path: [
+        { type: 'apGroup', name: 'apGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = fixedEncodeURIComponent(JSON.stringify(filter))
+    function Component () {
+      const { filters, pathFilters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)} | {JSON.stringify(pathFilters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/ai/reports/wired',
         search: `?analyticsNetworkFilter=${path}`
       }]}>
         <Component />
@@ -322,8 +375,8 @@ describe('pathToFilter', () => {
     expect(pathToFilter(
       [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
     )).toEqual({
-      networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
-      switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
+      networkNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]],
+      switchNodes: [[{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]]
     })
   })
   it('returns correct filter for mlisa app', () => {
@@ -355,5 +408,55 @@ describe('isSwitchPath', () => {
   it('returns false if not switch path', () => {
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     expect(isSwitchPath(path)).toBe(false)
+  })
+})
+describe('isApPath', () => {
+  it('returns true if is ap path', () => {
+    mockGet.mockReturnValueOnce('true')
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'zone', name: 'z1' },
+      { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApPath(path)).toBe(true)
+  })
+  it('returns true if is ap path for Alto', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'z1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApPath(path)).toBe(true)
+  })
+  it('returns false if not ap path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isApPath(path)).toBe(false)
+  })
+})
+describe('isApOrSwitchPath', () => {
+  it('returns true if is ap path', () => {
+    mockGet.mockReturnValueOnce('true')
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'system', name: 's1' },
+      { type: 'zone', name: 'z1' },
+      { type: 'apGroup', name: 'a1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(true)
+  })
+  it('returns true if is ap path for Alto', () => {
+    const path = [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'z1' },
+      { type: 'AP', name: 'm1' }
+    ] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(true)
+  })
+  it('returns false if not ap path', () => {
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    expect(isApOrSwitchPath(path)).toBe(false)
   })
 })

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }               from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { EdgeDhcpUrls }                                          from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockedEdgeDhcpData, mockEdgeDhcpHostStats } from './__tests__/fixtures'
 
@@ -30,6 +30,7 @@ describe('EdgeDhcpLeaseTable', () => {
       <Provider>
         <EdgeDhcpLeaseTable edgeId='testId' />
       </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestHost/i })
     expect(row.length).toBe(2)
   })
@@ -39,6 +40,7 @@ describe('EdgeDhcpLeaseTable', () => {
       <Provider>
         <EdgeDhcpLeaseTable edgeId='testId' isInfinite />
       </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const infiniteText = await screen.findAllByText('Infinite')
     expect(infiniteText.length).toBe(2)
   })

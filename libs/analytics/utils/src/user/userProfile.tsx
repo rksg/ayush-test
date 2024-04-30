@@ -27,26 +27,28 @@ export function getPendoConfig (): PendoParameters {
       productName: 'RuckusAI',
       id: tenant.id,
       name: tenant.name,
-      isTrial: tenant.isTrial
+      isTrial: tenant.isTrial,
+      sfdcId: tenant.id
     }
   }
 }
-const extractTenantFromUrl = (tenantFromUrl: string | null) => {
-  if (tenantFromUrl) {
-    const [ tenantId ] = JSON.parse(atob(decodeURIComponent(tenantFromUrl))) as [string]
-    return tenantId
-  }
-  return null
+const getSelectedTenant = (profile: UserProfile): Tenant => {
+  const search = new URLSearchParams(window.location.search)
+  const selected = search.get('selectedTenants')
+  const id = selected
+    ? JSON.parse(window.atob(decodeURIComponent(selected)))[0]
+    : profile.accountId
+  return profile.tenants.find(tenant => tenant.id === id)!
 }
 export const getUserProfile = () => user.profile
 export const setUserProfile = (profile: UserProfile) => {
-  const searchParams = new URLSearchParams(window.location.search)
-  const selectedTenantId = extractTenantFromUrl(searchParams.get('selectedTenants'))
-    || profile.accountId
-  if (selectedTenantId === (getUserProfile())?.selectedTenant?.id) return
-  const selectedTenant = profile.tenants.find(tenant => tenant.id === selectedTenantId) as Tenant
-  // Do not call this manually except in test env & UserProfileProvider
-  user.profile = { ...profile, selectedTenant }
+  user.profile = { ...profile, selectedTenant: getSelectedTenant(profile) }
+}
+export const updateSelectedTenant = () => {
+  const currentProfile = getUserProfile()
+  const selectedTenant = getSelectedTenant(currentProfile)
+  if (selectedTenant.id === currentProfile.selectedTenant.id) return
+  user.profile.selectedTenant = selectedTenant
   updatePendo(
     /* istanbul ignore next */
     () => getPendoConfig()

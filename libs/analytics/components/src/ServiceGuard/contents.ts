@@ -86,7 +86,7 @@ export const unsupportedAuthMethods = {
     <ul>
       <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li>
       <li>WEP encryption</li>
-      <li>WPA3/WPA2 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
+      <li>WPA2/WPA3 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
       <li>Captive portal</li>
       <li>Cloudpath</li>
       <li>DPSK</li>
@@ -157,11 +157,11 @@ export const messageMapping = {
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
   DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
-  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test created' }),
-  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test updated' }),
-  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test deleted' }),
-  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test cloned' }),
-  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test running' })
+  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test was created' }),
+  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test was updated' }),
+  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test was deleted' }),
+  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test was cloned' }),
+  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test is running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

@@ -11,7 +11,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchUpgradePreferences: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   updateUpgradePreferences: {
     method: 'put',
@@ -21,7 +22,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateSwitchUpgradePreferences: {
     method: 'put',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   getVenueVersionList: {
     method: 'get',
@@ -45,6 +47,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/apFirmwares?status=release&abf=all',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release/all',
+    newApi: true
+  },
+  getApModelFamilies: {
+    method: 'post',
+    url: '/apModelFamilies/query',
     newApi: true
   },
   getFirmwareVersionIdList: {
@@ -72,6 +79,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/update-now',
     newApi: true
   },
+  updateDowngrade: {
+    method: 'put',
+    url: '/venues/:venueId/apFirmwares/:firmwareVersion',
+    newApi: true
+  },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
     url: '/venues/switchFirmwares/schedules',
@@ -88,6 +100,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/switchFirmwares/versions/latest',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/latest',
+    newApi: true
+  },
+  getSwitchDefaultFirmwareList: {
+    method: 'get',
+    url: '/venues/switchFirmwares/versions/default',
     newApi: true
   },
   getSwitchFirmwareVersionIdList: {
@@ -112,6 +129,16 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/switchFirmwares/currentVersions',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
+    newApi: true
+  },
+  getSwitchFirmwareList: {
+    method: 'post',
+    url: '/venues/switchFirmwares/switches/schedules/query',
+    newApi: true
+  },
+  getSwitchFirmwareStatusList: {
+    method: 'post',
+    url: '/venues/switchFirmwares/upgradeStatusDetails/query',
     newApi: true
   },
   getInvalidTimeSlots: {
@@ -151,9 +178,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueEdgeFirmwareList: {
-    method: 'get',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    method: 'post',
+    url: '/edgeFirmwares/schedules/query',
     newApi: true
   },
   getAvailableEdgeFirmwareVersions: {
@@ -164,8 +190,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateEdgeFirmware: {
     method: 'PATCH',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares',
     newApi: true
   },
   getEdgeUpgradePreferences: {
@@ -182,14 +207,38 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true
   },
   updateEdgeVenueSchedules: {
     method: 'post',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
+    newApi: true
+  },
+  getScheduledFirmware: {
+    method: 'get',
+    url: '/apFirmwares?status=scheduled',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
+    newApi: true
+  },
+  getVenueApModelFirmwareList: {
+    method: 'post',
+    url: '/venues/apModelFirmwares/schedules/query',
+    newApi: true
+  },
+  getAllApModelFirmwareList: {
+    method: 'get',
+    url: '/apModelFirmwares',
+    newApi: true
+  },
+  patchVenueApModelFirmwares: {
+    method: 'PATCH',
+    url: '/venues/:venueId/apModelFirmwares',
+    newApi: true
+  },
+  updateVenueSchedulesPerApModel: {
+    method: 'post',
+    url: '/venues/:venueId/apModelFirmwareSchedules',
     newApi: true
   }
 }

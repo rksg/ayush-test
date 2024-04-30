@@ -15,6 +15,7 @@ configure({ asyncUtilTimeout: 3000 })
 // turn off warning from async-validator
 global.ASYNC_VALIDATOR_NO_WARNING = 1
 
+
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
@@ -56,12 +57,15 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 beforeAll(() => {
   mockServer.listen()
   setUpIntl({ locale: 'en-US', messages: {} })
+
+  // turn off warning from react act
+  global.IS_REACT_ACT_ENVIRONMENT = false
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)
-  const env = require('./apps/main/src/env.json')
+  const env = require('./apps/main/src/globalValues.json')
   mockServer.use(
-    rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))),
+    rest.get(`${document.baseURI}globalValues.json`, (_, res, ctx) => res(ctx.json(env))),
     rest.get('/mfa/tenant/:tenantId', (_req, res, ctx) =>
       res(
         ctx.json({
@@ -72,10 +76,12 @@ beforeEach(async () => {
       )
     )
   )
-  await config.initialize()
+  await config.initialize('test')
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
+    accountTier: 'Gold',
+    betaEnabled: false,
     profile: {
       region: '[NA]',
       allowedRegions: [
@@ -158,8 +164,10 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsSplitOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
+  useGetBetaList: jest.fn().mockReturnValue([]),
   Features: require('libs/common/feature-toggle/src/features').Features,
-  TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures
+  TierFeatures:require('libs/common/feature-toggle/src/features').TierFeatures,
+  BetaListDetails:require('libs/common/feature-toggle/src/features').BetaListDetails
 }), { virtual: true })
 
 jest.mock('@acx-ui/icons', ()=> {
@@ -187,3 +195,8 @@ jest.mock('react-xarrows', () => {
     useXarrow: () => null
   }
 })
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  goToNotFound: () => <div/>
+}))

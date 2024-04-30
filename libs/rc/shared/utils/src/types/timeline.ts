@@ -1,6 +1,50 @@
+import { defineMessage } from 'react-intl'
+
 import { TimelineStatus } from '@acx-ui/types'
 
 export type TimelineTypes = 'activities' | 'events' | 'adminLogs'
+
+export enum EventScheduleFrequency {
+  Weekly = 'Weekly',
+  Monthly = 'Monthly',
+  Immediate = 'Immediate'
+}
+
+export const eventSeverityMapping = {
+  All: defineMessage({ defaultMessage: 'All' }),
+  Critical: defineMessage({ defaultMessage: 'Critical' }),
+  Major: defineMessage({ defaultMessage: 'Major' }),
+  Minor: defineMessage({ defaultMessage: 'Minor' }),
+  Warning: defineMessage({ defaultMessage: 'Warning' }),
+  Info: defineMessage({ defaultMessage: 'Informational' })
+}
+
+export const eventTypeMapping = {
+  ALL: defineMessage({ defaultMessage: 'All' }),
+  AP: defineMessage({ defaultMessage: 'AP' }),
+  SECURITY: defineMessage({ defaultMessage: 'Security' }),
+  CLIENT: defineMessage({ defaultMessage: 'Client' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  NETWORK: defineMessage({ defaultMessage: 'Network' }),
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+}
+
+export const eventProductMapping = {
+  ALL: defineMessage({ defaultMessage: 'All' }),
+  GENERAL: defineMessage({ defaultMessage: 'General' }),
+  WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
+}
+
+export type WeekDayName = 'MON'
+  | 'TUE'
+  | 'WED'
+  | 'THU'
+  | 'FRI'
+  | 'SAT'
+  | 'SUN'
 
 export interface Activity {
   admin: {
@@ -30,6 +74,24 @@ export interface Activity {
   }[]
   tenantId: string
   useCase: string
+  linkData?: { name: string, value:string }[]
+  linkTemplate?: string
+}
+
+export interface ActivityApCompatibility {
+  data: ActivityIncompatibleFeatures[]
+  page: number
+  totalCount: number
+}
+
+export interface ActivityApCompatibilityExtraParams {
+  impactedCount: number
+}
+
+export interface ActivityIncompatibleFeatures {
+  id: string
+  name: string
+  incompatibleFeatures: string[]
 }
 
 export interface EventBase {
@@ -62,15 +124,48 @@ export interface EventMeta {
   isClientExists?: boolean
   isNetworkExists?: boolean
   isSwitchExists: boolean
-  isVenueExists: boolean
+  isVenueExists: boolean,
+  isUnitExists: boolean,
   networkId?: string
   networkName?: string
   switchMac?: string
   switchName: string
   venueName: string
   tableKey?: string
-  edgeName: string
+  edgeName: string,
+  unitName: string
 }
+
+export type EventExportSchedule = {
+  type: string,
+  enable: boolean,
+  clientTimeZone?: string,
+  sortOrder?: string,
+  sortField?: string,
+  context?: {
+    type?: string,
+    entity_type?: [typeof eventTypeMapping],
+    product?: [typeof eventProductMapping],
+    severity?: [typeof eventSeverityMapping],
+    searchString?: string[] | null // API support string array with only one string.
+    event_entity_type_all?: string[]
+  },
+  tenantId?: string,
+  period?: {
+    from: string,
+    to: string
+  },
+  isSupport?: boolean,
+  reportSchedule?: {
+    type: EventScheduleFrequency | null,
+    dayOfWeek?: WeekDayName | null,
+    dayOfMonth?: number | null,
+    hour?: number | null,
+    minute?: number | null
+  },
+  recipients: string[]
+}
+
 
 export type Event = EventBase & EventMeta
 

@@ -1,10 +1,3 @@
-import {
-  screen,
-  fireEvent,
-  act,
-  within,
-  waitFor
-} from '@testing-library/react'
 import { message, Modal } from 'antd'
 import { rest }           from 'msw'
 import '@testing-library/jest-dom'
@@ -14,8 +7,15 @@ import {
   SwitchStatusEnum,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { mockServer, renderHook } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  renderHook,
+  screen,
+  within,
+  waitFor } from '@acx-ui/test-utils'
 
 import { useSwitchActions } from '.'
 
@@ -89,6 +89,30 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitches', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { showDeleteSwitches } = result.current
+    const callback = jest.fn()
+
+    act(() => {
+      showDeleteSwitches(switchList.data, tenantId, callback)
+    })
+    const dialog = await screen.findByRole('dialog')
+
+    const deleteBtn = within(dialog).getByRole('button', { name: 'Delete Switches' })
+
+    fireEvent.click(deleteBtn)
+
+    await waitFor(async () => expect(callback).toBeCalled())
+
+    expect(dialog).not.toBeVisible()
+  })
+
+  it('showDeleteSwitches: patch API', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const { result } = renderHook(() => useSwitchActions(), {

@@ -28,7 +28,7 @@ describe('Edge firmware schedule update dialog', () => {
     )
 
     expect(await screen.findByRole('radio',
-      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023 09:16 AM' }
+      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023' }
     )).toBeVisible()
     expect(screen.getByRole('textbox')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
@@ -61,7 +61,7 @@ describe('Edge firmware schedule update dialog', () => {
     const nowDateStr = moment().add(2, 'days').format('YYYY-MM-DD')
     const nowDayStr = nowDateStr.split('-')[2]
     await userEvent.click(await screen.findByRole('radio',
-      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023 09:16 AM' }
+      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023' }
     ))
     await userEvent.click(screen.getByPlaceholderText('Select date'))
     const cell = await screen.findByRole('cell', { name: new RegExp(nowDateStr) })

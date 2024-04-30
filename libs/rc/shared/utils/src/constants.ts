@@ -123,7 +123,9 @@ export enum ServiceType {
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
-  RESIDENT_PORTAL = 'Resident Portal'
+  RESIDENT_PORTAL = 'Resident Portal',
+  EDGE_SD_LAN = 'SD-LAN',
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2' // temporary type before SD-LAN GA2 dev done.
 }
 
 export enum ServiceStatus {
@@ -178,7 +180,8 @@ export enum AclRuleProtocolEnum {
 
 export enum AclTypeEnum {
   STANDARD = 'standard',
-  EXTENDED = 'extended'
+  EXTENDED = 'extended',
+  IPv6 = 'IPv6'
 }
 
 export enum AclRuleActionEnum {
@@ -191,6 +194,7 @@ export enum TrustedPortTypeEnum {
   DHCP = 'dhcp',
   ARP = 'arp'
 }
+
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
   CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',
@@ -238,6 +242,7 @@ export enum ConfigStatusEnum {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
   NO_CONFIG_CHANGE = 'NO_CONFIG_CHANGE',
+  NOTIFY_IN_PROGRESS = 'NOTIFY_IN_PROGRESS',
   NOTIFY_SUCCESS = 'NOTIFY_SUCCESS',
   FAILED_NO_RESPONSE = 'FAILED_NO_RESPONSE',
   PENDING ='PENDING',
@@ -816,6 +821,7 @@ export enum UnitStatus {
   OTHER = 'OTHER', // Somehow SZ may send 'Other' status
 }
 
+// Deprecated: no port prefix for all models
 export enum PortLabelType {
   GENERAL = '', // 1, 2. For high end models, fiber port doesn't have port label too
   COPPER = 'C', // C1, C2
@@ -828,75 +834,75 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     'C12P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08PT': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C10ZP': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24F': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
-        { portLabel: PortLabelType.FIBER },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48PF': {
       powerSlots: 1, fanSlots: 3, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48ZP': {
       powerSlots: 2, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL }
       ]
     }
   },
@@ -1118,3 +1124,4 @@ export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
+export const ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-ap-compatibiliy-note-hidden'

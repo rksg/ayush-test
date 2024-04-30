@@ -20,7 +20,7 @@ jest.mock('@acx-ui/config', () => ({
 describe('APsSelection', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('supports select AP from venue', async () => {
@@ -88,7 +88,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
@@ -102,7 +102,7 @@ describe('APsSelection', () => {
 
   it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
     mockGraphqlQuery(
-      dataApiURL, 'RecentNetworkHierarchy', { data: mockHiddenAPs })
+      dataApiURL, 'VenueHierarchy', { data: mockHiddenAPs })
     renderForm(<APsSelection />,
       { initialValues: { clientType: ClientType.VirtualWirelessClient } })
 
@@ -119,7 +119,7 @@ describe('APsSelection', () => {
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
   it('renders selected APs in Venues', async () => {
-    mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {
@@ -166,7 +166,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: 'some device id' },
+          { type: 'system', name: 'system 1' },
           { type: 'zone', name: 'zone 1' }
         ]))
     })
@@ -186,7 +186,7 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: 'some device id' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
     })
@@ -204,9 +204,59 @@ describe('RA', () => {
 
       expect(await screen.findByTestId('form-values'))
         .toHaveTextContent(JSON.stringify([
-          { type: 'system', name: 'some device id' },
+          { type: 'system', name: 'system 1' },
           { type: 'apMac', list: ['00:00:00:00:00:01'] }
         ]))
+    })
+    it('should hide unsupport APs when ClientType.VirtualClient', async () => {
+      renderForm(<APsSelection />, { initialValues: { clientType: ClientType.VirtualClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      await click(document.body)
+      await click(await screen.findByText(/system 1/))
+      await click(await screen.findByText(/domain/))
+      await click(await screen.findByText(/zone 2/))
+      await click(await screen.findByText(/group 2/))
+
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 1/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 2/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 3/ })).toBeNull()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 4/ })).toBeNull()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 5/ })).toBeValid()
+    })
+    it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
+      renderForm(<APsSelection />, {
+        initialValues: { clientType: ClientType.VirtualWirelessClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      await click(document.body)
+      await click(await screen.findByText(/system 1/))
+      await click(await screen.findByText(/domain/))
+      await click(await screen.findByText(/zone 2/))
+      await click(await screen.findByText(/group 2/))
+
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 1/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 2/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 3/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 4/ })).toBeNull()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /ap 5/ })).toBeValid()
+    })
+    it('should hide system', async () => {
+      renderForm(<APsSelection />, {
+        initialValues: { clientType: ClientType.VirtualClient } })
+
+      expect(await screen.findByRole('menu')).toBeInTheDocument()
+
+      await click(document.body)
+      await click(await screen.findByText(/system 1/))
+
+      expect(screen.queryByRole('menuitemcheckbox', { name: /system 1/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /system 2/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /system 3/ })).toBeValid()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /system 4/ })).toBeNull()
+      expect(screen.queryByRole('menuitemcheckbox', { name: /system 5/ })).toBeNull()
     })
   })
   describe('APsSelection.FieldSummary', () => {
@@ -217,12 +267,12 @@ describe('RA', () => {
           configs: [{
             networkPaths: {
               networkNodes: [
-                [ { name: 'some device id', type: 'system' }],
-                [ { name: 'some device id', type: 'system' },
+                [ { name: 'system 1', type: 'system' }],
+                [ { name: 'system 1', type: 'system' },
                   { name: 'domain', type: 'domain' },
                   { name: 'zone 2', type: 'zone' },
                   { name: 'group 4', type: 'apGroup' }],
-                [ { name: 'some device id', type: 'system' },
+                [ { name: 'system 1', type: 'system' },
                   { type: 'apMac', list: ['00:00:00:00:00:01'] }]
               ]
             }
@@ -233,7 +283,7 @@ describe('RA', () => {
       const field = within(screen.getByTestId('field'))
 
       expect(await field
-        .findByText(/system 1 \(SZ Cluster\) — 2 AP/)).toBeVisible()
+        .findByText(/system 1 \(SZ Cluster\) — 3 AP/)).toBeVisible()
       expect(await field
         // eslint-disable-next-line max-len
         .findByText(/system 1 \(SZ Cluster\) > domain \(Domain\) > zone 2 \(Zone\) > group 4 \(AP Group\) — 0 AP/))

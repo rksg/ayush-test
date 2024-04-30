@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
+import { get }                                         from '@acx-ui/config'
 import { ArrowChevronLeft, ArrowChevronRight, LogOut } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
@@ -21,6 +22,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
+  --acx-sidebar-right-space: 28px;
   --acx-cloudmessagebanner-height: 58px;
   .ant-pro-basicLayout {
     .ant-layout {
@@ -55,9 +57,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   object-fit: contain;
                 }
               }
-            }
-            .ant-menu-submenu-arrow {
-              display: none;
             }
           }
           &:before, &::after {
@@ -103,10 +102,23 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
             padding-left: var(--acx-sidebar-left-space) !important;
-            padding-right: 0;
+            padding-right: var(--acx-sidebar-right-space);
             margin: 0;
             cursor: default;
             &:active { background: unset; }
+            .ant-menu-title-content + svg {
+              position: absolute;
+              top: 50%;
+              bottom: 50%;
+              margin: auto;
+              right: 12px;
+              width: 16px;
+              transition: transform 0.3s;
+              path {
+                stroke: var(--acx-neutrals-60);
+                stroke-width: 2;
+              }
+            }
           }
           &-open {
             background-color: var(--acx-neutrals-70);
@@ -116,6 +128,14 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
             background-color: var(--acx-neutrals-70);
             .ant-menu-submenu-title {
               font-weight: var(--acx-headline-4-font-weight-bold);
+            }
+          }
+          &-open,
+          &.menu-active {
+            .ant-menu-submenu-title .ant-menu-title-content + svg {
+              path {
+                stroke: var(--acx-primary-white);
+              }
             }
           }
           &.menu-admin-item { margin-top: auto; }
@@ -271,7 +291,12 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
         .ant-menu-submenu-title {
           color: transparent;
         }
-        .ant-menu-title-content { padding-left: 8px; }
+        .ant-menu-title-content {
+          padding-left: 8px;
+          & + svg {
+            display: none;
+          }
+        }
         .ant-menu-item {
           .ant-menu-title-content {
             color: transparent;
@@ -344,6 +369,7 @@ export const MenuIcon = styled.span`
 
 export const Content = styled.div`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
+  ${get('IS_MLISA_SA') ? 'padding-block-end: 60px;' : ''}
   min-width: calc(
     ${modifyVars['@screen-xl']}
     - var(--acx-sider-width)
@@ -446,6 +472,22 @@ const ButtonSolid = styled(Button)`
     }
   }
 `
+const CompanyName = styled.div`
+  line-height: var(--acx-body-4-line-height);
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-body-font-weight);
+  text-align: right;
+  flex-shrink: 0;
+  max-width: var(--acx-header-company-name-width);
+  min-width: var(--acx-header-company-name-min-width);
+  max-height: calc(2 * var(--acx-body-4-line-height));
+  overflow: hidden;
+  margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
+  padding-right: 9px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+`
 export const LayoutUI = {
   Icon: styled.span`
     > svg {
@@ -485,21 +527,19 @@ export const LayoutUI = {
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
   `,
-  CompanyName: styled.div`
-    line-height: var(--acx-body-4-line-height);
-    font-size: var(--acx-body-4-font-size);
-    font-weight: var(--acx-body-font-weight);
-    text-align: right;
-    flex-shrink: 0;
-    max-width: var(--acx-header-company-name-width);
-    min-width: var(--acx-header-company-name-min-width);
-    max-height: calc(2 * var(--acx-body-4-line-height));
-    overflow: hidden;
-    margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
-    padding-right: 9px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+  CompanyName,
+  CompanyNameDropdown: styled.div`
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right: var(--acx-header-company-name-right-space);
+
+    ${CompanyName} {
+      max-width: calc(
+        var(--acx-header-company-name-width) -
+        var(--acx-header-caret-width)
+      );
+    }
   `,
   UserNameButton: styled(ButtonSolid)`
     width: 32px;
@@ -516,3 +556,4 @@ export const LayoutUI = {
     height: 16px;
   `
 }
+

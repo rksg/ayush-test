@@ -53,6 +53,10 @@ describe('Administrators', () => {
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
         (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

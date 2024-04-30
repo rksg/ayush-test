@@ -26,7 +26,7 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import { categoryCodeMap, IncidentCode, incidentsToggle, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
 import {
   xAxisOptions,
   ResetButton,
@@ -36,10 +36,12 @@ import {
   cssNumber,
   toolboxDataZoomOptions
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import type { TimeStampRange }        from '@acx-ui/types'
-import { hasAccess }                  from '@acx-ui/user'
+import { get }                              from '@acx-ui/config'
+import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TimeStampRange }              from '@acx-ui/types'
+import { hasAccess }                        from '@acx-ui/user'
+
+import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
   eventColorByCategory,
@@ -56,7 +58,6 @@ import {
 } from './config'
 import * as UI                             from './styledComponents'
 import { getQualityColor, labelFormatter } from './util'
-
 
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -87,7 +88,8 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
   key: string,
-  series: string
+  series: string,
+  toggles?: IncidentsToggleFilter['toggles']
 ) => {
   if (series === EVENTS)
     return data
@@ -108,12 +110,11 @@ export const getSeriesData = (
         moment(record.end).valueOf(),
         { ...record, icon: '' }
       ])
+    const category = key as keyof typeof categoryCodeMap
+    const code = categoryCodeMap[category].codes
     return data
-      .filter((record) =>
-        categoryCodeMap[key as keyof typeof categoryCodeMap]?.codes.includes(
-          (record as IncidentDetails)?.code as IncidentCode
-        )
-      )
+      .filter((record) => incidentsToggle({ code, toggles }, category)
+        .includes((record as IncidentDetails)?.code as IncidentCode))
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
@@ -169,7 +170,7 @@ export const useDotClick = (
   onDotClick: ((param: unknown) => void) | undefined,
   popoverRef: RefObject<HTMLDivElement> | undefined,
   navigate: CallableFunction,
-  basePath: string
+  basePath: Path
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
@@ -197,7 +198,7 @@ export const useDotClick = (
       ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        navigate(`${basePath}/analytics/incidents/${id}`)
+        navigate({ ...basePath, pathname: `${basePath.pathname}/incidents/${id}` })
       }
     },
     [onDotClick, navigate, basePath, popoverRef]
@@ -324,8 +325,8 @@ export function TimelineChart ({
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
-  const currentPath = useTenantLink('/')
-  const basePath = currentPath.pathname
+  const basePath = useTenantLink('/analytics')
+  const toggles = useIncidentToggles()
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
@@ -355,7 +356,7 @@ export function TimelineChart ({
           symbol: 'circle',
           symbolSize: 8,
           animation: false,
-          data: getSeriesData(data, key, series),
+          data: getSeriesData(data, key, series, toggles),
           itemStyle: {
             color: getSeriesItemColor
           },
@@ -370,7 +371,7 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: getSeriesData(data, key, series),
+          data: getSeriesData(data, key, series, toggles),
           clip: true,
           cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
         })

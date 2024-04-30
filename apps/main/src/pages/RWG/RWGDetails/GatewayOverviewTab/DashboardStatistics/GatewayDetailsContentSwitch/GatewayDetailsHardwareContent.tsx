@@ -13,7 +13,7 @@ export default function GatewayDetailsHardwareContent (props: {
     labelStyle={{
       paddingLeft: '8px'
     }}
-    labelWidthPercent={30}>
+    labelWidthPercent={45}>
     <Descriptions.Item
       label={$t({ defaultMessage: 'Baseboard Manufacturer' })}
       children={gatewayDetails?.baseboardManufacturer}

@@ -1,4 +1,4 @@
-import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -25,37 +25,6 @@ export const currentEdge:EdgeStatus = {
   diskUsed: 250 * Math.pow(1024, 3),
   diskTotal: 162 * Math.pow(1024, 3)
 }
-
-export const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
-  name: 'description1',
-  status: 'Up',
-  adminStatus: 'Enabled',
-  type: EdgePortTypeEnum.WAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 12* Math.pow(12, 6),
-  duplex: 'Full',
-  ip: '1.1.1.1/24',
-  ipMode: 'DHCP',
-  sortIdx: 1,
-  vlan: '0',
-  subnet: '255.255.255.0'
-},
-{
-  portId: '2',
-  name: 'description2',
-  status: 'Down',
-  adminStatus: 'Disabled',
-  type: EdgePortTypeEnum.LAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 10* Math.pow(12, 6),
-  duplex: 'Half',
-  ip: '1.1.1.2/24',
-  ipMode: 'Static',
-  sortIdx: 2,
-  vlan: '0',
-  subnet: '255.255.255.0'
-}]
 
 export const edgeDnsServers: EdgeDnsServers = {
   primary: '1.1.1.1',

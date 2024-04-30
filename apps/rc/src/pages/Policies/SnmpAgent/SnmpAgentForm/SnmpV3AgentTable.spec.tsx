@@ -1,70 +1,50 @@
+import { useReducer } from 'react'
+
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 
-import { SnmpAuthProtocolEnum, SnmpNotificationTypeEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
-import { render, screen, within }                                                               from '@acx-ui/test-utils'
+import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import SnmpAgentV3Table from './SnmpV3AgentTable'
+import { mockSnmpV3Agents, newEmptySnmpData } from './__tests__/fixtures'
+import SnmpAgentFormContext, { mainReducer }  from './SnmpAgentFormContext'
+import SnmpAgentV3Table                       from './SnmpV3AgentTable'
 
+const renderInitState = (children: JSX.Element, initState=newEmptySnmpData) => {
+  const { result } = renderHook(() => useReducer(mainReducer, initState ))
+  const [state, dispatch] = result.current
+
+  const renderElement = <SnmpAgentFormContext.Provider value={{ state, dispatch }}>
+    {children}
+  </SnmpAgentFormContext.Provider>
+
+  return {
+    state, dispatch, renderElement
+  }
+}
 
 describe('SnmpV3AgentTable', () => {
-  const data: SnmpV3Agent[] = [
-    {
-      userName: 'joe_un1',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: SnmpNotificationTypeEnum.Trap,
-      targetAddr: '192.168.0.100',
-      targetPort: 162,
-      authProtocol: SnmpAuthProtocolEnum.SHA,
-      authPassword: '1234567890',
-      privacyProtocol: SnmpPrivacyProtocolEnum.None
-    },
-    {
-      userName: 'joe_un2',
-      readPrivilege: true,
-      trapPrivilege: false,
-      notificationType: SnmpNotificationTypeEnum.Inform,
-      targetPort: 162,
-      authProtocol: SnmpAuthProtocolEnum.MD5,
-      authPassword: '123456789',
-      privacyProtocol: SnmpPrivacyProtocolEnum.AES,
-      privacyPassword: '12345678'
-    }
-  ]
 
-  it('should Delete SNMP V3 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV3Table data={data} />
-      </Form>
+  it('should Edit/Delete SNMP V3 Agent successfully', async () => {
+    const snmpData = { ...newEmptySnmpData, snmpV3Agents: mockSnmpV3Agents }
+    const { renderElement } = renderInitState(
+      <SnmpAgentV3Table />, snmpData
     )
+    render(renderElement)
 
     let v3Rows = await screen.findAllByRole('row', { name: /joe_un/i })
     expect(v3Rows.length).toBe(2)
 
     // Delete SNMPv3 Agent
-    let v3Row = await screen.findByRole('row', { name: /joe_un1/i })
-    await userEvent.click(await within(v3Row).findByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-
-    v3Rows = await screen.findAllByRole('row', { name: /joe_un/i })
-    expect(v3Rows.length).toBe(1)
-  })
-
-  it('should Edit SNMP V3 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV3Table data={data} />
-      </Form>
-    )
-
-    let v3Rows = await screen.findAllByRole('row', { name: /joe_un/i })
-    expect(v3Rows.length).toBe(2)
+    await userEvent.click(await screen.findByText('joe_un1'))
+    const delBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(delBtn).toBeInTheDocument()
+    await userEvent.click(delBtn)
+    await waitFor(() => {
+      expect(delBtn).not.toBeVisible()
+    })
 
     // Edit SNMPv3 Agent
-    let v3Row = await screen.findByRole('row', { name: /joe_un2/i })
-    await userEvent.click(await within(v3Row).findByRole('checkbox'))
+    expect(within(v3Rows[1]).getByRole('cell', { name: /joe_un2/i })).toBeVisible()
+    await userEvent.click(await within(v3Rows[1]).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
     await screen.findByText('Edit SNMPv3 Agent')
@@ -72,24 +52,41 @@ describe('SnmpV3AgentTable', () => {
     await userEvent.type(
       await screen.findByRole('textbox', { name: /User Name/i }), 'jj_un2')
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    await userEvent.click(applyBtn)
+
+    await waitFor(() => {
+      expect(applyBtn).not.toBeInTheDocument()
+    })
   })
 
   it('should Add SNMP V3 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV3Table data={[]} />
-      </Form>
+    const { renderElement } = renderInitState(
+      <SnmpAgentV3Table />
     )
+    render(renderElement)
 
     // Add SNMPv3 Agent
     await userEvent.click(await screen.findByRole('button', { name: 'Add SNMPv3 Agent' }))
+
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      const addAnotherCheckbox = screen.queryByRole('checkbox', { name: 'Add another SNMPv3 agent' })
+      expect(addAnotherCheckbox).toBeInTheDocument()
+    })
+
     await userEvent.type(
       await screen.findByRole('textbox', { name: /User Name/i }), 'jj_un1')
 
     await userEvent.type(
       await screen.findByLabelText(/Authentication Password/i), '88888888')
+
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()
+    })
 
   })
 })

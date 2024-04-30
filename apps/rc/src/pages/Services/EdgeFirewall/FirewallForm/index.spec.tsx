@@ -9,6 +9,7 @@ import {
   DdosAttackType,
   DdosRateLimitingRule,
   EdgeFirewallSetting,
+  EdgeGeneralFixtures,
   EdgeUrlsInfo,
   getServiceRoutePath,
   ProtocolType,
@@ -27,7 +28,6 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../../../Devices/Edge/__tests__/fixtures'
 import { mockFirewall } from '../__tests__/fixtures'
 
 import { SettingsForm } from './SettingsForm'
@@ -35,6 +35,7 @@ import { SummaryForm }  from './SummaryForm'
 
 import FirewallForm from './'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { click, type } = userEvent
 
 const mockedNavigate = jest.fn()

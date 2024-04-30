@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
-import React                   from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
@@ -52,13 +51,17 @@ const defaultPayload = {
   ]
 }
 
-export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
+export function useActivityTableQuery (
+  baseFilters: Record<string, string> = {},
+  pagination?: Record<string, unknown>
+) {
   const { dateFilter } = useDateFilter()
   const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: { ...defaultPayload, filters },
+    pagination,
     sorter: defaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
@@ -90,7 +93,7 @@ const ActivityTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const excludeProduct = [
@@ -156,7 +159,9 @@ const ActivityTable = ({
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       render: function (_, row) {
-        return getActivityDescription(row.descriptionTemplate, row.descriptionData)
+        return getActivityDescription(row.descriptionTemplate,
+          row.descriptionData,
+          row?.linkData)
       }
     }
   ]
@@ -184,7 +189,9 @@ const ActivityTable = ({
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: getActivityDescription(data.descriptionTemplate, data.descriptionData)
+      value: getActivityDescription(data.descriptionTemplate,
+        data.descriptionData,
+        data?.linkData)
     }
   ]
 

@@ -5,7 +5,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { SwitchDetailsContext } from '..'
+import { SwitchDetails, SwitchDetailsContext } from '..'
 
 import { SwitchConfigurationTab } from '.'
 
@@ -35,7 +35,7 @@ describe('SwitchConfigurationTab', () => {
     }
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
-        switchDetailsContextData: {},
+        switchDetailsContextData: {} as SwitchDetails,
         setSwitchDetailsContextData: jest.fn()
       }}>
         <SwitchConfigurationTab />

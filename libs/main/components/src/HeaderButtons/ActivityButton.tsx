@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
-import { ClockSolid }                                                                       from '@acx-ui/icons'
-import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
-import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
-import { DateRange, DateRangeFilter, getDateRangeFilter }                                   from '@acx-ui/utils'
+import { LayoutUI, Loader, StatusIcon }                                                                                                        from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                                                           from '@acx-ui/formatter'
+import { ClockSolid }                                                                                                                          from '@acx-ui/icons'
+import { TimelineDrawer }                                                                                                                      from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                                                                                  from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping, initActivitySocket, closeActivitySocket, TxStatus } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate, useParams }                                                                                               from '@acx-ui/react-router-dom'
+import { getProductKey, getUserSettingsByPath, setDeepUserSettings, useLazyGetAllUserSettingsQuery, useSaveUserSettingsMutation }              from '@acx-ui/user'
+import { DateRange, DateRangeFilter, getDateRangeFilter }                                                                                      from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -39,14 +40,23 @@ const defaultPayload: {
   }
 }
 
+interface activityData {
+  showUnreadMark: boolean
+}
 export default function ActivityButton () {
+  const ACTIVITY_USER_SETTING = 'COMMON$activity'
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const params = useParams()
+  const [getUserSettings] = useLazyGetAllUserSettingsQuery()
+  const [saveUserSettings] = useSaveUserSettingsMutation()
   const [status, setStatus] = useState('all')
+  const [showUnreadMark, setShowUnreadMark] = useState<boolean>(false)
   const [detail, setDetail] = useState<Activity>()
   const [detailModal, setDetailModalOpen] = useState<boolean>(false)
   const [activityModal, setActivityModalOpen] = useState<boolean>(false)
+  const activitySocketRef = useRef<SocketIOClient.Socket>()
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -71,6 +81,57 @@ export default function ActivityButton () {
     })
   }, [status])
 
+  useEffect(() => {
+    if (!activitySocketRef.current) {
+      activitySocketRef.current = initActivitySocket((msg:string) => {
+        if(JSON.parse(msg).status === TxStatus.IN_PROGRESS) {
+          updateShowUnreadMaskStatus(true)
+        }
+      })
+    }
+
+    return closeSocket
+  }, [])
+
+  const closeSocket = () => {
+    if (activitySocketRef.current) closeActivitySocket(activitySocketRef.current)
+  }
+
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      const userSettings = await getUserSettings({ params }).unwrap()
+      // eslint-disable-next-line max-len
+      const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
+      if(activity){
+        setShowUnreadMark(activity.showUnreadMark)
+      }
+    }
+    fetchUserSettings()
+  }, [])
+
+  const updateShowUnreadMaskStatus = async (show: boolean) => {
+    if(showUnreadMark === show) {return}
+    setShowUnreadMark(show)
+    const userSettings = await getUserSettings({ params }).unwrap()
+    const productKey = getProductKey(ACTIVITY_USER_SETTING)
+    // eslint-disable-next-line max-len
+    const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
+    const newSettings = setDeepUserSettings(userSettings, ACTIVITY_USER_SETTING, {
+      ...activity, showUnreadMark: show })
+    saveUserSettings({
+      params: {
+        tenantId: params.tenantId,
+        productKey
+      },
+      payload: newSettings[productKey]
+    }).unwrap()
+  }
+
+  const onChangeActivityModal = (show:boolean) => {
+    setActivityModalOpen(show)
+    updateShowUnreadMaskStatus(false)
+  }
+
   const activityList = <>
     <UI.FilterRow>
       <Select value={status}
@@ -93,7 +154,10 @@ export default function ActivityButton () {
       </Select>
       <UI.LinkButton type='link'
         size='small'
-        onClick={() => navigate(basePath)}>
+        onClick={() => {
+          setActivityModalOpen(false)
+          navigate(basePath)
+        }}>
         {$t({ defaultMessage: 'View all activities' })}
       </UI.LinkButton>
     </UI.FilterRow>
@@ -130,7 +194,8 @@ export default function ActivityButton () {
               <UI.ActivityMeta
                 title={getActivityDescription(
                   activity.descriptionTemplate,
-                  activity.descriptionData
+                  activity.descriptionData,
+                  activity?.linkData
                 )}
                 avatar={<StatusIcon status={activity.status as Activity['status']}/>}
                 description={
@@ -170,24 +235,26 @@ export default function ActivityButton () {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getActivityDescription(
         data.descriptionTemplate,
-        data.descriptionData
+        data.descriptionData,
+        data?.linkData
       )
     }
   ]
   return <>
-    <Badge
+    <UI.ActivityBadge
       overflowCount={999}
       offset={[-3, 0]}
+      dot={showUnreadMark}
       children={<LayoutUI.ButtonSolid
         icon={<ClockSolid />}
-        onClick={()=> setActivityModalOpen(!activityModal)}
+        onClick={() => {onChangeActivityModal(!activityModal)}}
       />}
     />
     <UI.Drawer
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
       visible={activityModal}
-      onClose={() => setActivityModalOpen(false)}
+      onClose={() => onChangeActivityModal(false)}
       children={activityList}
     />
     {detail && <TimelineDrawer
@@ -195,7 +262,7 @@ export default function ActivityButton () {
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
       onClose={() => setDetailModalOpen(false)}
-      onBackClick={() => setActivityModalOpen(true)}
+      onBackClick={() => onChangeActivityModal(true)}
       data={getDrawerData?.(detail!)}
       activity={detail}
     />}

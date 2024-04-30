@@ -15,6 +15,7 @@ export const ChartsContainer = styled.div`
     padding-top: 20px;
 `
 export const ReportSectionTitle = styled.div`
+    padding-bottom: 10px;
     font-size: var(--acx-body-2-font-size);
     font-family: var(--acx-accent-brand-font);
     font-weight: var(--acx-body-font-weight-bold);

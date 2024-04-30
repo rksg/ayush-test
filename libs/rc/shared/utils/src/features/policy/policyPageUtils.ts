@@ -1,0 +1,91 @@
+import { useMemo } from 'react'
+
+import { MessageDescriptor, defineMessage } from 'react-intl'
+
+import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                  from '@acx-ui/types'
+import { hasRoles }                   from '@acx-ui/user'
+import { getIntl }                    from '@acx-ui/utils'
+
+import { LocationExtended }                                    from '../../common/redirect.utils'
+import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
+import { generatePageHeaderTitle }                             from '../../pages'
+import { PolicyType }                                          from '../../types'
+import { generateDpskManagementBreadcrumb }                    from '../service/servicePageUtils'
+
+import { policyTypeLabelMapping }                                      from './contentsMap'
+import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
+
+// eslint-disable-next-line max-len
+export function generatePolicyPageHeaderTitle (isEdit: boolean, isTemplate: boolean, policyType: PolicyType) {
+  const { $t } = getIntl()
+  return generatePageHeaderTitle({
+    isEdit,
+    isTemplate,
+    instanceLabel: $t(policyTypeLabelMapping[policyType])
+  })
+}
+
+export function usePolicyListBreadcrumb (type: PolicyType) {
+  const { isTemplate } = useConfigTemplate()
+  const breadcrumb = useMemo(() => {
+    return isTemplate
+      ? generateConfigTemplateBreadcrumb()
+      : generatePolicyListBreadcrumb(type)
+  }, [isTemplate])
+
+  return breadcrumb
+}
+
+export function usePolicyPreviousPath (type: PolicyType, oper: PolicyOperation) {
+  const fallbackPath = useTenantLink(getPolicyRoutePath({ type, oper }), 't')
+  const location = useLocation()
+
+  return (location as LocationExtended)?.state?.from?.pathname ?? fallbackPath
+}
+
+// eslint-disable-next-line max-len
+type AdaptivePolicyRelatedTypes = PolicyType.ADAPTIVE_POLICY | PolicyType.ADAPTIVE_POLICY_SET | PolicyType.RADIUS_ATTRIBUTE_GROUP
+export const adaptivePolicyListLabelMap: Record<AdaptivePolicyRelatedTypes, MessageDescriptor> = {
+  [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
+  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Sets' }),
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'RADIUS Attribute Groups' })
+}
+
+// eslint-disable-next-line max-len
+export function useAdaptivePolicyBreadcrumb (type?: AdaptivePolicyRelatedTypes): { text: string, link?: string }[] {
+  const { $t } = getIntl()
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const result = isDPSKAdmin ? generateDpskManagementBreadcrumb() : generatePoliciesBreadcrumb()
+
+  if (type) {
+    result.push({
+      text: $t(adaptivePolicyListLabelMap[type]),
+      link: getPolicyRoutePath({ type, oper: PolicyOperation.LIST })
+    })
+  }
+
+  return result
+}
+
+function generatePoliciesBreadcrumb () {
+  const { $t } = getIntl()
+  return [
+    { text: $t({ defaultMessage: 'Network Control' }) },
+    {
+      text: $t({ defaultMessage: 'Policies & Profiles' }),
+      link: getPolicyListRoutePath(true)
+    }
+  ]
+}
+
+function generatePolicyListBreadcrumb (type: PolicyType) {
+  const { $t } = getIntl()
+  return [
+    ...generatePoliciesBreadcrumb(),
+    {
+      text: $t(policyTypeLabelMapping[type]),
+      link: getPolicyRoutePath({ type, oper: PolicyOperation.LIST })
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import { get }                     from '@acx-ui/config'
 import { AccountCircleSolid }      from '@acx-ui/icons'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }   from '@acx-ui/user'
+import { userLogout }              from '@acx-ui/utils'
 
 const UserButton = () => {
   const { $t } = useIntl()
@@ -27,9 +28,7 @@ const UserButton = () => {
             window.open(changePasswordUrl, '_blank')
             break
           case 'logout':
-            const token = sessionStorage.getItem('jwt')?? null
-            sessionStorage.removeItem('jwt')
-            window.location.href = token? `/logout?token=${token}` : '/logout'
+            userLogout()
             break
         }
       }}

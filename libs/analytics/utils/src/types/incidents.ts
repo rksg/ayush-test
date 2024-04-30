@@ -17,9 +17,13 @@ export interface IncidentMetadata {
   dominant?: { ssid?: string }
   rootCauseChecks?: {
     checks: Record<string,boolean>[]
-    params: Record<string,string>
+    params?: Record<string,string | number>
   }
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  avgAnomalousAirtime?: number
+  // switch memory incident metadata
+  upper_bound?: number
+  projected_time?: number
 }
 
 export interface Incident extends IncidentInformation {
@@ -45,6 +49,8 @@ export interface Incident extends IncidentInformation {
   slaThreshold: number|null
   currentSlaThreshold: number|null
   relatedIncidents?: Incident[]
+  impactedStart?: string
+  impactedEnd?: string
 }
 
 export interface IncidentAttributesProps

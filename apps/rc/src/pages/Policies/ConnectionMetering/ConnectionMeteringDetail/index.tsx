@@ -80,7 +80,7 @@ export default function ConnectionMeteringDetail () {
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <Card>
-            <ConnectionMeteringInstanceTable data={profileQuery.data?.personas ?? []} />
+            <ConnectionMeteringInstanceTable data={profileQuery.data?.identities ?? []} />
           </Card>
         </GridCol>
       </GridRow>

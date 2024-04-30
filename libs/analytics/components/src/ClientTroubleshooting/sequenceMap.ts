@@ -53,6 +53,18 @@ export const RCCDContentMap = {
   11: contentMap('1', '2', defineMessage({
     defaultMessage: '802.11 Disassociation (Disassociation_STA)'
   })),
+  12: contentMap('1', '2', defineMessage({
+    defaultMessage: '802.11 Authentication Commit Request'
+  })),
+  13: contentMap('2', '1', defineMessage({
+    defaultMessage: '802.11 Authentication Commit Response'
+  })),
+  14: contentMap('1', '2', defineMessage({
+    defaultMessage: '802.11 Authentication Confirm Request'
+  })),
+  15: contentMap('2', '1', defineMessage({
+    defaultMessage: '802.11 Authentication Confirm Response'
+  })),
   // EAP 4-Way Handshake
   21: contentMap('2', '1', defineMessage({ defaultMessage: '4-Way Handshake - Frame 1' })),
   22: contentMap('1', '2', defineMessage({ defaultMessage: '4-Way Handshake - Frame 2' })),

@@ -1,29 +1,71 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, Loader, NoData, Tabs }          from '@acx-ui/components'
-import { EdgePortStatus }                        from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { Button, Loader, NoData, Tabs }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { hasAccess }                                             from '@acx-ui/user'
 
 import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
+import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
 
-export const EdgeSubInterfacesTab = ({ ports, isLoading }:
-  { ports: EdgePortStatus[], isLoading: boolean }) => {
+interface EdgeSubInterfacesTabProps {
+  isConfigurable: boolean
+  ports: EdgePortStatus[]
+  lags: EdgeLagStatus[]
+  isLoading: boolean
+}
+
+export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
+
+  const { ports, lags, isLoading, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/edge/${serialNumber}`)
+
+  let tabs: { title: string, id: string, ifName?: string, lagId?: number }[]
+
+  if(isEdgeLagEnabled) {
+    const normalPorts = ports.filter(port =>
+      !lags.some(lag =>
+        lag.lagMembers?.some(lagMember =>
+          lagMember.portId === port.portId)))
+      .map(item => ({
+        title: getEdgePortDisplayName(item),
+        id: item.portId,
+        ifName: item.interfaceName
+      }))
+    tabs = [
+      ...normalPorts,
+      ...lags.map(item => ({
+        title: item.name,
+        id: item.lagId.toString(),
+        ifName: item?.name ?? '',
+        lagId: item.lagId
+      }))
+    ]
+  } else {
+    tabs = ports.map(item => ({
+      title: getEdgePortDisplayName(item),
+      id: item.portId,
+      ifName: item.interfaceName
+    }))
+  }
+
+
 
   const handleClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/sub-interface`
+      pathname: `${basePath.pathname}/edit/sub-interfaces`
     })
   }
 
   return <Row justify='end'>
-    {hasAccess() &&
+    {hasAccess() && isConfigurable &&
       <Button
         size='small'
         type='link'
@@ -37,13 +79,17 @@ export const EdgeSubInterfacesTab = ({ ports, isLoading }:
       <Loader states={[{ isLoading }]}>
         {serialNumber && ports.length > 0
           ? <Tabs type='third'>
-            {ports?.map((item) => {
+            {tabs?.map((item) => {
               // subinterfaces mac === physical port mac
               return <Tabs.TabPane
-                tab={$t({ defaultMessage: 'Port {idx}' }, { idx: item.sortIdx })}
-                key={item.portId}
+                tab={item.title}
+                key={item.id}
               >
-                <EdgeSubInterfacesTable serialNumber={serialNumber} portMac={item.mac} />
+                {
+                  item.lagId === undefined ?
+                    <EdgeSubInterfacesTable serialNumber={serialNumber} ifName={item.ifName} /> :
+                    <LagSubInterfaceTable serialNumber={serialNumber} lagId={item.lagId} />
+                }
               </Tabs.TabPane>
             })}
           </Tabs>

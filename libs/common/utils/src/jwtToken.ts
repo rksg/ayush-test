@@ -1,7 +1,9 @@
 import jwtDecode from 'jwt-decode'
 
-import { isDelegationMode } from './apiService'
-import { getTenantId }      from './getTenantId'
+import { get } from '@acx-ui/config'
+
+import { isDelegationMode, isLocalHost } from './apiService'
+import { getTenantId }                   from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
@@ -10,8 +12,11 @@ export enum AccountTier {
 
 export enum AccountVertical {
   DEFAULT = 'Default',
-  HOSPITALITY = 'Hospitality',
   EDU = 'Education',
+  GOVERNMENT = 'Government',
+  HOSPITALITY = 'Hospitality',
+  NONPROFIT = 'Non Profit',
+  UNKNOWN = 'Unknown'
 }
 
 export enum AccountRegion {
@@ -25,6 +30,7 @@ export enum AccountType {
   MSP = 'MSP',
   VAR = 'VAR',
   MSP_EC = 'MSP_EC',
+  MSP_REC = 'MSP_REC',
   MSP_NON_VAR = 'MSP_NON_VAR',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
   MSP_INSTALLER = 'MSP_INSTALLER'
@@ -61,6 +67,7 @@ interface JwtToken {
   acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
+  isAlphaFlag?: boolean
 }
 
 const cache = new Map<string, JwtToken>()
@@ -91,15 +98,7 @@ export function getJwtTokenPayload () {
 
   if (cache.has(jwt)) return cache.get(jwt)!
 
-  try {
-    const token = jwtDecode(jwt) as JwtToken
-
-    cache.clear()
-    cache.set(jwt, token)
-    return token
-  } catch {
-    throw new Error('Unable to parse JWT Token')
-  }
+  return updateJwtCache(jwt)
 }
 
 export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
@@ -109,14 +108,42 @@ export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?
   }
 }
 
-export async function loadImageWithJWT (imageId: string) {
-  const headers = { mode: 'no-cors', ...getJwtHeaders() }
-  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
+export function updateJwtCache (newJwt: string) {
+  try {
+    const token = jwtDecode(newJwt) as JwtToken
+
+    cache.clear()
+    cache.set(newJwt, token)
+    return token
+  } catch {
+    throw new Error('Unable to parse JWT Token')
+  }
+}
+
+export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
+  const headers = { 'mode': 'no-cors', 'Content-Type': 'application/json',
+    'Accept': 'application/json', ...getJwtHeaders() }
+  const url = getUrlWithNewDomain(requestUrl) || `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const response = await fetch(url, { headers })
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
   } else {
     const result = await response.json()
     return result.signedUrl
+  }
+}
+
+function getUrlWithNewDomain (requestUrl?: string) {
+  if (requestUrl) {
+    const origin = window.location.origin
+    const newApiHostName = origin.replace(
+      window.location.hostname, get('NEW_API_DOMAIN_NAME'))
+    const domain = !isLocalHost()
+      ? newApiHostName
+      : origin
+
+    return `${domain}${requestUrl}`
+  } else {
+    return null
   }
 }

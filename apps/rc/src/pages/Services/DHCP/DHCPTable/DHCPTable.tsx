@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
-import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
+import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -18,8 +18,7 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
-import * as UI                     from '../DHCPForm/styledComponents'
+import * as UI from './styledComponents'
 
 export default function DHCPTable () {
   const { $t } = useIntl()
@@ -224,7 +223,8 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {

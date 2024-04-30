@@ -3,16 +3,17 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
+import { hasPermission }                                 from '@acx-ui/user'
 
-import { FixedAutoSizer }                    from '../../DescriptionSection/styledComponents'
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
-import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
+import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
+import { Insights }                                         from '../Insights'
+import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
+import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
+import { TimeSeries }                                       from '../TimeSeries'
+import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
 
-import MuteIncident from './MuteIncident'
+import { MuteIncident } from './MuteIncident'
 
 export const ApservContinuousReboots = (incident: Incident) => {
   const { $t } = useIntl()
@@ -30,18 +31,22 @@ export const ApservContinuousReboots = (incident: Incident) => {
 
   const networkImpactCharts: NetworkImpactProps['charts'] = [{
     chart: NetworkImpactChartTypes.APModelByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'apModel'
   }, {
     chart: NetworkImpactChartTypes.APFwVersionByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'apFwVersion'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonByAP,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apReboot',
     dimension: 'reason'
   }, {
     chart: NetworkImpactChartTypes.RebootReasonsByEvent,
+    query: NetworkImpactQueryTypes.TopN,
     type: 'apRebootEvent',
     dimension: 'reason'
   }]
@@ -67,7 +72,7 @@ export const ApservContinuousReboots = (incident: Incident) => {
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
-        extra={[<MuteIncident incident={incident} />]}
+        extra={hasPermission() ? [<MuteIncident incident={incident} />] : []}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>

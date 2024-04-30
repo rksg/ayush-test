@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { ClockCircleOutlined } from '@ant-design/icons'
-import _                       from 'lodash'
+import { isEmpty }             from 'lodash'
 
-import { Button, Tooltip } from '@acx-ui/components'
+import { Button, Tooltip, cssStr } from '@acx-ui/components'
 import {
   NetworkSaveData,
   NetworkVenue,
@@ -15,9 +15,14 @@ import {
   vlanContents,
   RadioEnum,
   RadioTypeEnum,
-  VLAN_PREFIX
+  VLAN_PREFIX,
+  getPolicyDetailsLink,
+  PolicyType,
+  PolicyOperation,
+  KeyValue
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }    from '@acx-ui/utils'
 
 /* eslint-disable max-len */
 const getRadioDescription = (radioTypes: RadioTypeEnum[]) => {
@@ -31,27 +36,27 @@ const getRadioDescription = (radioTypes: RadioTypeEnum[]) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getVlanDescription = (apGroup: any, network: NetworkSaveData) =>{
+const getVlanDescription = (apGroup: any, network: NetworkSaveData, vlanPoolingNameMap?: KeyValue<string, string>[]) =>{
   let vlanPrefix = VLAN_PREFIX.VLAN
-  let fieldToDisplay = 'vlanId'
+  let displayText = apGroup.vlanId
   let fieldToCompare = 'vlanId'
   let defaultValue = network.wlan?.vlanId || ''
+  const networkVlanPoolId = network?.wlan?.advancedCustomization?.vlanPool?.id
 
   if (apGroup.vlanPoolId) {
     vlanPrefix = VLAN_PREFIX.POOL
-    fieldToDisplay = 'vlanPoolName'
     fieldToCompare = 'vlanPoolId'
+    displayText = (vlanPoolingNameMap?.find(pool => pool.key === apGroup.vlanPoolId)?.value) || ''
   }
-
-  if (network?.wlan?.advancedCustomization?.vlanPool) {
-    defaultValue = network?.wlan?.advancedCustomization.vlanPool.id || ''
+  if (networkVlanPoolId) {
+    defaultValue = (vlanPoolingNameMap?.find(pool => pool.key === networkVlanPoolId)?.value) || ''
   }
 
   const status = apGroup[fieldToCompare] === undefined || apGroup[fieldToCompare] === defaultValue ? 'Default' : 'Custom'
-  return `${vlanPrefix}${apGroup[fieldToDisplay] ? apGroup[fieldToDisplay] : defaultValue} (${status})`
+  return `${vlanPrefix}${displayText ? displayText : defaultValue} (${status})`
 }
 
-const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveData) => {
+const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveData, vlanPoolingNameMap?: KeyValue<string, string>[]) => {
   let name: JSX.Element[] = []
   let radio: JSX.Element[] = []
   let vlan: JSX.Element[] = []
@@ -64,65 +69,79 @@ const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveD
         radio.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
           apGroup.apGroupName}: </td><td>{apGroup.radioTypes && getRadioDescription(apGroup.radioTypes)}</td></tr>)
         vlan.push(<tr><td style={{ minWidth: '80px' }}>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
-          apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network)}</td></tr>)
+          apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network, vlanPoolingNameMap)}</td></tr>)
       })
     }
   }
   if(type === 'radio'){
-    return _.isEmpty(radio) ? '' : <table>{radio.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(radio) ? '' : <table>{radio.map((item, index) => ({ ...item, key: index }))}</table>
   }else if(type === 'vlan'){
-    return _.isEmpty(vlan) ? '' : <table>{vlan.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(vlan) ? '' : <table>{vlan.map((item, index) => ({ ...item, key: index }))}</table>
   }else{
-    return _.isEmpty(name) ? '' : <table>{name.map((item, index) => ({ ...item, key: index }))}</table>
+    return isEmpty(name) ? '' : <table>{name.map((item, index) => ({ ...item, key: index }))}</table>
   }
 }
 
 export const transformVLAN = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
+  vlanPoolingNameMap?: KeyValue<string, string>[],
   callback?: React.MouseEventHandler<HTMLElement>,
   readOnly?: boolean
 ): JSX.Element => {
-  const { $t } = getIntl()
-  const button = (text: string) => <Button type='link' onClick={callback} disabled={readOnly}>{text}</Button>
-
   if (!currentVenue) return <></>
 
-  if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
-    return <Tooltip title={(network && apGroupTooltip('vlan', currentVenue, network)) || $t({ defaultMessage: 'Per AP Group' })}>{button($t({ defaultMessage: 'Per AP Group' }))}</Tooltip>
-  }
+  const { $t } = getIntl()
+  const childComponent = (text: string) => (
+    callback? <Button type='link' onClick={callback} disabled={readOnly}>{text}</Button> : text
+  )
+  let displayText = ''
+  let tooltipTitle: ReactNode
 
-  if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
-    const firstApGroup = currentVenue.apGroups[0]
-    const isVlanPool = firstApGroup?.vlanPoolId !== undefined
-    if (isVlanPool) {
-      return <Tooltip title={$t(vlanContents.vlanPool, {
-        poolName: firstApGroup.vlanPoolName,
-        isCustom: true
-      })}>{button($t(vlanContents.vlanPool, {
-          poolName: firstApGroup.vlanPoolName,
+  if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups)) {
+    if (currentVenue.apGroups.length === 1) {
+      const firstApGroup = currentVenue.apGroups[0]
+      const isVlanPool = firstApGroup?.vlanPoolId !== undefined
+      if (isVlanPool) {
+        const vlanPoolName = (vlanPoolingNameMap?.find(pool => pool.key === firstApGroup.vlanPoolId)?.value) || ''
+        displayText = $t(vlanContents.vlanPool, {
+          poolName: vlanPoolName,
           isCustom: true
-        }))}</Tooltip>
-    }
+        })
+      } else if (firstApGroup?.vlanId !== undefined) {
+        displayText = $t(vlanContents.vlan, {
+          id: firstApGroup.vlanId.toString(),
+          isCustom: true
+        })
+      } else {
+        const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+        displayText = vlan.vlanText
+      }
 
-    return <Tooltip title={$t(vlanContents.vlan, {
-      id: firstApGroup?.vlanId?.toString() ?? '1',
-      isCustom: true
-    })}>{button($t(vlanContents.vlan, {
-        id: firstApGroup?.vlanId?.toString() ?? '1',
-        isCustom: true
-      }))}</Tooltip>
+      tooltipTitle = displayText
+    } else if (currentVenue.apGroups.length > 1) {
+      displayText = $t({ defaultMessage: 'Per AP Group' })
+      tooltipTitle = (network && apGroupTooltip('vlan', currentVenue, network, vlanPoolingNameMap)) || displayText
+    }
+  } else {
+    const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+    displayText = vlan.vlanText
+    tooltipTitle = displayText
   }
 
-  const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
-  return <Tooltip title={vlan.vlanText}>{button(vlan.vlanText)}</Tooltip>
+  return (
+    <Tooltip title={tooltipTitle}>
+      {childComponent(displayText)}
+    </Tooltip>
+  )
 }
 
 export const transformAps = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
   callback?: React.MouseEventHandler<HTMLElement>,
-  readOnly?: boolean
+  readOnly?: boolean,
+  incompatible?: number
 ) => {
   const { $t } = getIntl()
   let result = ''
@@ -138,7 +157,18 @@ export const transformAps = (
       other {{count} AP Groups}
     }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
   }
-  return <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
+  return (
+    <>
+      <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
+      {incompatible && incompatible > 0 ?
+        <Tooltip.Info isFilled
+          title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this venue.' })}
+          placement='right'
+          iconStyle={{ height: '16px', width: '16px', marginBottom: '-2px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
+        /> :[]
+      }
+    </>
+  )
 }
 
 const _getRadioString = (deprecatedRadio: RadioEnum, radioTypes?: RadioTypeEnum[]) => {
@@ -160,21 +190,31 @@ export const transformRadios = (
   callback?: React.MouseEventHandler<HTMLElement>,
   readOnly?: boolean
 ) => {
-  const { $t } = getIntl()
-  let result = ''
   if (!currentVenue) return <></>
 
+  const { $t } = getIntl()
+  const childComponent = (text: string) => (
+    callback? <Button type='link' onClick={callback} disabled={readOnly}>{text}</Button> : text
+  )
+  let displayText = ''
+
   if (currentVenue.isAllApGroups) {
-    result = _getRadioString(currentVenue.allApGroupsRadio, currentVenue.allApGroupsRadioTypes)
+    displayText = _getRadioString(currentVenue.allApGroupsRadio, currentVenue.allApGroupsRadioTypes)
   } else if (currentVenue.isAllApGroups !== undefined && Array.isArray(currentVenue.apGroups)) {
     if (currentVenue.apGroups.length === 1) {
       const firstApGroup = currentVenue.apGroups[0]
-      result = _getRadioString(firstApGroup.radio, firstApGroup.radioTypes)
+      displayText = _getRadioString(firstApGroup.radio, firstApGroup.radioTypes)
     } else if (currentVenue.apGroups.length > 1) {
-      result = $t({ defaultMessage: 'Per AP Group' })
+      displayText = $t({ defaultMessage: 'Per AP Group' })
     }
   }
-  return <Tooltip title={(network && apGroupTooltip('radio', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
+
+  const tooltipTitle = (network && apGroupTooltip('radio', currentVenue, network)) || displayText
+  return (
+    <Tooltip title={tooltipTitle}>
+      {childComponent(displayText)}
+    </Tooltip>
+  )
 }
 
 export const transformScheduling = (
@@ -224,6 +264,94 @@ export const transformScheduling = (
   return (
     <Tooltip title={tooltip}>
       <Button type='link' onClick={callback} disabled={readOnly}>{result} <ClockCircleOutlined /></Button>
+    </Tooltip>
+  )
+}
+
+// For ApGroup detail's network table
+export const transformApGroupVlan = (
+  currentVenue?: NetworkVenue,
+  network?: NetworkSaveData,
+  apGroupId?: string,
+  vlanPoolingNameMap?: KeyValue<string, string>[]
+): JSX.Element => {
+  if (!currentVenue) return <></>
+
+  const { $t } = getIntl()
+  const { isAllApGroups, apGroups } = currentVenue
+
+  let displayText = ''
+
+
+  if (!isAllApGroups && Array.isArray(apGroups)) {
+    const wlan = network?.wlan
+    const findApGroup = apGroups.find((apGroup) => apGroup.apGroupId === apGroupId)
+    if (findApGroup) {
+      const vlanPoolId = findApGroup?.vlanPoolId
+      const isVlanPool = (vlanPoolId !== undefined && vlanPoolId !== null)
+      if (isVlanPool) {
+        const defaultValue = wlan?.advancedCustomization?.vlanPool?.id || ''
+        displayText = $t(vlanContents.vlanPool, {
+          poolName: (vlanPoolingNameMap?.find(pool => pool.key === vlanPoolId)?.value) || '',
+          isCustom: vlanPoolId && vlanPoolId !== defaultValue
+        })
+
+        return (
+          <Tooltip title={displayText}>
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.DETAIL,
+              policyId: vlanPoolId
+            })}>
+              {displayText}
+            </TenantLink>
+          </Tooltip>
+        )
+      } else {
+        const defaultValue = wlan?.vlanId || 1
+        const apGroupvlanId = findApGroup?.vlanId
+        const vlanId = apGroupvlanId || defaultValue
+        displayText = $t(vlanContents.vlan, {
+          id: vlanId.toString(),
+          isCustom: apGroupvlanId && apGroupvlanId !== defaultValue
+        })
+      }
+    }
+  } else {
+    const vlan = getVlanString(network?.wlan?.advancedCustomization?.vlanPool, network?.wlan?.vlanId)
+    displayText = vlan.vlanText
+  }
+
+  return (
+    <Tooltip title={displayText}>
+      {displayText}
+    </Tooltip>
+  )
+}
+
+export const transformApGroupRadios = (
+  currentVenue?: NetworkVenue,
+  network?: NetworkSaveData,
+  apGroupId?: string
+): JSX.Element => {
+  if (!currentVenue) return <></>
+
+  const { isAllApGroups, apGroups } = currentVenue
+
+  let displayText = ''
+
+  if (isAllApGroups) {
+    displayText = _getRadioString(currentVenue.allApGroupsRadio, currentVenue.allApGroupsRadioTypes)
+  } else if (isAllApGroups !== undefined && Array.isArray(apGroups)) {
+    const findApGroup = apGroups.find((apGroup) => apGroup.apGroupId === apGroupId)
+    if (findApGroup) {
+      displayText = _getRadioString(findApGroup.radio, findApGroup.radioTypes)
+    }
+  }
+
+  return (
+    <Tooltip title={displayText}>
+      {displayText}
     </Tooltip>
   )
 }

@@ -10,7 +10,10 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
-import { SimpleListTooltip }            from '@acx-ui/rc/components'
+import {
+  SimpleListTooltip,
+  usePersonaAsyncHeaders
+} from '@acx-ui/rc/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
@@ -80,7 +83,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const tooltipItems = row.personas?.filter(v=>v.identityId && v.primary).map(v=>v.name)
+        const tooltipItems = row.identities?.filter(v=>v.identityId && v.primary).map(v=>v.name)
         return <SimpleListTooltip items={tooltipItems ?? []} displayText={row.unitCount ?? 0} />
       }
     },
@@ -91,7 +94,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const groupIds = new Set(row.personas?.map(v=>v.groupId))
+        const groupIds = new Set(row.identities?.map(v=>v.groupId))
         const venues: string[] = []
         groupIds.forEach(id => {
           const venueName = propertyMap.get(id)?.venueName
@@ -124,7 +127,7 @@ export default function ConnectionMeteringTable () {
   const navigate = useNavigate()
   const [venueMap, setVenueMap] = useState(new Map())
   const [propertyMap, setPropertyMap] = useState(new Map<string, PropertyConfigs>())
-
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
   const { tenantId } = useParams()
   const venueListPayload = {
     fields: [
@@ -191,14 +194,16 @@ export default function ConnectionMeteringTable () {
           async () => {
             const id = selectedItems[0].id
             const name = selectedItems[0].name
-            deleteConnectionMetering({ params: { id } })
+            deleteConnectionMetering({ params: { id }, customHeaders })
               .unwrap()
               .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
-                    { name })
-                })
+                if (!isAsync) {
+                  showToast({
+                    type: 'success',
+                    content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
+                      { name })
+                  })
+                }
                 clearSelection()
               }).catch((e) => {
                 // eslint-disable-next-line no-console

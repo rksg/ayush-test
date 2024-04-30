@@ -1,55 +1,66 @@
-import { storiesOf } from '@storybook/react'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { Anchor, AnchorLayout } from './index'
+import { Anchor, AnchorLayout, AnchorLayoutProps } from './index'
 
-const { Link } = Anchor
+export default {
+  title: 'AnchorLayout',
+  component: AnchorLayout,
+  subcomponents: { Anchor }
+} as ComponentMeta<typeof AnchorLayout>
 
-const items = [{
-  title: 'Anchor 1',
-  content: 'Content 1'
-}, {
-  title: 'Anchor 2',
-  content: (
-    <div>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-      <p>Content 2</p>
-    </div>
-  )
-}, {
-  title: 'Anchor 3',
-  content: 'Content 3'
-}]
+const AnchorTemplate: ComponentStory<typeof Anchor> = () => (
+  <Anchor onClick={(e) => e.preventDefault()}>
+    <Anchor.Link href='#1' title='Anchor 1' />
+    <Anchor.Link href='#2' title='Anchor 2' />
+    <Anchor.Link href='#3' title='Anchor 3'>
+      <Anchor.Link href='#31' title='Anchor 3-1' />
+      <Anchor.Link href='#32' title='Anchor 3-2' />
+    </Anchor.Link>
+  </Anchor>
+)
 
-storiesOf('Anchor', module)
-  .add('Basic', () =>
-    <Anchor onClick={(e) => e.preventDefault()}>
-      <Link href='#1' title='Anchor 1' />
-      <Link href='#2' title='Anchor 2' />
-      <Link href='#3' title='Anchor 3'>
-        <Link href='#31' title='Anchor 3-1' />
-        <Link href='#32' title='Anchor 3-2' />
-      </Link>
-    </Anchor>
-  ).add('Anchor with Page Layout', () =>
-    <BrowserRouter>
-      <AnchorLayout items={items} offsetTop={50} />
-    </BrowserRouter>
-  )
+const Template: ComponentStory<typeof AnchorLayout> = (args: AnchorLayoutProps) => (
+  <BrowserRouter>
+    <AnchorLayout {...args} />
+  </BrowserRouter>
+)
+
+export const Basic_Anchor = AnchorTemplate.bind({})
+export const Anchor_with_Page_Layout = Template.bind({})
+
+Anchor_with_Page_Layout.args = {
+  items: [{
+    title: 'Anchor 1',
+    content: 'Content 1'
+  }, {
+    title: 'Anchor 2',
+    content: (
+      <div>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+        <p>Content 2</p>
+      </div>
+    )
+  }, {
+    title: 'Anchor 3',
+    content: 'Content 3'
+  }],
+  offsetTop: 50
+}

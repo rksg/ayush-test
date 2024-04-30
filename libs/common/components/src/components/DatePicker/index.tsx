@@ -119,6 +119,7 @@ export const RangePicker = ({
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
+      showTimePicker={showTimePicker}
       timeRangesForSelection={_.omit(translatedRanges, [allTimeKey, last8HoursKey])}
     >
       <AntRangePicker
@@ -131,8 +132,7 @@ export const RangePicker = ({
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
-        }
+          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter
@@ -166,7 +166,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
 )
 
 interface DateTimePickerProps {
-  applyFooterMsg?: string;
+  extraFooter?: ReactNode;
   disabled?: boolean;
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
@@ -196,7 +196,7 @@ export function useClosePreviousDateTimePicker (onClose: CallableFunction, visib
 }
 
 export const DateTimePicker = ({
-  applyFooterMsg,
+  extraFooter,
   disabled,
   icon,
   initialDate,
@@ -209,11 +209,12 @@ export const DateTimePicker = ({
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
   useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
-  return <Tooltip placement='right' title={title}>
+  return <Tooltip placement='top' title={title}>
+    <UI.HiddenDateInputGlobalOverride />
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
-        className='datepicker'
-        dropdownClassName='datepicker-popover'
+        className='hidden-date-input'
+        dropdownClassName='hidden-date-input-popover'
         picker='date'
         disabled={disabled}
         value={date}
@@ -227,13 +228,13 @@ export const DateTimePicker = ({
         allowClear={false}
         suffixIcon={icon ? icon : <ClockOutlined />}
         disabledDate={disabledDate}
-        getPopupContainer={(node) => node}
+        getPopupContainer={() => document.body}
         onChange={value => setDate(value!)}
         renderExtraFooter={() =>
           <DateTimePickerFooter
             value={date}
             setValue={setDate}
-            applyFooterMsg={applyFooterMsg}
+            extraFooter={extraFooter}
             onApply={() => {
               onApply(date)
               setOpen(false)

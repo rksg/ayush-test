@@ -19,7 +19,15 @@ export interface RadiusAttributeGroup {
   id?: string,
   name: string,
   description?: string,
-  attributeAssignments: AttributeAssignment []
+  attributeAssignments: AttributeAssignment [],
+  attributeCount: number,
+  externalAssignmentsCount: number,
+  externalServiceAssignments: ExternalServiceAssignments []
+}
+
+export interface ExternalServiceAssignments {
+  externalAssignmentIdentifier: string [],
+  serviceName: string
 }
 
 export interface RadiusAttributeVendor{

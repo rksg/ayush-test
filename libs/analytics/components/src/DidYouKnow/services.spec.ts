@@ -31,7 +31,7 @@ describe('factsApi', () => {
       api.endpoints.facts.initiate(pathFilter)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.facts)
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return correct data with DashboardFilter', async () => {
@@ -42,7 +42,7 @@ describe('factsApi', () => {
       api.endpoints.facts.initiate(dashboardFilter)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.facts)
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {

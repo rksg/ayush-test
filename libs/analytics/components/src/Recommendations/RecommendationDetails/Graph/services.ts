@@ -1,7 +1,6 @@
-import { gql }     from 'graphql-request'
-import { flow }    from 'lodash'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { gql }  from 'graphql-request'
+import { flow } from 'lodash'
+import moment   from 'moment-timezone'
 
 import {
   CloudRRMGraph,
@@ -13,13 +12,17 @@ import {
 } from '@acx-ui/components'
 import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
+import { getIntl }           from '@acx-ui/utils'
 
 import { EnhancedRecommendation } from '../services'
 
 
 const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    cloudRRMGraph: build.query<Record<string, CloudRRMGraph | null>, { id: string }>({
+    cloudRRMGraph: build.query<{
+      data: ReturnType<typeof trimPairedGraphs>
+      csv: ReturnType<typeof getCrrmCsvData>
+    }, { id: string, band: BandEnum }>({
       query: (variables) => ({
         document: gql`
           query CloudRRMGraph($id: String) {
@@ -33,31 +36,35 @@ const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
         variables
       }),
       transformResponse: (
-        response: { recommendation: { graph: Record<string, CloudRRMGraph | null> } }
-      ) => response.recommendation.graph
+        response: { recommendation: { graph: Record<string, CloudRRMGraph | null> } },
+        _,
+        { band }
+      ) => {
+        const data = response.recommendation.graph
+        const sortedData = {
+          previous: data.previous,
+          current: data.current,
+          projected: data.projected
+        }
+        const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
+          [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
+        )(Object.values(sortedData!).filter(v => v !== null), band)
+        return {
+          data: trimPairedGraphs(processedGraphs),
+          csv: getCrrmCsvData(processedGraphs, getIntl().$t)
+        }
+      }
     })
   })
 })
 
 export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
-  const { $t } = useIntl()
   const queryResult = useCloudRRMGraphQuery(
-    { id: String(details.id) }, {
+    { id: String(details.id), band }, {
       skip: !Boolean(details.id),
       selectFromResult: result => {
-        const sortedData = {
-          previous: result.data?.previous,
-          current: result.data?.current,
-          projected: result.data?.projected
-        }
-        const processedGraphs = result.data &&
-          flow(
-            [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-          )(Object.values(sortedData!).filter(Boolean), band)
-        return { ...result,
-          data: processedGraphs && trimPairedGraphs(processedGraphs),
-          csv: processedGraphs && getCrrmCsvData(processedGraphs, $t)
-        }
+        const { data = [], csv = '' } = result.data ?? {}
+        return { ...result, data, csv }
       }
     })
   return queryResult

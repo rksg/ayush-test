@@ -4,8 +4,8 @@ import { WifiUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider }                    from '@acx-ui/store'
 import { mockServer, render, waitFor } from '@acx-ui/test-utils'
 
-import {  mockCcdDataAnotherAp, mockCcdDataFail, mockCcdDataNoAp, mockCcdDataSuccess, mockedSocket } from './__tests__/fixtures'
-import { CcdResultViewer }                                                                           from './CcdResultViewer'
+import { mockCcdDataAnotherAp, mockCcdDataFail, mockCcdDataNoAp, mockCcdDataSuccess, mockedSocket } from './__tests__/fixtures'
+import { CcdResultViewer }                                                                          from './CcdResultViewer'
 
 
 const mockedInitCcdSocketFn = jest.fn()
@@ -22,7 +22,6 @@ describe('CcdResultViewer', () => {
   const venueId = '_VENUE_ID_'
   const clientMac = '11:11:11:11:11:11'
   const aps = ['22:22:22:22:22:22']
-  const mockCcdApChanged = jest.fn()
 
   beforeEach(() => {
     jest.useFakeTimers()
@@ -30,6 +29,8 @@ describe('CcdResultViewer', () => {
   })
 
   afterEach(() => {
+    mockedInitCcdSocketFn.mockRestore()
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
@@ -65,9 +66,7 @@ describe('CcdResultViewer', () => {
           state={state}
           venueId={venueId}
           payload={payload}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+        />
       </Provider>
     )
 
@@ -97,9 +96,7 @@ describe('CcdResultViewer', () => {
           state={state}
           venueId={venueId}
           payload={payload}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+        />
       </Provider>
     )
 
@@ -129,9 +126,7 @@ describe('CcdResultViewer', () => {
           state={state}
           venueId={venueId}
           payload={payload}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+        />
       </Provider>
     )
 
@@ -161,9 +156,7 @@ describe('CcdResultViewer', () => {
           state={state}
           venueId={venueId}
           payload={payload}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+        />
       </Provider>
     )
 
@@ -191,25 +184,27 @@ describe('CcdResultViewer', () => {
           state={state}
           venueId={venueId}
           payload={payload}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+        />
       </Provider>
     )
+
+    await waitFor(() => expect(mockedInitCcdSocketFn).not.toHaveBeenCalled())
   })
 
   it('should render correctly after clicking Clear', async () => {
     const state = 'CLEAR'
+    const mockCleanCcdAps = jest.fn()
 
     render(
       <Provider>
         <CcdResultViewer
           state={state}
           venueId={venueId}
-          currentViewAp={aps[0]}
-          currentCcdAp={aps[0]}
-          updateCcdAp={mockCcdApChanged} />
+          cleanCcdAps={mockCleanCcdAps}
+        />
       </Provider>
     )
+
+    await waitFor(() => expect(mockCleanCcdAps).toHaveBeenCalled())
   })
 })

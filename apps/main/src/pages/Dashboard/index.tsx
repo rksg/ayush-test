@@ -29,8 +29,8 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                              from '@acx-ui/main/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { VenueFilter }                                            from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -38,9 +38,9 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey }                                    from '@acx-ui/user'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter } from '@acx-ui/utils'
+import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                                         from '@acx-ui/user'
+import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter, getDatePickerValues } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -59,9 +59,7 @@ export const DashboardFilterProvider = ({ children }: { children : React.ReactNo
     getDateRangeFilter(DateRange.last8Hours)
   )
   const { filters } = useDashboardFilter()
-  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
-    ? getDateRangeFilter(dateFilterState.range)
-    : dateFilterState
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const dashboardFilters = { ...filters, startDate, endDate, range }
 
   return (
@@ -77,7 +75,7 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -144,7 +142,7 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const addMenu = <Menu

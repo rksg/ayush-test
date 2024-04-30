@@ -6,13 +6,15 @@ import {
   shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+import { hasPermission }                              from '@acx-ui/user'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchVLANsDetails }     from '../Charts/ImpactedSwitchVLANDetails'
 import { ImpactedSwitchVLANsTable }       from '../Charts/ImpactedSwitchVLANsTable'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
-import MuteIncident from './MuteIncident'
+import { MuteIncident } from './MuteIncident'
 
 export const SwitchVlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
@@ -37,7 +39,7 @@ export const SwitchVlanMismatch = (incident: Incident) => {
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
-        extra={[<MuteIncident incident={incident} />]}
+        extra={hasPermission() ? [<MuteIncident incident={incident} />] : []}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
@@ -50,7 +52,10 @@ export const SwitchVlanMismatch = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
+          <ImpactedSwitchVLANsDetails incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
           <ImpactedSwitchVLANsTable incident={incident} />
         </GridCol>
       </GridRow>

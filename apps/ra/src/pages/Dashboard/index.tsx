@@ -12,16 +12,22 @@ import {
   SANetworkFilter,
   AIDrivenRRM,
   AIOperations,
-  ChatWithMelissa
+  ChatWithMelissa,
+  AppInsights
 } from '@acx-ui/analytics/components'
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
+  useAnalyticsFilter,
+  getUserProfile
+} from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   RangePicker,
   cssNumber,
   useLayoutContext
 } from '@acx-ui/components'
-import { DateFilter, DateRange, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { AnalyticsFilter, DateFilter, DateRange, getDatePickerValues, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -48,9 +54,7 @@ export const useDashBoardUpdatedFilters = () => {
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
-  const { startDate, endDate, range } = dateFilterState.range !== DateRange.custom
-    ? getDateRangeFilter(dateFilterState.range)
-    : dateFilterState
+  const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const { filters, pathFilters } = useAnalyticsFilter()
   return {
     filters: { ...filters, startDate, endDate, range },
@@ -63,9 +67,99 @@ export const useDashBoardUpdatedFilters = () => {
 }
 
 export const getFiltersForRecommendationWidgets = (pathFilters: PathFilter) => {
-  if (pathFilters.range !== DateRange.last8Hours)
+  if (![DateRange.last8Hours, DateRange.last24Hours].includes(pathFilters.range))
     return pathFilters
-  return { ...pathFilters, ...getDateRangeFilter(DateRange.last24Hours) }
+  return { ...pathFilters, ...getDateRangeFilter(DateRange.last7Days) }
+}
+
+type DashboardViewProps = {
+  filters: AnalyticsFilter & Omit<DateFilter, 'setDateFilterState'>
+  pathFilters: PathFilter & Omit<DateFilter, 'setDateFilterState'>
+}
+
+const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
+  const height = useMonitorHeight(536)
+  const userProfile = getUserProfile()
+  const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
+  const hasRecommendation =
+    userProfile.selectedTenant.permissions[
+      PERMISSION_MANAGE_CONFIG_RECOMMENDATION
+    ]
+  if (!hasRecommendation) {
+    return (
+      <UI.NetworkAdminGrid style={{ height }}>
+        <div style={{ gridArea: 'a1' }}>
+          <ReportTile pathFilters={pathFilters} />
+        </div>
+        <div style={{ gridArea: 'a2' }}>
+          <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
+        </div>
+        <div style={{ gridArea: 'b1' }}>
+          <IncidentsCountBySeverities filters={filters} />
+        </div>
+        <div style={{ gridArea: 'c2' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+        <div style={{ gridArea: 'd1' }}>
+          <DidYouKnow
+            filters={pathFilters}
+            maxFactPerSlide={2}
+            maxSlideChar={290}
+          />
+        </div>
+        <div style={{ gridArea: 'd2' }}>
+          <ChatWithMelissa/>
+        </div>
+      </UI.NetworkAdminGrid>
+    )
+  }
+
+  return (
+    <UI.AdminGrid style={{ height }}>
+      <div style={{ gridArea: 'a1' }}>
+        <ReportTile pathFilters={pathFilters} />
+      </div>
+      { enableAppInsights
+        ? [<div key='1' style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}>
+          <AppInsights />
+        </div>]
+        : [
+          <div key='1' style={{ gridArea: 'a2' }}>
+            <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
+          </div>,
+          <div key='2' style={{ gridArea: 'a3' }}>
+            <SLA pathFilters={pathFilters} />
+          </div>]
+      }
+      <div style={{ gridArea: 'b1' }}>
+        <IncidentsCountBySeverities filters={filters} />
+      </div>
+      <div style={{ gridArea: 'b2' }}>
+        <AIDrivenRRM
+          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+        />
+      </div>
+      <div style={{ gridArea: 'c2' }}>
+        <AIOperations
+          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+        />
+      </div>
+      <div style={{ gridArea: 'd1' }}>
+        <DidYouKnow
+          filters={pathFilters}
+          maxFactPerSlide={3}
+          maxSlideChar={290}
+        />
+      </div>
+      { enableAppInsights
+        ? <div style={{ gridArea: 'd2' }}>
+          <SLA pathFilters={pathFilters} />
+        </div>
+        : <div style={{ gridArea: 'd2' }}>
+          <ChatWithMelissa/>
+        </div> }
+    </UI.AdminGrid>
+  )
 }
 
 export default function Dashboard () {
@@ -77,8 +171,7 @@ export default function Dashboard () {
     endDate,
     range,
     setDateFilterState
-  }= useDashBoardUpdatedFilters()
-  const height = useMonitorHeight(536)
+  } = useDashBoardUpdatedFilters()
 
   return (
     <>
@@ -86,10 +179,13 @@ export default function Dashboard () {
         title={$t({ defaultMessage: 'How is my network doing?' })}
         extra={[
           <>
-            <SANetworkFilter overrideFilters={filters}/>
+            <SANetworkFilter overrideFilters={filters} />
             <RangePicker
               key='range-picker'
-              selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+              selectedRange={{
+                startDate: moment(startDate),
+                endDate: moment(endDate)
+              }}
               onDateApply={setDateFilterState as CallableFunction}
               showTimePicker
               selectionType={range}
@@ -98,40 +194,7 @@ export default function Dashboard () {
           </>
         ]}
       />
-      <UI.Grid style={{ height }}>
-        <div style={{ gridArea: 'a1' }}>
-          <ReportTile pathFilters={pathFilters} />
-        </div>
-        <div style={{ gridArea: 'a2' }}>
-          <NetworkHistory
-            hideLegend
-            historicalIcon={false}
-            filters={filters}
-          />
-        </div>
-        <div style={{ gridArea: 'a3' }}>
-          <SLA pathFilters={pathFilters} />
-        </div>
-        <div style={{ gridArea: 'b1' }}>
-          <IncidentsCountBySeverities filters={filters} />
-        </div>
-        <div style={{ gridArea: 'b2' }}>
-          <AIDrivenRRM pathFilters={getFiltersForRecommendationWidgets(pathFilters)} />
-        </div>
-        <div style={{ gridArea: 'c2' }}>
-          <AIOperations pathFilters={getFiltersForRecommendationWidgets(pathFilters)} />
-        </div>
-        <div style={{ gridArea: 'd1' }}>
-          <DidYouKnow
-            filters={pathFilters}
-            maxFactPerSlide={3}
-            maxSlideChar={290}
-          />
-        </div>
-        <div style={{ gridArea: 'd2' }}>
-          <ChatWithMelissa />
-        </div>
-      </UI.Grid>
+      <DashboardView filters={filters} pathFilters={pathFilters} />
     </>
   )
 }

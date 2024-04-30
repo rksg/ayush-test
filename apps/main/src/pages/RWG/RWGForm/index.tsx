@@ -106,14 +106,18 @@ export function RWGForm () {
     }
   }
 
+  const isEditMode: boolean = action === 'edit'
+
+  const loadForm: boolean = isEditMode ? !!data : true
+
   return (
     <>
-      {<PageHeader
-        title={action !== 'edit'
+      <PageHeader
+        title={!isEditMode
           ? $t({ defaultMessage: 'Add Gateway' })
           : data?.name}
         titleExtra={
-          action === 'edit' &&
+          isEditMode &&
           <span>
             <Badge
               color={`var(${data?.status === 'Operational'
@@ -125,7 +129,7 @@ export function RWGForm () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'RUCKUS WAN Gateway' }), link: '/ruckus-wan-gateway' }
         ]}
-        extra={action === 'edit' ? [
+        extra={isEditMode ? [
           <Button
             type='primary'
             disabled={!gatewayId}
@@ -136,13 +140,13 @@ export function RWGForm () {
               })
             }>{ $t({ defaultMessage: 'Back to Gateway details' }) }</Button>
         ] : []}
-      />}
-      <StepsForm
-        onFinish={action === 'edit' ? handleEditGateway : handleAddGateway}
+      />
+      { loadForm && <StepsForm
+        onFinish={isEditMode ? handleEditGateway : handleAddGateway}
         onCancel={() =>
           redirectPreviousPage(navigate, '', linkToGateways) // TODO: set previousPath while gateway details implementation
         }
-        buttonLabel={{ submit: action === 'edit' ?
+        buttonLabel={{ submit: isEditMode ?
           $t({ defaultMessage: 'Save' }):
           $t({ defaultMessage: 'Add' }) }}
       >
@@ -187,7 +191,7 @@ export function RWGForm () {
                 <Form.Item
                   name='loginUrl'
                   initialValue={data?.loginUrl}
-                  label={$t({ defaultMessage: 'Hostname' })}
+                  label={$t({ defaultMessage: 'URL' })}
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
@@ -237,6 +241,7 @@ export function RWGForm () {
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>
+      }
     </>
   )
 }

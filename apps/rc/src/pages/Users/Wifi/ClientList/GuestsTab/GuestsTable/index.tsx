@@ -6,16 +6,19 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
+  Drawer,
+  Alert,
+  cssStr,
+  Modal,
+  ModalType,
   Button,
   Table,
   TableProps,
-  Loader
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
+  Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -34,13 +37,10 @@ import {
   SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
-import { RequestPayload }                                     from '@acx-ui/types'
-import { RolesEnum }                                          from '@acx-ui/types'
+import { RolesEnum, RequestPayload }                          from '@acx-ui/types'
 import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
-import { DateRange, getIntl  }                                from '@acx-ui/utils'
+import { getIntl  }                                           from '@acx-ui/utils'
 
-import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
-import { GuestDateFilter }                   from '../../index'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -67,19 +67,18 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => {
+export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
   const filters = {
-    includeExpired: ['true'],
-    ...(dateFilter.range === DateRange.allTime ? {} : { dateFilter })
+    includeExpired: ['true']
   }
   const { setGuestCount } = useContext(GuestTabContext)
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
+
+  const queryOptions = {
     defaultPayload: {
       ...defaultGuestPayload,
       filters: filters
@@ -87,17 +86,12 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
-  })
+  }
 
-  useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        ..._.omit(tableQuery.payload.filters, ['dateFilter']),
-        ...filters
-      }
-    })
-  }, [dateFilter])
+  const tableQuery = useTableQuery({
+    useQuery: useGetGuestsListQuery,
+    ...queryOptions
+  })
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -133,11 +127,13 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
 
   const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   const guestTypeFilterOptions = Object.values(GuestTypesEnum)
     .filter(gtype => gtype!==GuestTypesEnum.HOST_GUEST)
@@ -145,15 +141,6 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
 
   const networkFilterOptions = allowedNetworkList.map(network=>({
     key: network.id, value: network.name
-  }))
-
-  const showExpired = () => [
-    { key: 'true', text: $t({ defaultMessage: 'Show expired guests' }) },
-    { key: 'false', text: $t({ defaultMessage: 'Hide expired guests' }) }
-  ] as Array<{ key: string, text: string }>
-
-  const showExpiredOptions = showExpired().map(({ key, text }) => ({
-    key, value: text
   }))
 
   const navigate = useNavigate()
@@ -209,6 +196,9 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
+      filterable: true,
+      filterKey: 'fromTime',
+      filterComponent: { type: 'rangepicker' },
       render: (_, row) =>
         <Button
           type='link'
@@ -229,6 +219,9 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row, __, highlightFn) =>
+      // TODO: fix warn
+      // Warning: A future version of React will block javascript: URLs as a security precaution.
+
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a
           // eslint-disable-next-line no-script-url
@@ -277,9 +270,9 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       dataIndex: 'expiryDate',
       sorter: true,
       filterKey: 'includeExpired',
-      filterMultiple: false,
-      filterable: showExpiredOptions || true,
-      defaultFilteredValue: ['true'],
+      filterable: true,
+      filterComponent: { type: 'checkbox', label: $t({ defaultMessage: 'Show expired guests' }) },
+      defaultFilteredValue: [true],
       render: function (_, row) {
         return renderExpires(row)
       }
@@ -293,11 +286,22 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
           ? <span style={{ color: cssStr('--acx-semantics-red-50') }}>{guestStatus}</span>
           : guestStatus
       }
-    }
+    },
+    ...( HAEmailList_FeatureFlag ? [
+      {
+        key: 'Approver',
+        title: $t({ defaultMessage: 'Approver' }),
+        dataIndex: 'hostApprovalEmail'
+      }
+    ]: [])
   ]
 
   const onClose = () => {
     setVisible(false)
+  }
+
+  const clearSelection = () => {
+    setSelectedRowKeys([])
   }
 
   const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
@@ -311,7 +315,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        guestAction.showDeleteGuest(selectedRows, params.tenantId)
+        guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
     },
     {
@@ -325,10 +329,12 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       visible: (selectedRows) => {
         if (selectedRows.length !== 1) { return false }
         const guestDetail = selectedRows[0]
-        const flag = (guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+        const flag =
+        guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
+        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId && !guestDetail.socialLogin)
-
+          guestDetail.networkId ))
         return Boolean(flag)
       },
       onClick: (selectedRows) => {
@@ -361,6 +367,12 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     if (customFilters.guestType?.includes('SelfSign')) {
       customFilters.guestType.push('HostGuest')
     }
+    if(customFilters?.includeExpired){
+      customFilters = {
+        ...customFilters,
+        includeExpired: [customFilters.includeExpired[0].toString()]
+      }
+    }
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
@@ -380,9 +392,11 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         enableApiFilter={true}
+        filterableWidth={155}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
+          selectedRowKeys,
           type: 'checkbox'
         }}
         actions={filterByAccess([{
@@ -413,6 +427,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
           <GuestsDetail
             triggerClose={onClose}
             currentGuest={currentGuest}
+            queryPayload={tableQuery?.payload}
           />
         }
         width={'550px'}

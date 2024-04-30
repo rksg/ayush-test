@@ -6,9 +6,9 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent,
 import { DateRange }                                                                       from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
 
-import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
-import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
-import { api }                                                                                   from './services'
+import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse, noDataResponse } from './__tests__/fixtures'
+import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData }                                           from './healthPieChart'
+import { api, ImpactedEntities }                                                                                 from './services'
 
 const mockGet = get as jest.Mock
 
@@ -57,7 +57,10 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    expect(await screen.findByText('WLANs')).toBeVisible()
+    expect(await screen.findByText('Manufacturers')).toBeVisible()
+    expect(await screen.findByText('Events')).toBeVisible()
   })
 
   it('should render correctly for single ttc failures', async () => {
@@ -85,7 +88,10 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('1 Impacted Venue')).toBeVisible()
+    expect(await screen.findByText('WLAN')).toBeVisible()
+    expect(await screen.findByText('Manufacturers')).toBeVisible()
+    expect(screen.queryByText('Events')).toBeNull()
   })
 
   it('should render correctly for missing nodes data', async () => {
@@ -114,9 +120,36 @@ describe('HealthPieChart', () => {
         node.setAttribute('_echarts_instance_', 'ec_mock')
         node.setAttribute('size-sensor-id', 'sensor-mock')
       })
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findByText('1 Impacted WLAN')).toBeVisible()
   })
-
+  it('should show correctly for nodes with no data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: noDataResponse })
+    const apFilters = { ...filters, path: mockPathWithAp }
+    const { asFragment } = render(
+      <Provider>
+        <div style={{ height: 300, width: 300 }}>
+          <HealthPieChart
+            filters={apFilters}
+            queryType='ttc'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+          />,
+        </div>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'test' }
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_]')
+      .forEach((node: Element) => {
+        node.setAttribute('_echarts_instance_', 'ec_mock')
+        node.setAttribute('size-sensor-id', 'sensor-mock')
+      })
+    expect( await screen.findByText('No data to display')).toBeVisible()
+  })
   it('should handle chart switching', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     render(
@@ -137,10 +170,13 @@ describe('HealthPieChart', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Authentication')).toBeVisible()
-    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
-    const venues = await screen.findByText('Venues')
-    fireEvent.click(venues)
     expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    fireEvent.click(await screen.findByText('WLANs'))
+    expect(await screen.findByText('Top 5 Impacted WLANs')).toBeVisible()
+    fireEvent.click(await screen.findByText('Manufacturers'))
+    expect(await screen.findByText('Top 5 Impacted Manufacturers')).toBeVisible()
+    fireEvent.click(await screen.findByText('Events'))
+    expect(await screen.findByText('Top 5 Events')).toBeVisible()
   })
 
   describe('tooltipFormatter', () => {
@@ -154,11 +190,11 @@ describe('HealthPieChart', () => {
         { type: 'zone', name: 'Zone' }
       ]))
       expect(zone.defaultMessage?.[0].options.one.value[0].value).toEqual('AP Group')
-      const ap = pieNodeMap(pathToFilter([
+      const apGroup = pieNodeMap(pathToFilter([
         { type: 'zone', name: 'Zone' },
-        { type: 'AP', name: 'AP' }
+        { type: 'apGroup', name: 'AP Group' }
       ]))
-      expect(ap.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
+      expect(apGroup.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
     })
 
     it('should return correct title for ACX', () => {
@@ -174,3 +210,27 @@ describe('HealthPieChart', () => {
   })
 })
 
+
+describe('transformData', () => {
+  it('should transform Data correctly', () => {
+    expect(
+      transformData(mockConnectionFailureResponse as ImpactedEntities)
+        .osManufacturers[0]
+    ).toEqual(
+      {
+        color: '#66B1E8',
+        key: 'Apple, Inc.',
+        name: 'Apple, Inc.',
+        value: 1028
+      }
+    )
+    expect(
+      transformData(mockConnectionFailureResponse as ImpactedEntities).events[0]
+    ).toEqual({
+      color: '#66B1E8',
+      key: 'Previous Auth Invalid',
+      name: 'Previous Auth Invalid',
+      value: 3243
+    })
+  })
+})

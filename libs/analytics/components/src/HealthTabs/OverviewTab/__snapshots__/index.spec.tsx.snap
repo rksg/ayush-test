@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OverviewTab should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 105px;"
+      >
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 320px;"
+      >
+        <div>
+          Mocked ConnectedClientsOverTime
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`OverviewTab should render correctly with filter passed as props 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 105px;"
+      >
+        <div>
+          Mocked SummaryBoxes
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        style="min-height: 320px;"
+      >
+        <div>
+          Mocked ConnectedClientsOverTime
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

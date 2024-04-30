@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-  google.maps.key: "AIzaSyACjGDfnC5-HTRbG5dVkJp7hDRpRVwqp4M"
+  google.maps.key: "AIzaSyDePXl-hmmNzgJzy7fV7ZjAhncqMWMZhWQ"
   split.io.key: "l9e2d1b3npu3ri6bi920e38vln2h9qkgqikv"
   captive.portal.domain.name: "eu.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
@@ -11,3 +11,4 @@ data:
   fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-prd-latest.min.js"
   new.api.domain.name: "api.eu.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
+  druid.retain.period.days: "380"

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -9,17 +9,21 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
-  useAdaptivePolicyListQuery
+  useAdaptivePolicyListQuery,
+  useGetCertificateTemplatesQuery,
+  useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -29,11 +33,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
-import {
-  policyTypeDescMapping,
-  policyTypeLabelMapping
-} from '../contentsMap'
 
 interface CardDataProps {
   type: PolicyType
@@ -95,10 +94,12 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return [
     {
@@ -125,6 +126,26 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.WIFI_OPERATOR,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetWifiOperatorListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
+    },
+    {
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetIdentityProviderListQuery({
+        params, payload: { tenantId: params.tenantId }
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
@@ -198,6 +219,15 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.CERTIFICATE_TEMPLATE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !isCertificateTemplateEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
+      disabled: !isCertificateTemplateEnabled
     }
   ]
 }

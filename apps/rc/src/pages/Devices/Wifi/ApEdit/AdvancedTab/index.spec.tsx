@@ -26,6 +26,10 @@ jest.mock('./BssColoring', () => ({
   BssColoring: () => <div data-testid={'bssColoring'}></div>
 }))
 
+jest.mock('./ApManagementVlan', () => ({
+  ApManagementVlanForm: () => <div data-testid={'apManagementVlanForm'}></div>
+}))
+
 describe('AP advanced Tab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -61,7 +65,9 @@ describe('AP advanced Tab', () => {
       updateApLed: mockUpdateApLed,
       discardApLedChanges: jest.fn(),
       updateBssColoring: jest.fn(),
-      discardBssColoringChanges: jest.fn()
+      discardBssColoringChanges: jest.fn(),
+      updateApManagementVlan: jest.fn(),
+      discardApManagementVlan: jest.fn()
     }
 
     render(
@@ -70,7 +76,8 @@ describe('AP advanced Tab', () => {
           editContextData: newEditContextData,
           setEditContextData: jest.fn(),
           editAdvancedContextData: newEditAdvancedContextData,
-          setEditNetworkControlContextData: jest.fn()
+          setEditNetworkControlContextData: jest.fn(),
+          setEditAdvancedContextData: jest.fn()
         }} >
           <ApDataContext.Provider value={{
             apData: ApData_T750SE,
@@ -110,7 +117,8 @@ describe('AP advanced Tab', () => {
           editContextData: newEditContextData,
           setEditContextData: jest.fn(),
           editAdvancedContextData: newEditAdvancedContextData,
-          setEditNetworkControlContextData: jest.fn()
+          setEditNetworkControlContextData: jest.fn(),
+          setEditAdvancedContextData: jest.fn()
         }} >
           <ApDataContext.Provider value={{
             apData: ApData_T750SE,

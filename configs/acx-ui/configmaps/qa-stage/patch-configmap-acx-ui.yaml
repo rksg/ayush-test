@@ -4,7 +4,8 @@ metadata:
   name: configmap-acx-ui
 data:
   split.io.key: "mv0ie7nqslfon47mabelfdloqdem1alfctqp"
-  google.maps.key: "AIzaSyCO5O4se2-GDzFXqfUFAMDZHycyZfugqSc"
+  disable.pendo: "true"
+  google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   captive.portal.domain.name: "stage.qaalto.ruckuswireless.com"
   new.api.domain.name: "api.stage.qaalto.ruckuswireless.com"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"

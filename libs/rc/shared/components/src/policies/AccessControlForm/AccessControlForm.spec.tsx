@@ -1,0 +1,296 @@
+import React from 'react'
+
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
+
+import {
+  AccessControlUrls,
+  CONFIG_TEMPLATE_LIST_PATH,
+  getPolicyListRoutePath,
+  getPolicyRoutePath, PoliciesConfigTemplateUrlsInfo, PolicyOperation, PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
+import {
+  enhancedAccessControlList,
+  enhancedApplicationPolicyListResponse,
+  enhancedDevicePolicyListResponse,
+  enhancedLayer2PolicyListResponse,
+  enhancedLayer3PolicyListResponse
+} from '../AccessControl/__tests__/fixtures'
+
+import {
+  aclDetail,
+  aclList, aclResponse, avcApp, avcCat,
+  devicePolicyDetailResponse, devicePolicyListResponse,
+  layer2PolicyListResponse,
+  layer2Response,
+  layer3PolicyListResponse,
+  layer3Response, queryApplication
+} from './__tests__/fixtures'
+import { AccessControlForm } from './AccessControlForm'
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
+
+const mockedUseConfigTemplate = jest.fn()
+const mockedUsePolicyListBreadcrumb = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate(),
+  usePolicyListBreadcrumb: () => mockedUsePolicyListBreadcrumb()
+}))
+
+describe('AccessControlForm Component', () => {
+  beforeEach(async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUsePolicyListBreadcrumb.mockReturnValue([
+      { text: 'Network Control' },
+      {
+        text: 'Policies & Profiles',
+        link: getPolicyListRoutePath(true)
+      },
+      {
+        text: 'Access Control',
+        link: getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
+      }
+    ])
+    mockServer.use(
+      rest.post(AccessControlUrls.addAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclResponse))),
+      rest.get(AccessControlUrls.getAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.put(AccessControlUrls.updateAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json(aclList))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedAccessControlProfiles.url,
+        (req, res, ctx) => res(ctx.json(enhancedAccessControlList))),
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse))),
+      rest.get(AccessControlUrls.getL3AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer3Response))),
+      rest.get(AccessControlUrls.getL2AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer2Response))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(ctx.json(queryApplication))),
+      rest.get(AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(ctx.json(avcCat))),
+      rest.get(AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(ctx.json(avcApp))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies.url,
+        (req, res , ctx) => res(ctx.json(enhancedLayer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse)))
+    )
+  })
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockRestore()
+    mockedUsePolicyListBreadcrumb.mockRestore()
+  })
+
+  it('Render AccessControlForm component successfully', async () => {
+    render(
+      <Provider>
+        <AccessControlForm editMode={false}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    const header = screen.getByRole('heading', {
+      name: /add access control/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Cancel'
+    }))
+  })
+
+  it('Render AccessControlForm component successfully when isTemplate is true', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedUsePolicyListBreadcrumb.mockReturnValue([
+      {
+        text: 'Configuration Templates',
+        link: CONFIG_TEMPLATE_LIST_PATH,
+        tenantType: 'v'
+      }
+    ])
+
+    render(
+      <Provider>
+        <AccessControlForm editMode={false}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    const header = screen.getByRole('heading', {
+      name: /add access control template/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
+
+    mockedUsePolicyListBreadcrumb.mockRestore()
+  })
+
+  it('should render breadcrumb correctly', async () => {
+    render(
+      <Provider>
+        <AccessControlForm editMode={false}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Access Control'
+    })).toBeVisible()
+  })
+
+  it('Render AccessControlForm component successfully (create)', async () => {
+    render(
+      <Provider>
+        <AccessControlForm editMode={false}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    const header = await screen.findByRole('heading', {
+      name: /add access control/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name/i
+    }), 'acl-test')
+
+    await userEvent.click((await screen.findAllByRole('switch'))[1])
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Add'
+    }))
+
+    await userEvent.click((await screen.findAllByRole('switch'))[0])
+
+    await userEvent.click((await screen.findAllByRole('switch'))[1])
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Add'
+    }))
+
+    const layer2Data = enhancedLayer2PolicyListResponse.data
+
+    await screen.findByRole('option', { name: layer2Data[0].name })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: layer2Data[0].name })
+    )
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Add'
+    }))
+
+  })
+
+  it('Render AccessControlForm component with editMode successfully', async () => {
+    render(
+      <Provider>
+        <AccessControlForm editMode={true}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', policyId: 'c9c0667abfe74ab7803999a793fd2bbe' }
+        }
+      }
+    )
+
+    const header = screen.getByRole('heading', {
+      name: /edit access control/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    await screen.findByDisplayValue('acl-test')
+
+    await userEvent.clear(screen.getByRole('textbox', {
+      name: /policy name/i
+    }))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name/i
+    }), 'acl-test-modify')
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Finish'
+    }))
+  })
+})

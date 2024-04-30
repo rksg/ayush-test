@@ -20,15 +20,17 @@ const buttonStyle = css`
   }
 `
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ noPadding? : boolean }>`
   .ant-radio-group {
     border-radius: 20px;
     background-color: var(--acx-neutrals-20);
     vertical-align: top;
   }
   .ant-radio-button-wrapper {
+    ${props => props.noPadding && `
+    padding: 0px;
+  `}
     ${buttonStyle}
-
     &:not(.ant-radio-button-wrapper-checked, .ant-radio-button-wrapper-disabled):hover {
       background-color: var(--acx-neutrals-30);
     }

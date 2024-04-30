@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
 import { Provider }                            from '@acx-ui/store'
 import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
 import { RolesEnum }                           from '@acx-ui/types'
@@ -11,6 +12,12 @@ import AllRoutes from './AllRoutes'
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useStreamActivityMessagesQuery: jest.fn(),
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
+}))
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
+  useStreamActivityMessagesQuery: jest.fn(),
   useGetMspEcProfileQuery: () => ({ data: {
     msp_label: '',
     name: '',
@@ -18,8 +25,10 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} }),
-  useGetTenantDetailsQuery: () => ({ data: {} })
+  useGetBrandingDataQuery: () => ({ data: {
+    msp_label: '',
+    name: ''
+  } })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -60,7 +69,8 @@ jest.mock('@rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./pages/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues', () => ({
+  ...jest.requireActual('./pages/Venues'),
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
@@ -86,7 +96,11 @@ describe('AllRoutes', () => {
     mockServer.use(
       rest.get('mspCustomers/', (req, res, ctx) => {
         return res(ctx.json({}))
-      })
+      }),
+      rest.post(
+        MspUrlsInfo.getVarDelegations.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
     )
   })
 
@@ -234,7 +248,7 @@ describe('AllRoutes', () => {
     await screen.findByTestId('timeline')
   })
 
-  test('should not see anayltics & service validation if not admin', async () => {
+  test('should not see AI Assurance if guest manager', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const { rerender } = render(<AllRoutes />, {
@@ -243,23 +257,43 @@ describe('AllRoutes', () => {
         path: '/tenantId/t/dashboard'
       }
     })
-
-    const menuItem = await screen.findByRole('menuitem', { name: 'AI Assurance' })
-    expect(menuItem).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
     setUserProfile({
       allowedOperations: [],
       profile: {
         ...getUserProfile().profile,
-        roles: [RolesEnum.READ_ONLY]
+        roles: [RolesEnum.GUEST_MANAGER]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
+    rerender(<AllRoutes />)
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
+  })
+
+  test('should not see AI Assurance if DPSK admin', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const { rerender } = render(<AllRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/tenantId/t/dashboard'
       }
     })
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        roles: [RolesEnum.DPSK_ADMIN]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
     rerender(<AllRoutes />)
-
-    await screen.findAllByRole('menuitem')
-
-    expect(menuItem).not.toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
   })
 
   test('should navigate to ruckus-wan-gateway/*', async () => {

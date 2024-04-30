@@ -1,5 +1,6 @@
 export const EdgeTopTrafficWidgetEmptyMockData = {
-  traffic: []
+  traffic: [],
+  portTraffic: []
 }
 export const EdgeTrafficByVolumeWidgetEmptyMockData = {
   timeSeries: {
@@ -26,22 +27,35 @@ export const EdgeUpTimeWidgetEmptyMockData = {
   totalUptime: 0
 }
 export const EdgeTopTrafficWidgetMockData = {
-  traffic: [100000, 120000, 500000]   // bytes
+  traffic: [100000, 120000, 500000],   // bytes
+  portTraffic: [{
+    portName: 'port1',
+    traffic: 100000
+  }, {
+    portName: 'port2',
+    traffic: 120000
+  }, {
+    portName: 'port3',
+    traffic: 500000
+  }]
 }
 export const EdgeTrafficByVolumeWidgetMockData = {
   timeSeries: {
     ports: [
       {
+        portName: 'port1',
         tx: [null,4059176,4061913,5257556,4143238],
         rx: [null,3194968,3280669,99728159,3543347],
         total: [null,7254144,7342582,104985715,7686585]
       },
       {
+        portName: 'port2',
         tx: [null,142710,142660,330828,1326396],
         rx: [null,627544,642547,651846,664185],
         total: [null,770254,785207,982674,1990581]
       },
       {
+        portName: 'port3',
         tx: [null,360,360,300,360],
         rx: [null,155374,155547,154962,155007],
         total: [null,155734,155907,155262,155367]

@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-
-import { mockEdgeList, mockedEdgeServiceList } from '../__tests__/fixtures'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
+import { mockServer, render, screen }        from '@acx-ui/test-utils'
 
 import EdgeDetails from '.'
+
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -50,11 +50,15 @@ describe('EdgeDetails', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+        (_req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (_req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -92,7 +96,7 @@ describe('EdgeDetails', () => {
       route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
-    const tab = await screen.findByText('Services (3)')
+    const tab = await screen.findByText('Services (4)')
     expect(tab.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -132,7 +136,7 @@ describe('EdgeDetails', () => {
       route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
-    await user.click(screen.getByRole('tab', { name: 'Services (3)' }))
+    await user.click(screen.getByRole('tab', { name: 'Services (4)' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/services`,
       hash: '',

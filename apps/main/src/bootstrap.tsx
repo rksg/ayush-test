@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
@@ -8,14 +8,16 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
+import { SplitProvider }          from '@acx-ui/feature-toggle'
 import { useGetPreferencesQuery } from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { BrowserRouter }          from '@acx-ui/react-router-dom'
 import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
   UserUrlsInfo,
-  useGetUserProfileQuery
+  useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import {
   renderPendo,
@@ -27,35 +29,25 @@ import {
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
-import AllRoutes           from './AllRoutes'
-import { errorMiddleware } from './errorMiddleware'
+import AllRoutes    from './AllRoutes'
+import { showBrowserLangDialog,
+  detectBrowserLang,
+  PartialUserData } from './BrowserDialog/BrowserDialog'
+import { errorMiddleware }        from './errorMiddleware'
+import { refreshTokenMiddleware } from './refreshTokenMiddleware'
 
 import '@acx-ui/theme'
 
-// Needed for Browser language detection
-const supportedLocales: Record<string, LangKey> = {
-  'en-US': 'en-US',
-  'en': 'en-US',
-  'es': 'es-ES',
-  'es-ES': 'es-ES',
-  'de-DE': 'de-DE',
-  'de': 'de-DE',
-  'ja-JP': 'ja-JP',
-  'ja': 'ja-JP',
-  'fr-FR': 'fr-FR',
-  'ko-KR': 'ko-KR',
-  'pt-BR': 'pt-BR'
-}
-export function loadMessages (locales: readonly string[]): LangKey {
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  return supportedLocales[locale as keyof typeof supportedLocales]
-}
 async function pendoInitalization (): Promise<PendoParameters> {
   const tenantId = getTenantId()
   const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
   const res = await fetch(userProfileRequest.url, userProfileRequest)
   const user = await res.json()
+  const tenantDetailRequest =
+    createHttpRequest(AdministrationUrlsInfo.getTenantDetails, { tenantId })
+  const resTenant = await fetch(tenantDetailRequest.url, tenantDetailRequest)
+  const tenant = await resTenant.json()
+
   return {
     visitor: {
       id: user.externalId,
@@ -74,24 +66,74 @@ async function pendoInitalization (): Promise<PendoParameters> {
     account: {
       productName: 'RuckusOne',
       id: user.tenantId,
-      name: user.companyName
+      name: user.companyName,
+      sfdcId: tenant.externalId
     }
   }
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const result = useGetUserProfileQuery({})
-  const { data: userProfile } = result
-  const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const userPreflang = String(userProfile?.preferredLanguage) as LangKey
+  const tenantId = getTenantId()
+  const { data: userProfile, isUserProfileLoading } = useUserProfileContext()
+
+  const request = useGetPreferencesQuery({ tenantId })
   const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
 
-  const lang = userPreflang?? defaultLang
+  const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
+  const [langLoading, setLangLoading] = useState(true)
+  const [ updateUserProfile ] = useUpdateUserProfileMutation()
+
+  useEffect(() => {
+    if (userProfile) {
+      const userLang = userProfile?.preferredLanguage
+      const browserLang = detectBrowserLang()
+      const browserCacheLang = localStorage.getItem('browserLang')
+      const openDialog = browserLang !== userLang
+        && browserLang !== browserCacheLang
+
+      if (openDialog) {
+        const userPreflang = showBrowserLangDialog(userLang as LangKey)
+        userPreflang.then((dialogResult) => {
+          // update user profile - 'yes' language change
+          if (dialogResult.lang !== '') {
+            setLanguage(dialogResult.lang)
+            const data:PartialUserData = {
+              detailLevel: userProfile?.detailLevel,
+              dateFormat: userProfile?.dateFormat,
+              preferredLanguage: dialogResult.lang
+            }
+            try {
+              updateUserProfile({
+                payload: data,
+                params: { tenantId }
+              }).unwrap()
+              setLangLoading(false)
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            } finally {
+              setLangLoading(false)
+            }
+          }
+        }).catch(() => {
+          // user selected 'no' language change
+          setLanguage(userProfile?.preferredLanguage?? defaultLang)
+          setLangLoading(false)
+        })
+      } else {
+        setLanguage(userProfile?.preferredLanguage?? defaultLang)
+        setLangLoading(false)
+      }
+    }
+  }, [ userProfile, defaultLang, tenantId, updateUserProfile ])
+
+  const lang = language
+
   return <Loader
-    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: result.isLoading || result.isFetching
-        || request.isLoading || request.isFetching }]}
-    children={<ConfigProvider {...props} lang={lang} />}
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter/>}
+    states={[{
+      isLoading: isUserProfileLoading || request.isFetching || langLoading
+    }]}
+    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
   />
 }
 
@@ -102,8 +144,9 @@ function DataGuardLoader (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
-      !Boolean(locale.messages) ||
-      !Boolean(userProfile.allowedOperations.length)
+        !Boolean(locale.messages) ||
+        !Boolean(userProfile.allowedOperations.length) ||
+        !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
   />
@@ -111,21 +154,24 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(errorMiddleware)
+  addMiddleware(refreshTokenMiddleware, errorMiddleware)
+
   root.render(
     <React.StrictMode>
       <Provider>
-        <PreferredLangConfigProvider>
-          <BrowserRouter>
-            <UserProfileProvider>
-              <DataGuardLoader>
-                <React.Suspense fallback={null}>
-                  <AllRoutes />
-                </React.Suspense>
-              </DataGuardLoader>
-            </UserProfileProvider>
-          </BrowserRouter>
-        </PreferredLangConfigProvider>
+        <BrowserRouter>
+          <UserProfileProvider>
+            <SplitProvider>
+              <PreferredLangConfigProvider>
+                <DataGuardLoader>
+                  <React.Suspense fallback={null}>
+                    <AllRoutes />
+                  </React.Suspense>
+                </DataGuardLoader>
+              </PreferredLangConfigProvider>
+            </SplitProvider>
+          </UserProfileProvider>
+        </BrowserRouter>
       </Provider>
     </React.StrictMode>
   )

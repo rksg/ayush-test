@@ -6,7 +6,7 @@ import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider, store  }                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { apDetails, apLanPorts, apRadio, currentAP } from '../../__tests__/fixtures'
+import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities } from '../../__tests__/fixtures'
 
 import { ApProperties } from '.'
 
@@ -28,26 +28,28 @@ describe('ApProperties', () => {
             longitude: -122.0191908
           }
         }))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (req, res, ctx) => res(ctx.json({
           apPassword: 'admin!234'
         }))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         WifiUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
-      )
-    )
-    mockServer.use(
+      ),
       rest.get(
         WifiUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadio))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(wifiCapabilities))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

@@ -1,5 +1,5 @@
-import { Tenant, Settings }                               from './types'
-import { getUserProfile, setUserProfile, getPendoConfig } from './userProfile'
+import { Tenant, Settings }                                                     from './types'
+import { getUserProfile, setUserProfile, getPendoConfig, updateSelectedTenant } from './userProfile'
 
 jest.mock('@acx-ui/config', () => ({
   get: () => ''
@@ -50,47 +50,55 @@ describe('User Profile', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
-  afterAll(() => {
+  afterEach(() => {
     Object.defineProperty(window, 'location', {
       writable: true,
       value: { search: '' }
     })
   })
-  it('should set user profile once', () => {
+  it('should set user profile', () => {
     setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
     })
-    expect(mockedUpdatePendo).toHaveBeenCalledTimes(1)
-    setUserProfile(defaultMockUserProfile.data)
-    expect(mockedUpdatePendo).toHaveBeenCalledTimes(1)
   })
-  it('should set user profile acc to tenant from url', () => {
-    const t = window.btoa(
+  it('should set selected tenant from url', () => {
+    setUserProfile(defaultMockUserProfile.data)
+    const search = '?selectedTenants=' + window.btoa(
       JSON.stringify([defaultMockUserProfile.data.tenants[1].id])
     )
     Object.defineProperty(window, 'location', {
       writable: true,
-      value: { search: `selectedTenants=${t}` }
+      value: { search }
     })
-    setUserProfile(defaultMockUserProfile.data)
+    updateSelectedTenant()
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[1] }
+    })
+    expect(mockedUpdatePendo).toHaveBeenCalledTimes(1)
+  })
+  it('should set selected tenant to own account', () => {
+    setUserProfile(defaultMockUserProfile.data)
+    updateSelectedTenant()
+    expect(getUserProfile()).toEqual({
+      ...defaultMockUserProfile.data,
+      selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
     })
   })
   it('should return pendo config', () => {
     setUserProfile(defaultMockUserProfile.data)
     expect(getPendoConfig()).toEqual({
       account: {
-        id: '2',
+        id: '1',
         isTrial: false,
-        name: '2',
+        name: '1',
+        sfdcId: '1',
         productName: 'RuckusAI'
       },
       visitor: {
-        delegated: true,
+        delegated: false,
         email: '',
         full_name: ' ',
         id: '',

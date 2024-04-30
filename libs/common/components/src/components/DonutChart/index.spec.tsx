@@ -63,6 +63,12 @@ describe('DonutChart - small', () => {
       <DonutChart style={{ width: 238, height: 176 }} data={emptyChartData}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
+  it('should render the empty chart with custom status', async () => {
+    const { asFragment } = render(
+      <DonutChart style={{ width: 238, height: 176 }} title='test' value='custom status' data={[]}/>
+    )
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
   it('should not render the legend when false', async () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
@@ -104,6 +110,7 @@ describe('DonutChart - small', () => {
       data={data}
       title='Donut Chart'
       legend={'name-value'}
+      showLegend
       subTitle='Donut Chart subTitle'
     />)
     data.forEach(async item => {

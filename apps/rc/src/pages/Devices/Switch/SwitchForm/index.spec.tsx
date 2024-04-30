@@ -1,13 +1,18 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
+import userEvent   from '@testing-library/user-event'
+import { message } from 'antd'
+import { rest }    from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { venueApi }                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                  from '@acx-ui/store'
+import { useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { switchApi, venueApi } from '@acx-ui/rc/services'
 import {
+  CommonUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures,
+  SwitchUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  act,
   mockServer,
   render,
   screen,
@@ -18,23 +23,36 @@ import {
 
 import { staticRoutes, switchFirmwareVenue } from '../__tests__/fixtures'
 
-import { swtichListResponse, venueListResponse, vlansByVenueListResponse, switchResponse, switchDetailHeader } from './__tests__/fixtures'
+import {
+  swtichListResponse,
+  venueListResponse,
+  vlansByVenueListResponse,
+  switchResponse,
+  switchDetailHeader
+} from './__tests__/fixtures'
 
 import { SwitchForm } from '.'
 
-//switchListEmptyResponse
-//vlansByVenueListEmptyResponse
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
 describe('Add switch form', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -91,10 +109,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/description/i), { target: { value: 'Description' } })
     fireEvent.mouseDown(await screen.findByLabelText(/standalone switch/i))
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -156,10 +171,7 @@ describe('Add switch form', () => {
     await screen.findByText('7150stack')
 
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -209,10 +221,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/description/i), { target: { value: 'Description' } })
     fireEvent.mouseDown(await screen.findByLabelText(/standalone switch/i))
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 
@@ -251,16 +260,14 @@ describe('Add switch form', () => {
     await screen.findByText('7150stack')
 
     const addButton = await screen.findByRole('button', { name: /add/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(addButton)
-    })
+    await userEvent.click(addButton)
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 })
 
 
 describe('Edit switch form', () => {
+  const mockUpdateSwitch = jest.fn()
   const params = {
     tenantId: 'tenant-id',
     switchId: 'switch-id',
@@ -268,8 +275,8 @@ describe('Edit switch form', () => {
     action: 'edit'
   }
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    initialize()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
         (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
@@ -284,8 +291,15 @@ describe('Edit switch form', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
+        (_, res, ctx) => {
+          mockUpdateSwitch()
+          return res(ctx.json({ requestId: 'request-id' }))
+        })
     )
+  })
+  afterEach(() => {
+    message.destroy()
+    mockUpdateSwitch.mockClear()
   })
 
   it('should render edit switch form correctly', async () => {
@@ -319,9 +333,9 @@ describe('Edit switch form', () => {
     })
 
     const settingsTab = await screen.findByRole('tab', { name: 'Settings' })
-    fireEvent.click(settingsTab)
+    await userEvent.click(settingsTab)
     const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
-    fireEvent.click(ipModeRadio)
+    await userEvent.click(ipModeRadio)
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
@@ -332,16 +346,14 @@ describe('Edit switch form', () => {
       fireEvent.change(
         await screen.findByLabelText('Default Gateway'), { target: { value: '192.168.1.1' } })
     })
-    fireEvent.click(
+    await userEvent.click(
       await screen.findByRole('switch'))
     const jumboOkBtn = await screen.findByRole('button', { name: /ok/i })
-    fireEvent.click(jumboOkBtn)
+    await userEvent.click(jumboOkBtn)
     const applyButton = await screen.findByRole('button', { name: /apply/i })
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(applyButton)
-    })
+    await userEvent.click(applyButton)
+    expect(mockUpdateSwitch).toBeCalled()
   })
 
   it('should submit edit switch form with dynamic ip mode correctly', async () => {
@@ -355,10 +367,138 @@ describe('Edit switch form', () => {
     await userEvent.click(ipModeRadio)
     await waitFor(() => expect(screen.getByLabelText('Subnet Mask')).toBeDisabled())
     const applyButton = screen.getByRole('button', { name: /apply/i })
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(applyButton)
+    await userEvent.click(applyButton)
+    expect(mockUpdateSwitch).toBeCalled()
+  })
+
+  it('should render edit switch form with readonly mode correctly', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({ ...switchDetailHeader, cliApplied: true })))
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
     })
+
+    // eslint-disable-next-line max-len
+    expect(screen.queryByText('These settings cannot be changed, since a CLI profile is applied on the venue.')).toBeNull()
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    expect(await screen.findByLabelText(/Switch Name/)).not.toBeDisabled()
+    expect(await screen.findByLabelText(/Description/)).not.toBeDisabled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not block form submit when switch is offline and settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          deviceStatus: 'OFFLINE'
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).toBeCalled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should not show toast message when the details and settings tab both have invalid field values', async () => {
+    // eslint-disable-next-line max-len
+    const longSwitchName = 'ICX7150-C12 Router vhQKuZoqFy0fI5BR2h34PZFmV4ndAPVrdzg1Bw7jJYHf2opN5Bev1c7PCwobQtILj4GNHHhUsUFAW3h2wfcRvCM5qBs2OLsbNpa2WlUN6JwdbbC26TjPIkJTFBQ3PCFfW22d0DKPpIwur98vB9fk8t8Hh9zx2mGRttHa0SAJaqEtquVYgXrPkpHMFo0Gs5c9iS3jt6gzdSBKbEgnj9Ju8OD4ts9b3BxmnDiVwLMraNpqsfJR0wNx1e2yfVYM6If5'
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          name: longSwitchName,
+          igmpSnooping: ''
+        })))
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Switch Details' })).toBeTruthy()
+    expect(screen.queryByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeNull()
+  })
+
+  it('should show toast message when the settings tab has invalid field values', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab/i
+    )).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should show toast message when the settings tab has invalid field values in read-only mode', async () => {
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchResponse,
+          igmpSnooping: ''
+        }))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json({
+          ...switchDetailHeader,
+          cliApplied: true
+        }))
+      )
+    )
+    render(<Provider><SwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
+    })
+
+    await waitFor(async () =>
+      expect(await screen.findByLabelText(/Serial Number/)).toHaveValue('FEK3233R18P')
+    )
+    expect(await screen.findByLabelText(/Serial Number/)).toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /apply/i }))
+    expect(mockUpdateSwitch).not.toBeCalled()
+    expect(await screen.findByRole('tab', { name: 'Settings' })).toBeTruthy()
+    expect(await screen.findByText(
+      /Please check the invalid field values under the settings tab and modify it via CLI/i
+    )).toBeVisible()
   })
 })
 

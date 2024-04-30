@@ -1,19 +1,12 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import tz_lookup from '@photostructure/tz-lookup'
+import moment    from 'moment-timezone'
 
-import moment from 'moment-timezone'
-
-import { get } from '@acx-ui/config'
-
-import { NetworkVenue }          from '../../models/NetworkVenue'
 import { NetworkVenueScheduler } from '../../models/NetworkVenueScheduler'
-import { SchedulerTypeEnum }     from '../../models/SchedulerTypeEnum'
-import { Network }               from '../../types'
 
-interface ITimeZone {
+export interface ITimeZone {
   dstOffset: number
   rawOffset: number
-  status: string
   timeZoneId: string
   timeZoneName: string
 }
@@ -45,64 +38,15 @@ export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   return { day, timeIndex }
 }
 
-// TODO: use mapbox/timespace instead of Google Maps Time Zone API
-export const fetchVenueTimeZone = async (lat: number, lng: number): Promise<ITimeZone> => {
-  /** Timestamp is shifted to the beginning of the day to involve browser caching.
-   *  Without this parameter every request has unique timestamp and considered as unique
-   *  and it prevents native browser caching.
-   *  Dividing by 1000 required since google api accepts seconds (not ms).
-   **/
-  const timestamp = (new Date()).setHours(0, 0, 0, 0) / 1000
-  // We pass addContentTypeHeader= false in this case since google location API will reject the request
-  // if the content type is set to application/json; charset=utf-8
-  const query = [
-    'location=' + lat + ',' + lng,
-    'timestamp=' + timestamp,
-    'key=' + get('GOOGLE_MAPS_KEY')
-  ]
-  const url = 'https://maps.googleapis.com/maps/api/timezone/json?' + query.join('&')
-
-  return fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      return data
-    })
-    // .catch(error => {
-    //   return null
-    // })
+export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
+  const timeZoneId = tz_lookup(lat, lng)
+  const timeZoneName = moment.utc().tz(timeZoneId).zoneAbbr()
+  const rawOffset = moment.utc().tz(timeZoneId).utcOffset()*60
+  return {
+    timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
+    rawOffset, dstOffset: 0
+  }
 }
-
-type VenueSubset = {
-  deepVenue?: NetworkVenue,
-  id: string,
-  activated: Network['activated']
-  latitude?: string,
-  longitude?: string
-}
-
-export const useScheduleSlotIndexMap = (tableData: VenueSubset[]) => {
-  const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
-
-  useEffect(()=>{
-    const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
-      let timeZone
-      if (Number(venueLatitude) && Number(venueLongitude)) {
-        timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
-      }
-      const slotIndex = getCurrentTimeSlotIndex(timeZone)
-      setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
-    }
-
-    tableData.forEach(item => {
-      if ( item.activated.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
-        updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
-      }
-    })
-  }, [tableData])
-
-  return scheduleSlotIndexMap
-}
-
 
 const convertTimeFromScheduleIndex = (scheduleTimeIndex: number) => {
   const minute = (scheduleTimeIndex % 4) * 15

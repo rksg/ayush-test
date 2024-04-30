@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { renderHook } from '@testing-library/react'
-import userEvent      from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -11,8 +10,8 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { render, screen }          from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }   from '@acx-ui/react-router-dom'
+import { render,renderHook, screen } from '@acx-ui/test-utils'
 
 import SelectServiceForm from '.'
 
@@ -87,5 +86,37 @@ describe('Select Service Form', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
+  })
+
+  it('should not render edge-dhcp with the HA-FF ON and dhcp-HA-FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_HA_TOGGLE
+        || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
+    })
+
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
+  })
+
+  it('should not render edge-pin with the HA-FF ON and pin-HA-FF OFF', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
+      return featureFlag === Features.EDGE_HA_TOGGLE
+        || featureFlag !== Features.EDGE_PIN_HA_TOGGLE
+    })
+
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText('Personal Identity Network')).toBeNull()
   })
 })

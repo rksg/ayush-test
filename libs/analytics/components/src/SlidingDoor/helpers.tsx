@@ -21,23 +21,27 @@ export const searchTree = (node: Node, searchText: string, path: Node[] = []): N
 export const findMatchingNode = (
   node: Node,
   targetNode: Node,
-  path: Node[] = []
+  targetPath: Node[],
+  currentPath: Node[] = []
 ): Node | null => {
-  if (node.type === targetNode.type && (
-    node.type === 'ap' || node.type === 'switch'
-      ? node.mac === targetNode.list?.[0]
-      : node.name === targetNode.name
-  )) {
-    return { ...node, path: [...path, node] }
+
+  const isTargetTypeMatch = node.type?.toLowerCase() === targetNode.type?.toLowerCase()
+  const isTargetNameMatch = (node.type === 'ap' || node.type === 'switch') ?
+    (node.mac === targetNode.name) : (node.name === targetNode.name)
+  const isPathMatch = currentPath.length === (targetPath.length -1) &&
+                      currentPath.every((n, i) => n.name === targetPath[i].name)
+  if (isTargetTypeMatch && isTargetNameMatch && isPathMatch) {
+    return { ...node, path: [...currentPath, node] }
   }
   if (Array.isArray(node.children)) {
     for (const child of node.children) {
-      const result = findMatchingNode(child, targetNode, [...path, node])
+      const result = findMatchingNode(child, targetNode, targetPath, [...currentPath, node])
       if (result) {
         return result
       }
     }
   }
+
   return null
 }
 export const customCapitalize = (node: Node) => {

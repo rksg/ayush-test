@@ -11,6 +11,7 @@ import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToa
 import { Loader }                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }                                             from '@acx-ui/user'
 import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
@@ -31,12 +32,24 @@ export function VideoCallQoeTable () {
   const queryResults = useVideoCallQoeTestsQuery({})
   const allCallQoeTests = queryResults.data?.getAllCallQoeTests
   const meetingList: Meeting[] = []
-  allCallQoeTests?.forEach((qoeTest)=> {
+
+  allCallQoeTests?.forEach((qoeTest) => {
     const { name, meetings } = qoeTest
+
     meetings.forEach(meeting => {
-      meetingList.push( { ...meeting, name } )
+      // As part of mugration, some calls were marked as invalid
+      // Which was still getting showed with mos. We are resetting here
+      // to fix sorting issues on QoE column
+      const meetingCopy = {
+        ...meeting
+      }
+      if (meeting.status === MeetingType.INVALID.toUpperCase() && meeting.mos > 0) {
+        meetingCopy.mos = -1
+      }
+      meetingList.push({ ...meetingCopy, name })
     })
   })
+
   const [ deleteCallQoeTest ] = useDeleteCallQoeTestMutation()
 
   const statusMapping = {
@@ -53,23 +66,29 @@ export function VideoCallQoeTable () {
       key: 'name',
       searchable: true,
       render: (_, row) => {
-        const status = startCase(toLower((row as Meeting).status as string))
-        const meetingId = (row as Meeting).id
-        return [MeetingType.ENDED].includes(status)
-          ? <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
-            {row.name}
-          </TenantLink>
-          : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)
-            ? <Button
-              type='link'
-              onClick={()=>{
-                setVisible(true)
-                setTestDetails({ name: row.name, link: (row as Meeting).joinUrl })
-              }
-              }>
+        const status = startCase(toLower(row.status as string))
+        const meetingId = row.id
+
+        if ([MeetingType.ENDED].includes(status)) {
+          return (
+            <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
+              {row.name}
+            </TenantLink>
+          )
+        } else if ([MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)) {
+          const handleClick = () => {
+            setVisible(true)
+            setTestDetails({ name: row.name, link: row.joinUrl })
+          }
+
+          return (
+            <Button type='link' onClick={handleClick} size='small'>
               {row.name}
             </Button>
-            : row.name
+          )
+        } else {
+          return row.name
+        }
       },
       sorter: { compare: sortProp('name', defaultSort) }
     },
@@ -113,15 +132,19 @@ export function VideoCallQoeTable () {
       render: (_, row) => {
         const meetingStatus = $t(statusMapping[row.status as keyof typeof statusMapping])
         const formattedStatus = startCase(toLower(row.status))
-        return (formattedStatus !== MeetingType.INVALID ? meetingStatus :
-          (<Tooltip placement='top'
-            title={$t(messageMapping[
-            (row as Meeting).invalidReason as keyof typeof messageMapping
-            ])}>
+
+        if (formattedStatus !== MeetingType.INVALID) {
+          return meetingStatus
+        }
+
+        const invalidReason = messageMapping[row.invalidReason as keyof typeof messageMapping]
+        return (
+          <Tooltip placement='top' title={$t(invalidReason)} dottedUnderline={true}>
             <UI.Invalid>
               {meetingStatus}
             </UI.Invalid>
-          </Tooltip>))
+          </Tooltip>
+        )
       },
       sorter: { compare: sortProp('status', defaultSort) },
       align: 'center',
@@ -133,15 +156,28 @@ export function VideoCallQoeTable () {
       title: $t({ defaultMessage: 'QoE' }),
       dataIndex: 'mos',
       key: 'mos',
-      render: (_, { mos }) => {
-        const isValidMos = mos ? true : false
-        return isValidMos ? (mos >= 4 ? <TrendPill
-          value={$t({ defaultMessage: 'Good' })}
-          trend={TrendTypeEnum.Positive}
-        /> :
-          <TrendPill
-            value={$t({ defaultMessage: 'Bad' })}
-            trend={TrendTypeEnum.Negative} />) : '-'
+      render: (_, { mos, status }) => {
+        const formattedStatus = startCase(toLower(status))
+        const isValidMos = Boolean(mos)
+        if (formattedStatus === MeetingType.ENDED && isValidMos) {
+          if (mos >= 4) {
+            return (
+              <TrendPill
+                value={$t({ defaultMessage: 'Good' })}
+                trend={TrendTypeEnum.Positive}
+              />
+            )
+          } else {
+            return (
+              <TrendPill
+                value={$t({ defaultMessage: 'Bad' })}
+                trend={TrendTypeEnum.Negative}
+              />
+            )
+          }
+        } else {
+          return '-'
+        }
       },
       sorter: { compare: sortProp('mos', defaultSort) },
       align: 'center',
@@ -179,9 +215,9 @@ export function VideoCallQoeTable () {
       <Table
         columns={columnHeaders}
         dataSource={meetingList}
-        rowActions={actions}
+        rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasPermission() && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE

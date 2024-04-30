@@ -1,0 +1,203 @@
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+
+import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }        from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+
+import { TunnelProfileForm } from './index'
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+  loading?: boolean
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      {children ? <><option value={undefined}></option>{children}</> : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
+describe('TunnelProfileForm', () => {
+  const defaultValues = getTunnelProfileFormDefaultValues()
+
+  it('should render TunnelProfileForm successfully', () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+    expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeVisible()
+    // screen.getByRole('combobox', { name: 'Tags' })
+    expect(screen.getByRole('radio', { name: 'Auto' })).toBeVisible()
+    expect(screen.getByRole('radio', { name: 'Manual' })).toBeVisible()
+    expect(screen.getByRole('switch')).toBeVisible()
+    expect(screen.getByText('Tunnel Idle Timeout')).toBeVisible()
+    expect(screen.getByRole('spinbutton')).toBeVisible()
+  })
+
+  it('should show MTU size field when select Manual', async () => {
+    const user = userEvent.setup()
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+    await user.click(screen.getByRole('radio', { name: 'Manual' }))
+    const spinBtns = await screen.findAllByRole('spinbutton') // MTU size / idleTime unit
+    expect(spinBtns.length).toBe(2)
+    expect(spinBtns.filter(i => i.id === 'mtuSize').length).toBe(1)
+    expect(screen.getByText(/Please check Ethernet MTU on AP/i)).toBeVisible()
+  })
+
+  it('should show error when ageTime is invalid', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+    const ageTimeInput = await screen.findByRole('spinbutton')
+
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '1')
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
+
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '10081')
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
+  })
+
+  it('should trigger ageTime validate when change unit', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+    const ageTimeInput = await screen.findByRole('spinbutton')
+    await userEvent.clear(ageTimeInput)
+    await userEvent.type(ageTimeInput, '5')
+    const ageTimeUnitSelect = screen.getByRole('combobox')
+    await userEvent.selectOptions(
+      ageTimeUnitSelect,
+      await screen.findByRole('option', { name: 'Week' })
+    )
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
+  })
+
+  it('Input invalid profile name will show error message', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+    const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await userEvent.type(profileNameField, '``')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Avoid spaces at the beginning/end, and do not use "`" or "$(" characters.'))
+      .toBeVisible()
+  })
+
+  it('should correctly lock fields', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm()
+      form.setFieldValue('disabledFields', [
+        'name',
+        'mtuType',
+        'mtuSize',
+        'forceFragmentation',
+        'ageTimeMinutes',
+        'ageTimeUnit',
+        'type'
+      ])
+      return form
+    })
+
+    render(
+      <Form form={formRef.current} initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+    expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
+    const fragmentToggle = screen.getByRole('switch')
+    expect(fragmentToggle.id).toBe('forceFragmentation')
+    expect(fragmentToggle).toBeDisabled()
+    expect(screen.getByRole('spinbutton')).toBeDisabled()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+  })
+
+  it('MTU help message should only display when manual', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+  })
+
+
+  describe('when SD-LAN is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('should correctly set tunnel type', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('disabledFields', undefined)
+        return form
+      })
+
+      render(
+        <Form form={formRef.current}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).not.toBeDisabled()
+      await userEvent.selectOptions(
+        typeField,
+        await screen.findByRole('option', { name: 'VxLAN' })
+      )
+    })
+
+    it('should lock tunnel type when the disableTunnelType is true', async () => {
+      const { result: formRef } = renderHook(() => {
+        const [form] = Form.useForm()
+        form.setFieldValue('disabledFields', ['type'])
+        return form
+      })
+
+      render(
+        <Form form={formRef.current}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      expect(typeField).toBeDisabled()
+    })
+  })
+})

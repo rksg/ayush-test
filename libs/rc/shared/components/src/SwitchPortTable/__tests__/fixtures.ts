@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { SwitchPortViewModel } from '@acx-ui/rc/utils'
+
 export const selectedPorts = [{
   adminStatus: 'Down',
   broadcastIn: '0',
@@ -41,7 +43,9 @@ export const selectedPorts = [{
   unitState: 'ONLINE',
   unitStatus: 'Standalone',
   usedInFormingStack: false,
-  vlanIds: '2 1'
+  vlanIds: '2 1',
+  vsixIngressAclName: 'ipv6-acl-in',
+  vsixEgressAclName: 'ipv6-acl-out'
 }, {
   adminStatus: 'Up',
   cloudPort: false,
@@ -115,7 +119,7 @@ export const selectedPorts = [{
   unitStatus: 'Standalone',
   usedInFormingStack: false,
   vlanIds: '1'
-}]
+}] as SwitchPortViewModel[]
 
 export const switchDetailHeader = {
   activeSerial: 'FEK3224R0AG',

@@ -19,14 +19,48 @@ import {
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 type NetworkFilter = { path: NetworkPath, raw: object }
 
-const noSwitchSupport = [
-  '/analytics/health',
-  '/ai/health',
+const noSwitchSupportURLs = [
+  '/ai/health/wireless',
+  '/analytics/health/wireless',
   '/analytics/configChange',
-  '/ai/configChange'
+  '/ai/configChange',
+  '/ai/reports/aps',
+  '/ai/reports/airtime',
+  '/ai/reports/applications',
+  '/ai/reports/wireless',
+  '/ai/reports/clients',
+  '/ai/reports/wlans',
+  '/ai/users/wifi/reports',
+  '/ai/devices/wifi/reports/aps',
+  '/ai/devices/wifi/reports/airtime',
+  '/ai/networks/wireless/reports/wlans',
+  '/ai/networks/wireless/reports/applications',
+  '/ai/networks/wireless/reports/wireless'
 ]
 
-export function useAnalyticsFilter () {
+const noApSupportURLs = [
+  '/ai/health/wired',
+  '/analytics/health/wired',
+  '/ai/reports/switches',
+  '/ai/reports/wired',
+  '/ai/devices/switch/reports/wired'
+]
+
+// URLs here will only load filter till domains which is common across APs and Switches
+const noApOrSwitchSupportURLs = [
+  '/ai/health/overview',
+  '/analytics/health/overview'
+]
+
+export interface AnalyticsFilterProps {
+  revertToDefaultURLs?: {
+    noApSupportURLs?: string[],
+    noSwitchSupportURLs?: string[],
+    noApOrSwitchSupportURLs?: string[]
+  }
+}
+
+export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
@@ -39,20 +73,35 @@ export function useAnalyticsFilter () {
     write({ path, raw: [JSON.stringify(path)] })
   }
 
+  const { revertToDefaultURLs } = props || {}
+
   return useMemo(() => {
+    const isURLPresent = (list: string[]) => Boolean(list.find(url => pathname.includes(url)))
     const defaultPath = { raw: [], path: defaultNetworkPath }
     const { raw: rawPath, path: readPath } = read() || defaultPath
-    const revertToDefault = Boolean(noSwitchSupport.find(url => pathname.includes(url))) &&
-      isSwitchPath(readPath)
+
+    const revertToDefault =
+      ((isURLPresent(noApOrSwitchSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noApOrSwitchSupportURLs ?? []))
+          && (isApOrSwitchPath(readPath))) ||
+      ((isURLPresent(noSwitchSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noSwitchSupportURLs ?? []))
+          && isSwitchPath(readPath)) ||
+      ((isURLPresent(noApSupportURLs) ||
+        isURLPresent(revertToDefaultURLs?.noApSupportURLs ?? []))
+          && isApPath(readPath))
+
     const { raw, path, filter } = revertToDefault
       ? { ...defaultPath, filter: {} }
       : { raw: rawPath, path: readPath, filter: pathToFilter(readPath) }
+
     return {
       raw,
       filters: { ...dateFilter, filter } as AnalyticsFilter,
       pathFilters: { ...dateFilter, path } as PathFilter,
       setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateFilter, pathname, read, write])
 }
 
@@ -66,38 +115,28 @@ export const getFilterPayload = (
 }
 
 export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
-  const isMLISA = get('IS_MLISA_SA')
   const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
-  if(isMLISA) {
-    if(path.length === 0)
-      return {}
-    return {
-      networkNodes: [path as NodeFilter],
-      switchNodes: [path as NodeFilter]
-    }
+  if(path.length === 0) {
+    return {}
   }
-  switch (path.length) {
-    case 0:
-      return {}
-    case 1: // at venue level we want to see both its switches and aps
-      const { type, name } = path[0]
-      if (['zone', 'switchGroup'].includes(type)) {
-        return {
-          networkNodes: [[{ type: 'zone', name }]],
-          switchNodes: [[{ type: 'switchGroup', name }]]
-        }
+  if(!get('IS_MLISA_SA') && path.length === 1) { // at venue level we want to see both its switches and aps
+    const { type, name } = path[0]
+    if (['zone', 'switchGroup'].includes(type)) {
+      return {
+        networkNodes: [[{ type: 'zone', name }]],
+        switchNodes: [[{ type: 'switchGroup', name }]]
       }
-  }
-  const filter = path.reduce((filter, { type, name }) => {
-    if (type === 'zone' || type === 'switchGroup') {
-      filter.push({ type, name })
-    } else if (type === 'AP') {
-      filter.push({ type: 'apMac', list: [name] })
-    } else if (type === 'switch') {
-      filter.push({ type, list: [name] })
     }
-    return filter
-  }, [] as NodeFilter)
+  }
+  const filter: NodeFilter = path.map(({ type, name }) => {
+    if (type === 'AP') {
+      return { type: 'apMac', list: [name] }
+    } else if (type === 'switch') {
+      return { type, list: [name] }
+    } else {
+      return { type: type as FilterNameNode['type'], name }
+    }
+  })
   return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
     networkNodes: [filter],
     switchNodes: [filter]
@@ -120,5 +159,19 @@ export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
 }
 
 export const isSwitchPath = (path: NetworkPath) => {
-  return Boolean(path.find(({ type }) => type === 'switchGroup'))
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'switchGroup' || type === 'switch'))
+    : Boolean(path.find(({ type }) => type === 'switchGroup'))
+}
+
+export const isApPath = (path: NetworkPath) => {
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'zone' || type === 'apGroup'))
+    : Boolean(path.find(({ type }) => type === 'AP'))
+}
+
+export const isApOrSwitchPath = (path: NetworkPath) => {
+  return get('IS_MLISA_SA')
+    ? Boolean(path.find(({ type }) => type === 'switchGroup' || type === 'zone'))
+    : Boolean(path.find(({ type }) => type === 'switch' || type === 'AP'))
 }

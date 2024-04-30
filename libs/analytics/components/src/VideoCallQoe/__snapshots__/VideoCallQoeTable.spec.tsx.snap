@@ -6,11 +6,11 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 lKtIj"
+        class="styledComponents__Header-sc-1abm7iv-10 chCEgN"
       >
         <div>
           <div
@@ -33,6 +33,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                 </span>
                 <input
                   class="ant-input"
+                  maxlength="64"
                   placeholder="Search Test Call Name"
                   title="Search Test Call Name"
                   type="text"
@@ -762,7 +763,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
@@ -1473,9 +1474,13 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="sc-ftvSup cYsZHL"
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                                 >
-                                  Invalid
+                                  <span
+                                    class="sc-ftvSup cYsZHL"
+                                  >
+                                    Invalid
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -1487,6 +1492,83 @@ exports[`VideoCallQoe Table should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-row-hover"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="85"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-selection-column"
+                              >
+                                <label
+                                  class="ant-radio-wrapper"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="Test call"
+                              >
+                                Test call
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-column-sort ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="04/12/2023 09:56:58"
+                              >
+                                04/12/2023 09:56:58
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="-"
+                              >
+                                -
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="2"
+                              >
+                                2
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                              >
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span
+                                    class="sc-ftvSup cYsZHL"
+                                  >
+                                    Invalid
+                                  </span>
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                style="text-align: center;"
+                                title="-"
+                              >
+                                -
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>

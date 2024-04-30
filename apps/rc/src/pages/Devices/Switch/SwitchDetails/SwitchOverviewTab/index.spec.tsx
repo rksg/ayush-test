@@ -10,7 +10,8 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { switchDetailData, venueData, vlanList } from '../__tests__/fixtures'
+import { SwitchDetailsContext }                                            from '../'
+import { switchDetailData, switchDetailsContextData, venueData, vlanList } from '../__tests__/fixtures'
 
 import { SwitchOverviewTab } from '.'
 
@@ -66,14 +67,21 @@ describe('SwitchOverviewTab', () => {
     )
   })
 
-  it.skip('should render correctly', async () => {
+  it('should render correctly', async () => {
     const params = {
       tenantId: 'tenantId',
       switchId: 'switchId',
       serialNumber: 'serialNumber',
       activeTab: 'overview'
     }
-    render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
@@ -85,7 +93,7 @@ describe('SwitchOverviewTab', () => {
     fireEvent.click(await screen.findByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/ports`,
+      pathname: `/${params.tenantId}/t/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/ports`,
       hash: '',
       search: ''
     })
@@ -99,7 +107,14 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'ports'
     }
-    render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
@@ -116,7 +131,14 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'vlans'
     }
-    render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
@@ -133,7 +155,14 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'acls'
     }
-    render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchOverviewTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'

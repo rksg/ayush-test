@@ -53,7 +53,8 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
   const defaultPath = [{ name: 'Network', type: 'network' }]
   const availableNode = findMatchingNode(
     rootNode,
-    selectedNode?.[selectedNode.length - 1]
+    selectedNode?.[selectedNode.length - 1],
+    selectedNode
   )
   const initialBreadcrumb = availableNode?.path || [rootNode]
   const [isAnimationSlideIn, setIsAnimationSlideIn] = useState(true)
@@ -82,19 +83,10 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     setVisible(false)
     setHover(false)
     setInputValue(nodeToInputValue(breadcrumb))
-    const selectedNodePath = breadcrumb.map((node) => {
-      const nodeInfo = {
-        name: node.name,
-        type: node.type
-      }
-      const apOrSwitchInfo = node.type === 'ap' || node.type === 'switch'
-        ? { list: [node?.mac] }
-        : {}
-      return {
-        ...nodeInfo,
-        ...apOrSwitchInfo
-      }
-    })
+    const selectedNodePath = breadcrumb.map(({ type, name, mac }) => ({
+      name: mac || name,
+      type: type === 'ap' ? 'AP' : type
+    }))
     setNetworkPath(selectedNodePath, selectedNodePath)
   }
   const onClose = () => {
@@ -146,6 +138,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     setSearchText('')
     setBreadcrumbPath(initialBreadcrumb)
   }, [rootNode]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { // Required when the filter is re-used for different pages
+    setInputValue(nodeToInputValue(availableNode?.path || defaultNetworkPath))
+  }, [availableNode?.path])
 
   const nodesToShow = (searchText
     ? searchResults
@@ -181,7 +176,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
         }
         trigger={[]}
         visible={visible}
-        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}>
+        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
+        destroyPopupOnHide
+      >
         <UI.StyledInput
           ref={inputRef}
           prefix={<SearchOutlined />}

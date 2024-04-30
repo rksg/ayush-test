@@ -52,11 +52,15 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
+    url: '/admins/admins-settings/ui',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
+    newApi: true
   },
   saveUserSettings: {
     method: 'put',
-    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
+    url: '/admins/admins-settings/ui/:productKey',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
+    newApi: true
   },
   wifiAllowedOperations: {
     method: 'get',
@@ -90,6 +94,11 @@ export const UserUrlsInfo = {
     method: 'get',
     url: '/tenants/allowedOperations?service=upgradeConfig',
     oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
+    newApi: true
+  },
+  rcgAllowedOperations: {
+    method: 'get',
+    url: '/rcg/api/allowedOperations',
     newApi: true
   },
   getMfaTenantDetails: {
@@ -137,11 +146,17 @@ export const UserUrlsInfo = {
     method: 'put',
     url: '/tenants/betaStatus/:enable',
     newApi: true
+  },
+  getFeatureFlagStates: {
+    method: 'post',
+    url: '/featureFlagStates',
+    newApi: true
   }
 }
 
 export const {
   useAllowedOperationsQuery,
+  useRcgAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
@@ -164,7 +179,8 @@ export const {
   useMfaResendOTPMutation,
   useDisableMFAMethodMutation,
   useGetBetaStatusQuery,
-  useToggleBetaStatusMutation
+  useToggleBetaStatusMutation,
+  useFeatureFlagStatesQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -237,6 +253,16 @@ export const {
         return { data: responses.flatMap(response => (response.data as string[])) }
       }
     }),
+    rcgAllowedOperations: build.query<string[], string>({
+      async queryFn (tenantId, _api, _extraOptions, query) {
+        const params = { tenantId }
+        const responses = await Promise.all([
+          createHttpRequest(UserUrlsInfo.rcgAllowedOperations, params)
+        ].map(query))
+
+        return { data: responses.flatMap(response => (response.data as string[])) }
+      }
+    }),
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaTenantDetails, params ),
       transformResponse (mfaDetail: MfaDetailStatus) {
@@ -297,11 +323,22 @@ export const {
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
-      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
-        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
+      transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
+        ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
+      providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
-    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
+    toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
+      invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    featureFlagStates: build.query<{ [key: string]: boolean }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.getFeatureFlagStates, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })

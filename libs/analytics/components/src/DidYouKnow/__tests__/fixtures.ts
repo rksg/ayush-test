@@ -73,7 +73,8 @@ export const expectedResult = {
             'windows_update'
           ]
         }
-      ]
+      ],
+      availableFacts: ['topApplicationsByClients', 'airtimeUtilization']
     }
   }
 }

@@ -39,7 +39,8 @@ const switchDetail: SwitchViewModel = {
   ],
   uptime: '7 days, 7:36:21.00',
   formStacking: false,
-  floorplanId: '94bed28abef24175ab58a3800d01e24a'
+  floorplanId: '94bed28abef24175ab58a3800d01e24a',
+  unitId: 1
 }
 
 
@@ -145,7 +146,7 @@ describe('Switch floorplan', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))

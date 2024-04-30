@@ -1,32 +1,32 @@
 import React from 'react'
 
-import { PageNotFound }                      from '@acx-ui/components'
+import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import Administration   from './pages/Administration'
-import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
-import DevicesBase      from './pages/Devices'
-import Layout           from './pages/Layout'
-import { MFACheck }     from './pages/Layout/MFACheck'
-import NetworksBase     from './pages/Networks'
-import PoliciesBase     from './pages/Policies'
-import ReportsBase      from './pages/Reports'
-import { RWGDetails }   from './pages/RWG/RWGDetails'
-import { RWGForm }      from './pages/RWG/RWGForm'
-import { RWGTable }     from './pages/RWG/RWGTable'
-import SearchResults    from './pages/SearchResults'
-import ServicesBase     from './pages/Services'
-import TimelineBase     from './pages/Timeline'
-import { UserProfile }  from './pages/UserProfile'
-import UsersBase        from './pages/Users'
-import { VenueDetails } from './pages/Venues/VenueDetails'
-import { VenueEdit }    from './pages/Venues/VenueEdit'
-import { VenuesForm }   from './pages/Venues/VenuesForm'
-import { VenuesTable }  from './pages/Venues/VenuesTable'
+import Administration                                       from './pages/Administration'
+import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import { AddCustomRole }                                    from './pages/Administration/UserPrivileges/CustomRoles/AddCustomRole'
+import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
+import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
+import AnalyticsBase                                        from './pages/Analytics'
+import Dashboard                                            from './pages/Dashboard'
+import DevicesBase                                          from './pages/Devices'
+import Layout                                               from './pages/Layout'
+import { MFACheck }                                         from './pages/Layout/MFACheck'
+import NetworksBase                                         from './pages/Networks'
+import PoliciesBase                                         from './pages/Policies'
+import ReportsBase                                          from './pages/Reports'
+import { RWGDetails }                                       from './pages/RWG/RWGDetails'
+import { RWGForm }                                          from './pages/RWG/RWGForm'
+import { RWGTable }                                         from './pages/RWG/RWGTable'
+import SearchResults                                        from './pages/SearchResults'
+import ServicesBase                                         from './pages/Services'
+import TimelineBase                                         from './pages/Timeline'
+import { UserProfile }                                      from './pages/UserProfile'
+import UsersBase                                            from './pages/Users'
+import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
@@ -42,6 +42,8 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
+          <Route path='not-found' element={<PageNotFound />} />
+          <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
@@ -110,6 +112,7 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
     </Route>
   )
 }
@@ -124,6 +127,12 @@ function AdministrationRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
+      <Route path='userPrivileges/privilegeGroups/create' element={<AddPrivilegeGroup />} />
+      <Route
+        path='userPrivileges/privilegeGroups/:action/:groupId'
+        element={<EditPrivilegeGroup />} />
+      <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>

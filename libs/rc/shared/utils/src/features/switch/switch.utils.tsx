@@ -4,13 +4,19 @@ import _ from 'lodash'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
-import { STACK_MEMBERSHIP,
+import {
+  STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
+  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
   SwitchViewModel,
-  SWITCH_TYPE } from '../../types'
+  SWITCH_TYPE,
+  SWITCH_SERIAL_PATTERN
+} from '../../types'
+
+import { compareSwitchVersion } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -63,6 +69,11 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
   ['FMS', 'ICX7550-48F'],
+  ['FNX', 'ICX8100-24'],
+  ['FNY', 'ICX8100-24P'],
+  ['FNZ', 'ICX8100-48'],
+  ['FPA', 'ICX8100-48P'],
+  ['FPB', 'ICX8100-C08PF'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -137,11 +148,15 @@ export const ICX_MODELS_MODULES = {
 }
 
 export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig: boolean) => {
-  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
+  const isOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
+  const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+  return isOperational || isUpgradeFail
 }
 
-export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:boolean, syncedSwitchConfig: boolean) => {
-  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
+export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady: boolean, syncedSwitchConfig: boolean) => {
+  const isStrictOperational = status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
+  const isUpgradeFail = status === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+  return isStrictOperational || isUpgradeFail
 }
 
 export const getSwitchModel = (serial: string) => {
@@ -288,7 +303,7 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
   const isSync = !_.isEmpty(row.syncDataId) && status.isOperational
   const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, !!row.syncedSwitchConfig)
-  let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
+  let switchStatus = (isStrictOperational && row.operationalWarning === true) ?
     $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
 
   return isSync ? $t({ defaultMessage: 'Synchronizing' }) : switchStatus
@@ -323,6 +338,8 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Standby' })
   } else if (unitStatus === STACK_MEMBERSHIP.MEMBER) {
     return $t({ defaultMessage: 'Member' })
+  } else if (unitStatus === STACK_MEMBERSHIP.STANDALONE){
+    return $t({ defaultMessage: 'Standalone' })
   } else if (isDefaultMember) {
     return $t({ defaultMessage: 'Member' })
   }
@@ -375,7 +392,7 @@ export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
   return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
 }
 
-export const sortPortFunction = (portIdA: { id: string },portIdB: { id: string }) => {
+export const sortPortFunction = (portIdA: { id: string }, portIdB: { id: string }) => {
   const splitA = portIdA.id.split('/')
   const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
 
@@ -663,20 +680,26 @@ export const getDhcpOptionList = () => {
 }
 
 export const getClientIpAddr = (data?: SwitchClient) => {
-  if (data?.clientIpv4Addr !== '0.0.0.0') {
-    return data?.clientIpv4Addr
-  } else if (data?.clientIpv6Addr !== '0:0:0:0:0:0:0:0') {
-    return data?.clientIpv6Addr
+  const ipAddress: string[] = []
+  if (data?.clientIpv4Addr && !['', '0.0.0.0'].includes(data?.clientIpv4Addr)) {
+    ipAddress.push(data?.clientIpv4Addr)
   }
-  return noDataDisplay
+  if (data?.clientIpv6Addr && !['', '0:0:0:0:0:0:0:0'].includes(data?.clientIpv6Addr)) {
+    ipAddress.push(data?.clientIpv6Addr)
+  }
+  return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
 export const getAdminPassword = (
-  data?: SwitchViewModel | SwitchRow,
+  data: SwitchViewModel | SwitchRow,
   PasswordCoomponent?: React.ElementType
 ) => {
   const { $t } = getIntl()
-  return !(data?.configReady && data?.syncedSwitchConfig)
+  const serialNumberRegExp = new RegExp(SWITCH_SERIAL_PATTERN)
+
+  // when switch id is the serial number
+  // 1) pre-provision 2) migrate from alto
+  return !(data?.configReady && data?.syncedSwitchConfig) || serialNumberRegExp.test(data?.id)
     ? noDataDisplay
     : (data?.syncedAdminPassword
       ? PasswordCoomponent && <PasswordCoomponent
@@ -687,4 +710,60 @@ export const getAdminPassword = (
       />
       : $t({ defaultMessage: 'Custom' })
     )
+}
+
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+  let ranges = []
+
+  for (let i = 0; i < numbers.length; i++) {
+    let start = numbers[i]
+    while (numbers[i + 1] - numbers[i] === 1) {
+      i++
+    }
+    let end = numbers[i]
+    ranges.push(start === end ? `${start}` : `${start}-${end}`)
+  }
+
+  if (ranges.length > maxRangesToShow) {
+    const remainingCount = ranges.length - maxRangesToShow
+    ranges = ranges.slice(0, maxRangesToShow)
+    return `${ranges.join(', ')}, and ${remainingCount} more...`
+  }
+
+  return ranges.join(', ')
+}
+
+export const isFirmwareVersionAbove10 = (
+  firmwareVersion: string
+) => {
+  return firmwareVersion.slice(3,6) === '100'
+}
+
+export const isFirmwareSupportAdminPassword = (
+  firmwareVersion: string
+) => {
+  if (isFirmwareVersionAbove10(firmwareVersion)) {
+    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
+  }
+  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
+}
+
+export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
+  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}
+
+export const checkSwitchUpdateFields = function (
+  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+) {
+  const fields = Object.keys(values ?? {})
+  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
+    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
+      return [ ...result, key ]
+    }
+    return result
+  }, [])
 }

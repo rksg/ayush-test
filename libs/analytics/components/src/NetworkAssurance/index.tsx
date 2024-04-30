@@ -3,22 +3,21 @@ import { useIntl } from 'react-intl'
 import {
   PageHeader,
   Tabs,
-  TimeRangeDropDownProvider,
-  TimeRangeDropDown
+  TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { DateRange }                  from '@acx-ui/utils'
+import { get }                                     from '@acx-ui/config'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { DateRange }                               from '@acx-ui/utils'
 
 import { ConfigChange }    from '../ConfigChange'
 import { useHeaderExtra }  from '../Header'
 import { HealthPage }      from '../Health'
-import { NetworkFilter }   from '../NetworkFilter'
-import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
+import { HealthTabs }      from '../HealthTabs'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
+
+import type { UseHeaderExtraProps } from '../Header'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
@@ -37,14 +36,45 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const location = useLocation()
+  const basePath = useTenantLink('/analytics')
+
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+
+  const getHeaderExtraOptions = (): Partial<UseHeaderExtraProps> => {
+    const path = location.pathname.replace(basePath.pathname, '')
+    switch (path) {
+      case `/${NetworkAssuranceTabEnum.HEALTH}/overview`:
+        return {
+          shouldQuerySwitch: true,
+          shouldShowOnlyDomains: true
+        }
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wired`:
+        return {
+          shouldQueryAp: false,
+          shouldQuerySwitch: true
+        }
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wireless`:
+      default:
+        return {}
+    }
+  }
+
   const healthTab = {
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
-    component: <HealthPage/>,
-    headerExtra: useHeaderExtra({ shouldQuerySwitch: false, withIncidents: false })
+    component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
+    headerExtra: useHeaderExtra({
+      ...(isSwitchHealthEnabled ? getHeaderExtraOptions() : { shouldQuerySwitch: false }),
+      withIncidents: false
+    })
   }
+
   const serviceGuardTab = {
     key: NetworkAssuranceTabEnum.SERVICE_GUARD,
     url: 'serviceValidation',
@@ -54,16 +84,11 @@ const useTabs = () : Tab[] => {
     key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
     component: <ConfigChange/>,
-    headerExtra: [
-      get('IS_MLISA_SA')
-        ? <SANetworkFilter shouldQuerySwitch={false} />
-        : <NetworkFilter
-          key={getShowWithoutRbacCheckKey('network-filter')}
-          shouldQuerySwitch={false}
-          withIncidents={false}
-        />,
-      <TimeRangeDropDown/>
-    ]
+    headerExtra: useHeaderExtra({
+      shouldQuerySwitch: false,
+      withIncidents: false,
+      datepicker: 'dropdown'
+    })
   }
   const videoCallQoeTab = {
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,

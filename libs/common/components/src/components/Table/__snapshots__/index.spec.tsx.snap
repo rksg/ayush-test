@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 jOHJbe"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 AvZcX"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -185,7 +185,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 blcMwD"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 eWMXXW"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -364,13 +364,373 @@ exports[`Table component renders form table 1`] = `
 </DocumentFragment>
 `;
 
+exports[`Table component renders nested table 1`] = `
+<DocumentFragment>
+  <div
+    id="root"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1abm7iv-12 cAZWFC"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
+    >
+      <div
+        class="ant-pro-table"
+      >
+        <div
+          class="ant-pro-card"
+        >
+          <div
+            class="ant-pro-card-body"
+            style="padding-top: 0px;"
+          >
+            <div
+              class="ant-pro-table-list-toolbar"
+            />
+            <div
+              class="ant-table-wrapper"
+            >
+              <div
+                class="ant-spin-nested-loading"
+              >
+                <div
+                  class="ant-spin-container"
+                >
+                  <div
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-left ant-table-has-fix-right"
+                  >
+                    <div
+                      class="ant-table-container"
+                    >
+                      <div
+                        class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
+                      >
+                        <table
+                          style="width: 392px; min-width: 100%; table-layout: fixed;"
+                        >
+                          <colgroup>
+                            <col
+                              class="ant-table-expand-icon-col"
+                              style="width: 12px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 32px;"
+                            />
+                          </colgroup>
+                          <thead
+                            class="ant-table-thead"
+                          >
+                            <tr>
+                              <th
+                                class="ant-table-cell ant-table-row-expand-icon-cell ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                data-testid="react-resizable"
+                                style="position: sticky; left: 0px;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                data-testid="react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Name
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                data-testid="react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <span
+                                  class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                                >
+                                  Age
+                                  <svg
+                                    class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                    data-testid="InformationOutlined"
+                                  />
+                                </span>
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                data-testid="react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                Address
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                data-testid="react-resizable"
+                                style="position: sticky; right: 0px;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody
+                            class="ant-table-tbody"
+                          >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="1"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-row-expand-icon-cell ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
+                              >
+                                <svg
+                                  data-testid="MinusSquareOutlined"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="John Doe"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  John Doe
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  32
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="sample address"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  sample address
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-expanded-row ant-table-expanded-row-level-1"
+                            >
+                              <td
+                                class="ant-table-cell"
+                                colspan="5"
+                              >
+                                <div
+                                  class="ant-table-expanded-row-fixed"
+                                  style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                />
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-row-expand-icon-cell ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
+                              >
+                                <svg
+                                  data-testid="PlusSquareOutlined"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="Jane Doe"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  Jane Doe
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  33
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="new address"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  new address
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="3"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-row-expand-icon-cell ant-table-cell-fix-left ant-table-cell-fix-left-last"
+                                style="position: sticky; left: 0px;"
+                              >
+                                <svg
+                                  data-testid="PlusSquareOutlined"
+                                />
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="Will Smith"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  Will Smith
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  45
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-ellipsis"
+                                title="address"
+                              >
+                                <span
+                                  class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                  style="width: 100%; margin: 0px; padding: 0px;"
+                                  title=""
+                                >
+                                  address
+                                </span>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`Table component renders stickyPagination table 1`] = `
 <DocumentFragment>
   <div
     id="root"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jTnuTS"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fLUgZn"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
@@ -668,7 +1028,7 @@ exports[`Table component renders stickyPagination table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -965,7 +1325,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1362,7 +1722,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1863,7 +2223,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 cDZSBF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div

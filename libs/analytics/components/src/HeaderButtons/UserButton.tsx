@@ -5,15 +5,14 @@ import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS
 } from '@acx-ui/analytics/utils'
-import { LayoutUI, Dropdown } from '@acx-ui/components'
-import { NewTabLink }         from '@acx-ui/react-router-dom'
-
+import { LayoutUI, Dropdown }      from '@acx-ui/components'
+import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 
 export const UserButton = () => {
   const { $t } = useIntl()
-  const userProfile = getUserProfile()
-  const hasViewAnalyticsPermissions = userProfile
-    .selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
+  const { selectedTenant, firstName, lastName } = getUserProfile()
+  const hasViewAnalyticsPermissions = selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
+  const location = useLocation()
 
   const menuHeaderDropdown = (
     <Menu
@@ -33,17 +32,14 @@ export const UserButton = () => {
         ...(hasViewAnalyticsPermissions ? [
           {
             key: 'my-profile',
-            label: <NewTabLink to='/analytics/profile/settings'>
+            label: <TenantLink
+              to='/profile/settings'
+              state={{ from: location.pathname }}
+            >
               {$t({ defaultMessage: 'My Profile' })}
-            </NewTabLink>
+            </TenantLink>
           }
         ] : []),
-        {
-          key: 'accounts',
-          label: <NewTabLink to='/analytics/profile/tenants'>
-            {$t({ defaultMessage: 'Accounts' })}
-          </NewTabLink>
-        },
         { type: 'divider' },
         {
           key: 'logout',
@@ -58,7 +54,7 @@ export const UserButton = () => {
 
   return <Dropdown overlay={menuHeaderDropdown} placement='bottomLeft' >{() =>
     <LayoutUI.UserNameButton>
-      {`${userProfile.firstName[0].toUpperCase()}${userProfile.lastName[0].toUpperCase()}`}
+      {`${(firstName[0]||'').toUpperCase()}${(lastName[0]||'').toUpperCase()}`}
     </LayoutUI.UserNameButton>
   }</Dropdown>
 }

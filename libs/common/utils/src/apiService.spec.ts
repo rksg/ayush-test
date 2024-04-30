@@ -1,22 +1,27 @@
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+
 import {
-  enableNewApi,
-  isDev, isIntEnv,
-  isLocalHost, isQA,
-  isScale, isStage, isProdEnv,
+  isDev,
+  isLocalHost,
   isIgnoreErrorModal, isShowApiError,
-  createHttpRequest, getFilters } from './apiService'
+  createHttpRequest,
+  getFilters,
+  batchApi
+} from './apiService'
+
+const fetchWithBQSuccess: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
+unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockResolvedValue('success')
+
+const fetchWithBQFail: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<
+unknown, FetchBaseQueryError, FetchBaseQueryMeta>> = jest.fn().mockRejectedValue('error')
 
 describe('ApiInfo', () => {
   it('Check the envrionment', async () => {
     expect(isLocalHost()).toBe(true)
     expect(isDev()).toBe(false)
-    expect(isQA()).toBe(false)
-    expect(isScale()).toBe(false)
-    expect(isIntEnv()).toBe(false)
-    expect(isStage()).toBe(false)
-    expect(isProdEnv()).toBe(false)
   })
-
   it('Check the error modal flag', async () => {
     expect(isIgnoreErrorModal()).toBe(false)
     expect(isShowApiError()).toBe(false)
@@ -35,21 +40,18 @@ describe('ApiInfo', () => {
       networkId: ['networkId'],
       venueId: ['venueId']
     })
+    expect(getFilters({
+      apGroupId: 'apGroupId'
+    })).toStrictEqual({
+      deviceGroupId: ['apGroupId']
+    })
   })
 
   it('Check enable new API', async () => {
     const apiInfo1 = {
       method: 'post',
-      url: '/venues/aaaServers/query',
-      oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query',
-      newApi: true
-    }
-
-    const apiInfo2 = {
-      method: 'post',
       url: '/venues/aaaServers/query'
     }
-
     const httpRequest = {
       credentials: 'include',
       headers: {
@@ -60,10 +62,36 @@ describe('ApiInfo', () => {
       url: 'http://localhost/venues/aaaServers/query'
     }
 
-    expect(enableNewApi(apiInfo1)).toBe(true)
-    expect(enableNewApi(apiInfo2)).toBe(false)
     expect(createHttpRequest(apiInfo1)).toStrictEqual(httpRequest)
-    expect(createHttpRequest(apiInfo2)).toStrictEqual(httpRequest)
+    expect(apiInfo1.url).toBe('/venues/aaaServers/query')
+  })
+
+  it('batchApi: success', async () => {
+    expect(await batchApi(
+      {
+        method: 'delete',
+        url: '/venues/{venueId}/switches'
+      },
+      [
+        { params: { venueId: '905493085d224d1aabfbcf91e5139218' }, payload: ['FMF4250Q06L'] },
+        { params: { venueId: '905493085d224d1aabfbcf91e5139219' }, payload: ['FMF4250Q07L'] }
+      ],
+      fetchWithBQSuccess
+    )).toEqual({ data: ['success', 'success'] })
+  })
+
+  it('batchApi: fail', async () => {
+    expect(await batchApi(
+      {
+        method: 'delete',
+        url: '/venues/{venueId}/switches'
+      },
+      [
+        { params: { venueId: '905493085d224d1aabfbcf91e5139218' }, payload: ['FMF4250Q06L'] },
+        { params: { venueId: '905493085d224d1aabfbcf91e5139219' }, payload: ['FMF4250Q07L'] }
+      ],
+      fetchWithBQFail
+    )).toEqual('error')
   })
 
 })

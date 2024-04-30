@@ -1,9 +1,13 @@
-import { IntlShape } from 'react-intl'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
-import { QosPriorityEnum }                            from '../constants'
+import {
+  ApDeviceStatusEnum,
+  DeviceConnectionStatus,
+  QosPriorityEnum } from '../constants'
+import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus } from '../types'
 
 export enum APView {
   AP_LIST,
@@ -114,4 +118,161 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
   }
 
   return transform
+}
+
+// eslint-disable-next-line
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
+
+  const { $t } = useIntl()
+
+  const powerMode = afcInfo?.powerMode
+
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
+    return { columnText: '--', tooltipText: undefined }
+  }
+
+  if (powerMode === AFCPowerMode.STANDARD_POWER){
+    return { columnText: $t({ defaultMessage: 'Standard power' }), tooltipText: undefined }
+  }
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    if (afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED){
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
+          return {
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'AFC Geo-Location not set' })
+          }
+        case AFCStatus.REJECTED:
+          return {
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'Rejected by FCC DB due to no available channels' })
+          }
+        case AFCStatus.WAIT_FOR_RESPONSE:
+          return {
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'Wait for AFC server response' })
+          }
+        case AFCStatus.AFC_SERVER_FAILURE:
+          return {
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'AFC Server failure' })
+          }
+        case AFCStatus.PASSED:
+          return {
+            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            tooltipText: $t({ defaultMessage: 'AP is working on LPI channel' })
+          }
+      }
+    } else {
+      return {
+        columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+        tooltipText: undefined
+      }
+    }
+  }
+
+  return { columnText: '--', tooltipText: undefined }
+}
+
+// eslint-disable-next-line
+export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+
+  const { $t } = useIntl()
+
+  const powerMode = afcInfo?.powerMode
+
+  const displayList = []
+
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
+    return '--'
+  }
+
+  if (powerMode === AFCPowerMode.STANDARD_POWER){
+    displayList.push($t({ defaultMessage: 'Standard power' }))
+  }
+
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
+    switch(afcInfo?.afcStatus) {
+      case AFCStatus.WAIT_FOR_LOCATION:
+        displayList.push($t({ defaultMessage: '[AFC Geo-Location not set]' }))
+        break
+      case AFCStatus.REJECTED:
+        // eslint-disable-next-line
+        displayList.push($t({ defaultMessage: '[Rejected by FCC DB due to no available channels]' }))
+        break
+      case AFCStatus.WAIT_FOR_RESPONSE:
+        displayList.push($t({ defaultMessage: '[Wait for AFC server response]' }))
+        break
+      case AFCStatus.AFC_NOT_REQUIRED:
+        displayList.push($t({ defaultMessage: '[User set]' }))
+        break
+      case AFCStatus.PASSED:
+        displayList.push($t({ defaultMessage: '[AP is working on LPI channel]' }))
+        break
+      case AFCStatus.AFC_SERVER_FAILURE:
+        displayList.push($t({ defaultMessage: '[AFC Server failure]' }))
+        break
+    }
+  }
+
+  return (displayList.length === 0) ? '--' : displayList.join(' ')
+}
+
+// eslint-disable-next-line
+export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+
+  const { $t } = useIntl()
+
+  const powerMode = afcInfo?.powerMode
+
+  const displayList = []
+
+  if(!powerMode || apRadioDeploy !== '2-5-6') {
+    return '--'
+  }
+
+  if (powerMode === AFCPowerMode.STANDARD_POWER){
+    displayList.push($t({ defaultMessage: 'Standard power' }))
+  }
+
+  else if (powerMode === AFCPowerMode.LOW_POWER) {
+    switch(afcInfo?.afcStatus) {
+      case AFCStatus.WAIT_FOR_LOCATION:
+        displayList.push($t({ defaultMessage: 'AFC Geo-Location not set' }))
+        break
+      case AFCStatus.REJECTED:
+        displayList.push($t({ defaultMessage: 'Rejected by FCC DB due to no available channels' }))
+        break
+      case AFCStatus.WAIT_FOR_RESPONSE:
+        displayList.push($t({ defaultMessage: 'Wait for AFC server response' }))
+        break
+      case AFCStatus.AFC_NOT_REQUIRED:
+        displayList.push($t({ defaultMessage: 'N/A' }))
+        break
+      case AFCStatus.PASSED:
+        displayList.push($t({ defaultMessage: 'Passed' }))
+        break
+      case AFCStatus.AFC_SERVER_FAILURE:
+        displayList.push($t({ defaultMessage: 'AFC Server failure' }))
+        break
+    }
+  }
+
+
+  return (displayList.length === 0) ? '--' : displayList.join(' ')
+}
+
+/* eslint-disable max-len */
+export const ChannelButtonTextRender = ({ $t }: IntlShape, channels: number[], isChecked: boolean, afcProps?: AFCProps): string => {
+  let message = isChecked
+    ? $t({ defaultMessage: 'Disable this channel' })
+    : $t({ defaultMessage: 'Enable this channel' })
+  const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
+  // Only add AFC tooltip when all channels are in AFC available channel
+  const difference = _.without(channels, ...afcAvailableChannel)
+  if(difference.length === 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
+    message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+  }
+  return message
 }

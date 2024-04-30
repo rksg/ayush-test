@@ -1,19 +1,12 @@
-import userEvent from '@testing-library/user-event'
-
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
 import Layout from '.'
 
 const mockedProfile = jest.fn()
-const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: () => mockedProfile()
-}))
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => () => mockedNavigate()
 }))
 
 describe('Layout', () => {
@@ -42,7 +35,8 @@ describe('Layout', () => {
       ],
       firstName: 'firstName',
       lastName: 'lastName',
-      selectedTenant: { id: '0015000000GlI7SAAV', name: 'Company 2', permissions }
+      selectedTenant: { id: '0015000000GlI7SAAV', name: 'Company 2', permissions },
+      invitations: []
     }))
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Company 2')).toBeVisible()
@@ -50,7 +44,7 @@ describe('Layout', () => {
     expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
     expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
   })
-  it('should render layout correctly with single account', async () => {
+  it('should render layout correctly with single account with no invitation', async () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0012h00000NrljgAAB',
       tenants: [
@@ -58,7 +52,8 @@ describe('Layout', () => {
       ],
       firstName: 'firstName',
       lastName: 'lastName',
-      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions }
+      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions },
+      invitations: []
     }))
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Company 1')).toBeVisible()
@@ -66,23 +61,28 @@ describe('Layout', () => {
     expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
     expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
   })
-  it('should select account correctly', async () => {
+  it('should render layout correctly with single account with invitation', async () => {
     mockedProfile.mockImplementation(() => ({
-      accountId: '0015000000GlI7SAAV',
+      accountId: '0012h00000NrljgAAB',
       tenants: [
-        { id: '0012h00000NrljgAAB', name: 'Company 1' },
-        { id: '0015000000GlI7SAAV', name: 'Company 2' }
+        { id: '0012h00000NrljgAAB', name: 'Company 1' }
       ],
       firstName: 'firstName',
       lastName: 'lastName',
-      selectedTenant: { id: '0015000000GlI7SAAV', name: 'Company 2', permissions }
+      selectedTenant: { id: '0012h00000NrljgAAB', name: 'Company 1', permissions },
+      invitations: [{
+        accountId: '0015000000GlI7SAAV',
+        resourceGroupId: 'rg1',
+        role: 'admin',
+        type: 'tenant',
+        firstName: 'firstName',
+        lastName: 'lastName'
+      }]
     }))
     render(<Layout />, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByText('Company 2')).toBeVisible()
-    expect(screen.queryByText('Company 1')).not.toBeInTheDocument()
-    await userEvent.click(screen.getByTestId('CaretDownSolid'))
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Company 1' }))
-    expect(mockedNavigate).toHaveBeenCalledTimes(1)
     expect(await screen.findByText('Company 1')).toBeVisible()
+    expect(screen.queryByTestId('CaretDownSolid')).toBeVisible()
+    expect(await screen.findByTestId('QuestionMarkCircleSolid')).toBeVisible()
+    expect(await screen.findByText('FL')).toBeVisible() // firstName + lastName
   })
 })

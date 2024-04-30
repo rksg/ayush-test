@@ -1,13 +1,13 @@
-import { gql }               from 'graphql-request'
-import { get, snakeCase }    from 'lodash'
-import moment                from 'moment-timezone'
-import { MessageDescriptor } from 'react-intl'
+import { gql }                 from 'graphql-request'
+import { snakeCase, findLast } from 'lodash'
+import moment                  from 'moment-timezone'
+import { MessageDescriptor }   from 'react-intl'
 
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail }           from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText } from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue, filterKpisByStatus } from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText }                               from '../services'
 
 
 export type BasicRecommendation = {
@@ -27,14 +27,20 @@ export type RecommendationDetails = {
   status: StateType;
   isMuted: boolean;
   appliedTime: string;
-  originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
-  currentValue: string;
+  originalValue: ConfigurationValue;
+  currentValue: ConfigurationValue;
   recommendedValue: string;
-  metadata: object;
+  metadata: object & { scheduledAt: string };
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
   statusTrail: StatusTrail;
+  updatedAt: string;
+  dataEndTime: string;
+  preferences?: {
+    crrmFullOptimization: boolean;
+  },
+  trigger: string
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -43,6 +49,7 @@ export type EnhancedRecommendation = RecommendationDetails & {
   category: MessageDescriptor;
   pathTooltip: string;
   appliedOnce: boolean;
+  firstAppliedAt: string;
   monitoring: null | { until: string };
   tooltipContent: string | MessageDescriptor;
   crrmOptimizedState?: IconValue;
@@ -67,6 +74,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     statusTrail,
     status,
     appliedTime,
+    dataEndTime,
     currentValue,
     recommendedValue,
     kpi_number_of_interfering_links
@@ -86,6 +94,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
     : recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
+  const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
   return {
     ...details,
     monitoring,
@@ -94,20 +103,21 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     category,
     summary,
     appliedOnce,
+    firstAppliedAt,
     ...(code.includes('crrm') && {
       crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(
         status,
+        dataEndTime,
         kpi_number_of_interfering_links!
       )
     })
   } as EnhancedRecommendation
 }
 
-export const kpiHelper = (code: string) => {
+export const kpiHelper = (code: string, status: EnhancedRecommendation['status']) => {
   if (!code) return ''
-  const data = codes[code]
-  return get(data, ['kpis'])
+  return filterKpisByStatus(codes[code].kpis, status)
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
       return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
@@ -119,32 +129,41 @@ export const kpiHelper = (code: string) => {
     .trim()
 }
 
+type BasicRecommendationWithStatus = BasicRecommendation & {
+  status: string
+}
+
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationCode: build.query<BasicRecommendation, BasicRecommendation>({
+    recommendationCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
       query: ({ id }) => ({
         document: gql`
           query ConfigRecommendationCode($id: String) {
-            recommendation(id: $id) { id code }
+            recommendation(id: $id) { id code status }
           }
         `,
         variables: { id }
       }),
-      transformResponse: (response: { recommendation: BasicRecommendation }) =>
+      transformResponse: (response: { recommendation: BasicRecommendationWithStatus }) =>
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    recommendationDetails: build.query<EnhancedRecommendation, BasicRecommendation>({
-      query: ({ id, code }) => ({
+    recommendationDetails: build.query<
+      EnhancedRecommendation,
+      BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
+    >({
+      query: ({ id, code, status, isCrrmPartialEnabled }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
-              sliceType sliceValue
+              sliceType sliceValue updatedAt dataEndTime
+              ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(code!)}
+              ${kpiHelper(code!, status as EnhancedRecommendation['status'])}
+              trigger
             }
           }
         `,

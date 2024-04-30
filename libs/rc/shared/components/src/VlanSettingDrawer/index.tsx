@@ -113,12 +113,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList, enablePortModelConfigure = true } = props
-
+  const { form, vlan, setVlan, vlansList, editMode, enablePortModelConfigure = true } = props
   const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   useEffect(() => {
-    if(vlan){
+    if(vlan && editMode){
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {
@@ -132,8 +131,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       setRuleList(vlanPortsData as SwitchModelPortData[])
       setArpInspection(vlan.arpInspection || false)
       setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
+    }else{
+      form.resetFields()
     }
-  }, [form, vlan])
+  }, [])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
     {

@@ -117,6 +117,7 @@ describe('trimGraph', () => {
     ])
     expect(trimGraph(data)).toMatchSnapshot()
     expect(trimGraph(data, 8)).toMatchSnapshot()
+    expect(trimGraph(data, 1)).toMatchSnapshot()
   })
   it('should handle empty', () => {
     expect(trimGraph({ nodes: [], links: [], categories: [] }))
@@ -128,10 +129,32 @@ describe('trimPairedGraphs', () => {
   it('should return correct data', () => {
     const trimed = trimPairedGraphs([
       deriveInterfering(sample, BandEnum._5_GHz),
-      deriveInterfering(sampleForSortingTest, BandEnum._5_GHz)
+      deriveInterfering({
+        ...sampleForSortingTest,
+        interferingLinks: ['00:00:00:00:00:04-00:00:00:00:00:0A']
+      }, BandEnum._5_GHz)
     ])
     expect(trimed[0].nodes.map(node => node.id).slice(1))
       .toEqual(trimed[1].nodes.map(node => node.id).slice(0, trimed[1].nodes.length - 1))
+  })
+  it('should have same set of node', () => {
+    const trimed = trimPairedGraphs([
+      deriveInterfering(sample, BandEnum._5_GHz),
+      deriveInterfering(sampleForSortingTest, BandEnum._5_GHz)
+    ], 2)
+    expect(trimed[0].nodes.map(node => node.id)).toEqual(trimed[1].nodes.map(node => node.id))
+  })
+  it('should handle empty', () => {
+    const trimed = trimPairedGraphs([
+      deriveInterfering({ ...sample, nodes: [], links: [] }, BandEnum._5_GHz),
+      deriveInterfering({ ...sample, nodes: [], links: [] }, BandEnum._5_GHz)
+    ])
+    expect(trimed[0]).toEqual({ nodes: [], links: [],
+      categories: [{ name: 'highlight' }, { name: 'normal' }, { name: 'txPower' } ]
+    })
+    expect(trimed[1]).toEqual({ nodes: [], links: [],
+      categories: [{ name: 'highlight' }, { name: 'normal' }, { name: 'txPower' } ]
+    })
   })
 })
 
@@ -152,11 +175,11 @@ describe('pairGraphs', () => {
     expect(paired[0].nodes
       .filter(node => node.showTooltip)
       .map(node => node.name))
-      .toEqual(['name2', 'name3', 'name6', 'name8'])
+      .toEqual(sample.nodes.map(n => n.apName))
     expect(paired[1].nodes
       .filter(node => node.showTooltip)
       .map(node => node.name))
-      .toEqual(['name2', 'name3', 'name6', 'name8'])
+      .toEqual(sampleForPairingTest.nodes.map(n => n.apName))
     expect(paired[1].nodes.map(node => node.value))
       .toEqual([...paired[0].nodes.map(node => node.value), [36]])
   })

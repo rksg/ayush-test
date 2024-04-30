@@ -1,14 +1,23 @@
-import { useHeaderExtra }             from '@acx-ui/analytics/components'
-import { PageHeader }                 from '@acx-ui/components'
-import { useParams }                  from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
+import { useHeaderExtra } from '@acx-ui/analytics/components'
+import { PageHeader }     from '@acx-ui/components'
+import { useParams }      from '@acx-ui/react-router-dom'
+
+import { SwitchContextProvider } from './SwitchContextProvider'
+import { SwitchIncidentsTab }    from './SwitchIncidentsTab'
+import { SwitchReportsTab }      from './SwitchReportsTab'
+import SwitchTabs                from './SwitchTabs'
+
+const tabs = {
+  incidents: SwitchIncidentsTab,
+  reports: SwitchReportsTab
+}
 
 const SwitchDetails = () => {
-
-  const { switchId } = useParams()
+  const { switchId, activeTab } = useParams()
+  const Tab = tabs[activeTab as keyof typeof tabs]
 
   return (
-    <>
+    <SwitchContextProvider>
       <PageHeader
         title={switchId}
         breadcrumb={[
@@ -17,14 +26,10 @@ const SwitchDetails = () => {
           { text: 'Switch List', link: '/devices/switch' }
         ]}
         extra={useHeaderExtra({ excludeNetworkFilter: true })}
-        footer={false}
-        footerSpacer={false}
+        footer={<SwitchTabs/>}
       />
-      <EmbeddedReport
-        reportName={ReportType.SWITCH_DETAIL}
-        rlsClause={`"switchId" in ('${switchId}')`}
-      />
-    </>
+      { Tab && <Tab /> }
+    </SwitchContextProvider>
   )
 }
 

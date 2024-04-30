@@ -7,6 +7,8 @@ import {
 }                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
+
 import type {
   ProColumnType,
   ColumnsState as AntColumnsState
@@ -51,7 +53,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * the table will show a multi select dropdown to filter the column
    * @default false
    */
-  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode })[]
+  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode }) []
   /**
    * Set the key in filters of payload
    * It is useful when the dataIndex is different from the filter key
@@ -65,10 +67,30 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterValueNullable?: boolean
   /**
+   * Set the value in filters to be array, and setting values with comma(,) to connect all values
+   * Due to option value is array, UI ant component onChange event transform value is undefined
+   * @default undefined
+   */
+  filterValueArray?: boolean
+  /**
    * Set the filter to be searchable
    * @default undefined
    */
   filterSearchable?: boolean
+  /**
+   * Set the filter placeholder
+   * If `filterPlaceholder` is set, this prop will be override to original filter placeholder
+   * @default undefined
+   */
+  filterPlaceholder?: string
+  /**
+   * Allow filter to appear as one of the type specified
+   */
+  filterComponent?: ({ type: 'checkbox' | 'rangepicker', label?: string })
+  /**
+   * Overwrite filterableWidth of table attribute
+   */
+  filterableWidth?: number
   /**
    * Set the key for Coordinated filters that have a hierarchical dependency
    * the relevant filter will be reset by key when changing the value
@@ -128,8 +150,7 @@ export type TableColumn<RecordType = unknown, ValueType = 'text'>
  */
 export type ColumnState = { [columnKey: string]: boolean }
 export type ColumnStateOption = {
-  defaultValue?: ColumnState
-  // value?: ColumnState
+  defaultValue?: ColumnState,
   onChange?: (state: ColumnState) => void
 }
 
@@ -150,6 +171,7 @@ export type TableAction = {
 
 export type TableRowAction<RecordType> = {
   key?: string
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
   tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)

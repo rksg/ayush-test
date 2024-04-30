@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event'
 
-import { EdgePortAdminStatusEnum } from '@acx-ui/rc/utils'
-import { Provider  }               from '@acx-ui/store'
-import { render, screen, waitFor } from '@acx-ui/test-utils'
-
-import { edgePortsSetting } from '../__tests__/fixtures'
+import { EdgePortAdminStatusEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { Provider  }                                       from '@acx-ui/store'
+import { render, screen, waitFor }                         from '@acx-ui/test-utils'
 
 import { EdgePortsWidget, getPortsAdminStatusChartData } from '.'
+
+const { edgePortsSetting } = EdgePortConfigFixtures
 
 jest.mock('./EdgeOverviewDonutWidget', () => ({
   EdgeOverviewDonutWidget: (props: { onClick: () => void }) =>

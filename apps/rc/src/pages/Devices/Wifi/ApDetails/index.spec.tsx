@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { apApi }                                        from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
@@ -46,6 +45,11 @@ jest.mock('./ApOverviewTab/ApProperties', () => ({
 
 jest.mock('./ApNeighbors', () => ({
   ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
+}))
+
+jest.mock('./ApNeighbors/useApNeighbors', () => ({
+  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
+  useIsApNeighborsOn: () => true
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -126,7 +130,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(await screen.findAllByRole('tab')).toHaveLength(6)
+    expect(await screen.findAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -230,8 +234,6 @@ describe('ApDetails', () => {
   })
 
   it('should navigate to neighbors tab correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_EDA_NEIGHBORS_TOGGLE)
-
     const params = {
       tenantId: 'tenant-id',
       apId: 'ap-id',

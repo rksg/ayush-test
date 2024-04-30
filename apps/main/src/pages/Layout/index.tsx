@@ -6,8 +6,8 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { HomeSolid }                             from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { HomeSolid }              from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -22,13 +22,16 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                                 from '@acx-ui/rc/services'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }         from '@acx-ui/react-router-dom'
-import { useParams }                                                                from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, isDelegationMode, PverName, useTenantId } from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerListQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                                                     from '@acx-ui/msp/utils'
+import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                                     from '@acx-ui/rc/services'
+import { useTableQuery, dpskAdminRoutePathKeeper }                                      from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }             from '@acx-ui/react-router-dom'
+import { useParams }                                                                    from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -46,14 +49,33 @@ function Layout () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+  const { data: mspEcProfile } = useGetMspEcProfileQuery({ params })
+  const isMspEc = MSPUtils().isMspEc(mspEcProfile)
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isMspEc })
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
-  const showHomeButton =
+
+  const invitationPayload = {
+    searchString: '',
+    fields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_INVITED', 'DELEGATION_STATUS_ACCEPTED'],
+      delegationType: ['DELEGATION_TYPE_VAR'],
+      isValid: [true]
+    }
+  }
+  const invitationTableQuery = useTableQuery({
+    useQuery: useInviteCustomerListQuery,
+    defaultPayload: invitationPayload
+  })
+  const delegationCount = invitationTableQuery.data?.totalCount ?? 0
+  const nonVarDelegation =
+    useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && delegationCount > 0
+
+  const showHomeButton = nonVarDelegation ||
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
-    PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
@@ -61,22 +83,39 @@ function Layout () {
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
+  const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}`
-      })
+      (params['*'] === 'userprofile')
+        ? navigate({
+          ...userProfileBasePath,
+          pathname: `${userProfileBasePath.pathname}`
+        })
+        : navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}`
+        })
     }
-    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
-      navigate({
+  }, [isGuestManager, params['*']])
+
+  useEffect(() => {
+    const currentPath = params['*'] as string
+    const isAllowed = dpskAdminRoutePathKeeper(currentPath)
+
+    if (!isDPSKAdmin || isAllowed) return
+
+    currentPath === 'userprofile'
+      ? navigate({
+        ...userProfileBasePath,
+        pathname: `${userProfileBasePath.pathname}`
+      })
+      : navigate({
         ...dpskBasePath,
         pathname: `${dpskBasePath.pathname}`
       })
-    }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+  }, [isDPSKAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
@@ -95,14 +134,7 @@ function Layout () {
         </>
       }
       leftHeaderContent={<>
-        { showHomeButton && (isBackToRC ?
-          <a href={`/api/ui/v/${getJwtTokenPayload().tenantId}`}>
-            <UI.Home>
-              <LayoutUI.Icon children={<HomeSolid />} />
-              {isSupportDelegation
-                ? $t({ defaultMessage: 'Support Home' }) : $t({ defaultMessage: 'Home' })}
-            </UI.Home>
-          </a> :
+        { showHomeButton && (
           <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
@@ -139,17 +171,14 @@ function Layout () {
             <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton
+          isMspEc={isMspEc}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />
   )
 }
 
-function LayoutWithSplitProvider () {
-  return <SplitProvider>
-    <Layout />
-  </SplitProvider>
-}
-
-export default LayoutWithSplitProvider
+export default Layout

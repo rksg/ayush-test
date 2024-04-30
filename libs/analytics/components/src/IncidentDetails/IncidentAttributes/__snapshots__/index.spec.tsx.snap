@@ -42,7 +42,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                   >
                     5 of 27 clients (18.52%)
                   </span>
@@ -82,7 +82,7 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="styledComponents__TextContent-sc-1l4qm8r-0 dkUaea"
                   >
                     1 of 1 AP (100%)
                   </span>
@@ -242,9 +242,13 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0"
+                    class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                   >
-                    RuckusAP (70:CA:97:01:A0:C0)
+                    <span
+                      class="styledComponents__TextContent-sc-1l4qm8r-0"
+                    >
+                      RuckusAP (70:CA:97:01:A0:C0)
+                    </span>
                   </span>
                 </span>
               </div>

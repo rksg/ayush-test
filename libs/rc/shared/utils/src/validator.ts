@@ -1,19 +1,23 @@
 /* eslint-disable max-len */
+import { DefaultOptionType }                from 'antd/lib/select'
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import {
   isEqual,
   includes,
   remove,
-  split
+  split,
+  isEmpty,
+  uniq
 }                from 'lodash'
 
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { RolesEnum }                                from '@acx-ui/types'
+import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
 import { Acl, AclExtendedRule, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
+const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -118,6 +122,32 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   })
 
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
+}
+export function domainNameWildcardRegExp (value: string[]) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$)/)
+  const isValid = value?.every?.(domain => {
+    return re.test(domain)
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainWildcard))
+}
+
+export function domainNameDuplicationValidation (domainArray: string[]) {
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(domainArray)) {return Promise.reject($t(validationMessages.domains))}
+
+  const uniqDomainArray = uniq(domainArray)
+
+  if(uniqDomainArray.length !== domainArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
 }
 
 export function walledGardensRegExp (value:string) {
@@ -342,7 +372,7 @@ export function checkVlanMember (value: string) {
       const nums = item.split('-').map((x: string) => Number(x))
       return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
     }
-    return num > 0 && num < 4095
+    return Number(num) > 0 && Number(num) < 4095
   }).filter((x:boolean) => !x).length === 0
 
   if (isValid) {
@@ -430,6 +460,15 @@ export function checkValues (value: string, checkValue: string, checkEqual?: boo
 export function apNameRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp('(?=^((?!`|\\$\\()[ -_a-~]){2,32}$)^(\\S.*\\S)$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
+export function ssidBackendNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(?=^((?!(`|\$\())([\u0020-\u007E\u00A0-\uFFFF])){2,32}$)^(\S([\u0020-\u007E\u00A0-\uFFFF])*\S)$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
@@ -544,15 +583,110 @@ export function emailRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function phoneRegExp (value: string) {
+export function sfdcEmailRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:+\s@"]+(\.[^<>()\[\]\\.,;:+\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 
   if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.emailAddress))
+  }
+  return Promise.resolve()
+}
+
+export function emailsRegExp (value: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(value)) {return Promise.reject($t(validationMessages.emailAddress))}
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  const isValid = value.every((email) => {
+    return re.test(email.replace(/\n/, '').trim())
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailDuplicationValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  const uniqEmailArray = uniq(emailArray)
+
+  if(uniqEmailArray.length !== emailArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailDuplication))
+}
+
+export function emailMaxCountValidation (emailArray: string[], maxCount: number){
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  if (emailArray.length > maxCount) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailMaxCount, { maxCount }))
+
+}
+
+export function emailsSameDomainValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  let isValid = true
+
+  const firstEmail = emailArray[0]
+  const firstDomain = firstEmail.split('@')[1]
+
+  emailArray.forEach((currentEmail) => {
+    const currentDomain = currentEmail.split('@')[1]
+    // Compare the domain with the first domain
+    if (currentDomain !== firstDomain) {
+      isValid = false
+    }
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.sameEmailDomain))
+}
+
+export function phoneRegExp (value: string) {
+  const { $t } = getIntl()
+
+  if (value && !basicPhoneNumberRegExp.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
 
-  if (value && !ValidatePhoneNumber(value)){
+  if (value && !validateMobileNumber(value)){
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+  return Promise.resolve()
+}
+
+export function generalPhoneRegExp (value: string) {
+  const { $t } = getIntl()
+
+  if (value && !basicPhoneNumberRegExp.test(value)) {
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+
+  const parsedInfo = parsePhoneNumber(value)
+  if (value && !parsedInfo?.number){
     return Promise.reject($t(validationMessages.phoneNumber))
   }
   return Promise.resolve()
@@ -659,7 +793,10 @@ export function specialCharactersRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function ValidatePhoneNumber (phoneNumber: string) {
+export function parsePhoneNumber (phoneNumber: string): {
+  number: libphonenumber.PhoneNumber,
+  type: PhoneNumberType
+} | undefined {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
   let phoneNumberType
@@ -667,13 +804,25 @@ export function ValidatePhoneNumber (phoneNumber: string) {
     number = phoneNumberUtil.parse(phoneNumber, '')
     phoneNumberType = phoneNumberUtil.getNumberType(number)
   } catch (e) {
-    return false
+    return
   }
   if (!number) {
+    return
+  }
+
+  return { number, type: phoneNumberType }
+}
+
+export function validateMobileNumber (phoneNumber: string) {
+  const parsedPhone = parsePhoneNumber(phoneNumber)
+  const phoneNumberUtil = PhoneNumberUtil.getInstance()
+
+  if (parsedPhone === undefined) {
     return false
   } else {
-    if (!phoneNumberUtil.isValidNumber(number) ||
-      (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
+    const { number, type } = parsedPhone
+    if (!phoneNumberUtil.isValidNumber(number)
+      || (type !== PhoneNumberType.MOBILE && type !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
       return false
     }
   }
@@ -794,33 +943,18 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   return Promise.resolve()
 }
 
-export function checkAclName (aclName: string, aclType: string) {
+export function checkAclName (aclName: string) {
   const { $t } = getIntl()
-  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
-    try {
-      const iName = parseInt(aclName, 10)
-      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
-        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
-      }
-      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
-        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
-      }
-      return Promise.resolve()
-    } catch (e) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-  } else {
-    if (!aclName.match(/^[a-zA-Z_].*/)) {
-      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
-    }
-    if (aclName.match(/.*[\"]/)) {
-      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
-    }
-    if (aclName === 'test') {
-      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
-    }
-    return Promise.resolve()
+  if (!/^[a-zA-Z]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
   }
+  if (/["]/.test(aclName)) {
+    return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+  }
+  if (aclName.toLowerCase() === 'test') {
+    return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+  }
+  return Promise.resolve()
 }
 
 export function validateAclRuleSequence (sequence: number, currrentRecords: AclExtendedRule[]) {
@@ -834,6 +968,16 @@ export function validateAclRuleSequence (sequence: number, currrentRecords: AclE
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.value === aclName)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
   } else {
@@ -991,6 +1135,29 @@ export function servicePolicyNameRegExp (value: string) {
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateByteLength (value: string, maxLength: number) {
+  const { $t } = getIntl()
+  const numOfByte = byteCounter(value)
+  if (numOfByte > maxLength) {
+    return Promise.reject($t(
+      { defaultMessage: 'Field exceeds {max} bytes' },
+      { max: maxLength } ))
+  }
+
+  return Promise.resolve()
+}
+
+export function systemDefinedNameValidator (value: string) {
+  const { $t } = getIntl()
+  const rolesList = Object.values(RolesEnum)
+  if(rolesList.includes(value as RolesEnum)) {
+    return Promise.reject(
+      $t({ defaultMessage: 'Name can not be same as system defined name' })
+    )
   }
   return Promise.resolve()
 }

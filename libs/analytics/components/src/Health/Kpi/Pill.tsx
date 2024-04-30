@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -16,8 +14,8 @@ import { InformationOutlined }           from '@acx-ui/icons'
 import { TimeStampRange }                from '@acx-ui/types'
 import type { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { HealthPageContext } from '../HealthPageContext'
-import * as UI               from '../styledComponents'
+import GenericError from '../../GenericError'
+import * as UI      from '../styledComponents'
 
 
 export type PillData = { success: number, total: number }
@@ -68,7 +66,7 @@ type PillQueryProps = {
   apCount?: number
 }
 
-export const usePillQuery = ({ kpi, filters, timeWindow, threshold, apCount }: PillQueryProps) => {
+export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow, kpi }, {
     skip: !Boolean(histogram),
@@ -77,7 +75,7 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold, apCount }: P
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi, apCount }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
@@ -99,10 +97,9 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
 
   const { pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const [ startDate, endDate ] = timeWindow as [string, string]
-  const { apCount } = useContext(HealthPageContext)
 
   const { queryResults, percent } = usePillQuery({
-    kpi, filters, timeWindow: { startDate, endDate }, threshold, apCount
+    kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
   const { success, total } = queryResults.data as PillData
 
@@ -123,7 +120,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       )
     )
   }
-  return <Loader states={[queryResults]} key={kpi}>
+  return <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
     <UI.PillTitle>
       <span>{$t(text, productNames)}</span>
       <span>

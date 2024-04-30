@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
-import { act }   from 'react-dom/test-utils'
 
 import { healthApi }                   from '@acx-ui/analytics/services'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
+  act,
   mockGraphqlQuery,
   mockGraphqlMutation,
   render,
@@ -24,7 +24,8 @@ const thresholdMap = {
   apCapacity: 50,
   apServiceUptime: 0.995,
   apToSZLatency: 200,
-  switchPoeUtilization: 0.8
+  switchPoeUtilization: 0.8,
+  clusterLatency: 10
 }
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -61,6 +62,7 @@ describe('Threshold Histogram chart', () => {
     )
     expect(await screen.findByText('(seconds)')).toBeVisible()
   })
+
   it('should render Histogram with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [] } } }
@@ -108,6 +110,7 @@ describe('Threshold Histogram chart', () => {
         .toBeInTheDocument()
     })
   })
+
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
@@ -128,6 +131,7 @@ describe('Threshold Histogram chart', () => {
     await screen.findByText('(seconds)')
     expect( screen.queryByText('2000')).toBeNull()
   })
+
   it('should handle slider onchange and return when value is positive whole number', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
@@ -154,6 +158,7 @@ describe('Threshold Histogram chart', () => {
     })
     expect(setKpiThreshold).not.toBeCalled()
   })
+
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
       data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0, 20, 20, 2000] } } }
@@ -181,6 +186,29 @@ describe('Threshold Histogram chart', () => {
     expect(sliders).toHaveLength(1)
     const values = sliders.map(slider => slider.style.left)
     expect(values.find((val) => val === '50%')).toMatch('50%')
+  })
+
+  it('should disable set threshold when disabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0, 20, 20, 2000] } } }
+    })
+    render(
+      <Provider>
+        <Histogram
+          filters={filters}
+          kpi={'apCapacity'}
+          threshold={thresholdMap['apCapacity']}
+          thresholds={thresholdMap}
+          setKpiThreshold={setKpiThreshold}
+          mutationAllowed={true}
+          isNetwork={false}
+          disabled={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByRole('slider')).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.queryByText('Apply')).not.toBeInTheDocument()
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument()
   })
 
   it('should render success toast setKpiThreshold on clicking apply btn', async () => {

@@ -8,11 +8,12 @@ import {
 } from '@acx-ui/test-utils'
 
 import { SchedulerTypeEnum } from '../../models/SchedulerTypeEnum'
+import { CommonUrlsInfo }    from '../../urls'
 
 import {
   getSchedulingCustomTooltip,
-  fetchVenueTimeZone,
-  getCurrentTimeSlotIndex
+  getCurrentTimeSlotIndex,
+  getVenueTimeZone
 } from './schedule.utils'
 
 
@@ -22,10 +23,27 @@ describe('Test schedule.utils', () => {
     jest.useRealTimers()
   })
 
-  it('fetchVenueTimeZone and getCurrentTimeSlotIndex', async () => {
+  it('getVenueTimeZone and getCurrentTimeSlotIndex', async () => {
 
-    const callBackSpy = jest.fn()
+    jest.useFakeTimers()
 
+    // Australian Eastern Standard Time
+    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
+    const latitude = '-37.8145092'
+    const longitude = '144.9704868'
+
+    const timeZone = getVenueTimeZone(Number(latitude), Number(longitude))
+    const slotIndex = getCurrentTimeSlotIndex(timeZone)
+
+    expect(slotIndex).toStrictEqual({
+      day: 'Thu',
+      timeIndex: 5
+    })
+
+    jest.runOnlyPendingTimers()
+  })
+
+  it('getCurrentTimeSlotIndex', async () => {
     const timezoneRes = { // location=-37.8145092,144.9704868
       dstOffset: 0,
       rawOffset: 36000,
@@ -36,12 +54,9 @@ describe('Test schedule.utils', () => {
 
     mockServer.use(
       rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/json',
+        CommonUrlsInfo.getTimezone.url,
         (req, res, ctx) => res(ctx.json(timezoneRes))
-      ),
-      rest.get('/env.json', (_, r, c) => r(c.json({
-        GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
-      })))
+      )
     )
 
     await config.initialize()
@@ -50,20 +65,15 @@ describe('Test schedule.utils', () => {
 
     // Australian Eastern Standard Time
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
-    const latitude = '-37.8145092'
-    const longitude = '144.9704868'
 
-    fetchVenueTimeZone(Number(latitude), Number(longitude))
-      .then(timeZone => {
-        const slotIndex = getCurrentTimeSlotIndex(timeZone)
-        callBackSpy(slotIndex)
-      })
+    const slotIndex = getCurrentTimeSlotIndex(timezoneRes)
 
-    await waitFor(() => expect(callBackSpy).toHaveBeenCalledWith({
+    await waitFor(() => expect(slotIndex).toEqual({
       day: 'Thu',
       timeIndex: 5
     }))
 
+    jest.runOnlyPendingTimers()
   })
 
   it('getSchedulingCustomTooltip (today)', async () => {

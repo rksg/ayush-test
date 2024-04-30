@@ -2,11 +2,11 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                from '@acx-ui/components'
-import { formatter }                                                                            from '@acx-ui/formatter'
-import { EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                           from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                   from '@acx-ui/components'
+import { formatter }                                                                                               from '@acx-ui/formatter'
+import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                              from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                                   from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -14,13 +14,14 @@ interface EdgeDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   currentEdge: EdgeStatus | undefined,
+  currentCluster: EdgeClusterStatus | undefined
   dnsServers: EdgeDnsServers | undefined
   passwordDetail: EdgePasswordDetail | undefined
 }
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentEdge, dnsServers, passwordDetail } = props
+  const { visible, setVisible, currentEdge, currentCluster, dnsServers, passwordDetail } = props
   const { data: userProfile } = useUserProfileContext()
   const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
 
@@ -40,6 +41,12 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
           <TenantLink to={`/venues/${currentEdge?.venueId}/venue-details/overview`}>
             {currentEdge?.venueName}
           </TenantLink>
+        }
+      />
+      <Form.Item
+        label={$t({ defaultMessage: 'Cluster' })}
+        children={
+          currentCluster?.name || $t({ defaultMessage: 'None' })
         }
       />
       <Form.Item

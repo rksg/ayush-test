@@ -3,9 +3,16 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }                                           from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                                            from '@acx-ui/feature-toggle'
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard } from '@acx-ui/components'
+import { Features, TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  VenueLink,
+  PersonaGroupDrawer,
+  BasePersonaTable
+} from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -17,8 +24,6 @@ import { PersonaGroup }   from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
-import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
-import { BasePersonaTable }   from '../PersonaTable/BasePersonaTable'
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,
@@ -56,7 +61,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -71,12 +76,11 @@ function PersonaGroupDetails () {
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const { macRegistrationPoolId, dpskPoolId, nsgId, propertyId }
+    const { macRegistrationPoolId, dpskPoolId, personalIdentityNetworkId, propertyId }
     = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
@@ -89,7 +93,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })
@@ -97,11 +101,11 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (nsgId && networkSegmentationEnabled) {
+    if (personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: nsgId } })
+      getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgDisplay({ id: nsgId, name }))
+        .finally(() => setNsgDisplay({ id: personalIdentityNetworkId, name }))
     }
 
     if (propertyId) {
@@ -126,7 +130,7 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Identities' }),
-      content: detailsQuery.data?.personas?.length ?? 0
+      content: detailsQuery.data?.identities?.length ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
@@ -146,15 +150,15 @@ function PersonaGroupDetails () {
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
     },
-    {
-      title: $t({ defaultMessage: 'Network Segmentation' }),
+    ...(networkSegmentationEnabled ? [{
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
         <NetworkSegmentationLink
           showNoData={true}
           name={nsgDisplay?.name}
-          nsgId={detailsQuery.data?.nsgId}
+          id={detailsQuery.data?.personalIdentityNetworkId}
         />
-    }
+    }] : [])
   ]
 
   return (
@@ -175,7 +179,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

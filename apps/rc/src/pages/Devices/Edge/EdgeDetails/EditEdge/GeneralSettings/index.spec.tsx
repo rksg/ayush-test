@@ -1,39 +1,43 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { edgeApi }                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockVenueData } from '../../../__tests__/fixtures'
+import { mockVenueData }                                from '../../../__tests__/fixtures'
+import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
 
 import GeneralSettings from './index'
 
+const { mockEdgeData } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const updateRequestSpy = jest.fn()
 
-describe('EditEdge general settings', () => {
+describe('EditEdge - GeneralSettings', () => {
   let params: { tenantId: string, serialNumber: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: '000000000000'
     }
-
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
       rest.put(
         EdgeUrlsInfo.updateEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdge.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
+        (req, res, ctx) => {
+          updateRequestSpy()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -47,7 +51,13 @@ describe('EditEdge general settings', () => {
   it('should create GeneralSettings successfully', async () => {
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -60,7 +70,13 @@ describe('EditEdge general settings', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -74,7 +90,13 @@ describe('EditEdge general settings', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -82,13 +104,20 @@ describe('EditEdge general settings', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
+    await waitFor(() => expect(updateRequestSpy).toHaveBeenCalledTimes(1))
   })
 
   it('cancel and go back to edge list', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -114,10 +143,6 @@ describe('EditEdge general settings api fail', () => {
         EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
       ),
-      rest.get(
-        EdgeUrlsInfo.getEdge.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
-      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueData))
@@ -129,7 +154,13 @@ describe('EditEdge general settings api fail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })

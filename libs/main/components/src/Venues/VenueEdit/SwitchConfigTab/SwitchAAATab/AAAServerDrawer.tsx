@@ -1,0 +1,310 @@
+import { useEffect, useState } from 'react'
+
+import { Form, Input, Select }       from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
+
+import { Button, Drawer, Tooltip, PasswordInput }                                             from '@acx-ui/components'
+import {
+  useAddAAAServerMutation, useUpdateAAAServerMutation,
+  useAddVenueTemplateSwitchAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
+} from '@acx-ui/rc/services'
+import { AAAServerTypeEnum,
+  excludeExclamationRegExp,
+  excludeQuoteRegExp,
+  excludeSpaceExclamationRegExp,
+  excludeSpaceRegExp, LocalUser,
+  notAllDigitsRegExp, portRegExp,
+  RadiusServer, serverIpAddressRegExp,
+  TacacsServer, useConfigTemplateMutationFnSwitcher, validateUsername,
+  validateUserPassword } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+
+import { serversDisplayText, AAA_Purpose_Type, purposeDisplayText, AAA_Level_Type, levelDisplayText, LOCAL_USER_PASSWORD_TOOLTIP } from './contentsMap'
+const { Option } = Select
+
+interface AAAServerDrawerProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  isEditMode: boolean
+  serverType: AAAServerTypeEnum
+  editData: RadiusServer | TacacsServer | LocalUser
+}
+
+export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
+  const { $t } = useIntl()
+
+  const { visible, setVisible, isEditMode, serverType, editData } = props
+  const [resetField, setResetField] = useState(false)
+  const [isAdminUser, setIsAdminUser] = useState(false)
+  const params = useParams()
+  const [form] = Form.useForm()
+  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher(
+    useAddAAAServerMutation, useAddVenueTemplateSwitchAAAServerMutation
+  )
+  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
+  )
+  const [loading, setLoading] = useState<boolean>(false)
+
+  useEffect(()=>{
+    if (editData && visible) {
+      form.setFieldsValue(editData)
+      setIsAdminUser(editData?.name === 'admin' || editData?.username === 'admin')
+    }
+  }, [editData, visible])
+
+  const getTitle = () => {
+    const title = isEditMode
+      ? $t({ defaultMessage: 'Edit {serverType}' },
+        { serverType: $t(serversDisplayText[serverType]) }
+      )
+      : $t({ defaultMessage: 'Add {serverType}' },
+        { serverType: $t(serversDisplayText[serverType]) }
+      )
+
+    return title
+  }
+
+  const onClose = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
+  const resetFields = () => {
+    setResetField(true)
+    onClose()
+  }
+
+  const onSubmit = async (data:RadiusServer | TacacsServer | LocalUser) => {
+    setLoading(true)
+    try {
+      if (!isEditMode) {
+        const payload = {
+          ...data,
+          serverType
+        }
+        await addAAAServer({
+          params,
+          payload
+        }).unwrap()
+      } else {
+        const payload = {
+          ...editData,
+          ...data
+        }
+        await updateAAAServer({
+          params: {
+            ...params,
+            aaaServerId: payload.id
+          },
+          payload
+        }).unwrap()
+      }
+    }
+    catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+    setLoading(false)
+    onClose()
+    const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
+    if (clearButton) {
+      // @ts-ignore
+      clearButton.click()
+    }
+  }
+
+  const radiusForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
+    <Form.Item
+      name='name'
+      label={$t({ defaultMessage: 'Name' })}
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 64 },
+        { validator: (_, value) => excludeExclamationRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='ip'
+      label={$t({ defaultMessage: 'IP Address' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => serverIpAddressRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='authPort'
+      label={$t({ defaultMessage: 'Authentication port' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => portRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='acctPort'
+      label={$t({ defaultMessage: 'Accounting port' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => portRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='secret'
+      label={$t({ defaultMessage: 'Shared secret' })}
+      rules={[
+        { required: true },
+        { max: 64 },
+        { validator: (_, value) => excludeSpaceRegExp(value) },
+        { validator: (_, value) => notAllDigitsRegExp(value) }
+      ]}
+      children={<PasswordInput />}
+    />
+  </Form>
+
+  const tacacsForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
+    <Form.Item
+      name='name'
+      label={$t({ defaultMessage: 'Name' })}
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 64 },
+        { validator: (_, value) => excludeExclamationRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='ip'
+      label={$t({ defaultMessage: 'IP Address' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => serverIpAddressRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='authPort'
+      label={$t({ defaultMessage: 'Authentication port' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => portRegExp(value) }
+      ]}
+      children={<Input />}
+    />
+    <Form.Item
+      name='secret'
+      label={$t({ defaultMessage: 'Shared secret' })}
+      rules={[
+        { required: true },
+        { max: 64 },
+        { validator: (_, value) => excludeSpaceRegExp(value) },
+        { validator: (_, value) => notAllDigitsRegExp(value) }
+      ]}
+      children={<PasswordInput />}
+    />
+    <Form.Item
+      label='Purpose'
+      name='purpose'
+      initialValue={AAA_Purpose_Type.DEFAULT}
+    >
+      <Select>
+        {
+          Object.entries(AAA_Purpose_Type).map(([label, value]) => (
+            <Option key={label} value={value}>{$t(purposeDisplayText[value])}</Option>
+          ))
+        }
+      </Select>
+    </Form.Item>
+  </Form>
+
+  const localUserForm = <Form layout='vertical' form={form} onFinish={onSubmit}>
+    <Form.Item
+      name='username'
+      label={$t({ defaultMessage: 'Username' })}
+      rules={[
+        { required: true },
+        { min: 2 },
+        { max: 48 },
+        { validator: (_, value) => excludeQuoteRegExp(value) },
+        { validator: (_, value) => excludeSpaceRegExp(value) },
+        { validator: (_, value) => !isAdminUser ? validateUsername(value) : Promise.resolve() }
+      ]}
+      children={<Input disabled={(editData as LocalUser).username === 'admin'}/>}
+    />
+    <Form.Item
+      name='password'
+      label={<>
+        { $t({ defaultMessage: 'Password' }) }
+        <Tooltip.Question
+          overlayStyle={{ maxWidth: '450px' }}
+          title={<FormattedMessage
+            {...LOCAL_USER_PASSWORD_TOOLTIP}
+            values={{
+              br: () => <br />,
+              ul: (contents) => <ul>{contents}</ul>,
+              li: (contents) => <li>{contents}</li>
+            }}
+          />}
+          placement='bottom'
+        />
+      </>}
+      rules={[
+        { required: true },
+        { min: 8 },
+        { max: 64 },
+        { validator: (_, value) => excludeSpaceExclamationRegExp(value) },
+        { validator: (_, value) => validateUserPassword(value) }
+      ]}
+      children={<PasswordInput />}
+    />
+    <Form.Item
+      label='Privilege'
+      name='level'
+      initialValue={AAA_Level_Type.READ_WRITE}
+    >
+      <Select
+        disabled={(editData as LocalUser).username === 'admin'}
+      >
+        {
+          Object.entries(AAA_Level_Type).map(([label, value]) => (
+            <Option key={label} value={value}>{$t(levelDisplayText[value])}</Option>
+          ))
+        }
+      </Select>
+    </Form.Item>
+  </Form>
+
+  const getServerForm = (type: AAAServerTypeEnum) => {
+    const formMap = {
+      [AAAServerTypeEnum.RADIUS]: radiusForm,
+      [AAAServerTypeEnum.TACACS]: tacacsForm,
+      [AAAServerTypeEnum.LOCAL_USER]: localUserForm
+    }
+    return formMap[type]
+  }
+
+  const footer = [
+    <Button loading={loading} key='saveBtn' onClick={() => form.submit()} type={'primary'} >
+      {$t({ defaultMessage: 'Save' })}
+    </Button>,
+    <Button disabled={loading} key='cancelBtn' onClick={resetFields}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  ]
+
+  return (
+    <Drawer
+      title={getTitle()}
+      visible={visible}
+      onClose={onClose}
+      children={getServerForm(serverType)}
+      footer={footer}
+      destroyOnClose={resetField}
+      width={'600px'}
+    />
+  )
+}

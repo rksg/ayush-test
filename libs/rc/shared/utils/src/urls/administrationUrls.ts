@@ -51,14 +51,14 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getRecoveryPassphrase: {
     method: 'get',
-    url: '/recoveryPskSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    url: '/wifiNetworks/recoveryPassphraseSettings',
+    oldUrl: '/recoveryPskSettings',
     newApi: true
   },
   updateRecoveryPassphrase: {
     method: 'put',
-    url: '/recoveryPskSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/recovery',
+    url: '/wifiNetworks/recoveryPassphraseSettings',
+    oldUrl: '/recoveryPskSettings',
     newApi: true
   },
   getDelegations: {
@@ -169,6 +169,16 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/entitlement',
     newApi: true
   },
+  getEntitlementsActivations: {
+    method: 'post',
+    url: '/entitlements/orders/query',
+    newApi: true
+  },
+  patchEntitlementsActivations: {
+    method: 'PATCH',
+    url: '/entitlements/orders/:orderId',
+    newApi: true
+  },
   refreshLicensesData: {
     method: 'get',
     url: '/entitlements/summaries?refresh=true',
@@ -198,6 +208,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/authentications',
     newApi: true
   },
+  patchTenantAuthentications: {
+    method: 'PATCH',
+    url: '/tenants/authentications/:authenticationId',
+    newApi: true
+  },
   updateTenantAuthentications: {
     method: 'put',
     url: '/tenants/authentications/:authenticationId',
@@ -207,9 +222,79 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/tenants/authentications/:authenticationId',
     newApi: true
-  }
+  },
   // acceptRejectInvitation: {
   //   method: 'put',
   //   url: '/api/tenant/:tenantId/delegation/:delegationId'
   // }
+  getAdminGroups: {
+    method: 'get',
+    url: '/groups',
+    newApi: true
+  },
+  addAdminGroups: {
+    method: 'post',
+    url: '/groups',
+    newApi: true
+  },
+  updateAdminGroups: {
+    method: 'PATCH',
+    url: '/groups/:groupId',
+    newApi: true
+  },
+  deleteAdminGroups: {
+    method: 'delete',
+    url: '/groups',
+    newApi: true
+  },
+  getAdminGroupLastLogins: {
+    method: 'get',
+    url: '/events/adminGroups/:adminGroupId/latestLogins',
+    newApi: true
+  },
+  getCustomRoles: {
+    method: 'get',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  addCustomRole: {
+    method: 'post',
+    url: '/roleAuthentications/customRoles',
+    newApi: true
+  },
+  updateCustomRole: {
+    method: 'put',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
+  deleteCustomRole: {
+    method: 'delete',
+    url: '/roleAuthentications/customRoles/:customRoleId',
+    newApi: true
+  },
+  getOnePrivilegeGroup: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  addPrivilegeGroup: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  updatePrivilegeGroup: {
+    method: 'put',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  deletePrivilegeGroup: {
+    method: 'delete',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  }
 }

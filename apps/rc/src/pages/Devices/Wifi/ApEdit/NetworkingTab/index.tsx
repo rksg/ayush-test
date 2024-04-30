@@ -4,12 +4,12 @@ import { Button, Space, Tooltip } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { AnchorLayout, StepsFormLegacy }                          from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
-import { redirectPreviousPage }                                   from '@acx-ui/rc/utils'
-import { useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                                  from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
+import { redirectPreviousPage }          from '@acx-ui/rc/utils'
+import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }         from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '..'
 
@@ -49,9 +49,8 @@ export function NetworkingTab () {
   const { apCapabilities } = useContext(ApDataContext)
 
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
-  const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
   const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
+  const supportMeshEnhancement = isFeatureOnMeshEnhancement
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const [isSupportMesh, setIsSupportMesh] = useState(false)
@@ -192,7 +191,7 @@ export function NetworkingTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} offsetTop={60} />
+        <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

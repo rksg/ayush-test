@@ -351,7 +351,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
-      tmpModelPortData.model = family + '-' + selectedModel
+      tmpModelPortData.model = selectedFamily + '-' + selectedModel
       setSwitchFamilyModels(tmpModelPortData)
 
       form.setFieldValue('switchFamilyModels', tmpModelPortData)

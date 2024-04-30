@@ -6,6 +6,7 @@ export * from './wifiCallingService'
 export * from './networkSegmentationService'
 export * from './mdnsProxyService'
 export * from './portalService'
+export * from './edgeSdLanService'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -82,6 +83,21 @@ export interface AccessControlProfile {
   },
   policyName?: string,
   description?: string
+}
+
+export interface AccessControlProfileTemplate {
+  name: string,
+  id: string,
+  l2AclPolicyId?: string,
+  l2AclPolicyName?: string,
+  l3AclPolicyId?: string,
+  l3AclPolicyName?: string,
+  devicePolicyId?: string,
+  devicePolicyName?: string,
+  applicationPolicyId?: string,
+  applicationPolicyName?: string,
+  clientRateUpLinkLimit?: number,
+  clientRateDownLinkLimit?: number
 }
 
 export interface AccessControlFormFields {

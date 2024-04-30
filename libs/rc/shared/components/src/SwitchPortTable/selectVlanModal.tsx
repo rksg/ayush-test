@@ -146,17 +146,9 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    const untaggedVlanOptions = getUntaggedVlanOptions(taggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(untaggedVlan)
-
     setSelectUntaggedVlan(Number(untaggedVlan))
     setSelectTaggedVlans(taggedVlans)
-    setTaggedVlanOptions(taggedVlanOptions)
-    setDisplayTaggedVlan(taggedVlanOptions)
-    setUntaggedVlanOptions(untaggedVlanOptions)
-    setDisplayUntaggedVlan(untaggedVlanOptions)
-
-  }, [switchVlans])
+  }, [])
 
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
@@ -165,7 +157,8 @@ export function SelectVlanModal (props: {
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
     setDisplayUntaggedVlan(untaggedVlanOptions)
-  }, [voiceVlanTmp])
+
+  }, [switchVlans, voiceVlanTmp])
 
   useEffect(() => {
     const isTaggedVlansChanged
@@ -273,6 +266,7 @@ export function SelectVlanModal (props: {
 
   return <>
     <Modal
+      data-testid='select-port-vlans'
       title={$t({ defaultMessage: 'Select Port VLANs' })}
       visible={selectModalvisible}
       width={500}
@@ -320,7 +314,7 @@ export function SelectVlanModal (props: {
     >
       <Tabs stickyTop={false} defaultActiveKey='untaggedVlan'>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Untagged VLANs' })}
+          tab={$t({ defaultMessage: 'Untagged VLAN' })}
           key='untaggedVlan'
         >
           <Typography.Text style={{

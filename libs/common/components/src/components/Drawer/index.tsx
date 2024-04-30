@@ -14,7 +14,7 @@ import type { CheckboxProps } from 'antd/lib/checkbox'
 
 interface DrawerHeaderProps {
   drawerType?: UI.DrawerTypes,
-  title: string,
+  title: string | React.ReactNode,
   icon?: React.ReactNode,
   subTitle?: string,
   onBackClick?: () => void
@@ -91,6 +91,7 @@ interface FormFooterProps {
   showAddAnother?: boolean
   showAddAnotherProps?: CheckboxProps
   showSaveButton?: boolean
+  extra?: ReactNode
   onCancel: () => void
   onSave?: (checked: boolean) => Promise<void>
   buttonLabel?: {
@@ -107,6 +108,7 @@ const FormFooter = (props: FormFooterProps) => {
     showAddAnother = false,
     showAddAnotherProps,
     showSaveButton = true,
+    extra = null,
     onCancel,
     onSave
   } = props
@@ -128,6 +130,7 @@ const FormFooter = (props: FormFooterProps) => {
           children={buttonLabel.addAnother}
           {...showAddAnotherProps}
         />}
+        {extra}
       </div>
       <div>
         <Button onClick={onCancel}>

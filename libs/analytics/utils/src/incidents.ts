@@ -69,7 +69,7 @@ export function normalizeNodeType (nodeType: SliceType): NodeType {
   }
 }
 
-export function nodeTypes (nodeType: NodeType): string {
+export function nodeTypes (nodeType: NodeType|SliceType): string {
   const { $t } = getIntl()
   const isMLISA = get('IS_MLISA_SA')
   switch (normalizeNodeType(nodeType)) {
@@ -108,7 +108,7 @@ function formattedNodeName (
 ): string | undefined {
   const { $t } = getIntl()
   const type = node.type.toLocaleLowerCase()
-  const isComplexName = ['ap', 'switch'].includes(type) && sliceValue !== node.name
+  const isComplexName = ['ap', 'controller', 'switch'].includes(type) && sliceValue !== node.name
   return $t({
     defaultMessage: `{isComplexName, select,
       true {{name} ({nodeName})}
@@ -170,7 +170,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return kpiConfig.timeToConnect.histogram.initialThreshold
+    return incident.slaThreshold ?? kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
@@ -239,4 +239,15 @@ export const impactValues = <Type extends 'ap' | 'client'> (
       description: 'E.g. 1 of 10 clients (10%)'
     }, { formattedCount, formattedTotal, formattedType, formattedRatio })
   } as ReturnType<typeof impactValues>
+}
+
+export const longDescription = (incident: Incident) => {
+  const { clientImpactRatio, clientImpactRatioFormatted } = impactValues('client', incident)
+  const noRatioMap = [null, noDataDisplay] as (typeof clientImpactRatio)[]
+  return (noRatioMap.includes(clientImpactRatio))
+    ? shortDescription(incident)
+    : getIntl().$t(incident.longDescription, {
+      scope: incidentScope(incident),
+      impact: clientImpactRatioFormatted
+    })
 }

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
-import { act, render, screen } from '@testing-library/react'
-import userEvent               from '@testing-library/user-event'
-import { MemoryRouter }        from 'react-router-dom'
+import userEvent        from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { BrowserRouter }       from '@acx-ui/react-router-dom'
+import { act, render, screen } from '@acx-ui/test-utils'
 
 import { Anchor, AnchorLayout } from './index'
 
@@ -44,7 +44,7 @@ describe('Anchor', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it.skip('should scroll to anchor correctly', async () => {
+  it('should scroll to anchor correctly', async () => {
     jest.useFakeTimers()
     render(
       <MemoryRouter initialEntries={[{
@@ -58,6 +58,8 @@ describe('Anchor', () => {
       jest.runAllTimers() // trigger setTimeout
     })
     expect(await screen.findByText('Content 3')).toBeVisible()
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
   })
 })
 

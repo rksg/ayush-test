@@ -23,7 +23,9 @@ import { NetworkDeviceMarker }           from '../FloorPlan/NetworkDevices/Netwo
 import { RogueApLocationMarker }         from '../FloorPlan/NetworkDevices/RogueApLocationMarker'
 import { ApMeshConnections }             from '../FloorPlan/NetworkDevices/useApMeshDevice'
 import { ApMeshTopologyContextProvider } from '../FloorPlan/PlainView/ApMeshTopologyContext'
-
+import { ImageMode }                     from '../FloorPlan/PlainView/PlainView'
+import * as UI                           from '../FloorPlan/PlainView/styledComponents'
+import { ZoomWidget }                    from '../ZoomWidget'
 
 export function ApFloorplan (props: {
   activeDevice: NetworkDevice,
@@ -48,7 +50,8 @@ export function ApFloorplan (props: {
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)
   const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
-  const [containerWidth, setContainerWidth] = useState<number>(1)
+  const [currentZoom, setCurrentZoom] = useState(1)
+  const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
@@ -130,16 +133,8 @@ export function ApFloorplan (props: {
 
   useEffect(() => {
     if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
-      response.then((_imageUrl) => {
-        setImageUrl(_imageUrl)
-      })
-    }
-  }, [floorplan?.imageId])
-
-  useEffect(() => {
-    if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorplan?.imageId}/urls`
+      const response = loadImageWithJWT(floorplan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })
@@ -158,7 +153,7 @@ export function ApFloorplan (props: {
 
     if (differencePercentage) {
       const _zoom = Math.floor(differencePercentage) / 100
-      setContainerWidth(_zoom)
+      setCurrentZoom(_zoom)
     }
     setTimeout(() => setImageLoaded(true), 400)
   }
@@ -189,49 +184,64 @@ export function ApFloorplan (props: {
         }
       </Col>
     </Row>
-    <div
-      ref={imageContainerRef}
-      style={{
-        position: 'relative',
-        margin: '0 auto',
-        width: `calc(${100 * containerWidth}%)`
-      }}>
-      {imageLoaded && <DndProvider backend={HTML5Backend}>
-        {apList && apPosition?.floorplanId && <ApMeshTopologyContextProvider
-          isApMeshTopologyEnabled={isApMeshTopologyEnabled}
-          floorplanId={apPosition.floorplanId}
-          venueId={venueId}
-          children={<>{
-            apList.map((device: NetworkDevice) =>
-              <NetworkDeviceMarker
-                key={device?.serialNumber}
-                galleryMode={false}
-                contextAlbum={false}
-                showRogueAp={!!rogueApMac}
-                perRogueApModel={!!rogueApMac}
-                context={FloorplanContext['ap']}
-                device={device}
-                forbidDrag={true}/>
-            )
-          }
-          <RogueApLocationMarker
-            rogueApDevices={rogueApDevices}
-          />
-          <ApMeshConnections/>
-          </>}
-        />}
-      </DndProvider>}
-      <img
-        data-testid='floorPlanImage'
-        onLoad={onImageLoad}
+    <UI.ImageContainerWrapper>
+      <UI.ImageContainer
+        imageMode={imageMode}
+        currentZoom={currentZoom}
+        ref={imageContainerRef}
         style={{
-          maxHeight: '100%',
-          width: '100%',
-          border: 'none'
+          margin: '0 auto'
         }}
-        ref={imageRef}
-        alt={floorplan?.name}
-        src={imageUrl}/>
-    </div>
+      >
+        {imageLoaded && <DndProvider backend={HTML5Backend}>
+          {apList && apPosition?.floorplanId && <ApMeshTopologyContextProvider
+            isApMeshTopologyEnabled={isApMeshTopologyEnabled}
+            floorplanId={apPosition.floorplanId}
+            venueId={venueId}
+            children={<>{
+              apList.map((device: NetworkDevice) =>
+                <NetworkDeviceMarker
+                  key={device?.serialNumber}
+                  galleryMode={false}
+                  contextAlbum={false}
+                  showRogueAp={!!rogueApMac}
+                  perRogueApModel={!!rogueApMac}
+                  context={FloorplanContext['ap']}
+                  device={device}
+                  forbidDrag={true}/>
+              )
+            }
+            <RogueApLocationMarker
+              rogueApDevices={rogueApDevices}
+            />
+            <ApMeshConnections/>
+            </>}
+          />}
+        </DndProvider>}
+        <img
+          data-testid='floorPlanImage'
+          onLoad={onImageLoad}
+          style={{
+            maxHeight: '100%',
+            width: '100%',
+            border: 'none'
+          }}
+          ref={imageRef}
+          alt={floorplan?.name}
+          src={imageUrl}/>
+      </UI.ImageContainer>
+    </UI.ImageContainerWrapper>
+    <ZoomWidget
+      style={{
+        right: '5rem',
+        bottom: '0rem'
+      }}
+      imageRef={imageRef}
+      imageContainerRef={imageContainerRef}
+      currentZoom={currentZoom}
+      setCurrentZoom={setCurrentZoom}
+      imageMode={imageMode}
+      setImageMode={setImageMode}
+    />
   </div>
 }

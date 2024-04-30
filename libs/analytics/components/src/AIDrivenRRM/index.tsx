@@ -1,17 +1,24 @@
+import { List }    from 'antd'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { isSwitchPath }                             from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, NoData, ColorPill } from '@acx-ui/components'
-import { formatter, intlFormats }                   from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }            from '@acx-ui/react-router-dom'
-import type { PathFilter }                          from '@acx-ui/utils'
+import { isSwitchPath }                     from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill } from '@acx-ui/components'
+import { formatter, intlFormats }           from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath }    from '@acx-ui/react-router-dom'
+import type { PathFilter }                  from '@acx-ui/utils'
 
+import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
 import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
+import {
+  NoRRMLicense,
+  NoZones,
+  getParamString
+} from './extra'
+import CrrmKpi from './kpi'
 import * as UI from './styledComponents'
-
-export { AIDrivenRRMWidget as AIDrivenRRM }
 
 const { countFormat } = intlFormats
 
@@ -25,7 +32,7 @@ function AIDrivenRRMWidget ({
   const { $t } = useIntl()
   const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...pathFilters, n: 5 }, { skip: switchPath })
+  const queryResults = useCrrmListQuery({ ...pathFilters, n: 12 }, { skip: switchPath })
   const data = switchPath
     ? {
       crrmCount: 0,
@@ -35,7 +42,7 @@ function AIDrivenRRMWidget ({
       recommendations: []
     } as CrrmList
     : queryResults?.data
-  const noData = data?.recommendations?.length === 0
+  const noZones = data?.recommendations.length === 0
   const crrmCount = data?.crrmCount
   const zoneCount = data?.zoneCount
   const optimizedZoneCount = data?.optimizedZoneCount
@@ -47,6 +54,10 @@ function AIDrivenRRMWidget ({
       value={$t(countFormat, { value: crrmCount })}
     />
   }
+
+  const noLicense = data?.recommendations.length !== 0 ? data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses'
+  ) : false
 
   const subtitle = $t(
     {
@@ -66,46 +77,53 @@ function AIDrivenRRMWidget ({
     },
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
-  const noCrrmText = $t({ defaultMessage: `RUCKUS AI has confirmed that all zones are currently
-    operating with the optimal RRM configurations and no further recommendation is required.` })
 
   return <Loader states={[queryResults]}>
     <Card
       title={title}
       onArrowClick={onArrowClick}
-      subTitle={noData ? noCrrmText : subtitle}
-    >{noData
-        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-        : <UI.List
-          dataSource={data?.recommendations}
-          renderItem={item => {
-            const recommendation = item as CrrmListItem
-            const {
-              sliceValue,
-              id,
-              crrmOptimizedState,
-              crrmInterferingLinksText,
-              summary
-            } = recommendation
-            return <UI.List.Item key={id}>
-              <TenantLink to={`/recommendations/crrm/${id}`}>
-                <Tooltip
-                  placement='top'
-                  title={summary}
-                >
-                  <UI.List.Item.Meta
-                    avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                    title={sliceValue}
-                    description={crrmInterferingLinksText}
-                  />
-                </Tooltip>
-              </TenantLink>
-            </UI.List.Item>
-          }}
-        />
+      subTitle={noLicense || noZones ? '' : subtitle}
+    >{noZones
+        ? <NoZones />
+        : noLicense
+          ? <NoRRMLicense />
+          : <AutoSizer>{(style) => <List<CrrmListItem>
+            style={style}
+            dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
+            renderItem={recommendation => {
+              const {
+                sliceValue,
+                id,
+                code,
+                crrmOptimizedState,
+                summary,
+                status,
+                updatedAt,
+                metadata
+              } = recommendation
+              const paramString = getParamString(metadata, status, updatedAt, sliceValue)
+              const unknownPath = `unknown?${paramString}`
+              return <UI.ListItem key={`${id}${sliceValue}`}>
+                <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
+                  <Tooltip
+                    placement='top'
+                    title={code === 'unknown' ? '' : summary}
+                  >
+                    <UI.ListItem.Meta
+                      avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                      title={sliceValue}
+                      description={code === 'unknown'
+                        ? $t(states[status].text)
+                        : <CrrmKpi id={id} code={code} status={status} />}
+                    />
+                  </Tooltip>
+                </TenantLink>
+              </UI.ListItem>
+            }}
+          />}</AutoSizer>
       }
     </Card>
   </Loader>
 }
 
-export default AIDrivenRRMWidget
+export { AIDrivenRRMWidget as AIDrivenRRM }

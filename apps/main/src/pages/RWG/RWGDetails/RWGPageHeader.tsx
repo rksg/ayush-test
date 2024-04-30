@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                    from '@acx-ui/components'
-import { useGetDNSRecordsQuery, useGetRwgQuery } from '@acx-ui/rc/services'
-import { RWG }                                   from '@acx-ui/rc/utils'
+import { Button, PageHeader } from '@acx-ui/components'
+import { useGetRwgQuery }     from '@acx-ui/rc/services'
+import { RWG }                from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -14,31 +14,38 @@ import {
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { useRwgActions } from '../useRwgActions'
+
 import RWGTabs from './RWGTabs'
 
 
 function RWGPageHeader () {
   const { $t } = useIntl()
   const [gatewayStatus, setGatewayStatus] = useState<string>()
-  const [DNSRecordCount, setDNSRecordCount] = useState<number>()
   const { tenantId, gatewayId } = useParams()
 
   const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
-  const { data: dnsRecordsData } = useGetDNSRecordsQuery({ params: { tenantId, gatewayId } })
 
   useEffect(() => {
     if (gatewayData) {
       setGatewayStatus(gatewayData?.status)
-    }
-
-    if (dnsRecordsData) {
-      setDNSRecordCount(dnsRecordsData.totalCount)
     }
   })
 
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}`)
+  const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
+  const rwgActions = useRwgActions()
+
+  const redirectToList = function () {
+    navigate({
+      ...rwgListBasePath
+    }, {
+      state: {
+        from: location
+      }
+    })}
 
   return (
     <PageHeader
@@ -57,6 +64,12 @@ function RWGPageHeader () {
       ]}
       extra={[
         ...filterByAccess([<Button
+          type='default'
+          onClick={() =>
+            rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
+          }
+        >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+        <Button
           type='primary'
           onClick={() =>
             navigate({
@@ -70,7 +83,7 @@ function RWGPageHeader () {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>])
       ]}
-      footer={<RWGTabs gatewayDetail={gatewayData as RWG} dnsRecordsCount={DNSRecordCount || 0} />}
+      footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />
   )
 }

@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   getPolicyDetailsLink,
   MacRegistrationDetailsTabKey,
@@ -298,5 +299,33 @@ describe.skip('MacRegistrationsTab', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+  })
+
+  it('import file async correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        MacRegListUrlsInfo.uploadMacRegistration.url,
+        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+      )
+    )
+
+    render(<Provider><MacRegistrationsTab /></Provider>, {
+      route: { params, path: tablePath }
+    })
+    fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'mac_registration_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+    jest.mocked(useIsSplitOn).mockReset()
   })
 })

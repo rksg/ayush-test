@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { SortOrder }                         from 'antd/lib/table/interface'
 import _                                     from 'lodash'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
@@ -29,6 +31,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 import { AccountType, exportMessageMapping } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -86,6 +90,11 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
@@ -256,19 +265,21 @@ export function DeviceInventory () {
   }
 
   const DeviceTable = () => {
+    const settingsId = 'device-inventory-table'
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
       apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='device-inventory-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -286,7 +297,7 @@ export function DeviceInventory () {
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory ({count})' },
           { count: list?.totalCount || 0 })}
-        extra={
+        extra={!isHspSupportEnabled &&
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>

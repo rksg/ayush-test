@@ -7,8 +7,8 @@ import _                                                              from 'loda
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 
-import { SettingsOutlined }        from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
@@ -44,13 +44,14 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
-import type { RowSelectMethod } from 'antd/lib/table/interface'
+import type { ExpandableConfig, RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
   ColumnGroupType,
   RecordWithChildren,
-  TableColumn
+  TableColumn,
+  ColumnState
 } from './types'
 
 export interface TableProps <RecordType>
@@ -81,7 +82,10 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number,
     searchableWidth?: number,
+    stickyHeaders?: boolean,
     stickyPagination?: boolean,
+    enableResizableColumn?: boolean,
+    enablePagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
@@ -93,14 +97,26 @@ export interface TableHighlightFnArgs {
   ): string | React.ReactNode
 }
 
+export const NestedTableExpandableDefaultConfig = {
+  type: 'default',
+  columnWidth: '12px',
+  fixed: 'left',
+  expandIcon: ({ expanded, onExpand, record }) => {
+    const ExpandedIcon = expanded ? MinusSquareOutlined : PlusSquareOutlined
+    return <ExpandedIcon onClick={(e) =>
+      onExpand(record, e as unknown as React.MouseEvent<HTMLElement>)
+    } />
+  }
+} as ExpandableConfig<Record<string, unknown>>
+
 const defaultPagination = {
   mini: true,
   defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
-  showTotal: false,
+  showTotal: undefined,
   showSizeChanger: true
-}
+} as TablePaginationConfig
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
 ): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
@@ -131,7 +147,8 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, stickyPagination, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
+  enablePagination = false, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -164,9 +181,11 @@ function Table <RecordType extends Record<string, any>> ({
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
 
-  if (stickyPagination === undefined && type === 'tall' && wrapperRef?.current?.closest('#root')) {
-    // stickyPagination is true by default while this Table is under LayoutComponent (not in Modal or Drawer)
-    stickyPagination = true
+  // stickyHeaders/stickyPagination is true by default while this
+  // Table is under LayoutComponent (not in Modal or Drawer)
+  if (type === 'tall' && wrapperRef?.current?.closest('#root')) {
+    if (stickyHeaders === undefined) stickyHeaders = true
+    if (stickyPagination === undefined) stickyPagination = true
   }
 
   useEffect(() => {
@@ -219,7 +238,7 @@ function Table <RecordType extends Record<string, any>> ({
       : props.columns
 
     return cols.map(column => ({
-      ...column,
+      ..._.omit(column, 'scopeKey'),
       tooltip: null,
       title: column.tooltip
         ? <UI.TitleWithTooltip>
@@ -321,7 +340,21 @@ function Table <RecordType extends Record<string, any>> ({
     return all
   }, {} as Record<string, TableColumn<RecordType, 'text'>>))
 
-  const filterables = aggregator(columns, 'filterable')
+  const sortFilterableItems = (
+    a: TableColumn<RecordType, 'text'>,
+    b: TableColumn<RecordType, 'text'>): number => {
+    const aType = a.filterComponent ? _.get(a.filterComponent, 'type') : ''
+    const bType = b.filterComponent ? _.get(b.filterComponent, 'type') : ''
+
+    const priorityOrder: ('rangepicker' | 'checkbox')[] = ['rangepicker', 'checkbox']
+
+    const aIndex = priorityOrder.indexOf(aType as 'rangepicker' | 'checkbox')
+    const bIndex = priorityOrder.indexOf(bType as 'rangepicker' | 'checkbox')
+
+    return aIndex - bIndex
+  }
+
+  const filterables = aggregator(columns, 'filterable').sort(sortFilterableItems)
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
@@ -391,9 +424,22 @@ function Table <RecordType extends Record<string, any>> ({
       : {}
   } : undefined
 
+  const defaultPaginationMemo = useMemo<TablePaginationConfig>(() => ({
+    ...defaultPagination,
+    ...(!settingsId || type !== 'tall' ? {} : {
+      // Use localStorage if a tall table has settingsId and no pageSize specified.
+      // pageSize can usually be generated by useTableQuery
+      pageSize: (props.pagination && props.pagination.pageSize) ? undefined :
+        Number(localStorage.getItem(`${settingsId}-pagesize`)) || TABLE_DEFAULT_PAGE_SIZE,
+      onShowSizeChange: (current, size) => {
+        localStorage.setItem(`${settingsId}-pagesize`, size.toString())
+      }
+    })
+  }), [props.pagination, settingsId, type])
+
   let pagination: false | TablePaginationConfig = false
-  if (type === 'tall') {
-    pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+  if (type === 'tall' || !!enablePagination) {
+    pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
     if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
@@ -401,7 +447,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const components = _.merge({},
     props.components || {},
-    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+    type === 'tall' && enableResizableColumn ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
 
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
@@ -425,7 +471,7 @@ function Table <RecordType extends Record<string, any>> ({
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
           width: colWidth[column.key],
-          definedWidth: col.width
+          ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
       })
       : col
@@ -472,7 +518,7 @@ function Table <RecordType extends Record<string, any>> ({
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
             column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, filterWidth)
+            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth)
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}
@@ -504,7 +550,7 @@ function Table <RecordType extends Record<string, any>> ({
   let offsetHeader = layout.pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
-  const sticky = type === 'tall' &&
+  const sticky = stickyHeaders &&
     // disable in test env as it will result in 2 tables rendered
     // this is to prevent confusing/inconvenience for implementor
     // to find out themselves when they are using Table and
@@ -521,6 +567,7 @@ function Table <RecordType extends Record<string, any>> ({
     } as React.CSSProperties}
     ref={wrapperRef}
     $type={type}
+    $stickyHeaders={!!stickyHeaders}
     $stickyPagination={!!stickyPagination}
   >
     <UI.TableSettingsGlobalOverride />
@@ -578,7 +625,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={expandable}
+      expandable={props?.expandable || expandable}
       onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
@@ -654,8 +701,13 @@ function Table <RecordType extends Record<string, any>> ({
 
 Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
+Table.SearchInput = UI.SearchInput
 
 export { Table }
+
+export function AsyncColumnLoader () {
+  return <UI.AsyncColumnLoader data-testid='async-column-loader-animation'/>
+}
 
 type ScrollXReducerColumn = {
   key: string

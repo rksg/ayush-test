@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                          from 'antd/lib/form/Form'
@@ -37,26 +37,31 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, isSwitch, preDownload } = props
   const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
-  const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
+  // eslint-disable-next-line max-len
+  const [scheduleMode, setScheduleMode] = useState(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
   const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
   const [modelVisible, setModelVisible] = useState(false)
   const [disableSave, setDisableSave] = useState(true)
   const [checked, setChecked] = useState(false)
+  const isDayTimeInitializedRef = useRef(false)
 
 
   useEffect(() => {
-    if (data) {
-      // eslint-disable-next-line max-len
-      data.autoSchedule ? setScheduleMode(ScheduleMode.Automatically) : setScheduleMode(ScheduleMode.Manually)
-    }
-    if (data && data.days) {
+    if (isDayTimeInitializedRef.current || !visible) return
+
+    if (data.days) {
       setValueDays([...data.days])
     }
-    if (data && data.times) {
+    if (data.times) {
       setValueTimes([...data.times])
     }
-  }, [data])
+    if (data.autoSchedule) {
+      setScheduleMode(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
+    }
+
+    isDayTimeInitializedRef.current = true
+  }, [isDayTimeInitializedRef, data])
 
   useEffect(() => {
     if (preDownload) {
@@ -70,6 +75,13 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const handleModalCancel = () => {
     setModelVisible(false)
+  }
+
+  const setPreDownload = (value: boolean) => {
+    setChecked(value)
+    if (disableSave) {
+      setDisableSave(false)
+    }
   }
 
   const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
@@ -172,17 +184,16 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
         {isSwitch && scheduleMode === ScheduleMode.Automatically ?
           <PreDownload
             checked={checked}
-            setChecked={setChecked}
+            setChecked={setPreDownload}
           />
           : null}
       </Modal>
-      <ChangeSlotDialog
-        visible={modelVisible}
+      {modelVisible && <ChangeSlotDialog
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
-        days={data.days as string[]}
-        times={data.times as string[]}
-      />
+        days={valueDays}
+        times={valueTimes}
+      />}
     </>
   )
 }

@@ -1,10 +1,9 @@
 
 import { useIntl } from 'react-intl'
 
-import { SummaryCard }         from '@acx-ui/components'
-import { ApSnmpViewModelData } from '@acx-ui/rc/utils'
-
-import { renderToListTooltip } from '../SnmpAgentTable/SnmpAgentTable'
+import { SummaryCard }          from '@acx-ui/components'
+import { CountAndNamesTooltip } from '@acx-ui/rc/components'
+import { ApSnmpViewModelData }  from '@acx-ui/rc/utils'
 
 export default function SnmpAgentOverview (props: { snmpData: ApSnmpViewModelData }) {
   const intl = useIntl()
@@ -13,11 +12,11 @@ export default function SnmpAgentOverview (props: { snmpData: ApSnmpViewModelDat
   const snmpAgentInfo = [
     {
       title: $t({ defaultMessage: 'SNMPv2 Agent' }),
-      content: renderToListTooltip(intl, v2Agents)
+      content: <CountAndNamesTooltip data={v2Agents} maxShow={25} />
     },
     {
       title: $t({ defaultMessage: 'SNMPv3 Agent' }),
-      content: renderToListTooltip(intl, v3Agents)
+      content: <CountAndNamesTooltip data={v3Agents} maxShow={25} />
     }
   ]
 

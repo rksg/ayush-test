@@ -1,0 +1,94 @@
+import '@testing-library/jest-dom'
+
+import { rest } from 'msw'
+
+import { venueApi }                                                                                         from '@acx-ui/rc/services'
+import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                               from '@acx-ui/test-utils'
+
+import {
+  venueSetting
+} from '../../../../__tests__/fixtures'
+
+import { CellularOptionsForm } from './CellularOptionsForm'
+
+const venueApModelCellularResponse = {
+  model: 'M510',
+  primarySim: {
+    lteBands: [{
+      band3G: ['B2', 'B4'],
+      band4G: ['B4'],
+      region: LteBandRegionEnum.USA_CANADA
+    }, {
+      band4G: ['B3'],
+      region: LteBandRegionEnum.DOMAIN_1
+    }],
+    enabled: true,
+    apn: 'defaultapn0000',
+    roaming: true,
+    networkSelection: CellularNetworkSelectionEnum.ThreeG
+  },
+  secondarySim: {
+    lteBands: [{
+      band4G: ['B3'],
+      region: LteBandRegionEnum.DOMAIN_1
+    }, {
+      band3G: ['B2'],
+      region: LteBandRegionEnum.USA_CANADA
+    }],
+    enabled: true,
+    apn: 'defaultapn',
+    roaming: true,
+    networkSelection: CellularNetworkSelectionEnum.LTE
+  },
+  wanConnection: WanConnectionEnum.CELLULAR,
+  primaryWanRecoveryTimer: 99
+}
+
+const availableLteBandsResponse = [{
+  band3G: ['B2', 'B4', 'B5'],
+  band4G: ['B2', 'B4', 'B12'],
+  region: LteBandRegionEnum.USA_CANADA,
+  countryCodes: ['US', 'CA']
+}]
+
+describe('CellularOptionsForm', () => {
+  const params = { venueId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+  const mockedUsedNavigate = jest.fn()
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedUsedNavigate
+  }))
+
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    mockServer.use(
+      rest.get(WifiUrlsInfo.getAvailableLteBands.url,
+        (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(WifiUrlsInfo.getVenueApModelCellular.url,
+        (_, res, ctx) => res(ctx.json(venueApModelCellularResponse))),
+      rest.put(WifiUrlsInfo.updateVenueCellularSettings.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
+  it('should render Cellular options form successfully', async () => {
+
+    render(
+      <Provider>
+        <CellularOptionsForm />
+      </Provider>, {
+        route: { params }
+      })
+
+    screen.getByText(/1 primary sim/i)
+    const group = screen.getByRole('group', {
+      name: /1 primary sim/i
+    })
+    expect(await within(group).findByText(/bands for current country/i)).toBeVisible()
+  })
+
+})
