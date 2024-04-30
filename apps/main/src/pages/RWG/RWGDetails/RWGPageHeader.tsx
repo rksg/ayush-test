@@ -22,9 +22,9 @@ import RWGTabs from './RWGTabs'
 function RWGPageHeader () {
   const { $t } = useIntl()
   const [gatewayStatus, setGatewayStatus] = useState<string>()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId } = useParams()
 
-  const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
+  const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId, venueId } })
 
   useEffect(() => {
     if (gatewayData) {
