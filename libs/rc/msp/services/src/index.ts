@@ -83,11 +83,6 @@ export function useDelegateToMspEcPath () {
   return { delegateToMspEcPath }
 }
 
-const v4Header = {
-  'Content-Type': 'application/vnd.ruckus.v4+json',
-  'Accept': 'application/vnd.ruckus.v4+json'
-}
-
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
@@ -886,7 +881,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     addBrandCustomers: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params, v4Header)
+        const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params)
         return {
           ...req,
           body: JSON.stringify(payload)
