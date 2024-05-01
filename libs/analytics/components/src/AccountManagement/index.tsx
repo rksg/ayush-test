@@ -35,7 +35,7 @@ interface CountContextType {
 }
 export const CountContext = createContext({} as CountContextType)
 
-const useTabs = () : Tab[] => {
+const useTabs = (): Tab[] => {
   const { $t } = useIntl()
 
   const onboardedSystemsTab = {
