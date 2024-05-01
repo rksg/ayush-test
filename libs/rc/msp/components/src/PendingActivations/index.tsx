@@ -37,7 +37,7 @@ const PendingActivationsTable = () => {
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
   }
-  const { data: pendingActivationResults }
+  const pendingActivationResults
     = useGetEntitlementActivationsQuery({ params: useParams(), payload: pendingActivationPayload })
 
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
@@ -136,11 +136,12 @@ const PendingActivationsTable = () => {
   ]
 
   return (
-    <Loader>
+    <Loader states={[pendingActivationResults
+    ]}>
       <Table
         columns={columns}
         actions={filterByAccess(actions)}
-        dataSource={pendingActivationResults?.data}
+        dataSource={pendingActivationResults?.data?.data}
         rowKey='orderId'
       />
       {drawerActivateVisible && <ActivatePurchaseDrawer
