@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import {
   Form,
   Input
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -54,8 +53,9 @@ export function AddCustomRole () {
 
   const isEditMode = action === 'edit'
   const isClone = action === 'clone'
-  const clonePreDefinedRole = isClone && location?.name &&
-      Object.values(RolesEnum).includes(location?.name) ? location?.name : undefined
+  const clonePreDefinedRole = location?.preDefinedRole ? location?.preDefinedRole
+    : (isClone && location?.name &&
+      Object.values(RolesEnum).includes(location?.name) ? location?.name : undefined)
 
   const wifiScopes = [
     WifiScopes.READ, WifiScopes.CREATE,
@@ -85,7 +85,7 @@ export function AddCustomRole () {
         name: name,
         description: description,
         scopes: checkedScopes,
-        preDefinedRole: clonePreDefinedRole
+        preDefinedRole: clonePreDefinedRole || RolesEnum.READ_ONLY
       }
       if(isEditMode) {
         await updateCustomRole({ params: { customRoleId: customRoleId },
@@ -175,94 +175,15 @@ export function AddCustomRole () {
   }
 
   const PermissionsTechForm = () => {
-    const [wifiAttribute, setWifiAttribute] =
-      useState(form.getFieldValue(WifiScopes.READ) ?? false)
-    const [wiredAttribute, setWiredAttribute] =
-      useState(form.getFieldValue(SwitchScopes.READ) ?? false)
-    const [smartedgeAttribute, setSmartedgeAttribute] =
-      useState(form.getFieldValue(EdgeScopes.READ) ?? false)
-
     useEffect(() => {
       if (location && location?.scopes && (isEditMode || isClone)) {
         const scopes = location.scopes
         scopes.map(s => form.setFieldValue(s, true))
-        setWifiAttribute(scopes.find(a =>a.includes('wifi')) ? true : false )
-        setWiredAttribute(scopes.find(a =>a.includes('switch')) ? true : false)
-        setSmartedgeAttribute(scopes.find(a =>a.includes('edge')) ? true : false)
       }
+      form.setFieldValue(WifiScopes.READ, true)
+      form.setFieldValue(SwitchScopes.READ, true)
+      form.setFieldValue(EdgeScopes.READ, true)
     }, [form, location])
-
-    // wi-fi
-    const OnWifiAttributeChange = (checked: boolean) => {
-      setWifiAttribute(checked)
-      form.setFieldsValue(_.reduce(wifiScopes , (obj, item) => {
-        obj[item] = checked
-        return obj
-      }, {} as Record<WifiScopes, boolean>))
-    }
-
-    const OnWifiReadChange = (checked: boolean) => {
-      form.setFieldValue(WifiScopes.READ, checked)
-      if (!checked) {
-        wifiScopes.map(item =>
-          item !== WifiScopes.READ ? form.setFieldValue(item, false) : null
-        )
-      }
-    }
-
-    const OnWifiNonReadChange = (checked: boolean) => {
-      if (checked) {
-        form.setFieldValue(WifiScopes.READ, true)
-      }
-    }
-
-    // switch
-    const OnWiredAttributeChange = (checked: boolean) => {
-      setWiredAttribute(checked)
-      form.setFieldsValue(_.reduce(switchScopes , (obj, item) => {
-        obj[item] = checked
-        return obj
-      }, {} as Record<SwitchScopes, boolean>))
-    }
-
-    const OnWiredReadChange = (checked: boolean) => {
-      form.setFieldValue(SwitchScopes.READ, checked)
-      if (!checked) {
-        switchScopes.map(item =>
-          item !== SwitchScopes.READ ? form.setFieldValue(item, false) : null
-        )
-      }
-    }
-
-    const OnWiredNonReadChange = (checked: boolean) => {
-      if (checked) {
-        form.setFieldValue(SwitchScopes.READ, true)
-      }
-    }
-
-    // smart edge
-    const OnSmartEdgeAttributeChange = (checked: boolean) => {
-      setSmartedgeAttribute(checked)
-      form.setFieldsValue(_.reduce(edgeScopes , (obj, item) => {
-        obj[item] = checked
-        return obj
-      }, {} as Record<EdgeScopes, boolean>))
-    }
-
-    const OnSmartEdgeReadChange = (checked: boolean) => {
-      form.setFieldValue(EdgeScopes.READ, checked)
-      if (!checked) {
-        edgeScopes.map(item =>
-          item !== EdgeScopes.READ ? form.setFieldValue(item, false) : null
-        )
-      }
-    }
-
-    const OnSmartEdgeNonReadChange = (checked: boolean) => {
-      if (checked) {
-        form.setFieldValue(EdgeScopes.READ, true)
-      }
-    }
 
     return <div >
       <UI.FieldLabelPermission width='270'>
@@ -274,26 +195,24 @@ export function AddCustomRole () {
       </UI.FieldLabelPermission>
 
       <UI.FieldLabelAttributes width='660'>
-        <div className='grid-item'><Input type='checkbox'
-          checked={wifiAttribute}
-          onChange={(e)=>OnWifiAttributeChange(e.target.checked)}
-        />
-        <label style={{ width: '36px' }}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
-        <Tooltip.Question iconStyle={{ width: '20px' }}
-          title={<>
-            <div style={{ fontWeight: 800 }}>
-              {intl.$t({ defaultMessage: 'What is included?' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
-            <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Reports' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wi-Fi Version Management' })}</div>
-          </>}
-          placement='right'
-        />
+        <div className='grid-item'>
+          <label style={{ width: '36px', marginLeft: '10px' }}>
+            {intl.$t({ defaultMessage: 'Wi-Fi' })}</label>
+          <Tooltip.Question iconStyle={{ width: '20px' }}
+            title={<>
+              <div style={{ fontWeight: 800 }}>
+                {intl.$t({ defaultMessage: 'What is included?' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wireless Clients' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wi-Fi Network Control' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wi-Fi Reports' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wi-Fi Version Management' })}</div>
+            </>}
+            placement='right'
+          />
         </div>
 
         <Form.Item
@@ -302,8 +221,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            hidden={!wifiAttribute}
-            onChange={(e)=>OnWifiReadChange(e.target.checked)}
+            onChange={()=>form.setFieldValue(WifiScopes.READ, true)}
           />
         </Form.Item>
 
@@ -312,10 +230,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wifiAttribute}
-            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -323,10 +238,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wifiAttribute}
-            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -334,32 +246,27 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wifiAttribute}
-            onChange={(e)=>OnWifiNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <div className='grid-item'><Input type='checkbox'
-          checked={wiredAttribute}
-          onChange={(e)=>OnWiredAttributeChange(e.target.checked)}
-        />
-        <label style={{ width: '42px' }}>{intl.$t({ defaultMessage: 'Wired' })}</label>
-        <Tooltip.Question iconStyle={{ width: '20px' }}
-          title={<>
-            <div style={{ fontWeight: 800 }}>
-              {intl.$t({ defaultMessage: 'What is included?' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Switches' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Wired Clients' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Switch Network Control' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Switch Reports' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Switch Version Management' })}</div>
-          </>}
-          placement='right'
-        />
+        <div className='grid-item'>
+          <label style={{ width: '42px', marginLeft: '10px' }}>
+            {intl.$t({ defaultMessage: 'Wired' })}</label>
+          <Tooltip.Question iconStyle={{ width: '20px' }}
+            title={<>
+              <div style={{ fontWeight: 800 }}>
+                {intl.$t({ defaultMessage: 'What is included?' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Switches' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Wired Clients' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Switch Network Control' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Switch Reports' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Switch Version Management' })}</div>
+            </>}
+            placement='right'
+          />
         </div>
 
         <Form.Item
@@ -368,8 +275,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            hidden={!wiredAttribute}
-            onChange={(e)=>OnWiredReadChange(e.target.checked)}
+            onChange={()=>form.setFieldValue(SwitchScopes.READ, true)}
           />
         </Form.Item>
 
@@ -378,10 +284,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wiredAttribute}
-            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -389,10 +292,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wiredAttribute}
-            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -400,32 +300,26 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!wiredAttribute}
-            onChange={(e)=>OnWiredNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
       </UI.FieldLabelAttributes>
 
       <UI.FieldLabelAttributes width='660'>
-        <div className='grid-item'><Input type='checkbox'
-          checked={smartedgeAttribute}
-          onChange={(e)=>OnSmartEdgeAttributeChange(e.target.checked)}
-        />
-        <label style={{ width: '68px' }}>{intl.$t({ defaultMessage: 'SmartEdge' })}</label>
-        <Tooltip.Question iconStyle={{ width: '20px' }}
-          // eslint-disable-next-line max-len
-          title={<>
-            <div style={{ fontWeight: 800 }}>
-              {intl.$t({ defaultMessage: 'What is included?' })}</div>
-            <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
-            <div >{intl.$t({ defaultMessage: 'SmartEdge Devices' })}</div>
-            <div >{intl.$t({ defaultMessage: 'SmartEdge Network Control' })}</div>
-            <div >{intl.$t({ defaultMessage: 'SmartEdge Version Management' })}</div>
-          </>}
-          placement='right'
-        />
+        <div className='grid-item'>
+          <label style={{ width: '68px', marginLeft: '10px' }}>
+            {intl.$t({ defaultMessage: 'SmartEdge' })}</label>
+          <Tooltip.Question iconStyle={{ width: '20px' }}
+            title={<>
+              <div style={{ fontWeight: 800 }}>
+                {intl.$t({ defaultMessage: 'What is included?' })}</div>
+              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div >{intl.$t({ defaultMessage: 'SmartEdge Devices' })}</div>
+              <div >{intl.$t({ defaultMessage: 'SmartEdge Network Control' })}</div>
+              <div >{intl.$t({ defaultMessage: 'SmartEdge Version Management' })}</div>
+            </>}
+            placement='right'
+          />
         </div>
 
         <Form.Item
@@ -434,8 +328,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            hidden={!smartedgeAttribute}
-            onChange={(e)=>OnSmartEdgeReadChange(e.target.checked)}
+            onChange={()=>form.setFieldValue(EdgeScopes.READ, true)}
           />
         </Form.Item>
 
@@ -444,10 +337,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!smartedgeAttribute}
-            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -455,10 +345,7 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!smartedgeAttribute}
-            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
         <Form.Item
@@ -466,29 +353,11 @@ export function AddCustomRole () {
           className='grid-item'
           valuePropName='checked'
           initialValue={false}>
-          <Input type='checkbox'
-            hidden={!smartedgeAttribute}
-            onChange={(e)=>OnSmartEdgeNonReadChange(e.target.checked)}
-          />
+          <Input type='checkbox' />
         </Form.Item>
 
       </UI.FieldLabelAttributes>
 
-      <Form.Item
-        name='permissions-validation'
-        style={{ padding: '0px 20px', margin: '-20px 0px' }}
-        rules={[
-          { validator: () => {
-            if (!form.getFieldValue(WifiScopes.READ) &&
-            !form.getFieldValue(SwitchScopes.READ) &&
-            !form.getFieldValue(EdgeScopes.READ)) {
-              return Promise.reject(intl.$t({ defaultMessage: 'Please select permission(s)' }))
-            }
-            return Promise.resolve()
-          }
-          }
-        ]}
-        validateFirst />
     </div>
   }
 
@@ -510,12 +379,10 @@ export function AddCustomRole () {
           case 'd':
             permissions.push('Delete')
             break
-          default:
-            return
         }
       }
     })
-    return permissions.length === 0 ? 'No Access' : permissions.join(', ')
+    return permissions.join(', ')
   }
 
   const SummaryForm = () => {
