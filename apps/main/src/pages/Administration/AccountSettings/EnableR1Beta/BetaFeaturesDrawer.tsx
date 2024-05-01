@@ -75,7 +75,7 @@ function BetaFeaturesDrawer (
     width={props.width}
     children={
       <UI.ListWrapper>
-        <p>{$t({ defaultMessage: 'No early access features to show' })} </p>
+        <p>{$t({ defaultMessage: 'No Early Access features to show' })} </p>
       </UI.ListWrapper>
     }
     footer={footer}

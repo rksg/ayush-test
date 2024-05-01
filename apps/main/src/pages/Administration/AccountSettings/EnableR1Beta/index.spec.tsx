@@ -124,7 +124,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
         route: { params }
       })
 
-    const currentBeta = await screen.findByRole('link', { name: 'Current early access features' })
+    const currentBeta = await screen.findByRole('link', { name: 'Current Early Access features' })
     await userEvent.click(currentBeta)
     await screen.findAllByRole('dialog')
     // TODO: Test case is unable to find the 'dialog' roles so below
