@@ -69,7 +69,7 @@ function R1BetaTermsConditionDrawer (
         <Button
           type='primary'
           onClick={() => onSave()}>
-          {$t({ defaultMessage: 'Enable Beta' })}
+          {$t({ defaultMessage: 'Enable Early Access' })}
         </Button>
         <Button type='default' onClick={() => onClose()}>
           {$t({ defaultMessage: 'Cancel' })}

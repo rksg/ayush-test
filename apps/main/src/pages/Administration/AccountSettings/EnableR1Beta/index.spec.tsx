@@ -57,7 +57,7 @@ describe('Enable RUCKUS One Beta Checkbox', () => {
       expect(formItem).not.toBeChecked()
       await userEvent.click(formItem)
       const drawer = await screen.findByRole('dialog')
-      const enableBtn = await screen.findByRole('button', { name: 'Enable Beta' })
+      const enableBtn = await screen.findByRole('button', { name: 'Enable Early Access' })
       expect(enableBtn).toBeVisible()
       await userEvent.click(enableBtn)
       await waitFor(() => expect(drawer).not.toBeVisible())
