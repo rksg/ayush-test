@@ -34,7 +34,7 @@ Object {
     "eap-failure",
   ],
   "end": "2022-07-20T08:42:00.000Z",
-  "granularity": "PT1H",
+  "granularity": "PT180S",
   "path": Array [
     Object {
       "name": "Network",
