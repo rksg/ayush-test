@@ -26,6 +26,97 @@ const tenantAuthenticationData =
   scopes: RolesEnum.PRIME_ADMIN
 }
 
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8912',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8913',
+      name: 'READ_ONLY',
+      description: 'Read only Role',
+      roleName: 'READ_ONLY',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8914',
+      name: 'OFFICE_ADMIN',
+      description: 'Guest Manager',
+      roleName: 'OFFICE_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8915',
+      name: 'DPSK_ADMIN',
+      description: 'DPSK Manager',
+      roleName: 'DPSK_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '99bb7b958a5544898cd0b938fa800a5a',
+      name: 'wi-fi privilege group',
+      description: 'privilege group for wi-fi',
+      roleName: 'new wi-fi custom role',
+      type: 'Custom',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      name: 'PG_DEV_CR_01_MSP_DG',
+      description: 'This is PG creatig for MSP with delegations',
+      roleName: 'ADMIN',
+      policies: [
+        {
+          entityInstanceId: '2fe159728aa34c1abb94f3877d2f1d98',
+          objectType: 'com.ruckus.cloud.venue.model.venue'
+        },
+        {
+          entityInstanceId: '9e32160be86b4c4797c0fb106c4f3615',
+          objectType: 'com.ruckus.cloud.venue.model.venue'
+        }
+      ],
+      delegation: true,
+      policyEntityDTOS: [
+        {
+          tenantId: 'fd62264fb63f482283cd70fbcdbe9cb9',
+          objectList: {
+            'com.ruckus.cloud.venue.model.venue': [
+              'a3dfc1c8b6b14af897eef44c0ccf035b'
+            ]
+          }
+        },
+        {
+          tenantId: '5f404592c5b94ebcbaf674ebe5888645',
+          objectList: {
+            'com.ruckus.cloud.venue.model.venue': [
+              'ff6db356a17948719f7f5d9df0d05104'
+            ]
+          }
+        }
+      ]
+    }
+  ]
 
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
@@ -52,6 +143,11 @@ describe('Add Application Drawer', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      // mockReqAdminsData()
+      return { data: fakedPrivilegeGroupList }
+    })
+
   })
   it('should render add layout correctly', async () => {
     render(
