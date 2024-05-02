@@ -4,6 +4,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
 import {
   useGetVenueTemplateSwitchSettingQuery, useUpdateAAASettingMutation,
@@ -23,6 +24,7 @@ import { AAASettings } from './AAASettings'
 
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
@@ -32,7 +34,7 @@ export function SwitchAAATab () {
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)
   const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
   )
   const cliApplied = !!venueSwitchSetting?.cliApplied
 
@@ -93,7 +95,8 @@ export function SwitchAAATab () {
 
     await updateAAASettingMutation({
       params: { tenantId, venueId, aaaSettingId },
-      payload: _.pickBy(payload, v => v !== undefined)
+      payload: _.pickBy(payload, v => v !== undefined),
+      enableRbac: isSwitchRbacEnabled
     }).unwrap()
       .catch((error) => {
         console.log(error) // eslint-disable-line no-console

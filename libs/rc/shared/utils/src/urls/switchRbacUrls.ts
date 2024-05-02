@@ -7,25 +7,21 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateAaaSetting: {
     method: 'put',
     url: '/venues/:venueId/aaaSettings',
-    oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaSetting',
     newApi: true
   },
   getAaaServerList: {
     method: 'post',
     url: '/venues/:venueId/aaaServers/query',
-    oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query',
     newApi: true
   },
   deleteAaaServer: {
     method: 'delete',
     url: '/venues/:venueId/aaaServers/:aaaServerId',
-    oldUrl: '/api/switch/tenant/:tenantId/aaaServer/:aaaServerId',
     newApi: true
   },
   bulkDeleteAaaServer: {
     method: 'delete',
     url: '/venues/:venueId/aaaServers',
-    oldUrl: '/api/switch/tenant/:tenantId/aaaServer',
     newApi: true
   },
   deleteSwitches: {

@@ -39,9 +39,10 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const params = useParams()
   const [cliApplied, setCliApplied] = useState(false)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: venueSwitchSetting }
-    = useVenueSwitchSettingQuery({ params }, { skip: !isVenueLevel })
+    = useVenueSwitchSettingQuery({ params, enableRbac: isSwitchRbacEnabled }, { skip: !isVenueLevel })
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params }, { skip: isVenueLevel })
 
