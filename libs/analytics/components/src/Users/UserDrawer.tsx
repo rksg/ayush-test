@@ -4,7 +4,6 @@ import { Button, Col, Form, Row } from 'antd'
 import { isEqual, pick, isEmpty } from 'lodash'
 import { useIntl }                from 'react-intl'
 
-
 import {
   useUpdateUserMutation,
   useAddUserMutation,
@@ -17,7 +16,6 @@ import { ManagedUser }                        from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Tooltip, showToast } from '@acx-ui/components'
 
 import { drawerContentConfig } from './config'
-
 
 export type DrawerType = 'edit' | 'addInternal' | 'invite3rdParty'
 type UserDrawerProps = {

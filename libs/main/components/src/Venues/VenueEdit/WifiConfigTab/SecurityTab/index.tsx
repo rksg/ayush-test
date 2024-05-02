@@ -1,37 +1,50 @@
-import React, { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
+import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                           from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { RogueApModal, usePathBasedOnConfigTemplate }                                                   from '@acx-ui/rc/components'
 import {
-  useGetDenialOfServiceProtectionQuery,
-  useUpdateDenialOfServiceProtectionMutation,
-  useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation,
-  useGetVenueApEnhancedKeyQuery,
-  useUpdateVenueApEnhancedKeyMutation,
-  useGetVenueTemplateDoSProtectionQuery,
-  useUpdateVenueTemplateDoSProtectionMutation,
+  Button,
+  Fieldset,
+  Loader,
+  showActionModal,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import {
   useEnhancedRoguePoliciesQuery,
+  useGetDenialOfServiceProtectionQuery,
   useGetRoguePolicyTemplateListQuery,
+  useGetVenueApEnhancedKeyQuery,
+  useGetVenueRogueApQuery,
   useGetVenueRogueApTemplateQuery,
-  useUpdateVenueRogueApTemplateMutation
+  useGetVenueTemplateDoSProtectionQuery,
+  useUpdateDenialOfServiceProtectionMutation,
+  useUpdateVenueApEnhancedKeyMutation,
+  useUpdateVenueRogueApMutation,
+  useUpdateVenueRogueApTemplateMutation,
+  useUpdateVenueTemplateDoSProtectionMutation
 } from '@acx-ui/rc/services'
 import {
-  VenueDosProtection,
-  VenueMessages,
+  ConfigTemplateType,
   redirectPreviousPage,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  VenueDosProtection,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }                                                                from '../..'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }               from '../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../venueConfigTemplateApiSwitcher'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -76,6 +89,8 @@ export function SecurityTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance>()
@@ -237,11 +252,9 @@ export function SecurityTab () {
       type: 'confirm',
       width: 450,
       title: $t({ defaultMessage: 'TLS Enhanced Key' }),
-      content:
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage:
-          `Enabling TLS Enhanced key will prompt a reboot of all AP
-          devices within this venue. Are you sure you want to continue?` }),
+      content: $t({ defaultMessage:
+          `Enabling TLS Enhanced key will prompt a reboot of all AP devices
+          within this <venueSingular></venueSingular>. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
@@ -353,7 +366,7 @@ export function SecurityTab () {
             initialValue={false}
             switchStyle={{}}
             triggerDirtyFunc={setTriggerRogueAPDetection}
-            hidden={isTemplate}
+            hidden={isTemplate && !isConfigTemplateEnabledByType}
           >
             <Form.Item
               label={<>
@@ -418,7 +431,7 @@ export function SecurityTab () {
               <span>{$t({ defaultMessage: 'TLS Enhanced Key (RSA 3072/ECDSA P-256)' })}</span>
               <Tooltip.Question
                 // eslint-disable-next-line max-len
-                title={$t({ defaultMessage: 'Strengthen the TLS connection strength between APs and R1 by utilizing RSA 3072 for WiFi 7 and ECDSA P-256 for non-WiFi 7 devices. Note that toggling the switch will prompt a reboot of all AP devices within this venue.' })}
+                title={$t({ defaultMessage: 'Strengthen the TLS connection strength between APs and R1 by utilizing RSA 3072 for WiFi 7 and ECDSA P-256 for non-WiFi 7 devices. Note that toggling the switch will prompt a reboot of all AP devices within this <venueSingular></venueSingular>.' })}
                 placement='bottom'
                 iconStyle={{ height: '16px', width: '16px' }}
               />

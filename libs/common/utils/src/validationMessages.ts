@@ -207,12 +207,13 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country code or country',
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
-      be moved to the venue which doesn’t enable DHCP service`,
+      be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({

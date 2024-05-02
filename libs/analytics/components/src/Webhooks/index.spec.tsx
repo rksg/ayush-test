@@ -10,7 +10,7 @@ import { getUserProfile, setUserProfile }                                       
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
 
-import { WebhooksTable } from '.'
+import { useWebhooks } from '.'
 
 const { click } = userEvent
 
@@ -47,15 +47,34 @@ describe('WebhooksTable', () => {
       store.dispatch(notificationApi.util.resetApiState())
     })
     it('renders table with data and correct columns', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(4)
+      const firstRow = (await tbody.findAllByRole('row'))[0]
+      const firstRowText = within(firstRow).getAllByRole('cell').map(cell =>
+        cell.title)
+      expect(firstRowText).toEqual([
+        '', // radio
+        webhooks[0].name,
+        webhooks[0].callbackUrl,
+        'rg-1',
+        'Disabled',
+        '' // settings
+      ])
     })
     it('handle edit', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const element = await findTBody()
       expect(element).toBeVisible()
@@ -76,7 +95,11 @@ describe('WebhooksTable', () => {
       expect(form).not.toBeInTheDocument()
     })
     it('handle create', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       expect(await findTBody()).toBeVisible()
 
@@ -94,7 +117,11 @@ describe('WebhooksTable', () => {
     describe('delete', () => {
       const webhook = webhooks[4]
       const renderElements = async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
 
         const element = await findTBody()
         expect(element).toBeVisible()
@@ -172,7 +199,11 @@ describe('WebhooksTable', () => {
       store.dispatch(notificationApi.util.resetApiState())
     })
     it('renders table with data and correct columns', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
@@ -187,12 +218,20 @@ describe('WebhooksTable', () => {
         } })
       })
       it('should hide actions', async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
         expect(await findTBody()).toBeVisible()
         expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
       })
       it('should hide row actions', async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
         expect(await findTBody()).toBeVisible()
         expect(screen.queryByRole('radio')).not.toBeInTheDocument()
       })

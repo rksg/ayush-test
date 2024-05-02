@@ -23,6 +23,11 @@ export type Webhook = {
   createdAt: string
   updatedAt: string
 }
+export type ExtendedWebhook = Webhook & {
+  resourceGroup: string
+  status: string
+  enabledStr: string
+}
 
 export const webhookDtoKeys = [
   'id', 'name', 'secret', 'enabled',
@@ -49,14 +54,22 @@ export const {
   useSendSampleMutation
 } = notificationApi.injectEndpoints({
   endpoints: (build) => ({
-    webhooks: build.query<Webhook[], void>({
+    webhooks: build.query<ExtendedWebhook[], Record<string, string>>({
       query: () => ({
         url: '/webhooks',
         method: 'get',
         credentials: 'include'
       }),
       providesTags: [{ type: 'Webhook', id: 'LIST' }],
-      transformResponse: (response: Response<Webhook[]>) => response.data
+      transformResponse: (response: Response<Webhook[]>, _, rgMap) =>
+        response.data.map((item) => ({
+          ...item,
+          resourceGroup: rgMap[item.resourceGroupId],
+          enabledStr: String(item.enabled),
+          status: item.enabled
+            ? getIntl().formatMessage({ defaultMessage: 'Enabled' })
+            : getIntl().formatMessage({ defaultMessage: 'Disabled' })
+        }))
     }),
     createWebhook: build.mutation<void, WebhookDto>({
       query: (webhook) => ({

@@ -150,7 +150,7 @@ export const InterfaceSettings = () => {
     }
   }
 
-  const handleValuesChange = _.debounce((
+  const handleValuesChange = useCallback(_.debounce((
     typeKey: string,
     changedValues: Partial<InterfaceSettingsFormType>
   ) => {
@@ -161,7 +161,7 @@ export const InterfaceSettings = () => {
     configWizardForm.validateFields()
       .then(() => doCompatibleCheck(typeKey))
       .catch(() => {/* do nothing */})
-  }, 1000)
+  }, 1000), [configWizardForm])
 
   const steps = useMemo(() => [
     {
