@@ -13,11 +13,10 @@ describe('CertificateStrengthSettings', () => {
     const select = await screen.findByRole('combobox')
 
     expect(slider).toBeVisible()
-    expect(slider).toHaveAttribute('aria-valuemin', '512')
+    expect(slider).toHaveAttribute('aria-valuemin', '2048')
     expect(slider).toHaveAttribute('aria-valuemax', '4096')
 
     await userEvent.click(select)
-    expect(screen.getByText('SHA-1')).toBeInTheDocument()
     expect(screen.getByText('SHA-256')).toBeInTheDocument()
     expect(screen.getByText('SHA-384')).toBeInTheDocument()
     expect(screen.getByText('SHA-512')).toBeInTheDocument()
