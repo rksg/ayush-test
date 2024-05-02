@@ -37,6 +37,7 @@ export const defaultThreshold: KpiThresholdType = {
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
   switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 

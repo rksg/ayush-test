@@ -19,6 +19,7 @@ export interface KpiThresholdType {
   apToSZLatency: number
   switchPoeUtilization: number
   switchMemoryUtilization: number
+  switchCpuUtilization: number
   clusterLatency: number
 }
 
@@ -111,6 +112,7 @@ interface ThresholdsApiResponse {
   apToSZLatencyThreshold?: ThresholdData
   switchPoeUtilizationThreshold?: ThresholdData
   switchMemoryUtilizationThreshold?: ThresholdData
+  switchCpuUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
 
