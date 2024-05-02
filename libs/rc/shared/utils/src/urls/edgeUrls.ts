@@ -3,20 +3,17 @@ import { ApiInfo } from '@acx-ui/utils'
 export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   addEdge: {
     method: 'post',
-    url: '/edges',
-    oldUrl: '/api/edges',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges',
     newApi: true
   },
   getEdge: {
     method: 'get',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   updateEdge: {
-    method: 'put',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   getEdgeList: {
