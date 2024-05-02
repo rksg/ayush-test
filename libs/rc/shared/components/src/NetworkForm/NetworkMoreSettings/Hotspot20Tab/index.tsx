@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber, Select, Space, Switch } from 'antd'
-import _                                            from 'lodash'
-import { useIntl }                                  from 'react-intl'
+import { Form, InputNumber, Select, Switch } from 'antd'
+import _                                     from 'lodash'
+import { useIntl }                           from 'react-intl'
 
-import { Tooltip }                                from '@acx-ui/components'
 import { Table, TableProps }                      from '@acx-ui/components'
 import {
   Hotspot20AccessNetworkTypeEnum,
@@ -107,9 +106,6 @@ export function Hotspot20Tab (props: {
   const maxConnectionCapibility = 43
   const labelWidth = '250px'
 
-  const enableRfc5580Tooltip = $t({ defaultMessage:
-    'Enabling RFC 5580 allows the RADIUS server to use user location data.' })
-
   form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
 
   useEffect(() => {
@@ -175,14 +171,10 @@ export function Hotspot20Tab (props: {
     return Promise.resolve()
   }
 
-  const handleConnectionCapabilities = () => {
-    setEditMode(false)
-
-    const capabilityObject = {
-      protocol: drawerForm.getFieldValue('protocol'),
-      protocolNumber: drawerForm.getFieldValue('protocolNumber'),
-      port: drawerForm.getFieldValue('port'),
-      status: drawerForm.getFieldValue('status')
+  const handleSaveConnectionCapability = (
+    editMode?: boolean, capabilityObject?: Hotspot20ConnectionCapability) => {
+    if (!capabilityObject) {
+      return
     }
 
     if (editMode) {
@@ -200,9 +192,7 @@ export function Hotspot20Tab (props: {
         ...connectionCapabilities, capabilityObject
       ])
     }
-  }
 
-  const handleCapabilityClose = () => {
     setConnectionCapabilityDrawerVisible(false)
     setEditMode(false)
     setConnectionCapability({} as Hotspot20ConnectionCapability)
@@ -490,9 +480,7 @@ export function Hotspot20Tab (props: {
       <ConnectionCapabilityDrawer
         visible={connectionCapabilityDrawerVisible}
         editMode={editMode}
-        drawerForm={drawerForm}
-        handleDrawerSave={handleConnectionCapabilities}
-        handleDrawerClose={handleCapabilityClose}
+        modalCallBack={handleSaveConnectionCapability}
       />
     </>
   )

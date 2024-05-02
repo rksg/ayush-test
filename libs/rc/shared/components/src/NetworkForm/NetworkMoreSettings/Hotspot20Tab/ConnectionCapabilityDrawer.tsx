@@ -1,20 +1,27 @@
-import { Form, FormInstance, Input, Select } from 'antd'
-import { useIntl }                           from 'react-intl'
+import { useEffect } from 'react'
 
-import { Drawer }                                              from '@acx-ui/components'
-import { Hotspot20ConnectionCapabilityStatusEnum, portRegExp } from '@acx-ui/rc/utils'
+import { Form, Input, Select } from 'antd'
+import { useIntl }             from 'react-intl'
 
-interface ConnectionCapabilityDrawerProps {
-  visible: boolean,
-  editMode: boolean,
-  drawerForm: FormInstance,
-  handleDrawerSave: () => void,
-  handleDrawerClose: () => void
+import { Drawer } from '@acx-ui/components'
+import {
+  Hotspot20ConnectionCapability,
+  Hotspot20ConnectionCapabilityStatusEnum,
+  portRegExp
+} from '@acx-ui/rc/utils'
+
+type ConnectionCapabilityDrawerProps = {
+  visible?: boolean,
+  editMode?: boolean,
+  editData?: Hotspot20ConnectionCapability,
+  modalCallBack?: (editMode?: boolean, capability?: Hotspot20ConnectionCapability) => void
 }
 
 const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, editMode, drawerForm, handleDrawerSave, handleDrawerClose } = props
+  const { visible, editMode, editData, modalCallBack } = props
+
+  const [form] = Form.useForm()
 
   const statusOptions = Object.keys(Hotspot20ConnectionCapabilityStatusEnum).map((key => {
     return (
@@ -24,7 +31,13 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
     )
   }))
 
-  const content = <Form layout='vertical' form={drawerForm}>
+  useEffect(() => {
+    if (form && editData) {
+      form.setFieldsValue(editData)
+    }
+  }, [form, editData])
+
+  const content = <Form layout='vertical' form={form}>
     <Form.Item
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
@@ -68,7 +81,7 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
       ]}
       children={
         <Select
-          onChange={(value) => drawerForm.setFieldValue('status', value)}
+          onChange={(value) => form.setFieldValue('status', value)}
           options={statusOptions}
         />
       }
@@ -77,27 +90,26 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
 
   return (
     <Drawer
-      title={editMode
-        ? $t({ defaultMessage: 'Edit Protocol' })
-        : $t({ defaultMessage: 'Add Protocol' })
+      title={!editData
+        ? $t({ defaultMessage: 'Add Protocol' })
+        : $t({ defaultMessage: 'Edit Protocol' })
       }
       visible={visible}
-      destroyOnClose={true}
       width={430}
-      onClose={handleDrawerClose}
+      push={false}
       children={content}
+      destroyOnClose={true}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
-          onCancel={handleDrawerClose}
+          onCancel={form.resetFields}
           onSave={async () => {
             try {
-              await drawerForm.validateFields()
-              handleDrawerSave()
-              drawerForm.resetFields()
-              handleDrawerClose()
+              await form.validateFields()
+              modalCallBack?.(editMode, form.getFieldsValue() as Hotspot20ConnectionCapability)
+              form.resetFields()
             } catch (error) {
-              if (error instanceof Error) throw error
+              console.log(error) // eslint-disable-line no-console
             }
           }}
         />
