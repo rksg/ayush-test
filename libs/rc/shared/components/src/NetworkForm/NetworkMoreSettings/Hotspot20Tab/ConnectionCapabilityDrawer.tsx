@@ -1,33 +1,34 @@
 import { useEffect } from 'react'
 
 import { Form, Input, Select } from 'antd'
+import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }                            from '@acx-ui/components'
 import {
   Hotspot20ConnectionCapability,
-  Hotspot20ConnectionCapabilityStatusEnum,
-  portRegExp
+  Hotspot20ConnectionCapabilityStatusEnum
 } from '@acx-ui/rc/utils'
 
 type ConnectionCapabilityDrawerProps = {
   visible?: boolean,
-  editMode?: boolean,
   editData?: Hotspot20ConnectionCapability,
+  isValidCallBack?: (capability?: Hotspot20ConnectionCapability) => boolean,
+  resetCallBack?: () => void,
   modalCallBack?: (editMode?: boolean, capability?: Hotspot20ConnectionCapability) => void
 }
 
 const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, editMode, editData, modalCallBack } = props
+  const { visible, editData, isValidCallBack, resetCallBack, modalCallBack } = props
 
   const [form] = Form.useForm()
 
   const statusOptions = Object.keys(Hotspot20ConnectionCapabilityStatusEnum).map((key => {
     return (
       { value: key,
-        label: Hotspot20ConnectionCapabilityStatusEnum[
-          key as keyof typeof Hotspot20ConnectionCapabilityStatusEnum] }
+        label: `${_.startCase(_.toLower(Hotspot20ConnectionCapabilityStatusEnum[
+          key as keyof typeof Hotspot20ConnectionCapabilityStatusEnum]))}` }
     )
   }))
 
@@ -53,7 +54,6 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
     <Form.Item
       name='protocolNumber'
       label={$t({ defaultMessage: 'Protocol Number' })}
-      initialValue={''}
       rules={[
         { required: true },
         { min: 0 },
@@ -64,12 +64,10 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
     <Form.Item
       name='port'
       label={$t({ defaultMessage: 'Port' })}
-      initialValue={''}
       rules={[
         { required: true },
         { min: 0 },
-        { max: 65535 },
-        { validator: (_, value) => portRegExp(value) }
+        { max: 65535 }
       ]}
       children={<Input type='number'/>}
     />
@@ -88,6 +86,11 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
     />
   </Form>
 
+  const handleCancel = () => {
+    form.resetFields()
+    resetCallBack?.()
+  }
+
   return (
     <Drawer
       title={!editData
@@ -102,11 +105,14 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
       footer={
         <Drawer.FormFooter
           showAddAnother={false}
-          onCancel={form.resetFields}
+          showSaveButton={
+            !!editData ||
+            isValidCallBack?.(form.getFieldsValue() as Hotspot20ConnectionCapability)}
+          onCancel={handleCancel}
           onSave={async () => {
             try {
               await form.validateFields()
-              modalCallBack?.(editMode, form.getFieldsValue() as Hotspot20ConnectionCapability)
+              modalCallBack?.(!!editData, form.getFieldsValue() as Hotspot20ConnectionCapability)
               form.resetFields()
             } catch (error) {
               console.log(error) // eslint-disable-line no-console

@@ -99,12 +99,14 @@ export function Hotspot20Tab (props: {
   const [connectionCapabilityDrawerVisible, setConnectionCapabilityDrawerVisible] = useState(false)
   const [connectionCapabilities, setConnectionCapabilities] =
     useState(defaultConnectionCapabilities as Hotspot20ConnectionCapability[])
-  const [connectionCapability, setConnectionCapability] =
+  const [selectedConnectionCapability, setSelectedConnectionCapability] =
     useState({} as Hotspot20ConnectionCapability)
   const [drawerForm] = Form.useForm()
 
   const maxConnectionCapibility = 43
   const labelWidth = '250px'
+  const connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
+    [cap.protocolNumber + '_' + cap.port, cap.protocol]))
 
   form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
 
@@ -112,7 +114,7 @@ export function Hotspot20Tab (props: {
     if (data && data.hotspot20Settings) {
       form.setFieldsValue({ data })
     }
-  }, [data])
+  }, [form, data])
 
   const networkTypeOptions = Object.keys(Hotspot20AccessNetworkTypeEnum).map((key => {
     return (
@@ -147,7 +149,7 @@ export function Hotspot20Tab (props: {
     onClick: ([editRow]: Hotspot20ConnectionCapability[], clearSelection: () => void) => {
       setEditMode(true)
       setConnectionCapabilityDrawerVisible(true)
-      setConnectionCapability(editRow)
+      setSelectedConnectionCapability(editRow)
       clearSelection()
     }
   },{
@@ -171,7 +173,12 @@ export function Hotspot20Tab (props: {
     return Promise.resolve()
   }
 
-  const handleSaveConnectionCapability = (
+  const isValidConnectionCapability = (cap?: Hotspot20ConnectionCapability) => {
+    return !!cap?.protocolNumber && !!cap.port &&
+      !connectionCapibilityMap.has(cap?.protocolNumber + '_' + cap?.port)
+  }
+
+  const saveConnectionCapability = (
     editMode?: boolean, capabilityObject?: Hotspot20ConnectionCapability) => {
     if (!capabilityObject) {
       return
@@ -180,8 +187,8 @@ export function Hotspot20Tab (props: {
     if (editMode) {
       const capabilityIdx = connectionCapabilities
         .findIndex((capability: Hotspot20ConnectionCapability) =>
-          capability.port === connectionCapability.port &&
-        capability.protocolNumber === connectionCapability.protocolNumber
+          capability.port === capabilityObject.port as number &&
+        capability.protocolNumber === capabilityObject.protocolNumber as number
         )
       connectionCapabilities[capabilityIdx] = capabilityObject
       setConnectionCapabilities([
@@ -193,9 +200,13 @@ export function Hotspot20Tab (props: {
       ])
     }
 
+    resetConnectionCapability()
+  }
+
+  const resetConnectionCapability = () => {
     setConnectionCapabilityDrawerVisible(false)
     setEditMode(false)
-    setConnectionCapability({} as Hotspot20ConnectionCapability)
+    setSelectedConnectionCapability({} as Hotspot20ConnectionCapability)
   }
 
   const tableColumns: TableProps<Hotspot20ConnectionCapability>['columns'] = [
@@ -479,8 +490,10 @@ export function Hotspot20Tab (props: {
 
       <ConnectionCapabilityDrawer
         visible={connectionCapabilityDrawerVisible}
-        editMode={editMode}
-        modalCallBack={handleSaveConnectionCapability}
+        editData={selectedConnectionCapability}
+        isValidCallBack={isValidConnectionCapability}
+        resetCallBack={resetConnectionCapability}
+        modalCallBack={saveConnectionCapability}
       />
     </>
   )
