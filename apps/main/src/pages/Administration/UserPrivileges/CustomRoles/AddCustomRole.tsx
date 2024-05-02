@@ -207,7 +207,7 @@ export function AddCustomRole () {
             title={<>
               <div style={{ fontWeight: 800 }}>
                 {intl.$t({ defaultMessage: 'What is included?' })}</div>
-              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div>{intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Management' })}</div>
               <div >{intl.$t({ defaultMessage: 'AI Assurance' })}</div>
               <div >{intl.$t({ defaultMessage: 'Access Points' })}</div>
               <div >{intl.$t({ defaultMessage: 'Wi-Fi Networks' })}</div>
@@ -263,7 +263,7 @@ export function AddCustomRole () {
             title={<>
               <div style={{ fontWeight: 800 }}>
                 {intl.$t({ defaultMessage: 'What is included?' })}</div>
-              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div>{intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Management' })}</div>
               <div >{intl.$t({ defaultMessage: 'Switches' })}</div>
               <div >{intl.$t({ defaultMessage: 'Wired Clients' })}</div>
               <div >{intl.$t({ defaultMessage: 'Switch Network Control' })}</div>
@@ -318,7 +318,7 @@ export function AddCustomRole () {
             title={<>
               <div style={{ fontWeight: 800 }}>
                 {intl.$t({ defaultMessage: 'What is included?' })}</div>
-              <div >{intl.$t({ defaultMessage: 'Venue Management' })}</div>
+              <div>{intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Management' })}</div>
               <div >{intl.$t({ defaultMessage: 'SmartEdge Devices' })}</div>
               <div >{intl.$t({ defaultMessage: 'SmartEdge Network Control' })}</div>
               <div >{intl.$t({ defaultMessage: 'SmartEdge Version Management' })}</div>
