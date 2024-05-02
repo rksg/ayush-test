@@ -436,6 +436,42 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The PoE Utilization measures the percentage of the switches that utilize less power than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of PoE Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
+  onlineAPs: {
+    text: defineMessage({ defaultMessage: 'Online APs' }),
+    timeseries: {
+      apiMetric: 'onlineAPCountAndTotalAPCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('onlineAPCountAndTotalAPCount'),
+    pill: {
+      description: '',
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'Online APs Count' }),
+      apiMetric: 'onlineAPCount',
+      format: formatter('countFormat'),
+      deltaSign: '+'
+    }
+  },
+  onlineSwitches: {
+    text: defineMessage({ defaultMessage: 'Switch Reachability' }),
+    timeseries: {
+      apiMetric: 'switchStatusCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Online Switches measures the percentage of Switches which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online Switch percentage across time. The bar chart on the right captures the daily Online Switch percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
   switchMemoryUtilization: {
     text: defineMessage({ defaultMessage: 'Memory' }),
     isBeta: false,
@@ -494,47 +530,20 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The CPU Utilization measures the percentage of the switches that utilize less CPU percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of CPU Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
-  onlineAPs: {
-    text: defineMessage({ defaultMessage: 'Online APs' }),
+  switchesTemperature: {
+    text: defineMessage({ defaultMessage: 'Switch Temperature' }),
     timeseries: {
-      apiMetric: 'onlineAPCountAndTotalAPCount',
+      apiMetric: 'switchTempCountAndSwitchCount',
       minGranularity: 'PT15M'
     },
-    barChart: createBarChartConfig('onlineAPCountAndTotalAPCount'),
+    barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: '',
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are in high temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
-    },
-    configChange: {
-      text: defineMessage({ defaultMessage: 'Online APs Count' }),
-      apiMetric: 'onlineAPCount',
-      format: formatter('countFormat'),
-      deltaSign: '+'
+      tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
     }
-  },
-  onlineSwitches: {
-    text: defineMessage({ defaultMessage: 'Switch Reachability' }),
-    timeseries: {
-      apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT15M'
-    },
-    barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
-    pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
-      thresholdDesc: [],
-      pillSuffix: '',
-      thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Online Switches measures the percentage of Switches which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online Switch percentage across time. The bar chart on the right captures the daily Online Switch percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
-    }
-    // configChange: {
-    //   text: defineMessage({ defaultMessage: 'Online APs Count' }),
-    //   apiMetric: 'onlineAPCount',
-    //   format: formatter('countFormat'),
-    //   deltaSign: '+'
-    // }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -573,8 +582,7 @@ export const kpisForTab = (isMLISA? : string) => {
         'apToSZLatency',
         ...(isMLISA ? ['clusterLatency'] : []),
         'switchPoeUtilization',
-        'onlineAPs',
-        'onlineSwitches'
+        'onlineAPs'
       ]
     }
   }
@@ -585,7 +593,9 @@ export const wiredKPIsForTab = () => {
     overview: {
       kpis: [
         'switchMemoryUtilization',
-        'switchCpuUtilization'
+        'switchCpuUtilization',
+        'onlineSwitches',
+        'switchesTemperature'
       ]
     },
     connection: {
