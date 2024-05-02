@@ -176,7 +176,7 @@ const Ports = () => {
               activeTab={activeTab}
               onTabChange={handleTabChange}
               isCluster={isCluster}
-              vipConfig={clusterConfig?.virtualIpSettings.virtualIps}
+              vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
             />
           </StepsForm.StepForm>
         </StepsForm>
