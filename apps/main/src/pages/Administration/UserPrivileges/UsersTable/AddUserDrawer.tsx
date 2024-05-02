@@ -204,8 +204,9 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             />
           </>}
           rules={[
-            { required: true, message:
-              $t({ defaultMessage: 'Please enter email' }) },
+            { required: true,
+              message: $t({ defaultMessage: 'Please enter email' })
+            },
             { max: 255 },
             { validator: (_, value) => sfdcEmailRegExp(value) }
           ]}>
