@@ -9,22 +9,12 @@ import {
 } from '@acx-ui/analytics/services'
 import {
   CategoryTab,
-  wiredKPIsForTab,
-  kpiConfig
+  wiredKPIsForTab
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
-export const defaultThreshold: KpiThresholdType = {
-  timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
-  rss: kpiConfig.rss.histogram.initialThreshold,
-  clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
-  apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
-  apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
-  apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
-  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
-  clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
-}
+import { defaultThreshold } from '../../../Health/Kpi'
 
 type KpiThresholdsQueryProps = {
   filters: AnalyticsFilter
