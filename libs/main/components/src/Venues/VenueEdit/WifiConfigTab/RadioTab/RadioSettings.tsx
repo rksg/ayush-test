@@ -10,7 +10,7 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import {
+import _, {
   includes,
   isEmpty,
   isEqual,
@@ -599,8 +599,23 @@ export function RadioSettings () {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    const validationResult = await validationFields() as any
-    if (validationResult?.errorFields) return
+    try {
+      await validationFields() as any
+    } catch (error: any) {
+      showActionModal({
+        type: 'error',
+        width: 450,
+        title: $t({ defaultMessage: 'You Have Invalid Changes' }),
+        content: $t({ defaultMessage: 'You have invalid changes, please see technical detail for more information.' }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: {
+            error: _.flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
+          }
+        }
+      })
+      return
+    }
 
     update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
@@ -673,12 +688,10 @@ export function RadioSettings () {
       isDirty: true
     })
 
-    const errors = formRef?.current?.getFieldsError().find((field) => field.errors.length > 0)
-
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: errors ? () => {} : handleUpdateRadioSettings,
+      updateWifiRadio: handleUpdateRadioSettings,
       discardWifiRadioChanges: handleDiscard
     })
   }
