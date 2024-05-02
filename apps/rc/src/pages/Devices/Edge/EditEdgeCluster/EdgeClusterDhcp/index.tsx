@@ -3,14 +3,19 @@ import { useEffect, useState } from 'react'
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { StepsForm }                                                                          from '@acx-ui/components'
-import { EdgeDhcpSelectionForm }                                                              from '@acx-ui/rc/components'
-import { useGetDhcpPoolStatsQuery, useGetEdgeDhcpListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { DhcpPoolStats, EdgeDhcpSetting, useTableQuery }                                      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                              from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                                     from '@acx-ui/types'
+import { StepsForm }                                       from '@acx-ui/components'
+import { EdgeDhcpSelectionForm, useEdgeDhcpActions }       from '@acx-ui/rc/components'
+import { useGetDhcpPoolStatsQuery }                        from '@acx-ui/rc/services'
+import { DhcpPoolStats, EdgeClusterStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }           from '@acx-ui/react-router-dom'
+import { RequestPayload }                                  from '@acx-ui/types'
 
-export const EdgeClusterDhcp = () => {
+interface EdgeClusterDhcpProps {
+  currentClusterStatus?: EdgeClusterStatus
+}
+
+export const EdgeClusterDhcp = (props: EdgeClusterDhcpProps) => {
+  const { currentClusterStatus } = props
   const navigate = useNavigate()
   const params = useParams()
   const { clusterId } = params
@@ -18,25 +23,8 @@ export const EdgeClusterDhcp = () => {
   const [form] = Form.useForm()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
   const [currentDhcpId, setCurrentDhcpId] = useState('')
-  const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
+  const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const { $t } = useIntl()
-
-  const {
-    data: edgeDhcpData
-  } = useGetEdgeDhcpListQuery(
-    { params, payload: { page: 1, pageSize: 10000 } },
-    {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          data: data?.content.reduce((acc, item) => ({
-            ...acc,
-            [item.id]: item
-          }), {}) as { [key: string]: EdgeDhcpSetting },
-          edgeDhcpOptions: data?.content.map(item => ({ label: item.serviceName, value: item.id })),
-          isLoading
-        }
-      }
-    })
 
   const getDhcpPoolStatsPayload = {
     fields: [
@@ -81,12 +69,12 @@ export const EdgeClusterDhcp = () => {
   }
 
   const applyDhcpService = async (dhcpId: string) => {
-    const pathParams = { id: dhcpId }
-    const payload = {
-      edgeIds: [...new Set([...edgeDhcpData[dhcpId].edgeIds, clusterId])]
-    }
     try {
-      await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+      await activateEdgeDhcp(
+        dhcpId,
+        currentClusterStatus?.venueId ?? '',
+        clusterId ?? ''
+      )
       setCurrentDhcpId(dhcpId)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -94,12 +82,12 @@ export const EdgeClusterDhcp = () => {
   }
 
   const removeDhcpService = async () => {
-    const pathParams = { id: currentDhcpId }
-    const payload = {
-      edgeIds: edgeDhcpData[currentDhcpId].edgeIds.filter(id => id !== clusterId)
-    }
     try {
-      await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+      await deactivateEdgeDhcp(
+        currentDhcpId,
+        currentClusterStatus?.venueId ?? '',
+        clusterId ?? ''
+      )
       setCurrentDhcpId('')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

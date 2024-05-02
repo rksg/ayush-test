@@ -1,16 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                           from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData, mockEdgeDhcpData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { EdgeDetailsDataContext }                                        from '../EdgeDetailsDataProvider'
 
 import { EdgeDhcp } from '.'
 
 const { mockEdgeDhcpHostStats } = EdgeDHCPFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -46,8 +48,8 @@ describe('Edge DHCP no initial data', () => {
         EdgeDhcpUrls.getDhcpList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
       ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
+      rest.delete(
+        EdgeDhcpUrls.deactivateDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
@@ -68,7 +70,14 @@ describe('Edge DHCP no initial data', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -106,8 +115,8 @@ describe('Edge DHCP', () => {
         EdgeDhcpUrls.getDhcpList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
       ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
+      rest.delete(
+        EdgeDhcpUrls.deactivateDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
@@ -119,6 +128,10 @@ describe('Edge DHCP', () => {
         (req, res, ctx) => res(ctx.json({
           data: []
         }))
+      ),
+      rest.put(
+        EdgeDhcpUrls.activateDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -127,7 +140,14 @@ describe('Edge DHCP', () => {
     params.activeSubTab = 'pools'
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -143,7 +163,14 @@ describe('Edge DHCP', () => {
     params.activeSubTab = 'leases'
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -160,7 +187,14 @@ describe('Edge DHCP', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -181,7 +215,14 @@ describe('Edge DHCP', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -203,7 +244,14 @@ describe('Edge DHCP', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,

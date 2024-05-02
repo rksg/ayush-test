@@ -371,6 +371,7 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
     case EdgeIpModeEnum.DHCP:
       return EdgeIpModeEnum.DHCP
     case 'Static':
+    case EdgeIpModeEnum.STATIC:
       return EdgeIpModeEnum.STATIC
     default:
       return ''
