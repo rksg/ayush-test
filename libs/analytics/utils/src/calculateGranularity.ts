@@ -2,28 +2,37 @@ import moment from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
+export const granularity2Hours = [
+  { granularity: 'PT72H', hours: 24 * 30 },
+  { granularity: 'PT24H', hours: 24 * 7 },
+  { granularity: 'PT1H', hours: 24 * 1 },
+  { granularity: 'PT180S', hours: 0 }
+]
+
 export const calculateGranularity = (
-  start: string, end: string, minGranularity?: string
+  start: string, end: string, minGranularity?: string, granularities?: typeof granularity2Hours
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
-  let gran = getGranularity(interval)
+  let gran = getGranularity(interval, granularities)
   if (overlapsRollup(start)) minGranularity = 'PT1H'
   return minGranularity &&
     moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
     ? minGranularity
     : gran
 }
-const getGranularity = (interval: number) => {
-  switch (true) {
-    case interval > 24 * 30: // > 1 month
-      return 'PT72H'
-    case interval > 24 * 7: // 8 days to 30 days
-      return 'PT24H'
-    case interval > 24 * 1: // 1 day to 7 days
-      return 'PT1H'
-    default: // less than 1 day
-      return 'PT180S'
+const getGranularity = (interval: number, granularities = granularity2Hours) => {
+  const items = Array
+    .from(granularities)
+    .sort((a, b) => b.hours - a.hours)
+
+  let gran = items.at(-1)!.granularity
+  for (const { granularity, hours } of items) {
+    if (interval > hours) {
+      gran = granularity
+      break
+    }
   }
+  return gran
 }
 export const overlapsRollup = (start: string) => {
   const rollupDays = parseInt(get('DRUID_ROLLUP_DAYS'), 10)
