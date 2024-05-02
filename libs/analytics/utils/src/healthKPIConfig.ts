@@ -551,8 +551,6 @@ export const kpisForTab = (isMLISA? : string) => {
         'apToSZLatency',
         ...(isMLISA ? ['clusterLatency'] : []),
         'switchPoeUtilization',
-        'switchMemoryUtilization',
-        'switchCpuUtilization',
         'onlineAPs'
       ]
     }
@@ -563,31 +561,31 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'uplinkPortUtilization',
-        'switchReachability'
+        'switchMemoryUtilization',
+        'switchCpuUtilization'
       ]
     },
     connection: {
       kpis: [
-        'authentication',
-        'dhcp'
+        // 'authentication',
+        // 'dhcp'
       ]
     },
     performance: {
       kpis: [
-        'portUtilization',
-        'uplinkPortUtilization',
-        'interfaceAnamolies',
-        'bcmcTraffic'
+        // 'portUtilization',
+        // 'uplinkPortUtilization',
+        // 'interfaceAnamolies',
+        // 'bcmcTraffic'
       ]
     },
     infrastructure: {
       kpis: [
-        'switchReachability',
-        'memory',
-        'cpu',
-        'temperature',
-        'poeUtilization'
+        // 'switchReachability',
+        // 'memory',
+        // 'cpu',
+        // 'temperature',
+        // 'poeUtilization'
       ]
     }
   }

@@ -79,7 +79,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
