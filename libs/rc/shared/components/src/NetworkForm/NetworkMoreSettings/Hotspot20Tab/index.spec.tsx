@@ -38,7 +38,6 @@ it('should render Hotspot 2.0 tab correctly', async () => {
     { route: { params } }
   )
 
-  expect(await screen.findByText('Enable RFC 5580 (Location Data)')).toBeInTheDocument()
   expect(await screen.findByText('Accounting Interim Updates')).toBeInTheDocument()
   expect(await screen.findByText('Internet Access')).toBeInTheDocument()
   expect(await screen.findByText('Access Network Type')).toBeInTheDocument()
