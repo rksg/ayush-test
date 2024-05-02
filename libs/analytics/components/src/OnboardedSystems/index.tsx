@@ -1,65 +1,17 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useState, useCallback } from 'react'
 
-import { Badge }                   from 'antd'
-import { Map }                     from 'immutable'
-import { get, isEmpty, partition } from 'lodash'
-import { defineMessage, useIntl }  from 'react-intl'
+import { Badge }                  from 'antd'
+import { get, isEmpty }           from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { PERMISSION_MANAGE_MLISA, Tenant, defaultSort, getUserProfile, sortProp } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showActionModal, showToast, Tooltip }         from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
-import { getIntl }                                                                from '@acx-ui/utils'
+import { defaultSort, getUserProfile, sortProp, PERMISSION_MANAGE_MLISA } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
+import { getIntl }                                                        from '@acx-ui/utils'
 
-import { useFetchSmartZoneListQuery, useDeleteSmartZone, OnboardedSystem } from './services'
-import { Errors }                                                          from './styledComponents'
+import { useFetchSmartZoneListQuery, useDeleteSmartZone } from './services'
+import { Errors }                                         from './styledComponents'
 
-export type FormattedOnboardedSystem = {
-  status: string
-  statusType: string
-  errors: string[]
-  name: string
-  id: string
-  addedTime:string
-  formattedAddedTime: string
-  lastUpdateTime: string
-  canDelete: boolean,
-  accountName: string
-}
-
-export const smartZoneStateMap = {
-  onboarded:
-    defineMessage({ defaultMessage: 'Onboarded' }),
-  offboarded:
-    defineMessage({ defaultMessage: 'Offboarded' }),
-  onboarding_queued:
-    defineMessage({ defaultMessage: 'Onboarding: Queued' }),
-  onboarding_update_sz_name:
-    defineMessage({ defaultMessage: 'Onboarding: Update SZ name' }),
-  onboarding_update_account_id:
-    defineMessage({ defaultMessage: 'Onboarding: Update tenant association' }),
-  onboarding_delete_data_connectors_and_streaming_profiles:
-    defineMessage({ defaultMessage: 'Onboarding: Delete data connectors & streaming profiles' }),
-  onboarding_create_data_connector:
-    defineMessage({ defaultMessage: 'Onboarding: Create data connector' }),
-  onboarding_create_data_streaming_profiles:
-    defineMessage({ defaultMessage: 'Onboarding: Create streaming profiles' }),
-  onboarding_set_hccd_for_all_zones:
-    defineMessage({ defaultMessage: 'Onboarding: Enable reporting of connection failures' }),
-  updating_ap_filter_list_queued:
-    defineMessage({ defaultMessage: 'Assigning APs to license: Queued' }), // deprecated
-  updating_ap_filter_list:
-    defineMessage({ defaultMessage: 'Assigning APs to license' }), // deprecated
-  updating_sz_configuration_queued:
-    defineMessage({ defaultMessage: 'Updating SZ configuration: Queued' }),
-  updating_sz_configuration:
-    defineMessage({ defaultMessage: 'Updating SZ configuration' })
-}
-
-const apiServiceMap = {
-  licensing_api_error: defineMessage({ defaultMessage: 'License API' }),
-  rbac_api_error: defineMessage({ defaultMessage: 'Access control API' }),
-  sz_api_error: defineMessage({ defaultMessage: 'SmartZone API' })
-}
+import type { FormattedOnboardedSystem } from './services'
 
 const statusTypeColorMap = {
   onboarded: {
@@ -83,89 +35,6 @@ const statusTypeColorMap = {
 const errorMsgMap = {
   CANNOT_DELETE: defineMessage({ defaultMessage: 'Offboard this system to enable deletion' }),
   SZ_NOT_FOUND: defineMessage({ defaultMessage: 'System does not exist' })
-}
-
-const sortOnboardedSystems = (
-  smartzones: OnboardedSystem[],
-  tenantId: string,
-  tenantsMap: Map<string, Tenant>
-) => {
-  const [ currentTenantSzs, otherSzs ] = partition(smartzones, (sz) => sz.account_id === tenantId)
-  otherSzs.sort((a, b) => (tenantsMap.getIn([a.account_id, 'name']) as string)
-    .localeCompare((tenantsMap.getIn([b.account_id, 'name']) as string)))
-  return currentTenantSzs.concat(otherSzs)
-}
-
-const getStatusType = (state: keyof typeof smartZoneStateMap, errors: string[]) => {
-  const ongoingWordings = ['onboarding', 'updating']
-  if (!isEmpty(errors)) return 'error'
-  if (ongoingWordings.some(word => state.startsWith(word))) return 'ongoing'
-  if (state === 'onboarded') return 'onboarded'
-  return 'offboarded'
-}
-
-const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
-  const { $t } = getIntl()
-  return isEmpty(errors)
-    ? []
-    : errors.map(error => {
-      switch (error) {
-        case 'poll_control_message_response_timeout':
-          return $t({ defaultMessage: 'Control message response timeout' })
-        case 'msg_proxy_no_data_received':
-          return $t(
-            { defaultMessage: 'Have not received data since {time}' },
-            { time: formatter(DateFormatEnum.DateTimeFormat)(data.msg_proxy_updated_at) }
-          )
-        case 'sz_mgr_no_health_check_received':
-          return $t(
-            { defaultMessage: 'Have not received health check since {time}' },
-            { time: formatter(DateFormatEnum.DateTimeFormat)(data.sz_updated_at) }
-          )
-        default:
-          const { http_status_code: httpStatusCode, http_body: httpBody } =
-            data.error_details[error as keyof typeof data.error_details] ||
-            { http_status_code: null, http_body: null }
-          return $t(
-            // eslint-disable-next-line max-len
-            { defaultMessage: '{error}: {httpBody} {isHttpStatusCode, select, true {(status code: {httpStatusCode})} other {} }' },
-            {
-              error: (error in apiServiceMap)
-                ? $t(apiServiceMap[error as keyof typeof apiServiceMap]) : error,
-              httpBody: (httpBody && !isEmpty(httpBody))
-                ? (get(httpBody, 'message') || get(httpBody, 'error') || httpBody)
-                : $t({ defaultMessage: 'Unknown Error' }),
-              isHttpStatusCode: Boolean(httpStatusCode),
-              httpStatusCode: httpStatusCode
-            }
-          )
-      }
-    })
-}
-
-const formatSmartZoneName = (name: string) => {
-  return isEmpty(name) ? getIntl().$t({ defaultMessage: '[retrieving from SmartZone]' }) : name
-}
-
-export const formatSmartZone = (
-  data: OnboardedSystem[], tenantId: string, tenantsMap: Map<string, Tenant>
-) => {
-  const { $t } = getIntl()
-  return sortOnboardedSystems(data, tenantId, tenantsMap)
-    .map((data: OnboardedSystem) => {
-      const stateErrors = data.state_errors
-      return {
-        status: $t(smartZoneStateMap[data.state as keyof typeof smartZoneStateMap]),
-        statusType: getStatusType(data.state as keyof typeof smartZoneStateMap, stateErrors),
-        errors: getStatusErrors(data, stateErrors),
-        name: formatSmartZoneName(data.device_name),
-        id: data.device_id,
-        addedTime: data.created_at,
-        formattedAddedTime: formatter(DateFormatEnum.DateTimeFormat)(data.created_at),
-        canDelete: data.can_delete,
-        accountName: tenantsMap.getIn([data.account_id, 'name'])
-      }
-    })
 }
 
 const formatDeleteError = ({ name }: FormattedOnboardedSystem, response: Object) => {
@@ -196,20 +65,24 @@ export const TooltipContent = (value: FormattedOnboardedSystem) =>
       <Errors>{value.errors.map(error => <li key={error}>{error}</li>)}</Errors>
     </>
 
-export const OnboardedSystems = () => {
+export const useOnboardedSystems = () => {
   const { $t } = useIntl()
   const tenant = getUserProfile()
   const tenantId = tenant.selectedTenant.id
-  const tenantsMap = Map(tenant.tenants.map(t => [get(t, 'id'), t]))
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
-  const queryResults = useFetchSmartZoneListQuery(tenant.tenants
-    .filter(t => Boolean(t.permissions[PERMISSION_MANAGE_MLISA]))
-    .map(t => t.id), {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest, data: formatSmartZone(data||[], tenantId, tenantsMap)
-    })
+  const queryResults = useFetchSmartZoneListQuery({
+    tenantId,
+    tenants: tenant.tenants.filter(t => Boolean(t.permissions[PERMISSION_MANAGE_MLISA]))
+  })
+
+  const [count, setCount] = useState(queryResults.data?.length || 0)
+  useEffect(() => { setCount(queryResults.data?.length || 0) }, [queryResults.data?.length])
+
+  const title = defineMessage({
+    defaultMessage: 'Onboarded Systems {count, select, null {} other {({count})}}',
+    description: 'Translation string - Onboarded Systems'
   })
 
   const ColumnHeaders: TableProps<FormattedOnboardedSystem>['columns'] = [
@@ -261,11 +134,11 @@ export const OnboardedSystems = () => {
     }
   ]
 
-  return <Loader states={[queryResults]}>
+  const component = <Loader states={[queryResults]}>
     <Table
       rowKey='id'
       columns={ColumnHeaders}
-      dataSource={queryResults.data as FormattedOnboardedSystem[]}
+      dataSource={queryResults.data}
       rowSelection={{
         type: 'radio',
         selectedRowKeys: selected ? [ selected.id ] : [],
@@ -280,7 +153,7 @@ export const OnboardedSystems = () => {
             type: 'confirm',
             title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: selected?.name }),
             content: $t({ defaultMessage:
-              'Historical data for this system will not be viewable anymore if you confirm.' }),
+                'Historical data for this system will not be viewable anymore if you confirm.' }),
             onOk: async () => {
               await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
                 .unwrap()
@@ -301,6 +174,11 @@ export const OnboardedSystems = () => {
         tooltip: !(selected?.canDelete)
           ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
+      onDisplayRowChange={
+        useCallback((dataSource: FormattedOnboardedSystem[]) => setCount(dataSource.length), [])
+      }
     />
   </Loader>
+
+  return { title: $t(title, { count }), component }
 }
