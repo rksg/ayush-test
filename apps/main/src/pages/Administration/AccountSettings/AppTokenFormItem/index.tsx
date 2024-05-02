@@ -152,7 +152,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         key: 'scopes',
         render: function (_, row) {
           return roleDisplayText[row.scopes as RolesEnum]
-            ? $t(roleDisplayText[row.scopes as RolesEnum]) : ''
+            ? $t(roleDisplayText[row.scopes as RolesEnum]) : row.scopes
         }
       }
     ]
