@@ -460,7 +460,16 @@ Array [
                   "children": Array [
                     Object {
                       "type": 0,
-                      "value": "Enable ChannelFly for the venue.",
+                      "value": "Enable ChannelFly for the ",
+                    },
+                    Object {
+                      "children": Array [],
+                      "type": 8,
+                      "value": "venueSingular",
+                    },
+                    Object {
+                      "type": 0,
+                      "value": ".",
                     },
                   ],
                   "type": 8,
@@ -468,7 +477,7 @@ Array [
                 },
               ]
             }
-            id="Cm/QtZ"
+            id="w0i0IQ"
             values={
               Object {
                 "li": [Function],

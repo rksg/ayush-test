@@ -124,7 +124,7 @@ const EdgeDhcpTable = () => {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       align: 'center',
       key: 'venueNum',
       dataIndex: 'venueNum',
