@@ -28,6 +28,8 @@ import {
   policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                  from '@acx-ui/types'
+import { hasPermission }                               from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
 import { PROFILE_MAX_COUNT as WIFI_OPERATOR_MAX_COUNT }     from '../WifiOperator/constants'
@@ -128,7 +130,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
-  if (isCertificateTemplateEnabled) {
+  if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
   }
 
