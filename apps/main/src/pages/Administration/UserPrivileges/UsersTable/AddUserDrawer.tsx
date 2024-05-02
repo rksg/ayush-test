@@ -178,7 +178,7 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             save: $t({ defaultMessage: 'Add User' })
           }}
           onCancel={handleCancel}
-          onSave={handleSubmit}
+          onSave={async () => form.submit()}
         />
       }
     >
@@ -204,10 +204,10 @@ const AddUserDrawer = (props: AddUserDrawerProps) => {
             />
           </>}
           rules={[
-            { required: true },
+            { required: true, message:
+              $t({ defaultMessage: 'Please enter email' }) },
             { max: 255 },
-            { validator: (_, value) => sfdcEmailRegExp(value) },
-            { message: $t({ defaultMessage: 'Please enter a valid email address!' }) }
+            { validator: (_, value) => sfdcEmailRegExp(value) }
           ]}>
           <Input
             placeholder={$t({ defaultMessage: 'Enter email address' })}
