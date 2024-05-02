@@ -15,7 +15,6 @@ jest.mock('@acx-ui/analytics/components', () => {
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 jest.mock('./pages/ZoneDetails', () => () => <div data-testid='ZoneDetails' />)
 jest.mock('./pages/Zones', () => () => <div data-testid='ZonesList' />)
-jest.mock('./pages/Users', () => () => <div data-testid='UsersPage' />)
 
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
@@ -196,12 +195,6 @@ describe('AllRoutes', () => {
       path: '/ai/zones/systemName/zoneName/analytics/incidents/overview' }
     , wrapper: Provider })
     await screen.findByTestId('ZoneDetails')
-  })
-  it('should render users page correctly', async () => {
-    render(<AllRoutes />, { route: {
-      path: '/ai/admin/users' }
-    , wrapper: Provider })
-    await screen.findByTestId('UsersPage')
   })
   it('should render support correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/admin/support' }, wrapper: Provider })

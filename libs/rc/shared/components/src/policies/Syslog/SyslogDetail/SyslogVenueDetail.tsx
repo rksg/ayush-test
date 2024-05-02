@@ -32,7 +32,7 @@ const SyslogVenueDetail = () => {
   const { $t } = useIntl()
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'name',
       key: 'name',
       searchable: true,

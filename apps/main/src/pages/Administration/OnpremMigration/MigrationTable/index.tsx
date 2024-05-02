@@ -100,7 +100,7 @@ const MigrationTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Created Venue' }),
+      title: $t({ defaultMessage: 'Created <VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       searchable: true,

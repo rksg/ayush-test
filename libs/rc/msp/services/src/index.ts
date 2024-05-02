@@ -884,7 +884,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params)
         return {
           ...req,
-          body: JSON.stringify(payload)
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]

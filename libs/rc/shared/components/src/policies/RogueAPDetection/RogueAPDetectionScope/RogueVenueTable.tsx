@@ -48,7 +48,7 @@ export const RogueVenueTable = () => {
         type: 'warning',
         title: $t({ defaultMessage: 'Change Rogue AP Profile?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a venue. Are you sure you want to change the rogue AP profile to this venue?' }),
+        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a <venueSingular></venueSingular>. Are you sure you want to change the rogue AP profile to this <venueSingular></venueSingular>?' }),
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{
@@ -101,7 +101,7 @@ export const RogueVenueTable = () => {
 
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true
@@ -193,7 +193,8 @@ export const RogueVenueTable = () => {
         showToast({
           type: 'info',
           duration: 10,
-          content: 'The max-number of venues in a rogue ap policy profile is 64.'
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'The max-number of <venuePlural></venuePlural> in a rogue ap policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

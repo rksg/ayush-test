@@ -170,7 +170,7 @@ export default function MacRegistrationListsTable () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Venues' }),
+        title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
         key: 'venueCount',
         dataIndex: 'venueCount',
         align: 'center',
