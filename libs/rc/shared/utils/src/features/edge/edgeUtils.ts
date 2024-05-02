@@ -387,7 +387,7 @@ export const isInterfaceInVRRPSetting = (
   vrrpSettings: ClusterNetworkSettings['virtualIpSettings']
 ) => {
   return Boolean(vrrpSettings?.some(item =>
-    item.ports.some(port =>
+    item.ports?.some(port =>
       port.serialNumber === serialNumber &&
       port.portName.toLowerCase() === interfaceName.toLowerCase())))
 }
