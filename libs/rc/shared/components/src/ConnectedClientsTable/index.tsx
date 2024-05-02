@@ -316,7 +316,7 @@ export const ConnectedClientsTable = (props: {
       },
       ...(venueId ? [] : [{
         key: 'venueId',
-        title: intl.$t({ defaultMessage: 'Venue' }),
+        title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
         dataIndex: 'venueName',
         sorter: true,
         filterKey: 'venueId',
