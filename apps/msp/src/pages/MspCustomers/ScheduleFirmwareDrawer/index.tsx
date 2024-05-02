@@ -151,7 +151,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
       <Space size={18} direction='vertical'>
         <h4>{$t({
           defaultMessage:
-        `Any changes done to the Saved Schedule or a Manual option will overwrite previously 
+        `Any changes done to the Saved Schedule or a Manual option will overwrite previously
         scheduled configurations in Preferences.`
         })}</h4>
         <Form
@@ -169,9 +169,11 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {$t({ defaultMessage: 'Use saved schedule' })}
                   <UI.GreyTextSection>
                     <div>{$t({
-                      defaultMessage: '- Schedule is based on venues local time-zone' })}</div>
+                      // eslint-disable-next-line max-len
+                      defaultMessage: '- Schedule is based on <venuePlural></venuePlural> local time-zone' })}</div>
                     <div>{$t({
-                      defaultMessage: '- Applies to all newly added venues automatically' })}</div>
+                      // eslint-disable-next-line max-len
+                      defaultMessage: '- Applies to all newly added <venuePlural></venuePlural> automatically' })}</div>
                   </UI.GreyTextSection>
                   <UI.PreferencesSection>
                     <div>{$t({ defaultMessage: 'Firmware updates occur on:' })}</div>
@@ -191,7 +193,8 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
                   {$t({ defaultMessage: 'Schedule updates manually' })}
                   <UI.GreyTextSection>
                     <div>{$t({ defaultMessage:
-                  '- Applies only to the selected MSP Customers and their venues.' })}</div>
+                  // eslint-disable-next-line max-len
+                  '- Applies only to the selected MSP Customers and their <venuePlural></venuePlural>.' })}</div>
                   </UI.GreyTextSection>
                   {scheduleMode === ScheduleMode.Manually &&
                 <div style={{ marginTop: 10 }}>

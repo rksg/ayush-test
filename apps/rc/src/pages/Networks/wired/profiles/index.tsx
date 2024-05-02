@@ -32,7 +32,7 @@ export function ProfilesTab () {
     sorter: true
   },{
     key: 'venueCount',
-    title: $t({ defaultMessage: 'Venues' }),
+    title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
     dataIndex: 'venueCount',
     sorter: true,
     render: function (_, row) {

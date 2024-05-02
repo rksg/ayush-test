@@ -158,7 +158,8 @@ export function ApForm () {
     const curTriApModels = triApModels.current
     const contentInfo = $t({
       defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
-        'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
+        // eslint-disable-next-line max-len
+        'please update the firmware in this <venueSingular></venueSingular> to <b>{baseVersion}</b> or greater. ' +
         'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
       b: chunks => <strong>{chunks}</strong>,
       apModels: curTriApModels.length > 1 ? curTriApModels.slice(0, -1).join(',') : 'R560',
@@ -170,8 +171,8 @@ export function ApForm () {
     })
 
     return <Space direction='vertical' style={{ margin: '8px 0' }}>
-      { !supportUpgradeByModel &&
-        $t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, { fwVersion: venueFwVersion })
+      { !supportUpgradeByModel && // eslint-disable-next-line max-len
+        $t({ defaultMessage: '<VenueSingular></VenueSingular> Firmware Version: {fwVersion}' }, { fwVersion: venueFwVersion })
       }
       { !supportUpgradeByModel && checkTriApModelsAndBaseFwVersion(venueFwVersion) &&
         <span>{contentInfo}</span>
@@ -292,7 +293,7 @@ export function ApForm () {
         title: $t({ defaultMessage: 'AP Management VLAN Change' }),
         content: (<FormattedMessage
           defaultMessage={
-            `Moving to Venue: <b>{venueName}</b> will change the AP
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will change the AP
             management VLAN and reboot this AP device. Incorrect
             settings between APs and switches could result in AP access
             loss. Are you sure you want to continue?`
@@ -319,9 +320,9 @@ export function ApForm () {
         title: $t({ defaultMessage: 'TLS Key Change' }),
         content: (<FormattedMessage
           defaultMessage={
-            `Moving to Venue: <b>{venueName}</b> will alter the current key on
-            the TLS connection and reboot this AP device. Are you sure
-            you want to continue?`
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will
+            alter the current key on the TLS connection and reboot this AP device.
+            Are you sure you want to continue?`
           }
           values={{
             b: (text: string) => <strong>{text}</strong>,
@@ -398,7 +399,7 @@ export function ApForm () {
   const getApGroupOptions = async (venueId: string) => {
     let result: { label: string; value: string | null }[] = []
     result.push({
-      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      label: $t({ defaultMessage: 'No group (inherit from <VenueSingular></VenueSingular>)' }),
       value: null
     })
 
@@ -539,7 +540,7 @@ export function ApForm () {
                 name='venueId'
                 style={{ marginBottom: '0px' }}
                 label={<>
-                  {$t({ defaultMessage: 'Venue' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
                     title={
                       apMeshRoleDisabled
@@ -555,7 +556,7 @@ export function ApForm () {
                 initialValue={null}
                 rules={[{
                   required: true,
-                  message: $t({ defaultMessage: 'Please select venue' })
+                  message: $t({ defaultMessage: 'Please select <venueSingular></venueSingular>' })
                 }, {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
@@ -579,8 +580,8 @@ export function ApForm () {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
                     if (!selectVenue?.dhcp?.enabled) {
-                      return checkObjectNotExists(
-                        cellularApModels.current, apDetails?.model, $t({ defaultMessage: 'Venue' })
+                      return checkObjectNotExists( // eslint-disable-next-line max-len
+                        cellularApModels.current, apDetails?.model, $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                       )
                     }
                     return Promise.resolve()
@@ -597,7 +598,8 @@ export function ApForm () {
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:
-                    'Moving this device to a new venue will reset AFC geolocation. '+
+                    // eslint-disable-next-line max-len
+                    'Moving this device to a new <venueSingular></venueSingular> will reset AFC geolocation. '+
                     '6GHz operation will remain in low power mode ' +
                     'until geolocation information is reestablished.'
                     })
@@ -640,7 +642,7 @@ export function ApForm () {
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value',
-                        $t({ defaultMessage: 'in this Venue' })
+                        $t({ defaultMessage: 'in this <VenueSingular></VenueSingular>' })
                       )
                     }
                   }
@@ -734,7 +736,7 @@ export function ApForm () {
                   : null
               )}
             >
-              {$t({ defaultMessage: 'Same as Venue' })}
+              {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
           </Space>
         </Space>
@@ -820,7 +822,7 @@ function CoordinatesModal (props: {
         width: 450,
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
-          defaultMessage: `Your GPS coordinates are outside the venue:
+          defaultMessage: `Your GPS coordinates are outside the <venueSingular></venueSingular>:
             {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),

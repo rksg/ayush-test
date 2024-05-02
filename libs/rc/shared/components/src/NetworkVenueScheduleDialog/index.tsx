@@ -412,7 +412,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     <>
       <Modal
         {...props}
-        title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in Venue "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
+        title={$t({ defaultMessage: 'Schedule for Network "{NetworkName}" in <VenueSingular></VenueSingular> "{VenueName}"' }, { NetworkName: network?.name, VenueName: venue?.name })}
         okText={$t({ defaultMessage: 'Apply' })}
         maskClosable={true}
         destroyOnClose={true}
@@ -458,7 +458,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
                   <UI.TipSpan>{$t({ defaultMessage: 'See tips' })}</UI.TipSpan>
                 </Button></>}
               extra={<>
-                {$t({ defaultMessage: 'Venue time zone:' })} <b>
+                {$t({ defaultMessage: '<VenueSingular></VenueSingular> time zone:' })} <b>
                   {transformTimezoneDifference(timezone.dstOffset+timezone.rawOffset)} ({timezone.timeZoneName})
                 </b>
               </>}
