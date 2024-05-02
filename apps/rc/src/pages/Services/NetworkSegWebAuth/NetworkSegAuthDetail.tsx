@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Card, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery
@@ -71,9 +72,14 @@ export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const location = useLocation()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
-  const { data } = useGetWebAuthTemplateQuery({ params })
-  const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
+  const { data } = useGetWebAuthTemplateQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
+  const { data: switches } = useGetWebAuthTemplateSwitchesQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
 
   const columns: TableProps<WebAuthSwitchType>['columns'] = React.useMemo(() => {
     return [{
