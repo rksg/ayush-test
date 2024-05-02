@@ -97,7 +97,7 @@ export function VenueSetting () {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       sorter: true
@@ -159,7 +159,7 @@ export function VenueSetting () {
     renderCell (checked: any, record: any, index: any, node: any) {
       if (venueAppliedToCli?.map(item => item.venueId).includes(record.id)) {
         // eslint-disable-next-line max-len
-        return <Tooltip title='A CLI configuration profile has been applied to this venue so it cannot be selected.'>{node}</Tooltip>
+        return <Tooltip title={$t({ defaultMessage: 'A CLI configuration profile has been applied to this <venueSingular></venueSingular> so it cannot be selected.' })}>{node}</Tooltip>
       }
       return node
     }
@@ -171,7 +171,7 @@ export function VenueSetting () {
     ]}>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Venues' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} />
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}

@@ -186,7 +186,7 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
   const content =
     <Space direction='vertical'>
       {/* eslint-disable-next-line max-len */}
-      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated venues.' }) }</p>
+      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>.' }) }</p>
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
       <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
       {/* eslint-disable-next-line max-len */}
