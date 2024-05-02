@@ -174,6 +174,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/entitlements/orders/query',
     newApi: true
   },
+  patchEntitlementsActivations: {
+    method: 'PATCH',
+    url: '/entitlements/orders/:orderId',
+    newApi: true
+  },
   refreshLicensesData: {
     method: 'get',
     url: '/entitlements/summaries?refresh=true',

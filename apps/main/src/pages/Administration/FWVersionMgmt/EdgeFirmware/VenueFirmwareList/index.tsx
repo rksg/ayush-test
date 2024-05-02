@@ -292,7 +292,7 @@ export function VenueFirmwareList () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[
+        actions={filterByAccess([
           ...(
             isScheduleUpdateReady ? [
               {
@@ -301,7 +301,7 @@ export function VenueFirmwareList () {
               }
             ] : []
           )
-        ]}
+        ])}
       />
       <UpdateNowDialog
         visible={updateModalVisible}

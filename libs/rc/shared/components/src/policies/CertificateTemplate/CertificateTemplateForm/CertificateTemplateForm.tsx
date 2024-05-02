@@ -92,16 +92,17 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
       const { name, keyLength, algorithm, policySetId, defaultAccess, chromebook } = formData
       const {
         commonNamePattern, countryPattern, organizationPattern,
-        organizationUnitPattern, statePattern } = formData.onboard!
+        organizationUnitPattern, statePattern, localityPattern } = formData.onboard!
       const { enabled, enrollmentType, notifyAppId, apiKey,
         certRemovalType, accountCredential } = chromebook || {}
       const payload = {
-        name, keyLength, algorithm, policySetId, defaultAccess,
+        name, keyLength, algorithm, defaultAccess,
         onboard: {
           commonNamePattern, countryPattern, organizationPattern,
-          organizationUnitPattern, statePattern,
+          organizationUnitPattern, statePattern, localityPattern,
           ...transferExpirationFormDataToPayload(formData)
         },
+        policySetId: policySetId || '',
         ...(chromebook ? {
           chromebook: {
             enabled, enrollmentType, notifyAppId, apiKey,

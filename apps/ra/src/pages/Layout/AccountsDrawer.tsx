@@ -150,7 +150,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
           (invitation : Invitation, ind) => <InviteUI.ListItem key={`${invitation.accountName}-${ind}`}>
             {$t({
               defaultMessage: `You have been invited by {first} {last} to {accountName} as {role}.
-            Please {accept} or {reject} the invitation`
+            Please {accept} or {reject} the invitation.`
             }, {
               accountName: <InviteUI.Highlight>{invitation.accountName}</InviteUI.Highlight>,
               first: invitation.firstName,

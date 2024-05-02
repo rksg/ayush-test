@@ -29,10 +29,10 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { RequestPayload } from '@acx-ui/types'
-import { hasAccess }      from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -284,10 +284,10 @@ export const VenueFirmwareTable = (
         rowKey='id'
         rowActions={rowActions}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }]}
+        }])}
       />
 
       <SwitchUpgradeWizard
