@@ -15,7 +15,7 @@ const Lags = () => {
   const { serialNumber } = useParams()
   const {
     portData, lagData, lagStatus, isFetching,
-    clusterInfo, isCluster
+    clusterInfo, isCluster, clusterConfig
   } = useContext(EditEdgeDataContext)
   const [addEdgeLag] = useAddEdgeLagMutation()
   const [updateEdgeLag] = useUpdateEdgeLagMutation()
@@ -69,6 +69,7 @@ const Lags = () => {
           lagList={lagData}
           lagStatusList={lagStatus}
           portList={portData}
+          vipConfig={clusterConfig?.virtualIpSettings.virtualIps}
           onAdd={handleAdd}
           onEdit={handleEdit}
           onDelete={handleDelete}

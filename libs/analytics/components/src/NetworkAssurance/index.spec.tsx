@@ -125,6 +125,15 @@ describe('NetworkAssurance', () => {
       pathname: '/tenant-id/t/analytics/videoCallQoe', hash: '', search: ''
     }))
   })
+  it('should navigate to right path when click on health', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    userEvent.click(await screen.findByText('Health'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/tenant-id/t/analytics/health', hash: '', search: ''
+    }))
+  })
   it('should render config change when IS_MLISA_SA', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     get.mockReturnValue('true')

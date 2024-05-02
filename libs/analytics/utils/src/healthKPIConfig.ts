@@ -558,3 +558,37 @@ export const kpisForTab = (isMLISA? : string) => {
     }
   }
 }
+
+export const wiredKPIsForTab = () => {
+  return {
+    overview: {
+      kpis: [
+        'uplinkPortUtilization',
+        'switchReachability'
+      ]
+    },
+    connection: {
+      kpis: [
+        'authentication',
+        'dhcp'
+      ]
+    },
+    performance: {
+      kpis: [
+        'portUtilization',
+        'uplinkPortUtilization',
+        'interfaceAnamolies',
+        'bcmcTraffic'
+      ]
+    },
+    infrastructure: {
+      kpis: [
+        'switchReachability',
+        'memory',
+        'cpu',
+        'temperature',
+        'poeUtilization'
+      ]
+    }
+  }
+}
