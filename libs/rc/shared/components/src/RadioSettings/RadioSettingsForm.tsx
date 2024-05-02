@@ -263,7 +263,7 @@ export function RadioSettingsForm (props:{
                       style={{ width: '160px' }}
                       rules={[
                         ...(enableAfc ? [{ required: true , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) }] : []),
-                        { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
+                        { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMaxFloorLessThanMinFloor)) : Promise.resolve() }
                       ]}>
                       <InputNumber
                         style={{ width: '160px' }}
