@@ -221,7 +221,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            onChange={()=>form.setFieldValue(WifiScopes.READ, true)}
+            disabled={true}
           />
         </Form.Item>
 
@@ -275,7 +275,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            onChange={()=>form.setFieldValue(SwitchScopes.READ, true)}
+            disabled={true}
           />
         </Form.Item>
 
@@ -328,7 +328,7 @@ export function AddCustomRole () {
           valuePropName='checked'
           initialValue={false}>
           <Input type='checkbox'
-            onChange={()=>form.setFieldValue(EdgeScopes.READ, true)}
+            disabled={true}
           />
         </Form.Item>
 
