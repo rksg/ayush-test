@@ -33,8 +33,9 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -161,6 +162,7 @@ export function VenueFirmwareList () {
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -180,6 +182,7 @@ export function VenueFirmwareList () {
   if(isScheduleUpdateReady) {
     rowActions.push(...[
       {
+        scopeKey: [EdgeScopes.CREATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -195,6 +198,7 @@ export function VenueFirmwareList () {
         }
       },
       {
+        scopeKey: [EdgeScopes.DELETE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -282,6 +286,10 @@ export function VenueFirmwareList () {
     }
   }
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE]
+  })
+
   return (
     <Loader states={[
       { isLoading: isVenueFirmwareListLoading, isFetching: isVenueFirmwareListLoading }
@@ -291,17 +299,17 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        actions={filterByAccess([
           ...(
-            isScheduleUpdateReady ? [
-              {
-                label: $t({ defaultMessage: 'Preferences' }),
-                onClick: () => setPreferenceModalVisible(true)
-              }
-            ] : []
+            isScheduleUpdateReady ? [{
+              scopeKey: [EdgeScopes.UPDATE],
+              label: $t({ defaultMessage: 'Preferences' }),
+              onClick: () => setPreferenceModalVisible(true)
+            }]
+              : []
           )
-        ]}
+        ])}
       />
       <UpdateNowDialog
         visible={updateModalVisible}

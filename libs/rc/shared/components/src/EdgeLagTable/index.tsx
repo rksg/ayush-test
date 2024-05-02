@@ -6,7 +6,8 @@ import { useIntl }  from 'react-intl'
 
 import { Table, TableProps, Tooltip, showActionModal }                                                                                from '@acx-ui/components'
 import { EdgeLag, EdgeLagStatus, EdgePort, EdgeSerialNumber, defaultSort, getEdgePortDisplayName, getEdgePortIpModeString, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                  from '@acx-ui/user'
+import { EdgeScopes }                                                                                                                 from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                              from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -150,6 +151,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
 
   const actionButtons = [
     {
+      scopeKey: [EdgeScopes.CREATE],
       label: $t({ defaultMessage: 'Add LAG' }),
       onClick: () => {
         openDrawer()
@@ -160,12 +162,14 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
 
   const rowActions: TableProps<EdgeLagTableType>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows) => {
         openDrawer(rows[0])
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         const targetData = rows[0]
@@ -185,6 +189,10 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
+
   return (
     <>
       <Table<EdgeLagTableType>
@@ -192,7 +200,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         dataSource={transToTableData(lagList, lagStatusList)}
         columns={columns}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && {
+        rowSelection={isSelectionVisible && {
           type: 'radio'
         }}
         rowKey='id'

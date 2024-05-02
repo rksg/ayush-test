@@ -4,6 +4,8 @@ import { useIntl }                from 'react-intl'
 import { Tooltip }                                            from '@acx-ui/components'
 import { TunnelProfileAddModal }                              from '@acx-ui/rc/components'
 import { MtuTypeEnum, TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                             from '@acx-ui/types'
+import { hasPermission }                                      from '@acx-ui/user'
 
 import { messageMappings } from '../messageMappings'
 
@@ -48,8 +50,10 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
         />
       </Form.Item>
     </Col>
-    <Col span={3}>
-      <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
-    </Col>
+    {hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
+      <Col span={3}>
+        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
+      </Col>
+    }
   </Row>
 }

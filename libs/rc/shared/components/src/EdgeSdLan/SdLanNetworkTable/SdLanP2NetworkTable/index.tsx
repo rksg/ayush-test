@@ -18,8 +18,9 @@ import {
   Network,
   NetworkType
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { WifiScopes }     from '@acx-ui/types'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
 
@@ -145,7 +146,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={disabledInfo.disabled || hasAccess() === false}
+        disabled={disabledInfo.disabled}
         tooltip={disabledInfo.tooltip}
         onChange={onActivateChange}
       />
@@ -169,7 +170,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={disabledInfo.disabled || hasAccess() === false}
+          disabled={disabledInfo.disabled}
           tooltip={disabledInfo.tooltip}
           onChange={onActivateChange}
         />
@@ -180,6 +181,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   ]), [activated, activatedGuest, isGuestTunnelEnabled, onActivateChange, detailDrawerVisible])
 
   const actions: TableProps<Network>['actions'] = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Wi-Fi Network' }),
     onClick: () => {
       setNetworkModalVisible(true)

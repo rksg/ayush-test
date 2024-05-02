@@ -3,6 +3,8 @@ import { useIntl }                from 'react-intl'
 
 import { TunnelProfileAddModal }                 from '@acx-ui/rc/components'
 import { TunnelProfileFormType, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 interface TunnelProfileFormItemProps {
   options: { label: string, value: string }[]
@@ -36,8 +38,10 @@ export const TunnelProfileFormItem = (props: TunnelProfileFormItemProps) => {
         />
       </Form.Item>
     </Col>
-    <Col span={3}>
-      <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
-    </Col>
+    {hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
+      <Col span={3}>
+        <TunnelProfileAddModal initialValues={formInitValues as TunnelProfileFormType} />
+      </Col>
+    }
   </Row>
 }

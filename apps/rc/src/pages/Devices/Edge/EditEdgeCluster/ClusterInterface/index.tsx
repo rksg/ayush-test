@@ -15,8 +15,9 @@ import {
   validateClusterInterface,
   validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
-import { useTenantLink }             from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import * as CommUI from '../styledComponents'
 
@@ -194,6 +195,10 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE]
+  })
+
   return (
     <>
       <Table
@@ -201,7 +206,7 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
         columns={columns}
         dataSource={value}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={isSelectionVisible && { type: 'radio' }}
       />
       <EditClusterInterfaceDrawer
         visible={editDrawerVisible}

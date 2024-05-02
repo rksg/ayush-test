@@ -1,5 +1,6 @@
-import { useParams }    from '@acx-ui/react-router-dom'
-import { goToNotFound } from '@acx-ui/user'
+import { useParams }                                     from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                    from '@acx-ui/types'
+import { goToNoPermission, goToNotFound, hasPermission } from '@acx-ui/user'
 
 import { EdgeDetailsPageHeader } from './EdgeDetailsPageHeader'
 import { EdgeDhcp }              from './EdgeDhcp'
@@ -9,16 +10,35 @@ import { EdgeTimeline }          from './EdgeTimeline'
 import { EdgeTroubleshooting }   from './EdgeTroubleshooting'
 
 const tabs = {
-  overview: EdgeOverview,
-  troubleshooting: EdgeTroubleshooting,
-  services: EdgeServices,
-  dhcp: EdgeDhcp,
-  timeline: EdgeTimeline
+  overview: {
+    scopeKey: [EdgeScopes.READ],
+    content: EdgeOverview
+  },
+  troubleshooting: {
+    scopeKey: [EdgeScopes.UPDATE],
+    content: EdgeTroubleshooting
+  },
+  services: {
+    scopeKey: [EdgeScopes.READ],
+    content: EdgeServices
+  },
+  dhcp: {
+    scopeKey: [EdgeScopes.READ],
+    content: EdgeDhcp
+  },
+  timeline: {
+    scopeKey: [EdgeScopes.READ],
+    content: EdgeTimeline
+  }
 }
 
 export default function EdgeDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
+  const tabConfig = tabs[activeTab as keyof typeof tabs]
+
+  const Tab = tabConfig
+    ? hasPermission({ scopes: tabConfig.scopeKey }) ? tabConfig.content : goToNoPermission
+    : goToNotFound
 
   return <>
     <EdgeDetailsPageHeader />
