@@ -275,8 +275,8 @@ function ABFSelector (props: ABFSelectorProps) {
             </Radio>
           })
           }
-          <Radio key={'NONE'} value={''}>
-            {$t({ defaultMessage: 'Do not update firmware on selected venue(s)' })}
+          <Radio key={'NONE'} value={''}>{ /*eslint-disable-next-line max-len*/ }
+            {$t({ defaultMessage: 'Do not update firmware on selected <venuePlural></venuePlural>' })}
           </Radio>
         </Space>
       </Radio.Group>
@@ -298,9 +298,9 @@ export function ABFUpgradeWarning (props: ABFUpgradeWarningProp) {
   if (remainingApModels.length === 0) return null
 
   // eslint-disable-next-line max-len
-  const legacyDevicesMessage = defineMessage({ defaultMessage: 'There are one or more legacy devices in selected venues ({apModels}).' })
+  const legacyDevicesMessage = defineMessage({ defaultMessage: 'There are one or more legacy devices in selected <venuePlural></venuePlural> ({apModels}).' })
   // eslint-disable-next-line max-len
-  const activeDevicesMessage = defineMessage({ defaultMessage: 'There are one or more devices in selected venues ({apModels}).' })
+  const activeDevicesMessage = defineMessage({ defaultMessage: 'There are one or more devices in selected <venuePlural></venuePlural> ({apModels}).' })
 
   return <>
     <div>{

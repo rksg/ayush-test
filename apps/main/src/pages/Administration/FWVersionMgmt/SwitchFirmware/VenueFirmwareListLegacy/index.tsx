@@ -63,7 +63,7 @@ function useColumns (
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -365,7 +365,7 @@ export const VenueFirmwareTable = (
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk () {

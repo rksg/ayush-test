@@ -209,7 +209,8 @@ export function AddRecCustomer () {
           recCustomers.push({
             account_id: cus.account_id,
             name: cus.account_name,
-            admin_delegations: delegations
+            admin_delegations: delegations,
+            delegations: ecDelegations.length > 0 ? ecDelegations : undefined
           })
         })
       }
@@ -218,13 +219,11 @@ export function AddRecCustomer () {
       const customerRec: MspRecData =
       {
         account_id: mspRecCustomer[0].account_id,
-        admin_delegations: delegations
+        admin_delegations: delegations,
+        delegations: ecDelegations.length > 0 ? ecDelegations : undefined
       }
 
       const customer = multiPropertySelectionEnabled ? customerMulti : customerRec
-      if (ecDelegations.length > 0) {
-        customer.delegations = ecDelegations
-      }
 
       const result = multiPropertySelectionEnabled
         ? await addBrandCustomers({ params: { tenantId: tenantId }, payload: customer }).unwrap()

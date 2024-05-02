@@ -22,7 +22,7 @@ export const getDisabledToolTip = (isNetwork?: boolean, isMLISA?: string) =>
       defineMessage({
         defaultMessage:
         // eslint-disable-next-line max-len
-          'Cannot save threshold at organization level. Please select a Venue or AP to set a threshold.'
+          'Cannot save threshold at organization level. Please select a <VenueSingular></VenueSingular> or AP to set a threshold.'
       })
       :
       defineMessage({

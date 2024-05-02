@@ -120,7 +120,7 @@ function PersonaGroupDetails () {
 
   const basicInfo = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content:
       <VenueLink
         showNoData={true}

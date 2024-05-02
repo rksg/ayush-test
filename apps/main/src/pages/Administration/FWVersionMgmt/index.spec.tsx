@@ -105,6 +105,10 @@ describe('Firmware Version Management', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
