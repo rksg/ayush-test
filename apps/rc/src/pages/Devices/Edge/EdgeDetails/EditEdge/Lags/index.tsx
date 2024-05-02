@@ -69,7 +69,7 @@ const Lags = () => {
           lagList={lagData}
           lagStatusList={lagStatus}
           portList={portData}
-          vipConfig={clusterConfig?.virtualIpSettings.virtualIps}
+          vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
           onAdd={handleAdd}
           onEdit={handleEdit}
           onDelete={handleDelete}
