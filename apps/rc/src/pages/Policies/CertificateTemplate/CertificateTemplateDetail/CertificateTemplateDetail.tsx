@@ -69,7 +69,7 @@ export default function CertificateTemplateDetail () {
 
   const tabMapping = {
     [TabKeyType.CERTIFICATE]: <CertificateTable
-      templateId={certificateTemplateData?.id}
+      templateData={certificateTemplateData}
       showGenerateCert={!!privateKeyBase64} />,
     [TabKeyType.CHROMEBOOK]: <ChromebookTab data={certificateTemplateData} />
   }

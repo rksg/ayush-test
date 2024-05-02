@@ -1,10 +1,10 @@
-import { Row, Col, Divider, Typography, Checkbox, Modal } from 'antd'
-import { MessageDescriptor, defineMessage, useIntl }      from 'react-intl'
+import { Row, Col, Divider, Typography, Checkbox, Modal, Form, Input } from 'antd'
+import { MessageDescriptor, defineMessage, useIntl }                   from 'react-intl'
 
-import { Button }                                                                                                                                                                                          from '@acx-ui/components'
+import { Button, ModalRef }                                                                                                                                                                                from '@acx-ui/components'
 import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateAcceptType, CertificateAuthority, CertificateCategoryType }                                                                                                               from '@acx-ui/rc/utils'
-
+import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType }                                                                                                               from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                                                                                                                                     from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
 import { DescriptionRow, Description, ButtonWrapper, CollapseTitle } from '../styledComponents'
@@ -17,11 +17,20 @@ interface DownloadDrawerProps {
   setUploadDrawerOpen: (open: boolean) => void;
 }
 
-export enum DownloadType {
+enum SectionType {
   PUBLIC_KEY,
   CHAINS,
   PRIVATE_KEY,
   P12
+}
+
+enum CertDownloadType {
+  PEM,
+  DER,
+  PKCS7,
+  PKCS8,
+  PKCS12,
+  PKCS12_CHAIN
 }
 
 export default function DownloadSection (props: DownloadDrawerProps) {
@@ -34,63 +43,103 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   const [deletePrivateKeys] = useDeleteCaPrivateKeyMutation()
   const { Text } = Typography
 
-  const downloadButtonLabel: Record<CertificateAcceptType, MessageDescriptor> = {
-    [CertificateAcceptType.PEM]: defineMessage({
+  const downloadButtonLabel: Record<CertDownloadType, MessageDescriptor> = {
+    [CertDownloadType.PEM]: defineMessage({
       defaultMessage: 'Download PEM'
     }),
-    [CertificateAcceptType.DER]: defineMessage({
+    [CertDownloadType.DER]: defineMessage({
       defaultMessage: 'Download DER'
     }),
-    [CertificateAcceptType.PKCS7]: defineMessage({
+    [CertDownloadType.PKCS7]: defineMessage({
       defaultMessage: 'Download PKCS7'
     }),
-    [CertificateAcceptType.PKCS8]: defineMessage({
+    [CertDownloadType.PKCS8]: defineMessage({
       defaultMessage: 'Download'
     }),
-    [CertificateAcceptType.PKCS12]: defineMessage({
-      defaultMessage: 'Download'
+    [CertDownloadType.PKCS12]: defineMessage({
+      defaultMessage: 'Download Without Chain'
+    }),
+    [CertDownloadType.PKCS12_CHAIN]: defineMessage({
+      defaultMessage: 'Download With Chain'
     })
   }
 
-  const titleLabel: Record<DownloadType, MessageDescriptor> = {
-    [DownloadType.PUBLIC_KEY]: defineMessage({
+  const titleLabel: Record<SectionType, MessageDescriptor> = {
+    [SectionType.PUBLIC_KEY]: defineMessage({
       defaultMessage: 'Public Key'
     }),
-    [DownloadType.CHAINS]: defineMessage({
+    [SectionType.CHAINS]: defineMessage({
       defaultMessage: 'Chain'
     }),
-    [DownloadType.PRIVATE_KEY]: defineMessage({
+    [SectionType.PRIVATE_KEY]: defineMessage({
       defaultMessage: 'Private Key'
     }),
-    [DownloadType.P12]: defineMessage({
+    [SectionType.P12]: defineMessage({
       defaultMessage: 'P12 Format'
     })
   }
 
+  const certificateAcceptValue: Record<CertDownloadType, CertificateAcceptType> = {
+    [CertDownloadType.PEM]: CertificateAcceptType.PEM,
+    [CertDownloadType.DER]: CertificateAcceptType.DER,
+    [CertDownloadType.PKCS7]: CertificateAcceptType.PKCS7,
+    [CertDownloadType.PKCS8]: CertificateAcceptType.PKCS8,
+    [CertDownloadType.PKCS12]: CertificateAcceptType.PKCS12,
+    [CertDownloadType.PKCS12_CHAIN]: CertificateAcceptType.PKCS12
+  }
+
   const handleDownloadClick = (
-    downloadType: DownloadType,
-    format: CertificateAcceptType
+    downloadType: SectionType,
+    format: CertDownloadType
   ) => {
-    const customHeaders = { Accept: format }
+    if (downloadType === SectionType.PRIVATE_KEY || downloadType === SectionType.P12) {
+      const modalRef = Modal.confirm({})
+      modalRef.update({
+        title: downloadType === SectionType.PRIVATE_KEY ?
+          $t({ defaultMessage: 'Download Private Key' }) :
+          $t({ defaultMessage: 'Download P12 File' }),
+        okText: downloadType === SectionType.PRIVATE_KEY ?
+          $t({ defaultMessage: 'Download Private Key' }) :
+          $t({ defaultMessage: 'Download P12' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        maskClosable: false,
+        keyboard: false,
+        content:
+          <PasswordForm
+            modal={modalRef}
+            onFinish={(value) => doDownload(format, downloadType, value)} />,
+        icon: <> </>
+      })
+    } else {
+      doDownload(format, downloadType)
+    }
+  }
+
+  const doDownload = (format: CertDownloadType, downloadType: SectionType, password = '') => {
+    const customHeaders = { Accept: certificateAcceptValue[format] }
     const isCertificate = CertificateCategoryType.CERTIFICATE === type
     const downloadAction = isCertificate ? downloadCertificate : downloadCA
     const downloadChainsAction = isCertificate ? downloadCertificateChains : downloadCAChains
-    const downloadTypes = [DownloadType.PUBLIC_KEY, DownloadType.PRIVATE_KEY, DownloadType.P12]
+    const downloadTypes = [SectionType.PUBLIC_KEY, SectionType.PRIVATE_KEY, SectionType.P12]
     const params = isCertificate ? {
       certificateId: data?.id,
-      templateId: (data as Certificate).certificateTemplateId
+      templateId: (data as Certificate).certificateTemplateId,
+      includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
+      password
     } : {
-      caId: data?.id
+      caId: data?.id,
+      includeChain: (format === CertDownloadType.PKCS12_CHAIN).toString(),
+      password
     }
 
     if (downloadTypes.includes(downloadType)) {
       downloadAction({ params, customHeaders })
-    } else if (downloadType === DownloadType.CHAINS) {
+    } else if (downloadType === SectionType.CHAINS) {
       downloadChainsAction({ params, customHeaders })
     }
   }
 
-  const renderDownloadButton = (type: CertificateAcceptType, onClick: () => void) => (
+  const renderDownloadButton = (type: CertDownloadType, onClick: () => void) => (
     <Row style={{ marginBottom: '8px' }} key={type}>
       <ButtonWrapper>
         <Button type='default' onClick={onClick}>
@@ -113,8 +162,8 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   )
 
   const renderSection = (
-    downloadType: DownloadType,
-    acceptTypes: CertificateAcceptType[],
+    downloadType: SectionType,
+    acceptTypes: CertDownloadType[],
     detailData: string | null | undefined,
     shouldDisplayDetailData = true
   ) => (
@@ -138,7 +187,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   )
 
   const renderPrivateKeySection = (
-    downloadType: DownloadType) => (
+    downloadType: SectionType) => (
     <DescriptionRow>
       <Row>
         <Col span={12}>
@@ -161,14 +210,16 @@ export default function DownloadSection (props: DownloadDrawerProps) {
           }
         </Col>
       </Row>
-      {data?.privateKeyBase64 && renderDownloadButton(CertificateAcceptType.PKCS8,
-        () => handleDownloadClick(downloadType, CertificateAcceptType.PKCS8))}
+      {data?.privateKeyBase64 && renderDownloadButton(CertDownloadType.PKCS8,
+        () => handleDownloadClick(downloadType, CertDownloadType.PKCS8))}
       {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.privateKeyBase64 &&
         <ButtonWrapper>
           <Button onClick={() => {
             setUploadDrawerOpen(true)
           }}>{$t({ defaultMessage: 'Upload' })}</Button>
         </ButtonWrapper>}
+      {type === CertificateCategoryType.CERTIFICATE && !data?.privateKeyBase64
+        && <Description>{$t({ defaultMessage: 'N/A' })}</Description>}
     </DescriptionRow>
   )
 
@@ -211,14 +262,44 @@ export default function DownloadSection (props: DownloadDrawerProps) {
 
   return (
     <>
-      {renderSection(DownloadType.PUBLIC_KEY,
-        [CertificateAcceptType.PEM, CertificateAcceptType.DER], data?.publicKeyBase64)}
-      {renderSection(DownloadType.CHAINS,
-        [CertificateAcceptType.PEM, CertificateAcceptType.PKCS7], data?.chain)}
-      {renderPrivateKeySection(DownloadType.PRIVATE_KEY)}
-      {renderSection(DownloadType.P12, [CertificateAcceptType.PKCS12],
+      {renderSection(SectionType.PUBLIC_KEY,
+        [CertDownloadType.PEM, CertDownloadType.DER], data?.publicKeyBase64)}
+      {renderSection(SectionType.CHAINS,
+        [CertDownloadType.PEM, CertDownloadType.PKCS7], data?.chain)}
+      {renderPrivateKeySection(SectionType.PRIVATE_KEY)}
+      {renderSection(SectionType.P12,
+        [CertDownloadType.PKCS12, CertDownloadType.PKCS12_CHAIN],
         data?.privateKeyBase64, false)}
     </>
   )
 }
 
+const PasswordForm = (props: {
+  modal: ModalRef,
+  onFinish: (password: string) => void
+}) => {
+  const { $t } = getIntl()
+  const [form] = Form.useForm()
+  const { modal, onFinish } = props
+  modal.update({
+    onOk: () => {
+      onFinish(form.getFieldValue('password'))
+    }
+  })
+  return (
+    <>
+      <div>
+        {$t({ defaultMessage: 'Please enter a password to encrypt the file.' })}
+      </div>
+      <Form layout='vertical' form={form}>
+        <Form.Item
+          name='password'
+          label={$t({ defaultMessage: 'Password' })}
+          rules={[
+            { max: 64, message: $t(validationMessages.maxStr) }
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+      </Form></>)
+}

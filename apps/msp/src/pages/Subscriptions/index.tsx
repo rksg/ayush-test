@@ -39,6 +39,8 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                        from '@acx-ui/types'
+import { hasRoles }                                                         from '@acx-ui/user'
 
 import HspContext from '../../HspContext'
 
@@ -69,6 +71,7 @@ export function Subscriptions () {
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const {
     state
@@ -382,7 +385,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive}
+              hidden={!isAssignedActive || !isAdmin}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>
