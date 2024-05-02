@@ -11,9 +11,7 @@ import { EdgeScopes, RolesEnum, WifiScopes }                                    
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
-  UserProfileContextProps,
-  setUserProfile
-}         from '@acx-ui/user'
+  UserProfileContextProps }         from '@acx-ui/user'
 
 import {
   mockPersonaGroupWithoutNSG,
