@@ -34,7 +34,7 @@ export default function ResidentPortalVenuesTable () {
   const columns: TableProps<PropertyConfigs>['columns'] = [
     {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venueName',
       sorter: true,
       defaultSortOrder: 'ascend',

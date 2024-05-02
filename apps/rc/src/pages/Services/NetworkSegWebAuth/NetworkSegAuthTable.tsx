@@ -71,7 +71,7 @@ export default function NetworkSegAuthTable () {
         return switchCount || 0
       }
     }, {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'venueCount',
       dataIndex: 'venueCount',
       render: (_, { venueCount }) => {

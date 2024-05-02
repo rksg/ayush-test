@@ -5,7 +5,7 @@ import { merge }  from 'lodash'
 
 import { get, getJwtToken } from '@acx-ui/config'
 
-import { setUpIntl } from './intlUtil'
+import { getReSkinningElements, setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
@@ -196,7 +196,8 @@ export const useLocaleContext = () => useContext(LocaleContext)
 export interface LocaleProviderProps {
   /** @default 'en-US' */
   lang?: LangKey
-  children: ReactElement
+  children: ReactElement,
+  supportReSkinning?: boolean
 }
 
 export { LocaleProviderWrap as LocaleProvider }
@@ -216,11 +217,14 @@ function LocaleProvider (props: LocaleProviderProps) {
     loadLocale(lang).then((message) => {
       setUpIntl({
         locale: lang,
-        messages: message
+        messages: message,
+        defaultRichTextElements: getReSkinningElements(props.supportReSkinning, {
+          lang: lang, messages: message
+        })
       })
       setMessages(() => message)
     })
-  }, [lang])
+  }, [lang, props.supportReSkinning])
 
   const context = useMemo(() =>
     ({ lang, setLang, messages }), [lang, messages])
