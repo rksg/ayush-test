@@ -181,7 +181,8 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json({
           ...mockedUserProfile,
           scope: ['switch-r'],
-          customRoleName: 'CUSTOM_USER'
+          customRoleName: 'CUSTOM_USER',
+          customRoleType: 'Custom'
         }))
       ),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
