@@ -62,7 +62,7 @@ const userProfile = {
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
   detailLevel: 'su',
-  scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, EdgeScopes.CREATE, EdgeScopes.READ]
+  scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, EdgeScopes.CREATE, EdgeScopes.UPDATE]
 } as unknown as UserProfileInterface
 
 
@@ -147,7 +147,6 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should add no nsg drawer', async () => {
-    setUserProfile({ profile: userProfile, allowedOperations: [] })
     mockServer.use(
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
