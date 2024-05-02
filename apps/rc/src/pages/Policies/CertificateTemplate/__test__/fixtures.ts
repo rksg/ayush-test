@@ -184,7 +184,8 @@ export const certificateTemplateList = {
       certificateNames: [
         'testCertificate1',
         'testCertificate2'
-      ]
+      ],
+      variables: ['var1', 'var2']
     },
     {
       id: 'e86204218568452db9e1cb935c38f644',

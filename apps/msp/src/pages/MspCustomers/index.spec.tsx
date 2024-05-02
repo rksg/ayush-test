@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { MspEcTierEnum, MspUrlsInfo }                             from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -40,7 +40,8 @@ const list = {
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
       switchLicenses: 1,
-      edgeLicenses: 1
+      edgeLicenses: 1,
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -68,7 +69,8 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
-      accountType: 'TRIAL'
+      accountType: 'TRIAL',
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -105,7 +107,8 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     },
     {
       assignedMspEcList: [],
@@ -132,7 +135,8 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     }
   ]
 }
@@ -539,6 +543,7 @@ describe('MspCustomers', () => {
     })
   })
   it('should render table for installer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -576,6 +581,7 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -640,6 +646,7 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

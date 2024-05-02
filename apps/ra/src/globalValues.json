@@ -10,5 +10,6 @@
   "MLISA_UI_USER_TRACKING": "",
   "MLISA_LOGOUT_URL": "/analytics/api/auth/v1/user/logout",
   "DRUID_ROLLUP_DAYS": "36500",
-  "ENABLED_FEATURES": ""
+  "ENABLED_FEATURES": "",
+  "DRUID_RETAIN_PERIOD_DAYS": "90"
 }
