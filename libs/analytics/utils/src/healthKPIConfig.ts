@@ -514,6 +514,27 @@ export const kpiConfig = {
       format: formatter('countFormat'),
       deltaSign: '+'
     }
+  },
+  onlineSwitches: {
+    text: defineMessage({ defaultMessage: 'Switch Reachability' }),
+    timeseries: {
+      apiMetric: 'switchStatusCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Online Switches measures the percentage of Switches which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online Switch percentage across time. The bar chart on the right captures the daily Online Switch percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+    // configChange: {
+    //   text: defineMessage({ defaultMessage: 'Online APs Count' }),
+    //   apiMetric: 'onlineAPCount',
+    //   format: formatter('countFormat'),
+    //   deltaSign: '+'
+    // }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -525,7 +546,8 @@ export const kpisForTab = (isMLISA? : string) => {
         'clientThroughput',
         'apCapacity',
         'apServiceUptime',
-        'onlineAPs'
+        'onlineAPs',
+        'onlineSwitches'
       ]
     },
     connection: {
@@ -551,7 +573,8 @@ export const kpisForTab = (isMLISA? : string) => {
         'apToSZLatency',
         ...(isMLISA ? ['clusterLatency'] : []),
         'switchPoeUtilization',
-        'onlineAPs'
+        'onlineAPs',
+        'onlineSwitches'
       ]
     }
   }
