@@ -1,12 +1,14 @@
+import { createContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { OnboardedSystems } from '../OnboardedSystems'
-import { Support }          from '../Support'
-import { WebhooksTable }    from '../Webhooks'
+import { useOnboardedSystems } from '../OnboardedSystems'
+import { Support }             from '../Support'
+import { useUsers }            from '../Users'
+import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -27,18 +29,22 @@ interface Tab {
   headerExtra?: JSX.Element[]
 }
 
-const useTabs = () : Tab[] => {
+interface CountContextType {
+  usersCount: number,
+  setUsersCount: (count: number) => void
+}
+export const CountContext = createContext({} as CountContextType)
+
+const useTabs = (): Tab[] => {
   const { $t } = useIntl()
-  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
+
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: $t({ defaultMessage: 'Onboarded Systems' }),
-    component: <OnboardedSystems />
+    ...useOnboardedSystems()
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: $t({ defaultMessage: 'Users' }),
-    url: isNewUserRolesEnabled ? undefined : '/analytics/admin/users'
+    ...useUsers()
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,
@@ -67,8 +73,7 @@ const useTabs = () : Tab[] => {
   }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
-    title: $t({ defaultMessage: 'Webhooks' }),
-    component: <WebhooksTable />
+    ...useWebhooks()
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,

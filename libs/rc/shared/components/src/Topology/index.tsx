@@ -594,7 +594,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         }}>
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
-              ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
+              // eslint-disable-next-line max-len
+              ? <Empty description={$t({ defaultMessage: 'No devices added yet to this <venueSingular></venueSingular>' })}>
                 { hasAccess() && <Row>
                   <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
@@ -608,7 +609,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   </Col>
                 </Row>}
               </Empty>
-              : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
+              // eslint-disable-next-line max-len
+              : <Empty description={$t({ defaultMessage: 'This device not added to any <venueSingular></venueSingular>' })} />
           }
         </div>
       }

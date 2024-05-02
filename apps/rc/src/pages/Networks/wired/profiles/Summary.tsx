@@ -75,7 +75,7 @@ export function Summary () {
             $t({ defaultMessage: 'None' })}
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Venues:' })}
+          label={$t({ defaultMessage: '<VenuePlural></VenuePlural>:' })}
           children={getVenues() || $t({ defaultMessage: 'None' })}
         />
       </Col>
