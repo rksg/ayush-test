@@ -27,7 +27,8 @@ import {
   editStackDetail,
   editStackMembers,
   standaloneSwitches,
-  switchFirmwareVenue
+  switchFirmwareVenue,
+  staticRoutes
 } from '../__tests__/fixtures'
 import {
   vlansByVenueListResponse
@@ -105,6 +106,8 @@ describe('Switch Stack Form - Add', () => {
         (_, res, ctx) => res(ctx.json(editStackDetail))),
       rest.post(SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))),
+      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+        (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.post(SwitchUrlsInfo.convertToStack.url,
         (_, res, ctx) => res(ctx.json({})))
     )
@@ -235,6 +238,8 @@ describe('Switch Stack Form - Edit', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(SwitchUrlsInfo.getMemberList.url,
         (_, res, ctx) => res(ctx.json(editStackMembers))),
+      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+        (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => {
           mockUpdateSwitch()
