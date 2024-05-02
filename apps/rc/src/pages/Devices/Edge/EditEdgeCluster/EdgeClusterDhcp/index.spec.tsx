@@ -1,14 +1,16 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { edgeApi }                             from '@acx-ui/rc/services'
-import { EdgeDhcpUrls }                        from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { edgeApi }                                              from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDhcpUrls, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                  from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
 import { EdgeClusterDhcp } from '.'
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -57,7 +59,7 @@ describe('Edge Cluster DHCP Tab', () => {
 
     render(
       <Provider>
-        <EdgeClusterDhcp />
+        <EdgeClusterDhcp currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -70,7 +72,7 @@ describe('Edge Cluster DHCP Tab', () => {
   it('toggle should be ON when pools returned', async () => {
     render(
       <Provider>
-        <EdgeClusterDhcp />
+        <EdgeClusterDhcp currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -88,7 +90,7 @@ describe('Edge Cluster DHCP Tab', () => {
   it('should show DHCP selection form when switch is toggled on', async () => {
     render(
       <Provider>
-        <EdgeClusterDhcp />
+        <EdgeClusterDhcp currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,

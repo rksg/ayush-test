@@ -63,7 +63,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
