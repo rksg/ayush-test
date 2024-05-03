@@ -72,7 +72,8 @@ export function GeneralSettingForm () {
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
+    undefined, undefined, isSwitchRbacEnabled
   )
 
   // eslint-disable-next-line max-len

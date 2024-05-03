@@ -304,10 +304,15 @@ export const AAAServerTable = (props: {
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
-              deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id }, enableRbac: isSwitchRbacEnabled })
-                .then(clearSelection) :
-              bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id), enableRbac: isSwitchRbacEnabled })
-                .then(clearSelection)
+              deleteAAAServer({
+                params: { tenantId, aaaServerId: rows[0].id },
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection) :
+              bulkDeleteAAAServer({
+                params: { tenantId },
+                payload: rows.map(item => item.id),
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection)
             }
           })
         }

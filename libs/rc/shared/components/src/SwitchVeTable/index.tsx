@@ -42,7 +42,9 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: venueSwitchSetting }
-    = useVenueSwitchSettingQuery({ params, enableRbac: isSwitchRbacEnabled }, { skip: !isVenueLevel })
+    = useVenueSwitchSettingQuery({
+      params, enableRbac: isSwitchRbacEnabled
+    }, { skip: !isVenueLevel })
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params }, { skip: isVenueLevel })
 

@@ -34,7 +34,8 @@ export function SwitchAAATab () {
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)
   const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
+    undefined, undefined, isSwitchRbacEnabled
   )
   const cliApplied = !!venueSwitchSetting?.cliApplied
 
