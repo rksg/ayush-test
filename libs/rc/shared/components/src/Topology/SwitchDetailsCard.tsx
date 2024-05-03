@@ -8,6 +8,8 @@ import { DateFormatEnum, formatter }                                            
 import { CloseSymbol }                                                              from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus }             from '@acx-ui/rc/utils'
 import { useLocation }                                                              from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                             from '@acx-ui/types'
+import { hasPermission }                                                            from '@acx-ui/user'
 import { noDataDisplay, useDateFilter }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
@@ -52,18 +54,20 @@ export function SwitchDetailsCard (props: {
     return time.join(', ')
   }
 
+  const switchName = switchDetail?.name
+  || switchDetail?.id
+  || switchDetail?.switchMac
+  || $t({ defaultMessage: 'Unknown' }) // for unknown device
+
   return <Card><Card.Title>
-    <Space>
-      <UI.NodeTitle
+    <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
+      { hasPermission({ scopes: [SwitchScopes.READ] }) ? <UI.NodeTitle
         state={{ from: location.pathname }}
         // eslint-disable-next-line max-len
         to={`/devices/switch/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`}>
-        {switchDetail?.name
-            || switchDetail?.id
-            || switchDetail?.switchMac
-            || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
+        { switchName }
       </UI.NodeTitle>
+        : <Space style={{ fontSize: '12px' }}>{ switchName }</Space>}
       <Button
         size='small'
         type='link'
