@@ -4,12 +4,12 @@ import { Form, InputNumber, Select, Switch } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
-import { Table, TableProps }                      from '@acx-ui/components'
+import { Table, TableProps }     from '@acx-ui/components'
 import {
   Hotspot20AccessNetworkTypeEnum,
   Hotspot20ConnectionCapability,
   Hotspot20ConnectionCapabilityStatusEnum,
-  Hotspot20Ipv4AddressTypeEnum, NetworkSaveData } from '@acx-ui/rc/utils'
+  Hotspot20Ipv4AddressTypeEnum } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import NetworkFormContext from '../../NetworkFormContext'
@@ -86,35 +86,35 @@ const defaultConnectionCapabilities = [
   }
 ] as Hotspot20ConnectionCapability[]
 
-export function Hotspot20Tab (props: {
-  wlanData: NetworkSaveData | null
-}) {
+export function Hotspot20Tab () {
   const { $t } = useIntl()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data } = useContext(NetworkFormContext)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { wlanData } = props
   const form = Form.useFormInstance()
   const [editMode, setEditMode] = useState(false)
   const [connectionCapabilityDrawerVisible, setConnectionCapabilityDrawerVisible] = useState(false)
   const [connectionCapabilities, setConnectionCapabilities] =
     useState(defaultConnectionCapabilities as Hotspot20ConnectionCapability[])
   const [selectedConnectionCapability, setSelectedConnectionCapability] =
-    useState({} as Hotspot20ConnectionCapability)
-  const [drawerForm] = Form.useForm()
+    useState(null as unknown as Hotspot20ConnectionCapability)
 
   const maxConnectionCapibility = 43
   const labelWidth = '250px'
-  const connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
+  let connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
     [cap.protocolNumber + '_' + cap.port, cap.protocol]))
 
-  form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
+  useEffect(() => {
+    if (data && data.hotspot20Settings && data.hotspot20Settings.connectionCapability) {
+      setConnectionCapabilities(data.hotspot20Settings.connectionCapability)
+    }
+  }, [data, connectionCapabilities])
 
   useEffect(() => {
-    if (data && data.hotspot20Settings) {
-      form.setFieldsValue({ data })
+    if (connectionCapabilities) {
+      form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
     }
-  }, [form, data])
+  }, [connectionCapabilities, form])
 
   const networkTypeOptions = Object.keys(Hotspot20AccessNetworkTypeEnum).map((key => {
     return (
@@ -132,7 +132,6 @@ export function Hotspot20Tab (props: {
 
   const handleAddAction = () => {
     setConnectionCapabilityDrawerVisible(true)
-    drawerForm.resetFields()
   }
 
   const actions = !editMode ? [{
@@ -154,28 +153,30 @@ export function Hotspot20Tab (props: {
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ( [{ protocolNumber, port }]: Hotspot20ConnectionCapability[],
+    onClick: ( selectedRows: Hotspot20ConnectionCapability[],
       clearSelection: () => void) => {
-      setConnectionCapabilities([
-        ...connectionCapabilities.filter((cap: Hotspot20ConnectionCapability) =>
-          cap.protocolNumber !== protocolNumber && cap.port !== port
-        )
-      ])
+      if (selectedRows.length < connectionCapabilities.length ) {
+        const deletedMap = new Map(selectedRows?.map((cap) =>
+          [cap.protocolNumber + '_' + cap.port, cap.protocol]))
+        setConnectionCapabilities([
+          ...connectionCapabilities.filter((cap: Hotspot20ConnectionCapability) =>
+            !deletedMap.has(cap.protocolNumber + '_' + cap.port)
+          )
+        ])
+        connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
+          [cap.protocolNumber + '_' + cap.port, cap.protocol]))
+      } else {
+        setConnectionCapabilities([])
+        connectionCapibilityMap = new Map()
+      }
+
       clearSelection()
     }
   }]
 
-  const connectionCapabilityValidator = () => {
-    if (!connectionCapabilities.length) {
-      return Promise.reject($t({ defaultMessage: 'No connection capabilities were added yet' }))
-    }
-
-    return Promise.resolve()
-  }
-
-  const isValidConnectionCapability = (cap?: Hotspot20ConnectionCapability) => {
+  const isValidConnectionCapability = (editMode?: boolean, cap?: Hotspot20ConnectionCapability) => {
     return !!cap?.protocolNumber && !!cap.port &&
-      !connectionCapibilityMap.has(cap?.protocolNumber + '_' + cap?.port)
+      (editMode || !connectionCapibilityMap.has(cap?.protocolNumber + '_' + cap?.port))
   }
 
   const saveConnectionCapability = (
@@ -187,8 +188,8 @@ export function Hotspot20Tab (props: {
     if (editMode) {
       const capabilityIdx = connectionCapabilities
         .findIndex((capability: Hotspot20ConnectionCapability) =>
-          capability.port === capabilityObject.port as number &&
-        capability.protocolNumber === capabilityObject.protocolNumber as number
+          capability.port === capabilityObject.port &&
+        capability.protocolNumber === capabilityObject.protocolNumber
         )
       connectionCapabilities[capabilityIdx] = capabilityObject
       setConnectionCapabilities([
@@ -200,13 +201,16 @@ export function Hotspot20Tab (props: {
       ])
     }
 
+    connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
+      [cap.protocolNumber + '_' + cap.port, cap.protocol]))
+
     resetConnectionCapability()
   }
 
   const resetConnectionCapability = () => {
     setConnectionCapabilityDrawerVisible(false)
     setEditMode(false)
-    setSelectedConnectionCapability({} as Hotspot20ConnectionCapability)
+    setSelectedConnectionCapability(null as unknown as Hotspot20ConnectionCapability)
   }
 
   const tableColumns: TableProps<Hotspot20ConnectionCapability>['columns'] = [
@@ -464,9 +468,6 @@ export function Hotspot20Tab (props: {
             number: connectionCapabilities.length
           })}
           name={['hotspot20Settings', 'connectionCapabilities']}
-          rules={[
-            { validator: () => connectionCapabilityValidator() }
-          ]}
           children={<></>}
         />
       </div>

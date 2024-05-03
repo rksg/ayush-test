@@ -25,6 +25,7 @@ import {
   ManagementFrameProtectionEnum,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT } from '../../policies'
 import { NetworkDiagram }                                       from '../NetworkDiagram/NetworkDiagram'
@@ -50,7 +51,8 @@ export function Hotspot20SettingsForm () {
         wlan: {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection
-        }
+        },
+        hotspot20Settings: data.hotspot20Settings
       })
     }
   }, [data])
@@ -160,7 +162,9 @@ function Hotspot20Form () {
 
   function Hotspot20Service () {
     const { $t } = useIntl()
-    // const { setData, data } = useContext(NetworkFormContext)
+    const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+    const params = useParams()
+    const { networkId } = params
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
@@ -170,6 +174,18 @@ function Hotspot20Form () {
       pageSize: 100,
       sortField: 'name',
       sortOrder: 'ASC'
+    }
+
+    const networkFilter = {
+      fields: ['id'],
+      pageSize: 100,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: {
+        wifiNetworkIds: [
+          networkId
+        ]
+      }
     }
 
     const { providerSelectOptions } = useGetIdentityProviderListQuery({ payload: defaultPayload }, {
@@ -186,6 +202,20 @@ function Hotspot20Form () {
       }
     })
 
+    const selectedProviderList = useGetIdentityProviderListQuery(
+      { payload: networkFilter },
+      { skip: !networkId }
+    )
+
+    const selectedOperatorList = useGetWifiOperatorListQuery(
+      { payload: networkFilter },
+      { skip: !networkId }
+    )
+
+    const selectedProviderIds = selectedProviderList.data?.data.map(item => item.id)
+    const selectedOperatorId = selectedOperatorList && selectedOperatorList.data?.totalCount &&
+      selectedOperatorList.data?.data.map(item => item.id).at(0)
+
     useEffect(() => {
       if (wifiOperatorId.current !== undefined &&
         operatorSelectOptions.find(op => op.value === wifiOperatorId.current) !== undefined) {
@@ -193,6 +223,18 @@ function Hotspot20Form () {
         wifiOperatorId.current = undefined
       }
     }, [operatorSelectOptions, wifiOperatorId])
+
+    useEffect(() => {
+      if (data && (editMode || cloneMode) && providerSelectOptions && selectedProviderIds) {
+        form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
+      }
+    }, [cloneMode, data, editMode, providerSelectOptions, selectedProviderIds])
+
+    useEffect(() => {
+      if (data && (editMode || cloneMode) && operatorSelectOptions && selectedOperatorId) {
+        wifiOperatorId.current = selectedOperatorId
+      }
+    }, [cloneMode, data, editMode, operatorSelectOptions, selectedOperatorId])
 
     const handleAddOperator = () => {
       setShowOperatorDrawer(true)
