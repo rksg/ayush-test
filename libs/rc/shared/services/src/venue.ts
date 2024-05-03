@@ -86,8 +86,7 @@ import {
   ITimeZone,
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
-  ApiVersionEnum,
-  ApiVersion
+  ApiVersionType
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1060,7 +1059,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as { rbacApiVersion?: ApiVersionEnum }
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
         const apiInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(apiInfo.getVenueDirectedMulticast, params, apiCustomHeader)
@@ -1083,7 +1082,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const { rbacApiVersion, ...config } = payload as (ApiVersion & VenueDirectedMulticast)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueDirectedMulticast)
         const apiInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const configPayload = rbacApiVersion ? JSON.stringify(config) : config

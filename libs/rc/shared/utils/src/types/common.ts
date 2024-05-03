@@ -5,6 +5,6 @@ export interface CountAndNames {
   names: string[]
 }
 
-export type ApiVersion = {
+export type ApiVersionType = {
   rbacApiVersion?: ApiVersionEnum
 }

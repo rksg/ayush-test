@@ -12,7 +12,7 @@ import {
   useUpdateVenueDirectedMulticastMutation,
   useUpdateVenueTemplateDirectedMulticastMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, VenueDirectedMulticast } from '@acx-ui/rc/utils'
+import { ApiVersionEnum, VenueDirectedMulticast, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -21,9 +21,10 @@ import { FieldLabel }                                                           
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
+  const rbacApiVersion = (isUseRbacApi && !isTemplate)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
