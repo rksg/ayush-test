@@ -148,6 +148,34 @@ describe('Users Page', () => {
 
     expect(await screen.findByText('Refreshed user details successfully')).toBeVisible()
   })
+  it('should handle refresh user details failure with error message correctly', async () => {
+    mockRbacUserResponse([mockManagedUsers[0]])
+    mockSSOResponse()
+    const error = { status: 500, message: 'Internal Server Error.' }
+    mockServer.use(
+      rest.put(`${rbacApiURL}/users/refresh/1`, (_, res, ctx) => res(
+        ctx.status(error.status),
+        ctx.json({ error: error.message })
+      ))
+    )
+    const Component = () => {
+      const { component } = useUsers()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
+
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    expect(refreshButton).toBeVisible()
+    fireEvent.click(refreshButton)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const message = `Error: ${error.message}. (status code: ${error.status})`
+    expect(await screen.findByText(message)).toBeVisible()
+  })
   it('should handle delete user details correctly for internal user', async () => {
     mockRbacUserResponse([mockManagedUsers[0]])
     mockDeleteUserDetailsResponse({ data: 'ok' })
