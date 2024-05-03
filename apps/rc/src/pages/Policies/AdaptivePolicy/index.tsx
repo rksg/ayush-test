@@ -1,8 +1,8 @@
-import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { PageHeader }             from '@acx-ui/components'
-import { getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { goToNotFound }           from '@acx-ui/user'
+import { PageHeader }                                                          from '@acx-ui/components'
+import { PolicyType, adaptivePolicyListLabelMap, useAdaptivePolicyBreadcrumb } from '@acx-ui/rc/utils'
+import { goToNotFound }                                                        from '@acx-ui/user'
 
 import AdaptivePolicyTable       from './AdaptivePolicy/AdaptivePolicyTable'
 import AdaptivePolicySetTable    from './AdaptivePolicySet/AdaptivePolicySetTable'
@@ -23,24 +23,20 @@ const tabs: Record<AdaptivePolicyTabKey, () => JSX.Element> = {
 
 const tabsName: Record<AdaptivePolicyTabKey, MessageDescriptor> = {
   // eslint-disable-next-line max-len
-  [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'RADIUS Attribute Groups' }),
-  [AdaptivePolicyTabKey.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
+  [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: adaptivePolicyListLabelMap[PolicyType.RADIUS_ATTRIBUTE_GROUP],
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY]: adaptivePolicyListLabelMap[PolicyType.ADAPTIVE_POLICY],
   // eslint-disable-next-line max-len
-  [AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Sets' })
+  [AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET]: adaptivePolicyListLabelMap[PolicyType.ADAPTIVE_POLICY_SET]
 }
 
 export default function AdaptivePolicyList (props: { tabKey: AdaptivePolicyTabKey }) {
   const { $t } = useIntl()
   const Tab = tabs[props.tabKey] || goToNotFound
+  const breadcrumb = useAdaptivePolicyBreadcrumb()
+
   return <>
     <PageHeader
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'Policies & Profiles' }),
-          link: getPolicyListRoutePath(true)
-        }
-      ]}
+      breadcrumb={breadcrumb}
       title={$t(tabsName[props.tabKey])}
       footer={<AdaptivePolicyTabs activeTab={props.tabKey}/>}
     />

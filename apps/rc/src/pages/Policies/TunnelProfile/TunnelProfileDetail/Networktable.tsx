@@ -73,7 +73,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
       )
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'venues',
       dataIndex: 'venues',
       sorter: true,

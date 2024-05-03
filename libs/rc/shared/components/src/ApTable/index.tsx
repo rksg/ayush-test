@@ -342,7 +342,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     // },
     ...((params.venueId || params.apGroupId) ? [] : [{
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
@@ -524,7 +524,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     ]: []),
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
-      tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
+      tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
       filterValueArray: true,

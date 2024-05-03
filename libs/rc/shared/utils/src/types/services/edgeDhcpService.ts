@@ -14,7 +14,6 @@ export interface EdgeDhcpSetting {
     dhcpPools?: EdgeDhcpPool[];
     hosts?: EdgeDhcpHost[];
     dhcpOptions?: EdgeDhcpOption[];
-    edgeIds: string[];
 }
 
 export interface EdgeDhcpPool {

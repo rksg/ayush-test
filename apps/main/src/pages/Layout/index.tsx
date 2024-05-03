@@ -26,7 +26,7 @@ import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerList
 import { MSPUtils }                                                                     from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                     from '@acx-ui/rc/services'
-import { useTableQuery }                                                                from '@acx-ui/rc/utils'
+import { useTableQuery, dpskAdminRoutePathKeeper }                                      from '@acx-ui/rc/utils'
 import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }             from '@acx-ui/react-router-dom'
 import { useParams }                                                                    from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
@@ -98,18 +98,24 @@ function Layout () {
           pathname: `${basePath.pathname}`
         })
     }
-    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
-      (params['*'] === 'userprofile')
-        ? navigate({
-          ...userProfileBasePath,
-          pathname: `${userProfileBasePath.pathname}`
-        })
-        : navigate({
-          ...dpskBasePath,
-          pathname: `${dpskBasePath.pathname}`
-        })
-    }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+  }, [isGuestManager, params['*']])
+
+  useEffect(() => {
+    const currentPath = params['*'] as string
+    const isAllowed = dpskAdminRoutePathKeeper(currentPath)
+
+    if (!isDPSKAdmin || isAllowed) return
+
+    currentPath === 'userprofile'
+      ? navigate({
+        ...userProfileBasePath,
+        pathname: `${userProfileBasePath.pathname}`
+      })
+      : navigate({
+        ...dpskBasePath,
+        pathname: `${dpskBasePath.pathname}`
+      })
+  }, [isDPSKAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')

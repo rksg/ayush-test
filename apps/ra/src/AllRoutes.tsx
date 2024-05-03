@@ -28,7 +28,6 @@ import Incidents                             from './pages/Incidents'
 import Layout                                from './pages/Layout'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
-import Users                                 from './pages/Users'
 import { WiFiPage, WifiTabsEnum }            from './pages/Wifi'
 import ApDetails                             from './pages/Wifi/ApDetails'
 import { WiFiNetworksPage, NetworkTabsEnum } from './pages/WifiNetworks'
@@ -149,7 +148,8 @@ function AllRoutes () {
       <Route path='admin'>
         <Route path='onboarded'
           element={<AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>} />
-        <Route path='users' element={<Users/>} />
+        <Route path='users'
+          element={<AccountManagement tab={AccountManagementTabEnum.USERS}/>} />
         <Route path='support'
           element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />
         <Route path='webhooks'

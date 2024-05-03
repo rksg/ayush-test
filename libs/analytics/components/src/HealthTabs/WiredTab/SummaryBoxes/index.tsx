@@ -21,12 +21,11 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     {
       type: 'green',
       values: [{
-        title: defineMessage({ defaultMessage: 'DHCP Failure' }),
+        title: defineMessage({ defaultMessage: 'DHCP' }),
         value: !isNil(summaryData?.switchDHCP.successCount) &&
-        summaryData?.switchDHCP.attemptCount
+          summaryData?.switchDHCP.attemptCount
           ? formatter('percentFormat')(
-            (summaryData?.switchDHCP.attemptCount - summaryData?.switchDHCP.successCount)
-        / summaryData?.switchDHCP.attemptCount )
+            summaryData?.switchDHCP.successCount / summaryData?.switchDHCP.attemptCount)
           : noDataDisplay
       }],
       onClick: () => { }
@@ -34,7 +33,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     {
       type: 'red',
       values: [{
-        title: defineMessage({ defaultMessage: 'Congestion' }),
+        title: defineMessage({ defaultMessage: 'Uplink usage' }),
         value: 'X2%'
       }],
       onClick: () => { }
@@ -43,7 +42,10 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'yellow',
       values: [{
         title: defineMessage({ defaultMessage: 'Ports exp. Storm' }),
-        value: 'X3%'
+        value: !isNil(summaryData?.stormPortCount) &&
+        summaryData?.portCount
+          ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)
+          : noDataDisplay
       }],
       onClick: () => { }
     },

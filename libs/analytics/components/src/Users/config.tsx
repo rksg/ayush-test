@@ -1,21 +1,18 @@
-
 import { Checkbox, Typography } from 'antd'
 import { Rule }                 from 'antd/lib/form'
 import input                    from 'antd/lib/input'
 import { defineMessage }        from 'react-intl'
 
-
 import { ManagedUser } from '@acx-ui/analytics/utils'
-import { Label }       from '@acx-ui/rc/components'
 import { emailRegExp } from '@acx-ui/rc/utils'
 import { getIntl }     from '@acx-ui/utils'
 
 import { AvailableUsersSelection } from './AvailableUsersSelection'
 import { ResourceGroupSelection }  from './ResourceGroupSelection'
 import { RoleSelection }           from './RoleSelection'
+import { Label }                   from './styledComponents'
 
 import type { CheckboxProps } from 'antd'
-
 
 const Disclaimer = (props: object) => {
   const { $t } = getIntl()

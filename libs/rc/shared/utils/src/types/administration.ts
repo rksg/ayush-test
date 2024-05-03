@@ -261,7 +261,7 @@ export interface EntitlementActivations {
   productName: string,
   productCode: string,
   productId: string,
-  quantity: 100,
+  quantity: number,
   registeredQuantity: number,
   remainingQuantity: number,
   spaStartDate: string,

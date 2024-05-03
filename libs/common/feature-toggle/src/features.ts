@@ -49,6 +49,7 @@ export enum Features {
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
+  ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
@@ -115,6 +116,7 @@ export enum Features {
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
   SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
+  SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   SWITCH_EDIT_PORTS_FROM_PANEL = 'acx-ui-edit-ports-from-panel',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'switch-firmware-related-tsb-blocking-toggle',
@@ -125,10 +127,12 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
+  SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
@@ -198,5 +202,5 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
-  { key: TierFeatures.BETA_CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, venues, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
+  { key: TierFeatures.BETA_CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
 ]

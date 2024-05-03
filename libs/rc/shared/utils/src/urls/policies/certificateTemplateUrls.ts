@@ -79,7 +79,7 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   downloadCA: {
     method: 'get',
     newApi: true,
-    url: '/certificateAuthorities/:caId'
+    url: '/certificateAuthorities/:caId?includeChain=:includeChain&password=:password'
   },
   downloadCAChains: {
     method: 'get',
@@ -109,7 +109,8 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
   downloadCertificate: {
     method: 'get',
     newApi: true,
-    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+    // eslint-disable-next-line max-len
+    url: '/certificateTemplates/:templateId/certificates/:certificateId?includeChain=:includeChain&password=:password'
   },
   downloadCertificateChains: {
     method: 'get',

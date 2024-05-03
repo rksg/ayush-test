@@ -127,16 +127,13 @@ export interface AlarmMeta {
 }
 
 export interface RWG {
-  id: string
   name: string
   status: string
   venueId: string
   venueName: string
-  loginUrl: string
-  username: string
-  password: string
+  hostname: string
+  apiKey: string
   rwgId: string
-  tenantId: string
 }
 
 export interface GatewayAlarms {
