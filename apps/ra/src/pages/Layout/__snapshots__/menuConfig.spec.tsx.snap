@@ -415,8 +415,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -600,8 +599,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -1091,8 +1089,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -1591,8 +1588,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [

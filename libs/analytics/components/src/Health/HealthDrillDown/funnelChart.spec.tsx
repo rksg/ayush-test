@@ -172,7 +172,7 @@ describe('Funnel Chart', () => {
         <Labels {...props} />
       </Provider>
     )
-    expect(await screen.findByText('test3: (0)')).toBeVisible()
+    expect(await screen.findByText('test3: (0 ms)')).toBeVisible()
   })
   it('should handle onClick', async () => {
     const onClick = jest.fn()

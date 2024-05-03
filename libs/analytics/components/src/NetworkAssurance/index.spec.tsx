@@ -1,16 +1,19 @@
 import userEvent from '@testing-library/user-event'
 
-import * as config                 from '@acx-ui/config'
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, waitFor } from '@acx-ui/test-utils'
+import * as config                    from '@acx-ui/config'
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                   from '@acx-ui/store'
+import { render, screen, waitFor }    from '@acx-ui/test-utils'
 
 import { NetworkAssurance, NetworkAssuranceTabEnum } from '.'
 
 const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn(),
+  useTenantLink: jest.fn()
 }))
 
 jest.mock('../Header', () => ({
@@ -20,6 +23,10 @@ jest.mock('../Header', () => ({
 jest.mock('../Health', () => ({
   ...jest.requireActual('../Health'),
   HealthPage: () => <div data-testid='HealthPage' />
+}))
+jest.mock('../HealthTabs', () => ({
+  ...jest.requireActual('../HealthTabs'),
+  HealthTabs: () => <div data-testid='HealthTabs' />
 }))
 
 jest.mock('../ServiceGuard', () => ({
@@ -49,8 +56,25 @@ jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
 
 describe('NetworkAssurance', () => {
+  const location = {
+    pathname: '/t1/t/dashboard',
+    key: '123',
+    state: {},
+    search: '',
+    hash: ''
+  }
+  const basePath = {
+    pathname: '/tenant-id/t/analytics',
+    search: '',
+    hash: ''
+  }
+  beforeEach(() => {
+    jest.mocked(useLocation).mockReturnValue(location)
+    jest.mocked(useTenantLink).mockReturnValue(basePath)
+  })
   afterEach(() => {
     get.mockReturnValue('')
+    jest.clearAllMocks()
   })
   it('should render health', async () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
@@ -125,5 +149,22 @@ describe('NetworkAssurance', () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(screen.queryByText('Config Change')).toBeNull()
+  })
+  it('should render header with correct options for health pages', async () => {
+    ['overview', 'wireless', 'wired'].forEach(async (tab) => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useTenantLink).mockReturnValue({
+        pathname: 't1/t/ai',
+        search: '',
+        hash: ''
+      })
+      jest.mocked(useLocation).mockReturnValue({
+        ...location,
+        pathname: `t1/t/ai/health/${tab}`
+      })
+      render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+        { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+      expect(await screen.findByTestId('HealthTabs')).toBeVisible()
+    })
   })
 })

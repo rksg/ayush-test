@@ -116,7 +116,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
     tooltip: $t({ defaultMessage:
-        'A list of the networks that have been activated on this venue.' }),
+        // eslint-disable-next-line max-len
+        'A list of the networks that have been activated on this <venueSingular></venueSingular>.' }),
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',

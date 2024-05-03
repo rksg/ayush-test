@@ -182,7 +182,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,

@@ -38,7 +38,7 @@ const EdgeSdLanDetail = () => {
   )
 
   const sdLanInfo = [{
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     content: () => ((edgeSdLanData.venueId)
       ? <TenantLink to={`/venues/${edgeSdLanData.venueId}/venue-details/overview`}>
         {edgeSdLanData.venueName}

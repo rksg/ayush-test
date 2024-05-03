@@ -14,7 +14,7 @@ import { useMuteIncidentsMutation } from '../../IncidentTable/services'
 type MuteIncidentResponse = {
   toggleMute: { success: boolean; errorCode: string; errorMsg: string; }
 }
-function MuteIncident ({ incident } : { incident: Incident }) {
+export function MuteIncident ({ incident } : { incident: Incident }) {
   const { $t } = useIntl()
   const [ muteIncident ] = useMuteIncidentsMutation()
   const [ isMuted, setIsMuted ] = useState(incident.isMuted)
@@ -58,4 +58,4 @@ function MuteIncident ({ incident } : { incident: Incident }) {
     }
   ]}/>
 }
-export default MuteIncident
+

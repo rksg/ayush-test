@@ -17,7 +17,9 @@ import {
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useActivateCertificateTemplateMutation,
-  useGetCertificateTemplatesQuery
+  useGetCertificateTemplatesQuery,
+  useUpdateNetworkVenueTemplateMutation,
+  useDeleteNetworkVenuesTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -120,8 +122,12 @@ export function NetworkForm (props:{
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
     useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
   )
-  const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+  )
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
+  )
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
@@ -629,7 +635,7 @@ export function NetworkForm (props:{
               }
               <StepsFormLegacy.StepForm
                 name='venues'
-                title={intl.$t({ defaultMessage: 'Venues' })}
+                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                 onFinish={handleVenues}
               >
                 <Venues defaultActiveVenues={defaultActiveVenues} />
@@ -719,7 +725,7 @@ export function NetworkForm (props:{
               }
               <StepsForm.StepForm
                 name='venues'
-                title={intl.$t({ defaultMessage: 'Venues' })}
+                title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                 onFinish={handleVenues}
               >
                 <Venues />

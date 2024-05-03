@@ -139,7 +139,6 @@ describe('Add user drawer component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
     await userEvent.click(await screen.findByRole('combobox', { name: 'Privilege Group' }))
     await userEvent.click(await screen.findByText( 'wi-fi privilege group' ))
-    await userEvent.click(await screen.findByRole('radio', { name: 'None' }))
     await userEvent.click(await screen.findByText('Add User'))
     await waitFor(() => {
       expect(mockedAddAdminFn).toBeCalledWith({

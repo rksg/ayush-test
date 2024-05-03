@@ -4,10 +4,21 @@ import { Col, Row } from 'antd'
 import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
-import { Table, TableProps, Tooltip, showActionModal }                                                                                from '@acx-ui/components'
-import { EdgeLag, EdgeLagStatus, EdgePort, EdgeSerialNumber, defaultSort, getEdgePortDisplayName, getEdgePortIpModeString, sortProp } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                                                                                 from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                              from '@acx-ui/user'
+import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import {
+  ClusterNetworkSettings,
+  EdgeLag,
+  EdgeLagStatus,
+  EdgePort,
+  EdgeSerialNumber,
+  defaultSort,
+  getEdgePortDisplayName,
+  getEdgePortIpModeString,
+  isInterfaceInVRRPSetting,
+  sortProp
+} from '@acx-ui/rc/utils'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -21,6 +32,7 @@ interface EdgeLagTableProps {
   lagList?: EdgeLag[]
   lagStatusList?: EdgeLagStatus[]
   portList?: EdgePort[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
@@ -28,9 +40,8 @@ interface EdgeLagTableProps {
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
-    clusterId='',
-    serialNumber = '',
-    lagList, lagStatusList, portList,
+    clusterId = '', serialNumber = '', lagList,
+    lagStatusList, portList, vipConfig = [],
     onAdd, onEdit, onDelete
   } = props
   const { $t } = useIntl()
@@ -129,12 +140,12 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     }[]
   ) => {
     return lagMembers?.map(
-      lagmember =>
+      lagMember =>
         <Row>
           <Col>
             {
               `${getEdgePortDisplayName((portList?.find(port =>
-                port.id === lagmember.portId)))} (${lagmember.portEnabled ?
+                port.id === lagMember.portId)))} (${lagMember.portEnabled ?
                 $t({ defaultMessage: 'Enabled' }) :
                 $t({ defaultMessage: 'Disabled' })})`
             }
@@ -160,6 +171,14 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     }
   ]
 
+  const checkInterfacesInVRRPSetting = (rows: EdgeLagTableType[]) => {
+    for(let row of rows) {
+      if(isInterfaceInVRRPSetting(serialNumber, `lag${row.id}`, vipConfig))
+        return true
+    }
+    return false
+  }
+
   const rowActions: TableProps<EdgeLagTableType>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
@@ -171,6 +190,13 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     {
       scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (rows) => checkInterfacesInVRRPSetting(rows),
+      tooltip: (rows) => {
+        if(checkInterfacesInVRRPSetting(rows)) {
+          return $t({ defaultMessage: 'The LAG configured as VRRP interface cannot be deleted' })
+        }
+        return ''
+      },
       onClick: (rows, clearSelection) => {
         const targetData = rows[0]
         showActionModal({
@@ -213,6 +239,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         data={currentEditData}
         portList={portList}
         existedLagList={lagList}
+        vipConfig={vipConfig}
         onAdd={onAdd}
         onEdit={onEdit}
       />

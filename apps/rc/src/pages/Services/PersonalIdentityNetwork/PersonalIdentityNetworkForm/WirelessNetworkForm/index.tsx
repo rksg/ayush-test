@@ -102,8 +102,8 @@ export const WirelessNetworkForm = () => {
                       <UI.Description>
                         {
                           !networkOptions?.length &&
-                            $t({ defaultMessage: 'No networks activated on Venue ({venueName})' },
-                              { venueName: getVenueName(venueId) })
+                            // eslint-disable-next-line max-len
+                            $t({ defaultMessage: 'No networks activated on <VenueSingular></VenueSingular> ({venueName})' }, { venueName: getVenueName(venueId) })
                         }
                       </UI.Description>
                     </Space>

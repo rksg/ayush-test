@@ -43,7 +43,6 @@ import {
   TableResult,
   usePollingTableQuery,
   APExtendedGrouped,
-  AFCMaxPowerRender,
   AFCPowerStateRender,
   AFCStatusRender,
   getFilters,
@@ -343,7 +342,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     // },
     ...((params.venueId || params.apGroupId) ? [] : [{
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
@@ -521,20 +520,11 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </>
         )
       }
-    },
-    { key: 'afcMaxPower',
-      title: $t({ defaultMessage: 'AFC Max Power' }),
-      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
-      }
     }
     ]: []),
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
-      tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
+      tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
       filterValueArray: true,

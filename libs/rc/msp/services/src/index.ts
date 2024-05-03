@@ -695,6 +695,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getBrandingData: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getUserProfilePver: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -870,6 +879,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    addBrandCustomers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     patchCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.patchCustomer, params)
@@ -970,6 +989,7 @@ export const {
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
+  useGetBrandingDataQuery,
   useLazyGetUserProfilePverQuery,
   useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
@@ -987,6 +1007,7 @@ export const {
   useAssignMspEcToMultiIntegratorsMutation,
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
+  useAddBrandCustomersMutation,
   usePatchCustomerMutation
 } = mspApi
 

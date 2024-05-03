@@ -26,6 +26,7 @@ import {
   PrivilegePolicyObjectType,
   Venue,
   VenueObjectList,
+  specialCharactersRegExp,
   systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
@@ -154,10 +155,11 @@ export function AddPrivilegeGroup () {
     }
   }
 
-  const DisplaySelectedVenues = () => {
+  function DisplaySelectedVenues (ownScope: boolean) {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
+    return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
+      marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -179,8 +181,9 @@ export function AddPrivilegeGroup () {
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
         {firstCustomer.name} ({firstCustomer.children.every(v => v.selected) ?
-          'All Venues' : (firstCustomer.children.filter(v => v.selected).length + ' ' +
-        (firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'))})
+          intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+          intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+            { count: firstCustomer.children.filter(v => v.selected).length })})
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -190,8 +193,9 @@ export function AddPrivilegeGroup () {
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
           {ec.name} ({ec.children.every(v => v.selected) ?
-            'All Venues' : (ec.children.filter(v => v.selected).length + ' ' +
-          (ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'))})
+            intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+            intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+              { count: ec.children.filter(v => v.selected).length })})
         </UI.VenueList>
       )}</div>
   }
@@ -206,7 +210,7 @@ export function AddPrivilegeGroup () {
           { validator: () =>{
             if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
               return Promise.reject(
-                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+                `${intl.$t({ defaultMessage: 'Please select <venuePlural></venuePlural>' })} `
               )
             }
             return Promise.resolve()}
@@ -220,24 +224,24 @@ export function AddPrivilegeGroup () {
             <Radio
               key={ChoiceScopeEnum.ALL_VENUES}
               value={ChoiceScopeEnum.ALL_VENUES}>
-              {intl.$t({ defaultMessage: 'All Venues' })}
+              {intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })}
             </Radio>
             <Radio
               key={ChoiceScopeEnum.SPECIFIC_VENUE}
               value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+              {intl.$t({ defaultMessage: 'Specific <VenuePlural></VenuePlural>' })}
             </Radio>
             <Button
               style={{ marginLeft: '22px' }}
               hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
               type='link'
               onClick={onClickSelectVenue}
-            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+            >{intl.$t({ defaultMessage: 'Select <venuePlural></venuePlural>' })}</Button>
           </Space>
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(true) }
     </>
   }
 
@@ -257,7 +261,7 @@ export function AddPrivilegeGroup () {
           { validator: () =>{
             if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
               return Promise.reject(
-                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+                `${intl.$t({ defaultMessage: 'Please select <venuePlural></venuePlural>' })} `
               )
             }
             return Promise.resolve()}
@@ -272,24 +276,24 @@ export function AddPrivilegeGroup () {
             <Radio
               key={ChoiceScopeEnum.ALL_VENUES}
               value={ChoiceScopeEnum.ALL_VENUES}>
-              {intl.$t({ defaultMessage: 'All Venues' })}
+              {intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })}
             </Radio>
             <Radio
               key={ChoiceScopeEnum.SPECIFIC_VENUE}
               value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+              {intl.$t({ defaultMessage: 'Specific <VenuePlural></VenuePlural>' })}
             </Radio>
             <Button
               style={{ marginLeft: '22px' }}
               hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
               type='link'
               onClick={onClickSelectVenue}
-            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+            >{intl.$t({ defaultMessage: 'Select <venuePlural></venuePlural>' })}</Button>
           </Space>
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(false) }
 
       <Form.Item
         name='mspscope'
@@ -362,15 +366,19 @@ export function AddPrivilegeGroup () {
                 { required: true },
                 { min: 2 },
                 { max: 128 },
-                { validator: (_, value) => systemDefinedNameValidator(value) }
+                { validator: (_, value) => systemDefinedNameValidator(value) },
+                { validator: (_, value) => specialCharactersRegExp(value) }
               ]}
               children={<Input />}
             />
             <Form.Item
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
+              rules={[
+                { max: 180 }
+              ]}
               children={
-                <Input.TextArea rows={4} maxLength={180} />
+                <Input.TextArea rows={4} />
               }
             />
             <CustomRoleSelector />

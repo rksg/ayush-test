@@ -13,8 +13,10 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { ManageAdminsDrawer, SelectIntegratorDrawer } from '@acx-ui/msp/components'
 import {
+  useAddBrandCustomersMutation,
   useAddRecCustomerMutation,
   useDisableMspEcSupportMutation,
   useEnableMspEcSupportMutation,
@@ -30,6 +32,7 @@ import {
   MspEc,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
+  MspMultiRecData,
   MspRecCustomer,
   MspRecData
 } from '@acx-ui/msp/utils'
@@ -64,9 +67,11 @@ export function AddRecCustomer () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [addRecCustomer] = useAddRecCustomerMutation()
+  const [addBrandCustomers] = useAddBrandCustomersMutation()
 
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
+  const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -198,17 +203,31 @@ export function AddRecCustomer () {
           })
         })
       }
-      const customer: MspRecData = {
+      const recCustomers=[] as MspRecData[]
+      if (mspRecCustomer.length > 0) {
+        mspRecCustomer.forEach((cus: MspRecCustomer) => {
+          recCustomers.push({
+            account_id: cus.account_id,
+            name: cus.account_name,
+            admin_delegations: delegations,
+            delegations: ecDelegations.length > 0 ? ecDelegations : undefined
+          })
+        })
+      }
+
+      const customerMulti: MspMultiRecData = { data: recCustomers }
+      const customerRec: MspRecData =
+      {
         account_id: mspRecCustomer[0].account_id,
-        admin_delegations: delegations
+        admin_delegations: delegations,
+        delegations: ecDelegations.length > 0 ? ecDelegations : undefined
       }
 
-      if (ecDelegations.length > 0) {
-        customer.delegations = ecDelegations
-      }
+      const customer = multiPropertySelectionEnabled ? customerMulti : customerRec
 
-      const result =
-    await addRecCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      const result = multiPropertySelectionEnabled
+        ? await addBrandCustomers({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+        : await addRecCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
         // const ecTenantId = result.tenant_id
       }
@@ -235,18 +254,20 @@ export function AddRecCustomer () {
   const displayRecCustomer = () => {
     if (!mspRecCustomer || mspRecCustomer.length === 0)
       return noDataDisplay
-    return <>
-      <Form.Item
-        label={intl.$t({ defaultMessage: 'Property Name' })}
-      >
-        <Paragraph>{mspRecCustomer[0].account_name}</Paragraph>
-      </Form.Item>
-      <Form.Item style={{ marginTop: '-22px' }}
-        label={intl.$t({ defaultMessage: 'Address' })}
-      >
-        <Paragraph>{mspUtils.transformMspRecAddress(mspRecCustomer[0])}</Paragraph>
-      </Form.Item>
-    </>
+    return mspRecCustomer.map(customer =>
+      <div key={customer.account_id}>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Property Name' })}
+        >
+          <Paragraph>{customer.account_name}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Address' })}
+        >
+          <Paragraph>{mspUtils.transformMspRecAddress(customer)}</Paragraph>
+        </Form.Item>
+      </div>
+    )
   }
 
   const displayEditRecCustomer = () => {
@@ -297,7 +318,7 @@ export function AddRecCustomer () {
         <label>{
           intl.$t({ defaultMessage: 'Brand Property' })
         }</label>
-        <Form.Item
+        <Form.Item style={{ maxHeight: '300px', overflow: 'auto' }}
           children={<div>{isEditMode ? displayEditRecCustomer() : displayRecCustomer()}</div>} />
         {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerRecVisible(true)}>
@@ -394,6 +415,7 @@ export function AddRecCustomer () {
         visible={drawerRecVisible}
         setVisible={setDrawerRecVisible}
         setSelected={selectedRecCustomer}
+        multiSelectionEnabled={multiPropertySelectionEnabled}
         tenantId={mspEcTenantId}
       />}
       {drawerAdminVisible && <ManageAdminsDrawer

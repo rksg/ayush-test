@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 
 
 
@@ -7,10 +7,13 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox, Input } from 'antd'
 import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
 import { FormattedMessage, useIntl }                                 from 'react-intl'
 
-import { cssStr, Tooltip, Button }                         from '@acx-ui/components'
+import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useNavigate, useLocation }                        from '@acx-ui/react-router-dom'
 import { validationMessages }                              from '@acx-ui/utils'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import {
   ApRadioTypeEnum,
@@ -24,9 +27,11 @@ import {
   apChannelSelectionMethods6GOptions,
   LPIButtonText
 } from './RadioSettingsContents'
+import { VenueRadioContext }                                   from './RadioSettingsContents'
 import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
 const { useWatch } = Form
+
 
 export function RadioSettingsForm (props:{
   radioType: ApRadioTypeEnum,
@@ -53,6 +58,7 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
+  const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']
   const changeIntervalFieldName = [...radioDataKey, 'changeInterval']
   const scanIntervalFieldName = [...radioDataKey, 'scanInterval']
@@ -73,7 +79,9 @@ export function RadioSettingsForm (props:{
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
-
+  const navigate = useNavigate()
+  const location = useLocation()
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venue?.id}/edit/wifi/radio/Normal6GHz`)
   const [channelMethod] = [useWatch<string>(methodFieldName)]
   const form = Form.useFormInstance()
   const [
@@ -125,57 +133,106 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
+  const AFCEnableValidation = () => {
+    return [
+      (AFC_Featureflag),
+      (ApRadioTypeEnum.Radio6G === radioType),
+      (context === 'ap'),
+      (enableAfc),
+      (
+        (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined) ||
+        (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined)
+      )
+    ].every(Boolean)
+  }
+
 
 
   return (
     <>
-      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
-        <FieldLabel width='180px'
-          // Hide the label when afcEnable is false or ap is outdoor under ap context
-          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
-            { display: 'none' } : { display: 'flex' }}>
-          <div style={{ float: 'left' }}>
-            <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
-          </div>
-          <Form.Item
-            style={{ width: '50px' }}
-            name={enableAfcFieldName}
-            valuePropName={'checked'}
-            initialValue={true}>
-            {isUseVenueSettings ?
-              LPIButtonText?.buttonText :
-              <Switch
-                disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => {
-                  onChangedByCustom('enableAfc')
-                }}
-              />}
-          </Form.Item>
-          <Tooltip title={<>
-            <FormattedMessage
-              values={{ br: () => <br /> }}
-              defaultMessage={'Please ensure that configure the AFC Geo-location for the APs in the mobile APP.'}
-            />
-            <Button type='link'
-              style={{
-                height: '16px',
-                lineHeight: '12px',
-                fontSize: '12px'
+      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType && <FieldLabel width='180px'
+        // Hide the label when afcEnable is false or ap is outdoor under ap context
+        style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
+          { display: 'none' } : { display: 'flex' }}>
+        <div style={{ float: 'left' }}>
+          <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
+        </div>
+        <Form.Item
+          style={{ width: '50px' }}
+          name={enableAfcFieldName}
+          valuePropName={'checked'}
+          initialValue={true}
+          rules={[
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            { validator: (_, value) => AFCEnableValidation() ? Promise.reject() : Promise.resolve() }
+          ]}>
+          {isUseVenueSettings ?
+            LPIButtonText?.buttonText :
+            <Switch
+              disabled={!isAFCEnabled || isUseVenueSettings}
+              onChange={() => {
+                onChangedByCustom('enableAfc')
+                form.validateFields()
               }}
-              onClick={() => {}}>
-              {$t({ defaultMessage: 'See details.' })}
-            </Button>
-          </>
-          }
-          placement='bottom'>
-            <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
-          </Tooltip>
-        </FieldLabel>
+            />}
+        </Form.Item>
+      </FieldLabel>
       }
-      { AFC_Featureflag && context === 'venue' && enableAfc &&
+      {
+        (AFC_Featureflag) &&
+        (ApRadioTypeEnum.Radio6G === radioType) &&
+        (enableAfc) && (
+          <Alert
+            type='info'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
+              </span>
+              <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                target='_blank'
+                rel='noreferrer'>
+                {$t({ defaultMessage: 'How to configure?' })}
+              </a>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      {
+        AFCEnableValidation() && (
+          <Alert
+            type='error'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
+              </span>
+              <Button type='link'
+                data-testid='set-it-up-button'
+                onClick={() => {
+                  navigate(detailsPath, {
+                    state: {
+                      from: location
+                    }
+                  })
+                }}
+              >
+                <span style={{
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'Set it up now' })}
+                </span>
+              </Button>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      { AFC_Featureflag && context === 'venue' && ApRadioTypeEnum.Radio6G === radioType &&
               <FieldLabel width='180px'>
                 <div style={{ float: 'left' }}>
-                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC Venue Height:' })}</p>
+                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}</p>
                 </div>
                 <Form.Item>
                   <Input.Group
@@ -186,7 +243,7 @@ export function RadioSettingsForm (props:{
                       dependencies={maxFloorFieldName}
                       style={{ width: '160px' }}
                       rules={[
-                        { required: true, message: $t({ defaultMessage: 'Minimum floor can not be empty' }) },
+                        ...(enableAfc ? [{ required: true, message: $t({ defaultMessage: 'Minimum floor can not be empty' }) }] : []),
                         { validator: (_, value) => (value && value > maxFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
                       ]}>
                       <InputNumber
@@ -205,7 +262,7 @@ export function RadioSettingsForm (props:{
                       dependencies={minFloorFieldName}
                       style={{ width: '160px' }}
                       rules={[
-                        { required: true , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) },
+                        ...(enableAfc ? [{ required: true , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) }] : []),
                         { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
                       ]}>
                       <InputNumber
@@ -219,6 +276,14 @@ export function RadioSettingsForm (props:{
                         placeholder={$t({ defaultMessage: 'Maximum Floor' })}/>
                     </Form.Item>
                     <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
+                    <Tooltip title={<FormattedMessage
+                      values={{ br: () => <br /> }}
+                      defaultMessage={'When grand floor=0'}
+                    />
+                    }
+                    placement='bottom'>
+                      <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+                    </Tooltip>
                   </Input.Group>
                 </Form.Item>
               </FieldLabel>
@@ -344,7 +409,7 @@ export function RadioSettingsForm (props:{
             <Space>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
               <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />

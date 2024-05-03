@@ -61,9 +61,9 @@ const versionHeader = {
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge, undefined, {
+    addEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, {
           ...ignoreErrorModal
         })
         return {
@@ -71,7 +71,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'CLUSTER_LIST' }]
+      invalidatesTags: [
+        { type: 'Edge', id: 'LIST' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }
+      ]
     }),
     getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
@@ -90,8 +93,11 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
-        { type: 'Edge', id: 'CLUSTER_LIST' }]
+      invalidatesTags: [
+        { type: 'Edge', id: 'LIST' },
+        { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }
+      ]
     }),
     getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
@@ -182,7 +188,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.getPortConfig : EdgeUrlsInfo.getPortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req
         }
@@ -201,7 +209,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.updatePortConfig : EdgeUrlsInfo.updatePortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req,
           body: payload
@@ -841,7 +851,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }]
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
       queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {

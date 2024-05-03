@@ -123,12 +123,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wifi-calling-profile',
     newApi: true
   },
-  getServicesList: {
-    method: 'post',
-    url: '/serviceProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/serviceProfiles',
-    newApi: true
-  },
   getVenuesList: {
     method: 'post',
     url: '/venues/query',
@@ -249,6 +243,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/files/uploadurls',
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    newApi: true
+  },
+  getVenueSpecificUploadURL: {
+    method: 'post',
+    url: '/venues/:venueId/signurls/uploadurls',
     newApi: true
   },
   getAllDevices: {
@@ -439,12 +438,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
       'configurationHistory/detail/:transactionId',
     newApi: true
   },
-  getPoliciesList: {
-    method: 'post',
-    url: '/policyProfiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/policyProfiles',
-    newApi: true
-  },
   getApDetailHeader: {
     method: 'get',
     url: '/aps/:serialNumber/headerDetails',
@@ -527,8 +520,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getRwgList: {
-    method: 'get',
-    url: '/rwgs',
+    method: 'post',
+    url: '/rwgs/query',
     newApi: true
   },
   deleteGateways: {
@@ -543,17 +536,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGateway: {
     method: 'get',
-    url: '/rwgs/:gatewayId',
+    url: '/venues/:venueId/rwgs/:gatewayId',
     newApi: true
   },
   updateGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   addGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   getGatewayAlarms: {

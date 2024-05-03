@@ -16,7 +16,6 @@ import {
   venueRogueAp,
   venueApTlsEnhancedKey,
   venueDosProtection,
-  venueRoguePolicy,
   venueRoguePolicyList,
   rogueApPolicyNotDefaultProfile
 } from '../../../__tests__/fixtures'
@@ -61,9 +60,6 @@ describe('SecurityTab', () => {
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicy))),
-      rest.get(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json(venueDosProtection))),
       rest.get(
@@ -87,7 +83,12 @@ describe('SecurityTab', () => {
       rest.get(
         RogueApUrls.getRoguePolicy.url,
         (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
-      )
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(venueRoguePolicyList))
+        })
     )
   })
 
@@ -112,12 +113,6 @@ describe('SecurityTab', () => {
   })
 
   it('should render correctly with RogueApProfile settings', async () => {
-    mockServer.use(
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
-    )
-
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -162,12 +157,6 @@ describe('SecurityTab', () => {
   })
 
   it('should render correctly with RogueApProfile settings then cancel', async () => {
-    mockServer.use(
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
-    )
-
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -216,7 +205,7 @@ describe('SecurityTab', () => {
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
-    await screen.findByText('TLS Enhanced Key: RSA 3072/ECDSA P-256')
+    await screen.findByText('TLS Enhanced Key (RSA 3072/ECDSA P-256)')
 
     const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
 

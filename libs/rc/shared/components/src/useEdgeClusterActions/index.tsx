@@ -74,10 +74,14 @@ export const useEdgeClusterActions = () => {
         }
       }
       if(edgeNodes.length > 0) {
-        if(edgeNodes.length === 1) {
-          requests.push(invokeDeleteEdge({ params: { serialNumber: edgeNodes[0].serialNumber } }))
-        } else {
-          requests.push(invokeDeleteEdge({ payload: edgeNodes.map(item => item.serialNumber) }))
+        for(let item of edgeNodes) {
+          requests.push(invokeDeleteEdge({
+            params: {
+              venueId: item.venueId,
+              edgeClusterId: item.clusterId,
+              serialNumber: item.serialNumber
+            }
+          }))
         }
       }
       Promise.all(requests).then(() => callback?.())
