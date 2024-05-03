@@ -59,7 +59,7 @@ function GetCols (intl: ReturnType<typeof useIntl>) {
     render: (_, { userName }) => userName ? userName : '--'
   }, {
     key: 'venueId',
-    title: intl.$t({ defaultMessage: 'Last Venue' }),
+    title: intl.$t({ defaultMessage: 'Last <VenueSingular></VenueSingular>' }),
     dataIndex: 'venueId',
     sorter: true,
     render: (_, row) => row?.isVenueExists && row?.venueId

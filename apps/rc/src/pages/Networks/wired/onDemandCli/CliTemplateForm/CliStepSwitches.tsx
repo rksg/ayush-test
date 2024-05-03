@@ -90,7 +90,7 @@ export function CliStepSwitches () {
       }}>
         {<FormattedMessage
           defaultMessage={`
-          - Select the venues or specific switches that will have this
+          - Select the <venuePlural></venuePlural> or specific switches that will have this
           configuration applied onto them<br></br>
           - Only operational switches are displayed here`}
           values={{

@@ -46,8 +46,8 @@ export function UpdateFirmwarePerApModelGroup (props: UpdateFirmwarePerApModelGr
             </Radio>
           })
           }
-          <Radio key={'NONE'} value={''}>
-            {$t({ defaultMessage: 'Do not update firmware on selected venue(s)' })}
+          <Radio key={'NONE'} value={''}>{ /*eslint-disable-next-line max-len*/ }
+            {$t({ defaultMessage: 'Do not update firmware on selected <venuePlural></venuePlural>' })}
           </Radio>
         </Space>
       </Radio.Group>

@@ -157,7 +157,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       defaultSortOrder: 'ascend'
     }, {
       key: 'venueId',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueId',
       sorter: false,
       defaultSortOrder: 'ascend',

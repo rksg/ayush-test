@@ -48,8 +48,8 @@ export const SummaryForm = () => {
 
   const alertMsg = <FormattedMessage
     defaultMessage={
-      'For segment assignment for <sub5b>AP wired</sub5b>,\
-      please go to the <sub5b>Venue/ property Units page</sub5b> to assign an AP\
+      'For segment assignment for <sub5b>AP wired</sub5b>, please go to the\
+      <sub5b><VenueSingular></VenueSingular>/ property Units page</sub5b> to assign an AP\
       for the specific unit / identity.'}
 
     values={{
@@ -91,8 +91,8 @@ export const SummaryForm = () => {
       <Col flex={1}>
         <Form.Item label={$t({ defaultMessage: 'Service Name' })} children={nsgName} />
       </Col>
-      <Col flex={1}>
-        <Form.Item label={$t({ defaultMessage: 'Venue with the property management enabled' })}
+      <Col flex={1}>{/* eslint-disable-next-line max-len */}
+        <Form.Item label={$t({ defaultMessage: '<VenueSingular></VenueSingular> with the property management enabled' })}
           children={getVenueName(venueId)} />
       </Col>
     </Row>
