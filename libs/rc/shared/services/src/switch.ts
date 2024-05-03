@@ -588,8 +588,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params)
         return {
           ...req,
           body: payload
@@ -610,8 +611,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addBackup, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addBackup, params)
         return {
           ...req,
           body: payload
@@ -620,25 +622,34 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.restoreBackup, params)
+      query: ({ params, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.restoreBackup, params)
         return {
-          ...req
+          ...req,
+          ...(enableRbac ? { body: {
+            configBackupAction: 'restore'
+          } } : {})
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
+      query: ({ params, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params)
         return {
-          ...req
+          ...req,
+          ...(enableRbac ? { body: {
+            configBackupAction: 'download'
+          } } : {})
         }
       }
     }),
     deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteBackups, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteBackups, params)
         return {
           ...req,
           body: payload
@@ -647,23 +658,30 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigHistory, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params)
         return {
           ...req,
           body: payload
         }
       },
-      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: {
+        response:{ list:ConfigurationHistory[], totalCount:number }
+        } & { list:ConfigurationHistory[], totalCount:number }, meta
+      , arg: { payload:{ page:number } }) => {
+        const result = res.response?.list || res.list
+        const totalCount = res.response?.totalCount || res.totalCount
+        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' )
+          : 'configType'
         return {
-          data: res.response.list ? res.response.list.map(item => ({
+          data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: transformConfigType(item.configType),
+            configType: transformConfigType(item[configType]),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
-          totalCount: res.response.totalCount,
+          totalCount: totalCount,
           page: arg.payload.page
         }
       },

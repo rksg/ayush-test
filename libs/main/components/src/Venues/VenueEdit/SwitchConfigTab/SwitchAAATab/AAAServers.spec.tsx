@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { venueApi }                                                               from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, SwitchUrlsInfo }                                      from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'

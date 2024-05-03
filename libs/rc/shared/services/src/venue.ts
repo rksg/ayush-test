@@ -1098,35 +1098,42 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
     }),
     getVenueConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: {
+        response:{ list:ConfigurationHistory[], totalCount:number }
+        } & { list:ConfigurationHistory[], totalCount:number }, meta
+      , arg: { payload:{ page:number } }) => {
+        const result = res.response?.list || res.list
+        const totalCount = res.response?.totalCount || res.totalCount
+        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' ) : 'configType'
         return {
-          data: res.response.list ? res.response.list.map(item => ({
+          data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: (item.configType as unknown as string[])
+            configType: (item[configType] as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
-          totalCount: res.response.totalCount,
+          totalCount: totalCount,
           page: arg.payload.page
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

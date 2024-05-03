@@ -99,19 +99,16 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigBackupList: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/configBackups/query',
-    oldUrl: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId/query',
     newApi: true
   },
   addBackup: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/configBackups',
-    oldUrl: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId',
     newApi: true
   },
   restoreBackup: {
     method: 'patch',
     url: '/venues/:venueId/switches/:switchId/configBackups/:configBackupId',
-    oldUrl: '/api/switch/tenant/:tenantId/configBackup/restore/:configId',
     newApi: true
   },
   downloadSwitchConfig: {
@@ -129,7 +126,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigHistory: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/configHistDetails/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switches/:switchId/configurationHistory/detail/query',
     newApi: true
   },
   getSwitchRoutedList: {
