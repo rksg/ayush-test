@@ -45,7 +45,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitch: {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId',
     newApi: true
   },
   importSwitches: {
@@ -131,7 +130,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchRoutedList: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/vePorts/query',
-    oldUrl: '/api/switch/tenant/:tenantId/vePort/switch/:switchId/query',
     newApi: true
   },
   getDefaultVlan: {
@@ -194,7 +192,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   deleteVePorts: {
     method: 'delete',
     url: '/venues/:venueId/switches/:switchId/vePorts',
-    oldUrl: '/api/switch/tenant/:tenantId/vePorts',
     newApi: true
   },
   getSwitchAcls: {
@@ -387,6 +384,16 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getJwtToken: {
     method: 'get',
     url: '/switches/:serialNumber/jwtToken', // TODO: Karen - Need backend support
+    newApi: true
+  },
+  getSwitchDetailHeader: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/configurations',
+    newApi: true
+  },
+  getSwitchList: {
+    method: 'post',
+    url: '/venues/switches/query',
     newApi: true
   }
 }
