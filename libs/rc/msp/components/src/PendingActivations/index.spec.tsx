@@ -1,14 +1,14 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { mspApi }                                   from '@acx-ui/msp/services'
-import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
-import { administrationApi }                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor  }     from '@acx-ui/test-utils'
+import { showToast }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { mspApi }                                                          from '@acx-ui/msp/services'
+import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
+import { administrationApi }                                               from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { Provider, store }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { PendingActivations } from '.'
 
@@ -239,6 +239,7 @@ describe('PendingActivations', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getByRole('button', { name: 'Manage Subscriptions' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Refresh' })).toBeVisible()
     await screen.findByRole('columnheader', { name: 'SPA Activation Code' })

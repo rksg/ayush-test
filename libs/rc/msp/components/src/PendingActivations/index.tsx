@@ -37,7 +37,7 @@ const PendingActivationsTable = () => {
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
   }
-  const { data: pendingActivationResults }
+  const pendingActivationResults
     = useGetEntitlementActivationsQuery({ params: useParams(), payload: pendingActivationPayload })
 
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
@@ -59,8 +59,10 @@ const PendingActivationsTable = () => {
         return isActivatePendingActivationEnabled ? <Button
           type='link'
           onClick={() => {
-            const urlSupportActivation = 'http://support.ruckuswireless.com/register_code/' +
-              row.orderAcxRegistrationCode
+            const licenseUrl = get('MANAGE_LICENSES')
+            const support = new URL(licenseUrl).hostname
+            const urlSupportActivation =
+                  `http://${support}/register_code/${row.orderAcxRegistrationCode}`
             window.open(urlSupportActivation, '_blank')
           }}
         >{row.orderAcxRegistrationCode}</Button> : row.orderAcxRegistrationCode
@@ -136,11 +138,12 @@ const PendingActivationsTable = () => {
   ]
 
   return (
-    <Loader>
+    <Loader states={[pendingActivationResults
+    ]}>
       <Table
         columns={columns}
         actions={filterByAccess(actions)}
-        dataSource={pendingActivationResults?.data}
+        dataSource={pendingActivationResults?.data?.data}
         rowKey='orderId'
       />
       {drawerActivateVisible && <ActivatePurchaseDrawer
