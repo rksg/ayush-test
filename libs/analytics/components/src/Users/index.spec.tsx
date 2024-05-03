@@ -155,7 +155,7 @@ describe('Users Page', () => {
     mockServer.use(
       rest.put(`${rbacApiURL}/users/refresh/1`, (_, res, ctx) => res(
         ctx.status(error.status),
-        ctx.json({ error: error.message })
+        ctx.text(error.message)
       ))
     )
     const Component = () => {
