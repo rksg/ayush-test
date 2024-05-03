@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { venueApi }                                                               from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, SwitchUrlsInfo }                                      from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
@@ -203,7 +203,7 @@ describe('AAAServers', () => {
   })
 
   it('should render correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) => res(ctx.json(mockAaaSetting))),
       rest.post(SwitchUrlsInfo.getAaaServerList.url, (req, res, ctx) => {
