@@ -158,7 +158,7 @@ export function MoreSettingsTabs (props: {
     </div>
     {supportHotspot20 &&
       <div style={{ display: currentTab === 'hotspot20' ? 'block' : 'none' }}>
-        <Hotspot20Tab wlanData={wlanData} />
+        <Hotspot20Tab />
       </div>
     }
     {(data?.type === NetworkTypeEnum.CAPTIVEPORTAL) &&
