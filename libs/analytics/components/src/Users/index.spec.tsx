@@ -75,16 +75,16 @@ const mockSSOResponse = (fileContents?: string) => {
   )
 }
 
-const mockRefreshUserResponse = (data?: { error?: string; userId: string }) => {
-  mockServer.use(rest.put(`${rbacApiURL}/users/refresh/1`, (_, res, ctx) => res(ctx.json(data))))
+const mockRefreshUserResponse = () => {
+  mockServer.use(rest.put(`${rbacApiURL}/users/refresh/1`, (_, res, ctx) => res(ctx.text('OK'))))
 }
-const mockDeleteUserDetailsResponse = (data = {}) => {
+const mockDeleteUserDetailsResponse = () => {
   mockServer.use(
-    rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.json({ ...data })))
+    rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.text('OK')))
   )
 }
-const mockDeleteInvitationResponse = (data = {}) => {
-  mockServer.use(rest.delete(`${rbacApiURL}/invitations`, (_, res, ctx) => res(ctx.json(data))))
+const mockDeleteInvitationResponse = () => {
+  mockServer.use(rest.delete(`${rbacApiURL}/invitations`, (_, res, ctx) => res(ctx.text(''))))
 }
 
 describe('Users Page', () => {
@@ -131,7 +131,7 @@ describe('Users Page', () => {
   })
   it('should handle refresh user details correctly', async () => {
     mockRbacUserResponse([mockManagedUsers[0]])
-    mockRefreshUserResponse({ userId: '1111' })
+    mockRefreshUserResponse()
     mockSSOResponse()
     const Component = () => {
       const { component } = useUsers()
@@ -178,7 +178,7 @@ describe('Users Page', () => {
   })
   it('should handle delete user details correctly for internal user', async () => {
     mockRbacUserResponse([mockManagedUsers[0]])
-    mockDeleteUserDetailsResponse({ data: 'ok' })
+    mockDeleteUserDetailsResponse()
     mockSSOResponse()
     const Component = () => {
       const { component } = useUsers()
@@ -262,7 +262,7 @@ describe('Users Page', () => {
   })
   it('should handle delete invitation correctly for external user', async () => {
     mockRbacUserResponse([mockManagedUsers[2]])
-    mockDeleteInvitationResponse({ data: 'ok' })
+    mockDeleteInvitationResponse()
     mockSSOResponse()
     const Component = () => {
       const { component } = useUsers()
