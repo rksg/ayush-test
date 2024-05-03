@@ -22,7 +22,7 @@ export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
   const { venueId } = useParams()
 
   return useConfigTemplateQueryFnSwitcher(useQueryFn, useTemplateQueryFn, !venueId,
-    rbacApiVersion? { rbacApiVersion } : {}
+    rbacApiVersion? { rbacApiVersion } : undefined
   )
 }
 
