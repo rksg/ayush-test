@@ -243,7 +243,9 @@ export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
         'tunnelProfileId',
         'guestTunnelProfileId',
         'networkIds',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+        ...(isEdgeSdLanHaReady
+          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
+          : ['edgeId', 'edgeName'])
       ],
       pageSize: 10000
     }
@@ -270,7 +272,9 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         'isGuestTunnelEnabled',
         'tunnelProfileId',
         'guestTunnelProfileId',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+        ...(isEdgeSdLanHaReady
+          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
+          : ['edgeId', 'edgeName'])
       ],
       pageSize: 10000
     }

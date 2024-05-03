@@ -342,7 +342,7 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 0)')
+      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 3)')
     })
 
     it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
@@ -357,7 +357,7 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Local breakout')
+      expect(activatedRow).toHaveTextContent('Local Breakout')
     })
   })
 })

@@ -116,7 +116,7 @@ describe('Networks Table', () => {
       expect(row).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Tunnel' })).toBeVisible()
       await waitFor(() => expect(mockApListReq).toBeCalled())
-      expect(row).toHaveTextContent('Tunneled (SE_Cluster 0)')
+      expect(row).toHaveTextContent('Tunneled (SE_Cluster 3)')
     })
   })
 })

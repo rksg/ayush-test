@@ -13,12 +13,21 @@ export const useGetNetworkTunnelInfo = () => {
     const isTunneled = !!sdLansInfo?.length
 
     const clusterNames = sdLansInfo?.map(sdlan => {
-      const linkToDetail = isEdgeSdLanHaReady
-        ? `devices/edge/cluster/${sdlan.edgeClusterId}/edit/cluster-details`
-        : `/devices/edge/${sdlan.edgeId}/details/overview`
+      if (!isEdgeSdLanHaReady) {
+        return <TenantLink to={`/devices/edge/${sdlan.edgeId}/details/overview`} key={sdlan.id}>
+          {sdlan.edgeName}
+        </TenantLink>
+      }
+
+      const isDmz = sdlan.isGuestTunnelEnabled
+      const targetClusterId = isDmz
+        ? sdlan.guestEdgeClusterId
+        : sdlan.edgeClusterId
+
+      const linkToDetail = `devices/edge/cluster/${targetClusterId}/edit/cluster-details`
 
       return <TenantLink to={linkToDetail} key={sdlan.id}>
-        {isEdgeSdLanHaReady ? sdlan.edgeClusterName : sdlan.edgeName}
+        {isDmz ? sdlan.guestEdgeClusterName : sdlan.edgeClusterName}
       </TenantLink>
     })
 
@@ -27,6 +36,6 @@ export const useGetNetworkTunnelInfo = () => {
         { clusterNames: <Space size={5}>
           {clusterNames}
         </Space> })
-      : $t({ defaultMessage: 'Local breakout' })
+      : $t({ defaultMessage: 'Local Breakout' })
   }
 }
