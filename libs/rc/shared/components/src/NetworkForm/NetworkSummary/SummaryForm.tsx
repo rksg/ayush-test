@@ -182,7 +182,7 @@ export function SummaryForm (props: {
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({ defaultMessage: 'Activated in venues' }) }
+            { $t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' }) }
           </Subtitle>
           <Form.Item children={getVenues()} />
         </Col>

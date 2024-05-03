@@ -48,7 +48,7 @@ export function CliStepSummary () {
             )}
           />
           <Descriptions.Item
-            label={$t({ defaultMessage: 'Venues to apply' })}
+            label={$t({ defaultMessage: '<VenuePlural></VenuePlural> to apply' })}
             children={data?.venues?.map(vId => {
               const venue = venuesList?.data?.find(venue => venue.id === vId)
               return venue?.id ? <div key={venue?.id}>{venue?.name}</div> : '--'

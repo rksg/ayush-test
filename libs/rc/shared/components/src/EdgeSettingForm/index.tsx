@@ -82,7 +82,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         <Col span={23}>
           <Form.Item
             name='venueId'
-            label={$t({ defaultMessage: 'Venue' })}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{
               required: true
             }]}

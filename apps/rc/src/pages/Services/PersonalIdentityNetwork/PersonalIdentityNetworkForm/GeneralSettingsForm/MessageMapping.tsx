@@ -3,13 +3,13 @@ import { FormattedMessage } from 'react-intl'
 
 export const MessageMapping = {
   pin_preparation_list_desc_1: <FormattedMessage
-    defaultMessage={'Deploy a <b>SmartEdge</b> device at the venue where you intend to segment the clients'}
+    defaultMessage={'Deploy a <b>SmartEdge</b> device at the <venueSingular></venueSingular> where you intend to segment the clients'}
     values={{
       b: (content) => <b >{content}</b>
     }}
   />,
   pin_preparation_list_desc_2: <FormattedMessage
-    defaultMessage={'Enable the <b>Property management</b>service for the venue on the venue configuration page'}
+    defaultMessage={'Enable the <b>Property management</b>service for the <venueSingular></venueSingular> on the <venueSingular></venueSingular> configuration page'}
     values={{
       b: (content) => <b >{content}</b>
     }}
@@ -30,13 +30,13 @@ export const MessageMapping = {
     defaultMessage={'For Wi-Fi client segmentation'}
   />,
   pin_preparation_list_for_wifi_desc_1: <FormattedMessage
-    defaultMessage={'Create <b>DPSK networks</b> and activate them on the venue'}
+    defaultMessage={'Create <b>DPSK networks</b> and activate them on the <venueSingular></venueSingular>'}
     values={{
       b: (content) => <b >{content}</b>
     }}
   />,
   pin_preparation_list_for_wifi_desc_1_1: <FormattedMessage
-    defaultMessage={'Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the persona group in the venue’s property management. A DPSK network only can be associated with one personal identity network'}
+    defaultMessage={'Ensure the DPSK networks are using the <b>DPSK pool service</b> selected in the persona group in the property management of <venueSingular></venueSingular>. A DPSK network only can be associated with one personal identity network'}
     values={{
       b: (content) => <b >{content}</b>
     }}
