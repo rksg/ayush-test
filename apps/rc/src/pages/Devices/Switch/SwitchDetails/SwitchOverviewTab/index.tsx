@@ -136,7 +136,7 @@ export function SwitchOverviewTab () {
       </Tabs.TabPane>
       {supportRoutedInterfaces &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
-          <SwitchOverviewRouteInterfaces />
+          <SwitchOverviewRouteInterfaces switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
       <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>

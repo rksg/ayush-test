@@ -266,8 +266,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchDetailHeader, params, headers)
         return {
           ...req
         }
@@ -579,11 +581,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const switchListReq = createHttpRequest(switchUrls.getSwitchList, params, headers)
         return {
           ...switchListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -775,8 +779,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       ]
     }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getFreeVePortVlans, params, headers)
         return {
           ...req
         }
@@ -815,28 +821,34 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     addVePort: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addVePort, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     updateVePort: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateVePort, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateVePort, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitch: build.query<Switch, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitch, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitch, params, headers)
         return {
           ...req
         }
@@ -853,11 +865,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteVePorts, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
