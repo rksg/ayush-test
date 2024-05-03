@@ -106,11 +106,21 @@ export const useEdgeActions = () => {
   }
 
   const deleteEdges = (data: EdgeStatus[], callback?: () => void) => {
-    const handleOk = () => (data.length ===1 ?
-      invokeDeleteEdge({ params: { serialNumber: data[0].serialNumber } })
-        .then(() => callback?.()) :
-      invokeDeleteEdge({ payload: data.map(item => item.serialNumber) })
-        .then(() => callback?.()))
+    const handleOk = () => {
+      const requests = []
+      if(data.length > 0) {
+        for(let item of data) {
+          requests.push(invokeDeleteEdge({
+            params: {
+              venueId: item.venueId,
+              edgeClusterId: item.clusterId,
+              serialNumber: item.serialNumber
+            }
+          }))
+        }
+      }
+      Promise.all(requests).then(() => callback?.())
+    }
     showDeleteModal(data, handleOk)
   }
 

@@ -155,7 +155,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <li>
               <label>
                 { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}
+                  $t({ defaultMessage: 'Please note that during the firmware update, the switches in this <venueSingular></venueSingular> will reboot, and your network will be unavailable for customer operation.' })}
               </label>
             </li>
             <li>

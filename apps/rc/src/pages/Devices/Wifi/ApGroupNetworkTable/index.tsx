@@ -177,7 +177,7 @@ export function useApGroupNetworkColumns (
       render: function (_: ReactNode, row: Network) {
         const currentVenue = getCurrentVenue(row, venueId)
         return currentVenue?.isAllApGroups?
-          $t({ defaultMessage: 'Venue' }) : $t({ defaultMessage: 'AP Group' })
+          $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) : $t({ defaultMessage: 'AP Group' })
       }
     }]), {
       key: 'vlan',

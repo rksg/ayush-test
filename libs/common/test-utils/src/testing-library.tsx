@@ -84,7 +84,14 @@ function wrapper (options?: CustomOptions & { wrapper?: RenderOptions['wrapper']
 
       wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
     }
-    wrappedUI = <IntlProvider locale={enUS.locale} children={wrappedUI} />
+    wrappedUI = <IntlProvider locale={enUS.locale}
+      children={wrappedUI}
+      defaultRichTextElements={{
+        venueSingular: () => 'venue',
+        venuePlural: () => 'venues',
+        VenueSingular: () => 'Venue',
+        VenuePlural: () => 'Venues'
+      }}/>
     wrappedUI = <ConfigProvider locale={enUS} children={wrappedUI} />
 
     return wrappedUI

@@ -36,7 +36,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
       style={{ marginTop: currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL ? '25px' : 0 }}
     >
       <Form.Item
-        label={$t({ defaultMessage: 'Venue' })}
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
           <TenantLink to={`/venues/${currentEdge?.venueId}/venue-details/overview`}>
             {currentEdge?.venueName}

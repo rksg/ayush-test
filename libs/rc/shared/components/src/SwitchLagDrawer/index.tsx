@@ -23,9 +23,10 @@ import {
   useGetLagListQuery,
   useSwitchDetailHeaderQuery
 }                            from '@acx-ui/rc/services'
-import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
-import { filterByAccess }           from '@acx-ui/user'
+import { isOperationalSwitch, Lag }      from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SwitchLagModal } from './SwitchLagModal'
 
@@ -91,7 +92,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       dataIndex: 'action',
       render: function (data, row) {
         return <>
-          <Button
+          { hasPermission({ scopes: [SwitchScopes.UPDATE] }) && <Button
             key='edit'
             role='editBtn'
             disabled={!isOperational}
@@ -99,8 +100,8 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             icon={<EditOutlinedIcon />}
             style={{ height: '16px' }}
             onClick={() => handleEdit(row)}
-          />
-          <Button
+          />}
+          { hasPermission({ scopes: [SwitchScopes.DELETE] }) && <Button
             key='delete'
             role='deleteBtn'
             ghost={true}
@@ -108,7 +109,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             icon={<DeleteOutlinedIcon />}
             style={{ height: '16px' }}
             onClick={() => handleDelete(row)}
-          />
+          />}
         </>
       }
     }]
@@ -170,6 +171,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               rowKey='name'
               actions={filterByAccess([{
                 label: $t({ defaultMessage: 'Add LAG' }),
+                scopeKey: SwitchScopes.CREATE,
                 disabled: !isOperational,
                 onClick: () => {
                   setModalVisible(true)
