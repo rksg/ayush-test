@@ -175,7 +175,7 @@ export const PERMISSION_FRANCHISOR = 'franchisor'
 export enum RolesEnum {
   PRIME_ADMINISTRATOR = 'admin',
   ADMINISTRATOR = 'network-admin',
-  BUSSINESS_INSIGHTS_USER = 'report-only',
+  BUSINESS_INSIGHTS_USER = 'report-only',
   IT_HELPDESK = 'it-helpdesk',
   READ_ONLY = 'read-only',
   REPORTS_USER = 'reports-user',
@@ -185,7 +185,7 @@ export enum RolesEnum {
 export const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
   [RolesEnum.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-  [RolesEnum.BUSSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
+  [RolesEnum.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
   [RolesEnum.IT_HELPDESK]: defineMessage({ defaultMessage: 'IT Helpdesk' }),
   [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
   [RolesEnum.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),

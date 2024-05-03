@@ -18,7 +18,7 @@ function ClientDetailTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       {
-        role !== RolesEnum.BUSSINESS_INSIGHTS_USER
+        role !== RolesEnum.BUSINESS_INSIGHTS_USER
           ? <Tabs.TabPane
             tab={$t({ defaultMessage: 'Troubleshooting' })}
             key='troubleshooting'

@@ -11,7 +11,7 @@ import * as UI from './styledComponents'
 const useLinkData = () => {
   const { $t } = useIntl()
   const { selectedTenant: { role } } = getUserProfile()
-  const linkData = role === RolesEnum.BUSSINESS_INSIGHTS_USER
+  const linkData = role === RolesEnum.BUSINESS_INSIGHTS_USER
     ? [
       { title: 'Data Studio', to: '/dataStudio' },
       { title: 'Reports', to: '/reports' }

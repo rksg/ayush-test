@@ -51,7 +51,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
   }
 
   const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === RolesEnum.BUSSINESS_INSIGHTS_USER
+  const isReportOnly = role === RolesEnum.BUSINESS_INSIGHTS_USER
 
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {
