@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Space, Switch }    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, Tabs }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
+import { showActionModal, Tabs }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, useEdgeDhcpActions } from '@acx-ui/rc/components'
 import {
   useGetDhcpByEdgeIdQuery,
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
-  useGetEdgeServiceListQuery,
-  usePatchEdgeDhcpServiceMutation
+  useGetEdgeServiceListQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
@@ -23,6 +22,8 @@ import {
 import { useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 import ManageDhcpDrawer from './ManageDhcpDrawer'
 import * as UI          from './styledComponents'
 
@@ -31,8 +32,9 @@ export const EdgeDhcp = () => {
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
+  const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
-  const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
+  const { deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
@@ -120,14 +122,11 @@ export const EdgeDhcp = () => {
         content: $t({ defaultMessage: 'Are you sure you want to deactive DHCP service?' }),
         onOk: () => {
           if((poolTableQuery.data?.totalCount || 0) > 0) {
-            const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
-            const payload = {
-              edgeIds: [
-                ...edgeIds.filter(id => id !== serialNumber)
-              ]
-            }
-            updateEdgeDhcpService({ params, payload })
+            deactivateEdgeDhcp(
+              poolTableQuery.data?.data[0].dhcpId ?? '',
+              currentEdgeStatus?.venueId ?? '',
+              serialNumber ?? ''
+            )
           }
         }
       })

@@ -37,7 +37,7 @@ export function useSwitchFirmwareUtils () {
     let displayVersion = `${versionName} (${versionType})`
     if(version.inUse){
       // eslint-disable-next-line max-len
-      displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected Venues are already on this release' })}`
+      displayVersion = `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
     }
     return displayVersion
   }

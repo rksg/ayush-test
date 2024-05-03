@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
+import moment         from 'moment'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
@@ -115,11 +116,11 @@ const list = {
       creationDate: '1659589676050',
       entitlements: [
         {
-          consumed: '0',
+          consumed: '1',
           entitlementDeviceType: 'APSW',
-          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDate: moment().add(30, 'days'),
           expirationDateTs: '1667372399000',
-          quantity: '0',
+          quantity: '10',
           tenantId: '701fe9df5f6b4c17928a29851c07cc07',
           toBeRemovedQuantity: 0,
           type: 'entitlement'
@@ -132,6 +133,34 @@ const list = {
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 444',
+      status: 'Inactive',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_EC',
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589677050',
+      entitlements: [
+        {
+          consumed: '2',
+          entitlementDeviceType: 'APSW',
+          expirationDate: moment().add(70, 'days'),
+          expirationDateTs: '1667372399000',
+          quantity: '10',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc07',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
+      id: '701fe9df5f6b4c17928a29851c07cc22',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'ec 888',
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',

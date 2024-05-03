@@ -77,7 +77,7 @@ const EditEdgeCluster = () => {
     ? basicTabs
     : Object.assign(basicTabs, { dhcp: {
       title: $t({ defaultMessage: 'DHCP' }),
-      content: <EdgeClusterDhcp />
+      content: <EdgeClusterDhcp currentClusterStatus={currentClusterStatus} />
     } })
 
   const onTabChange = (finalTabs: string) => {

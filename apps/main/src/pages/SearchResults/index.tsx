@@ -65,7 +65,7 @@ const searches = [
     })
     return {
       result,
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       component: <VenueTable tableQuery={result} searchable={false} />
     }
   },

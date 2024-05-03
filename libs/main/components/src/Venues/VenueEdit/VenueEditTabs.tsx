@@ -86,7 +86,8 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
+      {/* eslint-disable-next-line max-len */}
+      <Tabs.TabPane tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })} key='details' />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       {enableSwitchConfiguration &&
         <Tabs.TabPane
