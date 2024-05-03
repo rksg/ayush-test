@@ -1,9 +1,5 @@
 import { Form } from 'antd'
 
-import {
-  NetworkHotspot20Settings,
-  NetworkSaveData
-} from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   render,
@@ -12,19 +8,6 @@ import {
 
 import { Hotspot20Tab } from '.'
 
-const mockWlanData = {
-  name: 'hotspot20-test',
-  type: 'hotspot20',
-  venues: [],
-  hotspot20Settings: {
-    wifiOperator: '0b9b52ea3209466ab5c17ee73edb41bf',
-    identityProviders: [
-      'bad92ccf19174f0db5f9edae47ad93da',
-      '599deb6758bd4f0fa702f2e1cb565102'
-    ]
-  } as NetworkHotspot20Settings
-} as NetworkSaveData
-
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
 it('should render Hotspot 2.0 tab correctly', async () => {
@@ -32,7 +15,7 @@ it('should render Hotspot 2.0 tab correctly', async () => {
   render(
     <Provider>
       <Form>
-        <Hotspot20Tab wlanData={mockWlanData} />
+        <Hotspot20Tab />
       </Form>
     </Provider>,
     { route: { params } }
