@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import {
@@ -356,5 +357,21 @@ describe('Add Application Drawer', () => {
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })
+  })
+  it('should render add layout correctly for ABAC/RBAC enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={jest.fn()} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
 })

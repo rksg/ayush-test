@@ -52,6 +52,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const onAddAppToken = () => {
     setEditMode(false)
+    setAuthenticationsData(undefined)
     setDrawerVisible(true)
   }
 

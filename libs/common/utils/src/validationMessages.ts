@@ -10,10 +10,6 @@ export const validationMessages = {
     defaultMessage: 'No leading or trailing spaces allowed',
     description: 'Validation - no leading/trailing whitespace checks'
   }),
-  replaceWhitespaceWithUnderscore: defineMessage({
-    defaultMessage: 'This field cannot contain any blank spaces',
-    description: 'Validation - replace whitespace with inderscore checks'
-  }),
   name: defineMessage({
     defaultMessage: 'Please enter a valid Name',
     description: 'Validation - Name checks'

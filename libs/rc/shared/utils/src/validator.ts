@@ -180,14 +180,6 @@ export function trailingNorLeadingSpaces (value: string) {
   return Promise.resolve()
 }
 
-export function replaceSpacesWithUnderscore (value: string) {
-  const { $t } = getIntl()
-  if (value && (value.includes(' '))) {
-    return Promise.reject($t(validationMessages.replaceWhitespaceWithUnderscore))
-  }
-  return Promise.resolve()
-}
-
 export function hasGraveAccentAndDollarSign (value: string) {
   const { $t } = getIntl()
   if (value.includes('`') && value.includes('$(')) {
