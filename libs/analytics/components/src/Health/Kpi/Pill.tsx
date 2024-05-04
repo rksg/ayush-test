@@ -107,8 +107,8 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const countFormat = formatter('countFormat')
   const translatedDesc = description
     ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
-      avgSuccessCount: countFormat(Math.round(success/(length || 1))),
-      avgTotalCount: countFormat(Math.round(total/(length || 1))) })
+      avgSuccessCount: countFormat(Math.ceil(success/(length || 1))),
+      avgTotalCount: countFormat(Math.ceil(total/(length || 1))) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {

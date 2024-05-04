@@ -538,7 +538,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are in high temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -592,10 +592,7 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'switchMemoryUtilization',
-        'switchCpuUtilization',
-        'onlineSwitches',
-        'switchesTemperature'
+        'onlineSwitches'
       ]
     },
     connection: {
@@ -614,11 +611,11 @@ export const wiredKPIsForTab = () => {
     },
     infrastructure: {
       kpis: [
-        // 'switchReachability',
-        // 'memory',
-        // 'cpu',
-        // 'temperature',
-        // 'poeUtilization'
+        'onlineSwitches',
+        'switchMemoryUtilization',
+        'switchCpuUtilization',
+        'switchesTemperature',
+        'switchPoeUtilization'
       ]
     }
   }
