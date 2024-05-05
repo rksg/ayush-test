@@ -395,5 +395,15 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/switches/query',
     newApi: true
+  },
+  getSwitchClientList: {
+    method: 'post',
+    url: '/venues/switches/clients/query',
+    newApi: true
+  },
+  getSwitchClientDetail: {
+    method: 'post',
+    url: '/venues/switches/clients/query',
+    newApi: true
   }
 }

@@ -82,7 +82,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     const payload = { filters: { venueId: [venueId] } }
     const switches = (await getSwitchList({
       params: { tenantId, venueId },
-      payload, enableRbac: isSwitchRbacEnabled
+      payload,
+      enableRbac: isSwitchRbacEnabled
     }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
     setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])

@@ -139,12 +139,16 @@ export function SwitchOverviewTab () {
           <SwitchOverviewRouteInterfaces switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
-        <SwitchOverviewVLANs />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
-        <SwitchOverviewACLs />
-      </Tabs.TabPane>
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
+          <SwitchOverviewVLANs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
+          <SwitchOverviewACLs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
     </Tabs>
   </>
 }

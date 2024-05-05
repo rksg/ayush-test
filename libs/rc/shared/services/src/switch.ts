@@ -740,21 +740,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getVlanListBySwitchLevel, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchAcls, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       extraOptions: { maxRetries: 5 }
@@ -952,32 +956,34 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const headers = arg.enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
-          body: arg.payload
+          ...createHttpRequest(switchUrls.getSwitchClientList, arg.params, headers),
+          body: JSON.stringify(arg.payload)
         }
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchClient>
 
         const switchesInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
-          body: {
+          ...createHttpRequest(switchUrls.getSwitchList, arg.params, headers),
+          body: JSON.stringify({
             fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
             filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
-          }
+          })
         }
         const switchesQuery = await fetchWithBQ(switchesInfo)
         const switches = switchesQuery.data as TableResult<SwitchRow>
 
 
         const switchPortsInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchPortlist, arg.params),
-          body: {
+          ...createHttpRequest(switchUrls.getSwitchPortlist, arg.params, headers),
+          body: JSON.stringify({
             fields: SwitchPortViewModelQueryFields,
             filters: { portId: _.uniq(list.data.map(c=>c.switchPortId)) },
             pageSize: 10000
-          }
+          })
         }
         const switchPortsQuery = await fetchWithBQ(switchPortsInfo)
         const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
@@ -993,8 +999,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
-      query: ({ params }) => {
-        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const clientListReq = createHttpRequest(switchUrls.getSwitchClientDetail, params, headers)
         const payload = {
           fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
             'clientName','clientDesc','clientType','switchPort','vlanName',
@@ -1006,7 +1014,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           }
         }
         return {
-          ...clientListReq, body: payload
+          ...clientListReq, body: JSON.stringify(payload)
         }
       },
       transformResponse: (result: SwitchClient | TableResult<SwitchClient>) => {

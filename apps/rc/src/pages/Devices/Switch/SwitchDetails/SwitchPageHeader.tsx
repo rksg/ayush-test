@@ -113,8 +113,10 @@ function SwitchPageHeader () {
       }
     }
     const list =
-      (await getSwitchList({ params: { tenantId: tenantId }, payload }, false))
-        .data?.data || []
+      (await getSwitchList({
+        params: { tenantId: tenantId },
+        payload,
+        enableRbac: isSwitchRbacEnabled }, false)).data?.data || []
     if (list.length > 0) {
       handleSyncButton(list[0].syncDataEndTime || '', !_.isEmpty(list[0].syncDataId))
     }

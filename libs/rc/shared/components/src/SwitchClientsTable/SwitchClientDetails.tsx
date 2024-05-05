@@ -22,8 +22,11 @@ export function SwitchClientDetails () {
   const [isManaged, setIsManaged] = useState(false)
   const [clientDetails, setClientDetails] = useState({} as SwitchClient)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
-  const { data, isLoading } = useGetSwitchClientDetailsQuery({ params })
-
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const { data, isLoading } = useGetSwitchClientDetailsQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [apList] = useLazyApListQuery()
 
