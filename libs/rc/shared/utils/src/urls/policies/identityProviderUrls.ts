@@ -52,5 +52,10 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/wifiNetworks/:wifiNetworkId/hotspot20IdentityProviders/:providerId',
     newApi: true
+  },
+  deactivateIdentityProviderOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:wifiNetworkId/hotspot20IdentityProviders/:providerId',
+    newApi: true
   }
 }

@@ -1341,6 +1341,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    deactivateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
@@ -2628,6 +2637,7 @@ export const {
   useActivateIdentityProviderRadiusMutation,
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,

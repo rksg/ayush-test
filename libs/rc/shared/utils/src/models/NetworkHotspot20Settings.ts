@@ -9,4 +9,6 @@ export class NetworkHotspot20Settings {
   connectionCapability?: Hotspot20ConnectionCapability[]
   wifiOperator?: string
   identityProviders?: string[]
+  activateProviders?: string[]    // for editMode
+  deactivateProviders?: string[]  // for editMode
 }

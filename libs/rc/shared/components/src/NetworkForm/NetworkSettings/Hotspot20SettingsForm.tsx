@@ -121,7 +121,7 @@ function Hotspot20Form () {
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
 
-  }, [cloneMode, editMode, form, wlanSecurity])
+  }, [cloneMode, disableMLO, editMode, form, wlanSecurity])
 
   const handleWlanSecurityChanged = (v: WlanSecurityEnum) => {
     const managementFrameProtection = (v === WlanSecurityEnum.WPA3)
@@ -162,7 +162,7 @@ function Hotspot20Form () {
 
   function Hotspot20Service () {
     const { $t } = useIntl()
-    const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+    const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
     const params = useParams()
     const { networkId } = params
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
@@ -261,6 +261,58 @@ function Hotspot20Form () {
       setShowProviderDrawer(false)
     }
 
+    const handleEditModeSelectProvider = (id: string) => {
+      if (editMode &&
+        data &&
+        selectedProviderIds &&
+        !selectedProviderIds.includes(id) &&
+        !data.hotspot20Settings?.activateProviders?.includes(id)) {
+        const adds = data.hotspot20Settings?.activateProviders ?
+          cloneDeep(data.hotspot20Settings?.activateProviders) : []
+        adds.push(id)
+        const selectedIdentityProviders =
+          form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
+        const newIdentityProviders = cloneDeep(selectedIdentityProviders)
+        if (!newIdentityProviders.includes(id)) {
+          newIdentityProviders.push(id)
+        }
+        setData && setData({
+          ...data,
+          hotspot20Settings: {
+            ...data.hotspot20Settings,
+            identityProviders: newIdentityProviders,
+            activateProviders: adds
+          }
+        })
+      }
+    }
+
+    const handleEditModeDeselectProvider = (id: string) => {
+      if (editMode &&
+        data &&
+        selectedProviderIds &&
+        selectedProviderIds.includes(id) &&
+        !data.hotspot20Settings?.deactivateProviders?.includes(id)) {
+        const removes = data.hotspot20Settings?.deactivateProviders ?
+          cloneDeep(data.hotspot20Settings.deactivateProviders) : []
+        removes.push(id)
+        const selectedIdentityProviders =
+          form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
+        let newIdentityProviders = cloneDeep(selectedIdentityProviders)
+        if (newIdentityProviders.includes(id)) {
+          newIdentityProviders = newIdentityProviders.filter((pId: string) => pId !== id)
+        }
+        setData && setData({
+          ...data,
+          hotspot20Settings: {
+            ...data.hotspot20Settings,
+            identityProviders: newIdentityProviders,
+            deactivateProviders: removes
+          }
+        })
+      }
+    }
+
     return (
       <>
         <Space>
@@ -297,6 +349,8 @@ function Hotspot20Form () {
               open={disabledSelectProviders ? false : undefined}
               style={{ width: '280px' }}
               options={providerSelectOptions}
+              onSelect={handleEditModeSelectProvider}
+              onDeselect={handleEditModeDeselectProvider}
               onChange={(newProviders: string[]) => {
                 if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
                   setDisabledSelectProviders(true)
