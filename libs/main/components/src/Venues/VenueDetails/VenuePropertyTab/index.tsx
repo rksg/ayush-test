@@ -61,8 +61,8 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
@@ -573,7 +573,7 @@ export function VenuePropertyTab () {
         onChange={queryUnitList.handleTableChange}
         actions={filterByAccess(hasAssociation ? actions : [])}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={hasPermission() && { type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

@@ -21,8 +21,8 @@ import {
   PersonaGroup,
   SEARCH
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
 
 import {
   IdentityDetailsLink,
@@ -386,7 +386,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: personaGroupId ? 'checkbox' : 'radio' }}
+        rowSelection={hasPermission() && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,

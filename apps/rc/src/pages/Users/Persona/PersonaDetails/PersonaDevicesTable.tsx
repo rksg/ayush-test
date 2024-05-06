@@ -29,8 +29,8 @@ import {
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 
 const defaultPayload = {
@@ -341,7 +341,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasAccess() ? {
+        rowSelection={hasPermission() ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

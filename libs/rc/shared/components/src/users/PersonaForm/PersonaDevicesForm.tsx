@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {  Table, TableProps }                   from '@acx-ui/components'
 import { defaultSort, PersonaDevice, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }            from '@acx-ui/user'
+import { filterByAccess, hasPermission }        from '@acx-ui/user'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
@@ -83,7 +83,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         dataSource={value ?? []}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { defaultSelectedRowKeys: [] }}
+        rowSelection={hasPermission() && { defaultSelectedRowKeys: [] }}
       />
       {modelVisible &&
         <PersonaDevicesImportDialog
