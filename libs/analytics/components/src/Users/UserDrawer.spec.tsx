@@ -107,7 +107,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[1]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[2]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const saveBtn = screen.getByText('Save')
     expect(saveBtn).toBeEnabled()
     await userEvent.click(saveBtn)
@@ -137,7 +137,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[1]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[2]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const saveBtn = screen.getByText('Save')
     expect(saveBtn).toBeEnabled()
     await userEvent.click(saveBtn)
@@ -253,7 +253,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[0]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[1]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const chkBox = await screen.findByLabelText('I understand and agree')
     userEvent.click(chkBox)
     const saveBtn = screen.getByText('Invite')
@@ -291,7 +291,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[0]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[1]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const chkBox = await screen.findByLabelText('I understand and agree')
     userEvent.click(chkBox)
     const saveBtn = screen.getByText('Invite')
@@ -333,7 +333,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[0]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[1]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const chkBox = await screen.findByLabelText('I understand and agree')
     userEvent.click(chkBox)
     const saveBtn = screen.getByText('Invite')
@@ -368,7 +368,7 @@ describe('User Drawer', () => {
     await userEvent.click(dropDowns[0]) //RG
     await userEvent.click(screen.getByTitle('abc'))
     await userEvent.click(dropDowns[1]) //Role
-    await userEvent.click(screen.getByTitle('Admin'))
+    await userEvent.click(screen.getByTitle('Network Admin'))
     const chkBox = await screen.findByLabelText('I understand and agree')
     userEvent.click(chkBox)
     const saveBtn = screen.getByText('Invite')
