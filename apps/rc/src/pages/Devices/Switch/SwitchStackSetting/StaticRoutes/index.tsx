@@ -21,7 +21,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
   const { data, isFetching: isDataFetching } = useGetSwitchStaticRoutesQuery({
-    params: params,
+    params: { ...params, venueId: switchDetail?.venueId },
     enableRbac: isSwitchRbacEnabled
   })
   const [deleteSwitchStaticRoutes] = useDeleteSwitchStaticRoutesMutation()

@@ -124,6 +124,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -140,6 +141,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
+    enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       filters: getFilters(params),
       ...defaultSwitchPayload
@@ -163,7 +165,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []

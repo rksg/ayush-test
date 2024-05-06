@@ -405,5 +405,20 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/switches/clients/query',
     newApi: true
+  },
+  getSwitchListByGroup: {
+    method: 'post',
+    url: '/venues/switches/aggregationDetails',
+    newApi: true
+  },
+  getSwitchModelList: {
+    method: 'post',
+    url: '/venues/switches/models/query',
+    newApi: true
+  },
+  downloadSwitchsCSV: {
+    method: 'post',
+    url: '/venues/switches/csvFiles',
+    newApi: true
   }
 }
