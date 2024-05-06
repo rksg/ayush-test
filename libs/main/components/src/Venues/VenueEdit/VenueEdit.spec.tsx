@@ -438,8 +438,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       beforeEach(() => {
         store.dispatch(policyApi.util.resetApiState())
         mockServer.use(
-          rest.get(SyslogUrls.getSyslogPolicyList.url,
-            (_, res, ctx) => res(ctx.json(syslogServerProfiles))
+          rest.post(SyslogUrls.syslogPolicyList.url,
+            (req, res, ctx) => res(ctx.json({
+              totalCount: syslogServerProfiles.length,
+              data: syslogServerProfiles
+            }))
           ),
           rest.get(SyslogUrls.getVenueSyslogAp.url,
             (_, res, ctx) => res(ctx.json({ enabled: false }))
