@@ -10,12 +10,13 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import _, {
+import {
   includes,
   isEmpty,
   isEqual,
   dropRight,
-  uniq
+  uniq,
+  flatten
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -610,7 +611,7 @@ export function RadioSettings () {
         customContent: {
           action: 'SHOW_ERRORS',
           errorDetails: {
-            error: _.flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
+            error: flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
           }
         }
       })
