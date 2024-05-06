@@ -22,7 +22,7 @@ import {
   useSdLanScopedNetworkVenues
 } from './useEdgeSdLanActions'
 
-const { mockedSdLanDataList } = EdgeSdLanFixtures
+// const { mockedSdLanDataList } = EdgeSdLanFixtures
 
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
@@ -604,41 +604,70 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
 describe('SD-LAN feature functions', () => {
 
   describe('useSdLanScopedVenueNetworks', () => {
-    const mockedSdLanGet = jest.fn()
     const mockVenueId = 'mock_venue'
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
-      mockedSdLanGet.mockClear()
+    })
 
+    it('should return networkId for DC case', async () => {
+      const mockData = mockedSdLanDataListP2.filter(item => item.id === 'mocked-sd-lan-2')
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => {
-            mockedSdLanGet()
-            return res(ctx.json({ data: mockedSdLanDataList }))
-          }
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
         )
       )
-    })
-
-    it('should return networkId', async () => {
       const { result } = renderHook(() =>
-        useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
+        useSdLanScopedVenueNetworks(mockVenueId, ['network_2']), {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
       await waitFor(() =>
         expect(result.current)
           .toStrictEqual({
-            scopedNetworkIds: ['8e22159cfe264ac18d591ea492fbc05a'],
-            sdLans: mockedSdLanDataList
+            scopedNetworkIds: ['network_2'],
+            scopedGuestNetworkIds: [],
+            sdLans: mockData
+          })
+      )
+    })
+
+    it('should return networkId for DMZ case', async () => {
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
+        )
+      )
+      const { result } = renderHook(() =>
+        // eslint-disable-next-line max-len
+        useSdLanScopedVenueNetworks(mockVenueId, ['network_1', 'network_2', 'network_3', 'network_4']), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            scopedNetworkIds: ['network_1', 'network_4', 'network_2'],
+            scopedGuestNetworkIds: ['network_4'],
+            sdLans: mockedSdLanDataListP2
           })
       )
     })
 
     it('should do nothing when FF is OFF', async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
+      const mockedSdLanGet = jest.fn()
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanGet()
+            return res(ctx.json({ data: [] }))
+          }
+        )
+      )
       renderHook(() =>
         useSdLanScopedVenueNetworks(mockVenueId, ['mocked_network_1']), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -649,42 +678,135 @@ describe('SD-LAN feature functions', () => {
   })
 
   describe('useSdLanScopedNetworkVenues', () => {
-    const mockedSdLanGet = jest.fn()
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
-      mockedSdLanGet.mockClear()
+    })
 
+    it('should return venueId used for DC case', async () => {
+      const mockData = mockedSdLanDataListP2
+        .filter(item => item.id === 'mocked-sd-lan-2')
       mockServer.use(
         rest.post(
           EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => {
-            mockedSdLanGet()
-            return res(ctx.json({ data: mockedSdLanDataList }))
-          }
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
         )
       )
-    })
 
-    it('should return venueId', async () => {
-      const { result } = renderHook(() => useSdLanScopedNetworkVenues('mocked_network_2'), {
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
         wrapper: ({ children }) => <Provider children={children} />
       })
 
       await waitFor(() =>
         expect(result.current)
           .toStrictEqual({
-            sdLansVenueMap: _.groupBy(mockedSdLanDataList, 'venueId'),
+            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
             networkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861567',
-              'a8def420bd6c4f3e8b28114d6c78f237'
+              'a307d7077410456f8f1a4fc41d861560'
+            ],
+            guestNetworkVenueIds: []
+          })
+      )
+    })
+
+    it('should return venueId used for DC case with previous guest network', async () => {
+      let mockData = _.cloneDeep(mockedSdLanDataListP2
+        .filter(item => item.id === 'mocked-sd-lan-1'))
+      mockData[0].isGuestTunnelEnabled = false
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
+        )
+      )
+
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567'
+            ],
+            guestNetworkVenueIds: []
+          })
+      )
+    })
+
+    it('should return venueId used for DMZ case', async () => {
+      const mockData = mockedSdLanDataListP2
+        .filter(item => item.id === 'mocked-sd-lan-1')
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: mockData }))
+        )
+      )
+
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567'
+            ],
+            guestNetworkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567'
             ]
+          })
+      )
+    })
+
+    it('should return venueId used for DMZ case with no guest network', async () => {
+      const mockData = _.cloneDeep(mockedSdLanDataListP2
+        .filter(item => item.id === 'mocked-sd-lan-1'))
+      mockData[0].guestNetworkIds = []
+      mockData[0].guestNetworkInfos = []
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({ data: mockData }))
+          }
+        )
+      )
+
+      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      await waitFor(() =>
+        expect(result.current)
+          .toStrictEqual({
+            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
+            networkVenueIds: [
+              'a307d7077410456f8f1a4fc41d861567'
+            ],
+            guestNetworkVenueIds: []
           })
       )
     })
 
     it('should do nothing when FF is OFF', async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
+      const mockedSdLanGet = jest.fn()
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            mockedSdLanGet()
+            return res(ctx.json({ data: [] }))
+          }
+        )
+      )
+
       renderHook(() => useSdLanScopedNetworkVenues('mocked_network_2'), {
         wrapper: ({ children }) => <Provider children={children} />
       })

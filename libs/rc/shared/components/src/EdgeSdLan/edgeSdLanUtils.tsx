@@ -1,5 +1,3 @@
-import { Space } from 'antd'
-
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeSdLanViewDataP2 }    from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
@@ -8,34 +6,31 @@ import { getIntl }                from '@acx-ui/utils'
 export const useGetNetworkTunnelInfo = () => {
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  return (sdLansInfo?: EdgeSdLanViewDataP2[]) => {
+  return (networkId: string, sdLanInfo?: EdgeSdLanViewDataP2) => {
     const { $t } = getIntl()
-    const isTunneled = !!sdLansInfo?.length
+    const isTunneled = !!sdLanInfo
+    if (!isTunneled) return $t({ defaultMessage: 'Local Breakout' })
 
-    const clusterNames = sdLansInfo?.map(sdlan => {
-      if (!isEdgeSdLanHaReady) {
-        return <TenantLink to={`/devices/edge/${sdlan.edgeId}/details/overview`} key={sdlan.id}>
-          {sdlan.edgeName}
-        </TenantLink>
-      }
-
-      const isDmz = sdlan.isGuestTunnelEnabled
-      const targetClusterId = isDmz
-        ? sdlan.guestEdgeClusterId
-        : sdlan.edgeClusterId
+    let clusterName
+    if(!isEdgeSdLanHaReady) {
+      clusterName = <TenantLink to={`/devices/edge/${sdLanInfo.edgeId}/details/overview`}>
+        {sdLanInfo.edgeName}
+      </TenantLink>
+    } else {
+      const isDmzEnabled = sdLanInfo.isGuestTunnelEnabled
+      const isTunnelDmz = isDmzEnabled && sdLanInfo.guestNetworkIds?.includes(networkId)
+      const targetClusterId = isTunnelDmz
+        ? sdLanInfo.guestEdgeClusterId
+        : sdLanInfo.edgeClusterId
 
       const linkToDetail = `devices/edge/cluster/${targetClusterId}/edit/cluster-details`
 
-      return <TenantLink to={linkToDetail} key={sdlan.id}>
-        {isDmz ? sdlan.guestEdgeClusterName : sdlan.edgeClusterName}
+      clusterName = <TenantLink to={linkToDetail}>
+        {isTunnelDmz ? sdLanInfo.guestEdgeClusterName : sdLanInfo.edgeClusterName}
       </TenantLink>
-    })
+    }
 
-    return isTunneled
-      ? $t({ defaultMessage: 'Tunneled ({clusterNames})' },
-        { clusterNames: <Space size={5}>
-          {clusterNames}
-        </Space> })
-      : $t({ defaultMessage: 'Local Breakout' })
+    return $t({ defaultMessage: 'Tunneled ({clusterName})' },
+      { clusterName })
   }
 }

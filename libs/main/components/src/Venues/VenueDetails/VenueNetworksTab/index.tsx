@@ -287,7 +287,7 @@ export function VenueNetworksTab () {
         if (Boolean(row.activated?.isActivated)) {
           const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
             sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
         } else {
           return ''
         }
