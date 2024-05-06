@@ -81,9 +81,11 @@ describe('Networks Table', () => {
     const mockedSdLanScopeData = {
       sdLans: [{
         ...mockedSdLanDataListP2[0],
-        networkIds: [list.data[0].id]
+        networkIds: [list.data[0].id],
+        guestNetworkIds: []
       }],
-      scopedNetworkIds: [list.data[0].id]
+      scopedNetworkIds: [list.data[0].id],
+      scopedGuestNetworkIds: []
     }
 
     const mockApListReq = jest.fn()
@@ -116,7 +118,7 @@ describe('Networks Table', () => {
       expect(row).toBeVisible()
       expect(screen.getByRole('columnheader', { name: 'Tunnel' })).toBeVisible()
       await waitFor(() => expect(mockApListReq).toBeCalled())
-      expect(row).toHaveTextContent('Tunneled (SE_Cluster 3)')
+      expect(row).toHaveTextContent('Tunneled (SE_Cluster 0)')
     })
   })
 })

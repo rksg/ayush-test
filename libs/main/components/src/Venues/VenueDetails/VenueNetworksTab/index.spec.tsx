@@ -315,7 +315,8 @@ describe('VenueNetworksTab', () => {
         ...mockedSdLanDataListP2[0],
         networkIds: ['d556bb683e4248b7a911fdb40c307aa5']
       }],
-      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5']
+      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5'],
+      scopedGuestNetworkIds: []
     }
 
     it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
@@ -342,13 +343,14 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 3)')
+      expect(activatedRow).toHaveTextContent('Tunneled (SE_Cluster 0)')
     })
 
     it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
         sdLans: [],
-        scopedNetworkIds: []
+        scopedNetworkIds: [],
+        scopedGuestNetworkIds: []
       })
 
       render(<Provider><VenueNetworksTab /></Provider>, {
