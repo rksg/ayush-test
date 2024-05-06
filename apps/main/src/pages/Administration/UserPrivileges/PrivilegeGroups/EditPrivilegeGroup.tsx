@@ -34,6 +34,7 @@ import {
   PrivilegePolicyObjectType,
   Venue,
   VenueObjectList,
+  excludeSpaceRegExp,
   specialCharactersRegExp,
   systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
@@ -225,7 +226,7 @@ export function EditPrivilegeGroup () {
   useEffect(() => {
     if (privilegeGroup) {
       const delegation = privilegeGroup.delegation || false
-      form.setFieldValue('name', isClone ? (privilegeGroup.name + ' - copy') : privilegeGroup.name)
+      form.setFieldValue('name', isClone ? (privilegeGroup.name + '-copy') : privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
       setDisplayMspScope(delegation)
@@ -479,7 +480,8 @@ export function EditPrivilegeGroup () {
                 { min: 2 },
                 { max: 128 },
                 { validator: (_, value) => systemDefinedNameValidator(value) },
-                { validator: (_, value) => specialCharactersRegExp(value) }
+                { validator: (_, value) => specialCharactersRegExp(value) },
+                { validator: (_, value) => excludeSpaceRegExp(value) }
               ]}
               children={<Input />}
             />
