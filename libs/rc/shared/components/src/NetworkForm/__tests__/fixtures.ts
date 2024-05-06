@@ -6,7 +6,7 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   WlanSecurityEnum,
-  AuthRadiusEnum, RadioEnum, RadioTypeEnum, SchedulerTypeEnum
+  AuthRadiusEnum, RadioEnum, RadioTypeEnum, SchedulerTypeEnum, Hotspot20AccessNetworkTypeEnum, Hotspot20Ipv4AddressTypeEnum, NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
 import Photo   from '../assets/images/portal-demo/PortalPhoto.svg'
@@ -1432,6 +1432,23 @@ export const aaalList = [
     name: 'test1'
   }
 ]
+
+export const mockHotspot20MoreData = {
+  name: 'test',
+  type: 'hotspot20',
+  isCloudpathEnabled: false,
+  venues: [],
+  wlan: {
+    wlanSecurity: 'WPA2Enterprise'
+  },
+  managementFrameProtection: 'Disabled',
+  hotspot20Settings: {
+    allowInternetAccess: true,
+    accessNetworkType: Hotspot20AccessNetworkTypeEnum.PRIVATE,
+    ipv4AddressType: Hotspot20Ipv4AddressTypeEnum.SINGLE_NATED_PRIVATE
+  } as NetworkHotspot20Settings
+} as NetworkSaveData
+
 export const mockGuestMoreData = {
   name: 'test',
   type: 'guest',
