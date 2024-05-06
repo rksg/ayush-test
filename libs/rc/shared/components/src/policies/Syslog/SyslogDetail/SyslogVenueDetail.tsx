@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { CheckOutlined } from '@ant-design/icons'
 import { useIntl }       from 'react-intl'
 
-import { Card, Table, TableProps }   from '@acx-ui/components'
+import { Card, Table, TableProps }  from '@acx-ui/components'
 import {
   useVenueSyslogPolicyQuery ,
   useGetSyslogPolicyQuery,

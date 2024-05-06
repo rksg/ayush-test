@@ -20,16 +20,19 @@ import {
   MspAdministrator,
   MspEcDelegatedAdmins
 } from '@acx-ui/msp/utils'
+import { useGetMspEcPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
+  PrivilegeGroup,
   defaultSort,
   roleDisplayText,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountType } from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { RolesEnum }     from '@acx-ui/types'
+import { roleStringMap } from '@acx-ui/user'
+import { AccountType }   from '@acx-ui/utils'
 
-interface ManageAdminsDrawerProps {
+interface ManageDelegateAdminDrawerProps {
   visible: boolean
   tenantId?: string
   setVisible: (visible: boolean) => void
@@ -37,7 +40,7 @@ interface ManageAdminsDrawerProps {
   tenantType?: string
 }
 
-export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
+export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, tenantId, setVisible, setSelected, tenantType } = props
@@ -46,6 +49,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const [ecPrivilegeGroups, setEcPrivilegeGroups] = useState<PrivilegeGroup[]>([])
 
   const isSkip = tenantId === undefined
   const isTechPartner =
@@ -69,6 +73,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         { skip: isSkip })
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
+  const ecPrivilegeGroupList =
+      useGetMspEcPrivilegeGroupsQuery({ params: { mspEcTenantId: tenantId } },
+        { skip: isSkip })
+
   useEffect(() => {
     if (queryResults?.data && delegatedAdmins?.data) {
       const selRoles = delegatedAdmins?.data?.map((admin) => {
@@ -81,7 +89,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       setSelectedRows(selRows)
     }
     setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
-  }, [queryResults?.data, delegatedAdmins?.data])
+    if (ecPrivilegeGroupList?.data) {
+      setEcPrivilegeGroups(ecPrivilegeGroupList?.data)
+    }
+  }, [queryResults?.data, delegatedAdmins?.data, ecPrivilegeGroupList?.data])
 
   const onClose = () => {
     setVisible(false)
@@ -145,7 +156,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Role' }),
+      title: $t({ defaultMessage: 'Prvilege Group' }),
       dataIndex: 'role',
       key: 'role',
       sorter: false,
@@ -173,18 +184,24 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
-    return isLoaded && <Select defaultValue={role}
+    return isLoaded &&
+    <Select defaultValue={role}
       style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
-      {
-        Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN)
+      {tenantId ? ecPrivilegeGroups?.map((item) => (
+        !(item.roleName === RolesEnum.DPSK_ADMIN)
+          && <Option
+            key={item.name}
+            value={item.name}>{roleStringMap[item.name as RolesEnum]
+              ? $t(roleStringMap[item.name as RolesEnum]) : item.name}
+          </Option>
+      )) : Object.entries(RolesEnum).map(([label, value]) => (
+        !(value === RolesEnum.DPSK_ADMIN)
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
           </Option>
-        ))
-      }
+      ))}
     </Select>
   }
 
@@ -222,7 +239,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onClick={() => handleSave()}
       type='primary'
     >
-      {$t({ defaultMessage: 'Save' })}
+      {$t({ defaultMessage: 'Assign' })}
     </Button>
 
     <Button onClick={() => {
@@ -234,8 +251,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   return (
     <Drawer
-      title={isTechPartner ? $t({ defaultMessage: 'Manage Tech Partner Administrators' })
-        : $t({ defaultMessage: 'Manage MSP Administrators' })}
+      title={isTechPartner ? $t({ defaultMessage: 'Manage Tech Partner Users' })
+        : $t({ defaultMessage: 'Manage MSP Users' })}
       visible={visible}
       onClose={onClose}
       footer={footer}

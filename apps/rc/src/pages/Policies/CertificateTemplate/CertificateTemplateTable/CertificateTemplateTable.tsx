@@ -105,6 +105,7 @@ export default function CertificateTemplateTable () {
       title: $t({ defaultMessage: 'CA Type' }),
       dataIndex: 'caType',
       key: 'caType',
+      sorter: true,
       render: function (_, row) {
         return $t(caTypeShortLabel[row.caType as keyof typeof caTypeShortLabel])
       }
@@ -146,7 +147,8 @@ export default function CertificateTemplateTable () {
     {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: ['onboard', 'commonNamePattern'],
-      key: 'commonName',
+      key: 'certificateTemplateOnboard.commonNamePattern',
+      sorter: true,
       searchable: true
     },
     {

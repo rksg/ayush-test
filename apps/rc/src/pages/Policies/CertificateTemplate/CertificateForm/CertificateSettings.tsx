@@ -3,19 +3,22 @@ import { useIntl }                                from 'react-intl'
 
 import { MAX_CERTIFICATE_PER_TENANT }                                         from '@acx-ui/rc/components'
 import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
 
 import { certificateDescription } from '../contentsMap'
 import { Description }            from '../styledComponents'
 
-export default function CertificateSettings ({ specificTemplate = false }) {
+export default function CertificateSettings (
+  { templateData }: { templateData?: CertificateTemplate }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const csrType = Form.useWatch('csrType', form)
+  const certificateTemplateId = Form.useWatch('certificateTemplateId', form)
 
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
     {
-      skip: specificTemplate,
+      skip: !!templateData,
       selectFromResult: ({ data }) =>
         ({
           caList: data?.data?.filter((item) => item.privateKeyBase64)
@@ -28,13 +31,13 @@ export default function CertificateSettings ({ specificTemplate = false }) {
   } = useGetCertificateTemplatesQuery({
     payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
   }, {
-    skip: specificTemplate || !caList,
+    skip: !!templateData || !caList,
     selectFromResult: ({ data, isLoading }) =>
       ({
         isCertificateTemplateOptionsLoading: isLoading,
         certificateTemplateOptions: data?.data?.filter((item) =>
           caList?.includes(item.onboard?.certificateAuthorityId!))
-          .map((item) => ({ label: item.name, value: item.id }))
+          .map((item) => ({ label: item.name, value: item.id, variables: item.variables }))
       })
   })
 
@@ -43,15 +46,30 @@ export default function CertificateSettings ({ specificTemplate = false }) {
     { label: $t({ defaultMessage: 'Copy & Paste CSR' }), value: 'copy' }
   ]
 
+  const renderVariableItems = (variables: string[] = []) => (
+    variables?.map((item, idx) => (
+      <Row key={idx}>
+        <Col span={10}>
+          <Form.Item name={item}
+            label={item}
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+      </Row>
+    ))
+  )
+
   return (
     <>
-      {!specificTemplate && <Row>
+      {!templateData && <Row>
         <Col span={10}>
           <Form.Item
             name='certificateTemplateId'
             label={$t({ defaultMessage: 'Certificate Template' })}
             rules={[{
-              required: !specificTemplate
+              required: !templateData
             }]}
           >
             <Select
@@ -91,19 +109,9 @@ export default function CertificateSettings ({ specificTemplate = false }) {
       }
       <Divider />
       <Description>{$t(certificateDescription.INFORMATION)}</Description>
-      <Row>
-        <Col span={10}>
-          <Form.Item
-            name='userName'
-            label={$t({ defaultMessage: 'Username' })}
-            rules={[{
-              required: true
-            }]}
-          >
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
+      {templateData ? renderVariableItems(templateData.variables) :
+        renderVariableItems(certificateTemplateOptions?.find(
+          (item) => item.value === certificateTemplateId)?.variables)}
       <Row>
         <Col span={10}>
           <Form.Item
