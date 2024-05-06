@@ -64,13 +64,24 @@ describe('Health KPI', () => {
   })
   it('should return correct config for wired in RA', () => {
     expect(wiredKPIsForTab()).toMatchObject({
+      overview: {
+        kpis: [
+          'onlineSwitches'
+        ]
+      },
+      connection: {
+        kpis: []
+      },
+      performance: {
+        kpis: []
+      },
       infrastructure: {
         kpis: [
-          'switchReachability',
-          'memory',
-          'cpu',
-          'temperature',
-          'poeUtilization'
+          'onlineSwitches',
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
         ]
       }
     })
