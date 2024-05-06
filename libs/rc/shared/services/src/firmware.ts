@@ -21,9 +21,7 @@ import {
   ApModelFirmware,
   UpdateFirmwarePerApModelPayload,
   UpdateFirmwareSchedulePerApModelPayload,
-  FirmwareRbacUrlsInfo,
-  SwitchRbacUrlsInfo,
-  SwitchUrlsInfo
+  FirmwareRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -305,7 +303,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
-        const switchUrls = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
         const req = createHttpRequest(switchUrls.getSwitchCurrentVersions, params, headers)
         return {
           ...req

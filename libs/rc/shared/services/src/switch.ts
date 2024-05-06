@@ -420,8 +420,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     convertToStack: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.convertToStack, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.convertToStack, params, headers)
         return {
           ...req,
           body: payload
@@ -774,8 +776,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
           body: [payload]

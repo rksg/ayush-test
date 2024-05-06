@@ -85,7 +85,6 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   convertToStack: {
     method: 'post',
     url: '/venues/:venueId/stacks/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/ConvertToStack',
     newApi: true
   },
   addStackMember: {
@@ -404,6 +403,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchClientDetail: {
     method: 'post',
     url: '/venues/switches/clients/query',
+    newApi: true
+  },
+  getSwitchListByGroup: {
+    method: 'post',
+    url: '/venues/switches/aggregationDetails',
     newApi: true
   }
 }
