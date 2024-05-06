@@ -594,10 +594,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (res: TableResult<ConfigurationBackup>) => {
@@ -617,10 +618,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.addBackup, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.addBackup, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -628,12 +630,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.restoreBackup, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.restoreBackup, params, headers)
+        const payload = {
+          configBackupAction: 'restore'
+        }
         return {
           ...req,
-          ...(enableRbac ? { body: {
-            configBackupAction: 'restore'
-          } } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -641,22 +645,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params, headers)
+        const payload = {
+          configBackupAction: 'download'
+        }
         return {
           ...req,
-          ...(enableRbac ? { body: {
-            configBackupAction: 'download'
-          } } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       }
     }),
     deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.deleteBackups, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.deleteBackups, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -664,10 +671,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (res: {

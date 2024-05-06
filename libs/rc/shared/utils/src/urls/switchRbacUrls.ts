@@ -106,7 +106,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   restoreBackup: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/:venueId/switches/:switchId/configBackups/:configBackupId',
     newApi: true
   },
