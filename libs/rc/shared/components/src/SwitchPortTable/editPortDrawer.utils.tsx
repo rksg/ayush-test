@@ -63,7 +63,7 @@ export const getPortEditStatus = (status: string) => {
   const key = status.toUpperCase()
   const statusMap = {
     PORT: $t(defineMessage({ defaultMessage: 'Port level override' })),
-    VENUE: $t(defineMessage({ defaultMessage: 'Applied at venue' })),
+    VENUE: $t(defineMessage({ defaultMessage: 'Applied at <venueSingular></venueSingular>' })),
     DEFAULT: $t(defineMessage({ defaultMessage: 'Default' }))
   }
 

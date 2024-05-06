@@ -91,8 +91,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       okButtonProps={{ disabled: !selectedVersion || !selectedDate || !selectedTime }}
     >
       <div>
-        <Typography style={{ fontWeight: 700 }}>
-          { intl.$t({ defaultMessage: 'Choose which version to update the venue to:' }) }
+        <Typography style={{ fontWeight: 700 }}>{ /*eslint-disable-next-line max-len*/ }
+          { intl.$t({ defaultMessage: 'Choose which version to update the <venueSingular></venueSingular> to:' }) }
         </Typography>
         <Radio.Group
           style={{ margin: 12 }}
@@ -118,7 +118,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       </UI.TitleDate>
       <UI.Title2Date>
         {// eslint-disable-next-line max-len
-          intl.$t({ defaultMessage: 'Selected time will apply to each venue according to own time-zone' })}
+          intl.$t({ defaultMessage: 'Selected time will apply to each <venueSingular></venueSingular> according to own time-zone' })}
       </UI.Title2Date>
       <UI.DateContainer>
         <label>{intl.$t({ defaultMessage: 'Update date:' })}</label>

@@ -8,7 +8,6 @@ import { mockServer, renderHook, screen, waitFor, within }                      
 import { useEdgeClusterActions } from '.'
 
 const mockedDeleteApi = jest.fn()
-const mockedBuckDeleteApi = jest.fn()
 const mockedDeleteClusterApi = jest.fn()
 const mockedRebootApi = jest.fn()
 const mockedSendOtp = jest.fn()
@@ -23,12 +22,6 @@ describe('useEdgeClusterActions', () => {
         EdgeUrlsInfo.deleteEdge.url,
         (req, res, ctx) => {
           mockedDeleteApi()
-          return res(ctx.status(202))
-        }
-      ),rest.delete(
-        EdgeUrlsInfo.deleteEdges.url,
-        (req, res, ctx) => {
-          mockedBuckDeleteApi()
           return res(ctx.status(202))
         }
       ),rest.delete(

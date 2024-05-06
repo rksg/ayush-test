@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 
-
 import {
   getUserProfile,
   PERMISSION_VIEW_ANALYTICS,
@@ -48,7 +47,6 @@ export function useMenuConfig () {
   const [search] = useSearchParams()
   const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
-  const isNewUserRolesEnabled = useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -285,11 +283,8 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Onboarded Systems' })
               },
               {
-                uri: isNewUserRolesEnabled
-                  ? '/admin/users'
-                  : legacyLink('/analytics/admin/users', search),
-                label: $t({ defaultMessage: 'Users' }),
-                openNewTab: !isNewUserRolesEnabled
+                uri: '/admin/users',
+                label: $t({ defaultMessage: 'Users' })
               }
             ] : []),
             ...(hasManageLabelPermission ? [

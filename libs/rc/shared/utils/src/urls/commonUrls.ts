@@ -517,8 +517,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getRwgList: {
-    method: 'get',
-    url: '/rwgs',
+    method: 'post',
+    url: '/rwgs/query',
     newApi: true
   },
   deleteGateways: {
@@ -533,17 +533,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGateway: {
     method: 'get',
-    url: '/rwgs/:gatewayId',
+    url: '/venues/:venueId/rwgs/:gatewayId',
     newApi: true
   },
   updateGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   addGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   getGatewayAlarms: {

@@ -59,7 +59,7 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       fixed: 'left'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: 'venueName'
     },

@@ -88,7 +88,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
                 navigateToVenues: <PropertyUnitLink
                   venueId={props.venueId}
                   unitId='0'
-                  name={$t({ defaultMessage: 'Venue/Property Units' })} />
+                  name={$t({ defaultMessage: '<VenueSingular></VenueSingular>/Property Units' })} />
               }
             )}
             placement='bottom'

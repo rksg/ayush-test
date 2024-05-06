@@ -6,7 +6,8 @@ import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                              from '@acx-ui/user'
+import { SwitchScopes }                                           from '@acx-ui/types'
+import { filterByAccess, hasPermission }                          from '@acx-ui/user'
 
 import { Notification  } from './styledComponents'
 
@@ -57,12 +58,14 @@ export function OnDemandCliTab () {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit`, { replace: false })
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -84,6 +87,10 @@ export function OnDemandCliTab () {
       }
     }
   ]
+
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
 
   return (
     <> <Loader states={[
@@ -108,9 +115,10 @@ export function OnDemandCliTab () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
+          scopeKey: SwitchScopes.CREATE,
           onClick: () => {
             navigate('add', { replace: false })
           }

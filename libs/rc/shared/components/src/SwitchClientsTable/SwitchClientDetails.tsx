@@ -74,7 +74,7 @@ export function SwitchClientDetails () {
         ? ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })] : ['', '']),
       ['clientName', $t({ defaultMessage: 'Hostname' })],
       ['switchName', $t({ defaultMessage: 'Switch Name' })],
-      ['venueName', $t({ defaultMessage: 'Venue Name' })],
+      ['venueName', $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })],
       ['clientVlan', $t({ defaultMessage: 'Vlan ID' })],
       ['vlanName', $t({ defaultMessage: 'Vlan' })],
       ['switchSerialNumber', $t({ defaultMessage: 'Switch Serial Number' })],
@@ -179,7 +179,7 @@ export function SwitchClientDetails () {
     },
     {
       title: <span>
-        {$t({ defaultMessage: 'Venue' })}
+        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       </span>,
       value: <TenantLink to={`/venues/${clientDetails?.venueId}/venue-details/overview`}>
         {clientDetails?.venueName}</TenantLink>
