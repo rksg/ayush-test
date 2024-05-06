@@ -22,6 +22,7 @@ import {
 import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
 import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
+  useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,
   useGetVenuesQuery,
   useUpdatePrivilegeGroupMutation
@@ -32,7 +33,9 @@ import {
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
   Venue,
-  VenueObjectList
+  VenueObjectList,
+  specialCharactersRegExp,
+  systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -126,8 +129,10 @@ export function EditPrivilegeGroup () {
   const location = useLocation().state as PrivilegeGroup
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
+  const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
   const isOnboardedMsp = location ?? false
+  const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
@@ -207,8 +212,9 @@ export function EditPrivilegeGroup () {
           ? policyEntities : undefined
       }
 
-      await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
-        payload: privilegeGroupData }).unwrap()
+      isClone ? await addPrivilegeGroup({ payload: privilegeGroupData }).unwrap()
+        : await updatePrivilegeGroup({ params: { privilegeGroupId: groupId },
+          payload: privilegeGroupData }).unwrap()
 
       navigate(linkToPrivilegeGroups)
     } catch (error) {
@@ -219,7 +225,7 @@ export function EditPrivilegeGroup () {
   useEffect(() => {
     if (privilegeGroup) {
       const delegation = privilegeGroup.delegation || false
-      form.setFieldValue('name', privilegeGroup.name)
+      form.setFieldValue('name', isClone ? (privilegeGroup.name + ' - copy') : privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
       setDisplayMspScope(delegation)
@@ -227,10 +233,12 @@ export function EditPrivilegeGroup () {
       const venues = (venuesList?.data.filter(venue =>
         privilegeGroup?.policies?.map(p => p.entityInstanceId).includes(venue.id)) || [])
       setVenues(venues)
-      setSelectedScope( venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
-      form.setFieldValue('mspvenues', venues.length > 0
-        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES)
+      const venueRadioButton = venues.length > 0
+        ? ChoiceScopeEnum.SPECIFIC_VENUE : ChoiceScopeEnum.ALL_VENUES
+      setSelectedScope(venueRadioButton)
+      isOnboardedMsp
+        ? form.setFieldValue('mspvenues', venueRadioButton)
+        : form.setFieldValue('scope', venueRadioButton)
 
       const ecCustomers = (customerList?.data.filter(customer =>
         privilegeGroup?.policyEntityDTOS?.map(p => p.tenantId).includes(customer.id)) || [])
@@ -259,10 +267,11 @@ export function EditPrivilegeGroup () {
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
-  const DisplaySelectedVenues = () => {
+  function DisplaySelectedVenues (ownScope: boolean) {
     const firstVenue = selectedVenues[0]
     const restVenue = selectedVenues.slice(1)
-    return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
+    return <div style={{ marginLeft: ownScope ? '-12px' : '12px',
+      marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstVenue.id}>
         {firstVenue.name}
         <Button
@@ -283,8 +292,10 @@ export function EditPrivilegeGroup () {
     const restCustomer = selectedCustomers.slice(1)
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({firstCustomer.children.filter(v => v.selected).length}
-        {firstCustomer.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
+        {firstCustomer.name} ({
+          intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+            { count: firstCustomer.children.filter(v => v.selected).length })
+        })
         <Button
           type='link'
           style={{ marginLeft: '40px' }}
@@ -293,8 +304,10 @@ export function EditPrivilegeGroup () {
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({ec.children.filter(v => v.selected).length}
-          {ec.children.filter(v => v.selected).length > 1 ? ' Venues' : ' Venue'})
+          {ec.name} ({
+            intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+              { count: ec.children.filter(v => v.selected).length })
+          })
         </UI.VenueList>
       )}</div>
   }
@@ -309,7 +322,7 @@ export function EditPrivilegeGroup () {
           { validator: () =>{
             if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
               return Promise.reject(
-                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+                `${intl.$t({ defaultMessage: 'Please select <venuePlural></venuePlural>' })} `
               )
             }
             return Promise.resolve()}
@@ -323,24 +336,24 @@ export function EditPrivilegeGroup () {
             <Radio
               key={ChoiceScopeEnum.ALL_VENUES}
               value={ChoiceScopeEnum.ALL_VENUES}>
-              {intl.$t({ defaultMessage: 'All Venues' })}
+              {intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })}
             </Radio>
             <Radio
               key={ChoiceScopeEnum.SPECIFIC_VENUE}
               value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+              {intl.$t({ defaultMessage: 'Specific <VenuePlural></VenuePlural>' })}
             </Radio>
             <Button
               style={{ marginLeft: '22px' }}
               hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
               type='link'
               onClick={onClickSelectVenue}
-            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+            >{intl.$t({ defaultMessage: 'Select <venuePlural></venuePlural>' })}</Button>
           </Space>
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(true)}
     </>
   }
 
@@ -359,7 +372,7 @@ export function EditPrivilegeGroup () {
           { validator: () =>{
             if(selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE && selectedVenues.length === 0) {
               return Promise.reject(
-                `${intl.$t({ defaultMessage: 'Please select venue(s)' })} `
+                `${intl.$t({ defaultMessage: 'Please select <venuePlural></venuePlural>' })} `
               )
             }
             return Promise.resolve()}
@@ -374,24 +387,24 @@ export function EditPrivilegeGroup () {
             <Radio
               key={ChoiceScopeEnum.ALL_VENUES}
               value={ChoiceScopeEnum.ALL_VENUES}>
-              {intl.$t({ defaultMessage: 'All Venues' })}
+              {intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })}
             </Radio>
             <Radio
               key={ChoiceScopeEnum.SPECIFIC_VENUE}
               value={ChoiceScopeEnum.SPECIFIC_VENUE}>
-              {intl.$t({ defaultMessage: 'Specific Venue(s)' })}
+              {intl.$t({ defaultMessage: 'Specific <VenuePlural></VenuePlural>' })}
             </Radio>
             <Button
               style={{ marginLeft: '22px' }}
               hidden={selectedScope === ChoiceScopeEnum.ALL_VENUES || selectedVenues.length > 0}
               type='link'
               onClick={onClickSelectVenue}
-            >{intl.$t({ defaultMessage: 'Select venues' })}</Button>
+            >{intl.$t({ defaultMessage: 'Select <venuePlural></venuePlural>' })}</Button>
           </Space>
         </Radio.Group>
       </Form.Item>
       {selectedVenues.length > 0 && selectedScope === ChoiceScopeEnum.SPECIFIC_VENUE &&
-        <DisplaySelectedVenues />}
+        DisplaySelectedVenues(false)}
 
       <Form.Item
         name='mspscope'
@@ -464,7 +477,9 @@ export function EditPrivilegeGroup () {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 64 }
+                { max: 128 },
+                { validator: (_, value) => systemDefinedNameValidator(value) },
+                { validator: (_, value) => specialCharactersRegExp(value) }
               ]}
               children={<Input />}
             />
@@ -472,10 +487,11 @@ export function EditPrivilegeGroup () {
               name='description'
               label={intl.$t({ defaultMessage: 'Description' })}
               rules={[
-                { min: 2 },
-                { max: 64 }
+                { max: 180 }
               ]}
-              children={<Input />}
+              children={
+                <Input.TextArea rows={4} />
+              }
             />
             <CustomRoleSelector />
           </Col>
@@ -506,7 +522,9 @@ export function EditPrivilegeGroup () {
 
   return (<>
     <PageHeader
-      title={intl.$t({ defaultMessage: 'Administrators' })}
+      title={isClone ? intl.$t({ defaultMessage: 'Clone Privilege Group' })
+        : intl.$t({ defaultMessage: 'Edit Privilege Group' })
+      }
       breadcrumb={[
         { text: intl.$t({ defaultMessage: 'Administration' }) },
         { text: intl.$t({ defaultMessage: 'Users & Privileges' }) },

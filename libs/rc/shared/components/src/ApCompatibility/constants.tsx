@@ -45,7 +45,9 @@ export const retrievedCompatibilitiesOptions = (
         const { featureName, incompatibleDevices } = feature
         const fwVersions: string[] = []
         incompatibleDevices?.forEach((device: ApIncompatibleDevice) => {
-          fwVersions.push(device.firmware)
+          if (fwVersions.indexOf(device.firmware) === -1) {
+            fwVersions.push(device.firmware)
+          }
         })
         compatibilitiesFilterOptions.push({
           key: fwVersions.join(','),

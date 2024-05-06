@@ -162,7 +162,7 @@ export const transformAps = (
       <Tooltip title={(network && apGroupTooltip('aps', currentVenue, network)) || result}><Button type='link' onClick={callback} disabled={readOnly}>{result}</Button></Tooltip>
       {incompatible && incompatible > 0 ?
         <Tooltip.Info isFilled
-          title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this venue.' })}
+          title={$t({ defaultMessage: 'Some access points may not be compatible with certain Wi-Fi features in this <venueSingular></venueSingular>.' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-2px', marginLeft: '6px', color: cssStr('--acx-semantics-yellow-50') }}
         /> :[]
@@ -272,7 +272,8 @@ export const transformScheduling = (
 export const transformApGroupVlan = (
   currentVenue?: NetworkVenue,
   network?: NetworkSaveData,
-  apGroupId?: string
+  apGroupId?: string,
+  vlanPoolingNameMap?: KeyValue<string, string>[]
 ): JSX.Element => {
   if (!currentVenue) return <></>
 
@@ -291,7 +292,7 @@ export const transformApGroupVlan = (
       if (isVlanPool) {
         const defaultValue = wlan?.advancedCustomization?.vlanPool?.id || ''
         displayText = $t(vlanContents.vlanPool, {
-          poolName: findApGroup.vlanPoolName,
+          poolName: (vlanPoolingNameMap?.find(pool => pool.key === vlanPoolId)?.value) || '',
           isCustom: vlanPoolId && vlanPoolId !== defaultValue
         })
 

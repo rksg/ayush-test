@@ -67,13 +67,14 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       rcgAllowedOperationsEnabled ? rcgAllowedOperations : allAllowedOperations
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
-    isCustomRole = !!profile?.customRoleName
+    isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     abacEnabled = featureFlagStates?.[abacFF] ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
-      userProfile.role = Role.PRIME_ADMIN
-      userProfile.roles = [Role.PRIME_ADMIN]
+      userProfile.role = userProfile.role in Role ? userProfile.role : Role.PRIME_ADMIN
+      userProfile.roles = userProfile.roles
+        .every(r => r in Role) ? userProfile.roles : [Role.PRIME_ADMIN]
       isCustomRole = false
     }
     setUserProfile({

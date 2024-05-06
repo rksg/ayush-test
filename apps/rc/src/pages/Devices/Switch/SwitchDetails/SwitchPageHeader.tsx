@@ -27,8 +27,9 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { filterByAccess, SwitchScopes } from '@acx-ui/user'
-import { useDateFilter }                from '@acx-ui/utils'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useDateFilter }                 from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -200,11 +201,16 @@ function SwitchPageHeader () {
     }, 3000)
   }
 
+  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
+  const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+  const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
+  const showAddMember = isStack && (maxMembers > 0) && hasCreatePermission
+
   const menu = (
     <Menu
       onClick={handleMenuClick}
       items={[
-        ...(isSyncedSwitchConfig ? [{
+        ...(isSyncedSwitchConfig && hasUpdatePermission ? [{
           key: MoreActions.SYNC_DATA,
           disabled: isSyncing || !isOperational,
           label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
@@ -214,7 +220,7 @@ function SwitchPageHeader () {
           type: 'divider'
         }] : []),
 
-        ...(isOperational ? [{
+        ...(isOperational && hasUpdatePermission ? [{
           key: MoreActions.REBOOT,
           label: isStack
             ? $t({ defaultMessage: 'Reboot Stack' })
@@ -222,25 +228,27 @@ function SwitchPageHeader () {
         }, {
           key: MoreActions.CLI_SESSION,
           label: $t({ defaultMessage: 'CLI Session' })
-        }, {
-          type: 'divider'
         }] : []),
 
-        ...(isStack && (maxMembers > 0) ? [{
+        ...(hasUpdatePermission && (showAddMember || hasDeletaPermission) ? [{
+          type: 'divider'
+        }] : [] ),
+
+        ...(showAddMember ? [{
           key: MoreActions.ADD_MEMBER,
           disabled: maxMembers === 0,
           label: $t({ defaultMessage: 'Add Member' })
         }] : []),
 
-        {
+        ...(hasDeletaPermission ? [{
           key: MoreActions.DELETE,
           label: <Tooltip placement='bottomRight' title={syncDataEndTime}>
             {isStack ?
               $t({ defaultMessage: 'Delete Stack' }) : $t({ defaultMessage: 'Delete Switch' })}
           </Tooltip>
-        }
-      ] as ItemType[]}
-    />
+        }] : [])
+      ] as ItemType[]
+      }/>
   )
 
   return (
@@ -271,14 +279,15 @@ function SwitchPageHeader () {
             selectionType={range}
           />,
           ...filterByAccess([
-            <Dropdown overlay={menu}>{() =>
-              <Button>
-                <Space>
-                  {$t({ defaultMessage: 'More Actions' })}
-                  <CaretDownSolidIcon />
-                </Space>
-              </Button>
-            }</Dropdown>,
+            <Dropdown overlay={menu}
+              scopeKey={[SwitchScopes.CREATE, SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
+                <Button>
+                  <Space>
+                    {$t({ defaultMessage: 'More Actions' })}
+                    <CaretDownSolidIcon />
+                  </Space>
+                </Button>
+              }</Dropdown>,
             <Button
               type='primary'
               scopeKey={[SwitchScopes.UPDATE]}

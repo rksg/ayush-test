@@ -22,7 +22,7 @@ export default function GatewayDetailsGeneralContent (props: {
     }}
     labelWidthPercent={40}>
     <Descriptions.Item
-      label={$t({ defaultMessage: 'Venue' })}
+      label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       children={
         <TenantLink to={`venues/${gatewayDetails?.venueId}/venue-details/overview`}>
           {gatewayDetails?.venueName}

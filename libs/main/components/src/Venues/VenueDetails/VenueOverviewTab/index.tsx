@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -22,11 +24,18 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
-import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
-import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                                          from '@acx-ui/utils'
+import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
+import { ShowTopologyFloorplanOn }              from '@acx-ui/rc/utils'
+import { useNavigateToPath }                    from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }                        from '@acx-ui/user'
+import { generateVenueFilter, useDateFilter }   from '@acx-ui/utils'
+import type { AnalyticsFilter }                 from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
@@ -36,25 +45,52 @@ export function VenueOverviewTab () {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+  const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
+    ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
       children: <ApWidgets filters={venueFilter}/>
-    },
-    {
+    }] : []),
+
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets filters={venueFilter}/>
-    }
+    }] : [])
   ]
+
+  const hasReadPermission
+    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ] })
+
   return (<>
+    {
+      (
+        (tripleBand?.enabled === true) &&
+        (venueRadio?.radioParams6G?.enableAfc === true) &&
+        (
+          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+        )
+      ) &&
+      <LowPowerBannerAndModal from={'venue'} />
+    }
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' />
+    { hasReadPermission && <ContentSwitcher tabDetails={tabDetails} size='large' />}
   </>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
+  const { venueId } = useParams()
+  const [incidentCount, setIncidentCount] = useState(0)
+  const onIncidentClick =
+    useNavigateToPath(`/venues/${venueId}/venue-details/analytics/incidents/overview`)
+
+  const hasReadPermission
+    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
+
   const filters = props.filters
   return (
     <GridRow>
@@ -62,11 +98,16 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
         <VenueAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <IncidentBySeverity type='donut' filters={filters}/>
+        <UI.Container
+          incidentCount={incidentCount}
+          onClick={incidentCount > 0 ? onIncidentClick : undefined}
+        >
+          <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
+        </UI.Container>
       </GridCol>
-      <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
+      { hasReadPermission && <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
         <VenueDevicesWidget />
-      </GridCol>
+      </GridCol>}
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
         <VenueHealth filters={filters}/>

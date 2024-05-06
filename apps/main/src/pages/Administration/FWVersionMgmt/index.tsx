@@ -11,11 +11,14 @@ import {
   useGetSigPackQuery,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
+  useGetVenueApModelFirmwareListQuery,
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -33,11 +36,10 @@ const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const tenantBasePath = useTenantLink('')
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
   const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
@@ -51,10 +53,16 @@ const FWVersionMgmt = () => {
   })
   const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
     { skip: !enableSigPackUpgrade })
-  const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
+  const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
+
+  const hasNoPermissions
+    = (!hasPermission({ scopes: [WifiScopes.READ] }) && params?.activeSubTab === 'apFirmware')
+    // eslint-disable-next-line max-len
+    || (!hasPermission({ scopes: [SwitchScopes.READ] }) && params?.activeSubTab === 'switchFirmware')
+    || (!hasPermission({ scopes: [EdgeScopes.READ] }) && params?.activeSubTab === 'edgeFirmware')
 
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
@@ -63,16 +71,6 @@ const FWVersionMgmt = () => {
       setIsAPPLibraryAvailable(false)
     }
   }, [sigPackUpdate])
-  useEffect(()=>{
-    if (latestReleaseVersions && venueVersionList) {
-      // As long as one of the venues' version smaller than the latest release version, it would be the available
-      const latest = [...latestReleaseVersions].sort((a,b)=>
-        compareVersions(a.id, b.id)).pop()
-      const hasOutdated = venueVersionList.data.some(fv=>
-        compareVersions(getApVersion(fv), latest?.id) < 0)
-      setIsApFirmwareAvailable(hasOutdated)
-    }
-  }, [latestReleaseVersions, venueVersionList])
 
   useEffect(()=>{
     if (latestSwitchReleaseVersions && switchVenueVersionList) {
@@ -93,6 +91,15 @@ const FWVersionMgmt = () => {
     setIsEdgeFirmwareAvailable(!!hasOutdated)
   }, [edgeVenueVersionList, latestEdgeReleaseVersion])
 
+  useEffect(() => {
+    if (hasNoPermissions) {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/no-permissions`
+      }, { replace: true })
+    }
+  }, [ hasNoPermissions, tenantBasePath, navigate ])
+
   const tabs = {
     apFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'AP Firmware' })}
@@ -100,7 +107,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new AP firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <ApFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [WifiScopes.READ] })
     },
     switchFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
@@ -108,7 +115,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [SwitchScopes.READ] })
     },
     edgeFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'SmartEdge Firmware' })}
@@ -116,7 +123,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new SmartEdge firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.READ] })
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}
@@ -156,3 +163,36 @@ const FWVersionMgmt = () => {
 }
 
 export default FWVersionMgmt
+
+
+function useIsApFirmwareAvailable () {
+  const params = useParams()
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const [ isApFirmwareAvailable, setIsApFirmwareAvailable ] = useState(false)
+  // eslint-disable-next-line max-len
+  const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery({ params }, { skip: !isUpgradeByModelEnabled })
+  // eslint-disable-next-line max-len
+  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params }, { skip: isUpgradeByModelEnabled })
+  // eslint-disable-next-line max-len
+  const { data: venueVersionList } = useGetVenueVersionListQuery({ params }, { skip: isUpgradeByModelEnabled })
+
+  useEffect(() => {
+    if (!latestReleaseVersions || !venueVersionList) return
+
+    // As long as one of the venues' version smaller than the latest release version, it would be the available
+    const latest = [...latestReleaseVersions].sort((a, b) => compareVersions(a.id, b.id)).pop()
+    // eslint-disable-next-line max-len
+    const hasOutdated = venueVersionList.data.some(fv => compareVersions(getApVersion(fv), latest?.id) < 0)
+    setIsApFirmwareAvailable(hasOutdated)
+  }, [latestReleaseVersions, venueVersionList])
+
+  useEffect(() => {
+    if (!venueApModelFirmwareList?.data) return
+
+    // eslint-disable-next-line max-len
+    setIsApFirmwareAvailable(venueApModelFirmwareList.data.some(venueApModelFiwmrare => !venueApModelFiwmrare.isFirmwareUpToDate))
+
+  }, [venueApModelFirmwareList])
+
+  return isApFirmwareAvailable
+}

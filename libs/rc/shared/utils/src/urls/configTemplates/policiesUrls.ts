@@ -164,5 +164,70 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/devicePolicies/query',
     newApi: true
+  },
+  deleteVlanPoolPolicy: {
+    method: 'delete',
+    url: '/templates/vlanPools/:templateId',
+    newApi: true
+  },
+  addVlanPoolPolicy: {
+    method: 'post',
+    url: '/templates/vlanPools',
+    newApi: true
+  },
+  getVlanPoolPolicy: {
+    method: 'get',
+    url: '/templates/vlanPools/:policyId',
+    newApi: true
+  },
+  updateVlanPoolPolicy: {
+    method: 'put',
+    url: '/templates/vlanPools/:policyId',
+    newApi: true
+  },
+  getVlanPoolVenues: {
+    method: 'post',
+    url: '/templates/vlanPools/:policyId/venues',
+    newApi: true
+  },
+  getVlanPools: {
+    method: 'get',
+    url: '/templates/vlanPools',
+    newApi: true
+  },
+  addRoguePolicy: {
+    method: 'post',
+    url: '/templates/rogueApPolicyProfiles',
+    newApi: true
+  },
+  getRoguePolicy: {
+    method: 'get',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  getEnhancedRoguePolicyList: {
+    method: 'post',
+    url: '/templates/rogueApPolicyProfiles/query',
+    newApi: true
+  },
+  updateRoguePolicy: {
+    method: 'put',
+    url: '/templates/rogueApPolicyProfiles/:policyId',
+    newApi: true
+  },
+  deleteRogueApPolicy: {
+    method: 'delete',
+    url: '/templates/rogueApPolicyProfiles/:templateId',
+    newApi: true
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/templates/venues/:venueId/rogueApSettings',
+    newApi: true
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/templates/venues/:venueId/rogueApSettings',
+    newApi: true
   }
 }

@@ -36,7 +36,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     (visibilityMap[ConfigTemplateType.VENUE] ? {
       key: 'add-venue',
       label: <ConfigTemplateLink to='venues/add'>
-        {$t({ defaultMessage: 'Venue' })}
+        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       </ConfigTemplateLink>
     } : null),
     {
@@ -63,7 +63,9 @@ function usePolicyMenuItems (): ItemType[] {
 
   return [
     createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap)
+    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap)
   ]
 }
 

@@ -25,7 +25,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.PORTAL]: false,
       [ConfigTemplateType.VLAN_POOL]: false,
       [ConfigTemplateType.WIFI_CALLING]: false,
-      [ConfigTemplateType.CLIENT_ISOLATION]: false
+      [ConfigTemplateType.CLIENT_ISOLATION]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: false
     })
   })
 
@@ -50,7 +51,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.PORTAL]: true,
       [ConfigTemplateType.VLAN_POOL]: true,
       [ConfigTemplateType.WIFI_CALLING]: true,
-      [ConfigTemplateType.CLIENT_ISOLATION]: false
+      [ConfigTemplateType.CLIENT_ISOLATION]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: true
     })
   })
 
@@ -72,10 +74,11 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.LAYER_3_POLICY]: true,
       [ConfigTemplateType.APPLICATION_POLICY]: true,
       [ConfigTemplateType.DEVICE_POLICY]: true,
-      [ConfigTemplateType.PORTAL]: false,
+      [ConfigTemplateType.PORTAL]: true,
       [ConfigTemplateType.VLAN_POOL]: false,
       [ConfigTemplateType.WIFI_CALLING]: false,
-      [ConfigTemplateType.CLIENT_ISOLATION]: false
+      [ConfigTemplateType.CLIENT_ISOLATION]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: false
     })
   })
 })

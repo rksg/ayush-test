@@ -5,6 +5,7 @@ import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider  }                           from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { AlarmsDrawer }             from '../../AlarmsDrawer'
 import { alarmList, alarmListMeta } from '../__tests__/fixtures'
 
 import { EdgeAlarmWidget, getAlarmChartData } from '.'
@@ -46,6 +47,7 @@ describe('Edge Alarm Widget', () => {
           isLoading={false}
           serialNumber='mocked-edge'
         />
+        <AlarmsDrawer visible={false} setVisible={jest.fn()}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })

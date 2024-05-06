@@ -30,9 +30,9 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }                     from '@acx-ui/utils'
+import { RolesEnum, SwitchScopes }                        from '@acx-ui/types'
+import { hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useTenantId }                                    from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -46,7 +46,6 @@ export function useMenuConfig () {
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
@@ -55,6 +54,10 @@ export function useMenuConfig () {
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -63,7 +66,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    ...(isAdmin ? [{
+    {
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -91,7 +94,7 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Network Assurance' }),
           children: [
             {
-              uri: '/analytics/health',
+              uri: `/analytics/health${isSwitchHealthEnabled ? '/overview' : ''}`,
               label: $t({ defaultMessage: 'Health' })
             },
             ...(isAnltAdvTier ? [{
@@ -109,10 +112,10 @@ export function useMenuConfig () {
           ]
         }
       ]
-    }]: []),
+    },
     {
       uri: '/venues',
-      label: $t({ defaultMessage: 'Venues' }),
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
     },
@@ -139,7 +142,7 @@ export function useMenuConfig () {
             }
           ]
         },
-        {
+        ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wired' }),
           children: [
@@ -148,7 +151,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Wired Clients List' })
             }
           ]
-        },
+        }] : []),
         ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Identity Management' }),
@@ -224,7 +227,7 @@ export function useMenuConfig () {
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
     }] : []),
-    {
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wired' }),
       inactiveIcon: SwitchOutlined,
       activeIcon: SwitchSolid,
@@ -259,7 +262,7 @@ export function useMenuConfig () {
           ]
         }
       ]
-    },
+    }] : []),
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),

@@ -11,7 +11,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchUpgradePreferences: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   updateUpgradePreferences: {
     method: 'put',
@@ -21,7 +22,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateSwitchUpgradePreferences: {
     method: 'put',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   getVenueVersionList: {
     method: 'get',
@@ -98,6 +100,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/switchFirmwares/versions/latest',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/latest',
+    newApi: true
+  },
+  getSwitchDefaultFirmwareList: {
+    method: 'get',
+    url: '/venues/switchFirmwares/versions/default',
     newApi: true
   },
   getSwitchFirmwareVersionIdList: {
@@ -227,6 +234,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   patchVenueApModelFirmwares: {
     method: 'PATCH',
     url: '/venues/:venueId/apModelFirmwares',
+    newApi: true
+  },
+  updateVenueSchedulesPerApModel: {
+    method: 'post',
+    url: '/venues/:venueId/apModelFirmwareSchedules',
     newApi: true
   }
 }

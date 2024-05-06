@@ -169,7 +169,7 @@ export function APsSelection () {
         autoFocus
         placeholder={get('IS_MLISA_SA')
           ? $t({ defaultMessage: 'Select APs to test' })
-          : $t({ defaultMessage: 'Select Venues / APs to test' })}
+          : $t({ defaultMessage: 'Select <VenuePlural></VenuePlural> / APs to test' })}
         options={response.options}
       />}
     />

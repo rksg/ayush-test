@@ -23,6 +23,7 @@ import {
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
 import { CRRMStates }                   from './states'
+import { isDataRetained }               from './utils'
 
 export type CrrmListItem = {
   id: string
@@ -47,6 +48,7 @@ export type CrrmList = {
 export type CrrmKpi = {
   recommendation: {
     status: StateType
+    dataEndTime: string
     kpi_number_of_interfering_links: RecommendationKpi['']
   }
 }
@@ -68,6 +70,11 @@ export type AiOpsList = {
   recommendations: AiOpsListItem[]
 }
 
+export type RecommendationWlan = {
+  name: string
+  ssid: string
+}
+
 export type Recommendation = {
   id: string
   code: string
@@ -76,7 +83,10 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: object & { scheduledAt: string }
+  metadata: object & {
+    scheduledAt: string
+    wlans?: RecommendationWlan[]
+  }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null
@@ -108,7 +118,12 @@ type MutationResponse = { success: boolean, errorMsg: string, errorCode: string 
 export interface MuteMutationPayload extends MutationPayload { mute: boolean }
 export interface MuteMutationResponse { toggleMute: MutationResponse }
 
-interface SchedulePayload extends MutationPayload { type: string, scheduledAt: string }
+export interface SchedulePayload extends MutationPayload {
+  type: string
+  scheduledAt: string
+  isRecommendationRevertEnabled?: boolean
+  wlans?: RecommendationWlan[]
+}
 interface ScheduleResponse { schedule: MutationResponse }
 
 interface DeleteMutationPayload extends MutationPayload { }
@@ -203,9 +218,12 @@ export function extractBeforeAfter (value: CrrmListItem['kpis']) {
 
 export const getCrrmInterferingLinksText = (
   status: StateType,
+  dataEndTime: string,
   kpi_number_of_interfering_links: RecommendationKpi['']
 ) => {
   const { $t } = getIntl()
+  if (!isDataRetained(dataEndTime))
+    return $t({ defaultMessage: 'Beyond data retention period' })
   if (status === 'reverted') return $t(states.reverted.text)
   if (status === 'applyfailed') return $t(states.applyfailed.text)
   if (status === 'revertfailed') return $t(states.revertfailed.text)
@@ -289,6 +307,23 @@ export const api = recommendationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    recommendationWlans: build.query<RecommendationWlan[], { id: String }>({
+      query: ({ id }) => ({
+        document: gql`
+        query Wlans($id: String) {
+          recommendation(id: $id) {
+            WLANs {
+              name
+              ssid
+            }
+          }
+        }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: { recommendation: { WLANs: RecommendationWlan[] } }) =>
+        response.recommendation.WLANs
     }),
     aiOpsList: build.query<
       AiOpsList,
@@ -449,20 +484,21 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    scheduleRecommendation: build.mutation<
-      ScheduleResponse, SchedulePayload & { isRecommendationRevertEnabled?: boolean }
-    >({
+    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
       query: ({ isRecommendationRevertEnabled, ...payload }) => ({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
             ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
+            ${payload.wlans ? '$wlans: [WLANInput]' : ''}
           ) {
             schedule(
               id: $id,
               ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
-              scheduledAt: $scheduledAt) {
+              ${payload.wlans ? 'wlans: $wlans,' : ''}
+              scheduledAt: $scheduledAt
+            ) {
               success
               errorMsg
               errorCode
@@ -472,6 +508,7 @@ export const api = recommendationApi.injectEndpoints({
         variables: {
           id: payload.id,
           actionType: payload.type,
+          wlans: payload.wlans,
           scheduledAt: payload.scheduledAt
         }
       }),
@@ -523,22 +560,23 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
-      query: ({ id, code }) => ({
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code' | 'status'>>({
+      query: ({ id, code, status }) => ({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status ${kpiHelper(code!)}
+              id status dataEndTime ${kpiHelper(code!, status)}
             }
           }
         `,
         variables: { id }
       }),
       transformResponse: (response: CrrmKpi) => {
-        const { status, kpi_number_of_interfering_links } = response.recommendation
+        const { status, dataEndTime, kpi_number_of_interfering_links } = response.recommendation
         return {
           text: getCrrmInterferingLinksText(
             status,
+            dataEndTime,
             kpi_number_of_interfering_links!
           )
         }
@@ -572,6 +610,7 @@ export const {
   useCrrmListQuery,
   useAiOpsListQuery,
   useRecommendationListQuery,
+  useRecommendationWlansQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,

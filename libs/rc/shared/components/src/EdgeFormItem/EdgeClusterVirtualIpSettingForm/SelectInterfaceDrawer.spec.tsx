@@ -125,7 +125,7 @@ describe('InterfaceTable', () => {
       'port3'
     )
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('The selected port is not in the same subnet as other nodes.')).toBeVisible()
+    expect((await screen.findAllByText('The selected port is not in the same subnet as other nodes.'))[0]).toBeVisible()
   })
 
   it('should submit successfully', async () => {
@@ -153,15 +153,10 @@ describe('InterfaceTable', () => {
       'port3'
     )
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
-    expect(handleFinishSpy).toHaveBeenCalledWith({
-      [lanInterfaceKeys[0]]: mockLanInterfaces[
-        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-      ].find(item => item.portName === 'port3'),
-      [lanInterfaceKeys[1]]: mockLanInterfaces[
-        lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-      ].find(item => item.portName === 'port3')
-    })
+    expect(handleFinishSpy).toHaveBeenCalledWith(mockEdgeClusterList.data[0].edgeList.map(item => ({
+      serialNumber: item.serialNumber,
+      portName: 'port3'
+    })))
     expect(setVisibleSpy).toHaveBeenCalledWith(false)
   })
 
@@ -187,14 +182,10 @@ describe('InterfaceTable', () => {
     const { result } = renderHook(() => Form.useForm())
     jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
     const lanInterfaceKeys = Object.keys(mockLanInterfaces)
-    const editData = {
-      [lanInterfaceKeys[0]]: mockLanInterfaces[
-        lanInterfaceKeys[0] as keyof typeof mockLanInterfaces
-      ].find(item => item.portName === 'port3'),
-      [lanInterfaceKeys[1]]: mockLanInterfaces[
-        lanInterfaceKeys[1] as keyof typeof mockLanInterfaces
-      ].find(item => item.portName === 'port3')
-    }
+    const editData = mockEdgeClusterList.data[0].edgeList.map(item => ({
+      serialNumber: item.serialNumber,
+      portName: 'port3'
+    }))
     render(
       <SelectInterfaceDrawer
         visible={true}

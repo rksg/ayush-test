@@ -7,6 +7,8 @@ import { DateFormatEnum, formatter }                                            
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { useLocation }                                                                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                               from '@acx-ui/types'
+import { hasPermission }                                                                            from '@acx-ui/user'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 
@@ -33,7 +35,8 @@ export function APDetailsCard (props: {
       networkNodes: [[
         { type: 'zone', name: apDetail?.venueId },
         { type: 'AP', name: apDetail?.apMac as string }
-      ]]
+      ]],
+      switchNodes: [[]]
     }
   } as AnalyticsFilter
 
@@ -45,17 +48,21 @@ export function APDetailsCard (props: {
     skip: !apDetail?.venueId || !apDetail?.apMac
   })
 
+  const apName = apDetail?.name
+    || apDetail?.apMac
+    || $t({ defaultMessage: 'Unknown' }) // for unknown device
+
   return <Card><Card.Title>
-    <Space>
-      <UI.NodeTitle
-        state={{ from: location.pathname }}
-        // eslint-disable-next-line max-len
-        to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
-        {apDetail?.name
-        || apDetail?.apMac
-        || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
-      </UI.NodeTitle>
+    <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
+      { hasPermission({ scopes: [WifiScopes.READ] })
+        ? <UI.NodeTitle
+          state={{ from: location.pathname }}
+          // eslint-disable-next-line max-len
+          to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
+          {apName}
+        </UI.NodeTitle>
+        : <Space style={{ fontSize: '12px' }}>{ apName }</Space>
+      }
       <Button
         size='small'
         type='link'

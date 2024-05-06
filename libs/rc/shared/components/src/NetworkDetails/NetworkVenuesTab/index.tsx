@@ -99,7 +99,7 @@ const defaultPayload = {
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
-  defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+  defaultMessage: 'No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating <venuePlural></venuePlural>'
 })
 
 interface schedule {
@@ -307,7 +307,7 @@ export function NetworkVenuesTab () {
         content: (<>
           <div>
             {$t(
-              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { defaultMessage: 'For the following {count, plural, one {<venueSingular></venueSingular>} other {<venuePlural></venuePlural>}}, the network could not be activated on all <VenuePlural></VenuePlural>:' },
               { count: enabledNotActivatedVenueNames.length }
             )}
           </div>
@@ -367,7 +367,7 @@ export function NetworkVenuesTab () {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,
@@ -427,7 +427,7 @@ export function NetworkVenuesTab () {
       render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
           disabled = true
         } else if (systemNetwork) {

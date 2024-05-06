@@ -140,7 +140,3 @@ export const FwContainer = styled.div`
   line-height: 20px;
   margin-right: 30px;
 `
-export const ShowMoreLink = styled.span`
-  color: var(--acx-accents-blue-50);
-  font-size: 12px;
-`

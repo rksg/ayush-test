@@ -123,7 +123,7 @@ export function RadioSettings () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { tenantId, venueId } = useParams()
+  const { tenantId, venueId, wifiRadioTab } = useParams()
 
   const formRef = useRef<StepsFormLegacyInstance<VenueRadioCustomization>>()
   const isTriBandRadioRef = useRef<boolean>(false)
@@ -389,6 +389,9 @@ export function RadioSettings () {
     }
     if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
       handleChange()
+    }
+    if (wifiRadioTab) {
+      onTabChange(wifiRadioTab)
     }
   }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 

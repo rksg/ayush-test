@@ -4,9 +4,16 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                                                                    from '@acx-ui/components'
-import { EdgeLag, EdgePort, EdgePortInfo, EdgePortWithStatus, getEdgePortDisplayName, validateEdgeGateway } from '@acx-ui/rc/utils'
-
+import { Tabs, Tooltip } from '@acx-ui/components'
+import {
+  ClusterNetworkSettings,
+  EdgeLag, EdgePort,
+  EdgePortInfo,
+  EdgePortWithStatus,
+  getEdgePortDisplayName,
+  isInterfaceInVRRPSetting,
+  validateEdgeGateway
+} from '@acx-ui/rc/utils'
 
 import { EdgePortCommonFormProps } from '../PortCommonForm'
 
@@ -25,13 +32,14 @@ interface TabData {
 }
 
 interface PortsGeneralProps extends Pick<EdgePortCommonFormProps, 'formFieldsProps'> {
-  statusData: EdgePortInfo[]
+  statusData?: EdgePortInfo[]
   lagData?: EdgeLag[]
   isEdgeSdLanRun: boolean
   activeTab?: string
   onTabChange?: (activeTab: string) => void
   fieldHeadPath?: string[]
   isCluster?: boolean
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
 }
 
 export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
@@ -43,7 +51,8 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
     onTabChange,
     fieldHeadPath = [],
     isCluster,
-    formFieldsProps
+    formFieldsProps,
+    vipConfig = []
   } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string>('')
@@ -76,7 +85,19 @@ export const EdgePortsGeneralBase = (props: PortsGeneralProps) => {
             statusData={portStatus}
             lagData={lagData}
             isCluster={isCluster}
-            formFieldsProps={formFieldsProps}
+            formFieldsProps={
+              {
+                ...formFieldsProps,
+                portType: {
+                  ..._.get(formFieldsProps, 'portType'),
+                  disabled: isInterfaceInVRRPSetting(
+                    portStatus?.serialNumber ?? '',
+                    innerPortFormID,
+                    vipConfig
+                  )
+                }
+              }
+            }
           />
         )}
       </Form.List>,

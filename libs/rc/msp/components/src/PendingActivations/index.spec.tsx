@@ -1,0 +1,331 @@
+import  userEvent from '@testing-library/user-event'
+import { rest }   from 'msw'
+
+import { showToast }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { mspApi }                                                          from '@acx-ui/msp/services'
+import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
+import { administrationApi }                                               from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { Provider, store }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+
+import { PendingActivations } from '.'
+
+const mockedEtitlementsList =
+  [
+    {
+      name: 'Switch',
+      deviceSubType: 'ICX76',
+      deviceType: 'SWITCH',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889502-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 100,
+      sku: 'CLD-MS76-1001'
+    },
+    {
+      name: 'Wi-Fi',
+      deviceType: 'WIFI',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Sun Jan 01 23:59:59 UTC 2023',
+      id: '373419142-1',
+      tempLicense: true,
+      lastNotificationDate: null,
+      quantity: 80,
+      sku: 'CLD-MW00-1001'
+    },
+    {
+      name: 'Switch',
+      deviceSubType: 'ICX71L',
+      deviceType: 'SWITCH',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889505-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 30,
+      sku: 'CLD-S08M-3001'
+    },
+    {
+      deviceType: 'EDGE',
+      effectiveDate: 'Fri Dec 10 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889302-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 70,
+      sku: ''
+    },
+    {
+      deviceType: 'UNKOWNTYPE',
+      effectiveDate: 'Sun Dec 12 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889509-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 50,
+      sku: ''
+    },
+    {
+      name: 'Device',
+      deviceType: 'APSW',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Wed Dec 06 23:59:59 UTC 2023',
+      id: '358889506-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 30,
+      sku: '',
+      assignedLicense: true
+    },
+    {
+      name: 'Device',
+      deviceType: 'APSW',
+      effectiveDate: 'Fri Dec 06 00:00:00 UTC 2024',
+      expirationDate: 'Wed Apr 02 23:59:59 UTC 2024',
+      id: '358889508-1',
+      tempLicense: false,
+      lastNotificationDate: null,
+      quantity: 10,
+      sku: ''
+    }
+  ]
+
+const mockedSummary =
+  [
+    {
+      deviceSubType: 'ICX',
+      deviceType: 'SWITCH',
+      tempLicense: false,
+      quantity: 130,
+      deviceCount: 2,
+      remainingDevices: 5
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'WIFI',
+      tempLicense: false,
+      quantity: 80,
+      deviceCount: 3,
+      remainingDevices: 15
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'EDGE',
+      tempLicense: false,
+      quantity: 70,
+      deviceCount: 2,
+      remainingDevices: 20
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'UNKOWNTYPE',
+      tempLicense: false,
+      quantity: 50,
+      deviceCount: 0,
+      remainingDevices: 25
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'ANALYTICS',
+      tempLicense: false,
+      quantity: 60,
+      deviceCount: 80,
+      remainingDevices: 0
+    }
+  ]
+
+const mockedWindowOpen = jest.fn()
+const mockedRefreshFn = jest.fn()
+jest.spyOn(Date, 'now').mockImplementation(() => {
+  return new Date('2023-01-11T12:33:37.101+00:00').getTime()
+})
+jest.spyOn(window, 'open').mockImplementation(mockedWindowOpen)
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
+// jest.mock('./SubscriptionHeader', () => ({
+//   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
+// }))
+const services = require('@acx-ui/rc/services')
+const activations = {
+  data: [{
+    orderId: '123',
+    productName: 'test',
+    productCode: 'aaa',
+    quantity: 100,
+    spaEndDate: '2024-12-01',
+    productClass: 'ACX-ESNT-NEW',
+    orderCreateDate: '2024-03-03',
+    orderAcxRegistrationCode: 'ABC123'
+  },
+  {
+    orderId: 'a0EO3000001ZfR7MAK',
+    salesOrderId: 'a0FO3000000xJ0DMAU',
+    productName: 'RUCKUS One Trial REC 90-Day',
+    productCode: 'CLD-R1-TMP090-REC',
+    quantity: 100,
+    spaStartDate: '2024-04-22',
+    spaEndDate: '2024-07-22',
+    productClass: 'ACX-TRIAL-NEW',
+    orderCreateDate: '2024-04-22T08:53:05.000+0000',
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
+  }]
+}
+
+describe('PendingActivations', () => {
+  let params: { tenantId: string }
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    mockedWindowOpen.mockClear()
+    mockedRefreshFn.mockClear()
+
+    params = {
+      tenantId: '3061bd56e37445a8993ac834c01e2710'
+    }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
+
+    services.useGetEntitlementsListQuery = jest.fn().mockImplementation(() => {
+      return { data: mockedEtitlementsList }
+    })
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
+        (req, res, ctx) => {
+          if (req.url.searchParams.get('refresh') === 'true') {
+            mockedRefreshFn()
+            return res(ctx.status(202))
+          } else {
+            return res(ctx.json({
+              banners: [],
+              entitlements: mockedEtitlementsList,
+              summary: mockedSummary
+            }))
+          }
+        }
+      ),
+      rest.post(
+        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
+        (_req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.getEntitlementsActivations.url,
+        (req, res, ctx) => res(ctx.json(activations))
+      )
+    )
+  })
+
+  it('should render correctly', async () => {
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getByRole('button', { name: 'Manage Subscriptions' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeVisible()
+    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
+    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /aaa/i })).toBeVisible()
+  })
+
+  it('should refresh successfully', async () => {
+    const mockedShowToast = jest.fn()
+    jest.mocked(showToast).mockImplementation(mockedShowToast)
+
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
+
+    const licenseManagementButton =
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
+    await userEvent.click(licenseManagementButton)
+    expect(mockedWindowOpen).toBeCalled()
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    await userEvent.click(refreshButton)
+    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
+  })
+
+  it('should display toast message when refresh failed', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
+        (req, res, ctx) => {
+          if (req.url.searchParams.get('refresh') === 'true')
+            return res(ctx.status(500))
+          else
+            return res(ctx.json({
+              banners: [],
+              entitlements: mockedEtitlementsList,
+              summary: mockedSummary
+            }))
+        }
+      ),
+      rest.post(
+        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
+        (_req, res, ctx) => res(ctx.status(500))
+      )
+    )
+
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    await userEvent.click(refreshButton)
+    // FIXME: might need to fix when general error handler behavior changed.
+    await waitFor(() => expect(spyConsole).toBeCalled())
+  })
+
+  it('should open window correctly when activation code clicked', async () => {
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(await screen.findByRole('button', { name: /ABC123/i }))
+    expect(mockedWindowOpen).toBeCalled()
+  })
+
+  it('should open drawer correctly when part number clicked', async () => {
+    render(
+      <Provider>
+        <PendingActivations />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(await screen.findByRole('button', { name: /aaa/i }))
+    expect(await screen.findByText('Activate Purchase')).toBeVisible()
+  })
+})

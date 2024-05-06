@@ -50,9 +50,27 @@ export const aclList = {
       aclType: 'standard',
       id: '24ef915a476947ec9fb1fe37feecab0e',
       name: 'standard-acl'
+    },
+    {
+      id: 'c73f27644c024add9b88186a93e58db0',
+      name: 'ipv6-acl',
+      aclType: 'IPv6',
+      aclRules: [
+        {
+          id: '2ef95518fd304b1f882a40d97733504d',
+          sequence: 10,
+          action: 'permit',
+          destination: 'any',
+          protocol: 'ipv6',
+          source: 'any',
+          dscpMatching: 0,
+          dscpMarking: 0,
+          internalPriority: 0
+        }
+      ]
     }
   ],
   page: 1,
-  totalCount: 2,
+  totalCount: 3,
   totalPages: 1
 }

@@ -1,8 +1,11 @@
 import '@testing-library/jest-dom'
 import * as router from 'react-router-dom'
 
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { Provider, dataApiURL, store }                 from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
+
+import { switchCountFixture } from './OverviewTab/SummaryBoxes/__tests__/fixtures'
+import { api }                from './OverviewTab/SummaryBoxes/services'
 
 import { HealthTabs } from '.'
 
@@ -23,12 +26,22 @@ jest.mock('./OverviewTab', () => ({
   OverviewTab: () => <div>Mocked OverviewTab</div>
 }))
 
+jest.mock('./WiredTab', () => ({
+  OverviewTab: () => <div>Mocked WiredTab</div>
+}))
+
+
+const params = { activeTab: 'overview', tenantId: 'tenant-id' }
 
 describe('HealthTabs', () => {
   beforeEach(() => {
     mockedUsedNavigate.mockReset()
   })
+  afterEach(() =>
+    store.dispatch(api.util.resetApiState())
+  )
   it('should handle default tab', async () => {
+    mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1' })
     )
@@ -40,15 +53,18 @@ describe('HealthTabs', () => {
       }) as unknown as ReturnType<typeof router.useLocation>
     )
 
-    render(<Provider>
-      <HealthTabs />
-    </Provider>)
+    render(
+      <Provider>
+        <HealthTabs />
+      </Provider>, { route: { params } })
     fireEvent.click(await screen.findByText('Wireless'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/t1/t/analytics/health/wireless'
     )
   })
+
   it('should handle tab changes', async () => {
+    mockGraphqlQuery(dataApiURL, 'SwitchCount', { data: switchCountFixture })
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ activeSubTab: 'wireless', tenantId: 't1' })
     )
@@ -61,7 +77,7 @@ describe('HealthTabs', () => {
     )
     render(<Provider>
       <HealthTabs />
-    </Provider>)
+    </Provider> , { route: { params } })
     fireEvent.click(await screen.findByText('Wired'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
       '/t1/t/analytics/health/wired'

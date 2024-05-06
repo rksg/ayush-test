@@ -4,15 +4,15 @@ import { Divider } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Table }                                              from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortInfo, EdgeStatus, getIpWithBitMask } from '@acx-ui/rc/utils'
+import { Button, Table }                                                                from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePortInfo, EdgeStatus, VirtualIpSetting, getIpWithBitMask } from '@acx-ui/rc/utils'
 
 import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
 
 import { VirtualIpFormType } from '.'
 
 interface InterfaceTableProps {
-  value?: { [key: string]: EdgePortInfo | undefined }
+  value?: VirtualIpSetting['ports']
   onChange?: (data: unknown) => void
   index?: number
   nodeList?: EdgeStatus[]
@@ -40,20 +40,22 @@ export const InterfaceTable = (props: InterfaceTableProps) => {
   const [data, setData] = useState<InterfaceTableDataType[]>([])
 
   useEffect(() => {
-    if(!nodeList || !value) return
+    if(!nodeList || !lanInterfaces || !value) return
     setData(nodeList.map(node => {
-      const target = value[node.serialNumber]
+      const target = value.find(item => item.serialNumber === node.serialNumber)
+      const targetInterfaceInfo = lanInterfaces[node.serialNumber].find(item =>
+        item.portName.toLowerCase() === target?.portName.toLowerCase())
       return {
         nodeName: node.name,
         interface: _.capitalize(target?.portName),
-        ip: target?.ipMode === EdgeIpModeEnum.DHCP ?
+        ip: targetInterfaceInfo?.ipMode === EdgeIpModeEnum.DHCP ?
           $t({ defaultMessage: 'Dynamic' }) :
-          getIpWithBitMask(target?.ip, target?.subnet)
+          getIpWithBitMask(targetInterfaceInfo?.ip, targetInterfaceInfo?.subnet)
       }
     }))
-  }, [nodeList, value])
+  }, [nodeList, lanInterfaces, value])
 
-  const handleSelectPort = (data: { [key: string]: EdgePortInfo | undefined }) => {
+  const handleSelectPort = (data: VirtualIpSetting['ports']) => {
     onChange?.(data)
   }
 

@@ -13,7 +13,7 @@ import { WarningCircleOutlined }          from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchDefaultFirmwareListQuery,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
@@ -69,15 +69,15 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     })
   }
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({ params })
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
-    const latestVersions = getReleaseFirmware(latestReleaseVersions)
-    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
-    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
-    return (currentVersion.id === latestFirmware?.id ||
-      currentVersion.id === latestRodanFirmware?.id)
+    const defaultVersions = getReleaseFirmware(defaultReleaseVersions)
+    const defaultFirmware = defaultVersions.filter(v => v.id.startsWith('090'))[0]
+    const defaultRodanFirmware = defaultVersions.filter(v => v.id.startsWith('100'))[0]
+    return (currentVersion.id === defaultFirmware?.id ||
+      currentVersion.id === defaultRodanFirmware?.id)
   }
 
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
@@ -156,7 +156,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
       const selectedItemMap = {
         'true,true': $t({ defaultMessage: 'items' }),
-        'true,false': $t({ defaultMessage: 'venues' }),
+        'true,false': $t({ defaultMessage: '<venuePlural></venuePlural>' }),
         'false,true': $t({ defaultMessage: 'switches' }),
         'false,false': $t({ defaultMessage: 'items' })
       }
@@ -253,7 +253,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           marginRight: '3px'
         }} />
       { // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'The following list will only display the connected switch under the venue.' })}
+        $t({ defaultMessage: 'The following list will only display the connected switch under the <venueSingular></venueSingular>.' })}
       </div>
     }
   }

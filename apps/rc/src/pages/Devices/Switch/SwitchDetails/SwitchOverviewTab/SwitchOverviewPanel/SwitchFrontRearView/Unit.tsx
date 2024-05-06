@@ -14,14 +14,17 @@ import { getPoeUsage,
   getSwitchPortLabel,
   isEmpty,
   StackMember,
-  SwitchFrontView
-  , SwitchModelInfo,
+  SwitchFrontView,
+  SwitchModelInfo,
+  SwitchPortViewModelQueryFields,
   SwitchRearViewUISlot,
   SwitchSlot,
   SwitchStatusEnum,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
@@ -170,16 +173,7 @@ export function Unit (props:{
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10000,
-        fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-          'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-          'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-          'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-          'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
-          'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-          'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-          'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage',
-          'neighborMacAddress'
-        ]
+        fields: SwitchPortViewModelQueryFields
       }
     })
     const portStatusData = {
@@ -425,7 +419,7 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember &&
+          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
           <Button
             type='link'
             size='small'

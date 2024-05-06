@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { CertificateCategoryType, CertificateStatusType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
+import { CertificateCategoryType, CertificateStatusType, EnrollmentType, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 
 
 export const usagesLabel: Record<UsageType, MessageDescriptor> = {
@@ -53,6 +53,9 @@ export const deleteDescription: Record<string, MessageDescriptor> = {
   }),
   UNDONE: defineMessage({
     defaultMessage: 'This action cannot be undone.'
+  }),
+  CA_IN_USE: defineMessage({
+    defaultMessage: 'You are unable to delete this record due to its usage in network'
   })
 }
 
@@ -60,4 +63,10 @@ export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor>
   [CertificateCategoryType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate Details' }),
   [CertificateCategoryType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority Details' }),
   [CertificateCategoryType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template Details' })
+}
+
+export const issuedByLabel: Record<EnrollmentType, MessageDescriptor> = {
+  [EnrollmentType.CHROMEBOOK]: defineMessage({ defaultMessage: 'Chromebook' }),
+  [EnrollmentType.SCEP]: defineMessage({ defaultMessage: 'SCEP' }),
+  [EnrollmentType.NONE]: defineMessage({ defaultMessage: 'None' })
 }

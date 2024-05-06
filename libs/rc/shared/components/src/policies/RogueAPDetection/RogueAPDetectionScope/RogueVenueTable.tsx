@@ -3,11 +3,11 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/services'
+import { showActionModal, showToast, Table, TableProps }                 from '@acx-ui/components'
+import { useGetVenueRoguePolicyTemplateQuery, useVenueRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
-  RogueAPDetectionActionTypes,
+  RogueAPDetectionActionTypes, useConfigTemplate,
   useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
@@ -37,6 +37,7 @@ const defaultPayload = {
 
 export const RogueVenueTable = () => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
@@ -47,7 +48,7 @@ export const RogueVenueTable = () => {
         type: 'warning',
         title: $t({ defaultMessage: 'Change Rogue AP Profile?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a venue. Are you sure you want to change the rogue AP profile to this venue?' }),
+        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a <venueSingular></venueSingular>. Are you sure you want to change the rogue AP profile to this <venueSingular></venueSingular>?' }),
         customContent: {
           action: 'CUSTOM_BUTTONS',
           buttons: [{
@@ -100,7 +101,7 @@ export const RogueVenueTable = () => {
 
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true
@@ -109,6 +110,7 @@ export const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aggregatedApStatus',
       key: 'aggregatedApStatus',
+      disable: isTemplate,
       align: 'center',
       sorter: true,
       render: (_, row) => {
@@ -119,6 +121,7 @@ export const RogueVenueTable = () => {
       title: $t({ defaultMessage: 'Switches' }),
       dataIndex: 'switches',
       key: 'switches',
+      disable: isTemplate,
       align: 'center',
       sorter: true,
       render: (_, row) => {
@@ -133,7 +136,7 @@ export const RogueVenueTable = () => {
       sorter: true,
       render: (_, row) => {
         if (row.rogueDetection?.enabled) {
-          return <div style={{ textAlign: 'center' }}>
+          return <div style={{ textAlign: 'center', whiteSpace: 'pre-wrap' }}>
             <div>ON</div>
             <div>({row.rogueDetection.policyName})</div>
           </div>
@@ -169,7 +172,7 @@ export const RogueVenueTable = () => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenueRoguePolicyQuery,
+    useQuery: isTemplate ? useGetVenueRoguePolicyTemplateQuery :useVenueRoguePolicyQuery,
     defaultPayload
   })
 
@@ -190,7 +193,8 @@ export const RogueVenueTable = () => {
         showToast({
           type: 'info',
           duration: 10,
-          content: 'The max-number of venues in a rogue ap policy profile is 64.'
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'The max-number of <venuePlural></venuePlural> in a rogue ap policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

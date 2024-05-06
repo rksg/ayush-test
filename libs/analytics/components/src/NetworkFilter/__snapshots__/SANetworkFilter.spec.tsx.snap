@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filterSystemAndDomain should filter system and domain 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "name": "somenames",
+          "type": "domain",
+        },
+      ],
+      "name": "test-system",
+      "type": "system",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "children": Array [],
+          "name": "second domain",
+          "type": "domain",
+        },
+      ],
+      "name": "test-system2",
+      "type": "system",
+    },
+  ],
+  "name": "Network",
+  "type": "network",
+}
+`;

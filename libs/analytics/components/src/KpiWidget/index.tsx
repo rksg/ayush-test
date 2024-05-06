@@ -1,4 +1,3 @@
-import { Typography }         from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
 import { healthApi }                                         from '@acx-ui/analytics/services'
@@ -143,10 +142,7 @@ export function KpiWidget ({
             <Tooltip title={kpiInfoText[name].tooltip}>
               <UI.Wrapper>
                 <UI.LargePercent>
-                  {intl.$t(intlFormats.scaleFormatRound, { value: percent })}
-                  <Typography.Title level={3}>
-                  %
-                  </Typography.Title>
+                  {intl.$t(intlFormats.percentFormatRound, { value: percent })}
                 </UI.LargePercent>
               </UI.Wrapper>
             </Tooltip>

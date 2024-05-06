@@ -10,6 +10,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteVePortsMutation,
   useGetSwitchRoutedListQuery,
@@ -23,8 +24,9 @@ import {
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 
@@ -37,6 +39,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const { $t } = useIntl()
   const params = useParams()
   const [cliApplied, setCliApplied] = useState(false)
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
 
   const { data: venueSwitchSetting }
     = useVenueSwitchSettingQuery({ params }, { skip: !isVenueLevel })
@@ -62,7 +65,10 @@ export function SwitchVeTable ( { isVenueLevel } : {
       'ipAddress',
       'ipSubnetMask',
       'ingressAclName',
-      'egressAclName']
+      'egressAclName',
+      'vsixIngressAclName',
+      'vsixEgressAclName'
+    ]
   }
 
 
@@ -119,15 +125,29 @@ export function SwitchVeTable ( { isVenueLevel } : {
     sorter: true
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true
-  }]
+  },
+  ...(isSwitchV6AclEnabled ? [{
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
+    dataIndex: 'vsixEgressAclName',
+    sorter: true,
+    show: false
+  }] : [])
+  ]
 
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)
@@ -168,6 +188,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         setIsEditMode(true)
         setEditData(selectedRows[0])
@@ -176,6 +197,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       disabled: disabledDelete || cliApplied,
       tooltip: deleteButtonTooltip || $t(VenueMessages.CLI_APPLIED),
       onClick: (rows, clearSelection) => {
@@ -199,15 +221,20 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const [visible, setVisible] = useState(false)
   const [editData, setEditData] = useState({} as VeViewModel)
 
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
+
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId='switch-ve-table'
       columns={isVenueLevel ? columns: columns.filter(item => item.key !== 'switchName')}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{
+      rowSelection={isSelectionVisible ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record?.inactiveRow
@@ -216,9 +243,10 @@ export function SwitchVeTable ( { isVenueLevel } : {
         },
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
-      }}
+      } : undefined}
       actions={filterByAccess([{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
+        scopeKey: [SwitchScopes.CREATE],
         disabled: cliApplied,
         tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
         onClick: () => {

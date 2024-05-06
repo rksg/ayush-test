@@ -12,15 +12,23 @@ import {
 import {
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
+import {
+  getUserProfile,
+  setUserProfile,
+  UserProfileContext,
+  UserProfileContextProps
+} from '@acx-ui/user'
 
 
 import {
   availableVersions, versionLatest,
   switchLatest, switchVenue,
-  venue, version, preference, mockedApModelFamilies
+  venue, version, preference, mockedApModelFamilies,
+  mockedFirmwareVenuesPerApModel
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
@@ -41,6 +49,20 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./ApFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-ApFirmware-table'></div>
 }))
+jest.mock('./ApFirmware/VenueFirmwareListPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VenueFirmwareListPerApModel'),
+  VenueFirmwareListPerApModel: () => <div>VenueFirmwareListPerApModel</div>
+}))
+jest.mock('./ApFirmware/VersionBannerPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VersionBannerPerApModel'),
+  VersionBannerPerApModel: () => <div>VersionBannerPerApModel</div>
+}))
+jest.mock('../ApplicationPolicyMgmt', () => ({
+  ...jest.requireActual('../ApplicationPolicyMgmt'),
+  default: () => {
+    return <div data-testid='mocked-application-policy-mgmt'></div>
+  }
+}))
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -50,7 +72,12 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Firmware Version Management', () => {
-  let params: { tenantId: string, activeTab: string, activeSubTab: string }
+  const params: { tenantId: string, activeTab: string, activeSubTab: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    activeTab: 'fwVersionMgmt',
+    activeSubTab: 'apFirmware'
+  }
+
   beforeEach(async () => {
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
@@ -78,6 +105,10 @@ describe('Firmware Version Management', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
@@ -91,11 +122,6 @@ describe('Firmware Version Management', () => {
         (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      activeTab: 'fwVersionMgmt',
-      activeSubTab: 'apFirmware'
-    }
   })
 
   it('should render correctly', async () => {
@@ -117,5 +143,108 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render upgradable hint correctly when the FF "ap-fw-mgmt-upgrade-by-model" is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      )
+    )
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+          <FWVersionMgmt />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+      })
+
+    const apFirmwareTab = await screen.findByRole('tab', { name: /AP Firmware/ })
+    expect(await within(apFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
+  })
+
+  describe('should render correctly when abac is enabled', () => {
+    beforeEach(async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL
+      )
+      mockServer.use(
+        rest.get(
+          FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
+          (req, res, ctx) => res(ctx.json([]))
+        )
+      )
+    })
+
+    it('only has switch permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ, SwitchScopes.UPDATE]
+      })
+
+      render(
+        <Provider>
+          <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+            <FWVersionMgmt />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        })
+
+      const tab = await screen.findByRole('tab', { name: 'Switch Firmware' })
+      expect(tab.getAttribute('aria-selected')).toBeTruthy()
+      expect(await screen.findByTestId('mocked-SwitchFirmware-table')).toBeVisible()
+      expect(await screen.findAllByRole('tab')).toHaveLength(2)
+    })
+
+    it('only has wifi permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.READ]
+      })
+
+      render(
+        <Provider>
+          <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+            <FWVersionMgmt />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        })
+
+
+      expect(await screen.findByTestId('mocked-ApFirmware-table')).toBeVisible()
+      expect(await screen.findAllByRole('tab')).toHaveLength(2)
+    })
+
+    it('has no permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: []
+      })
+
+      render(
+        <Provider>
+          <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+            <FWVersionMgmt />
+          </UserProfileContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        })
+
+      expect(await screen.findByTestId('mocked-application-policy-mgmt')).toBeVisible()
+      expect(await screen.findAllByRole('tab')).toHaveLength(1)
+    })
   })
 })

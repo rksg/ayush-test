@@ -80,7 +80,12 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
     <Table<MspEc>
       columns={columns}
       dataSource={tableQuery.data?.data}
+      pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      settingsId='msp-applied-template-table'
       rowKey='id'
+      enableApiFilter={true}
     />
   </Loader>
 

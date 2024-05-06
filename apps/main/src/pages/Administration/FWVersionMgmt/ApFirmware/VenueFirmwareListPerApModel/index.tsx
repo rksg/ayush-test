@@ -10,12 +10,13 @@ import { FirmwareVenuePerApModel, dateSort, defaultSort, sortProp, useTableQuery
 import { filterByAccess, hasAccess }                                               from '@acx-ui/user'
 import { noDataDisplay }                                                           from '@acx-ui/utils'
 
-import { getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
-import { PreferencesDialog }                                                         from '../../PreferencesDialog'
-import * as UI                                                                       from '../../styledComponents'
+import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
+import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
+import * as UI                                                                                        from '../../styledComponents'
 
-import { UpdateNowPerApModel }                                                         from './UpdateNowPerApModel'
-import { renderCurrentFirmwaresColumn, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
+import { ChangeSchedulePerApModelDialog }                                                                                  from './ChangeScheduleDialog'
+import { UpdateNowPerApModelDialog }                                                                                       from './UpdateNowDialog'
+import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
@@ -25,8 +26,9 @@ export function VenueFirmwareListPerApModel () {
   })
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
+  const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
   // eslint-disable-next-line max-len
-  const { updateNowVisible, setUpdateNowVisible, handleUpdateModalCancel } = useUpdateNowPerApModel()
+  const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
   const {
     preferencesModalVisible, setPreferencesModalVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
@@ -48,6 +50,14 @@ export function VenueFirmwareListPerApModel () {
         setSelectedRows(rows)
         setUpdateNowVisible(true)
       }
+    },
+    {
+      visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
+      label: $t({ defaultMessage: 'Change Update Schedule' }),
+      onClick: (rows) => {
+        setSelectedRows(rows)
+        setChangeScheduleVisible(true)
+      }
     }
   ]
 
@@ -68,8 +78,13 @@ export function VenueFirmwareListPerApModel () {
         }])}
       />
     </Loader>
-    {updateNowVisible && selectedRows && <UpdateNowPerApModel
-      onCancel={handleUpdateModalCancel}
+    {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
+      onCancel={handleUpdateNowCancel}
+      afterSubmit={afterUpdateModalSubmit}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {changeScheduleVisible && selectedRows && <ChangeSchedulePerApModelDialog
+      onCancel={handleChangeScheduleCancel}
       afterSubmit={afterUpdateModalSubmit}
       selectedVenuesFirmwares={selectedRows}
     />}
@@ -84,18 +99,11 @@ export function VenueFirmwareListPerApModel () {
 
 function useColumns () {
   const { $t } = useIntl()
-  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
-    refetchOnMountOrArgChange: false,
-    selectFromResult ({ data }) {
-      return {
-        versionFilterOptions: data?.map(v => ({ key: v, value: v })) || true
-      }
-    }
-  })
+  const versionFilterOptions = useVersionFilterOptions()
 
   const columns: TableProps<FirmwareVenuePerApModel>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -154,4 +162,18 @@ function useColumns () {
   ]
 
   return columns
+}
+
+function useVersionFilterOptions () {
+  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult ({ data }) {
+      return {
+        // eslint-disable-next-line max-len
+        versionFilterOptions: data?.map(v => ({ key: v, value: v })).sort((v1, v2) => -compareVersions(v1.value, v2.value))
+      }
+    }
+  })
+
+  return versionFilterOptions
 }

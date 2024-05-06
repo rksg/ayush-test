@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                            from 'antd/lib/select'
-import _                                                from 'lodash'
+import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                     from 'antd/lib/select'
+import _                                                         from 'lodash'
 
 import {
   Alert,
@@ -13,6 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -27,7 +29,8 @@ import {
   useLazyGetVlansByVenueQuery,
   useLazyGetVenueRoutedListQuery,
   useSwitchDetailHeaderQuery,
-  useSavePortsSettingMutation
+  useSavePortsSettingMutation,
+  useCyclePoeMutation
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -40,9 +43,11 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { store }     from '@acx-ui/store'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 import { EditLldpModal }    from './editLldpModal'
@@ -146,7 +151,10 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
+  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const [loading, setLoading] = useState<boolean>(true)
+
+  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   const defaultVlanName = 'DEFAULT-VLAN'
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
@@ -188,8 +196,8 @@ export function EditPortDrawer ({
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
-
-  const [ drawerAclVisible, setDrawerAclVisible ] = useState(false)
+  const [drawerAclVisible, setDrawerAclVisible] = useState(false)
+  const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -202,6 +210,7 @@ export function EditPortDrawer ({
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
+  const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
@@ -333,6 +342,7 @@ export function EditPortDrawer ({
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setUseVenueSettings(portSetting?.revert)
     setLldpQosList(portSetting?.lldpQos || [])
+    setCyclePoeEnable(portSetting.poeEnable)
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -375,6 +385,7 @@ export function EditPortDrawer ({
     const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
+    setCyclePoeEnable(portsSetting?.response?.filter(s => s?.poeEnable)?.length > 0)
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
@@ -439,6 +450,7 @@ export function EditPortDrawer ({
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
+      case 'cyclePoe': return disablePoeCapability || !cyclePoeEnable
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
         return isMultipleEdit && !checkboxEnabled
@@ -586,6 +598,21 @@ export function EditPortDrawer ({
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+  }
+
+  const onCyclePoe = async () => {
+    const venueId = selectedPorts[0].venueId
+    const payload = switches.map((switchId) => ({
+      switchId: switchId,
+      ports: selectedPorts
+        .filter(p => p.switchSerial === switchId)
+        .map(p => p.portIdentifier)
+    }))
+    await cyclePoe({
+      params: { venueId },
+      payload
+    }).unwrap()
+    onClose()
   }
 
   const resetFields = async () => {
@@ -747,6 +774,16 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+      {
+        cyclePoeFFEnabled && <>
+          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+            {$t({ defaultMessage: 'Cycle PoE' })}
+          </Button>
+          <UI.DrawerFooterDivider>
+            <Divider type='vertical' />
+          </UI.DrawerFooterDivider>
+        </>
+      }
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -768,7 +805,7 @@ export function EditPortDrawer ({
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
-      isFetching: isPortsSettingUpdating
+      isFetching: isPortsSettingUpdating || isCyclePoeUpdating
     }]}>
       {
         isCloudPort && <Alert
@@ -853,7 +890,7 @@ export function EditPortDrawer ({
                             disabled={getFieldDisabled('useVenuesettings')}
                             onClick={onApplyVenueSettings}
                           >
-                            {$t({ defaultMessage: 'Use Venue settings' })}
+                            {$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> settings' })}
                           </Button>
                         </Space>
                       </Tooltip>
@@ -1023,6 +1060,7 @@ export function EditPortDrawer ({
                     initialValue={false}
                   >
                     <Switch
+                      data-testid='poeEnable'
                       disabled={getFieldDisabled('poeEnable')}
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
@@ -1306,7 +1344,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='ingressAcl'
-              label={$t({ defaultMessage: 'Ingress ACL' })}
+              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
@@ -1317,7 +1355,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
                 <Button type='link'
@@ -1331,7 +1369,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'ingressAcl', $t({ defaultMessage: 'Ingress ACL' })
+          'ingressAcl', $t({ defaultMessage: 'Ingress ACL (IPv4)' })
         )}
 
         { getFieldTemplate(
@@ -1339,7 +1377,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='egressAcl'
-              label={$t({ defaultMessage: 'Egress ACL' })}
+              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
@@ -1350,7 +1388,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
@@ -1363,7 +1401,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+          'egressAcl', $t({ defaultMessage: 'Egress ACL (IPv4)' })
         )}
 
         {getFieldTemplate(

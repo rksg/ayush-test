@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/query'
+import _                          from 'lodash'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {
@@ -12,39 +12,25 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
+import { get }                           from '@acx-ui/config'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
 import { WebhookForm }                                                                from './WebhookForm'
 
-import type { Webhook } from './services'
+import type { Webhook, ExtendedWebhook } from './services'
 
-type ExtendedWebhook = Webhook & {
-  resourceGroup: string
-  status: string
-  enabledStr: string
-}
 type WebhookTableProps = TableProps<ExtendedWebhook>
 
-const useWebhooks = (selectedId?: Webhook['id'] | null) => {
-  const { $t } = useIntl()
+const useWebhooksData = (selectedId?: Webhook['id'] | null) => {
   const rg = useResourceGroups()
-  const webhooks = useWebhooksQuery(undefined, {
+  const webhooks = useWebhooksQuery(rg.rgMap, {
     skip: !rg.data && Boolean(get('IS_MLISA_SA')),
     selectFromResult: (response) => {
-      const data = response.data?.map((item) => ({
-        ...item,
-        resourceGroup: rg.rgMap[item.resourceGroupId],
-        enabledStr: String(item.enabled),
-        status: item.enabled
-          ? $t({ defaultMessage: 'Enabled' })
-          : $t({ defaultMessage: 'Disabled' })
-      }))
       return {
         ...response,
-        data,
         webhook: selectedId
-          ? _.get(_.keyBy(data, 'id'), selectedId)
+          ? _.get(_.keyBy(response.data, 'id'), selectedId)
           : (selectedId as null | undefined)
       }
     }
@@ -56,7 +42,7 @@ const useWebhooks = (selectedId?: Webhook['id'] | null) => {
   }
 }
 
-export const WebhooksTable = () => {
+export const useWebhooks = () => {
   const { $t } = useIntl()
 
   // string    = existing record
@@ -64,8 +50,17 @@ export const WebhooksTable = () => {
   // null      = no webhook selected
   const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
 
-  const { webhook, webhooks, states } = useWebhooks(selectedId)
+  const { webhook, webhooks, states } = useWebhooksData(selectedId)
+
   const [doDelete, response] = useDeleteWebhookMutation()
+
+  const [count, setCount] = useState(webhooks?.length || 0)
+  useEffect(() => setCount(webhooks?.length || 0), [webhooks?.length])
+
+  const title = defineMessage({
+    defaultMessage: 'Webhooks {count, select, null {} other {({count})}}',
+    description: 'Translation string - Webhooks'
+  })
 
   useEffect(() => {
     if (response.isSuccess) {
@@ -132,22 +127,28 @@ export const WebhooksTable = () => {
     onClick: () => setSelectedId(undefined)
   }]
 
-  return (
-    <Loader states={states}>
-      <WebhookForm
-        webhook={webhook}
-        onClose={() => setSelectedId(null)}
-      />
-      <Table<ExtendedWebhook>
-        {...{ actions, columns, rowActions }}
-        rowKey='id'
-        dataSource={webhooks}
-        searchableWidth={450}
-        rowSelection={{
-          type: 'radio',
-          selectedRowKeys: selectedId ? [selectedId] : []
-        }}
-      />
-    </Loader>
-  )
+  const component = <Loader states={states}>
+    <WebhookForm
+      webhook={webhook}
+      onClose={() => setSelectedId(null)}
+    />
+    <Table<ExtendedWebhook>
+      rowKey='id'
+      settingsId='webhooks-table'
+      columns={columns}
+      dataSource={webhooks}
+      searchableWidth={450}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
+      rowSelection={hasPermission() && {
+        type: 'radio',
+        selectedRowKeys: selectedId ? [selectedId] : []
+      }}
+      onDisplayRowChange={
+        useCallback((dataSource: ExtendedWebhook[]) => setCount(dataSource.length), [])
+      }
+    />
+  </Loader>
+
+  return { title: $t(title, { count }), component }
 }

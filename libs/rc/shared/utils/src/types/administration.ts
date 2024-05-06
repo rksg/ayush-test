@@ -206,6 +206,7 @@ export interface TenantAuthentications {
   url?: string;
   scopes?: string;
   domains?: string[];
+  samlSignatureEnabled?: boolean;
 }
 
 export interface Entitlement {
@@ -250,6 +251,29 @@ export interface NewEntitlementSummary {
   summary: EntitlementSummary[];
 }
 
+export interface EntitlementPendingActivations {
+  data: EntitlementActivations[],
+}
+
+export interface EntitlementActivations {
+  orderId: string,
+  salesOrderId: string,
+  productName: string,
+  productCode: string,
+  productId: string,
+  quantity: number,
+  registeredQuantity: number,
+  remainingQuantity: number,
+  spaStartDate: string,
+  spaEndDate: string,
+  productCategory: string,
+  productClass: string,
+  orderSoNumber: string,
+  orderCreateDate: string,
+  orderRegistrationCode: string,
+  orderAcxRegistrationCode:string
+}
+
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
 
 export interface AdminGroup {
@@ -272,7 +296,8 @@ export interface CustomRole {
   frameworkRO?: boolean,
   createdDate?: string,
   updatedDate?: string,
-  scopes?: string[]
+  scopes?: string[],
+  preDefinedRole?: string
 }
 
 export interface AdminGroupLastLogins {
@@ -293,7 +318,7 @@ export interface PrivilegeGroup {
   role?: CustomRole,
   roleName?: string,
   scope?: string,
-  members?: number,
+  memberCount?: number,
   allCustomers?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],

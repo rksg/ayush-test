@@ -7,14 +7,16 @@ function HistogramSlider ({
   height,
   sliderValue,
   onSliderChange,
-  shortXFormat
+  shortXFormat,
+  disabled
 }: {
   splits: number[];
   width: number;
   height: number;
   sliderValue : number;
   onSliderChange: ((value: number) => void) | undefined,
-  shortXFormat: CallableFunction
+  shortXFormat: CallableFunction,
+  disabled?: boolean
 }) {
   const marks = splits.reduce((acc, value, index) => ({
     ...acc,
@@ -39,6 +41,7 @@ function HistogramSlider ({
         top: height * 0.65,
         left: 16
       }}
+      disabled={disabled}
     />
   )
 }
