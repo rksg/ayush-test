@@ -51,10 +51,16 @@ function useHandleMutationResponse (
       let message: string = defaultErrorMessage
 
       if ('data' in response.error && response.error.data) {
-        const error = JSON.parse(String(response.error.data))
+        const { data, status } = response.error
+        let error = String(data)
+        try {
+          error = JSON.parse(error).error
+        } catch {
+          /* ignore when error is not JSON */
+        }
         message = $t({ defaultMessage: 'Error: {message}. (status code: {code})' }, {
-          message: error.error,
-          code: response.error.status
+          message: error,
+          code: status
         })
       }
 

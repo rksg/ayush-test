@@ -38,7 +38,7 @@ export function LowPowerBannerAndModal (props: {
     let modalMessage = ''
 
     if (from === 'venue') {
-      modalMessage = $t({ defaultMessage: 'AFC in the 6 GHz band requires a venue height to be set for standard power operation.' })
+      modalMessage = $t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })
     }
     else {
       // when from 'AP'
