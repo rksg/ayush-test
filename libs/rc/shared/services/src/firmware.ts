@@ -21,7 +21,9 @@ import {
   ApModelFirmware,
   UpdateFirmwarePerApModelPayload,
   UpdateFirmwareSchedulePerApModelPayload,
-  FirmwareRbacUrlsInfo
+  FirmwareRbacUrlsInfo,
+  SwitchRbacUrlsInfo,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -239,6 +241,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getSwitchVenueVersionList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
+        const headers = v1Header
         // eslint-disable-next-line max-len
         const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
         let typeString = ''
@@ -249,15 +252,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         if (queryString?.filters?.type && queryString.filters.type.join(',') === 'Beta') {
           typeString = 'BETA'
         }
-        if(enableRbac) {
-          const request = createHttpRequest(FirmwareRbacUrlsInfo.getSwitchVenueVersionList, params)
+        if (enableRbac) {
+          const request =
+            createHttpRequest(FirmwareRbacUrlsInfo.getSwitchVenueVersionList, params, headers)
           return {
             ...request,
-            body: {
+            body: JSON.stringify({
               // eslint-disable-next-line max-len
               firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
               searchFilter: queryString?.searchString ?? ''
-            }
+            })
           }
         } else {
           const request = createHttpRequest(FirmwareUrlsInfo.getSwitchVenueVersionList, params)
@@ -299,8 +303,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchCurrentVersions, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchCurrentVersions, params, headers)
         return {
           ...req
         }

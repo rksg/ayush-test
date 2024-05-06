@@ -165,10 +165,11 @@ function SwitchPageHeader () {
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
         .then(result => {
+          const venueId = isSwitchRbacEnabled? 'venueId' : 'id'
           const venueFw = result?.data?.find(
-            venue => venue.id === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
+            venue => venue[venueId] === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
           const venueAboveTenFw = result?.data?.find(
-            venue => venue.id === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
+            venue => venue[venueId] === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
 
           setVenueFW(venueFw)
           setVenueAboveTenFw(venueAboveTenFw)
