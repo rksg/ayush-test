@@ -244,7 +244,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
       </Subtitle>
       {<UI.TitleActive>
         {intl.$t({
-          defaultMessage: 'Venue\'s local time-zone is applied to the selection below.'
+          // eslint-disable-next-line max-len
+          defaultMessage: '<VenueSingular></VenueSingular>\'s local time-zone is applied to the selection below.'
         })}
       </UI.TitleActive>}
 

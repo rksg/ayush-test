@@ -16,7 +16,7 @@ const SyslogScopeForm = () => {
         <Form.Item
           name='venueTable'
           label={$t({ defaultMessage:
-              'Select the venues where the syslog server will be applied:' })}
+              'Select the <venuePlural></venuePlural> where the syslog server will be applied:' })}
         >
           <SyslogVenueTable />
         </Form.Item>
