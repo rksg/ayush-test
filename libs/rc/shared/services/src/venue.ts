@@ -266,10 +266,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueCityList: build.query<{ name: string }[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params, headers)
         return{
-          ...req, body: payload
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (result: { cityList: { name: string }[] }) => {
@@ -724,10 +726,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
-        const listReq = createHttpRequest(urlsInfo.getAaaServerList, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const listReq = createHttpRequest(urlsInfo.getAaaServerList, params, headers)
         return {
           ...listReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],
@@ -754,20 +757,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateAAASetting: build.mutation<AAASetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
-        const req = createHttpRequest(urlsInfo.updateAaaSetting, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.updateAaaSetting, params, headers)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -786,7 +791,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
     deleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
-        const req = createHttpRequest(urlsInfo.deleteAaaServer, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.deleteAaaServer, params, headers)
         return {
           ...req
         }
@@ -796,10 +802,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
-        const req = createHttpRequest(urlsInfo.bulkDeleteAaaServer, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.bulkDeleteAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]

@@ -105,7 +105,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   restoreBackup: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/venues/:venueId/switches/:switchId/configBackups/:configBackupId',
     newApi: true
   },
@@ -408,6 +408,16 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchListByGroup: {
     method: 'post',
     url: '/venues/switches/aggregationDetails',
+    newApi: true
+  },
+  getSwitchModelList: {
+    method: 'post',
+    url: '/venues/switches/models/query',
+    newApi: true
+  },
+  downloadSwitchsCSV: {
+    method: 'post',
+    url: '/venues/switches/csvFiles',
     newApi: true
   }
 }

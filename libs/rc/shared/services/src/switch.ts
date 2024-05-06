@@ -90,12 +90,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const hasGroupBy = !!arg.payload?.groupBy
+        const switchUrls = getSwitchUrls(arg.enableRbac)
+        const headers = arg.enableRbac ? customHeaders.v1 : {}
         const req = hasGroupBy
-          ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
-          : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
+          ? createHttpRequest(switchUrls.getSwitchListByGroup, arg.params, headers)
+          : createHttpRequest(switchUrls.getSwitchList, arg.params, headers)
         const listInfo = {
           ...req,
-          body: arg.payload
+          body: JSON.stringify(arg.payload)
         }
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchRow>
@@ -596,10 +598,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (res: TableResult<ConfigurationBackup>) => {
@@ -619,10 +622,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.addBackup, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.addBackup, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -630,12 +634,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.restoreBackup, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.restoreBackup, params, headers)
+        const payload = {
+          configBackupAction: 'restore'
+        }
         return {
           ...req,
-          ...(enableRbac ? { body: {
-            configBackupAction: 'restore'
-          } } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -643,22 +649,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params, headers)
+        const payload = {
+          configBackupAction: 'download'
+        }
         return {
           ...req,
-          ...(enableRbac ? { body: {
-            configBackupAction: 'download'
-          } } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       }
     }),
     deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.deleteBackups, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.deleteBackups, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -666,10 +675,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const switchUrls = getSwitchUrls(enableRbac)
-        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (res: {
@@ -882,11 +892,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'SWITCH' }]
     }),
     getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchModelList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1374,28 +1386,32 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    downloadSwitchsCSV: build.mutation<Blob, SwitchsExportPayload>({
-      query: (payload) => {
-        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchsCSV,
-          { tenantId: payload.tenantId }
-        )
-        return {
-          ...req,
-          body: payload,
-          responseHandler: async (response) => {
-            const date = new Date()
-            // eslint-disable-next-line max-len
-            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
-            const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
-            const headerContent = response.headers.get('content-disposition')
-            const fileName = headerContent
-              ? headerContent.split('filename=')[1]
-              : filename
-            downloadFile(response, fileName)
+    downloadSwitchsCSV: build.mutation<Blob, {
+      payload: SwitchsExportPayload, enableRbac:boolean }>({
+        query: ({ payload, enableRbac }) => {
+          const switchUrls = getSwitchUrls(enableRbac)
+          const headers = enableRbac ? customHeaders.v1 : {}
+          const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
+            { tenantId: payload.tenantId },
+            headers
+          )
+          return {
+            ...req,
+            body: payload,
+            responseHandler: async (response) => {
+              const date = new Date()
+              // eslint-disable-next-line max-len
+              const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+              const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
+              const headerContent = response.headers.get('content-disposition')
+              const fileName = headerContent
+                ? headerContent.split('filename=')[1]
+                : filename
+              downloadFile(response, fileName)
+            }
           }
         }
-      }
-    })
+      })
     // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
     //   query: ({ params, payload }) => {
     //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)

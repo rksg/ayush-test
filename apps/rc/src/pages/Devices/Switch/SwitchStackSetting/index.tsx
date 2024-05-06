@@ -281,7 +281,7 @@ export function SwitchStackSetting (props: {
         </Form.Item>
       </Form.Item>
       }
-      { true && <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
+      { switchDetail && <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
     </>
   )
 }
