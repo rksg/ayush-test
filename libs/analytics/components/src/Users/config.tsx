@@ -3,9 +3,9 @@ import { Rule }                 from 'antd/lib/form'
 import input                    from 'antd/lib/input'
 import { defineMessage }        from 'react-intl'
 
-import { ManagedUser } from '@acx-ui/analytics/utils'
-import { emailRegExp } from '@acx-ui/rc/utils'
-import { getIntl }     from '@acx-ui/utils'
+import { ManagedUser, useRoles, Roles } from '@acx-ui/analytics/utils'
+import { emailRegExp }                  from '@acx-ui/rc/utils'
+import { getIntl }                      from '@acx-ui/utils'
 
 import { AvailableUsersSelection } from './AvailableUsersSelection'
 import { ResourceGroupSelection }  from './ResourceGroupSelection'
@@ -16,12 +16,17 @@ import type { CheckboxProps } from 'antd'
 
 const Disclaimer = (props: object) => {
   const { $t } = getIntl()
+  const roles = useRoles()
   const { Paragraph } = Typography
   /* eslint-disable max-len */
   return (<><Paragraph {...props}>
     {$t({ defaultMessage: 'By inviting a 3rd party user, you are explicitly granting access to someone outside of your organization into this RUCKUS Analytics service account. Please ensure that you have the necessary authorization to do so.' })}
   </Paragraph><Paragraph {...props}>
-    {$t({ defaultMessage: 'Do note that if the Prime Administrator role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user a Administrator or Report Only role.' })}
+    {$t({ defaultMessage: 'Do note that if the {admin} role is granted, this 3rd party user will also be able to invite other users into your account. If this is not desired, you may want to grant the 3rd party user {networkAdmin} or {reportOnly} role.' }, {
+      admin: $t(roles[Roles.PRIME_ADMINISTRATOR]),
+      networkAdmin: $t(roles[Roles.ADMINISTRATOR]),
+      reportOnly: $t(roles[Roles.BUSINESS_INSIGHTS_USER])
+    })}
   </Paragraph></>)
   /* eslint-enable max-len */
 }
