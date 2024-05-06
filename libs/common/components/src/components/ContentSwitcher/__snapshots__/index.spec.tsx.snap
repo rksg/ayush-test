@@ -6,7 +6,7 @@ exports[`ContentSwitcher should render component 1`] = `
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -104,7 +104,7 @@ exports[`ContentSwitcher should render component with default selection 1`] = `
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -202,7 +202,7 @@ exports[`ContentSwitcher should render component with extra components 1`] = `
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -305,7 +305,7 @@ exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] 
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -403,7 +403,7 @@ exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] 
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
