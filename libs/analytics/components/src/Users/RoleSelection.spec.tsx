@@ -17,17 +17,16 @@ describe('Role Selection', () => {
       <Provider><RoleSelection onChange={mockedOnchange} selectedValue='admin' /></Provider>,
       { route: {} }
     )
-    expect(await screen.findByText('Prime Administrator')).toBeVisible()
+    expect(await screen.findByText('Admin')).toBeVisible()
     const ddWithSearch = screen.getByRole('combobox')
     await userEvent.click(ddWithSearch)
-    expect(screen.getByTitle('Administrator')).toBeInTheDocument()
-    fireEvent.change(ddWithSearch, { target: { value: 'Toy' } })
-    expect(screen.queryByTitle('Administrator')).not.toBeInTheDocument()
-    await userEvent.type(ddWithSearch, 'Administrator')
-    await userEvent.click(await screen.findByTitle('Administrator'))
+    expect(screen.getByTitle('Network Admin')).toBeInTheDocument()
+    fireEvent.change(ddWithSearch, { target: { value: 'Netwo' } })
+    expect(screen.queryByTitle('Admin')).not.toBeInTheDocument()
+    await userEvent.click(screen.getByTitle('Network Admin'))
     expect(mockedOnchange).toBeCalledWith(
       'network-admin',
-      { value: 'network-admin', label: 'Administrator', key: 1 }
+      { value: 'network-admin', label: 'Network Admin', key: 'network-admin' }
     )
   })
 })

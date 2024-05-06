@@ -8,7 +8,7 @@ import { SystemMap, useSystems }   from '@acx-ui/analytics/services'
 import {
   getUserProfile as getUserProfileRA,
   useAnalyticsFilter,
-  RolesEnum as RolesEnumRA
+  Roles as RolesEnumRA
 } from '@acx-ui/analytics/utils'
 import type { UserProfile as UserProfileRA } from '@acx-ui/analytics/utils'
 import { RadioBand, Loader }                 from '@acx-ui/components'

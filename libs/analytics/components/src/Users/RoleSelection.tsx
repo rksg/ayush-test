@@ -3,7 +3,7 @@
 import { Select }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { RolesEnum, roleStringMap } from '@acx-ui/analytics/utils'
+import { useRoles } from '@acx-ui/analytics/utils'
 
 export const RoleSelection = ({
   onChange,
@@ -13,13 +13,14 @@ export const RoleSelection = ({
   onChange: (value: string) => void;
 }) => {
   const { $t } = useIntl()
+  const roles = useRoles()
   return (
     <Select
       style={{ width: 350 }}
-      options={Object.values(RolesEnum).map((role, i) => ({
-        label: $t(roleStringMap[role]),
+      options={Object.entries(roles).map(([role, label]) => ({
+        label: $t(label),
         value: role,
-        key: i
+        key: role
       }))}
       placeholder={$t({ defaultMessage: 'Select a role' })}
       value={selectedValue}

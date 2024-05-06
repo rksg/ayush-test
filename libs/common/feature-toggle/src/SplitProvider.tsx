@@ -8,12 +8,12 @@ import { get }            from '@acx-ui/config'
 import { useTenantId }    from '@acx-ui/utils'
 
 let factory: SplitIO.IBrowserSDK
-const splitKey = get('SPLIT_IO_KEY')
-const splitProxy = get('SPLIT_PROXY_ENDPOINT')
-const isMLISA = get('IS_MLISA_SA')
-const suffix = splitKey.substring(0, 5)
-
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
+  const splitKey = get('SPLIT_IO_KEY')
+  const splitProxy = get('SPLIT_PROXY_ENDPOINT')
+  const isMLISA = get('IS_MLISA_SA')
+  const suffix = splitKey.substring(0, 5)
+
   const tenantId = useTenantId()
   const { accountId } = getUserProfile()
 

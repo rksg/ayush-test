@@ -4,8 +4,7 @@ import { groupBy }                                 from 'lodash'
 
 import {
   Settings,
-  ManagedUser,
-  roleStringMap
+  ManagedUser
 } from '@acx-ui/analytics/utils'
 import { get }                    from '@acx-ui/config'
 import { rbacApi as baseRbacApi } from '@acx-ui/store'
@@ -35,7 +34,6 @@ type ResourceGroup = {
 export type DisplayUser = ManagedUser & {
   displayInvitationState: string
   displayInvitor: string
-  displayRole: string
   displayType: string
 }
 
@@ -184,7 +182,6 @@ export const rbacApi = baseRbacApi.injectEndpoints({
         const { $t } = getIntl()
         return response?.map(user => ({
           ...user,
-          displayRole: $t(roleStringMap[user.role]),
           displayType: getDisplayType(user.type, brand),
           displayInvitationState: getDisplayState(user.invitation?.state),
           displayInvitor: user.invitation
