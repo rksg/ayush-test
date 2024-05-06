@@ -47,7 +47,7 @@ const useTabs = () : Tab[] => {
   ].some(Boolean)
 
   const getHeaderExtraOptions = (): Partial<UseHeaderExtraProps> => {
-    const path = location.pathname.replace(basePath.pathname, '')
+    const path = location.pathname.replace(basePath.pathname, '').split('/').slice(0, 3).join('/')
     switch (path) {
       case `/${NetworkAssuranceTabEnum.HEALTH}/overview`:
         return {
@@ -106,10 +106,24 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+
+  const massagePath = (path: string) => {
+    if (isSwitchHealthEnabled) {
+      return path.replace('health', 'health/overview')
+    }
+    return path
+  }
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
+      pathname: massagePath(
+        `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
+      )
     })
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component

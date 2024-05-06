@@ -8,12 +8,7 @@ export const Actions = styled(Space)`
     margin: 0 !important;
   }
 `
-export const IconWrapper = styled.span<{ $disabled?: boolean }>`
-  ${(props) =>
-    props.$disabled
-      ? 'cursor: not-allowed;'
-      : 'cursor: pointer;'}
-`
+
 export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -46,4 +41,9 @@ export const ImportFileDrawer = styled(Drawer)`
 
 export const Spacer = styled.div`
   height: var(--acx-descriptions-space);
+`
+
+export const Label = styled.span`
+  font-size: var(--acx-body-4-font-size);
+  line-height: 34px;
 `

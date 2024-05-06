@@ -27,7 +27,7 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.LAYER_3_POLICY]: isBeta,
     [ConfigTemplateType.APPLICATION_POLICY]: isBeta,
     [ConfigTemplateType.DEVICE_POLICY]: isBeta,
-    [ConfigTemplateType.PORTAL]: isGA,
+    [ConfigTemplateType.PORTAL]: isBeta,
     [ConfigTemplateType.VLAN_POOL]: isGA,
     [ConfigTemplateType.WIFI_CALLING]: isGA,
     [ConfigTemplateType.SYSLOG]: isGA,

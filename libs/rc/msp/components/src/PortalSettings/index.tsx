@@ -374,13 +374,14 @@ export function PortalSettings () {
     }
     if (preferredProvider) {
       if (isOtherProvider) {
+        const wisprProvider = values.preferredWisprProvider || mspLabel?.preferredWisprProvider
         portal.preferredWisprProvider = {
-          providerName: values.preferredWisprProvider?.providerName as string,
+          providerName: wisprProvider?.providerName || '',
           apiKey: '',
           apiSecret: '',
           customExternalProvider: true,
-          auth: values.preferredWisprProvider?.auth,
-          acct: values.preferredWisprProvider?.acct
+          auth: wisprProvider?.auth,
+          acct: wisprProvider?.acct
         }
       } else {
         portal.preferredWisprProvider = {

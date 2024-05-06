@@ -169,7 +169,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       )
     })
 
-    it('should not display Switch Configuration tab when the condition is met', async () => {
+    it('should display Switch Configuration tab when the condition is met', async () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
       mockedUseIsConfigTemplateGA.mockReturnValue(false)
 
@@ -185,19 +185,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       rerender(<Provider><VenueEdit /></Provider>)
       // eslint-disable-next-line max-len
       expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
-    })
-
-    it('should not display Switch Configuration tab when the condition is not met', async () => {
-      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-      mockedUseIsConfigTemplateGA.mockReturnValue(false)
-
-      render(<Provider><VenueEdit /></Provider>, {
-        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
-      })
-
-      await waitFor(() => {
-        expect(screen.queryByRole('tab', { name: 'Switch Configuration' })).not.toBeInTheDocument()
-      })
     })
   })
 

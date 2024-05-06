@@ -12,12 +12,12 @@ const VenueSelectInfo = () => {
     <QuestionMarkCircleOutlined/>
     <Space wrap size={8} >
       {/* eslint-disable-next-line max-len */}
-      {$t({ defaultMessage: 'If Rogue AP Detection is OFF for a venue and you activate a policy, Rogue detection will be turned ON for the venue automatically.' })}
+      {$t({ defaultMessage: 'If Rogue AP Detection is OFF for a <venueSingular></venueSingular> and you activate a policy, Rogue detection will be turned ON for the <venueSingular></venueSingular> automatically.' })}
     </Space>
     <QuestionMarkCircleOutlined/>
     <Space wrap size={8} >
       {/* eslint-disable-next-line max-len */}
-      {$t({ defaultMessage: 'Only 1 rogue AP classification profile can be active at any venue at any time.' })}
+      {$t({ defaultMessage: 'Only 1 rogue AP classification profile can be active at any <venueSingular></venueSingular> at any time.' })}
     </Space>
   </div>
 }
@@ -33,7 +33,8 @@ export const RogueAPDetectionScopeForm = () => {
         <Form.Item
           name='venueTable'
           label={$t({ defaultMessage:
-              'Select the venues where the rogue AP detection policy will be applied:' })}
+              // eslint-disable-next-line max-len
+              'Select the <venuePlural></venuePlural> where the rogue AP detection policy will be applied:' })}
         >
           <>
             <VenueSelectInfo />
