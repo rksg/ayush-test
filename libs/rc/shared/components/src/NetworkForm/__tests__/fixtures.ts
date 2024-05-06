@@ -6,7 +6,13 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   WlanSecurityEnum,
-  AuthRadiusEnum, RadioEnum, RadioTypeEnum, SchedulerTypeEnum, Hotspot20AccessNetworkTypeEnum, Hotspot20Ipv4AddressTypeEnum, NetworkHotspot20Settings
+  AuthRadiusEnum,
+  RadioEnum,
+  RadioTypeEnum,
+  SchedulerTypeEnum,
+  Hotspot20AccessNetworkTypeEnum,
+  Hotspot20Ipv4AddressTypeEnum,
+  NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
 import Photo   from '../assets/images/portal-demo/PortalPhoto.svg'
