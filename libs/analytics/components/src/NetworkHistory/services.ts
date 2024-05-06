@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import {
   calculateGranularity,
   getFilterPayload,
-  granularity2Hours,
+  granularityToHours,
   IncidentFilter,
   IncidentsToggleFilter,
   incidentsToggle
@@ -25,7 +25,7 @@ interface Response <TimeSeriesData> {
 }
 
 // https://github.com/rksg/rsa-mlisa-ui/pull/279
-const customGranularity = granularity2Hours
+const customGranularity = granularityToHours
   .filter(v => v.granularity !== 'PT1H')
   .concat({ granularity: 'PT30M', hours: 1 })
 

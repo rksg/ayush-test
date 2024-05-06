@@ -2,7 +2,7 @@ import moment from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
-export const granularity2Hours = [
+export const granularityToHours = [
   { granularity: 'PT72H', hours: 24 * 30 },
   { granularity: 'PT24H', hours: 24 * 7 },
   { granularity: 'PT1H', hours: 24 * 1 },
@@ -10,7 +10,7 @@ export const granularity2Hours = [
 ]
 
 export const calculateGranularity = (
-  start: string, end: string, minGranularity?: string, granularities?: typeof granularity2Hours
+  start: string, end: string, minGranularity?: string, granularities?: typeof granularityToHours
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
   let gran = getGranularity(interval, granularities)
@@ -20,7 +20,7 @@ export const calculateGranularity = (
     ? minGranularity
     : gran
 }
-const getGranularity = (interval: number, granularities = granularity2Hours) => {
+const getGranularity = (interval: number, granularities = granularityToHours) => {
   const items = Array
     .from(granularities)
     .sort((a, b) => b.hours - a.hours)
