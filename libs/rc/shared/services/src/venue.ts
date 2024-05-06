@@ -86,7 +86,8 @@ import {
   ITimeZone,
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
-  ApiVersionType
+  ApiVersionType,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1418,8 +1419,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1438,10 +1442,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueRadiusOptions)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(apiInfo.updateVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]

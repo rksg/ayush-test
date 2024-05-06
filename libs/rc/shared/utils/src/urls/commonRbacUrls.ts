@@ -9,5 +9,17 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/position',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:serialNumber/position',
     newApi: true
+  },
+  getVenueRadiusOptions: {
+    method: 'get',
+    //url: '/venues/:venueId/radiusOptions',
+    url: '/venues/:venueId/apRadiusOptions',
+    newApi: true
+  },
+  updateVenueRadiusOptions: {
+    method: 'put',
+    //url: '/venues/:venueId/radiusOptions',
+    url: '/venues/:venueId/apRadiusOptions',
+    newApi: true
   }
 }
