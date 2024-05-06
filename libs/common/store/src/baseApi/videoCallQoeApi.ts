@@ -19,7 +19,7 @@ const baseQuery = graphqlRequestBaseQuery({
 })
 
 export const videoCallQoeApi = createApi({
-  baseQuery: baseQuery,
+  baseQuery,
   reducerPath: 'video-call-qoe-api',
   refetchOnMountOrArgChange: true,
   tagTypes: ['VideoCallQoe'],

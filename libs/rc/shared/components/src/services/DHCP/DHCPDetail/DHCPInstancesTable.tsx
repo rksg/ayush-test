@@ -47,7 +47,7 @@ export default function DHCPInstancesTable (){
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'VenueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venue',
       sorter: true,
       fixed: 'left',

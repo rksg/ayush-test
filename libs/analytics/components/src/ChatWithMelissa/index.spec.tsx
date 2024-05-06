@@ -10,6 +10,7 @@ describe('ChatWithMelissa', () => {
     params: { page: 'dashboard' },
     wrapRoutes: false
   }
+  const originalFetch = global.fetch
   beforeEach(()=>{
     jest.spyOn(localStorage, 'setItem').mockImplementation(() => {})
     global.fetch = jest.fn().mockImplementation(() =>
@@ -20,6 +21,7 @@ describe('ChatWithMelissa', () => {
   })
   afterEach(()=>{
     jest.clearAllMocks()
+    global.fetch = originalFetch
   })
   it('renders properly when chatbot enabled', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

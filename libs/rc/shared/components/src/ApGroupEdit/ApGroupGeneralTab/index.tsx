@@ -259,12 +259,12 @@ export function ApGroupGeneralTab () {
               <Form.Item
                 name='venueId'
                 label={<>
-                  {$t({ defaultMessage: 'Venue' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                 </>}
                 initialValue={null}
                 rules={[{
                   required: true,
-                  message: $t({ defaultMessage: 'Please select venue' })
+                  message: $t({ defaultMessage: 'Please select <venueSingular></venueSingular>' })
                 }]}
                 children={<Select
                   disabled={isEditMode || !!venueIdFromNavigate}

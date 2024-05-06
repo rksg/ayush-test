@@ -3,11 +3,11 @@ import React from 'react'
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
+import { showExpiredSessionModal }                        from '@acx-ui/analytics/components'
 import { getPendoConfig, getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
-  showActionModal,
   SuspenseBoundary
 } from '@acx-ui/components'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
@@ -17,14 +17,14 @@ import {
   useLocaleContext,
   LocaleProvider,
   setUpIntl,
-  getIntl,
-  LangKey
+  LangKey,
+  getJwtHeaders
 } from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
-import type { AnyAction } from '@reduxjs/toolkit'
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { lang } = useLocaleContext()
@@ -35,32 +35,11 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
-export function showExpiredSessionModal () {
-  try {
-    getIntl()
-  } catch {
-    setUpIntl({ locale: 'en-US' })
-  }
-  const { $t } = getIntl()
-  showActionModal({
-    type: 'info',
-    title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
-    onOk: () => window.location.reload()
-  })
-}
-
-function detectExpiredSession (action: AnyAction, next: CallableFunction) {
-  if (action.meta?.baseQueryMeta?.response?.status === 401) {
-    showExpiredSessionModal()
-  } else {
-    return next(action)
-  }
-}
-
 export async function init (root: Root) {
-  addMiddleware(() => next => action => detectExpiredSession(action, next))
-  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
+  addMiddleware(errorMiddleware)
+  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
+    headers: { ...getJwtHeaders() }
+  })
   if (user.status === 401) {
     showExpiredSessionModal()
   } else {

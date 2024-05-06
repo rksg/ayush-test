@@ -4,10 +4,10 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
+import { IpUtilsService }                                                                                                                                                          from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                                                 from '../../models/EdgeEnum'
+import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                                                from '../../validator'
 
 const Netmask = require('netmask').Netmask
 
@@ -371,6 +371,7 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
     case EdgeIpModeEnum.DHCP:
       return EdgeIpModeEnum.DHCP
     case 'Static':
+    case EdgeIpModeEnum.STATIC:
       return EdgeIpModeEnum.STATIC
     default:
       return ''
@@ -379,4 +380,15 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
 
 export const getEdgePortIpFromStatusIp = (statusIp?: string) => {
   return statusIp?.split('/')[0]
+}
+
+export const isInterfaceInVRRPSetting = (
+  serialNumber: EdgeSerialNumber,
+  interfaceName: string,
+  vrrpSettings: ClusterNetworkSettings['virtualIpSettings']
+) => {
+  return Boolean(vrrpSettings?.some(item =>
+    item.ports?.some(port =>
+      port.serialNumber === serialNumber &&
+      port.portName.toLowerCase() === interfaceName.toLowerCase())))
 }

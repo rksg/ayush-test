@@ -89,7 +89,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
     },
     {
       key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       sorter: true,
       align: 'center',
@@ -107,7 +107,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
     },
     {
       key: 'venue',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venue',
       show: false,
       filterable: Array.from(venueMap, (entry) => {

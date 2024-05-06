@@ -53,10 +53,6 @@ describe('EdgeDhcpTable', () => {
         EdgeDhcpUrls.deleteDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
-      rest.delete(
-        EdgeDhcpUrls.bulkDeleteDhcpServices.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))

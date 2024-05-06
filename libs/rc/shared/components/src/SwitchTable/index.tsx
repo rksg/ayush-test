@@ -47,9 +47,8 @@ import {
   getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { SwitchScopes }                                      from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
+import { RequestPayload, SwitchScopes }                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }                     from '@acx-ui/user'
 import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
@@ -95,7 +94,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 const PasswordTooltip = {
   SYNCING: defineMessage({ defaultMessage: 'We are not able to determine the password before completing data synchronization.' }),
-  SYNCED: defineMessage({ defaultMessage: 'To change the admin password in venue setting, please go to Venue > Venue Configuration > Switch Configuration > AAA' }),
+  SYNCED: defineMessage({ defaultMessage: 'To change the admin password in <venueSingular></venueSingular> setting, please go to <VenueSingular></VenueSingular> > <VenueSingular></VenueSingular> Configuration > Switch Configuration > AAA' }),
   CUSTOM: defineMessage({ defaultMessage: 'For security reasons, RUCKUS One is not able to show custom passwords that are set on the switch.' })
 }
 
@@ -219,8 +218,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const handleClickMatchPassword = (rows: SwitchRow[], clearSelection: () => void) => {
     showActionModal({
       type: 'confirm',
-      title: $t({ defaultMessage: 'Match Admin Password to Venue' }),
-      content: $t({ defaultMessage: 'The switch admin password will be set same as the venue setting. Are you sure you want to proceed?' }),
+      title: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
+      content: $t({ defaultMessage: 'The switch admin password will be set same as the <venueSingular></venueSingular> setting. Are you sure you want to proceed?' }),
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
@@ -331,7 +330,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     ...(params.venueId ? [] : [{
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       filterKey: 'venueId',
@@ -384,6 +383,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     return !!selectOne && selectedRows.length === 1
   }
 
+  const isSelectionVisible = searchable !== false && hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
+
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
@@ -402,6 +405,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows) => {
       const row = rows[0]
       const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
@@ -420,6 +424,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
     tooltip: stackTooltip,
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows) => {
       const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(rows)
       return !!notOperational || !!invalid || !!hasStack
@@ -429,7 +434,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   },
   ...(enableSwitchAdminPassword ? [{
-    label: $t({ defaultMessage: 'Match Admin Password to Venue' }),
+    label: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
@@ -443,6 +449,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }] : []),
   {
     label: $t({ defaultMessage: 'Retry firmware update' }),
+    scopeKey: [SwitchScopes.UPDATE],
     visible: (rows) => {
       const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
       return isActionVisible(rows, { selectOne: true }) && isFirmwareUpdateFailed
@@ -533,7 +540,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         filterableWidth={140}
         rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={searchable !== false ? {
+        rowSelection={isSelectionVisible ? {
           type: 'checkbox',
           renderCell: (checked, record, index, originNode) => {
             return record.isFirstLevel
@@ -552,22 +559,25 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             } else if(!!notOperational) {
               setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
             } else if(!!invalid) {
-              setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+              setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and <venueSingular></venueSingular>' }))
             }
           }
         } : undefined}
         actions={filterByAccess(props.enableActions ? [{
           label: $t({ defaultMessage: 'Add Switch' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Add Stack' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/stack/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Import from file' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             setImportVisible(true)
           }
