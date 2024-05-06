@@ -20,9 +20,10 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { PersonaGroup }                  from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -33,7 +34,7 @@ function PersonaGroupDetailsPageHeader (props: {
   const { title, onClick } = props
 
   const extra = filterByAccess([
-    <Button type={'primary'} onClick={onClick}>
+    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
   ])
@@ -150,7 +151,7 @@ function PersonaGroupDetails () {
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
     },
-    ...(networkSegmentationEnabled ? [{
+    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] })) ? [{
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
         <NetworkSegmentationLink

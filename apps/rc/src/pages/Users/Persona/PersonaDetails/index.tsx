@@ -29,7 +29,8 @@ import {
   useAllocatePersonaVniMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
-import { filterByAccess }                   from '@acx-ui/user'
+import { EdgeScopes, WifiScopes }           from '@acx-ui/types'
+import { filterByAccess, hasPermission }    from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
@@ -253,7 +254,9 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
+            {(networkSegmentationEnabled
+                && personaGroupData?.personalIdentityNetworkId
+                && hasPermission({ scopes: [EdgeScopes.READ] })) &&
               <Subtitle level={4}>
                 {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
@@ -275,7 +278,9 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
+          {(networkSegmentationEnabled
+              && personaGroupData?.personalIdentityNetworkId
+              && hasPermission({ scopes: [EdgeScopes.READ] })) &&
             <Col span={12}>
               {netSeg.map(item =>
                 <Row key={item.label} align={'middle'}>
@@ -387,7 +392,12 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
+    <Button
+      type='primary'
+      onClick={showRevokedModal}
+      disabled={!allowed}
+      scopeKey={[WifiScopes.UPDATE]}
+    >
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
@@ -395,7 +405,7 @@ function PersonaDetailsPageHeader (props: {
         description: 'Translation strings - Unblock, Block Identity'
       }, { revokedStatus })}
     </Button>,
-    <Button type={'primary'} onClick={onClick}>
+    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
   ])

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -30,6 +30,7 @@ import {
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                      from '@acx-ui/types'
 import { filterByAccess, hasPermission }               from '@acx-ui/user'
 import { exportMessageMapping }                        from '@acx-ui/utils'
 
@@ -128,7 +129,7 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
-    ...(networkSegmentationEnabled ? [{
+    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] })) ? [{
       key: 'personalIdentityNetworkId',
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       dataIndex: 'personalIdentityNetworkId',
@@ -289,14 +290,14 @@ export function PersonaGroupTable () {
     )
   }
 
-  const actions: TableProps<PersonaGroup>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Identity Group' }),
-      onClick: () => {
-        setDrawerState({ isEdit: false, visible: true, data: undefined })
-      }
-    }
-  ]
+  const actions: TableProps<PersonaGroup>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Identity Group' }),
+        onClick: () => {
+          setDrawerState({ isEdit: false, visible: true, data: undefined })
+        }
+      }] : []
 
   const rowActions: TableProps<PersonaGroup>['rowActions'] = [
     {
@@ -304,7 +305,8 @@ export function PersonaGroupTable () {
       onClick: ([data], clearSelection) => {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -314,7 +316,8 @@ export function PersonaGroupTable () {
       ),
       onClick: ([selectedRow], clearSelection) => {
         doDelete(selectedRow, clearSelection)
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
@@ -354,7 +357,10 @@ export function PersonaGroupTable () {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({
+            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          }) && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

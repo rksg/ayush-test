@@ -14,31 +14,18 @@ import {
   useLazyDownloadPersonasQuery,
   useLazyGetPropertyUnitByIdQuery
 } from '@acx-ui/rc/services'
-import {
-  FILTER,
-  Persona,
-  PersonaErrorResponse,
-  PersonaGroup,
-  SEARCH
-} from '@acx-ui/rc/utils'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { exportMessageMapping }          from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
+import { EdgeScopes, WifiScopes }                                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { exportMessageMapping }                                        from '@acx-ui/utils'
 
-import {
-  IdentityDetailsLink,
-  IdentityGroupLink,
-  PropertyUnitLink
-} from '../../CommonLinkHelper'
-import {
-  CsvSize,
-  ImportFileDrawerType,
-  ImportFileDrawer } from '../../ImportFileDrawer'
-import { usePersonaListQuery } from '../../usePersonaListQuery'
-import { PersonaDrawer }       from '../PersonaDrawer'
-import {
-  PersonaGroupSelect } from '../PersonaGroupSelect'
-import { PersonaBlockedIcon }     from '../styledComponents'
-import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
+import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
+import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
+import { PersonaDrawer }                                            from '../PersonaDrawer'
+import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
+import { PersonaBlockedIcon }                                       from '../styledComponents'
+import { usePersonaAsyncHeaders }                                   from '../usePersonaAsyncHeaders'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
@@ -160,13 +147,14 @@ function useColumns (
       },
       ...props.ethernetPorts
     },
-    ...(networkSegmentationEnabled ? [{
-      key: 'vni',
-      dataIndex: 'vni',
-      title: $t({ defaultMessage: 'Segment No.' }),
-      sorter: true,
-      ...props.vni
-    }] : [])
+    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] }))
+      ? [{
+        key: 'vni',
+        dataIndex: 'vni',
+        title: $t({ defaultMessage: 'Segment No.' }),
+        sorter: true,
+        ...props.vni
+      }] : [])
   ]
 
   return columns
@@ -277,19 +265,19 @@ export function BasePersonaTable (props: PersonaTableProps) {
     })
   }
 
-  const actions: TableProps<PersonaGroup>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Identity' }),
-      onClick: () => {
+  const actions: TableProps<PersonaGroup>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Identity' }),
+        onClick: () => {
         // if user is under PersonaGroup page, props groupId into Drawer
-        setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Import From File' }),
-      onClick: () => setUploadCsvDrawerVisible(true)
-    }
-  ]
+          setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Import From File' }),
+        onClick: () => setUploadCsvDrawerVisible(true)
+      }] : []
 
   const rowActions: TableProps<Persona>['rowActions'] = [
     {
@@ -298,12 +286,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
       },
-      visible: (selectedItems => selectedItems.length === 1)
+      visible: (selectedItems => selectedItems.length === 1),
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       // We would not allow the user to delete the persons which was created by the Unit.
       disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -386,7 +376,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission() && { type: personaGroupId ? 'checkbox' : 'radio' }}
+        rowSelection={
+          hasPermission({
+            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          }) && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,
