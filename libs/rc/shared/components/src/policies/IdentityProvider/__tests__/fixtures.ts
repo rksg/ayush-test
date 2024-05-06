@@ -77,6 +77,10 @@ export const editDataWithRealms = {
       rowId: 0
     }],
     rowId: 1
+  }, {
+    name: 'r3',
+    encoding: NaiRealmEcodingEnum.UTF8,
+    rowId: 2
   }]
 }
 
