@@ -26,7 +26,7 @@ import {
 }                                      from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { ApGroupEditContext } from '..'
+import { ApGroupEditContext } from '../index'
 
 const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
