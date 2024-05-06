@@ -6,7 +6,7 @@ export class NetworkHotspot20Settings {
   allowInternetAccess?: boolean
   accessNetworkType?: Hotspot20AccessNetworkTypeEnum
   ipv4AddressType?: Hotspot20Ipv4AddressTypeEnum
-  connectionCapability?: Hotspot20ConnectionCapability[]
+  connectionCapabilities?: Hotspot20ConnectionCapability[]
   wifiOperator?: string
   identityProviders?: string[]
   activateProviders?: string[]    // for editMode

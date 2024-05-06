@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, InputNumber, Select, Switch } from 'antd'
-import _                                     from 'lodash'
+import _, { cloneDeep }                      from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import { Table, TableProps }     from '@acx-ui/components'
@@ -95,24 +95,27 @@ export function Hotspot20Tab () {
   const [editMode, setEditMode] = useState(false)
   const [connectionCapabilityDrawerVisible, setConnectionCapabilityDrawerVisible] = useState(false)
   const [connectionCapabilities, setConnectionCapabilities] =
-    useState(defaultConnectionCapabilities as Hotspot20ConnectionCapability[])
+    useState([] as Hotspot20ConnectionCapability[])
   const [selectedConnectionCapability, setSelectedConnectionCapability] =
     useState(null as unknown as Hotspot20ConnectionCapability)
+  const connectionCapibilityMap = useRef<Map<string, number>>()
 
   const maxConnectionCapibility = 43
   const labelWidth = '250px'
-  let connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
-    [cap.protocolNumber + '_' + cap.port, cap.protocol]))
 
   useEffect(() => {
-    if (data && data.hotspot20Settings && data.hotspot20Settings.connectionCapability) {
-      setConnectionCapabilities(data.hotspot20Settings.connectionCapability)
+    if (data && data.hotspot20Settings && data.hotspot20Settings.connectionCapabilities) {
+      setConnectionCapabilities(data.hotspot20Settings.connectionCapabilities)
+    } else {
+      setConnectionCapabilities(defaultConnectionCapabilities)
     }
-  }, [data, connectionCapabilities])
+  }, [data])
 
   useEffect(() => {
     if (connectionCapabilities) {
       form.setFieldValue(['hotspot20Settings', 'connectionCapabilities'], connectionCapabilities)
+      connectionCapibilityMap.current = new Map(connectionCapabilities?.map((cap, i) =>
+        [cap.protocolNumber + '_' + cap.port, i]))
     }
   }, [connectionCapabilities, form])
 
@@ -153,21 +156,22 @@ export function Hotspot20Tab () {
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ( selectedRows: Hotspot20ConnectionCapability[],
+    onClick: ( removedRows: Hotspot20ConnectionCapability[],
       clearSelection: () => void) => {
-      if (selectedRows.length < connectionCapabilities.length ) {
-        const deletedMap = new Map(selectedRows?.map((cap) =>
-          [cap.protocolNumber + '_' + cap.port, cap.protocol]))
-        setConnectionCapabilities([
-          ...connectionCapabilities.filter((cap: Hotspot20ConnectionCapability) =>
-            !deletedMap.has(cap.protocolNumber + '_' + cap.port)
-          )
-        ])
-        connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
-          [cap.protocolNumber + '_' + cap.port, cap.protocol]))
+      if (removedRows.length < connectionCapabilities.length ) {
+        let newCapbilities = cloneDeep(connectionCapabilities)
+        removedRows.forEach((c) => {
+          const idx = connectionCapibilityMap.current?.get(c.protocolNumber + '_' + c.port)as number
+          if (idx > -1) {
+            newCapbilities = [...newCapbilities.slice(0, idx), ...newCapbilities.slice(idx+1)]
+            connectionCapibilityMap.current = new Map(newCapbilities?.map((cap, i) =>
+              [cap.protocolNumber + '_' + cap.port, i]))
+          }
+        })
+        setConnectionCapabilities(newCapbilities)
       } else {
         setConnectionCapabilities([])
-        connectionCapibilityMap = new Map()
+        connectionCapibilityMap.current?.clear()
       }
 
       clearSelection()
@@ -176,7 +180,7 @@ export function Hotspot20Tab () {
 
   const isValidConnectionCapability = (editMode?: boolean, cap?: Hotspot20ConnectionCapability) => {
     return !!cap?.protocolNumber && !!cap.port &&
-      (editMode || !connectionCapibilityMap.has(cap?.protocolNumber + '_' + cap?.port))
+      (editMode || !connectionCapibilityMap.current?.has(cap?.protocolNumber + '_' + cap?.port))
   }
 
   const saveConnectionCapability = (
@@ -200,9 +204,6 @@ export function Hotspot20Tab () {
         ...connectionCapabilities, capabilityObject
       ])
     }
-
-    connectionCapibilityMap = new Map(connectionCapabilities?.map((cap) =>
-      [cap.protocolNumber + '_' + cap.port, cap.protocol]))
 
     resetConnectionCapability()
   }
@@ -247,7 +248,7 @@ export function Hotspot20Tab () {
   ]
 
   const getRowKey = (record: Hotspot20ConnectionCapability): string => {
-    return '' + record.protocolNumber?.toString() + record.port?.toString()
+    return '' + record.protocolNumber?.toString() + '_' + record.port?.toString()
   }
 
   const getProtocolNumberDisplay = (protocolNumber: number): string => {

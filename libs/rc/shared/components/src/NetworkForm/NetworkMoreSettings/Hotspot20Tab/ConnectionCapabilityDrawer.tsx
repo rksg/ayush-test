@@ -113,6 +113,7 @@ const ConnectionCapabilityDrawer = (props: ConnectionCapabilityDrawerProps) => {
       width={430}
       push={false}
       children={content}
+      onClose={handleCancel}
       destroyOnClose={true}
       footer={
         <Drawer.FormFooter
