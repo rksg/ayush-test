@@ -94,7 +94,7 @@ export function PortalInstancesTable (){
     },
     {
       key: 'Venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       align: 'center',
       sorter: true,

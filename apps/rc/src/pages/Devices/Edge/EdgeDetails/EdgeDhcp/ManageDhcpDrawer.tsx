@@ -1,15 +1,17 @@
 
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Select, Space } from 'antd'
 import { useForm, useWatch }   from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Drawer, Loader, Table, TableProps }                        from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal }                                  from '@acx-ui/rc/components'
-import { useGetEdgeDhcpListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-ui/rc/utils'
+import { Drawer, Loader, Table, TableProps }           from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal, useEdgeDhcpActions } from '@acx-ui/rc/components'
+import { useGetEdgeDhcpListQuery }                     from '@acx-ui/rc/services'
+import { EdgeDhcpPool, EdgeDhcpSetting }               from '@acx-ui/rc/utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 interface ManageDhcpDrawerProps {
   visible: boolean
@@ -25,6 +27,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
   const [form] = useForm()
   const dhcpId = useWatch('dhcpId', form)
   const params = useParams()
+  const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
   const {
     data: edgeDhcpData,
     edgeDhcpOptions,
@@ -43,7 +46,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
         }
       }
     })
-  const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
+  const { activateEdgeDhcp } = useEdgeDhcpActions()
 
   useEffect(() => {
     form.setFieldValue('dhcpId', props.inUseService)
@@ -76,9 +79,11 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
   ]
 
   const handleFinish = async () => {
-    const pathParams = { id: dhcpId }
-    const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, params.serialNumber] }
-    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    await activateEdgeDhcp(
+      dhcpId,
+      currentEdgeStatus?.venueId ?? '',
+      params.serialNumber ?? ''
+    )
     handleClose()
   }
 

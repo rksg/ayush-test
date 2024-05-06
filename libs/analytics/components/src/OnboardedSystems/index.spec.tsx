@@ -1,27 +1,20 @@
 import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
-import { Map }     from 'immutable'
-import { get }     from 'lodash'
 import { rest }    from 'msw'
 
-import { PERMISSION_MANAGE_MLISA, Tenant, UserProfile, setUserProfile }                     from '@acx-ui/analytics/utils'
+import { PERMISSION_MANAGE_MLISA, UserProfile, setUserProfile }                             from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
-import { mockSmartZoneList } from './__tests__/fixtures'
-import { OnboardedSystem }   from './services'
+import { mockSmartZoneList, tenants } from './__tests__/fixtures'
+import { FormattedOnboardedSystem }   from './services'
 
-import { OnboardedSystems, TooltipContent, formatSmartZone, FormattedOnboardedSystem } from '.'
+import { useOnboardedSystems, TooltipContent } from '.'
 
 const services = require('./services')
 jest.mock('./services', () => ({
   ...jest.requireActual('./services')
 }))
-
-const tenants = [
-  { id: 'id1', name: 'account1', permissions: { [PERMISSION_MANAGE_MLISA]: true } },
-  { id: 'id2', name: 'account2', permissions: { [PERMISSION_MANAGE_MLISA]: true } }
-] as unknown as Tenant[]
 
 describe('OnboardedSystems', () => {
   beforeEach(() => {
@@ -42,7 +35,11 @@ describe('OnboardedSystems', () => {
     }
   })
   it('should render correctly', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findAllByText('Status')).toHaveLength(2)
     expect(await screen.findByPlaceholderText('Search Account, Name')).toBeVisible()
     expect(await screen.findByText('Account')).toBeVisible()
@@ -56,7 +53,11 @@ describe('OnboardedSystems', () => {
   })
   it('should sort by selected account', async () => {
     setUserProfile({ accountId: tenants[1].id, tenants } as UserProfile)
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findAllByText('account2')).toHaveLength(2)
   })
   it('should handle delete submit', async () => {
@@ -65,7 +66,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { status: 204 }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -78,11 +83,14 @@ describe('OnboardedSystems', () => {
     await userEvent.click(await screen.findByRole('button', { name: /OK/ }))
 
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
-    expect(await screen.findByTestId('toast-content'))
-      .toHaveTextContent('sz3 was deleted')
+    expect(await screen.findByTestId('toast-content')).toHaveTextContent('sz3 was deleted')
   })
   it('should handle delete cancel', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -97,7 +105,11 @@ describe('OnboardedSystems', () => {
     await waitFor(async () => expect(await screen.findByText('Delete "sz3"?')).not.toBeVisible())
   })
   it('should disable delete', async () => {
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
@@ -109,7 +121,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { error: 'CANNOT_DELETE' }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -132,7 +148,11 @@ describe('OnboardedSystems', () => {
       'delete',
       { error: 'UNKNOWN' }
     )
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -155,16 +175,12 @@ describe('OnboardedSystems', () => {
       { id: 'id3', name: 'account3', permissions: { [PERMISSION_MANAGE_MLISA]: false } }
     ] } as UserProfile)
     jest.spyOn(services, 'useFetchSmartZoneListQuery')
-    render(<Provider><OnboardedSystems /></Provider>, { route: {} })
-    expect(services.useFetchSmartZoneListQuery).toBeCalledWith(['id1', 'id2'], expect.anything())
-  })
-})
-
-describe('formatSmartZone', () => {
-  it('should generate correct formatted data', () => {
-    const tenantsMap = Map(tenants.map(t => [get(t, 'id'), t]))
-    expect(formatSmartZone(
-      mockSmartZoneList as OnboardedSystem[], tenants[0].id, tenantsMap)).toMatchSnapshot()
+    const Component = () => {
+      const { component } = useOnboardedSystems()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(services.useFetchSmartZoneListQuery).toBeCalledWith({ tenantId: 'id1', tenants })
   })
 })
 

@@ -14,6 +14,8 @@ import {
   VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { SwitchScopes }                          from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '..'
 
@@ -86,7 +88,7 @@ export function SwitchDhcpTab () {
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='pool'
       onChange={onTabChange}
-      tabBarExtraContent={operations}
+      tabBarExtraContent={hasPermission({ scopes: [SwitchScopes.UPDATE] }) && operations}
       type='card'
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Pools' })} key='pool'>
