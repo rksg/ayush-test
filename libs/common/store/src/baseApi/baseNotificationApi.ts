@@ -3,7 +3,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
 
-
 const isRa = get('IS_MLISA_SA')
 
 export const notificationApiURL = isRa

@@ -11,8 +11,8 @@ import {
   useLazyGetVenueEdgeFirmwareListQuery,
   useLazyGetScheduledFirmwareQuery
 } from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                             from '@acx-ui/types'
+import { useNavigate, useParams, useTenantLink }           from '@acx-ui/react-router-dom'
+import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import {
   CloudVersion,
   getUserSettingsByPath,
@@ -20,7 +20,8 @@ import {
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
   UserSettingsUIModel,
-  hasRoles
+  hasRoles,
+  hasPermission
 } from '@acx-ui/user'
 
 export function CloudMessageBanner () {
@@ -54,10 +55,10 @@ export function CloudMessageBanner () {
   useEffect(() => {
     if (cloudVersion && userSettings) {
       setVersion(version)
-      checkWifiScheduleExists()
-      if (!hasRoles(RolesEnum.DPSK_ADMIN))
+      hasPermission({ scopes: [WifiScopes.READ] }) && checkWifiScheduleExists()
+      if (!hasRoles(RolesEnum.DPSK_ADMIN) && hasPermission({ scopes: [SwitchScopes.READ] }))
         checkSwitchScheduleExists()
-      if(isEdgeEnabled && isScheduleUpdateReady)
+      if(isEdgeEnabled && isScheduleUpdateReady && hasPermission({ scopes: [EdgeScopes.READ] }))
         checkEdgeScheduleExists()
     }
   }, [cloudVersion, userSettings])

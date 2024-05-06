@@ -42,7 +42,7 @@ export const ScopeForm = () => {
             {$t({
               defaultMessage:
                 // eslint-disable-next-line max-len
-                'Activate networks for the SD-LAN service on the venue ({venueName}):'
+                'Activate networks for the SD-LAN service on the <venueSingular></venueSingular> ({venueName}):'
             }, {
               venueName: <Typography.Text strong>{venueName}</Typography.Text>
             })}

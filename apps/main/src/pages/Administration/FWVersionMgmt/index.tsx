@@ -17,6 +17,8 @@ import {
 } from '@acx-ui/rc/services'
 import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -34,6 +36,7 @@ const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const tenantBasePath = useTenantLink('')
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
@@ -54,6 +57,12 @@ const FWVersionMgmt = () => {
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
+
+  const hasNoPermissions
+    = (!hasPermission({ scopes: [WifiScopes.READ] }) && params?.activeSubTab === 'apFirmware')
+    // eslint-disable-next-line max-len
+    || (!hasPermission({ scopes: [SwitchScopes.READ] }) && params?.activeSubTab === 'switchFirmware')
+    || (!hasPermission({ scopes: [EdgeScopes.READ] }) && params?.activeSubTab === 'edgeFirmware')
 
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
@@ -82,6 +91,15 @@ const FWVersionMgmt = () => {
     setIsEdgeFirmwareAvailable(!!hasOutdated)
   }, [edgeVenueVersionList, latestEdgeReleaseVersion])
 
+  useEffect(() => {
+    if (hasNoPermissions) {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/no-permissions`
+      }, { replace: true })
+    }
+  }, [ hasNoPermissions, tenantBasePath, navigate ])
+
   const tabs = {
     apFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'AP Firmware' })}
@@ -89,7 +107,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new AP firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <ApFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [WifiScopes.READ] })
     },
     switchFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
@@ -97,7 +115,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmware />,
-      visible: true
+      visible: hasPermission({ scopes: [SwitchScopes.READ] })
     },
     edgeFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'SmartEdge Firmware' })}
@@ -105,7 +123,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new SmartEdge firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
-      visible: isEdgeEnabled
+      visible: isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.READ] })
     },
     appLibrary: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}

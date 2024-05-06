@@ -98,8 +98,8 @@ export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
     default:
       return !isMLISA ?
         defineMessage({ defaultMessage: `{ count, plural,
-        one {Venue}
-        other {Venues}
+        one {<VenueSingular></VenueSingular>}
+        other {<VenuePlural></VenuePlural>}
       }` })
         : defineMessage({ defaultMessage: `{ count, plural,
         one {Zone}

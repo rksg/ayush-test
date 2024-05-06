@@ -805,7 +805,7 @@ export function StackForm () {
                   <Col span={14} style={{ padding: '0' }}>
                     <Form.Item
                       name='venueId'
-                      label={$t({ defaultMessage: 'Venue' })}
+                      label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                       rules={[
                         {
                           required: true,

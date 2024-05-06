@@ -27,7 +27,7 @@ export default function VLANPoolInstancesTable (){
   const columns: TableProps<VLANPoolVenues>['columns'] = [
     {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venueName',
       searchable: true,
       sorter: true,

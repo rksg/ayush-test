@@ -311,7 +311,7 @@ export function ConfigurationProfileForm () {
           }
 
           <StepsForm.StepForm
-            title={$t({ defaultMessage: 'Venues' })}
+            title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
             onFinish={updateCurrentData}
           >
             <VenueSetting />

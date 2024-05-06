@@ -56,7 +56,12 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 beforeAll(() => {
   mockServer.listen()
-  setUpIntl({ locale: 'en-US', messages: {} })
+  setUpIntl({ locale: 'en-US', messages: {}, defaultRichTextElements: {
+    venueSingular: () => 'venue',
+    venuePlural: () => 'venues',
+    VenueSingular: () => 'Venue',
+    VenuePlural: () => 'Venues'
+  } })
 
   // turn off warning from react act
   global.IS_REACT_ACT_ENVIRONMENT = false
@@ -76,12 +81,14 @@ beforeEach(async () => {
       )
     )
   )
-  await config.initialize('test')
+  await config.initialize()
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
     accountTier: 'Gold',
     betaEnabled: false,
+    abacEnabled: false,
+    isCustomRole: false,
     profile: {
       region: '[NA]',
       allowedRegions: [
