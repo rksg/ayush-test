@@ -1,4 +1,4 @@
-import { multipleBy1000, divideBy100, noFormat, kpisForTab } from './healthKPIConfig'
+import { multipleBy1000, divideBy100, noFormat, kpisForTab, wiredKPIsForTab } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -58,6 +58,19 @@ describe('Health KPI', () => {
           'apToSZLatency',
           'switchPoeUtilization',
           'onlineAPs'
+        ]
+      }
+    })
+  })
+  it('should return correct config for wired in RA', () => {
+    expect(wiredKPIsForTab()).toMatchObject({
+      infrastructure: {
+        kpis: [
+          'switchReachability',
+          'memory',
+          'cpu',
+          'temperature',
+          'poeUtilization'
         ]
       }
     })

@@ -38,9 +38,17 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey }                                                         from '@acx-ui/user'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter, getDatePickerValues } from '@acx-ui/utils'
+import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import {
+  useDashboardFilter,
+  DateFilter,
+  DateRange,
+  getDateRangeFilter,
+  AnalyticsFilter,
+  getDatePickerValues
+} from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -79,17 +87,19 @@ export default function Dashboard () {
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
+    ...(hasPermission({ scopes: [WifiScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
       children: <ApWidgets />
-    },
-    {
+    }] : []),
+
+    ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets />
-    },
-    ...(isEdgeEnabled && isEdgeReady ? [
+    }] : []),
+
+    ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.READ] }) ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
@@ -108,27 +118,32 @@ export default function Dashboard () {
     localStorage.setItem('dashboard-tab', value)
   }
 
+  const hasReadPermission
+  = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
+
   return (
     <DashboardFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <Divider dashed
-        style={{
-          borderColor: 'var(--acx-neutrals-30)',
-          margin: '20px 0px 5px 0px' }}/>
-      <ContentSwitcher
-        tabDetails={tabDetails}
-        size='large'
-        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-        onChange={onTabChange}
-        extra={
-          <UI.Wrapper>
-            <TenantLink to={'/reports'}>
-              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-            </TenantLink>
-          </UI.Wrapper>
-        }
-      />
+      { hasReadPermission && <>
+        <Divider dashed
+          style={{
+            borderColor: 'var(--acx-neutrals-30)',
+            margin: '20px 0px 5px 0px' }}/>
+        <ContentSwitcher
+          tabDetails={tabDetails}
+          size='large'
+          defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+          onChange={onTabChange}
+          extra={
+            <UI.Wrapper>
+              <TenantLink to={'/reports'}>
+                {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+              </TenantLink>
+            </UI.Wrapper>
+          }
+        />
+      </>}
       <Divider dashed
         style={{
           borderColor: 'var(--acx-neutrals-30)',
@@ -145,32 +160,44 @@ function DashboardPageHeader () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
+  const hasCreatePermission
+    = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
+
   const addMenu = <Menu
     expandIcon={<UI.MenuExpandArrow />}
     items={[{
       key: 'add-venue',
       // eslint-disable-next-line max-len
       label: <TenantLink to='venues/add'>{$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</TenantLink>
-    }, {
+    },
+    ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
       key: 'add-wifi-network',
       label: <TenantLink to='networks/wireless/add'>{
         $t({ defaultMessage: 'Wi-Fi Network' })}
       </TenantLink>
-    }, {
+    }] : []),
+    ...( hasCreatePermission ? [{
       key: 'add-device',
       label: $t({ defaultMessage: 'Device' }),
       // type: 'group',
-      children: [{
-        key: 'add-ap',
-        label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
-      }, {
-        key: 'add-switch',
-        label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
-      }, ...(isEdgeEnabled && isEdgeReady) ? [{
-        key: 'add-edge',
-        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
-      }] : []]
-    }]}
+      children: [
+        ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
+          key: 'add-ap',
+          label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
+        }] : []),
+        ...( hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+          key: 'add-switch',
+          label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+        }] : []),
+        ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
+          key: 'add-edge',
+          label: <TenantLink to='devices/edge/add'>{
+            $t({ defaultMessage: 'SmartEdge' })
+          }</TenantLink>
+        }] : []
+      ]
+    }] : [])
+    ]}
   />
 
   return (
@@ -266,6 +293,9 @@ function EdgeWidgets () {
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
 
+  const hasReadPermission
+    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
+
   return (
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
@@ -284,12 +314,12 @@ function CommonDashboardWidgets () {
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <VenuesDashboardWidgetV2 />
           </GridCol>
-          <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
+          { hasReadPermission && <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <DevicesDashboardWidgetV2 />
-          </GridCol>
-          <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
+          </GridCol>}
+          { hasReadPermission && <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <ClientsWidgetV2 />
-          </GridCol>
+          </GridCol>}
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>
