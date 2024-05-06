@@ -179,7 +179,6 @@ export const rbacApi = baseRbacApi.injectEndpoints({
       }),
       providesTags: [{ type: 'RBAC', id: 'GET_USERS' }],
       transformResponse: (response: ManagedUser[] | undefined, _, brand) => {
-        const { $t } = getIntl()
         return response?.map(user => ({
           ...user,
           displayType: getDisplayType(user.type, brand),
