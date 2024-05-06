@@ -79,6 +79,7 @@ describe('NetworkForm', () => {
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Hotspot 2.0 Settings/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Security Protocol/i)).toBeInTheDocument()
     expect(await screen.findByText(/Wi-Fi Operator/i)).toBeInTheDocument()
     expect(await screen.findByText(/Identity Provider/i)).toBeInTheDocument()
   })
