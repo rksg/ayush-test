@@ -17,8 +17,8 @@ const WifiCallingSettingTable = () => {
   const compactColumns: TableProps<WifiCallingSetting>['columns'] = [
     {
       title: $t({ defaultMessage: 'Selected Profile' }),
-      dataIndex: 'serviceName',
-      key: 'serviceName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Description' }),

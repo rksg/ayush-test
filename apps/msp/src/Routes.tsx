@@ -18,7 +18,9 @@ import {
   VLANPoolForm,
   VLANPoolDetail,
   RogueAPDetectionForm,
-  RogueAPDetectionDetailView
+  RogueAPDetectionDetailView,
+  SyslogForm,
+  SyslogDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -321,6 +323,29 @@ export function ConfigTemplatesRoutes () {
               oper: PolicyOperation.DETAIL
             })}
             element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<SyslogForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<SyslogForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<SyslogDetailView />}
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
