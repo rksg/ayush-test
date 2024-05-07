@@ -44,7 +44,7 @@ export function ApNetworksTab () {
     { skip: !isEdgeSdLanHaReady })
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
-    , tableQuery.data?.data.map(item => item.id))
+    , tableQuery.data?.data?.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
