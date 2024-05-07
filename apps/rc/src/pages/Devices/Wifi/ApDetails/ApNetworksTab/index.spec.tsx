@@ -18,7 +18,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
     sdLans: [],
-    scopedNetworkIds: []
+    scopedNetworkIds: [],
+    scopedGuestNetworkIds: []
   })
 }))
 
