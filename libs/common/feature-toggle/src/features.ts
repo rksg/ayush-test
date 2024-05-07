@@ -79,6 +79,7 @@ export enum Features {
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
+  MSP_HSP_360_PLM_FF = 'HSP-360',
   MSP_HSP_PLM_FF = 'HSP-LOC',
   MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
