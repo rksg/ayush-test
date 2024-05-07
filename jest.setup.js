@@ -81,12 +81,14 @@ beforeEach(async () => {
       )
     )
   )
-  await config.initialize('test')
+  await config.initialize()
 
   require('@acx-ui/user').setUserProfile({
     allowedOperations: [],
     accountTier: 'Gold',
     betaEnabled: false,
+    abacEnabled: false,
+    isCustomRole: false,
     profile: {
       region: '[NA]',
       allowedRegions: [

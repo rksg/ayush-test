@@ -24,8 +24,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteEdge: {
     method: 'delete',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   deleteEdges: {
