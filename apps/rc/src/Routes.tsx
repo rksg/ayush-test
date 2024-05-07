@@ -28,7 +28,8 @@ import {
   WifiOperatorForm,
   ConfigurationProfileForm,
   CliTemplateForm,
-  CliProfileForm
+  CliProfileForm,
+  IdentityProviderForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -91,7 +92,6 @@ import ConnectionMeteringDetail             from './pages/Policies/ConnectionMet
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import IdentityProviderDetail               from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
-import IdentityProviderForm                 from './pages/Policies/IdentityProvider/IdentityProviderForm/IdentityProviderForm'
 import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -781,11 +781,11 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.CREATE })}
-        element={<WifiOperatorForm edit={false}/>}
+        element={<WifiOperatorForm editMode={false}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.EDIT })}
-        element={<WifiOperatorForm edit={true}/>}
+        element={<WifiOperatorForm editMode={true}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.DETAIL })}
