@@ -564,6 +564,318 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
             protocolNumber: 91,
             port: 0,
             status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'MTP',
+            protocolNumber: 92,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'AX.25',
+            protocolNumber: 93,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPIP',
+            protocolNumber: 94,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'MICP',
+            protocolNumber: 95,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SCC-SP',
+            protocolNumber: 96,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ETHERIP',
+            protocolNumber: 97,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ENCAP',
+            protocolNumber: 98,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'GMTP',
+            protocolNumber: 100,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IFMP',
+            protocolNumber: 101,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PNNI',
+            protocolNumber: 102,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PIM',
+            protocolNumber: 103,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ARIS',
+            protocolNumber: 104,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SCPS',
+            protocolNumber: 105,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'QNX',
+            protocolNumber: 106,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'A/N',
+            protocolNumber: 107,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPComp',
+            protocolNumber: 108,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SNP',
+            protocolNumber: 109,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Compaq-Peer',
+            protocolNumber: 110,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPX-in-IP',
+            protocolNumber: 111,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'VRRP',
+            protocolNumber: 112,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PGM',
+            protocolNumber: 113,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'L2TP',
+            protocolNumber: 115,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'DDX',
+            protocolNumber: 116,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IATP',
+            protocolNumber: 117,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'STP',
+            protocolNumber: 118,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SRP',
+            protocolNumber: 119,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'UTI',
+            protocolNumber: 120,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SMP',
+            protocolNumber: 121,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SM',
+            protocolNumber: 122,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PTP',
+            protocolNumber: 123,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ISIS over IPv4',
+            protocolNumber: 124,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'FIRE',
+            protocolNumber: 125,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'CRTP',
+            protocolNumber: 126,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'CRUDP',
+            protocolNumber: 127,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SSCOPMCE',
+            protocolNumber: 128,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPLT',
+            protocolNumber: 129,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SPS',
+            protocolNumber: 130,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PIPE',
+            protocolNumber: 131,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SCTP',
+            protocolNumber: 132,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'FC',
+            protocolNumber: 133,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'RSVP-E2E-IGNORE',
+            protocolNumber: 134,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Mobility Header',
+            protocolNumber: 135,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'UDPLite',
+            protocolNumber: 136,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'MPLS-in-IP',
+            protocolNumber: 137,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'manet',
+            protocolNumber: 138,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'HIP',
+            protocolNumber: 139,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Shim6',
+            protocolNumber: 140,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'WESP',
+            protocolNumber: 141,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ROHC',
+            protocolNumber: 142,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Ethernet',
+            protocolNumber: 143,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'AGGFRAG',
+            protocolNumber: 144,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'NSH',
+            protocolNumber: 145,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
           }
         ]
       }
@@ -581,7 +893,7 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
       </Provider>,
       { route: { params } })
 
-    expect(await screen.findByText('Connection Capabilities (84)')).toBeInTheDocument()
+    expect(await screen.findByText('Connection Capabilities (136)')).toBeInTheDocument()
     expect(await screen.findByText('2 (IGMP)')).toBeInTheDocument()
     expect(await screen.findByText('3 (GGP)')).toBeInTheDocument()
     expect(await screen.findByText('5 (ST)')).toBeInTheDocument()
@@ -666,6 +978,58 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
     expect(await screen.findByText('89 (OSPFIGP)')).toBeInTheDocument()
     expect(await screen.findByText('90 (Sprite-RPC)')).toBeInTheDocument()
     expect(await screen.findByText('91 (LARP)')).toBeInTheDocument()
+    expect(await screen.findByText('92 (MTP)')).toBeInTheDocument()
+    expect(await screen.findByText('93 (AX.25)')).toBeInTheDocument()
+    expect(await screen.findByText('94 (IPIP)')).toBeInTheDocument()
+    expect(await screen.findByText('95 (MICP)')).toBeInTheDocument()
+    expect(await screen.findByText('96 (SCC-SP)')).toBeInTheDocument()
+    expect(await screen.findByText('97 (ETHERIP)')).toBeInTheDocument()
+    expect(await screen.findByText('98 (ENCAP)')).toBeInTheDocument()
+    expect(await screen.findByText('100 (GMTP)')).toBeInTheDocument()
+    expect(await screen.findByText('101 (IFMP)')).toBeInTheDocument()
+    expect(await screen.findByText('102 (PNNI)')).toBeInTheDocument()
+    expect(await screen.findByText('103 (PIM)')).toBeInTheDocument()
+    expect(await screen.findByText('104 (ARIS)')).toBeInTheDocument()
+    expect(await screen.findByText('105 (SCPS)')).toBeInTheDocument()
+    expect(await screen.findByText('106 (QNX)')).toBeInTheDocument()
+    expect(await screen.findByText('107 (A/N)')).toBeInTheDocument()
+    expect(await screen.findByText('108 (IPComp)')).toBeInTheDocument()
+    expect(await screen.findByText('109 (SNP)')).toBeInTheDocument()
+    expect(await screen.findByText('110 (Compaq-Peer)')).toBeInTheDocument()
+    expect(await screen.findByText('111 (IPX-in-IP)')).toBeInTheDocument()
+    expect(await screen.findByText('112 (VRRP)')).toBeInTheDocument()
+    expect(await screen.findByText('113 (PGM)')).toBeInTheDocument()
+    expect(await screen.findByText('115 (L2TP)')).toBeInTheDocument()
+    expect(await screen.findByText('116 (DDX)')).toBeInTheDocument()
+    expect(await screen.findByText('117 (IATP)')).toBeInTheDocument()
+    expect(await screen.findByText('118 (STP)')).toBeInTheDocument()
+    expect(await screen.findByText('119 (SRP)')).toBeInTheDocument()
+    expect(await screen.findByText('120 (UTI)')).toBeInTheDocument()
+    expect(await screen.findByText('121 (SMP)')).toBeInTheDocument()
+    expect(await screen.findByText('122 (SM)')).toBeInTheDocument()
+    expect(await screen.findByText('123 (PTP)')).toBeInTheDocument()
+    expect(await screen.findByText('124 (ISIS over IPv4)')).toBeInTheDocument()
+    expect(await screen.findByText('125 (FIRE)')).toBeInTheDocument()
+    expect(await screen.findByText('126 (CRTP)')).toBeInTheDocument()
+    expect(await screen.findByText('127 (CRUDP)')).toBeInTheDocument()
+    expect(await screen.findByText('128 (SSCOPMCE)')).toBeInTheDocument()
+    expect(await screen.findByText('129 (IPLT)')).toBeInTheDocument()
+    expect(await screen.findByText('130 (SPS)')).toBeInTheDocument()
+    expect(await screen.findByText('131 (PIPE)')).toBeInTheDocument()
+    expect(await screen.findByText('132 (SCTP)')).toBeInTheDocument()
+    expect(await screen.findByText('133 (FC)')).toBeInTheDocument()
+    expect(await screen.findByText('134 (RSVP-E2E-IGNORE)')).toBeInTheDocument()
+    expect(await screen.findByText('135 (Mobility Header)')).toBeInTheDocument()
+    expect(await screen.findByText('136 (UDPLite)')).toBeInTheDocument()
+    expect(await screen.findByText('137 (MPLS-in-IP)')).toBeInTheDocument()
+    expect(await screen.findByText('138 (manet)')).toBeInTheDocument()
+    expect(await screen.findByText('139 (HIP)')).toBeInTheDocument()
+    expect(await screen.findByText('140 (Shim6)')).toBeInTheDocument()
+    expect(await screen.findByText('141 (WESP)')).toBeInTheDocument()
+    expect(await screen.findByText('142 (ROHC)')).toBeInTheDocument()
+    expect(await screen.findByText('143 (Ethernet)')).toBeInTheDocument()
+    expect(await screen.findByText('144 (AGGFRAG)')).toBeInTheDocument()
+    expect(await screen.findByText('145 (NSH)')).toBeInTheDocument()
     const row18 = await screen.findByText('XNS-IDP')
     await userEvent.click(row18)
 
@@ -686,7 +1050,7 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
     deleteBtn = await screen.findByText('Delete')
     expect(deleteBtn).toBeInTheDocument()
     await userEvent.click(deleteBtn)
-    expect(await screen.findByText('Connection Capabilities (83)')).toBeInTheDocument()
+    expect(await screen.findByText('Connection Capabilities (135)')).toBeInTheDocument()
   })
 
   it('should render number if no protocol name at connection capabilities in edit mode'
