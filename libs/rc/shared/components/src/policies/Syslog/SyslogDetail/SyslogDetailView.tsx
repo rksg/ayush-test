@@ -9,10 +9,11 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation }                                                           from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                      from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                  from '@acx-ui/user'
+import { PolicyType, SyslogConstant, SyslogDetailContextType, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { PolicyOperation }                                                              from '@acx-ui/rc/utils'
+import { filterByAccess }                                                               from '@acx-ui/user'
+
+import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import SyslogDetailContent from './SyslogDetailContent'
 import SyslogVenueDetail   from './SyslogVenueDetail'
@@ -24,37 +25,26 @@ export const SyslogDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SYSLOG)
 
   return (
     <SyslogDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Syslog Server' }),
-            link: tablePath
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={policyName !== SyslogConstant.DefaultProfile ? filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.SYSLOG,
-            oper: PolicyOperation.EDIT,
-            policyId: params.policyId as string
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          </TenantLink>
+          <PolicyConfigTemplateLinkSwitcher
+            type={PolicyType.SYSLOG}
+            oper={PolicyOperation.EDIT}
+            policyId={params.policyId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ]) : []}
       />
-
       <GridRow>
         <GridCol col={{ span: 24 }}>
           <SyslogDetailContent />

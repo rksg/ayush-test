@@ -6,108 +6,18 @@ import { rest }  from 'msw'
 
 import { policyApi } from '@acx-ui/rc/services'
 import {
-  ProtocolEnum,
-  FacilityEnum,
-  PriorityEnum,
-  FlowLevelEnum,
-  RogueApUrls,
-  SyslogContextType,
-  SyslogUrls,
-  SyslogVenue
+  SyslogUrls
 } from '@acx-ui/rc/utils'
-import { Provider, store }                            from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
-import { SyslogForm } from './SyslogForm'
+import { initState, syslogPolicyTableList, syslogVenueTable, targetSyslog } from './__tests__/fixtures'
+import { SyslogForm }                                                       from './SyslogForm'
 
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
-}
-
-const policyListContent = [
-  {
-    id: 'policyId1',
-    primary: {
-      server: '1.1.1.1',
-      port: 514,
-      protocol: 'TCP'
-    },
-    secondary: {
-      server: '2.2.2.2',
-      port: 1514,
-      potocol: 'UDP'
-    },
-    facility: 'KEEP_ORIGINAL',
-    priority: 'ERROR',
-    flowLevel: 'ALL',
-    venueIds: []
-  },
-  {
-    id: 'be62604f39aa4bb8a9f9a0733ac07add',
-    primary: {
-      server: '1.1.1.1',
-      port: 514,
-      protocol: 'TCP'
-    },
-    secondary: {
-      server: '2.2.2.2',
-      port: 1514,
-      protocol: 'UDP'
-    },
-    facility: 'KEEP_ORIGINAL',
-    priority: 'ERROR',
-    flowLevel: 'ALL',
-    venueIds: []
-  }
-]
-
-const venueTable = {
-  fields: [
-    'country',
-    'city',
-    'name',
-    'switches',
-    'id',
-    'aggregatedApStatus',
-    'rogueDetection',
-    'status'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      aggregatedApStatus: {
-        '1_01_NeverContactedCloud': 10
-      },
-      status: '1_InSetupPhase',
-      rogueDetection: {
-        policyId: '14d6ee52df3a48988f91558bac54c1ae',
-        policyName: 'Default profile',
-        enabled: false
-      }
-    },
-    {
-      id: '4ca20c8311024ac5956d366f15d96e03',
-      name: 'test-venue2',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      aggregatedApStatus: {
-        '2_00_Operational': 5
-      },
-      status: '1_InSetupPhase',
-      rogueDetection: {
-        policyId: 'policyId1',
-        policyName: 'Default policyId1 profile',
-        enabled: true
-      }
-    }
-  ]
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -118,24 +28,10 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
 
 const setSyslogAPConfigure = jest.fn()
 
-const initState = {
-  policyName: '',
-  server: '',
-  port: 514,
-  protocol: ProtocolEnum.TCP,
-  secondaryServer: '',
-  secondaryPort: 514,
-  secondaryProtocol: ProtocolEnum.TCP,
-  facility: FacilityEnum.KEEP_ORIGINAL,
-  priority: PriorityEnum.ALL,
-  flowLevel: FlowLevelEnum.ALL,
-  venues: [] as SyslogVenue[]
-} as SyslogContextType
-
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: jest.fn(),
-  useTenantLink: jest.fn()
+  useNavigate: () => jest.fn(),
+  useTenantLink: () => jest.fn()
 }))
 
 jest.mock('antd', () => {
@@ -159,35 +55,32 @@ jest.mock('antd', () => {
 
 describe('SyslogForm', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(policyApi.util.resetApiState())
-    })
+    store.dispatch(policyApi.util.resetApiState())
 
-    mockServer.use(rest.get(
-      SyslogUrls.getSyslogPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
+    mockServer.use(
+      rest.post(
+        SyslogUrls.syslogPolicyList.url,
+        (_, res, ctx) => res(ctx.json(syslogPolicyTableList))
+      ),
+      rest.post(
+        SyslogUrls.getVenueSyslogList.url,
+        (_, res, ctx) => res(ctx.json(syslogVenueTable))
       )
-    ), rest.put(
-      SyslogUrls.updateSyslogPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(200)
-      )
-    ))
+    )
   })
 
   it('should render SyslogForm successfully', async () => {
-    mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogList.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
+    const addFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        SyslogUrls.addSyslogPolicy.url,
+        (_, res, ctx) => {
+          addFn()
+          return res(ctx.json(policyResponse))
+        }
       )
-    ), rest.post(
-      SyslogUrls.addSyslogPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(policyResponse)
-      )
-    ))
+    )
 
     render(
       <SyslogContext.Provider value={{
@@ -232,6 +125,7 @@ describe('SyslogForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Add'))
+    await waitFor(() => expect(addFn).toHaveBeenCalledTimes(1))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -259,17 +153,21 @@ describe('SyslogForm', () => {
   })
 
   it('should render SyslogForm with editMode successfully', async () => {
-    mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogList.url,
-      (_, res, ctx) => res(
-        ctx.json(venueTable)
+    const updateFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        SyslogUrls.getSyslogPolicy.url,
+        (_, res, ctx) => res(ctx.json(targetSyslog))
+      ),
+      rest.put(
+        SyslogUrls.updateSyslogPolicy.url,
+        (_, res, ctx) => {
+          updateFn()
+          return res(ctx.json(200))
+        }
       )
-    ), rest.get(
-      RogueApUrls.getRoguePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
-      )
-    ))
+    )
 
     render(
       <SyslogContext.Provider value={{
@@ -286,9 +184,6 @@ describe('SyslogForm', () => {
       }
     )
 
-    expect(screen.getAllByText('Settings')).toBeTruthy()
-    expect(screen.getAllByText('Scope')).toBeTruthy()
-
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     await userEvent.type(await screen.findByTestId('name'), 'modify name')
@@ -298,5 +193,7 @@ describe('SyslogForm', () => {
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
 
     await userEvent.click(applyBtn)
+
+    await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
   })
 })
