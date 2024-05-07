@@ -51,8 +51,13 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeRebootEdge({ params: { serialNumber: data.serialNumber } })
-              .then(() => callback?.())
+            invokeRebootEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
@@ -97,8 +102,13 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeFactoryResetEdge({ params: { serialNumber: data.serialNumber } })
-              .then(() => callback?.())
+            invokeFactoryResetEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
@@ -130,8 +140,13 @@ export const useEdgeActions = () => {
       title: $t({ defaultMessage: 'Send OTP' }),
       content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
       onOk: () => {
-        invokeSendOtp({ params: { serialNumber: data.serialNumber } })
-          .then(() => callback?.())
+        invokeSendOtp({
+          params: {
+            venueId: data.venueId,
+            edgeClusterId: data.clusterId,
+            serialNumber: data.serialNumber
+          }
+        }).then(() => callback?.())
       }
     })
   }
