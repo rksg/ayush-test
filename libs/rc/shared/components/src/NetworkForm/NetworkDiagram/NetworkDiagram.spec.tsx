@@ -360,6 +360,16 @@ describe('NetworkDiagram', () => {
     })
   })
 
+  describe('NetworkDiagram - Hotspot20', () => {
+    const type = NetworkTypeEnum.HOTSPOT20
+    it('should render Hotspot20 diagram successfully', async () => {
+      const { asFragment } = render(<Provider><NetworkDiagram type={type} /></Provider>)
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('Hotspot20')
+      expect(asFragment()).toMatchSnapshot()
+    })
+  })
+
   describe('NetworkDiagram - Captive portal', () => {
     const type = NetworkTypeEnum.CAPTIVEPORTAL
     it('should render Captive portal default diagram successfully', async () => {
