@@ -462,7 +462,7 @@ export function StackForm () {
       }
 
       await updateSwitch({
-        params: { tenantId, switchId, venueId },
+        params: { tenantId, switchId, venueId: venueId || editVenueId },
         payload,
         enableRbac: isSwitchRbacEnabled
       }).unwrap()

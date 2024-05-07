@@ -470,7 +470,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.portsPowerCycle, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

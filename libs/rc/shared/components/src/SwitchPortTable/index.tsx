@@ -69,7 +69,7 @@ export function SwitchPortTable (props: {
           option: { skip: switchDetail?.venueId }
         }).unwrap()
         // eslint-disable-next-line max-len
-        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
+        const vlanList = vlanUnion?.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
           .concat(vlanUnion.profileVlan || [])
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
