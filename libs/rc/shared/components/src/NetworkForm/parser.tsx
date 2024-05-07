@@ -106,6 +106,12 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   return saveData
 }
 
+const parseHotspot20SettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = { ...data }
+
+  return saveData
+}
+
 const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = { ...data }
 
@@ -246,6 +252,7 @@ export function transferDetailToSave (data: NetworkSaveData) {
 export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.HOTSPOT20]: parseHotspot20SettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
     [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),

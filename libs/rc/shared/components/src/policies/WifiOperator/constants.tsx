@@ -1,3 +1,5 @@
+export const WIFI_OPERATOR_MAX_COUNT = 16
+
 export enum FriendlyNameEnum{
   CHI = 'CHI',
   CZE = 'CZE',

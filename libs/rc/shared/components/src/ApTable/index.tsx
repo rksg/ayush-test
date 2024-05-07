@@ -54,8 +54,8 @@ import {
   ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                 from '@acx-ui/types'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { RequestPayload, SwitchScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
@@ -353,7 +353,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         </TenantLink>
       )
     }]),
-    ...(params.apGroupId ? [] : [{
+    ...(params.apGroupId || !hasPermission({ scopes: [SwitchScopes.READ] }) ? [] : [{
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
