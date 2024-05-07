@@ -44,7 +44,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
-import { SwitchScopes }                                from '@acx-ui/types'
+import { SwitchScopes, WifiScopes }                    from '@acx-ui/types'
 import { AuthRoute }                                   from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
@@ -1004,16 +1004,36 @@ function UserRoutes () {
           </AuthRoute>
         } />
       {(isCloudpathBetaEnabled)
-        ? <><Route
-          path='users/identity-management'
-          element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}/><Route
-          path='users/identity-management/:activeTab'
-          element={<PersonaPortal/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId'
-          element={<PersonaGroupDetails/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-          element={<PersonaDetails/>}/></>
-        : <></>}
+        ? <>
+          <Route
+            path='users/identity-management'
+            element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}
+          />
+          <Route
+            path='users/identity-management/:activeTab'
+            element={
+              <AuthRoute scopes={[WifiScopes.READ]}>
+                <PersonaPortal/>
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId'
+            element={
+              <AuthRoute scopes={[WifiScopes.READ]}>
+                <PersonaGroupDetails/>
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+            element={
+              <AuthRoute scopes={[WifiScopes.READ]}>
+                <PersonaDetails/>
+              </AuthRoute>
+            }
+          />
+        </> : <></>}
     </Route>
   )
 }
