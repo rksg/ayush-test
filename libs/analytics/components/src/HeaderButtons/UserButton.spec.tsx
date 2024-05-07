@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { getUserProfile }          from '@acx-ui/analytics/utils'
-import type { Invitation, Tenant } from '@acx-ui/analytics/utils'
-import { Provider }                from '@acx-ui/store'
-import { render, screen }          from '@acx-ui/test-utils'
+import { getUserProfile, permissions } from '@acx-ui/analytics/utils'
+import type { Invitation, Tenant }     from '@acx-ui/analytics/utils'
+import { Provider }                    from '@acx-ui/store'
+import { render, screen }              from '@acx-ui/test-utils'
 
 import { UserButton } from './UserButton'
 
@@ -22,16 +22,10 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 const mockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': false,
-  'manage-call-manager': false,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': false
+  ...Object.keys(permissions)
+    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}),
+  READ_AI_DRIVEN_RRM: false,
+  READ_AI_OPERATIONS: false
 }
 const mockUserProfile = {
   accountId: 'accountId',
@@ -115,7 +109,7 @@ describe('UserButton', () => {
   })
 
   it('should not render My Profile if view-analytics is false', async () => {
-    const permissions = { ...mockPermissions, 'view-analytics': false }
+    const permissions = { ...mockPermissions, READ_INCIDENTS: false }
     userProfile.mockReturnValue({
       ...mockUserProfile,
       accountId: 'accountId1',

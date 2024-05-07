@@ -43,7 +43,10 @@ jest.mock('../Recommendations', () => ({
 describe('NetworkAssurance', () => {
   beforeEach(() => {
     mockGetUserProfile.mockReturnValue({
-      selectedTenant: { permissions: { 'manage-config-recommendation': true } }
+      selectedTenant: { permissions: {
+        READ_AI_DRIVEN_RRM: true,
+        READ_AI_OPERATIONS: true
+      } }
     })
   })
   afterEach(() => {
@@ -79,7 +82,10 @@ describe('NetworkAssurance', () => {
   it('should not render config recommendation tabs for RA SA when not admin', async () => {
     jest.mocked(mockGet).mockReturnValue(true)
     mockGetUserProfile.mockReturnValue({
-      selectedTenant: { permissions: { 'manage-config-recommendation': false } }
+      selectedTenant: { permissions: {
+        READ_AI_DRIVEN_RRM: false,
+        READ_AI_OPERATIONS: false
+      } }
     })
     render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })

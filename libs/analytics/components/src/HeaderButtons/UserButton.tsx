@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import {
   getUserProfile,
-  PERMISSION_VIEW_ANALYTICS
+  permissions
 } from '@acx-ui/analytics/utils'
 import { LayoutUI, Dropdown }      from '@acx-ui/components'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
@@ -12,7 +12,6 @@ import { userLogout }              from '@acx-ui/utils'
 export const UserButton = () => {
   const { $t } = useIntl()
   const { selectedTenant, firstName, lastName } = getUserProfile()
-  const hasViewAnalyticsPermissions = selectedTenant.permissions[PERMISSION_VIEW_ANALYTICS]
   const location = useLocation()
 
   const menuHeaderDropdown = (
@@ -26,7 +25,7 @@ export const UserButton = () => {
         }
       }}
       items={[
-        ...(hasViewAnalyticsPermissions ? [
+        ...(selectedTenant.permissions[permissions.READ_INCIDENTS] ? [ // TODO language setting
           {
             key: 'my-profile',
             label: <TenantLink

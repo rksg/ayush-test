@@ -1,10 +1,10 @@
-import { PERMISSION_MANAGE_MLISA, Tenant } from '@acx-ui/analytics/utils'
+import { permissions, Tenant } from '@acx-ui/analytics/utils'
 
 import { OnboardedSystem } from '../services'
 
 export const tenants = [
-  { id: 'id1', name: 'account1', permissions: { [PERMISSION_MANAGE_MLISA]: true } },
-  { id: 'id2', name: 'account2', permissions: { [PERMISSION_MANAGE_MLISA]: true } }
+  { id: 'id1', name: 'account1', permissions: { [permissions.READ_ONBOARDED_SYSTEMS]: true } },
+  { id: 'id2', name: 'account2', permissions: { [permissions.READ_ONBOARDED_SYSTEMS]: true } }
 ] as unknown as Tenant[]
 
 const testStateTemplate = {

@@ -17,8 +17,8 @@ import {
   ServiceGuardDetails,
   Profile
 } from '@acx-ui/analytics/components'
-import { updateSelectedTenant, PERMISSION_VIEW_ANALYTICS, getUserProfile } from '@acx-ui/analytics/utils'
-import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH }   from '@acx-ui/react-router-dom'
+import { updateSelectedTenant, permissions, getUserProfile }             from '@acx-ui/analytics/utils'
+import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ClientDetails                         from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum }         from './pages/Clients'
@@ -47,13 +47,14 @@ function Init () {
   if (previousURL) {
     return <Navigate replace to={decodeURIComponent(previousURL)} />
   } else {
-    const { selectedTenant: { id, permissions } } = getUserProfile()
-    const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
+    const { selectedTenant } = getUserProfile()
+    const selectedTenants = search.get('selectedTenants') ||
+      window.btoa(JSON.stringify([selectedTenant.id]))
     return <Navigate
       replace
       to={{
         search: `?selectedTenants=${selectedTenants}`,
-        pathname: permissions[PERMISSION_VIEW_ANALYTICS]
+        pathname: selectedTenant.permissions[permissions.READ_DASHBOARD]
           ? `${MLISA_BASE_PATH}/dashboard`
           : `${MLISA_BASE_PATH}/reports`
       }}

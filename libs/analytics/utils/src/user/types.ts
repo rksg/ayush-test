@@ -1,4 +1,4 @@
-import { Roles } from '../constants'
+import { Roles, permissions } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -36,20 +36,7 @@ export type Tenant = {
   settings: Settings
 }
 
-export type Permissions = {
-  'view-analytics': boolean
-  'view-report-controller-inventory': boolean
-  'view-data-explorer': boolean
-  'manage-service-guard': boolean
-  'manage-call-manager': boolean
-  'manage-mlisa': boolean
-  'manage-occupancy': boolean
-  'manage-label': boolean
-  'manage-tenant-settings': boolean
-  'manage-config-recommendation': boolean
-  'franchisor': boolean
-}
-
+export type Permissions = Record<keyof typeof permissions, boolean>
 
 export type Settings = {
   'sla-p1-incidents-count': string

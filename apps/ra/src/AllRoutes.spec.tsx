@@ -42,7 +42,7 @@ describe('AllRoutes', () => {
     invitations: [],
     selectedTenant: {
       id: 'aid',
-      permissions: { 'view-analytics': true }
+      permissions: { READ_DASHBOARD: true }
     }
   }
   beforeEach(() => {
@@ -66,7 +66,7 @@ describe('AllRoutes', () => {
       invitations: [],
       selectedTenant: {
         id: 'aid',
-        permissions: { 'view-analytics': false }
+        permissions: { READ_DASHBOARD: false }
       }
     })
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })

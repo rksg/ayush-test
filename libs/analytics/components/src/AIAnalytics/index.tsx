@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import {
   getUserProfile,
-  PERMISSION_MANAGE_CONFIG_RECOMMENDATION
+  permissions
 } from '@acx-ui/analytics/utils'
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
@@ -55,8 +55,13 @@ const useTabs = () : Tab[] => {
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
-      userProfile.selectedTenant.permissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION] &&
-      recommendationTabs.push(crrmTab as Tab, aiOpsTab as Tab)
+      const { selectedTenant } = userProfile
+      if (selectedTenant.permissions?.[permissions.READ_AI_DRIVEN_RRM]) {
+        recommendationTabs.push(crrmTab as Tab)
+      }
+      if (selectedTenant.permissions?.[permissions.READ_AI_OPERATIONS]) {
+        recommendationTabs.push(aiOpsTab as Tab)
+      }
     } else { // R1
       crrmEnabled && recommendationTabs.push(crrmTab as Tab)
       recommendationsEnabled && recommendationTabs.push(aiOpsTab as Tab)

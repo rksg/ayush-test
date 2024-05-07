@@ -1,10 +1,10 @@
 import { find } from 'lodash'
 
-import { getUserProfile }  from '@acx-ui/analytics/utils'
-import { LayoutProps }     from '@acx-ui/components'
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { useSearchParams } from '@acx-ui/react-router-dom'
-import { renderHook }      from '@acx-ui/test-utils'
+import { getUserProfile, permissions } from '@acx-ui/analytics/utils'
+import { LayoutProps }                 from '@acx-ui/components'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { useSearchParams }             from '@acx-ui/react-router-dom'
+import { renderHook }                  from '@acx-ui/test-utils'
 
 
 import { useMenuConfig } from './menuConfig'
@@ -31,19 +31,8 @@ jest.mock('@acx-ui/analytics/utils', () => (
     ...jest.requireActual('@acx-ui/analytics/utils'),
     getUserProfile: jest.fn()
   }))
-const defaultMockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': true,
-  'manage-call-manager': true,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': true,
-  'franchisor': true
-}
+const defaultMockPermissions = Object.keys(permissions)
+  .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
 const defaultMockUserProfile = {
   accountId: 'accountId',
   selectedTenant: {
@@ -107,7 +96,11 @@ describe('useMenuConfig', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'view-analytics': false
+      READ_DASHBOARD: false,
+      READ_ACCESS_POINTS_LIST: false,
+      READ_SWITCH_LIST: false,
+      READ_INCIDENTS: false,
+      READ_OCCUPANCY: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
@@ -124,11 +117,11 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return Data Explorerer', () => {
+  it('should not return Data Studio', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'view-data-explorer': false
+      READ_DATA_STUDIO: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
@@ -155,9 +148,10 @@ describe('useMenuConfig', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'manage-service-guard': false,
-      'manage-call-manager': false,
-      'manage-config-recommendation': false
+      READ_SERVICE_VALIDATION: false,
+      READ_VIDEO_CALL_QOE: false,
+      READ_AI_DRIVEN_RRM: false,
+      READ_AI_OPERATIONS: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
@@ -183,9 +177,10 @@ describe('useMenuConfig', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'manage-mlisa': false,
-      'manage-label': false,
-      'franchisor': false
+      READ_ONBOARDED_SYSTEMS: false,
+      READ_LABELS: false,
+      READ_RESOURCE_GROUPS: false,
+      READ_WEBHOOKS: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
@@ -207,11 +202,14 @@ describe('useMenuConfig', () => {
     ]
     adminRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
   })
-  it('should not return Administration-related menu items for manage-mlisa', () => {
+  it('should not return Administration-related menu items', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'manage-mlisa': false
+      READ_ONBOARDED_SYSTEMS: false,
+      READ_LABELS: false,
+      READ_RESOURCE_GROUPS: false,
+      READ_WEBHOOKS: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
@@ -228,11 +226,11 @@ describe('useMenuConfig', () => {
     const configs = flattenConfig(result.current)
     manageMlisaRoutes.forEach(route => expect(find(configs, route)).toBeUndefined())
   })
-  it('should not return Administration-related menu items for manage-label', () => {
+  it('should not return label related menu items', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'manage-label': false
+      READ_LABELS: false
     }
     const mockUserProfile = {
       accountId: 'accountId',

@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
-import { defaultNetworkPath, getUserProfile } from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { BrowserRouter }                      from '@acx-ui/react-router-dom'
-import { act, render, renderHook, screen }    from '@acx-ui/test-utils'
-import { DateRange }                          from '@acx-ui/utils'
+import { defaultNetworkPath, getUserProfile, permissions } from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { BrowserRouter }                                   from '@acx-ui/react-router-dom'
+import { act, render, renderHook, screen }                 from '@acx-ui/test-utils'
+import { DateRange }                                       from '@acx-ui/utils'
 
 import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters, getFiltersForRecommendationWidgets } from '.'
 
@@ -28,19 +28,8 @@ jest.mock('@acx-ui/analytics/utils', () => (
     ...jest.requireActual('@acx-ui/analytics/utils'),
     getUserProfile: jest.fn()
   }))
-const defaultMockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': true,
-  'manage-call-manager': true,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': true,
-  'franchisor': true
-}
+const defaultMockPermissions = Object.keys(permissions)
+  .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
 const defaultMockUserProfile = {
   accountId: 'accountId',
   selectedTenant: {
@@ -83,7 +72,8 @@ describe('Dashboard', () => {
     const mockUseUserProfileContext = getUserProfile as jest.Mock
     const mockPermissions = {
       ...defaultMockPermissions,
-      'manage-config-recommendation': false
+      READ_AI_DRIVEN_RRM: false,
+      READ_AI_OPERATIONS: false
     }
     const mockUserProfile = {
       accountId: 'accountId',
