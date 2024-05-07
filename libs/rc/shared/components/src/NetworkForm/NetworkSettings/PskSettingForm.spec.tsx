@@ -23,7 +23,7 @@ import { NetworkForm } from '../NetworkForm'
 
 jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('../utils', () => ({

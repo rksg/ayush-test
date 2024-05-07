@@ -17,7 +17,8 @@ import {
   CommonUrlsInfo,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                  from '@acx-ui/types'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes }            from '@acx-ui/types'
+import { hasPermission }                                                   from '@acx-ui/user'
 import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -97,7 +98,9 @@ const ActivityTable = ({
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const excludeProduct = [
-    ...(!isEdgeEnabled ? ['EDGE'] : [])
+    ...(!hasPermission({ scopes: [WifiScopes.READ] }) ? ['WIFI'] : []),
+    ...(!hasPermission({ scopes: [SwitchScopes.READ] }) ? ['SWITCH'] : []),
+    ...(!isEdgeEnabled || !hasPermission({ scopes: [EdgeScopes.READ] }) ? ['EDGE'] : [])
   ]
 
   const columns: TableProps<Activity>['columns'] = [
