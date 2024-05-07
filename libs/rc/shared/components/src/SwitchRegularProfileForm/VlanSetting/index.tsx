@@ -4,7 +4,6 @@ import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { VlanSettingDrawer }                                            from '@acx-ui/rc/components'
 import {
   Vlan,
   SwitchModel,
@@ -15,6 +14,7 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
+import { VlanSettingDrawer }               from '../../VlanSettingDrawer'
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'

@@ -13,7 +13,6 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
-import { CsvSize, CodeMirrorWidget, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliTemplatesQuery
@@ -27,6 +26,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
+
+import { CodeMirrorWidget }                                from '../../CodeMirrorWidget'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 
 import { CliVariableModal } from './CliVariableModal'
 import * as UI              from './styledComponents'
