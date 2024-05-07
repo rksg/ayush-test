@@ -176,7 +176,8 @@ export enum Features {
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
-  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
