@@ -23,8 +23,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration } from '../../onDemandCli/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }        from '../../onDemandCli/CliTemplateForm/CliStepNotice'
+import { CliStepConfiguration } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }        from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -37,7 +37,7 @@ export const cliFormMessages = {
 }
 /* eslint-enable max-len */
 
-export default function CliProfileForm () {
+export function CliProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()

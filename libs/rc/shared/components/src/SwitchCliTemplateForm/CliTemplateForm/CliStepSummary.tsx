@@ -4,8 +4,9 @@ import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { Descriptions, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { CodeMirrorWidget }                                     from '@acx-ui/rc/components'
 import { CliConfiguration }                                     from '@acx-ui/rc/utils'
+
+import { CodeMirrorWidget } from '../../CodeMirrorWidget'
 
 import * as UI from './styledComponents'
 
