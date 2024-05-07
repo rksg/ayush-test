@@ -1,13 +1,32 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, TableProps, Loader, Table, Button }                                                                                                              from '@acx-ui/components'
-import { SimpleListTooltip, friendlyNameEnumOptions, FriendlyNameEnum }                                                                                               from '@acx-ui/rc/components'
-import { doProfileDelete, useDeleteWifiOperatorMutation, useGetWifiOperatorListQuery, useWifiNetworkListQuery }                                                       from '@acx-ui/rc/services'
-import { KeyValue, PolicyOperation, PolicyType, WifiNetwork, WifiOperatorViewModel, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink }                                                                                                    from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                                  from '@acx-ui/user'
+import { PageHeader, TableProps, Loader, Table, Button } from '@acx-ui/components'
+import {
+  SimpleListTooltip,
+  friendlyNameEnumOptions,
+  FriendlyNameEnum,
+  WIFI_OPERATOR_MAX_COUNT
+} from '@acx-ui/rc/components'
+import {
+  doProfileDelete,
+  useDeleteWifiOperatorMutation,
+  useGetWifiOperatorListQuery,
+  useWifiNetworkListQuery
+} from '@acx-ui/rc/services'
+import {
+  KeyValue,
+  PolicyOperation,
+  PolicyType,
+  WifiNetwork,
+  WifiOperatorViewModel,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT } from '../constants'
 
 
 const defaultPayload = {
@@ -85,7 +104,7 @@ export default function WifiOperatorTable () {
             oper: PolicyOperation.CREATE })}>
             <Button
               type='primary'
-              disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
+              disabled={tableQuery.data?.totalCount! >= WIFI_OPERATOR_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Wi-Fi Operator' })}
             </Button>
           </TenantLink>
@@ -100,7 +119,7 @@ export default function WifiOperatorTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -137,16 +156,17 @@ function useColumns () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: (_, row) => (
+      render: (_, row, __, highlightFn) => (
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.WIFI_OPERATOR,
             oper: PolicyOperation.DETAIL,
             policyId: row.id!
           })}>
-          {row.name}
+          {highlightFn(row.name || '--')}
         </TenantLink>
       )
     },

@@ -79,7 +79,7 @@ describe('OpenNetwork form', () => {
       </MLOContext.Provider>
     </Provider>, { route: { params } })
 
-    await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))
+    await userEvent.click(await screen.findByTestId('mac-auth-switch'))
     await screen.findByText(/mac address format/i)
 
     await userEvent.click(await screen.findByLabelText(/MAC Registration list/i))
