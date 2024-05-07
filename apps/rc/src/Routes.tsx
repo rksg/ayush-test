@@ -26,6 +26,9 @@ import {
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
   WifiOperatorForm,
+  ConfigurationProfileForm,
+  CliTemplateForm,
+  CliProfileForm,
   IdentityProviderForm
 } from '@acx-ui/rc/components'
 import {
@@ -67,9 +70,6 @@ import { ApForm }                                   from './pages/Devices/Wifi/A
 import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
 import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
-import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
-import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
-import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
