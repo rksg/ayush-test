@@ -24,7 +24,7 @@ jest.mock('../../policies/MacRegistrationListForm', () => ({
 
 jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('../utils', () => ({
