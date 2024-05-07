@@ -78,12 +78,12 @@ describe('WifiOperatorForm', () => {
 
     const params = { tenantId: 'tenant-id' }
 
-    render(<Provider><WifiOperatorForm edit={false}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={false}/></Provider>, {
       route: { params }
     })
 
     //step 1 setting form
-    await userEvent.type(await screen.findByLabelText('Policy Name'), 'test1')
+    await userEvent.type(await screen.findByLabelText('Profile Name'), 'test1')
     await userEvent.type(await screen.findByLabelText('Domain'), 'rks.com')
     const combobox = await screen.findByRole('combobox', { name: 'Language' })
     await userEvent.click(combobox)
@@ -97,7 +97,7 @@ describe('WifiOperatorForm', () => {
 
   it('should render breadcrumb correctly', async () => {
     const params = { tenantId: 'tenant-id' }
-    render(<Provider><WifiOperatorForm edit={false}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={false}/></Provider>, {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
@@ -127,11 +127,11 @@ describe('WifiOperatorForm', () => {
 
     const params = { tenantId: 'tenant-id', policyId: '70ea860d29d34c218de1b42268b563dc' }
 
-    render(<Provider><WifiOperatorForm edit={true}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={true}/></Provider>, {
       route: { params }
     })
 
-    await userEvent.type(screen.getByLabelText('Policy Name'), 'test2')
+    await userEvent.type(screen.getByLabelText('Profile Name'), 'test2')
 
     await userEvent.type(await screen.findByLabelText('Domain'), '\nrks.rks.com')
     const dropdown = await screen.findByTestId('select_language_0')
@@ -159,13 +159,15 @@ describe('WifiOperatorForm', () => {
     )
     const params = { tenantId: 'tenant-id', policyId: '70ea860d29d34c218de1b42268b563dc' }
 
-    render(<Provider><WifiOperatorForm edit={true}/></Provider>, {
+    render(<Provider><WifiOperatorForm editMode={true}/></Provider>, {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Cancel'))
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      hash: '', pathname: '/tenant-id/t/policies/wifiOperator/list', search: '' }
-    )
+      hash: '',
+      pathname: '/tenant-id/t/policies/wifiOperator/list',
+      search: ''
+    }, { replace: true })
   })
 })
