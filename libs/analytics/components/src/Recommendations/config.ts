@@ -612,7 +612,7 @@ export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) =
   return acc
 }, {} as Record<StateType, MessageDescriptor>)
 
-export const filterKpisByStatus = (kpis: RecommendationKPIConfig[], status: StateType) => {
+export const filterKpisByStatus = (kpis: RecommendationKPIConfig[], status: StateType, trail: StatusTrail ) => {
   return kpis.filter(kpi => typeof kpi.onlyForStatuses === 'undefined'
-    || kpi.onlyForStatuses.includes(status))
+    || kpi.onlyForStatuses.includes(status) || trail.some((t) => t.status === 'applied' ))
 }

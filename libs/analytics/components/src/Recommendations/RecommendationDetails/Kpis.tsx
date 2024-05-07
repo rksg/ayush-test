@@ -24,8 +24,8 @@ import {
 } from './styledComponents'
 
 const getKpis = (details: EnhancedRecommendation) => {
-  const { code, status } = details
-  const configs = filterKpisByStatus(codes[code].kpis, status)
+  const { code, status, statusTrail } = details
+  const configs = filterKpisByStatus(codes[code].kpis, status, statusTrail)
   const kpis = configs.map((config) => {
     const { current, previous } = get(
       details,

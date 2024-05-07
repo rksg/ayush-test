@@ -560,12 +560,12 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
     }),
-    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code' | 'status'>>({
-      query: ({ id, code, status }) => ({
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
+      query: ({ id, code }) => ({
         document: gql`
           query CrrmKpi($id: String) {
             recommendation(id: $id) {
-              id status dataEndTime ${kpiHelper(code!, status)}
+              id status dataEndTime ${kpiHelper(code!)}
             }
           }
         `,
