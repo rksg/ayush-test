@@ -45,7 +45,7 @@ export const tooltip = {
 }
 /* eslint-enable max-len */
 
-export default function CliTemplateForm () {
+export function CliTemplateForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()

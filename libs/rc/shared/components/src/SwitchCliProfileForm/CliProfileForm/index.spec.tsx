@@ -27,7 +27,7 @@ import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
 import { CliStepVenues }  from './CliStepVenues'
 
-import CliProfileForm from './'
+import { CliProfileForm } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

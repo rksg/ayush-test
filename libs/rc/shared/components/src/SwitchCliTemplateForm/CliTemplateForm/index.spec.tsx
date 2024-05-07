@@ -29,7 +29,7 @@ import { CliStepNotice }        from './CliStepNotice'
 import { CliStepSummary }       from './CliStepSummary'
 import { CliStepSwitches }      from './CliStepSwitches'
 
-import CliTemplateForm from './'
+import { CliTemplateForm } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
