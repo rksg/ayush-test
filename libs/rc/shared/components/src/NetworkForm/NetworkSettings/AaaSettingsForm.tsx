@@ -20,9 +20,9 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useGetCertificateTemplatesQuery }              from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { InformationSolid }                from '@acx-ui/icons'
+import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
@@ -38,6 +38,8 @@ import { NetworkDiagram }                                      from '../NetworkD
 import { MLOContext }                                          from '../NetworkForm'
 import NetworkFormContext                                      from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                                                 from '../styledComponents'
+
 
 const { Option } = Select
 
@@ -247,9 +249,12 @@ function SettingsForm () {
     const enableMacAuthentication = useWatch<boolean>(
       ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
     const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+    const labelWidth = '250px'
+
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
+
     const onMacAuthChange = (checked: boolean) => {
       setData && setData({
         ...data,
@@ -265,14 +270,15 @@ function SettingsForm () {
       })
     }
 
-    const proxyServiceTooltip = <Tooltip
+    const proxyServiceTooltip = <Tooltip.Question
       placement='bottom'
-      children={<QuestionMarkCircleOutlined />}
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
       })}
+      iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
     />
+
     const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
       <Option key={key}>
         { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
@@ -285,79 +291,79 @@ function SettingsForm () {
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
             type='authRadius'/>
-          <Form.Item>
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              { $t({ defaultMessage: 'Proxy Service' }) }
+              {proxyServiceTooltip}
+            </Space>
             <Form.Item
-              noStyle
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
               children={<Switch onChange={(value) => onProxyChange(value,'enableAuthProxy')}/>}
             />
-            <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-            {proxyServiceTooltip}
-          </Form.Item>
+          </UI.FieldLabel>
         </div>
         <div>
-          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-          <Form.Item
-            name='enableAccountingService'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
-          />
-          {enableAccountingService && (
-            <>
-              <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-                type='accountingRadius'/>
-              <Form.Item>
-                <Form.Item
-                  noStyle
-                  name='enableAccountingProxy'
-                  valuePropName='checked'
-                  initialValue={false}
-                  children={<Switch
-                    onChange={(value) => onProxyChange(value,'enableAccountingProxy')}/>}
-                />
-                <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-                {proxyServiceTooltip}
-              </Form.Item>
-            </>
-          )}
-        </div>
-        {support8021xMacAuth &&
-        <div>
-          <Form.Item>
+          <UI.FieldLabel width={labelWidth}>
+            <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
             <Form.Item
-              noStyle
+              name='enableAccountingService'
+              valuePropName='checked'
+              initialValue={false}
+              style={{ marginTop: '-5px', marginBottom: '0' }}
+              children={<Switch
+                onChange={(value)=>onProxyChange(value,'enableAccountingService')}
+              />}
+            />
+          </UI.FieldLabel>
+          {enableAccountingService && <>
+            <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+              type='accountingRadius'/>
+            <UI.FieldLabel width={labelWidth}>
+              <Space align='start'>
+                { $t({ defaultMessage: 'Proxy Service' }) }
+                {proxyServiceTooltip}
+              </Space>
+              <Form.Item
+                name='enableAccountingProxy'
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch
+                  onChange={(value) => onProxyChange(value,'enableAccountingProxy')}/>}
+              />
+            </UI.FieldLabel>
+          </>}
+        </div>
+        {support8021xMacAuth && <>
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              { $t({ defaultMessage: 'MAC Authentication' }) }
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+                placement='bottom'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+              />
+            </Space>
+            <Form.Item
               name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
               initialValue={false}
-              valuePropName='checked'>
-              <Switch
+              valuePropName='checked'
+              children={<Switch
                 disabled={editMode}
                 onChange={onMacAuthChange}
-                data-testid='macAuth8021x'
-              />
-            </Form.Item>
-            <span>{ $t({ defaultMessage: 'MAC Authentication' }) }</span>
-            <Tooltip.Question
-              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
-              placement='bottom'
-              iconStyle={{ height: '16px', width: '16px' }}
+                data-testid='macAuth8021x'/>}
             />
-          </Form.Item>
+          </UI.FieldLabel>
           {enableMacAuthentication &&
             <Form.Item
               label={$t({ defaultMessage: 'MAC Address Format' })}
               name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
               initialValue={MacAuthMacFormatEnum.UpperDash}
-            >
-              <Select>
-                {macAuthOptions}
-              </Select>
-            </Form.Item>
+              children={<Select children={macAuthOptions} />}
+            />
           }
-        </div>
-        }
+        </>}
       </Space>
     )
   }
