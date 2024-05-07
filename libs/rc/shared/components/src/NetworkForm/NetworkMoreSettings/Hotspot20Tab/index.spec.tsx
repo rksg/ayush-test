@@ -168,6 +168,402 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
             protocolNumber: 22,
             port: 0,
             status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'TRUNK-1',
+            protocolNumber: 23,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'TRUNK-2',
+            protocolNumber: 24,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'LEAF-1',
+            protocolNumber: 25,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'LEAF-2',
+            protocolNumber: 26,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'RDP',
+            protocolNumber: 27,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IRTP',
+            protocolNumber: 28,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ISO-TP4',
+            protocolNumber: 29,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'NETBLT',
+            protocolNumber: 30,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'MFE-NSP',
+            protocolNumber: 31,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'MERIT-INP',
+            protocolNumber: 32,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'DCCP',
+            protocolNumber: 33,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: '3PC',
+            protocolNumber: 34,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IDPR',
+            protocolNumber: 35,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'XTP',
+            protocolNumber: 36,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'DDP',
+            protocolNumber: 37,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IDPR-CMTP',
+            protocolNumber: 38,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'TP',
+            protocolNumber: 39,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IL',
+            protocolNumber: 40,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6',
+            protocolNumber: 41,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SDRP',
+            protocolNumber: 42,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6-Route',
+            protocolNumber: 43,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6-Frag',
+            protocolNumber: 44,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IDRP',
+            protocolNumber: 45,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'RSVP',
+            protocolNumber: 46,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'GRE',
+            protocolNumber: 47,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'DSR',
+            protocolNumber: 48,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'BNA',
+            protocolNumber: 49,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ESP',
+            protocolNumber: 50,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'AH',
+            protocolNumber: 51,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'I-NLSP',
+            protocolNumber: 52,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SWIPE',
+            protocolNumber: 53,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'NARP',
+            protocolNumber: 54,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Min-IPv4',
+            protocolNumber: 55,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'TLSP',
+            protocolNumber: 56,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SKIP',
+            protocolNumber: 57,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6-ICMP',
+            protocolNumber: 58,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6-NoNxt',
+            protocolNumber: 59,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPv6-Opts',
+            protocolNumber: 60,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'CFTP',
+            protocolNumber: 62,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SAT-EXPAK',
+            protocolNumber: 64,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'KRYPTOLAN',
+            protocolNumber: 65,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'RVD',
+            protocolNumber: 66,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPPC',
+            protocolNumber: 67,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SAT-MON',
+            protocolNumber: 69,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'VISA',
+            protocolNumber: 70,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPCV',
+            protocolNumber: 71,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'CPNX',
+            protocolNumber: 72,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'CPHB',
+            protocolNumber: 73,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'WSN',
+            protocolNumber: 74,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'PVP',
+            protocolNumber: 75,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'BR-SAT-MON',
+            protocolNumber: 76,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SUN-ND',
+            protocolNumber: 77,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'WB-MON',
+            protocolNumber: 78,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'WB-EXPAK',
+            protocolNumber: 79,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'ISO-IP',
+            protocolNumber: 80,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'VMTP',
+            protocolNumber: 81,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'SECURE-VMTP',
+            protocolNumber: 82,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'VINES',
+            protocolNumber: 83,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'IPTM',
+            protocolNumber: 84,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'NSFNET-IGP',
+            protocolNumber: 85,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'DGP',
+            protocolNumber: 86,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'TCF',
+            protocolNumber: 87,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'EIGRP',
+            protocolNumber: 88,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'OSPFIGP',
+            protocolNumber: 89,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'Sprite-RPC',
+            protocolNumber: 90,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
+          },
+          {
+            protocol: 'LARP',
+            protocolNumber: 91,
+            port: 0,
+            status: Hotspot20ConnectionCapabilityStatusEnum.CLOSED
           }
         ]
       }
@@ -185,7 +581,7 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
       </Provider>,
       { route: { params } })
 
-    expect(await screen.findByText('Connection Capabilities (18)')).toBeInTheDocument()
+    expect(await screen.findByText('Connection Capabilities (84)')).toBeInTheDocument()
     expect(await screen.findByText('2 (IGMP)')).toBeInTheDocument()
     expect(await screen.findByText('3 (GGP)')).toBeInTheDocument()
     expect(await screen.findByText('5 (ST)')).toBeInTheDocument()
@@ -204,6 +600,72 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
     expect(await screen.findByText('20 (HMP)')).toBeInTheDocument()
     expect(await screen.findByText('21 (PRM)')).toBeInTheDocument()
     expect(await screen.findByText('22 (XNS-IDP)')).toBeInTheDocument()
+    expect(await screen.findByText('23 (TRUNK-1)')).toBeInTheDocument()
+    expect(await screen.findByText('24 (TRUNK-2)')).toBeInTheDocument()
+    expect(await screen.findByText('25 (LEAF-1)')).toBeInTheDocument()
+    expect(await screen.findByText('26 (LEAF-2)')).toBeInTheDocument()
+    expect(await screen.findByText('27 (RDP)')).toBeInTheDocument()
+    expect(await screen.findByText('28 (IRTP)')).toBeInTheDocument()
+    expect(await screen.findByText('29 (ISO-TP4)')).toBeInTheDocument()
+    expect(await screen.findByText('30 (NETBLT)')).toBeInTheDocument()
+    expect(await screen.findByText('31 (MFE-NSP)')).toBeInTheDocument()
+    expect(await screen.findByText('32 (MERIT-INP)')).toBeInTheDocument()
+    expect(await screen.findByText('33 (DCCP)')).toBeInTheDocument()
+    expect(await screen.findByText('34 (3PC)')).toBeInTheDocument()
+    expect(await screen.findByText('35 (IDPR)')).toBeInTheDocument()
+    expect(await screen.findByText('36 (XTP)')).toBeInTheDocument()
+    expect(await screen.findByText('37 (DDP)')).toBeInTheDocument()
+    expect(await screen.findByText('38 (IDPR-CMTP)')).toBeInTheDocument()
+    expect(await screen.findByText('39 (TP)')).toBeInTheDocument()
+    expect(await screen.findByText('40 (IL)')).toBeInTheDocument()
+    expect(await screen.findByText('41 (IPv6)')).toBeInTheDocument()
+    expect(await screen.findByText('42 (SDRP)')).toBeInTheDocument()
+    expect(await screen.findByText('43 (IPv6-Route)')).toBeInTheDocument()
+    expect(await screen.findByText('44 (IPv6-Frag)')).toBeInTheDocument()
+    expect(await screen.findByText('45 (IDRP)')).toBeInTheDocument()
+    expect(await screen.findByText('46 (RSVP)')).toBeInTheDocument()
+    expect(await screen.findByText('47 (GRE)')).toBeInTheDocument()
+    expect(await screen.findByText('48 (DSR)')).toBeInTheDocument()
+    expect(await screen.findByText('49 (BNA)')).toBeInTheDocument()
+    expect(await screen.findByText('50 (ESP)')).toBeInTheDocument()
+    expect(await screen.findByText('51 (AH)')).toBeInTheDocument()
+    expect(await screen.findByText('52 (I-NLSP)')).toBeInTheDocument()
+    expect(await screen.findByText('53 (SWIPE)')).toBeInTheDocument()
+    expect(await screen.findByText('54 (NARP)')).toBeInTheDocument()
+    expect(await screen.findByText('55 (Min-IPv4)')).toBeInTheDocument()
+    expect(await screen.findByText('56 (TLSP)')).toBeInTheDocument()
+    expect(await screen.findByText('57 (SKIP)')).toBeInTheDocument()
+    expect(await screen.findByText('58 (IPv6-ICMP)')).toBeInTheDocument()
+    expect(await screen.findByText('59 (IPv6-NoNxt)')).toBeInTheDocument()
+    expect(await screen.findByText('60 (IPv6-Opts)')).toBeInTheDocument()
+    expect(await screen.findByText('62 (CFTP)')).toBeInTheDocument()
+    expect(await screen.findByText('64 (SAT-EXPAK)')).toBeInTheDocument()
+    expect(await screen.findByText('65 (KRYPTOLAN)')).toBeInTheDocument()
+    expect(await screen.findByText('66 (RVD)')).toBeInTheDocument()
+    expect(await screen.findByText('67 (IPPC)')).toBeInTheDocument()
+    expect(await screen.findByText('69 (SAT-MON)')).toBeInTheDocument()
+    expect(await screen.findByText('70 (VISA)')).toBeInTheDocument()
+    expect(await screen.findByText('71 (IPCV)')).toBeInTheDocument()
+    expect(await screen.findByText('72 (CPNX)')).toBeInTheDocument()
+    expect(await screen.findByText('73 (CPHB)')).toBeInTheDocument()
+    expect(await screen.findByText('74 (WSN)')).toBeInTheDocument()
+    expect(await screen.findByText('75 (PVP)')).toBeInTheDocument()
+    expect(await screen.findByText('76 (BR-SAT-MON)')).toBeInTheDocument()
+    expect(await screen.findByText('77 (SUN-ND)')).toBeInTheDocument()
+    expect(await screen.findByText('78 (WB-MON)')).toBeInTheDocument()
+    expect(await screen.findByText('79 (WB-EXPAK)')).toBeInTheDocument()
+    expect(await screen.findByText('80 (ISO-IP)')).toBeInTheDocument()
+    expect(await screen.findByText('81 (VMTP)')).toBeInTheDocument()
+    expect(await screen.findByText('82 (SECURE-VMTP)')).toBeInTheDocument()
+    expect(await screen.findByText('83 (VINES)')).toBeInTheDocument()
+    expect(await screen.findByText('84 (IPTM)')).toBeInTheDocument()
+    expect(await screen.findByText('85 (NSFNET-IGP)')).toBeInTheDocument()
+    expect(await screen.findByText('86 (DGP)')).toBeInTheDocument()
+    expect(await screen.findByText('87 (TCF)')).toBeInTheDocument()
+    expect(await screen.findByText('88 (EIGRP)')).toBeInTheDocument()
+    expect(await screen.findByText('89 (OSPFIGP)')).toBeInTheDocument()
+    expect(await screen.findByText('90 (Sprite-RPC)')).toBeInTheDocument()
+    expect(await screen.findByText('91 (LARP)')).toBeInTheDocument()
     const row18 = await screen.findByText('XNS-IDP')
     await userEvent.click(row18)
 
@@ -224,7 +686,7 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
     deleteBtn = await screen.findByText('Delete')
     expect(deleteBtn).toBeInTheDocument()
     await userEvent.click(deleteBtn)
-    expect(await screen.findByText('Connection Capabilities (17)')).toBeInTheDocument()
+    expect(await screen.findByText('Connection Capabilities (83)')).toBeInTheDocument()
   })
 
   it('should render number if no protocol name at connection capabilities in edit mode'
