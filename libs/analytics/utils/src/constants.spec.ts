@@ -103,10 +103,14 @@ describe('constants', () => {
     })
     it('returns old roles', () => {
       useIsSplitOn.mockReturnValue(false)
-      expect(Object.values(require('.').useRoles()).length).toEqual(3)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(3)
     })
     it('returns new roles', () => {
       useIsSplitOn.mockReturnValue(true)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(7)
+    })
+    it('always returns new roles for places where splitio may not be initialized', () => {
+      useIsSplitOn.mockReturnValue(false)
       expect(Object.values(require('.').useRoles()).length).toEqual(7)
     })
   })

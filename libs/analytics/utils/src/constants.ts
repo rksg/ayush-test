@@ -184,8 +184,8 @@ export enum Roles {
   DATA_STUDIO_USER = 'data-studio-user',
 }
 
-export const useRoles = (): Record<string, MessageDescriptor> => {
-  return useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE) ? {
+export const useRoles = (forceAllRoles = true): Record<string, MessageDescriptor> => {
+  const newRoles = {
     [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
     [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
     [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
@@ -193,7 +193,9 @@ export const useRoles = (): Record<string, MessageDescriptor> => {
     [Roles.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
     [Roles.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),
     [Roles.DATA_STUDIO_USER]: defineMessage({ defaultMessage: 'Data Studio User' })
-  } : {
+  }
+  return useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE) ? newRoles : {
+    ...(forceAllRoles ? newRoles : {}),
     [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Admin' }),
     [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Network Admin' }),
     [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Report Only' })

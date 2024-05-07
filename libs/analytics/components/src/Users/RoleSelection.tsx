@@ -13,7 +13,7 @@ export const RoleSelection = ({
   onChange: (value: string) => void;
 }) => {
   const { $t } = useIntl()
-  const roles = useRoles()
+  const roles = useRoles(false)
   return (
     <Select
       style={{ width: 350 }}
