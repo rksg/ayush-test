@@ -6,7 +6,13 @@ import {
   NetworkSaveData,
   NetworkTypeEnum,
   WlanSecurityEnum,
-  AuthRadiusEnum, RadioEnum, RadioTypeEnum, SchedulerTypeEnum
+  AuthRadiusEnum,
+  RadioEnum,
+  RadioTypeEnum,
+  SchedulerTypeEnum,
+  Hotspot20AccessNetworkTypeEnum,
+  Hotspot20Ipv4AddressTypeEnum,
+  NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
 import Photo   from '../assets/images/portal-demo/PortalPhoto.svg'
@@ -1432,6 +1438,23 @@ export const aaalList = [
     name: 'test1'
   }
 ]
+
+export const mockHotspot20MoreData = {
+  name: 'test',
+  type: 'hotspot20',
+  isCloudpathEnabled: false,
+  venues: [],
+  wlan: {
+    wlanSecurity: 'WPA2Enterprise'
+  },
+  managementFrameProtection: 'Disabled',
+  hotspot20Settings: {
+    allowInternetAccess: true,
+    accessNetworkType: Hotspot20AccessNetworkTypeEnum.PRIVATE,
+    ipv4AddressType: Hotspot20Ipv4AddressTypeEnum.SINGLE_NATED_PRIVATE
+  } as NetworkHotspot20Settings
+} as NetworkSaveData
+
 export const mockGuestMoreData = {
   name: 'test',
   type: 'guest',
@@ -2012,4 +2035,98 @@ export const networkVenue_apgroup = {
     vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
     vlanPoolName: 'pool1'
   }]
+}
+
+export const mockHotspot20OperatorList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      id: '0b9b52ea3209466ab5c17ee73edb41bf',
+      name: 'operator1'
+    },
+    {
+      id: 'c61df04c218e46d2880afd4c25493202',
+      name: 'operator2'
+    },
+    {
+      id: '2048008715d340db9ce9572e72dcfead',
+      name: 'operator3'
+    }
+  ]
+}
+
+export const mockHotpost20IdentityProviderList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 15,
+  page: 1,
+  data: [
+    {
+      id: 'bad92ccf19174f0db5f9edae47ad93da',
+      name: 'provide_4'
+    },
+    {
+      id: 'a45f756715fc4eeba1d86132e1503fd2',
+      name: 'provider_1'
+    },
+    {
+      id: '599deb6758bd4f0fa702f2e1cb565102',
+      name: 'provider_10'
+    },
+    {
+      id: 'f464009202e74c11b94d9148e6a49dd6',
+      name: 'provider_11'
+    },
+    {
+      id: '251a7a77b9ab4539babe40bd3c7834da',
+      name: 'provider_12'
+    },
+    {
+      id: '1e3df6c84d2e4e2bac744085f8b38947',
+      name: 'provider_13'
+    },
+    {
+      id: 'c2a49ac912184787ab5baf1279ba2675',
+      name: 'provider_14'
+    },
+    {
+      id: 'b2dc059157fd40bb83e72f43829f8d92',
+      name: 'provider_15'
+    },
+    {
+      id: '2a2401edb87245a583f89d07c9fe5cf9',
+      name: 'provider_2'
+    },
+    {
+      id: '0ddaf3a31ab9490981ef0e6612694e08',
+      name: 'provider_3'
+    },
+    {
+      id: 'e86749fafa3d4b719b2966a256b0cbb6',
+      name: 'provider_5'
+    },
+    {
+      id: 'de2b37b523af437b9898d715451bc086',
+      name: 'provider_6'
+    },
+    {
+      id: '78cc2f9260c2435e81a4ce102061fed7',
+      name: 'provider_7'
+    },
+    {
+      id: '5c805dbbd6ec490aac12d31f06f4c5b9',
+      name: 'provider_8'
+    },
+    {
+      id: 'b1de5ae07ebf4e7d833a6a6542ad9f73',
+      name: 'provider_9'
+    }
+  ]
 }

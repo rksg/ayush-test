@@ -65,7 +65,7 @@ describe('NaiRealmTable Component', () => {
     // edit realm2 data
     const realm2 = await screen.findByText('r2')
     expect(realm2).toBeVisible()
-    expect(await screen.findByText('UTF-8')).toBeVisible()
+    expect((await screen.findAllByText('UTF-8')).length).toBe(2)
     expect(await screen.findByText('2')).toBeVisible()
     await userEvent.click(realm2)
 
