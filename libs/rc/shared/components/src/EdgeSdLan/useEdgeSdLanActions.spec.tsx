@@ -22,9 +22,6 @@ import {
   useSdLanScopedNetworkVenues
 } from './useEdgeSdLanActions'
 
-// const { mockedSdLanDataList } = EdgeSdLanFixtures
-
-
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const mockedCallback = jest.fn()
 const mockedActivateEdgeSdLanDmzClusterReq = jest.fn()
