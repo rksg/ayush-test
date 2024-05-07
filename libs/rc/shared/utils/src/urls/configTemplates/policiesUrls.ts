@@ -195,6 +195,41 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/vlanPools',
     newApi: true
   },
+  deleteSyslogPolicy: {
+    method: 'delete',
+    url: '/templates/syslogServerProfiles/:templateId',
+    newApi: true
+  },
+  addSyslogPolicy: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles',
+    newApi: true
+  },
+  getSyslogPolicy: {
+    method: 'get',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  updateSyslogPolicy: {
+    method: 'put',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  getSyslogPolicyList: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles/query',
+    newApi: true
+  },
+  getVenueSyslogSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
+  },
+  updateVenueSyslogSettings: {
+    method: 'post',
+    url: '/templates/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
+  },
   addRoguePolicy: {
     method: 'post',
     url: '/templates/rogueApPolicyProfiles',
