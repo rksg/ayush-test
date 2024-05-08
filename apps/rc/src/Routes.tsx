@@ -25,7 +25,11 @@ import {
   VLANPoolDetail,
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  ConfigurationProfileForm,
+  CliTemplateForm,
+  CliProfileForm,
+  IdentityProviderForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -66,9 +70,6 @@ import { ApForm }                                   from './pages/Devices/Wifi/A
 import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
 import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
-import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
-import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
-import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
@@ -91,7 +92,6 @@ import ConnectionMeteringDetail             from './pages/Policies/ConnectionMet
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import IdentityProviderDetail               from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
-import IdentityProviderForm                 from './pages/Policies/IdentityProvider/IdentityProviderForm/IdentityProviderForm'
 import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -744,11 +744,11 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.CREATE })}
-        element={<WifiOperatorForm edit={false}/>}
+        element={<WifiOperatorForm editMode={false}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.EDIT })}
-        element={<WifiOperatorForm edit={true}/>}
+        element={<WifiOperatorForm editMode={true}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.DETAIL })}
@@ -894,41 +894,65 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
-          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.LIST })}
           // eslint-disable-next-line max-len
-          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>
+            </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })}
-          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })}
-          element={<CertificateTemplateForm editMode={false}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <CertificateTemplateForm editMode={false}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.EDIT })}
-          element={<CertificateTemplateForm editMode={true}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <CertificateTemplateForm editMode={true}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE })}
-          element={<CertificateAuthorityForm/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <CertificateAuthorityForm/>
+            </AuthRoute>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })}
-          element={<CertificateForm/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <CertificateForm/>
+            </AuthRoute>}
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
-          element={<CertificateTemplateDetail/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateDetail/>
+            </AuthRoute>}
         />
       </>
       }

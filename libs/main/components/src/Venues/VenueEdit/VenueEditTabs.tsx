@@ -23,7 +23,6 @@ function VenueEditTabs () {
   const location = useLocation()
   const navigate = useNavigate()
   const enablePropertyManagement = usePropertyManagementEnabled()
-  const enableSwitchConfiguration = useSwitchConfigurationEnabled()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const {
     editContextData,
@@ -89,12 +88,10 @@ function VenueEditTabs () {
       {/* eslint-disable-next-line max-len */}
       <Tabs.TabPane tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })} key='details' />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      {enableSwitchConfiguration &&
-        <Tabs.TabPane
-          key='switch'
-          tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
-        />
-      }
+      <Tabs.TabPane
+        key='switch'
+        tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
+      />
       {enablePropertyManagement &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
