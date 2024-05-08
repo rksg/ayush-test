@@ -484,7 +484,7 @@ export function NetworkForm (props:{
             'certificateTemplateId',
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.identityProviders']))
-      const result = await addNetworkInstance({ params, payload,
+      const networkResponse = await addNetworkInstance({ params, payload,
         callback: async (res: CommonResult) => {
           if (saveState.type === NetworkTypeEnum.HOTSPOT20) {
             await activateHotspot20NetworkOperator(
@@ -497,7 +497,10 @@ export function NetworkForm (props:{
         .catch(err => {
           console.log(err) // eslint-disable-line no-console
         })
-      if (result && result.response && payload.venues) {
+      // eslint-disable-next-line max-len
+      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
+      const hasResult = certResponse ?? networkResponse?.response
+      if (hasResult && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
