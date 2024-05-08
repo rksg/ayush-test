@@ -15,6 +15,7 @@ import {
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
@@ -31,8 +32,6 @@ import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-route
 import { WifiScopes }                                  from '@acx-ui/types'
 import { hasPermission }                               from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
-import { PROFILE_MAX_COUNT as WIFI_OPERATOR_MAX_COUNT }     from '../WifiOperator/constants'
 
 interface policyOption {
   type: PolicyType,

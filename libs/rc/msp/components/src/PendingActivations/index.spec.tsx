@@ -1,14 +1,14 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { mspApi }                                   from '@acx-ui/msp/services'
-import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
-import { administrationApi }                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor  }     from '@acx-ui/test-utils'
+import { showToast }                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
+import { mspApi }                                                          from '@acx-ui/msp/services'
+import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
+import { administrationApi }                                               from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { Provider, store }                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { PendingActivations } from '.'
 
@@ -174,6 +174,18 @@ const activations = {
     productClass: 'ACX-TRIAL-NEW',
     orderCreateDate: '2024-04-22T08:53:05.000+0000',
     orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
+  },
+  {
+    orderId: 'a0EO3000001haUHMAY',
+    salesOrderId: 'a0FO30000012DgXMAU',
+    productName: 'R1 Pro 1 AP/SW REC 1-Yr',
+    productCode: 'CLD-PROF-APSW-REC1',
+    quantity: 60,
+    spaStartDate: '2024-04-22',
+    spaEndDate: '2025-04-22',
+    productClass: 'ACX-PROF-NEW',
+    orderCreateDate: '2024-04-22T08:53:05.000+0000',
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
   }]
 }
 
@@ -239,6 +251,7 @@ describe('PendingActivations', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getByRole('button', { name: 'Manage Subscriptions' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Refresh' })).toBeVisible()
     await screen.findByRole('columnheader', { name: 'SPA Activation Code' })

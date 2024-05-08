@@ -27,10 +27,10 @@ import {
   TableQuery,
   usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { RequestPayload }                     from '@acx-ui/types'
-import { filterByAccess, hasAccess }          from '@acx-ui/user'
-import { transformToCityListOptions }         from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }       from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }             from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+import { transformToCityListOptions }               from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -42,7 +42,7 @@ function useColumns (
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -120,7 +120,7 @@ function useColumns (
             />
             {isApCompatibleCheckEnabled && row?.incompatible && row.incompatible > 0 ?
               <Tooltip.Info isFilled
-                title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this venue.' })}
+                title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
               />:[]
@@ -145,7 +145,7 @@ function useColumns (
         )
       }
     },
-    {
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
@@ -160,8 +160,8 @@ function useColumns (
           />
         )
       }
-    },
-    {
+    }] : []) as TableProps<Venue>['columns'],
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       title: $t({ defaultMessage: 'Switch Clients' }),
       key: 'switchClients',
       dataIndex: 'switchClients',
@@ -176,7 +176,7 @@ function useColumns (
           />
         )
       }
-    },
+    }] : []) as TableProps<Venue>['columns'],
     {
       title: $t({ defaultMessage: 'SmartEdges' }),
       key: 'edges',
@@ -266,8 +266,8 @@ export const VenueTable = ({ settingsId = 'venues-table',
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: rows.length === 1? $t({ defaultMessage: 'Venue' })
-            : $t({ defaultMessage: 'Venues' }),
+          entityName: rows.length === 1? $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+            : $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
           entityValue: rows.length === 1 ? rows[0].name : undefined,
           numOfEntities: rows.length,
           confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
@@ -327,10 +327,10 @@ export function VenuesTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Venues ({count})' }, { count })}
+        title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
         ])}
       />

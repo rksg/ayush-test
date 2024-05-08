@@ -76,7 +76,7 @@ const EdgeDHCPDetail = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       render: function (_, row) {

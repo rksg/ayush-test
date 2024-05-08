@@ -161,7 +161,7 @@ export default function BasicInfo () {
         disabled={meshEnable}
         title={meshEnable
           // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
         }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
       visible: true

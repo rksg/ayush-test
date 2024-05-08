@@ -48,7 +48,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       {data.name}
     </TenantLink>
   }, {
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     content: () => <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>
       {data.venueName}
     </TenantLink>

@@ -79,7 +79,8 @@ export enum Features {
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
-  MSP_HSP_PLM_FF = 'LOC-HSP',
+  MSP_HSP_360_PLM_FF = 'HSP-360',
+  MSP_HSP_PLM_FF = 'HSP-LOC',
   MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
@@ -132,6 +133,7 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
+  VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
@@ -175,7 +177,8 @@ export enum Features {
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
-  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -201,5 +204,5 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
-  { key: TierFeatures.BETA_CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, venues, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
+  { key: TierFeatures.BETA_CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
 ]
