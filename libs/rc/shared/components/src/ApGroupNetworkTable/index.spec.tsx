@@ -2,8 +2,7 @@ import { rest } from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
-import { render, screen }               from '@acx-ui/test-utils'
-import { mockServer }                   from '@acx-ui/test-utils'
+import { render, screen, mockServer }   from '@acx-ui/test-utils'
 
 import { mockDeepNetworkList, mockedApGroupNetworkLinks, mockTableResult, networkApGroup } from './__tests__/fixtures'
 

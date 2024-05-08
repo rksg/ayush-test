@@ -1,3 +1,4 @@
+import { Tooltip } from '@acx-ui/components'
 import {
   BasicServiceSetPriorityEnum,
   KeyValue,
@@ -5,9 +6,12 @@ import {
   NetworkVenue,
   OpenWlanAdvancedCustomization,
   RadioEnum,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  RadioTypeEnum
 } from '@acx-ui/rc/utils'
-import {render, screen} from '@acx-ui/test-utils'
+import { ClientIsolationOptions, WlanRadioCustomization } from '@acx-ui/rc/utils'
+import { TenantLink }                                     from '@acx-ui/react-router-dom'
+import { render, screen }                                 from '@acx-ui/test-utils'
 
 import {
   network,
@@ -15,26 +19,19 @@ import {
   networkVenue_apgroup
 } from '../NetworkApGroupDialog/__tests__/NetworkVenueTestData'
 
-import {transformApGroupVlan, transformAps, transformRadios, transformScheduling, transformVLAN} from './apGroupPipes'
-import {RadioTypeEnum} from "../../../utils/src/models/RadioTypeEnum";
-import {ClientIsolationOptions} from "../../../utils/src/models/ClientIsolationOptions";
-import {WlanRadioCustomization} from "../../../utils/src/models/WlanRadioCustomization";
-import {DnsProxy} from "../../../utils/src/models/DnsProxy";
-import {QosMapSetOptions} from "../../../utils/src/models/QosMapSetOptions";
-import {TenantLink} from "@acx-ui/react-router-dom";
-import {Tooltip} from "@acx-ui/components";
+import { transformApGroupVlan, transformAps, transformRadios, transformScheduling, transformVLAN } from './apGroupPipes'
 
 const mockWlanAdvancedVlanPoolData: OpenWlanAdvancedCustomization = {
   clientIsolation: true,
   maxClientsOnWlanPerRadio: 100,
   enableBandBalancing: true,
-  clientIsolationOptions: new ClientIsolationOptions(),
+  clientIsolationOptions: {} as ClientIsolationOptions,
   hideSsid: false,
   forceMobileDeviceDhcp: false,
   clientLoadBalancingEnable: true,
   directedThreshold: 5,
   enableNeighborReport: true,
-  radioCustomization: new WlanRadioCustomization(),
+  radioCustomization: {} as WlanRadioCustomization,
   enableSyslog: false,
   clientInactivityTimeout: 120,
   accessControlEnable: false,
@@ -66,7 +63,6 @@ const mockWlanAdvancedVlanPoolData: OpenWlanAdvancedCustomization = {
   enableDhcpRequestRateLimit: true,
   dhcpRequestRateLimit: 15,
   dnsProxyEnabled: false,
-  dnsProxy: new DnsProxy(),
   bssPriority: BasicServiceSetPriorityEnum.HIGH,
   dhcpOption82Enabled: false,
   dhcpOption82SubOption1Enabled: false,
@@ -86,9 +82,8 @@ const mockWlanAdvancedVlanPoolData: OpenWlanAdvancedCustomization = {
   wifi7Enabled: true,
   multiLinkOperationEnabled: false,
   qosMirroringEnabled: true,
-  qosMapSetEnabled: false,
-  qosMapSetOptions: new QosMapSetOptions()
-};
+  qosMapSetEnabled: false
+}
 
 const mockedUsedNavigate = jest.fn()
 const mockedUseLocation = jest.fn()
@@ -279,8 +274,8 @@ describe('Test apGroupPipes.utils', () => {
   })
 
   it('transformApGroupVlan', async () => {
-    const emptyResult = transformApGroupVlan();
-    expect(emptyResult).toEqual(<></>);
+    const emptyResult = transformApGroupVlan()
+    expect(emptyResult).toEqual(<></>)
 
     let currentVenue: NetworkVenue = {
       isAllApGroups: false,
@@ -290,16 +285,16 @@ describe('Test apGroupPipes.utils', () => {
         radio: RadioEnum._2_4_GHz,
         vlanPoolId: 'testPoolId'
       }]
-    };
+    }
     let network: NetworkSaveData = {
       wlan: {
         advancedCustomization: mockWlanAdvancedVlanPoolData
       }
-    };
+    }
     let vlanPoolingNameMap: KeyValue<string, string>[] = [{
       key: 'testPoolId',
       value: 'testPoolName'
-    }];
+    }]
 
     let result = transformApGroupVlan(currentVenue, network, 'testGroupId', vlanPoolingNameMap)
     expect(result).toEqual(
@@ -308,12 +303,12 @@ describe('Test apGroupPipes.utils', () => {
         autoAdjustOverflow={true}
         mouseEnterDelay={0.5}
         mouseLeaveDelay={0.1}
-        placement="top"
-        title="VLAN Pool: testPoolName (Default)">
-        <TenantLink to="policies/vlanPool/testPoolId/detail">
+        placement='top'
+        title='VLAN Pool: testPoolName (Default)'>
+        <TenantLink to='policies/vlanPool/testPoolId/detail'>
           VLAN Pool: testPoolName (Default)
         </TenantLink>
       </Tooltip>
-    );
+    )
   })
 })
