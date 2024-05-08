@@ -19,11 +19,14 @@ import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
+
 
 interface DHCPFormRefType {
   resetForm: Function,
@@ -164,7 +167,7 @@ export default function BasicInfo () {
           ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
         }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
-      visible: true
+      visible: hasPermission({ scopes: [WifiScopes.UPDATE] })
     }
   ]
 
