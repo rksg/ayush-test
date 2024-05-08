@@ -2,13 +2,16 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                                       from '@acx-ui/components'
-import { QosPriorityEnum, WifiCallingSetting, wifiCallingQosPriorityLabelMapping } from '@acx-ui/rc/utils'
+import { Table, TableProps }                                                    from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
+import {
+  QosPriorityEnum,
+  WifiCallingSetting,
+  wifiCallingQosPriorityLabelMapping,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
 
 import { WifiCallingSettingContext } from './NetworkControlTab'
-
-
-
 
 const WifiCallingSettingTable = () => {
   const { $t } = useIntl()
@@ -22,8 +25,11 @@ const WifiCallingSettingTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Description' }),
-      dataIndex: 'description',
-      key: 'description'
+      dataIndex: 'id',
+      key: 'id',
+      render: (_, value) => {
+        return <WifiCallingNameContent id={value.id} />
+      }
     },
     {
       title: $t({ defaultMessage: 'QosPriority' }),
@@ -36,6 +42,7 @@ const WifiCallingSettingTable = () => {
   ]
 
   return <Table style={{ width: '355px' }}
+    rowKey='id'
     columns={compactColumns}
     dataSource={wifiCallingSettingList}
     type={'form'}
@@ -43,3 +50,17 @@ const WifiCallingSettingTable = () => {
 }
 
 export default WifiCallingSettingTable
+
+const WifiCallingNameContent = (props: { id: string }) => {
+  const { id } = props
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery,
+    false,
+    null,
+    { serviceId: id }
+  )
+
+  return <div>
+    {data?.description || ''}
+  </div>
+}

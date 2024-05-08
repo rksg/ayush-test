@@ -7,7 +7,8 @@ import { RawIntlProvider, useIntl } from 'react-intl'
 import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                       from '@acx-ui/components'
 import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                    from '@acx-ui/rc/services'
 import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                                                                       from '@acx-ui/user'
+import { WifiScopes }                                                                                                                                                                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                   from '@acx-ui/user'
 import { getIntl, noDataDisplay }                                                                                                                                                          from '@acx-ui/utils'
 
 import CertificateSettings from '../CertificateForm/CertificateSettings'
@@ -190,7 +191,8 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
             payload: { revocationReason }
           }).then(clearSelection)
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Unrevoke' }),
@@ -201,7 +203,8 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           params: { templateId: selectedRow.certificateTemplateId, certificateId: selectedRow.id },
           payload: { revocationReason: null }
         }).then(clearSelection)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     }
   ]
 
@@ -222,7 +225,8 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)
-      }
+      },
+      scopeKey: [WifiScopes.CREATE]
     }] : [])
   ]
 
@@ -237,7 +241,8 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           onChange={tableQuery.handleTableChange}
           rowActions={filterByAccess(rowActions)}
           actions={filterByAccess(actionButtons)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'radio' }}
           rowKey='id'
           onFilterChange={handleFilterChange}
           enableApiFilter={true}
