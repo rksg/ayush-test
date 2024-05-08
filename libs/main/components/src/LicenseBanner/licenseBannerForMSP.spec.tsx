@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }     from '@acx-ui/msp/utils'
-import { LicenseUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }        from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { LicenseUrlsInfo }        from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -121,6 +121,7 @@ const list = [
 
 describe('License Banner Component', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {

@@ -4,10 +4,10 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
-import { useEntitlementBannersQuery }       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
+import { useGetMspEntitlementBannersQuery }               from '@acx-ui/msp/services'
+import { useEntitlementBannersQuery, useGetBannersQuery } from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
@@ -88,21 +88,45 @@ export function LicenseBanner (props: BannerProps) {
   const { isMSPUser } = props
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
   const params = useParams()
 
-  const { data: bannerData } = useEntitlementBannersQuery({ params }, { skip: isMSPUser })
-  const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params }, { skip: !isMSPUser })
+  const { data: bannerData } = useEntitlementBannersQuery({ params },
+    { skip: isMSPUser || isAbacToggleEnabled })
+  const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
+    { skip: !isMSPUser || isAbacToggleEnabled })
+
+  const recPayload = {
+    filters: {
+      usageType: 'SELF'
+    }
+  }
+  const mspPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      usageType: 'ASSIGNED'
+    }
+  }
+
+  const { data: bannersSelf } = useGetBannersQuery({ params, payload: recPayload },
+    { skip: isMSPUser || !isAbacToggleEnabled })
+  const { data: bannersMsp } = useGetBannersQuery({ params, payload: mspPayload },
+    { skip: !isMSPUser || !isAbacToggleEnabled })
 
   useEffect(() => {
-    if(bannerData || mspBannerData){
+    if(!isAbacToggleEnabled && (bannerData || mspBannerData)){
       const list = getExpireInfo(isMSPUser ? (mspBannerData||[]) : bannerData||[])
       setExpireList(list)
     }
+    if(isAbacToggleEnabled && (bannersSelf || bannersMsp)) {
+      const list = getExpireInfo(isMSPUser ? (bannersMsp?.data||[]) : bannersSelf?.data || [])
+      setExpireList(list)
+    }
 
-  },[bannerData, isMSPUser, mspBannerData])
+  },[bannerData, isMSPUser, mspBannerData, bannersSelf, bannersMsp])
 
   const getMainTipsContent = (expireInfo:ExpireInfo)=>{
     return isMSPUser ?
