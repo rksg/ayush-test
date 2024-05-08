@@ -35,8 +35,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   sendOtp: {
     method: 'PATCH',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   getDnsServers: {
@@ -118,22 +117,22 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   reboot: {
     method: 'post',
-    url: '/edges/:serialNumber/reboot',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/reboot',
     newApi: true
   },
   factoryReset: {
     method: 'post',
-    url: '/edges/:serialNumber/configReset',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/configReset',
     newApi: true
   },
   pingEdge: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/hostDetails',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/hostDetails',
     newApi: true
   },
   traceRouteEdge: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/hostDetails',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/hostDetails',
     newApi: true
   },
   downloadEdgesCSV: {
