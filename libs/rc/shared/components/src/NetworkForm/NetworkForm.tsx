@@ -494,9 +494,6 @@ export function NetworkForm (props:{
             })
           }
         } }).unwrap()
-        .catch(err => {
-          console.log(err) // eslint-disable-line no-console
-        })
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
       const hasResult = certResponse ?? networkResponse?.response
