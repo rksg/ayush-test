@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                               from '@acx-ui/components'
-import { useNetworkListQuery }                                   from '@acx-ui/rc/services'
-import { Network, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                                                  from '@acx-ui/components'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery }                      from '@acx-ui/rc/services'
+import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 
@@ -21,6 +21,7 @@ const defaultPayload = {
 
 const WifiCallingNetworksDetail = () => {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
@@ -40,7 +41,7 @@ const WifiCallingNetworksDetail = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,
@@ -62,7 +63,7 @@ const WifiCallingNetworksDetail = () => {
   }, [networkIds])
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {

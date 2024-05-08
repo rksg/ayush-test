@@ -5,91 +5,108 @@ import { formatter }                                           from '@acx-ui/for
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { useTrafficQuery } from './services'
+import { useSummaryDataQuery } from './services'
 
-export const SummaryBoxes = ({ filters }: {
-  filters: AnalyticsFilter,
+export const SummaryBoxes = ({ filters, wirelessOnly }: {
+  filters: AnalyticsFilter, wirelessOnly: boolean
 }) => {
   const payload = {
     filter: filters.filter,
     start: filters.startDate,
-    end: filters.endDate
+    end: filters.endDate,
+    wirelessOnly
   }
-  const { data: trafficSummary, ...trafficQueryState } = useTrafficQuery(payload,
-    { selectFromResult: ({ data, ...rest }) => {
-      return {
-        ...rest,
-        data: {
-          apTotalTraffic: data?.network?.hierarchyNode.apTotalTraffic,
-          switchTotalTraffic: data?.network?.hierarchyNode.switchTotalTraffic
-        }
-      }
-    } })
+
+  const { data: summaryData, ...summaryQueryState } = useSummaryDataQuery(payload)
+  const formatValue = (value: number | undefined) => {
+    if (value == null) return noDataDisplay
+    return formatter('countFormat')(value)
+  }
+
+
+  const utilization : StatsCardProps['values'] = [{
+    title: defineMessage({ defaultMessage: 'Avg. clients per AP' }),
+    value: formatValue(summaryData?.avgPerAPClientCount)
+  }]
+
+  !wirelessOnly && utilization.push(
+    {
+      title: defineMessage({ defaultMessage: 'Switch ports in use' }),
+      value: formatValue(summaryData?.portCount),
+      suffix: `/${formatValue(summaryData?.totalPortCount)}`
+    }
+  )
+
+  const incidents : StatsCardProps['values'] = [{
+    title: defineMessage({ defaultMessage: 'APs' }),
+    value: formatValue(summaryData?.apIncidentCount)
+  }]
+
+  !wirelessOnly && incidents.push(
+    {
+      title: defineMessage({ defaultMessage: 'Switches' }),
+      value: formatValue(summaryData?.switchIncidentCount)
+    }
+  )
+  const traffic = [{
+    title: defineMessage({ defaultMessage: 'Wireless' }),
+    value: summaryData?.apTotalTraffic ?
+      formatter('bytesFormat')(summaryData?.apTotalTraffic).split(' ')[0] : noDataDisplay,
+    suffix: summaryData?.apTotalTraffic ?
+      formatter('bytesFormat')(summaryData?.apTotalTraffic).split(' ')[1] : undefined
+  }]
+
+  !wirelessOnly && traffic.push(
+    {
+      title: defineMessage({ defaultMessage: 'Wired' }),
+      value: summaryData?.switchTotalTraffic ?
+        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[0] : noDataDisplay,
+      suffix: summaryData?.switchTotalTraffic ?
+        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[1] : undefined
+    }
+  )
+  const powerUtilization = [{
+    title: defineMessage({ defaultMessage: 'Insufficient powered APs' }),
+    value: formatValue(summaryData?.poeUnderPoweredApCount),
+    suffix: `/${formatValue(summaryData?.apCount)}`
+  }]
+
+  !wirelessOnly && powerUtilization.push(
+    {
+      title: defineMessage({ defaultMessage: 'Switches under PoE threshold' }),
+      value: formatValue(summaryData?.poeUnderPoweredSwitchCount),
+      suffix: `/${formatValue(summaryData?.poeThresholdSwitchCount)}`
+    }
+  )
+
   const mapping: StatsCardProps[] = [
     {
-      // TODO: integrate with api
       type: 'green',
       title: defineMessage({ defaultMessage: 'Utilization' }),
-      values: [{
-        title: defineMessage({ defaultMessage: 'Client/AP' }),
-        value: '5'
-      },
-      {
-        title: defineMessage({ defaultMessage: 'Switches ports in use' }),
-        value: '10/100'
-      }]
+      values: utilization
     },
     {
-      // TODO: integrate with api
       type: 'red',
-      title: defineMessage({ defaultMessage: 'Incidents by' }),
-      values: [{
-        title: defineMessage({ defaultMessage: 'APs' }),
-        value: '450 TB'
-      },
-      {
-        title: defineMessage({ defaultMessage: 'Switches' }),
-        value: '227 TB'
-      }]
+      title: defineMessage({ defaultMessage: 'Incidents' }),
+      values: incidents
     },
     {
       type: 'yellow',
       title: defineMessage({ defaultMessage: 'Total Traffic' }),
-      values: [{
-        title: defineMessage({ defaultMessage: 'APs' }),
-        value: trafficSummary.apTotalTraffic ?
-          formatter('bytesFormat')(trafficSummary.apTotalTraffic).split(' ')[0] : noDataDisplay,
-        suffix: trafficSummary.apTotalTraffic ?
-          formatter('bytesFormat')(trafficSummary.apTotalTraffic).split(' ')[1] : undefined
-      },
-      {
-        title: defineMessage({ defaultMessage: 'Switches' }),
-        value: trafficSummary.switchTotalTraffic ?
-          formatter('bytesFormat')(trafficSummary.switchTotalTraffic).split(' ')[0] : noDataDisplay,
-        suffix: trafficSummary.switchTotalTraffic ?
-          formatter('bytesFormat')(trafficSummary.switchTotalTraffic).split(' ')[1] : undefined
-      }]
+      values: traffic
     },
     {
-      // TODO: integrate with api
       type: 'grey',
-      title: defineMessage({ defaultMessage: 'PoE' }),
-      values: [{
-        title: defineMessage({ defaultMessage: 'Wireless' }),
-        value: 'X%'
-      },
-      {
-        title: defineMessage({ defaultMessage: 'Wired' }),
-        value: 'Y1'
-      }]
+      title: defineMessage({ defaultMessage: 'Power Utilization' }),
+      values: powerUtilization
     }
   ]
 
   return (
-    <Loader states={[trafficQueryState]}>
+    <Loader states={[summaryQueryState]}>
       <GridRow>
-        {mapping.map((stat)=>
-          <GridCol key={stat.type} col={{ span: 24/mapping.length }}>
+        {mapping.map((stat) =>
+          <GridCol key={stat.type} col={{ span: 24 / mapping.length }}>
             <StatsCard {...stat} />
           </GridCol>
         )}

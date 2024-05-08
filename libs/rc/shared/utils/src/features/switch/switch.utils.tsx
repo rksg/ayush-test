@@ -69,6 +69,11 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
   ['FMS', 'ICX7550-48F'],
+  ['FNX', 'ICX8100-24'],
+  ['FNY', 'ICX8100-24P'],
+  ['FNZ', 'ICX8100-48'],
+  ['FPA', 'ICX8100-48P'],
+  ['FPB', 'ICX8100-C08PF'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -675,12 +680,14 @@ export const getDhcpOptionList = () => {
 }
 
 export const getClientIpAddr = (data?: SwitchClient) => {
-  if (data?.clientIpv4Addr !== '0.0.0.0') {
-    return data?.clientIpv4Addr
-  } else if (data?.clientIpv6Addr !== '0:0:0:0:0:0:0:0') {
-    return data?.clientIpv6Addr
+  const ipAddress: string[] = []
+  if (data?.clientIpv4Addr && !['', '0.0.0.0'].includes(data?.clientIpv4Addr)) {
+    ipAddress.push(data?.clientIpv4Addr)
   }
-  return noDataDisplay
+  if (data?.clientIpv6Addr && !['', '0:0:0:0:0:0:0:0'].includes(data?.clientIpv6Addr)) {
+    ipAddress.push(data?.clientIpv6Addr)
+  }
+  return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
 export const getAdminPassword = (

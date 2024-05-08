@@ -248,8 +248,8 @@ describe('MspRecCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+    expect(screen.getByText('Add Property')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -309,7 +309,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(deleteButton)
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete EC' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Property' })
     await userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>
@@ -415,7 +415,7 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Property')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -462,6 +462,7 @@ describe('MspRecCustomers', () => {
     expect(services.useDelegateToMspEcPath).toHaveBeenCalled()
   })
   it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -526,6 +527,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

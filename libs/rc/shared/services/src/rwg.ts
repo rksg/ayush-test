@@ -8,8 +8,7 @@ import {
   GatewayDashboard,
   GatewayTopProcess,
   GatewayFileSystem,
-  GatewayDetails,
-  DNSRecord
+  GatewayDetails
 } from '@acx-ui/rc/utils'
 import { baseRWGApi }        from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -18,17 +17,18 @@ import { createHttpRequest } from '@acx-ui/utils'
 export const rwgApi = baseRWGApi.injectEndpoints({
   endpoints: (build) => ({
     rwgList: build.query<TableResult<RWG>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const rwgListReq = createHttpRequest(CommonUrlsInfo.getRwgList, params)
         return {
-          ...rwgListReq
+          ...rwgListReq,
+          body: payload
         }
       },
       transformResponse: ({ response }) => {
         return {
-          data: response,
-          totalCount: response.length,
-          page: 0
+          data: response.items,
+          totalCount: response.totalSizes,
+          page: response.totalPages
         }
       },
       keepUnusedDataFor: 0,
@@ -154,53 +154,6 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         return data?.response
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
-    }),
-    getDNSRecords: build.query<TableResult<DNSRecord>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getDNSRecords, params)
-        return{
-          ...req
-        }
-      },
-      transformResponse: (data: { response: DNSRecord[] }) => {
-        return {
-          data: data?.response || [],
-          totalCount: data?.response?.length || 0,
-          page: 0
-        }
-      },
-      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
-    }),
-    getDNSRecord: build.query<DNSRecord, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getDNSRecord, params)
-        return{
-          ...req
-        }
-      },
-      transformResponse: (data: { response: DNSRecord }) => {
-        return data?.response
-      },
-      providesTags: [{ type: 'RWG', id: 'DETAIL' }]
-    }),
-    deleteDnsRecord: build.mutation<DNSRecord, RequestPayload>({
-      query: ({ params }) => {
-        let req = createHttpRequest(CommonUrlsInfo.deleteDnsRecords, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'RWG', id: 'DETAIL' }]
-    }),
-    addUpdateDnsRecord: build.mutation<RWG, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addUpdateDnsRecord, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
   })
 })
@@ -216,9 +169,5 @@ export const {
   useGetGatewayDashboardQuery,
   useGetGatewayTopProcessQuery,
   useGetGatewayFileSystemsQuery,
-  useGetGatewayDetailsQuery,
-  useGetDNSRecordsQuery,
-  useGetDNSRecordQuery,
-  useDeleteDnsRecordMutation,
-  useAddUpdateDnsRecordMutation
+  useGetGatewayDetailsQuery
 } = rwgApi

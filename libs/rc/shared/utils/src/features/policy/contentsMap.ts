@@ -25,8 +25,11 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy' }),
   [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'SNMP Agent' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy' }),
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
-  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute Group' }),
+  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set' }),
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Tunnel Profile' }),
-  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' })
+  [PolicyType.CONNECTION_METERING]: defineMessage({ defaultMessage: 'Data Usage Metering' }),
+  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Certificate Template' }),
+  [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
+  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
 }

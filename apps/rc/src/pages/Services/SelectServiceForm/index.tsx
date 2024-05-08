@@ -34,6 +34,7 @@ export default function SelectServiceForm () {
   const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinHaReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -61,7 +62,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
@@ -93,7 +94,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeHaReady || !isEdgePinHaReady
         },
         {
           type: ServiceType.RESIDENT_PORTAL,

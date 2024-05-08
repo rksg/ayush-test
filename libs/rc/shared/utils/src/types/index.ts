@@ -9,10 +9,10 @@ import { EdgeStatusSeverityEnum } from '../models'
 import { NetworkVenue }           from '../models/NetworkVenue'
 import { TrustedCAChain }         from '../models/TrustedCAChain'
 
-import { ApModel }                     from './ap'
-import { EdgeStatusSeverityStatistic } from './edge'
-import { EPDG }                        from './services'
-import { SwitchStatusEnum }            from './switch'
+import { ApModel }                               from './ap'
+import { EdgeStatusSeverityStatistic }           from './edge'
+import { EPDG }                                  from './services'
+import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
 
 export * from './common'
 export * from './ap'
@@ -127,16 +127,13 @@ export interface AlarmMeta {
 }
 
 export interface RWG {
-  id: string
   name: string
   status: string
   venueId: string
   venueName: string
-  loginUrl: string
-  username: string
-  password: string
+  hostname: string
+  apiKey: string
   rwgId: string
-  tenantId: string
 }
 
 export interface GatewayAlarms {
@@ -227,27 +224,6 @@ export interface GatewayDetails {
   gatewayDetailsHardware: GatewayDetailsHardware
   gatewayDetailsOs: GatewayDetailsOs
   gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
-}
-
-export interface DNSRecord {
-    id: string,
-    name: string,
-    host: string,
-    ttl: number,
-    dataType: string,
-    data: string
-}
-
-export enum DNSDataType {
-  A = 'A',
-  AAAA = 'AAAA',
-  CNAME = 'CNAME',
-  LOC = 'LOC',
-  MX = 'MX',
-  NS = 'NS',
-  PTR = 'PTR',
-  SRV = 'SRV',
-  TXT = 'TXT'
 }
 
 export type Alarm = AlarmBase & AlarmMeta
@@ -577,6 +553,7 @@ export interface SwitchClient {
   switchId: string
   switchName: string
   switchPort: string
+  switchPortId?: string
   switchSerialNumber: string
   clientVlan: string
   vlanName: string
@@ -588,6 +565,7 @@ export interface SwitchClient {
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
   dhcpClientHostName?: string
+  switchPortStatus?: SwitchPortViewModel
 }
 
 export interface QosMapRule {

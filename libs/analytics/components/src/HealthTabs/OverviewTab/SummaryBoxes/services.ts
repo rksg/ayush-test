@@ -1,39 +1,105 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload } from '@acx-ui/analytics/utils'
-import { dataApi }          from '@acx-ui/store'
-import type { NodesFilter } from '@acx-ui/utils'
+import { getFilterPayload, incidentsToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                           from '@acx-ui/store'
+import type { NodesFilter }                  from '@acx-ui/utils'
 
-export interface TrafficSummary {
-  network: {
-    hierarchyNode: {
-      apTotalTraffic: number
-      switchTotalTraffic: number
-    }
-  }
-}
 
 export interface RequestPayload {
   filter: NodesFilter
   start: string
   end: string
+  wirelessOnly?: boolean
 }
+
+export interface SummaryResult {
+  apIncidentCount: number
+  switchIncidentCount?: number
+  portCount?: number
+  totalPortCount?: number
+  avgPerAPClientCount: number
+  apTotalTraffic: number
+  switchTotalTraffic?: number
+  poeUnderPoweredApCount: number
+  apCount: number
+  poeUnderPoweredSwitchCount?: number
+  poeThresholdSwitchCount?: number
+}
+
+export interface SwitchCount {
+  switchCount: number
+}
+
+
+const wirelessFields = `
+  apIncidentCount: incidentCount(
+    filter: {
+      code: $code
+      type: "apMac"
+  })
+  avgPerAPClientCount
+  apTotalTraffic: totalTraffic
+  poeUnderPoweredApCount
+  apCount
+`
+
+const wiredFields = `
+  switchIncidentCount: incidentCount(
+    filter: {
+      code: $code
+      type: "switchId"
+  }),
+  switchTotalTraffic
+  totalPortCount
+  portCount
+  poeUnderPoweredSwitchCount
+  poeThresholdSwitchCount
+`
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    traffic: build.query<TrafficSummary, RequestPayload>({
-      query: payload => ({
-        document: gql`
-          query TrafficSummary(
+    summaryData: build.query<SummaryResult, RequestPayload>({
+      query: payload => {
+        const { wirelessOnly = false } = payload
+        return ({
+          document: gql`
+          query SummaryQuery(
           $path: [HierarchyNodeInput],
           $start: DateTime,
           $end: DateTime,
-          $filter: FilterInput
+          $filter: FilterInput,
+          $code: [String]
           ) {
             network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
-                apTotalTraffic: totalTraffic
-                switchTotalTraffic
+                ${wirelessFields}
+                ${!wirelessOnly ? wiredFields : ''}
+              }
+            }
+          }`,
+          variables: {
+            ...payload,
+            ...getFilterPayload(payload),
+            code: incidentsToggle({})
+          }
+        })
+      },
+      transformResponse: (response: {
+        network: { hierarchyNode: SummaryResult } }) => response.network.hierarchyNode
+    }),
+    switchCount: build.query<SwitchCount, RequestPayload>({
+      query: payload => ({
+        document: gql`
+          query SwitchCount(
+          $path: [HierarchyNodeInput],
+          $start: DateTime,
+          $end: DateTime,
+          $filter: FilterInput,
+
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
+              hierarchyNode(path: $path) {
+                switchCount
               }
             }
           }`,
@@ -41,9 +107,14 @@ export const api = dataApi.injectEndpoints({
           ...payload,
           ...getFilterPayload(payload)
         }
-      })
+      }),
+      transformResponse: (response:
+        { network: { hierarchyNode: SwitchCount } }) => response.network.hierarchyNode
     })
   })
 })
 
-export const { useTrafficQuery } = api
+export const {
+  useSummaryDataQuery,
+  useSwitchCountQuery
+} = api

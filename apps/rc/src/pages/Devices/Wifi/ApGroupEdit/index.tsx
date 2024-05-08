@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { CustomButtonProps, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { goToNotFound }                       from '@acx-ui/user'
 import { getIntl }                            from '@acx-ui/utils'
 
 import { ApGroupEditPageHeader } from './ApGroupEditPageHeader'
@@ -37,7 +38,7 @@ export function ApGroupEdit () {
   const isApGroupTableFlag = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const { activeTab = 'general', action } = useParams()
   const isEditMode = action === 'edit'
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as ApGroupEditContextType)

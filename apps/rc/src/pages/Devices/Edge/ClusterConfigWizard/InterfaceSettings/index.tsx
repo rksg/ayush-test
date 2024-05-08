@@ -1,14 +1,13 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
-import { CompatibilityStatusBar, CompatibilityStatusEnum }    from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { CompatibilityStatusBar, CompatibilityStatusEnum }                        from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterNetworkSettingsQuery,
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
 import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
@@ -38,13 +37,19 @@ import { VirtualIpForm } from './VirtualIpForm'
 const lagCompatibleErrorFields = getLagFormCompatibilityFields()
 const portCompatibleErrorFields = getPortFormCompatibilityFields()
 
+const enum InterfaceSettingsTypeEnum {
+  LAGS = 'lagSettings',
+  PORTS = 'portSettings',
+  VIRTUAL_IP = 'virtualIpSettings'
+}
+
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const [configWizardForm] = Form.useForm()
   const [alertData, setAlertData] = useState<
   StepsFormProps<Record<string, unknown>>['alert']>({
@@ -54,36 +59,39 @@ export const InterfaceSettings = () => {
       type={CompatibilityStatusEnum.PASS}
     />
   })
-
-  const { clusterNetworkSettings, isFetching } = useGetEdgeClusterNetworkSettingsQuery({
-    params: {
-      venueId: clusterInfo?.venueId,
-      clusterId: clusterInfo?.clusterId
-    }
-  },{
-    skip: !Boolean(clusterInfo),
-    selectFromResult: ({ data, isFetching }) => ({
-      clusterNetworkSettings: transformFromApiToFormData(data, clusterInfo),
-      isFetching
-    })
-  })
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
 
   const isSingleNode = (clusterInfo?.edgeList?.length ?? 0) < 2
+  const clusterNetworkSettingsFormData = transformFromApiToFormData(clusterNetworkSettings)
 
-  const doCompatibleCheck = (typeKey: string): CompatibilityCheckResult => {
+  const doCompatibleCheck = (typeKey: string): void => {
+    const checkResult = getCompatibleCheckResult(typeKey)
+    updateAlertMessage(checkResult, typeKey)
+  }
+
+  const getCompatibleCheckResult = useCallback((typeKey: string): CompatibilityCheckResult => {
     const formData = _.get(configWizardForm.getFieldsValue(true), typeKey)
     let checkResult: CompatibilityCheckResult
-    let errorFieldsConfig
-    if (typeKey === 'lagSettings') {
-      errorFieldsConfig = lagCompatibleErrorFields
+    if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
       checkResult = lagSettingsCompatibleCheck(formData, clusterInfo?.edgeList)
     } else {
-      errorFieldsConfig = portCompatibleErrorFields
       const lagFormData = _.get(configWizardForm.getFieldsValue(true), 'lagSettings')
       checkResult = interfaceCompatibilityCheck(formData, lagFormData, clusterInfo?.edgeList)
     }
 
+    return checkResult
+  }, [configWizardForm, clusterInfo])
+
+  const updateAlertMessage = (
+    checkResult: CompatibilityCheckResult,
+    typeKey?: string
+  ) => {
+    let errorFieldsConfig
+    if (typeKey === InterfaceSettingsTypeEnum.LAGS) {
+      errorFieldsConfig = lagCompatibleErrorFields
+    } else {
+      errorFieldsConfig = portCompatibleErrorFields
+    }
 
     setAlertData({
       type: checkResult.isError?'error':'success',
@@ -101,8 +109,6 @@ export const InterfaceSettings = () => {
           : undefined)}
       />
     })
-
-    return checkResult
   }
 
   const handlePortValueChange = (changedValues: Partial<InterfaceSettingsFormType>) => {
@@ -110,7 +116,7 @@ export const InterfaceSettings = () => {
     let changedField
     let changedValue
     let targetSn: EdgeSerialNumber = ''
-    let targetPortIfNaem: string = ''
+    let targetPortIfName: string = ''
     let field: EdgePort
     for (let sn in settings) {
       for (let portIfName in settings[sn]) {
@@ -118,7 +124,7 @@ export const InterfaceSettings = () => {
         for (let fieldKey in field) {
           if (!changedField) {
             targetSn = sn
-            targetPortIfNaem = portIfName
+            targetPortIfName = portIfName
             changedField = fieldKey
             changedValue = field[fieldKey as keyof typeof field]
             break
@@ -128,15 +134,15 @@ export const InterfaceSettings = () => {
     }
 
     if (changedField === 'portType' || changedField === 'corePortEnabled') {
-      const targetNamePath = ['portSettings', targetSn, targetPortIfNaem, 0]
+      const targetNamePath = ['portSettings', targetSn, targetPortIfName, 0]
 
       if (changedField === 'corePortEnabled' && changedValue === false) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
-      } else if (changedField === 'portType'
-        && (changedValue === EdgePortTypeEnum.LAN)) {
+      } else if (changedField === 'portType' && (changedValue === EdgePortTypeEnum.LAN)) {
         configWizardForm.setFieldValue(targetNamePath.concat(['ipMode']), EdgeIpModeEnum.STATIC)
       } else if (changedField === 'portType' && changedValue === EdgePortTypeEnum.WAN) {
-        const initialPortData = clusterNetworkSettings.portSettings[targetSn][targetPortIfNaem][0]
+        // eslint-disable-next-line max-len
+        const initialPortData = clusterNetworkSettingsFormData.portSettings[targetSn][targetPortIfName][0]
         if (initialPortData?.portType !== EdgePortTypeEnum.WAN) {
           configWizardForm.setFieldValue(targetNamePath.concat(['natEnabled']), true)
         }
@@ -144,38 +150,62 @@ export const InterfaceSettings = () => {
     }
   }
 
-  const handleValuesChange = _.debounce((
+  const handleValuesChange = useCallback(_.debounce((
     typeKey: string,
     changedValues: Partial<InterfaceSettingsFormType>
   ) => {
-    if (typeKey === 'portSettings') {
+    if (typeKey === InterfaceSettingsTypeEnum.PORTS) {
       handlePortValueChange(changedValues)
     }
 
     configWizardForm.validateFields()
       .then(() => doCompatibleCheck(typeKey))
       .catch(() => {/* do nothing */})
-  }, 1000)
+  }, 1000), [configWizardForm])
 
-  const steps = [
+  const steps = useMemo(() => [
     {
       title: $t({ defaultMessage: 'LAG' }),
-      id: 'lagSettings',
-      content: <LagForm />,
+      id: InterfaceSettingsTypeEnum.LAGS,
+      content: <LagForm
+        onInit={() => {
+          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.LAGS)
+          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.LAGS)
+        }}
+      />,
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange('lagSettings', changedValues),
-      onFinish: async (typeKey: string) => {
-        const checkResult = doCompatibleCheck(typeKey)
-        return !checkResult.isError
+        handleValuesChange(InterfaceSettingsTypeEnum.LAGS, changedValues),
+      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
+        const isBackBtn = isStepsFormBackStepClicked(event)
+
+        const checkResult = getCompatibleCheckResult(typeKey)
+        if (isBackBtn) {
+          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+          return true
+        } else {
+          updateAlertMessage(checkResult, typeKey)
+          return !checkResult.isError
+        }
       }
     },
     {
       title: $t({ defaultMessage: 'Port General' }),
-      id: 'portSettings',
-      content: <PortForm />,
+      id: InterfaceSettingsTypeEnum.PORTS,
+      content: <PortForm
+        onInit={() => {
+          const checkResult = getCompatibleCheckResult(InterfaceSettingsTypeEnum.PORTS)
+          updateAlertMessage(checkResult, InterfaceSettingsTypeEnum.PORTS)
+        }}
+      />,
       onValuesChange: (changedValues: Partial<InterfaceSettingsFormType>) =>
-        handleValuesChange('portSettings', changedValues),
-      onFinish: async (typeKey: string) => {
+        handleValuesChange(InterfaceSettingsTypeEnum.PORTS, changedValues),
+      onFinish: async (typeKey: string, event?: React.MouseEvent) => {
+        const isBackBtn = isStepsFormBackStepClicked(event)
+        if (isBackBtn) {
+          updateAlertMessage({ isError: false } as CompatibilityCheckResult)
+          return true
+        }
+
         // eslint-disable-next-line max-len
         const allValues = (configWizardForm.getFieldValue('portSettings') as InterfaceSettingsFormType['portSettings']) ?? {}
 
@@ -189,13 +219,14 @@ export const InterfaceSettings = () => {
         }
         configWizardForm.setFieldValue(['portSettings'], allValues)
 
-        const checkResult = doCompatibleCheck(typeKey)
+        const checkResult = getCompatibleCheckResult(typeKey)
+        updateAlertMessage(checkResult, typeKey)
         return !checkResult.isError
       }
     },
     {
       title: $t({ defaultMessage: 'Cluster Virtual IP' }),
-      id: 'virtualIpSettings',
+      id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
       content: <VirtualIpForm />
     },
     {
@@ -203,7 +234,7 @@ export const InterfaceSettings = () => {
       id: 'summary',
       content: <Summary />
     }
-  ]
+  ], [configWizardForm, getCompatibleCheckResult, handleValuesChange])
 
   const invokeUpdateApi = async (
     value: InterfaceSettingsFormType,
@@ -246,7 +277,7 @@ export const InterfaceSettings = () => {
   }
 
   const isVipConfigChanged = (config: VirtualIpFormType['vipConfig']) => {
-    return !_.isEqual(config, clusterNetworkSettings.vipConfig)
+    return !_.isEqual(config, clusterNetworkSettingsFormData.vipConfig)
   }
 
   const applyAndFinish = async (value: InterfaceSettingsFormType) => {
@@ -268,41 +299,39 @@ export const InterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: isFetching }]}>
-      <StepsForm<InterfaceSettingsFormType>
-        form={configWizardForm}
-        alert={isSingleNode ? undefined : alertData}
-        onFinish={applyAndFinish}
-        onCancel={handleCancel}
-        initialValues={clusterNetworkSettings}
-        buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply & Finish' })
-        }}
-        customSubmit={{
-          label: $t({ defaultMessage: 'Apply & Continue' }),
-          onCustomFinish: applyAndContinue
-        }}
-      >
-        {
-          steps.map((item, index) =>
-            <StepsForm.StepForm
-              key={`step-${index}`}
-              name={index.toString()}
-              title={item.title}
-              onFinish={item.onFinish
-                ? () => item.onFinish?.(item.id)
-                : undefined}
-              onValuesChange={
-                item.onValuesChange
-                  // eslint-disable-next-line max-len
-                  ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
-                  : undefined
-              }
-            >
-              {item.content}
-            </StepsForm.StepForm>)
-        }
-      </StepsForm>
-    </Loader>
+    <StepsForm<InterfaceSettingsFormType>
+      form={configWizardForm}
+      alert={isSingleNode ? undefined : alertData}
+      onFinish={applyAndFinish}
+      onCancel={handleCancel}
+      initialValues={clusterNetworkSettingsFormData}
+      buttonLabel={{
+        submit: $t({ defaultMessage: 'Apply & Finish' })
+      }}
+      customSubmit={{
+        label: $t({ defaultMessage: 'Apply & Continue' }),
+        onCustomFinish: applyAndContinue
+      }}
+    >
+      {
+        steps.map((item, index) =>
+          <StepsForm.StepForm
+            key={`step-${index}`}
+            name={index.toString()}
+            title={item.title}
+            onFinish={item.onFinish
+              ? (_, e?: React.MouseEvent) => item.onFinish?.(item.id, e)
+              : undefined}
+            onValuesChange={
+              item.onValuesChange
+              // eslint-disable-next-line max-len
+                ? (changedValues: Partial<InterfaceSettingsFormType>) => item.onValuesChange?.(changedValues)
+                : undefined
+            }
+          >
+            {item.content}
+          </StepsForm.StepForm>)
+      }
+    </StepsForm>
   )
 }

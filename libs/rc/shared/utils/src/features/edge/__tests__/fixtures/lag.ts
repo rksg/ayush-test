@@ -1,13 +1,15 @@
-import { EdgeIpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
+import _ from 'lodash'
+
+import { EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum } from '../../../../models/EdgeEnum'
 
 export const mockedEdgeLagList = {
   content: [
     {
       id: 1,
       description: 'string',
-      lagType: 'LACP',
-      lacpMode: 'ACTIVE',
-      lacpTimeout: 'SHORT',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [
         {
           portId: '00:0c:29:b6:ad:04',
@@ -18,24 +20,24 @@ export const mockedEdgeLagList = {
           portEnabled: true
         }
       ],
-      portType: 'WAN',
-      ipMode: 'DHCP',
+      portType: EdgePortTypeEnum.WAN,
+      ipMode: EdgeIpModeEnum.DHCP,
       ip: '',
       subnet: '',
       gateway: '',
-      corePortEnabled: true,
+      corePortEnabled: false,
       natEnabled: true,
       lagEnabled: true
     },
     {
       id: 2,
       description: 'string',
-      lagType: 'LACP',
-      lacpMode: 'ACTIVE',
-      lacpTimeout: 'SHORT',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
       lagMembers: [],
-      portType: 'LAN',
-      ipMode: 'STATIC',
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.STATIC,
       ip: '1.1.1.1',
       subnet: '255.255.255.0',
       gateway: '1.0.0.0',
@@ -50,6 +52,11 @@ export const mockedEdgeLagList = {
     totalCount: 2
   }
 }
+
+export const mockedEdgeLagListCorePortEnabled = _.cloneDeep(mockedEdgeLagList)
+mockedEdgeLagListCorePortEnabled.content[0].portType = EdgePortTypeEnum.LAN
+mockedEdgeLagListCorePortEnabled.content[0].corePortEnabled = true
+mockedEdgeLagListCorePortEnabled.content[0].natEnabled = false
 
 export const mockEdgeLagStatusList = {
   totalCount: 2,

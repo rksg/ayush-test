@@ -3,13 +3,19 @@ import { ItemType }  from 'antd/lib/menu/hooks/useItems'
 import { useIntl }   from 'react-intl'
 
 import {
-  ConfigTemplateLink, PolicyConfigTemplateLink,
-  ServiceConfigTemplateLink, useConfigTemplateVisibilityMap
+  ConfigTemplateLink,
+  PolicyConfigTemplateLink,
+  ServiceConfigTemplateLink,
+  useConfigTemplateVisibilityMap
 } from '@acx-ui/rc/components'
 import {
-  ConfigTemplateType, PolicyOperation, ServiceOperation,
-  configTemplatePolicyTypeMap, configTemplateServiceTypeMap,
-  policyTypeLabelMapping, serviceTypeLabelMapping
+  configTemplatePolicyTypeMap,
+  configTemplateServiceTypeMap,
+  ConfigTemplateType,
+  PolicyOperation,
+  policyTypeLabelMapping,
+  ServiceOperation,
+  serviceTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -30,7 +36,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     (visibilityMap[ConfigTemplateType.VENUE] ? {
       key: 'add-venue',
       label: <ConfigTemplateLink to='venues/add'>
-        {$t({ defaultMessage: 'Venue' })}
+        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       </ConfigTemplateLink>
     } : null),
     {
@@ -56,8 +62,10 @@ function usePolicyMenuItems (): ItemType[] {
   const visibilityMap = useConfigTemplateVisibilityMap()
 
   return [
-    createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap)
+    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.SYSLOG, visibilityMap),
+    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
   ]
 }
 
@@ -84,7 +92,8 @@ function useServiceMenuItems (): ItemType[] {
   return [
     createServiceMenuItem(ConfigTemplateType.DPSK, visibilityMap),
     createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap),
-    createServiceMenuItem(ConfigTemplateType.PORTAL, visibilityMap)
+    createServiceMenuItem(ConfigTemplateType.PORTAL, visibilityMap),
+    createServiceMenuItem(ConfigTemplateType.WIFI_CALLING, visibilityMap)
   ]
 }
 

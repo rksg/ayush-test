@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigTemplateType, PolicyOperation,
   PolicyType, ServiceOperation, ServiceType, getConfigTemplatePath,
@@ -7,8 +8,13 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { ConfigTemplatesRoutes } from './Routes'
+import HspContext                      from './HspContext'
+import { Init, ConfigTemplatesRoutes } from './Routes'
 
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  Navigate: props => <div>{JSON.stringify(props)}</div>
+}))
 
 jest.mock('./pages/ConfigTemplates/Templates', () => ({
   ...jest.requireActual('./pages/ConfigTemplates/Templates'),
@@ -24,7 +30,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   NetworkForm: () => <div>NetworkForm</div>,
   DpskForm: () => <div>DpskForm</div>,
   DHCPForm: () => <div>DHCPForm</div>,
-  PortalForm: () => <div>PortalForm</div>
+  PortalForm: () => <div>PortalForm</div>,
+  VLANPoolForm: () => <div>VLANPoolForm</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -49,6 +56,37 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.APPLICATION_POLICY]: false
 }
 
+jest.mocked(useIsSplitOn).mockReturnValue(false)
+jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+describe('Init', () => {
+  it('navigates to dashboard if brand360 is not available', async () => {
+    render(<Init />, {
+      route: {
+        path: '/tenantId/v',
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByText(
+      '{"replace":true,"to":{"pathname":"/undefined/v/dashboard"}}'
+    )).toBeVisible()
+  })
+  it('navigates to brand360 when available', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(ff => ff === Features.MSP_BRAND_360)
+    jest.mocked(useIsTierAllowed).mockReturnValue(ff => ff === Features.MSP_HSP_360_PLM_FF)
+    render(<HspContext.Provider value={{ state: { isHsp: true }, dispatch: jest.fn() }}>
+      <Init />
+    </HspContext.Provider>, {
+      route: {
+        path: '/tenantId/v',
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByText(
+      '{"replace":true,"to":{"pathname":"/undefined/v/brand360"}}'
+    )).toBeVisible()
+  })
+})
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
   beforeEach(() => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })
@@ -169,7 +207,7 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     expect(await screen.findByText('DHCPForm')).toBeVisible()
   })
 
-  it('should navigate to the VLAN Pool config template', async () => {
+  it('should navigate to the Portal config template', async () => {
     mockedUseConfigTemplateVisibilityMap.mockReturnValue({
       ...mockedConfigTemplateVisibilityMap,
       [ConfigTemplateType.PORTAL]: true
@@ -185,5 +223,23 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('PortalForm')).toBeVisible()
+  })
+
+  it('should navigate to the VLAN Pool config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.VLAN_POOL]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath(
+          getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })
+        ),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('VLANPoolForm')).toBeVisible()
   })
 })

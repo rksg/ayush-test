@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { useBrand360Config }                                      from '@acx-ui/analytics/services'
@@ -8,6 +10,8 @@ import {
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid,
   MspSubscriptionOutlined,
   MspSubscriptionSolid,
   IntegratorsOutlined,
@@ -19,21 +23,20 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { useHospitalityVerticalCheck }                    from '@acx-ui/msp/services'
 import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType, useParams }                          from '@acx-ui/react-router-dom'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean, parentMspId?: string) {
+import HspContext from '../../HspContext'
+
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
-  const params = useParams()
   const { names: { brand } } = useBrand360Config()
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
@@ -45,9 +48,11 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
 
-  const showMenuesforHsp =
-  useHospitalityVerticalCheck(parentMspId as string, tenantType as string, params)
+  const {
+    state
+  } = useContext(HspContext)
 
+  const { isHsp: isHspSupportEnabled } = state
 
   const mspCustomersMenu = {
     uri: '/dashboard/mspCustomers',
@@ -55,11 +60,10 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
     label: $t({ defaultMessage: 'MSP Customers' })
   }
 
-  const recCustomerMenu = (!showMenuesforHsp || isSupport ? [] : [{
+  const recCustomerMenu = (!isHspSupportEnabled || isSupport ? [] : [{
     uri: '/dashboard/mspRecCustomers',
     tenantType: 'v' as TenantType,
-    label: isHspSupportEnabled ? $t({ defaultMessage: 'Brand Properties' })
-      : $t({ defaultMessage: 'RUCKUS End Customers' })
+    label: $t({ defaultMessage: 'Brand Properties' })
   }])
 
   const hspMspMenues = (isVar || isDogfood)
@@ -69,7 +73,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       : [ mspCustomersMenu, ...recCustomerMenu])
 
   return [
-    ...(showMenuesforHsp && isBrand360Enabled && !isInstaller ? [{
+    ...(isHspSupportEnabled && isBrand360Enabled && !isInstaller ? [{
       uri: '/brand360',
       label: brand,
       tenantType: 'v' as TenantType,
@@ -112,6 +116,13 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(isHspSupportEnabled && isDataStudioEnabled && !isInstaller ? [{
+      uri: '/dataStudio',
+      label: $t({ defaultMessage: 'Data Studio' }),
+      tenantType: 'v' as TenantType,
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    }] : []),
     ...(isConfigTemplateEnabled
       ? [{
         uri: '/' + getConfigTemplatePath(),

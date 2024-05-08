@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SummaryBoxes should render correctly 1`] = `
+exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -28,13 +28,13 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Client/AP
+                  Avg. clients per AP
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -45,7 +45,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                     <span
                       class="ant-statistic-content-value-int"
                     >
-                      5
+                      643
                     </span>
                   </span>
                 </div>
@@ -55,13 +55,13 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Switches ports in use
+                  Switch ports in use
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -69,7 +69,16 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    10/100
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      636
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /14.2K
                   </span>
                 </div>
               </div>
@@ -90,13 +99,13 @@ exports[`SummaryBoxes should render correctly 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
@@ -110,7 +119,11 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    450 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      461
+                    </span>
                   </span>
                 </div>
               </div>
@@ -119,7 +132,7 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
@@ -133,7 +146,11 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    227 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      8
+                    </span>
                   </span>
                 </div>
               </div>
@@ -160,13 +177,13 @@ exports[`SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  APs
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -197,13 +214,13 @@ exports[`SummaryBoxes should render correctly 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Switches
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -246,14 +263,200 @@ exports[`SummaryBoxes should render correctly 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iNgWsf"
                 style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Insufficient powered APs
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /8
+                  </span>
+                </div>
+              </div>
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
+                role="separator"
+              />
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iNgWsf"
+                style="width: 50%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Switches under PoE threshold
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      2
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /2
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Utilization
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Avg. clients per AP
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      643
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Incidents
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  APs
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      461
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+            >
+              Total Traffic
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
+              <div
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
@@ -266,22 +469,54 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                    <span
+                      class="ant-statistic-content-value-decimal"
+                    >
+                      .11
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    GB
                   </span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+          >
+            <div
+              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+            >
+              Power Utilization
+            </div>
+            <div
+              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+            >
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
-                role="separator"
-              />
-              <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
-                style="width: 50%;"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wired
+                  Insufficient powered APs
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -289,7 +524,16 @@ exports[`SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /8
                   </span>
                 </div>
               </div>
@@ -330,13 +574,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Client/AP
+                  Avg. clients per AP
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -347,7 +591,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                     <span
                       class="ant-statistic-content-value-int"
                     >
-                      5
+                      0
                     </span>
                   </span>
                 </div>
@@ -357,13 +601,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Switches ports in use
+                  Switch ports in use
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -371,7 +615,16 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    10/100
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /0
                   </span>
                 </div>
               </div>
@@ -392,13 +645,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
             >
-              Incidents by
+              Incidents
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
@@ -412,7 +665,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    450 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
                   </span>
                 </div>
               </div>
@@ -421,7 +678,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
@@ -435,7 +692,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    227 TB
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
                   </span>
                 </div>
               </div>
@@ -462,13 +723,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  APs
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -485,13 +746,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dosZBs"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 jMDrjj"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Switches
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -520,19 +781,19 @@ exports[`SummaryBoxes should show - when no data 1`] = `
             <div
               class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
             >
-              PoE
+              Power Utilization
             </div>
             <div
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iNgWsf"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wireless
+                  Insufficient powered APs
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -540,7 +801,16 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    X%
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /0
                   </span>
                 </div>
               </div>
@@ -549,13 +819,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 eIosMM"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iNgWsf"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  Wired
+                  Switches under PoE threshold
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -563,7 +833,16 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    Y1
+                    <span
+                      class="ant-statistic-content-value-int"
+                    >
+                      0
+                    </span>
+                  </span>
+                  <span
+                    class="ant-statistic-content-suffix"
+                  >
+                    /0
                   </span>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { getUserProfile }                     from '@acx-ui/analytics/utils'
+import { getUserProfile, Roles }              from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }                   from '@acx-ui/components'
 import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
 import { TenantLink }                         from '@acx-ui/react-router-dom'
@@ -11,7 +11,7 @@ import * as UI from './styledComponents'
 const useLinkData = () => {
   const { $t } = useIntl()
   const { selectedTenant: { role } } = getUserProfile()
-  const linkData = role === 'report-only'
+  const linkData = role === Roles.BUSINESS_INSIGHTS_USER
     ? [
       { title: 'Data Studio', to: '/dataStudio' },
       { title: 'Reports', to: '/reports' }

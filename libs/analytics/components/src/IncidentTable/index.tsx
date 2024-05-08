@@ -24,6 +24,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
@@ -270,7 +271,7 @@ export function IncidentTable ({ filters }: {
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
@@ -278,7 +279,7 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={{
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

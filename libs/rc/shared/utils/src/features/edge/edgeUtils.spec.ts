@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { EdgeLag }                                                                 from '../..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }  from './__tests__/fixtures'
-import { mockEdgePortConfig } from './__tests__/fixtures/portsConfig'
+import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
+import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootForStatus,
   allowResetForStatus,
@@ -13,6 +13,7 @@ import {
   getIpWithBitMask,
   getSuggestedIpRange,
   isAllPortsLagMember,
+  isInterfaceInVRRPSetting,
   lanPortsubnetValidator,
   optionSorter,
   validateClusterInterface,
@@ -22,6 +23,8 @@ import {
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+
 describe('Edge utils', () => {
 
   it('should get good service health', () => {
@@ -244,6 +247,22 @@ describe('Edge utils', () => {
     // eslint-disable-next-line max-len
     expect(mockErrorFn).toBeCalledWith('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')
   })
+
+  it('Test isInterfaceInVRRPSetting true', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port2',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeTruthy()
+  })
+
+  it('Test isInterfaceInVRRPSetting false', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port3',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeFalsy()
+  })
 })
 
 describe('validateEdgeGateway', () => {
@@ -289,7 +308,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when LAN port with LAN lag', async () => {
@@ -309,7 +329,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when all ports are LAN lag member', async () => {
@@ -330,7 +351,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when all ports are WAN lag member but all disabled', async () => {
@@ -351,7 +373,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when Cluster port with empty lag', async () => {
@@ -364,7 +387,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when LAN port with Cluster LAG', async () => {
@@ -389,7 +413,8 @@ describe('validateEdgeGateway', () => {
         result = err
       }
 
-      expect(result).toBe('At least one port must be enabled and configured to form a cluster.')
+      // eslint-disable-next-line max-len
+      expect(result).toBe('At least one port must be enabled and configured to WAN or core port to form a cluster.')
     })
 
     it('when WAN port with LAN core port LAG', async () => {

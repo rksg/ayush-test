@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
@@ -11,10 +11,11 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
+  ManageDelegateAdminDrawer,
   ResendInviteModal,
   SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
@@ -48,7 +49,8 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType, isDelegationMode, noDataDisplay }                           from '@acx-ui/utils'
 
-import * as UI from '../Subscriptions/styledComponent'
+import HspContext from '../../HspContext'
+import * as UI    from '../Subscriptions/styledComponent'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 import { ScheduleFirmwareDrawer }  from './ScheduleFirmwareDrawer'
@@ -62,14 +64,18 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
   const isUpgradeMultipleEcEnabled =
     useIsSplitOn(Features.MSP_UPGRADE_MULTI_EC_FIRMWARE) && isPrimeAdmin && !isDelegationMode()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isSupportEcAlarmCount = useIsSplitOn(Features.MSPEC_ALARM_COUNT_SUPPORT_TOGGLE)
   const isTechPartnerQueryEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
 
   const [ecTenantId, setTenantId] = useState('')
@@ -248,8 +254,7 @@ export function MspCustomers () {
         title: $t({ defaultMessage: 'Address' }),
         dataIndex: 'streetAddress',
         key: 'streetAddress',
-        sorter: true,
-        show: false
+        sorter: true
       },
       {
         title: $t({ defaultMessage: '{adminCountHeader}' }, { adminCountHeader:
@@ -615,12 +620,19 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
-          visible={drawerAssignEcMspAdminsVisible}
-          tenantIds={selEcTenantIds}
-          setVisible={setDrawerAssignEcMspAdminsVisible}
-          setSelected={() => {}}
-        />}
+        {drawerAssignEcMspAdminsVisible && ((isAbacToggleEnabled && selEcTenantIds.length === 1)
+          ? <ManageDelegateAdminDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelected={() => {}}
+            tenantId={selEcTenantIds[0]}
+            tenantType={AccountType.MSP_EC}/>
+          : <AssignEcMspAdminsDrawer
+            visible={drawerAssignEcMspAdminsVisible}
+            tenantIds={selEcTenantIds}
+            setVisible={setDrawerAssignEcMspAdminsVisible}
+            setSelected={() => {}}/>)
+        }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}
           tenantIds={selEcTenantIds}
@@ -774,13 +786,20 @@ export function MspCustomers () {
       {(isSupportToMspDashboardAllowed || (!userProfile?.support && !isIntegrator))
         && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={() => {}}
-        tenantId={ecTenantId}
-        tenantType={tenantType}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={ecTenantId}
+          tenantType={tenantType}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={ecTenantId}
+          tenantType={tenantType}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}

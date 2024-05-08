@@ -15,7 +15,8 @@ import {
   isEmpty,
   isEqual,
   dropRight,
-  uniq
+  uniq,
+  flatten
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -123,7 +124,7 @@ export function RadioSettings () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { tenantId, venueId } = useParams()
+  const { tenantId, venueId, wifiRadioTab } = useParams()
 
   const formRef = useRef<StepsFormLegacyInstance<VenueRadioCustomization>>()
   const isTriBandRadioRef = useRef<boolean>(false)
@@ -390,6 +391,9 @@ export function RadioSettings () {
     if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
       handleChange()
     }
+    if (wifiRadioTab) {
+      onTabChange(wifiRadioTab)
+    }
   }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
@@ -588,12 +592,33 @@ export function RadioSettings () {
   }
 
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    update5gData(data)
+    try {
+      await validationFields() as any
+    } catch (error: any) {
+      showActionModal({
+        type: 'error',
+        width: 450,
+        title: $t({ defaultMessage: 'You Have Invalid Changes' }),
+        content: $t({ defaultMessage: 'You have invalid changes, please see technical detail for more information.' }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: {
+            error: flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
+          }
+        }
+      })
+      return
+    }
 
+    update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
@@ -664,12 +689,10 @@ export function RadioSettings () {
       isDirty: true
     })
 
-    const errors = formRef?.current?.getFieldsError().find((field) => field.errors.length > 0)
-
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: errors ? () => {} : handleUpdateRadioSettings,
+      updateWifiRadio: handleUpdateRadioSettings,
       discardWifiRadioChanges: handleDiscard
     })
   }

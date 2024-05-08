@@ -1,7 +1,7 @@
 import { Space, Typography } from 'antd'
 import _                     from 'lodash'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
+import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } from '@acx-ui/rc/components'
 import {
   ClusterNetworkSettings,
   EdgeClusterStatus,
@@ -11,11 +11,7 @@ import {
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
-import {
-  VirtualIpConfigFormType,
-  VirtualIpFormType,
-  defaultHaTimeoutValue
-} from '../../EditEdgeCluster/VirtualIp'
+import { defaultHaTimeoutValue } from '../../EditEdgeCluster/VirtualIp'
 
 import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
@@ -29,7 +25,7 @@ const initialNodeCompatibleResult = {
 } as CompatibilityNodeError<InterfacePortFormCompatibility>
 
 export const transformFromApiToFormData =
- (apiData?: ClusterNetworkSettings, clusterInfo?: EdgeClusterStatus):InterfaceSettingsFormType => {
+ (apiData?: ClusterNetworkSettings):InterfaceSettingsFormType => {
    const portSettings = _.reduce(apiData?.portSettings,
      (result, port) => {
        result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
@@ -38,32 +34,18 @@ export const transformFromApiToFormData =
 
    const virtualIpSettings = apiData?.virtualIpSettings
    const timeout = apiData?.virtualIpSettings?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
-   const editVipConfig = [] as VirtualIpFormType['vipConfig']
-   const lanInterfaces = getLanInterfaces(apiData?.lagSettings, portSettings, clusterInfo)
-   if(virtualIpSettings && lanInterfaces) {
-     for(let i=0; i<virtualIpSettings.length; i++) {
-       const currentConfig = virtualIpSettings[i]
-       const interfaces = {} as { [key: string]: EdgePortInfo }
-       for(let config of currentConfig.ports) {
-         const tmp = lanInterfaces?.[config.serialNumber].find(item =>
-           item.portName === config.portName)
-         interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
-       }
-       editVipConfig.push({
-         vip: currentConfig.virtualIp,
-         interfaces
-       })
-     }
-   }
+   const vipConfig = virtualIpSettings?.map(item => ({
+     vip: item.virtualIp,
+     interfaces: item.ports
+   })) ?? []
 
-   // initialized empty data
-   if(editVipConfig.length === 0) editVipConfig.push({} as VirtualIpConfigFormType)
+   if(vipConfig.length === 0) vipConfig.push({} as VipConfigType)
 
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
-     vipConfig: editVipConfig
+     vipConfig
    } as InterfaceSettingsFormType
  }
 
@@ -194,26 +176,44 @@ const getCompatibleCheckResult = (
   countResult: Record<EdgeSerialNumber, CompatibilityNodeError<InterfacePortFormCompatibility>>
 ): CompatibilityCheckResult => {
   let results = _.values(countResult)
+  const targetData = results[0]
+
   const portsCheck = _.every(results,
-    (result) => _.isEqual(result.errors.ports.value, results[0].errors.ports.value))
+    (result) => _.isEqual(result.errors.ports.value, targetData.errors.ports.value))
   const corePortsCheck = _.every(results,
-    (result) => _.isEqual(result.errors.corePorts.value, results[0].errors.corePorts.value))
+    (result) => _.isEqual(result.errors.corePorts.value, targetData.errors.corePorts.value))
 
   // append 'isError' data
-  results.forEach((r) => {
-    r.errors.ports.isError = !portsCheck
-    r.errors.corePorts.isError = !corePortsCheck
+  results.forEach((givenData) => {
+    givenData.errors.ports.isError = !portsCheck
+    givenData.errors.corePorts.isError = !corePortsCheck
 
-    Object.keys(r.errors.portTypes).forEach(pt => {
-      const portTypeData = r.errors.portTypes[pt]
-      if (!portTypeData) r.errors.portTypes[pt] = { value: 0 }
-
-      const res = _.isEqual(portTypeData?.value, results[0].errors.portTypes[pt]?.value)
-      if (!res) r.errors.portTypes[pt].isError = true
+    // compare the given with target data
+    const givenPortTypes = Object.keys(givenData.errors.portTypes)
+    givenPortTypes.forEach(pt => {
+      // ignore UNCONFIGURED
+      if (pt === EdgePortTypeEnum.UNCONFIGURED) return
+      const givenPortType = givenData.errors.portTypes[pt]
+      const res = _.isEqual(givenPortType?.value, targetData.errors.portTypes[pt]?.value)
+      if (!res) {
+        givenPortType.isError = true
+        // when counting not equal, both side should display in error
+        if (targetData.errors.portTypes[pt]) targetData.errors.portTypes[pt].isError = true
+      }
     })
+
+    // reverse check to find port type only configure on target data
+    const diffPortTypes = _.difference(Object.keys(targetData.errors.portTypes), givenPortTypes)
+    if (diffPortTypes.length) {
+      diffPortTypes.forEach(diffPortType => {
+        // ignore UNCONFIGURED
+        if (diffPortType === EdgePortTypeEnum.UNCONFIGURED) return
+        targetData.errors.portTypes[diffPortType].isError = true
+      })
+    }
   })
   const portTypesCheck = _.every(results, (res) => {
-    // cehck no error
+    // check no error
     return _.values(res.errors.portTypes).some(i => i.isError) === false
   })
 
@@ -266,8 +266,7 @@ export const interfaceCompatibilityCheck = (
           isError: false, value: 1
         }
       } else {
-        // eslint-disable-next-line max-len
-        result.errors.portTypes[port.portType].value = result.errors.portTypes[port.portType].value++
+        result.errors.portTypes[port.portType].value++
       }
     })
 
@@ -306,8 +305,7 @@ export const lagSettingsCompatibleCheck = (
           isError: false, value: 1
         }
       } else {
-        // eslint-disable-next-line max-len
-        result.errors.portTypes[lag.portType].value = result.errors.portTypes[lag.portType].value++
+        result.errors.portTypes[lag.portType].value++
       }
     })
 
@@ -328,16 +326,10 @@ export const transformFromFormToApiData =
   }
   const virtualIpSettings = data.vipConfig.map(item => {
     if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
-    const ports = Object.entries(item.interfaces).map(([, v2]) => {
-      return {
-        serialNumber: v2.serialNumber,
-        portName: v2.portName
-      }
-    })
     return {
       virtualIp: item.vip,
       timeoutSeconds: data.timeout,
-      ports
+      ports: item.interfaces
     }
   }).filter(item => Boolean(item)) as VirtualIpSetting[]
   return {

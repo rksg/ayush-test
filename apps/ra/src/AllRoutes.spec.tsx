@@ -15,7 +15,6 @@ jest.mock('@acx-ui/analytics/components', () => {
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 jest.mock('./pages/ZoneDetails', () => () => <div data-testid='ZoneDetails' />)
 jest.mock('./pages/Zones', () => () => <div data-testid='ZonesList' />)
-jest.mock('./pages/Users', () => () => <div data-testid='UsersPage' />)
 
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
@@ -197,12 +196,6 @@ describe('AllRoutes', () => {
     , wrapper: Provider })
     await screen.findByTestId('ZoneDetails')
   })
-  it('should render users page correctly', async () => {
-    render(<AllRoutes />, { route: {
-      path: '/ai/admin/users' }
-    , wrapper: Provider })
-    await screen.findByTestId('UsersPage')
-  })
   it('should render support correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/admin/support' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
@@ -212,5 +205,10 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, { route: { path: '/ai/admin/onboarded' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('AccountManagement')).toBeVisible()
+  })
+  it('should render profile correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/profile/settings' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('Profile')).toBeVisible()
   })
 })

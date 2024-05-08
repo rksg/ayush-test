@@ -23,12 +23,10 @@ export function AdvancedTab () {
 
   const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
-  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
   return (
     <>
-      {dtimFlag &&
       <UI.FieldLabel width={labelWidth}>
         <Form.Item
           name={['wlan','advancedCustomization','dtimInterval']}
@@ -54,7 +52,6 @@ export function AdvancedTab () {
           />}
         />
       </UI.FieldLabel>
-      }
 
       {(qosMapSetFlag || (qosMirroringFlag && enableAP70)) && <QoS wlanData={data} />}
     </>

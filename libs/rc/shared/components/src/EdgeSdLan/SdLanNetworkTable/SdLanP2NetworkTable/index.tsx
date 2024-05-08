@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Space, Typography }      from 'antd'
+import { Space }                  from 'antd'
 import { isNil, merge, find }     from 'lodash'
 import _                          from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
@@ -115,7 +115,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
     tooltip: $t({ defaultMessage:
-        'A list of the networks that have been activated on this venue.' }),
+        // eslint-disable-next-line max-len
+        'A list of the networks that have been activated on this <venueSingular></venueSingular>.' }),
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
@@ -153,7 +154,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   }, ...(isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
     tooltip: !detailDrawerVisible ? $t(dmzTunnelColumnHeaderTooltip, {
-      detailLink: <Button type='link' onClick={showMoreDetails}>
+      detailLink: <Button type='link' onClick={showMoreDetails} style={{ fontSize: 'inherit' }}>
         {$t({ defaultMessage: 'More details about the feature.' })}
       </Button>
     }) : undefined,
@@ -234,12 +235,12 @@ const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean
         />
         <UI.FrameOverDiagram />
       </UI.DiagramContainer>
-      <Typography.Paragraph>
+      <UI.StyledParagraph>
         {
           // eslint-disable-next-line max-len
           $t({ defaultMessage: 'Enabling \'Forward guest traffic to DMZ\' will tunnel the guest traffic further to the cluster (SmartEdges) in DMZ. If it\'s disabled, the guest traffic could still be sent to the cluster (SmartEdges) in the Data Center, but only if the \'Enable Tunnel\' toggle is enabled.' })
         }
-      </Typography.Paragraph>
+      </UI.StyledParagraph>
     </Space>
   </Drawer>
 }

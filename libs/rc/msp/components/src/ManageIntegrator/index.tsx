@@ -68,8 +68,9 @@ import { RolesEnum }             from '@acx-ui/types'
 import { useUserProfileContext } from '@acx-ui/user'
 import { AccountType  }          from '@acx-ui/utils'
 
-import { AssignEcDrawer }     from '../AssignEcDrawer'
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { AssignEcDrawer }            from '../AssignEcDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
 import * as UI from '../styledComponents'
 
@@ -159,6 +160,7 @@ export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -517,7 +519,8 @@ export function ManageIntegrator () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -563,16 +566,22 @@ export function ManageIntegrator () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -686,7 +695,9 @@ export function ManageIntegrator () {
       />
       <Form.Item
         name='admin_role'
-        label={intl.$t({ defaultMessage: 'Role' })}
+        label={isAbacToggleEnabled
+          ? intl.$t({ defaultMessage: 'Privilege Group' })
+          : intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
         rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
@@ -696,7 +707,8 @@ export function ManageIntegrator () {
               Object.entries(RolesEnum).map(([label, value]) => (
                 <Option
                   key={label}
-                  value={value}>{intl.$t(roleDisplayText[value])}
+                  value={value}>
+                  {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                 </Option>
               ))
             }
@@ -954,10 +966,15 @@ export function ManageIntegrator () {
           <Paragraph>{formData.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -1161,12 +1178,18 @@ export function ManageIntegrator () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerAssignedEcVisible && <AssignEcDrawer
         visible={drawerAssignedEcVisible}
         setVisible={setDrawerAssignedEcVisible}

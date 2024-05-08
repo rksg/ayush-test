@@ -29,7 +29,9 @@ import {
   useGetVenueTemplateCityListQuery,
   useGetVenueCityListQuery,
   useAddNetworkVenueTemplatesMutation,
-  useDeleteNetworkVenuesTemplateMutation
+  useDeleteNetworkVenuesTemplateMutation,
+  useScheduleSlotIndexMap,
+  useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -37,17 +39,18 @@ import {
   NetworkVenue,
   Venue,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   RadioTypeEnum,
   SchedulingModalState,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+  SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  KeyValue, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }  from '@acx-ui/user'
-import { transformToCityListOptions } from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { transformToCityListOptions }    from '@acx-ui/utils'
 
 import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
@@ -97,7 +100,7 @@ const defaultPayload = {
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
-  defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+  defaultMessage: 'No <venuePlural></venuePlural> activating this network. Use the ON/OFF switches in the list to select the activating <venuePlural></venuePlural>'
 })
 
 interface schedule {
@@ -105,6 +108,7 @@ interface schedule {
 }
 
 export function NetworkVenuesTab () {
+  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
@@ -140,6 +144,7 @@ export function NetworkVenuesTab () {
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+  const networkId = params.networkId
 
   const networkQuery = useGetNetwork()
   const [
@@ -153,8 +158,27 @@ export function NetworkVenuesTab () {
 
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
   const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
-  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
 
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
@@ -285,7 +309,7 @@ export function NetworkVenuesTab () {
         content: (<>
           <div>
             {$t(
-              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { defaultMessage: 'For the following {count, plural, one {<venueSingular></venueSingular>} other {<venuePlural></venuePlural>}}, the network could not be activated on all <VenuePlural></VenuePlural>:' },
               { count: enabledNotActivatedVenueNames.length }
             )}
           </div>
@@ -345,7 +369,7 @@ export function NetworkVenuesTab () {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true,
       searchable: true,
@@ -391,7 +415,7 @@ export function NetworkVenuesTab () {
       render: function (_: ReactNode, row: Venue) {
         const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
         if (Boolean(row.activated?.isActivated)) {
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(networkId!, destinationsInfo?.[0])
         } else {
           return ''
         }
@@ -404,22 +428,22 @@ export function NetworkVenuesTab () {
       align: 'center',
       render: function (_, row) {
         let disabled = false
-        // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
-        if((networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled)){
-          disabled = true
-        } else if (systemNetwork) {
-          disabled = true
-          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
-        }else{
-          title = ''
+        let title = ''
+        if (hasUpdatePermission) {
+          if (networkQuery.data && networkQuery.data.enableDhcp && row.mesh && row.mesh.enabled){
+            disabled = true
+            title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          } else if (systemNetwork) {
+            disabled = true
+            title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
+          }
         }
         return <Tooltip
           title={title}
           placement='bottom'>
           <Switch
             checked={Boolean(row.activated?.isActivated)}
-            disabled={disabled}
+            disabled={!hasUpdatePermission || disabled}
             onClick={(checked, event) => {
               activateNetwork(checked, row)
               event.stopPropagation()
@@ -433,7 +457,12 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformVLAN(
+          getCurrentVenue(row),
+          networkQuery.data as NetworkSaveData,
+          vlanPoolingNameMap,
+          (e) => handleClickApGroups(row, e),
+          (!hasUpdatePermission || systemNetwork))
       }
     },
     {
@@ -442,7 +471,12 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork, row.incompatible)
+        return transformAps(
+          getCurrentVenue(row),
+          networkQuery.data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          (!hasUpdatePermission || systemNetwork),
+          row.incompatible)
       }
     },
     {
@@ -451,7 +485,11 @@ export function NetworkVenuesTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row), networkQuery.data as NetworkSaveData, (e) => handleClickApGroups(row, e), systemNetwork)
+        return transformRadios(
+          getCurrentVenue(row),
+          networkQuery.data as NetworkSaveData,
+          (e) => handleClickApGroups(row, e),
+          (!hasUpdatePermission || systemNetwork))
       }
     },
     {
@@ -459,7 +497,11 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), systemNetwork)
+        return transformScheduling(
+          getCurrentVenue(row),
+          scheduleSlotIndexMap[row.id],
+          (e) => handleClickScheduling(row, e),
+          (!hasUpdatePermission || systemNetwork))
       }
     }
   ]
@@ -568,7 +610,7 @@ export function NetworkVenuesTab () {
         settingsId={settingsId}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && !systemNetwork && {
+        rowSelection={hasUpdatePermission && !systemNetwork && {
           type: 'checkbox'
         }}
         columns={columns}

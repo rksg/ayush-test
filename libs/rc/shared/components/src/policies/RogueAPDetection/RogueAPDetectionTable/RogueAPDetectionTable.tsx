@@ -66,7 +66,9 @@ const defaultPayload = {
     'description',
     'numOfRules',
     'venueIds',
-    'venueCount'
+    'venueCount',
+    'rules',
+    'rule'
   ]
 }
 
@@ -104,7 +106,8 @@ export function RogueAPDetectionTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
       async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
     )
   }
@@ -249,7 +252,7 @@ function useColumns (venueIds: string[]) {
     },
     {
       key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueFilterOptions,
       align: 'center',

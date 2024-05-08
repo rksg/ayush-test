@@ -4,8 +4,6 @@ import {
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
-  CommonUrlsInfo,
-  Policy,
   RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
@@ -67,7 +65,15 @@ import {
   Assignment,
   NewAPITableResult, transferNewResToTableResult,
   transferToNewTablePaginationParams,
-  CommonResultWithEntityResponse
+  CommonResultWithEntityResponse,
+  CertificateUrls,
+  CertificateTemplate,
+  CertificateAuthority,
+  Certificate,
+  downloadFile,
+  CertificateTemplateMutationResult,
+  downloadCertExtension,
+  CertificateAcceptType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -92,7 +98,7 @@ const WifiOperatorMutationUseCases = [
 const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
-  'DeleteHotspot20IdentityProviders'
+  'DeleteHotspot20IdentityProvider'
 ]
 
 const L2AclUseCases = [
@@ -131,6 +137,11 @@ const AccessControlUseCases = [
 ]
 
 const defaultMacListVersioningHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+const defaultCertTempVersioningHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
 }
@@ -701,34 +712,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    policyList: build.query<TableResult<Policy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
-        return {
-          ...policyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile',
-            'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile',
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool',
-            'PatchVlanPool',
-            'DeleteVlanPools',
-            ...clientIsolationMutationUseCases
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
-    }),
     addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
@@ -803,7 +786,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...aaaDetailReq
         }
@@ -1242,6 +1225,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.activateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -1301,18 +1293,63 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
-    /*
-    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
+    getRadiusServers: build.query<TableResult<AAAViewModalType>,RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
+        const req = createHttpRequest(IdentityProviderUrls.getRadiusServers, params)
         return {
           ...req,
           body: payload
         }
+      }/*,
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      extraOptions: { maxRetries: 5 }
+      */
     }),
-    */
+
+    activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
@@ -2151,12 +2188,373 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return transferNewResToTableResult<PrioritizedPolicy>(result, { pageStartZero: true })
       },
       providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
+    }),
+    getCertificateTemplates: build.query<TableResult<CertificateTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getCertificateTemplates, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'CertificateTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'DELETE_TEMPLATE',
+            'ADD_TEMPLATE',
+            'UPDATE_TEMPLATE',
+            'DELETE_CA'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'CertificateTemplate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getCertificateTemplate: build.query<CertificateTemplate, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getCertificateTemplate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'CertificateTemplate', id: 'DETAIL' }]
+    }),
+    addCertificateTemplate: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.addCertificateTemplate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    editCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.editCertificateTemplate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    bindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.bindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    unbindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.unbindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    deleteCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.deleteCertificateTemplate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    getCertificateAuthorities: build.query<TableResult<CertificateAuthority>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getCAs, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'CertificateAuthority', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'ADD_CA',
+            'UPDATE_CA',
+            'UPLOAD_CA',
+            'DELETE_CA'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'CertificateAuthority', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getCertificateAuthority: build.query<CertificateAuthority, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getCA, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'CertificateAuthority', id: 'DETAIL' }]
+    }),
+    getSubCertificateAuthorities: build.query<TableResult<CertificateAuthority>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getSubCAs, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'CertificateAuthority', id: 'SUBLIST' }]
+    }),
+    addCertificateAuthority: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.addCA, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    uploadCertificateAuthority: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.addCA, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    addSubCertificateAuthority: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.addSubCA, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    editCertificateAuthority: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.editCA, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    uploadCaPrivateKey: build.mutation<CertificateTemplateMutationResult, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.uploadCAPrivateKey, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    deleteCaPrivateKey: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.deleteCAPrivateKey, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    deleteCertificateAuthority: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.deleteCA, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateAuthority', id: 'LIST' }]
+    }),
+    downloadCertificateAuthority: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCA, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthority.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateAuthorityChains: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCAChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthorityChain.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    getCertificates: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getCertificates, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UPDATE_CERT',
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getSpecificTemplateCertificates: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.getSpecificTemplateCertificates, params, defaultCertTempVersioningHeaders)
+        return {
+          ...req,
+          body: JSON.stringify({
+            ...(payload as TableChangePayload),
+            // eslint-disable-next-line max-len
+            ...transferToNewTablePaginationParams({ ...payload as TableChangePayload, pageStartZero: false })
+          })
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'GENERATE_CERT',
+            'UPDATE_CERT'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    generateCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.generateCertificate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Certificate', id: 'LIST' }]
+    }),
+    editCertificate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.editCertificate, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Certificate', id: 'LIST' }]
+    }),
+    downloadCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateChains: build.query<Blob, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
 
 export const {
-  usePolicyListQuery,
   useMacRegListsQuery,
   useSearchMacRegListsQuery,
   useLazySearchMacRegListsQuery,
@@ -2241,11 +2639,13 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  // HS2.0 Wi-Fi Operator
   useAddWifiOperatorMutation,
   useUpdateWifiOperatorMutation,
   useDeleteWifiOperatorMutation,
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,
@@ -2253,6 +2653,11 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetRadiusServersQuery,
+  useActivateIdentityProviderRadiusMutation,
+  useDeactivateIdentityProviderRadiusMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
@@ -2328,5 +2733,35 @@ export const {
   useUpdateAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
   useDeletePrioritizedPolicyMutation,
-  useGetPrioritizedPoliciesQuery
+  useGetPrioritizedPoliciesQuery,
+  useGetCertificateTemplatesQuery,
+  useLazyGetCertificateTemplatesQuery,
+  useLazyGetCertificateTemplateQuery,
+  useLazyGetCertificateAuthoritiesQuery,
+  useLazyGetCertificateAuthorityQuery,
+  useLazyGetSubCertificateAuthoritiesQuery,
+  useGetCertificateAuthorityQuery,
+  useGetSubCertificateAuthoritiesQuery,
+  useGetCertificateAuthoritiesQuery,
+  useAddCertificateTemplateMutation,
+  useDeleteCertificateTemplateMutation,
+  useGetCertificateTemplateQuery,
+  useEditCertificateTemplateMutation,
+  useBindCertificateTemplateWithPolicySetMutation,
+  useUnbindCertificateTemplateWithPolicySetMutation,
+  useGetCertificatesQuery,
+  useGetSpecificTemplateCertificatesQuery,
+  useAddCertificateAuthorityMutation,
+  useUploadCertificateAuthorityMutation,
+  useAddSubCertificateAuthorityMutation,
+  useEditCertificateAuthorityMutation,
+  useUploadCaPrivateKeyMutation,
+  useDeleteCaPrivateKeyMutation,
+  useGenerateCertificateMutation,
+  useEditCertificateMutation,
+  useLazyDownloadCertificateAuthorityQuery,
+  useLazyDownloadCertificateAuthorityChainsQuery,
+  useLazyDownloadCertificateQuery,
+  useLazyDownloadCertificateChainsQuery,
+  useDeleteCertificateAuthorityMutation
 } = policyApi

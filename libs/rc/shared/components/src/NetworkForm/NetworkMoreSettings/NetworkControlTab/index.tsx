@@ -46,7 +46,6 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
 
   const labelWidth = '250px'
 
-  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_DHCP_OPT_82_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
@@ -310,7 +309,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         />
       </UI.FieldLabel>
 
-      {dhcpOption82Flag && <DhcpOption82Form labelWidth={'240px'} />}
+      <DhcpOption82Form labelWidth={'240px'} />
 
       <AccessControlForm/>
 

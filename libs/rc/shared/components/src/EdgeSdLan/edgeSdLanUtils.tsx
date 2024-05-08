@@ -1,5 +1,3 @@
-import { Space } from 'antd'
-
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeSdLanViewDataP2 }    from '@acx-ui/rc/utils'
 import { TenantLink }             from '@acx-ui/react-router-dom'
@@ -8,25 +6,31 @@ import { getIntl }                from '@acx-ui/utils'
 export const useGetNetworkTunnelInfo = () => {
   const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
 
-  return (sdLansInfo?: EdgeSdLanViewDataP2[]) => {
+  return (networkId: string, sdLanInfo?: EdgeSdLanViewDataP2) => {
     const { $t } = getIntl()
-    const isTunneled = !!sdLansInfo?.length
+    const isTunneled = !!sdLanInfo
+    if (!isTunneled) return $t({ defaultMessage: 'Local Breakout' })
 
-    const clusterNames = sdLansInfo?.map(sdlan => {
-      const linkToDetail = isEdgeSdLanHaReady
-        ? `devices/edge/cluster/${sdlan.edgeClusterId}/edit/cluster-details`
-        : `/devices/edge/${sdlan.edgeId}/details/overview`
-
-      return <TenantLink to={linkToDetail} key={sdlan.id}>
-        {isEdgeSdLanHaReady ? sdlan.edgeClusterName : sdlan.edgeName}
+    let clusterName
+    if(!isEdgeSdLanHaReady) {
+      clusterName = <TenantLink to={`/devices/edge/${sdLanInfo.edgeId}/details/overview`}>
+        {sdLanInfo.edgeName}
       </TenantLink>
-    })
+    } else {
+      const isDmzEnabled = sdLanInfo.isGuestTunnelEnabled
+      const isTunnelDmz = isDmzEnabled && sdLanInfo.guestNetworkIds?.includes(networkId)
+      const targetClusterId = isTunnelDmz
+        ? sdLanInfo.guestEdgeClusterId
+        : sdLanInfo.edgeClusterId
 
-    return isTunneled
-      ? $t({ defaultMessage: 'Tunneled ({clusterNames})' },
-        { clusterNames: <Space size={5}>
-          {clusterNames}
-        </Space> })
-      : $t({ defaultMessage: 'Local breakout' })
+      const linkToDetail = `devices/edge/cluster/${targetClusterId}/edit/cluster-details`
+
+      clusterName = <TenantLink to={linkToDetail}>
+        {isTunnelDmz ? sdLanInfo.guestEdgeClusterName : sdLanInfo.edgeClusterName}
+      </TenantLink>
+    }
+
+    return $t({ defaultMessage: 'Tunneled ({clusterName})' },
+      { clusterName })
   }
 }

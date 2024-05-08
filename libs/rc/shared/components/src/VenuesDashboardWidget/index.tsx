@@ -13,6 +13,9 @@ import { useDashboardFilter }           from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
+import * as UI from './styledComponents'
+
+
 const seriesMapping = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
@@ -59,7 +62,8 @@ export function VenuesDashboardWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
+      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart
@@ -93,13 +97,16 @@ export function VenuesDashboardWidgetV2 () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
+      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              size={'medium'}
-              data={queryResults.data} />
+            <UI.Container onClick={onArrowClick}>
+              <DonutChart
+                style={{ width, height }}
+                size={'medium'}
+                data={queryResults.data} />
+            </UI.Container>
           )}
         </AutoSizer>
       </Card>

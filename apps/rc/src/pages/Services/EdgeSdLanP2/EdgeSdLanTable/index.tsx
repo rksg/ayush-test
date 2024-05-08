@@ -158,7 +158,7 @@ const EdgeSdLanTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,
@@ -263,6 +263,7 @@ const EdgeSdLanTable = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       width: 80,
+      align: 'center',
       render: (__, row) =>
         <Row justify='center'>
           <EdgeServiceStatusLight

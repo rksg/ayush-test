@@ -7,7 +7,7 @@ import { addMiddleware }                      from 'redux-dynamic-middlewares'
 import { showActionModal }         from '@acx-ui/components'
 import { act, screen, mockServer } from '@acx-ui/test-utils'
 
-import * as bootstrap from './bootstrap'
+import { init } from './bootstrap'
 
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
@@ -39,7 +39,7 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 const renderPendo = jest.mocked(require('@acx-ui/utils').renderPendo)
 jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils'),
+  ...jest.requireActual('@acx-ui/analytics/utils'),
   setUserProfile: () => {},
   getPendoConfig: jest.fn().mockImplementation(() => ({
     account: {
@@ -60,7 +60,8 @@ jest.mock('@acx-ui/analytics/utils', () => ({
       version: 'test version'
     }
   }
-  ))
+  )),
+  getUserProfile: jest.fn()
 }))
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockImplementation((name: string) => ({
@@ -70,19 +71,16 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 describe('bootstrap.init', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...window.location,
-        reload: jest.fn()
-      }
-    })
-  })
   afterEach(() => {
     mockServer.resetHandlers()
   })
   it('calls pendo and renders', async () => {
+    const mockedGetUserProfile = jest.mocked(require('@acx-ui/analytics/utils').getUserProfile)
+    mockedGetUserProfile.mockImplementationOnce(() => ({
+      preferences: {
+        preferredLanguage: 'en-US'
+      }
+    }))
     mockServer.use(
       rest.get(
         '/analytics/api/rsa-mlisa-rbac/users/profile',
@@ -112,7 +110,7 @@ describe('bootstrap.init', () => {
     rootEl.id = 'root'
     document.body.appendChild(rootEl)
     const root = createRoot(rootEl)
-    await act(() => bootstrap.init(root))
+    await act(() => init(root))
     expect(screen.getByTestId('all-routes')).toBeVisible()
     expect(renderPendo).toHaveBeenCalled()
     expect(await renderPendo.mock.calls[0][0]()).toEqual({
@@ -136,6 +134,10 @@ describe('bootstrap.init', () => {
     })
   })
   it('shows expired session if profile or any api gives 401', async () => {
+    const mockedGetUserProfile = jest.mocked(require('@acx-ui/analytics/utils').getUserProfile)
+    mockedGetUserProfile.mockImplementationOnce(() => ({
+      preferences: undefined
+    }))
     mockServer.use(
       rest.get(
         '/analytics/api/rsa-mlisa-rbac/users/profile',
@@ -146,10 +148,9 @@ describe('bootstrap.init', () => {
     rootEl.id = 'root'
     document.body.appendChild(rootEl)
     const root = createRoot(rootEl)
-    await act(() => bootstrap.init(root))
+    await act(() => init(root))
     expect(actionModal).toHaveBeenCalled()
     actionModal.mock.calls[0][0].onOk!()
-    expect(window.location.reload).toHaveBeenCalled()
     expect(middleware).toHaveBeenCalled()
     const next = jest.fn()
     const mw = middleware.mock.calls[0][0]({} as MiddlewareAPI<Dispatch<AnyAction>, unknown>)(next)

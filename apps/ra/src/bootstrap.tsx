@@ -3,11 +3,11 @@ import React from 'react'
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
+import { showExpiredSessionModal }                        from '@acx-ui/analytics/components'
+import { getPendoConfig, getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
-  showActionModal,
   SuspenseBoundary
 } from '@acx-ui/components'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
@@ -17,13 +17,14 @@ import {
   useLocaleContext,
   LocaleProvider,
   setUpIntl,
-  getIntl
+  LangKey,
+  getJwtHeaders
 } from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
-import type { AnyAction } from '@reduxjs/toolkit'
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const { lang } = useLocaleContext()
@@ -34,37 +35,23 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   />
 }
 
-function showExpiredSessionModal () {
-  const { $t } = getIntl()
-  showActionModal({
-    type: 'info',
-    title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
-    onOk: () => window.location.reload()
-  })
-}
-
-function detectExpiredSession (action: AnyAction, next: CallableFunction) {
-  if (action.meta?.baseQueryMeta?.response?.status === 401) {
-    showExpiredSessionModal()
-  } else {
-    return next(action)
-  }
-}
-
 export async function init (root: Root) {
-  addMiddleware(() => next => action => detectExpiredSession(action, next))
-  setUpIntl({ locale: 'en-US' })
-  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
+  addMiddleware(errorMiddleware)
+  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
+    headers: { ...getJwtHeaders() }
+  })
   if (user.status === 401) {
     showExpiredSessionModal()
   } else {
     setUserProfile(await(user).json())
   }
+  const { preferences } = getUserProfile()
+  const preferredLanguage = preferences?.preferredLanguage || 'en-US'
+  setUpIntl({ locale: preferredLanguage })
   root.render(
     <React.StrictMode>
       <Provider>
-        <LocaleProvider>
+        <LocaleProvider lang={preferredLanguage as LangKey}>
           <PreferredLangConfigProvider>
             <BrowserRouter>
               <React.Suspense fallback={null}>

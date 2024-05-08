@@ -1,3 +1,4 @@
+import { Roles } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -10,10 +11,13 @@ export type UserProfile = {
   selectedTenant: Tenant
   accountTier?: string
   betaEnabled?: boolean
+  preferences?: {
+    preferredLanguage: string
+  }
 }
 export type Invitation = {
   accountName: string
-  role: string
+  role: Roles
   type: string
   resourceGroupId: string
   firstName: string
@@ -24,7 +28,7 @@ export type Tenant = {
   name: string
   support: boolean
   type: 'tenant' | 'super-tenant'
-  role: 'admin' | 'network-admin' | 'report-only'
+  role: Roles
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
@@ -65,7 +69,7 @@ export type ManagedUser = {
   email: string
   accountId: string
   accountName: string
-  role: 'admin' | 'network-admin' | 'report-only'
+  role: Roles
   tenantId: string
   resourceGroupId: string
   resourceGroupName: string

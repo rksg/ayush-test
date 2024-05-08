@@ -23,7 +23,9 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
-    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId
+    authRadiusId: data.authRadiusId === '' ? null : data.authRadiusId,
+    useCertificateTemplate: data.useCertificateTemplate,
+    certificateTemplateId: data.certificateTemplateId
   }
   let authRadius = {}
   if (get(data, 'authRadius.primary.ip')) {
@@ -100,6 +102,12 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       }
     }
   }
+
+  return saveData
+}
+
+const parseHotspot20SettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = { ...data }
 
   return saveData
 }
@@ -244,6 +252,7 @@ export function transferDetailToSave (data: NetworkSaveData) {
 export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.HOTSPOT20]: parseHotspot20SettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
     [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),

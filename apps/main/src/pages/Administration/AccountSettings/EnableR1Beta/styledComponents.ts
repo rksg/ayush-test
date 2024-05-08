@@ -117,5 +117,5 @@ export const ButtonFooterWrapper = styled.div`
   align-items: flex-start;
   flex-wrap: nowrap;
   justify-content: space-between;
-  gap: 100%;
+  gap: 65%;
 `

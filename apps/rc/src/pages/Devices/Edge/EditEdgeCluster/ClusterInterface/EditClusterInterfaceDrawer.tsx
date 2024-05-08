@@ -9,7 +9,10 @@ import {
   EdgeIpModeEnum,
   EdgePortInfo,
   EdgePortTypeEnum,
+  VirtualIpSetting,
   edgePortIpValidator,
+  getEdgePortIpFromStatusIp,
+  isInterfaceInVRRPSetting,
   optionSorter,
   subnetMaskIpRegExp,
   validateUniqueIp
@@ -26,12 +29,13 @@ interface EditClusterInterfaceDrawerProps {
   interfaceList?: EdgePortInfo[]
   editData?: ClusterInterfaceTableType
   allNodeData?: ClusterInterfaceTableType[]
+  vipConfig?: VirtualIpSetting[]
 }
 
 export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProps) => {
   const {
     visible, setVisible, handleFinish: finish, interfaceList, editData,
-    allNodeData
+    allNodeData, vipConfig = []
   } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -39,13 +43,12 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
   useEffect(() => {
     if (visible){
       form.setFieldsValue({
-        ...editData,
-        ip: editData?.ip?.split('/')[0]
+        ...editData
       })
     }
   }, [editData])
 
-  const interfaceOprionts = interfaceList?.filter(item =>
+  const interfaceOptions = interfaceList?.filter(item =>
     !item.portName.includes('.') &&
     !item.isCorePort &&
     !item.isLagMember &&
@@ -58,7 +61,7 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
 
   const handleInterfaceChange = (value: string) => {
     const currentInterface = interfaceList?.find(item => item.portName === value)
-    form.setFieldValue('ip', currentInterface?.ip?.split('/')[0])
+    form.setFieldValue('ip', getEdgePortIpFromStatusIp(currentInterface?.ip))
     form.setFieldValue('subnet', currentInterface?.subnet)
   }
 
@@ -117,12 +120,37 @@ export const EditClusterInterfaceDrawer = (props: EditClusterInterfaceDrawerProp
                 />
               </>
             }
-            rules={[{ required: true }]}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select an interface as cluster interface' })
+            }]}
             children={
               <Select
                 onChange={handleInterfaceChange}
-                options={interfaceOprionts}
-              />
+              >
+                {
+                  interfaceOptions?.map(item => (
+                    isInterfaceInVRRPSetting(
+                      editData?.serialNumber ?? '',
+                      item.value,
+                      vipConfig) ?
+                      <Select.Option
+                        key={item.value}
+                        value={item.value}
+                        // eslint-disable-next-line max-len
+                        title={$t({ defaultMessage: 'This interface has already been configured as a VRRP interface' })}
+                        children={item.label}
+                        disabled
+                      />
+                      :
+                      <Select.Option
+                        key={item.value}
+                        value={item.value}
+                        children={item.label}
+                      />
+                  ))
+                }
+              </Select>
             }
           />
         </Col>

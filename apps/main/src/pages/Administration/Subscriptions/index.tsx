@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
 import { Alert, Button, Space } from 'antd'
 import moment                   from 'moment'
@@ -32,11 +31,13 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { filterByAccess }                  from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
+import { SubscriptionTabs }   from './SubscriptionsTab'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -78,7 +79,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
-const SubscriptionTable = () => {
+export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
@@ -108,7 +109,6 @@ const SubscriptionTable = () => {
         title: $t({ defaultMessage: 'Subscription' }),
         dataIndex: 'deviceType',
         key: 'deviceType',
-        // fixed: 'left',
         filterMultiple: false,
         filterValueNullable: true,
         filterable: licenseTypeOpts.filter(o =>
@@ -291,11 +291,16 @@ const SubscriptionTable = () => {
 }
 
 const Subscriptions = () => {
+  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const { tenantType } = getJwtTokenPayload()
+
   return (
-    <SpaceWrapper fullWidth size='large' direction='vertical'>
-      <SubscriptionHeader />
-      <SubscriptionTable />
-    </SpaceWrapper>
+    (isPendingActivationEnabled && tenantType === AccountType.REC)
+      ? <SubscriptionTabs />
+      : <SpaceWrapper fullWidth size='large' direction='vertical'>
+        <SubscriptionHeader />
+        <SubscriptionTable />
+      </SpaceWrapper>
   )
 }
 

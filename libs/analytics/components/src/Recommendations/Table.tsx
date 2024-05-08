@@ -10,11 +10,18 @@ import {
   dateSort,
   sortProp
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Tooltip }        from '@acx-ui/components'
+import {
+  Loader,
+  TableProps,
+  Tooltip,
+  showToast,
+  showActionModal
+} from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission }      from '@acx-ui/user'
 import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
@@ -24,11 +31,14 @@ import {
   useRecommendationListQuery,
   RecommendationListItem,
   useMuteRecommendationMutation,
-  useSetPreferenceMutation
+  useSetPreferenceMutation,
+  useDeleteRecommendationMutation
 } from './services'
 import * as UI from './styledComponents'
 
+import type { StateType }           from './config'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
 
 type Metadata = { audit?: [{ failure: string }] | undefined }
 
@@ -54,10 +64,10 @@ function RowTooltip (props: RowProps) {
       channel plan can be found within the next 24 hours.
     ` })
     : defineMessage({ defaultMessage: `
-      RUCKUS AI is currently working on optimizing this venue, with the full
-      optimization criteria, where the channel bandwidth and AP Tx
-      power will be included in the optimization plan. A new
-      recommendation for this venue will be generated only if a better
+      RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>,
+      with the full optimization criteria, where the channel bandwidth and AP Tx
+      power will be included in the optimization plan. A new recommendation for this
+      <venueSingular></venueSingular> will be generated only if a better
       channel plan can be found within the next 24 hours.
     ` })
   const partialOptimizationText = get('IS_MLISA_SA')
@@ -69,10 +79,10 @@ function RowTooltip (props: RowProps) {
       channel plan can be found within the next 24 hours.
     ` })
     : defineMessage({ defaultMessage: `
-      RUCKUS AI is currently working on optimizing this venue, without the
-      full optimization criteria, where the channel bandwidth and AP Tx
-      power will not be included in the optimization plan. A new
-      recommendation for this venue will be generated only if a better
+      RUCKUS AI is currently working on optimizing this <venueSingular></venueSingular>,
+      without the full optimization criteria, where the channel bandwidth and AP Tx
+      power will not be included in the optimization plan. A new recommendation for this
+      <venueSingular></venueSingular> will be generated only if a better
       channel plan can be found within the next 24 hours.
     ` })
   return (
@@ -128,22 +138,92 @@ const disableMuteStatus: Array<RecommendationListItem['statusEnum']> = [
   'revertscheduleinprogress'
 ]
 
+export const enableDeleteStatus: Array<RecommendationListItem['statusEnum']> = [
+  'applyfailed', 'revertfailed'
+]
+
+export const getDeleteTooltipText = (state: StateType) => {
+  const { $t } = getIntl()
+  const statusMap = {
+    applyfailed: $t({ defaultMessage: 'apply' }),
+    revertfailed: $t({ defaultMessage: 'revert' })
+  } as Record<StateType, string>
+  const values = {
+    status: statusMap[state]
+  }
+
+  return get('IS_MLISA_SA')
+    ? $t({ defaultMessage: `
+  Since a previous {status} has failed, you have the option to delete this,
+  in order for RUCKUS AI to re-run the recommendation algorithm for this zone
+  in the next 24 hours.` }, values)
+    : $t({ defaultMessage: `
+  Since a previous {status} has failed, you have the option to delete this,
+  in order for RUCKUS AI to re-run the recommendation algorithm for this
+  <venueSingular></venueSingular> in the next 24 hours.` }, values)
+}
+
 export const crrmStateSort = (itemA: RecommendationListItem, itemB: RecommendationListItem) => {
   const stateA = itemA.crrmOptimizedState!
   const stateB = itemB.crrmOptimizedState!
   return defaultSort(stateA.order, stateB.order)
 }
 
+export const toggleMuteFn = async (
+  id: string,
+  checked: boolean,
+  muteFn: ReturnType<typeof useMuteRecommendationMutation>[0],
+  callback?: () => void
+) => {
+  const { toggleMute } = await muteFn({ id, mute: checked }).unwrap()
+  callback?.()
+  if (toggleMute.success) {
+    showToast({
+      type: 'success',
+      content: getIntl().$t(
+        { defaultMessage: 'Recommendation {state} successfully' },
+        { state: checked ? 'muted' : 'unmuted' }
+      )
+    })
+  } else {
+    showToast({ type: 'error', content: toggleMute.errorMsg })
+  }
+}
+
+export const clickDeleteFn = async (
+  id: string,
+  deleteFn: ReturnType<typeof useDeleteRecommendationMutation>[0],
+  callback?: () => void
+) => {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'confirm',
+    title: $t({ defaultMessage: 'Delete recommendation' }),
+    content: $t({ defaultMessage: 'Are you sure you want to delete this recommendation?' }),
+    onOk: async () => {
+      const { deleteRecommendation } = await deleteFn({ id }).unwrap()
+      callback?.()
+      if (deleteRecommendation.success) {
+        showToast({
+          type: 'success',
+          content: getIntl().$t({ defaultMessage: 'Recommendation was deleted successfully' })
+        })
+      } else {
+        showToast({ type: 'error', content: deleteRecommendation.errorMsg })
+      }
+    }
+  })
+}
+
 export function RecommendationTable (
   { pathFilters, showCrrm }: { pathFilters: PathFilter, showCrrm?: boolean }
 ) {
-  const intl = useIntl()
-  const { $t } = intl
-
+  const { $t } = useIntl()
   const [showMuted, setShowMuted] = useState<boolean>(false)
 
   const [setPreference] = useSetPreferenceMutation()
   const [muteRecommendation] = useMuteRecommendationMutation()
+  const [deleteRecommendation] = useDeleteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     isMuted: boolean,
@@ -151,8 +231,14 @@ export function RecommendationTable (
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
+  const selectedMuteDisabled = selectedRecommendation
+    && selectedRecommendation.statusEnum
+    && disableMuteStatus.includes(selectedRecommendation.statusEnum)
   const isRecommendationRevertEnabled =
     useIsSplitOn(Features.RECOMMENDATION_REVERT) || Boolean(get('IS_MLISA_SA'))
+  const isRecommendationDeleteEnabled =
+    useIsSplitOn(Features.RECOMMENDATION_DELETE) || Boolean(get('IS_MLISA_SA'))
+
   const rowActions: TableProps<RecommendationListItem>['rowActions'] = [
     ...(selectedRecommendation
       ? getAvailableActions(
@@ -175,13 +261,31 @@ export function RecommendationTable (
       ),
       onClick: async () => {
         const { id, isMuted } = selectedRecommendation
-        await muteRecommendation({ id, mute: !isMuted }).unwrap()
-        setSelectedRowData([])
+        await toggleMuteFn(id, !isMuted, muteRecommendation, () => setSelectedRowData([]) )
       },
-      disabled: selectedRecommendation
-            && selectedRecommendation.statusEnum
-            && disableMuteStatus.includes(selectedRecommendation.statusEnum)
-    }
+      disabled: selectedMuteDisabled,
+      tooltip: selectedMuteDisabled
+        ? $t(
+          // eslint-disable-next-line max-len
+          defineMessage({ defaultMessage: 'Cannot {isMuted, select, false {mute} other {unmute}} scheduled recommendation' }),
+          { isMuted: selectedRecommendation?.isMuted }
+        )
+        : undefined
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: async () => {
+        await clickDeleteFn(selectedRecommendation.id, deleteRecommendation, () => {
+          setSelectedRowData([])
+        })
+      },
+      visible: (selectedRows) =>
+        ( selectedRows[0] &&
+          selectedRows[0].trigger === 'daily' &&
+          enableDeleteStatus.includes(selectedRows[0].statusEnum) &&
+          isRecommendationDeleteEnabled
+        ) ? true : false,
+      tooltip: selectedRows => getDeleteTooltipText(selectedRows[0].statusEnum) }
   ]
 
   const optimizationTooltipText = get('IS_MLISA_SA')
@@ -195,7 +299,7 @@ export function RecommendationTable (
       When Full Optimization is enabled, AI-Driven RRM will comprehensively optimize the channel
       plan, channel bandwidth and Tx power with the objective of minimizing co-channel interference.
       When it is disabled, only the channel plan will be optimized, using the currently configured
-      venue channel bandwidth and Tx power.
+      <venueSingular></venueSingular> channel bandwidth and Tx power.
     ` })
 
   const isCrrmPartialEnabled = [
@@ -219,7 +323,7 @@ export function RecommendationTable (
     ...(showCrrm ? [{
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM Health' })
-        : $t({ defaultMessage: 'Venue RRM Health' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular> RRM Health' }),
       width: 140,
       dataIndex: 'crrmOptimizedState',
       key: 'crrmOptimizedState',
@@ -283,7 +387,7 @@ export function RecommendationTable (
     {
       title: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone' })
-        : $t({ defaultMessage: 'Venue' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       width: 200,
       dataIndex: 'sliceValue',
       key: 'sliceValue',
@@ -336,15 +440,15 @@ export function RecommendationTable (
             ` })
             : $t({ defaultMessage: `
               Optimization option cannot be modified when RRM recommendations are applied across any
-              of the radios of the same venue. Please revert them in case you still prefer to change
-              the optimization option for current recommendation.
+              of the radios of the same <venueSingular></venueSingular>. Please revert them in case
+              you still prefer to change the optimization option for current recommendation.
             ` })
           : ''
         return <Tooltip placement='top' title={tooltipText}>
           <Switch
             defaultChecked
             checked={preferences.crrmFullOptimization}
-            disabled={!canToggle || record.isMuted}
+            disabled={!canToggle || record.isMuted || !hasPermission()}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
@@ -366,8 +470,8 @@ export function RecommendationTable (
         type='tall'
         dataSource={showCrrm ? data : noCrrmData}
         columns={columns}
-        rowActions={rowActions}
-        rowSelection={{
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

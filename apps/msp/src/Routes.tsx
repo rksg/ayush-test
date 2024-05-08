@@ -1,9 +1,11 @@
-import { Brand360 }                                             from '@acx-ui/analytics/components'
-import { ConfigProvider, PageNotFound }                         from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
-import { VenueEdit, VenuesForm, VenueDetails }                  from '@acx-ui/main/components'
-import { ManageCustomer, ManageIntegrator, PortalSettings }     from '@acx-ui/msp/components'
-import { useGetTenantDetailQuery, useHospitalityVerticalCheck } from '@acx-ui/msp/services'
+import { useContext, useEffect, useReducer, useState } from 'react'
+
+import { Brand360 }                                         from '@acx-ui/analytics/components'
+import { ConfigProvider, Loader, PageNotFound }             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { VenueEdit, VenuesForm, VenueDetails }              from '@acx-ui/main/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { checkMspRecsForIntegrator }                        from '@acx-ui/msp/services'
 import {
   AAAForm, AAAPolicyDetail,
   DHCPDetail,
@@ -11,7 +13,14 @@ import {
   PortalForm,
   NetworkDetails, NetworkForm,
   AccessControlForm, AccessControlDetail,
-  useConfigTemplateVisibilityMap
+  useConfigTemplateVisibilityMap,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  VLANPoolForm,
+  VLANPoolDetail,
+  RogueAPDetectionForm,
+  RogueAPDetectionDetailView,
+  SyslogForm,
+  SyslogDetailView
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -25,9 +34,12 @@ import {
   getServiceRoutePath
 }  from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
+import HspContext, { HspActionTypes }              from './HspContext'
+import { hspReducer }                              from './HspReducer'
 import { ConfigTemplate }                          from './pages/ConfigTemplates'
 import DpskDetails                                 from './pages/ConfigTemplates/Wrappers/DpskDetails'
 import PortalDetail                                from './pages/ConfigTemplates/Wrappers/PortalDetail'
@@ -41,16 +53,19 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
-function Init () {
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
-  const { tenantId } = useParams()
-  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
-  const params = useParams()
+export function Init () {
+  const {
+    state
+  } = useContext(HspContext)
+
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+
   const { tenantType } = getJwtTokenPayload()
-  const isHospitalityVerticalEnabled =
-  useHospitalityVerticalCheck(data?.mspEc?.parentMspId as string, tenantType as string, params)
+
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
-  const isShowBrand360 = isBrand360Enabled && isHospitalityVerticalEnabled && !isInstaller
+  const isShowBrand360 = isBrand360Enabled && state.isHsp && !isInstaller
+
   const basePath = useTenantLink(isShowBrand360 ? '/brand360' : '/dashboard', 'v')
   return <Navigate
     replace
@@ -60,11 +75,56 @@ function Init () {
 
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
-  const navigateToDashboard = isHspSupportEnabled
+  const { tenantType } = getJwtTokenPayload()
+
+  const [loadMspRoute, setLoadMspRoute] = useState<boolean>(false)
+  const { tenantId } = useParams()
+
+  const [state, dispatch] = useReducer(hspReducer, {
+    isHsp: false
+  })
+
+  const navigateToDashboard = state.isHsp
     ? '/dashboard/mspRecCustomers'
     : '/dashboard/mspCustomers'
+
+  const isTechPartner =
+  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isTechPartner) {
+          const response = await checkMspRecsForIntegrator(tenantId as string)
+          const integratorListData = await response
+          dispatch({
+            type: HspActionTypes.IS_HSP,
+            payload: {
+              isHsp: !!integratorListData?.data?.length
+            }
+          })
+        } else {
+          dispatch({
+            type: HspActionTypes.IS_HSP,
+            payload: {
+              isHsp: isHspSupportEnabled
+            }
+          })
+        }
+        setLoadMspRoute(true)
+      } catch (error) {
+        setLoadMspRoute(false)
+        // eslint-disable-next-line no-console
+        console.log(error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
@@ -82,13 +142,18 @@ export default function MspRoutes () {
       <Route path='msplicenses/*' element={<CustomersRoutes />} />
       <Route path='portalSetting' element={<PortalSettings />} />
       <Route path='brand360' element={<Brand360 />} />
+      {isDataStudioEnabled && <Route path='dataStudio' element={<DataStudio />} />}
       <Route path={getConfigTemplatePath('/*')} element={<ConfigTemplatesRoutes />} />
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Loader states={[{ isLoading: !loadMspRoute }]}>
+      <HspContext.Provider value={{ state, dispatch }}>
+        <ConfigProvider>
+          <Provider children={routes} />
+        </ConfigProvider>
+      </HspContext.Provider>
+    </Loader>
   )
 }
 
@@ -113,6 +178,7 @@ function CustomersRoutes () {
       </Route>
       <Route path=':tenantId/v/msplicenses'>
         <Route index element={<Subscriptions />} />
+        <Route path=':activeTab' element={<Subscriptions />} />
         <Route path='assign' element={<AssignMspLicense />} />
       </Route>
     </Route>
@@ -216,6 +282,92 @@ export function ConfigTemplatesRoutes () {
           <Route
             path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
             element={<PortalDetail/>}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE
+            })}
+            element={<WifiCallingForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT
+            })}
+            element={<WifiCallingConfigureForm />}
+          />
+          <Route
+            path={getServiceRoutePath({
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL
+            })}
+            element={<WifiCallingDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.VLAN_POOL] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<VLANPoolForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<VLANPoolForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.VLAN_POOL,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<VLANPoolDetail />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<SyslogForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<SyslogForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<SyslogDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE
+            })}
+            element={<RogueAPDetectionForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT
+            })}
+            element={<RogueAPDetectionForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL
+            })}
+            element={<RogueAPDetectionDetailView />}
           />
         </>}
       </Route>

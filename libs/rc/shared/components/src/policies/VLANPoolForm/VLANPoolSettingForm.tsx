@@ -3,12 +3,12 @@ import React from 'react'
 import { Form, Input }               from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { useVlanPoolListQuery }                       from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }                  from '@acx-ui/components'
+import { useGetVlanPoolPolicyTemplateListQuery, useVlanPoolListQuery } from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMembers, servicePolicyNameRegExp
+  checkVlanPoolMembers, servicePolicyNameRegExp,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
@@ -19,14 +19,15 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
-  const params = useParams()
-  const { data } = useVlanPoolListQuery({
-    params,
-    payload: {
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useVlanPoolListQuery,
+    useGetVlanPoolPolicyTemplateListQuery,
+    false,
+    {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  })
+  )
 
   const nameValidator = async (_rule: unknown, value: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -82,7 +83,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
                   You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br>
                   Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br>
                   The total number of VLAN members per pool is 64 (including ranges)<br></br>
-                  IF DHCP/NAT is enabled on a venue, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>
+                  IF DHCP/NAT is enabled on a <venueSingular></venueSingular>, the VLANs configured should be aligned with the VLANs in the DHCP profiles.
+                  Otherwise, clients may experience connectivity issues<br></br>
                 `}
                 /* eslint-enable */
               />}

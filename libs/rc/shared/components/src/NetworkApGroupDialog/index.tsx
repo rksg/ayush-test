@@ -38,7 +38,8 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum, NetworkTypeEnum
+  WlanSecurityEnum, NetworkTypeEnum,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -88,6 +89,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
@@ -196,7 +198,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
     const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
     const apGroupVlanPool = apgroup?.vlanPoolId ? {
-      name: apgroup.vlanPoolName || '',
+      name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
       id: apgroup.vlanPoolId || '',
       vlanMembers: []
     } : wlan?.advancedCustomization?.vlanPool
@@ -298,7 +300,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
          && radios.length === 1
          && radios.includes(RadioTypeEnum._6_GHz)) {
       return Promise.reject($t({ defaultMessage:
-        'Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
+        'Configure a <VenueSingular></VenueSingular> using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
     }
     return Promise.resolve()
   }
@@ -307,7 +309,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     <Modal
       {...props}
       title={$t({ defaultMessage: 'Select APs' })}
-      subTitle={$t({ defaultMessage: 'Define how this network will be activated on venue "{venueName}"' }, { venueName: venueName })}
+      subTitle={$t({ defaultMessage: 'Define how this network will be activated on <venueSingular></venueSingular> "{venueName}"' }, { venueName: venueName })}
       okText={$t({ defaultMessage: 'Apply' })}
       maskClosable={true}
       keyboard={false}
@@ -340,7 +342,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
           <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
-                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</UI.RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
                 shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
@@ -362,7 +364,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 )}
               </Form.Item>
 
-              <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
+              <Radio disabled={isTemplate} value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.List name='apgroups'>

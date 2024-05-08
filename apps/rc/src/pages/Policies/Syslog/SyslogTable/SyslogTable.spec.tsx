@@ -99,8 +99,6 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -118,8 +116,6 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))

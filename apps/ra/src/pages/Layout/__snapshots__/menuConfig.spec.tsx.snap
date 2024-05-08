@@ -406,8 +406,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -416,8 +415,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -436,8 +434,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -466,8 +463,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [
@@ -594,8 +590,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -604,8 +599,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -634,8 +628,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -1087,8 +1080,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -1097,8 +1089,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -1127,8 +1118,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -1157,8 +1147,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [
@@ -1590,8 +1579,7 @@ Array [
                 "value": "Onboarded Systems",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/onboarded",
+            "uri": "/admin/onboarded",
           },
           Object {
             "label": Array [
@@ -1600,8 +1588,7 @@ Array [
                 "value": "Users",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/users",
+            "uri": "/admin/users",
           },
           Object {
             "label": Array [
@@ -1630,8 +1617,7 @@ Array [
                 "value": "Support",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/support",
+            "uri": "/admin/support",
           },
           Object {
             "label": Array [
@@ -1660,8 +1646,7 @@ Array [
                 "value": "Webhooks",
               },
             ],
-            "openNewTab": true,
-            "uri": "/analytics/admin/webhooks",
+            "uri": "/admin/webhooks",
           },
         ],
         "label": Array [

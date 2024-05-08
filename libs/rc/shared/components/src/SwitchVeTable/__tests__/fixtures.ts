@@ -52,7 +52,9 @@ export const routedList = {
       switchName: '7150stack',
       syncedSwitchConfig: true,
       veId: 1,
-      vlanId: 1
+      vlanId: 1,
+      vsixIngressAclName: 'ipv6-acl-in',
+      vsixEgressAclName: 'ipv6-acl-out'
     }
   ],
   fields: [

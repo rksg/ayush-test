@@ -4,10 +4,10 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
+import { IpUtilsService }                                                                                                                                                          from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                                                 from '../../models/EdgeEnum'
+import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                                                from '../../validator'
 
 const Netmask = require('netmask').Netmask
 
@@ -338,7 +338,7 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
 
   if (allPortsLagMember && lagWithGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to form a cluster.' }))
+    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to WAN or core port to form a cluster.' }))
   } else {
     return Promise.resolve()
   }
@@ -355,12 +355,12 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
 
   const lagWithGateway = getLagGatewayCount(lagData)
 
-  const totoalGateway = portWithGateway + lagWithGateway
+  const totalGateway = portWithGateway + lagWithGateway
 
-  if (totoalGateway === 0) {
+  if (totalGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to form a cluster.' }))
-  } else if (totoalGateway > 1) {
+    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
+  } else if (totalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   } else {
     return Promise.resolve()
@@ -371,8 +371,24 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
     case EdgeIpModeEnum.DHCP:
       return EdgeIpModeEnum.DHCP
     case 'Static':
+    case EdgeIpModeEnum.STATIC:
       return EdgeIpModeEnum.STATIC
     default:
       return ''
   }
+}
+
+export const getEdgePortIpFromStatusIp = (statusIp?: string) => {
+  return statusIp?.split('/')[0]
+}
+
+export const isInterfaceInVRRPSetting = (
+  serialNumber: EdgeSerialNumber,
+  interfaceName: string,
+  vrrpSettings: ClusterNetworkSettings['virtualIpSettings']
+) => {
+  return Boolean(vrrpSettings?.some(item =>
+    item.ports?.some(port =>
+      port.serialNumber === serialNumber &&
+      port.portName.toLowerCase() === interfaceName.toLowerCase())))
 }
