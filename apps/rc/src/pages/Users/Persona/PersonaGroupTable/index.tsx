@@ -8,12 +8,12 @@ import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/featu
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
-  VenueLink,
   PersonaGroupDrawer,
-  usePersonaAsyncHeaders
+  usePersonaAsyncHeaders,
+  VenueLink
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -50,7 +50,8 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationAvailable
+    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
 
   const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({
@@ -58,7 +59,7 @@ function useColumns (
   })
   const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
     { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
-    { skip: !networkSegmentationEnabled }
+    { skip: !networkSegmentationAvailable }
   )
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
     payload: propertyConfigDefaultPayload }, {
@@ -129,7 +130,7 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
-    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] })) ? [{
+    ...(networkSegmentationAvailable ? [{
       key: 'personalIdentityNetworkId',
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       dataIndex: 'personalIdentityNetworkId',
@@ -193,6 +194,8 @@ export function PersonaGroupTable () {
     defaultPayload: { keyword: '' },
     pagination: { settingsId }
   })
+  const networkSegmentationAvailable
+    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -232,7 +235,7 @@ export function PersonaGroupTable () {
           })
       }
 
-      if (personalIdentityNetworkId) {
+      if (networkSegmentationAvailable && personalIdentityNetworkId) {
         getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {

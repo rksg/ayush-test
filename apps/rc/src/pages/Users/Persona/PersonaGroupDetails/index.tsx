@@ -3,22 +3,22 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard } from '@acx-ui/components'
+import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
 import { Features, TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
+  BasePersonaTable,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  VenueLink,
   PersonaGroupDrawer,
-  BasePersonaTable
+  VenueLink
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
-  useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
+  useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup }                  from '@acx-ui/rc/utils'
 import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
@@ -62,7 +62,8 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationAvailable
+    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -102,7 +103,7 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (personalIdentityNetworkId && networkSegmentationEnabled) {
+    if (personalIdentityNetworkId && networkSegmentationAvailable) {
       let name: string | undefined
       getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
@@ -151,7 +152,7 @@ function PersonaGroupDetails () {
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
     },
-    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] })) ? [{
+    ...(networkSegmentationAvailable ? [{
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
         <NetworkSegmentationLink

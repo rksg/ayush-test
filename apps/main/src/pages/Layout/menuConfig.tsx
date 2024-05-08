@@ -30,7 +30,7 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum, SwitchScopes }                        from '@acx-ui/types'
+import { RolesEnum, SwitchScopes, WifiScopes }            from '@acx-ui/types'
 import { hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
 import { useTenantId }                                    from '@acx-ui/utils'
 
@@ -152,7 +152,7 @@ export function useMenuConfig () {
             }
           ]
         }] : []),
-        ...(isCloudpathBetaEnabled ? [{
+        ...(isCloudpathBetaEnabled && hasPermission({ scopes: [WifiScopes.READ ] }) ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Identity Management' }),
           children: [
