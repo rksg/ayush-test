@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonRbacUrlsInfo, CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,
