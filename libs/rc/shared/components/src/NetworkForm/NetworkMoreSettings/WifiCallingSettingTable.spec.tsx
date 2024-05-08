@@ -2,40 +2,27 @@ import React from 'react'
 
 import { rest } from 'msw'
 
-import { serviceApi }                      from '@acx-ui/rc/services'
-import { WifiCallingUrls }                 from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { serviceApi }                          from '@acx-ui/rc/services'
+import { WifiCallingSetting, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { act, mockServer, render, screen }     from '@acx-ui/test-utils'
 
-import WifiCallingSettingTable from './WifiCallingSettingTable'
+import { mockWifiCallingDetail } from '../__tests__/fixtures'
+
+import { WifiCallingSettingContext } from './NetworkControlTab'
+import WifiCallingSettingTable       from './WifiCallingSettingTable'
 
 
-const wifiCallingSettingTable = [
-  {
-    profileName: 'AT&T',
-    description: 'AT&T des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'Sprint',
-    description: 'Sprint des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'Verizon',
-    description: 'Verizon des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  },
-  {
-    profileName: 'T-Mobile',
-    description: 'T-Mobile des',
-    qosPriority: 'WIFICALLING_PRI_VOICE'
-  }
-]
-
+let wifiCallingSettingList = [mockWifiCallingDetail] as WifiCallingSetting[]
+const setWifiCallingSettingList = jest.fn()
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
-    {children}
+    <WifiCallingSettingContext.Provider value={{
+      wifiCallingSettingList: wifiCallingSettingList,
+      setWifiCallingSettingList
+    }}>
+      {children}
+    </WifiCallingSettingContext.Provider>
   </Provider>
 }
 
@@ -47,12 +34,10 @@ describe('WifiCallingSettingTable', () => {
   })
 
   it('should render wifiCallingSettingTable successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCallingList.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingSettingTable)
-      )
-    ))
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail)))
+    )
 
     render(
       <WifiCallingSettingTable />, {
@@ -73,5 +58,13 @@ describe('WifiCallingSettingTable', () => {
     expect(screen.getByRole('columnheader', {
       name: /qospriority/i
     })).toBeTruthy()
+
+    expect(await screen.findByRole('cell', {
+      name: /wificsp1/i
+    })).toBeVisible()
+
+    expect(await screen.findByRole('cell', {
+      name: /for test/i
+    })).toBeVisible()
   })
 })

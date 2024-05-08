@@ -79,8 +79,10 @@ export enum Features {
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
-  MSP_HSP_PLM_FF = 'LOC-HSP',
+  MSP_HSP_360_PLM_FF = 'HSP-360',
+  MSP_HSP_PLM_FF = 'HSP-LOC',
   MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
+  MSP_PATCH_TIER = 'mspservice-patch-tier',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
@@ -177,7 +179,8 @@ export enum Features {
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
-  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

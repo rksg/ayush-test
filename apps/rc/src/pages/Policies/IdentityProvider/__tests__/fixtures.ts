@@ -2,13 +2,8 @@ import {
   AAAPolicyType,
   IdentityProviderViewModel,
   NaiRealmAuthInfoEnum,
-  NaiRealmAuthTypeCredentialEnum,
-  NaiRealmAuthTypeInnerEnum,
-  NaiRealmAuthTypeNonEapEnum,
-  NaiRealmAuthTypeTunneledEnum,
   NaiRealmEapMethodEnum,
   NaiRealmEcodingEnum,
-  NaiRealmType,
   Network,
   TableResult
 } from '@acx-ui/rc/utils'
@@ -19,84 +14,6 @@ export const mockAuthRadiusId = '__Auth_Radius_ID__'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 
-export const newEmptyData = {
-  name: '',
-  naiRealms: [] as NaiRealmType[],
-  authRadiusId: '',
-  accountingRadiusEnabled: false
-}
-
-export const editDataWithRealms = {
-  ...newEmptyData,
-  naiRealms: [{
-    name: 'r1',
-    encoding: NaiRealmEcodingEnum.RFC4282,
-    eaps: [{
-      method: NaiRealmEapMethodEnum.MD5,
-      authInfos: [{
-        info: NaiRealmAuthInfoEnum.Expanded,
-        vendorId: '1',
-        vendorType: '1'
-      }, {
-        info: NaiRealmAuthInfoEnum.Non_Eap,
-        nonEapAuth: NaiRealmAuthTypeNonEapEnum.CHAP
-      }, {
-        info: NaiRealmAuthInfoEnum.Inner,
-        eapInnerAuth: NaiRealmAuthTypeInnerEnum.EAP_TLS
-      }, {
-        info: NaiRealmAuthInfoEnum.Credential,
-        credentialType: NaiRealmAuthTypeCredentialEnum.NFC
-      }],
-      rowId: 0
-    }, {
-      method: NaiRealmEapMethodEnum.PEAP,
-      authInfos: [{
-        info: NaiRealmAuthInfoEnum.Expanded_Inner,
-        vendorId: '1',
-        vendorType: '1'
-      }, {
-        info: NaiRealmAuthInfoEnum.Tunneled,
-        tunneledType: NaiRealmAuthTypeTunneledEnum.Certificate
-      }, {
-        info: NaiRealmAuthInfoEnum.Credential,
-        credentialType: NaiRealmAuthTypeCredentialEnum.SIM
-      }],
-      rowId: 1
-    }],
-    rowId: 0
-  }, {
-    name: 'r2',
-    encoding: NaiRealmEcodingEnum.UTF8,
-    eaps: [{
-      method: NaiRealmEapMethodEnum.MD5,
-      authInfos: [{
-        info: NaiRealmAuthInfoEnum.Expanded,
-        vendorId: '1',
-        vendorType: '1'
-      }],
-      rowId: 0
-    }],
-    rowId: 1
-  }]
-}
-
-export const editDataWithPlmns = {
-  ...newEmptyData,
-  name: 'test1',
-  plmns: [
-    { mcc: '001', mnc: '005', rowId: 0 },
-    { mcc: '002', mnc: '01', rowId: 1 }
-  ]
-}
-
-export const editDataWithROIs = {
-  ...newEmptyData,
-  name: 'test1',
-  roamConsortiumOIs: [
-    { name: 'roi1', organizationId: '1a2b3c4d5e', rowId: 0 },
-    { name: 'roi2', organizationId: 'ffffff', rowId: 1 }
-  ]
-}
 
 export const dummyIdenetityPrividerData1 = {
   id: mockAccountingRadiusId,

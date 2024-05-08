@@ -206,7 +206,7 @@ const privilegeGroup = {
   allCustomers: false,
   delegation: true,
   description: 'some description',
-  name: 'some name',
+  name: 'some-name',
   type: 'Custom',
   roleName: 'READ_ONLY',
   policies: [{

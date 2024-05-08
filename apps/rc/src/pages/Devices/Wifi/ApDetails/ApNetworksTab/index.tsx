@@ -44,7 +44,7 @@ export function ApNetworksTab () {
     { skip: !isEdgeSdLanHaReady })
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
-    , tableQuery.data?.data.map(item => item.id))
+    , tableQuery.data?.data?.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
@@ -92,7 +92,7 @@ export function ApNetworksTab () {
       render: function (_: ReactNode, row: Network) {
         const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
           sdlan.networkIds.includes(row.id))
-        return getNetworkTunnelInfo(destinationsInfo)
+        return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
       }
     }]: [])
     // { // TODO: Waiting for HEALTH feature support
