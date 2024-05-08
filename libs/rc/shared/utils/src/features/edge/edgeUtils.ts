@@ -10,6 +10,8 @@ import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgeP
 import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                     from '../../validator'
 
 const Netmask = require('netmask').Netmask
+const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
+const physicalSmartEdgeSerialRegex = '(9[1-9]|10|1[1-9]|[2-4][0-9]|5[0-2])\\d{10}'
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -201,8 +203,7 @@ export const getSuggestedIpRange = (ipAddress?: string, subnetMask?: string) => 
 
 export const edgeSerialNumberValidator = async (value: string) => {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  if (!new RegExp(/^(96[0-9A-Z]{32}|(9[1-9]|10|1[1-9]|[2-4][0-9]|5[0-2])\d{10})$/i).test(value)) {
+  if (!new RegExp(`^(${vSmartEdgeSerialRegex}|${physicalSmartEdgeSerialRegex})$`,'i').test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
