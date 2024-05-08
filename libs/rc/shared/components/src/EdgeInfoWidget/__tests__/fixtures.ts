@@ -6,6 +6,7 @@ export const currentEdge:EdgeStatus = {
   serialNumber: 'edge-111000001',
   venueId: '97b77f8a82324a1faa0f4cc3f56d1ef0',
   venueName: 'testVenue_Edge',
+  clusterId: 'cluster-1',
   model: 'test',
   type: 'test',
   deviceStatus: EdgeStatusEnum.OPERATIONAL,

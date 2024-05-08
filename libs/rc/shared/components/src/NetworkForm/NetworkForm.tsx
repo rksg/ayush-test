@@ -16,10 +16,13 @@ import {
   useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
   useActivateCertificateTemplateMutation,
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
-  useDeleteNetworkVenuesTemplateMutation
+  useDeleteNetworkVenuesTemplateMutation,
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -35,7 +38,9 @@ import {
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  WlanSecurityEnum, useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  CommonResult,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -51,6 +56,7 @@ import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
 import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
@@ -75,6 +81,7 @@ export const MLOContext = createContext({} as MLOContextType)
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
     aaa {AAA Settings}
+    hotspot20 {Hotspot 2.0 Settings}
     dpsk {DPSK Settings}
     other {Settings}
     guest {Portal Type}
@@ -129,6 +136,9 @@ export function NetworkForm (props:{
     useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
   )
   const activateCertificateTemplate = useCertificateTemplateActivation()
+  const activateHotspot20NetworkOperator = useWifiOperatorActivation()
+  const activateHotspot20NetworkProvider = useIdentityProviderActivation()
+  const deactivateHotspot20NetworkProvider = useIdentityProviderDeactivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -471,12 +481,23 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId',
-            'certificateTemplateId']))
-      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
-      // eslint-disable-next-line max-len
-      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
-      const hasResult = certResponse ?? networkResponse?.response
-      if (hasResult && payload.venues) {
+            'certificateTemplateId',
+            'hotspot20Settings.wifiOperator',
+            'hotspot20Settings.identityProviders']))
+      const result = await addNetworkInstance({ params, payload,
+        callback: async (res: CommonResult) => {
+          if (saveState.type === NetworkTypeEnum.HOTSPOT20) {
+            await activateHotspot20NetworkOperator(
+              res.response?.id, saveState.hotspot20Settings?.wifiOperator)
+            saveState.hotspot20Settings?.identityProviders?.forEach(async (id) => {
+              await activateHotspot20NetworkProvider(res.response?.id, id)
+            })
+          }
+        } }).unwrap()
+        .catch(err => {
+          console.log(err) // eslint-disable-line no-console
+        })
+      if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
@@ -527,7 +548,11 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId',
-            'certificateTemplateId'
+            'certificateTemplateId',
+            'hotspot20Settings.wifiOperator',
+            'hotspot20Settings.identityProviders',
+            'hotspot20Settings.activateProviders',
+            'hotspot20Settings.deactivateProviders'
           ]
         )
       }else{
@@ -547,9 +572,26 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
+      const hotspot20ActivateProviders = formData.hotspot20Settings?.activateProviders
+      const hotspot20DeactivateProviders = formData.hotspot20Settings?.deactivateProviders
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload }).unwrap()
+      await updateNetworkInstance({ params, payload,
+        callback: async () => {
+          if (payload.type === NetworkTypeEnum.HOTSPOT20) {
+            if (hotspot20DeactivateProviders) {
+              hotspot20DeactivateProviders.forEach(async (id) => {
+                await deactivateHotspot20NetworkProvider(formData.id, id)
+              })
+            }
+
+            if (hotspot20ActivateProviders) {
+              hotspot20ActivateProviders.forEach(async (id) => {
+                await activateHotspot20NetworkProvider(formData.id, id)
+              })
+            }
+          }
+        } }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
@@ -603,6 +645,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}
@@ -686,6 +729,7 @@ export function NetworkForm (props:{
                 onFinish={handleSettings}
               >
                 {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+                {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
               <DpskSettingsForm />}
@@ -813,4 +857,38 @@ function useCertificateTemplateActivation () {
     }
 
   return activateCertificateTemplate
+}
+
+function useWifiOperatorActivation () {
+  const [activate] = useActivateWifiOperatorOnWifiNetworkMutation()
+  const activateWifiOperator =
+    async (wifiNetworkId?: string, operatorId?: string) => {
+      return wifiNetworkId && operatorId ?
+        await activate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
+    }
+
+  return activateWifiOperator
+}
+
+
+function useIdentityProviderActivation () {
+  const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
+  const activateIdentityProvider =
+    async (wifiNetworkId?: string, providerId?: string) => {
+      return wifiNetworkId && providerId ?
+        await activate({ params: { wifiNetworkId, providerId } }).unwrap() : null
+    }
+
+  return activateIdentityProvider
+}
+
+function useIdentityProviderDeactivation () {
+  const [deactivate] = useDeactivateIdentityProviderOnWifiNetworkMutation()
+  const deactivateIdentityProvider =
+    async (wifiNetworkId?: string, providerId?: string) => {
+      return wifiNetworkId && providerId ?
+        await deactivate({ params: { wifiNetworkId, providerId } }).unwrap() : null
+    }
+
+  return deactivateIdentityProvider
 }

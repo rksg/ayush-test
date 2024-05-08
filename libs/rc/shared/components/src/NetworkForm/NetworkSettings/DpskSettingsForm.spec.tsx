@@ -193,7 +193,7 @@ describe('DpskSettingsForm', () => {
     )
     await userEvent.click(screen.getByRole('radio', { name: 'Use RADIUS Server' }))
     expect(screen.getByRole('radio', { name: 'Use RADIUS Server' })).toBeChecked()
-    expect(screen.getByRole('switch', { name: 'Proxy Service' })).toBeChecked()
+    expect(screen.getByTestId('enable-auth-proxy')).toBeChecked()
   })
 
 })
