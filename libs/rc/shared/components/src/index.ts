@@ -215,6 +215,7 @@ export type {
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
 export { EditContext } from './EdgeFormItem/EdgeEditContext'
+export type { EditEdgeFormControlType, EditEdgeContextType } from './EdgeFormItem/EdgeEditContext'
 export {
   getFieldFullPath,
   transformApiDataToFormListData
@@ -238,3 +239,6 @@ export * from './users'
 export * from './configTemplates'
 export * from './EdgeCluster'
 export * from './SwitchBlinkLEDsDrawer'
+export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
+export * from './SwitchCliProfileForm'
+export * from './SwitchCliTemplateForm'

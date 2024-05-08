@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {  useIntl } from 'react-intl'
 
 import { useUpdateInvitationMutation }                                           from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, Tenant, Invitation, UserProfile, roleStringMap } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, Tenant, Invitation, UserProfile, useRoles }      from '@acx-ui/analytics/utils'
 import { LayoutUI as UI, Drawer, Table, TableProps, ColorPill, showActionModal } from '@acx-ui/components'
 import { CaretDownSolid, HomeSolid }                                             from '@acx-ui/icons'
 import { Link, useTenantLink }                                                   from '@acx-ui/react-router-dom'
@@ -89,6 +89,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     .filter(invitation => invitation.type !== 'super-tenant')
   const [visible, setVisible] = useState(false)
   const basePath = useTenantLink('')
+  const roles = useRoles()
   const columns: TableProps<Tenant>['columns'] = [
     {
       width: 200,
@@ -110,7 +111,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     {
       title: $t({ defaultMessage: 'Role' }),
       sorter: { compare: sortProp('role', defaultSort) },
-      render: (_, { role }) => $t(roleStringMap[role]),
+      render: (_, { role }) => $t(roles[role]),
       searchable: true,
       dataIndex: 'role',
       key: 'role'
@@ -156,7 +157,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
               first: invitation.firstName,
               last: invitation.lastName,
               role: <InviteUI.Highlight>
-                {$t(roleStringMap[invitation.role])}
+                {$t(roles[invitation.role])}
               </InviteUI.Highlight>,
               accept: <ActionLink type='accept' invitation={invitation} userId={userId} />,
               reject: <ActionLink type='reject' invitation={invitation} userId={userId} />

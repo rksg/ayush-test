@@ -69,6 +69,19 @@ export function UserConnectionForm () {
   const [useDefaultSetting, setUseDefaultSetting]=useState(true)
   const [maxGracePeriod, setMaxGracePeriod]=useState(1440)
 
+  useEffect(() => {
+    let timeoutValue = userSessionTimeout
+    switch(userSessionTimeoutUnit){
+      case 'days':
+        timeoutValue = timeoutValue * 24 *60
+        break
+      case 'hours':
+        timeoutValue = timeoutValue * 60
+        break
+    }
+    setMaxGracePeriod(timeoutValue)
+  }, [userSessionTimeoutUnit, userSessionTimeout])
+
   /* eslint-disable max-len */
   useEffect(() => {
     if ((editMode || cloneMode) && data) {

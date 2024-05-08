@@ -32,7 +32,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 interface CardDataProps {
   type: PolicyType
@@ -227,7 +228,7 @@ function useCardData (): CardDataProps[] {
       totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !isCertificateTemplateEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
-      disabled: !isCertificateTemplateEnabled
+      disabled: !isCertificateTemplateEnabled || !hasPermission({ scopes: [WifiScopes.READ] })
     }
   ]
 }

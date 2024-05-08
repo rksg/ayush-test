@@ -377,6 +377,26 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram success
 </DocumentFragment>
 `;
 
+exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
+      >
+        <img
+          src="Hotspot20"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (Cloud) diagram successfully 1`] = `
 <DocumentFragment>
   <div
