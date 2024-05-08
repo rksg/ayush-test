@@ -37,7 +37,8 @@ function useColumns (
   venueId: string
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isNetworkSegmentationAvailable
+    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
 
   const personaGroupList = useGetPersonaGroupListQuery({
     payload: {
@@ -147,14 +148,13 @@ function useColumns (
       },
       ...props.ethernetPorts
     },
-    ...((networkSegmentationEnabled && hasPermission({ scopes: [EdgeScopes.READ] }))
-      ? [{
-        key: 'vni',
-        dataIndex: 'vni',
-        title: $t({ defaultMessage: 'Segment No.' }),
-        sorter: true,
-        ...props.vni
-      }] : [])
+    ...(isNetworkSegmentationAvailable ? [{
+      key: 'vni',
+      dataIndex: 'vni',
+      title: $t({ defaultMessage: 'Segment No.' }),
+      sorter: true,
+      ...props.vni
+    }] : [])
   ]
 
   return columns
