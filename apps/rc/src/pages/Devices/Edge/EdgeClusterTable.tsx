@@ -18,7 +18,8 @@ import {
   usePollingTableQuery,
   genUrl,
   CommonCategory,
-  EdgeStatusEnum
+  EdgeStatusEnum,
+  isVirtualEdgeSerial
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -229,7 +230,9 @@ export const EdgeClusterTable = () => {
     {
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
-          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
+          // eslint-disable-next-line max-len
+          selectedRows.filter(row => isVirtualEdgeSerial(row.serialNumber)).length === selectedRows.length),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (selectedRows, clearSelection) => {
         sendEdgeOnboardOtp(selectedRows, clearSelection)
