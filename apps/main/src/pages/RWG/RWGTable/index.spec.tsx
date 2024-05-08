@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
@@ -56,7 +56,7 @@ describe('RWG Table', () => {
         (req, res, ctx) => res(ctx.json([]))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteGateway.url,
+        CommonRbacUrlsInfo.deleteGateway.url,
         (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
       )
     )
