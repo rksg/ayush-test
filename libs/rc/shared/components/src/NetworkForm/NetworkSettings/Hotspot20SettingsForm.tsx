@@ -170,51 +170,34 @@ function Hotspot20Form () {
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
     const wifiOperatorId = useRef<string>()
     const defaultPayload = {
-      fields: ['name', 'id'],
+      fields: ['name', 'id', 'wifiNetworkIds'],
       pageSize: 100,
       sortField: 'name',
       sortOrder: 'ASC'
     }
 
-    const networkFilter = {
-      fields: ['id'],
-      pageSize: 100,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: {
-        wifiNetworkIds: [
-          networkId
-        ]
-      }
-    }
+    const { operatorSelectOptions, selectedOperatorId } = useGetWifiOperatorListQuery(
+      { payload: defaultPayload }, {
+        selectFromResult: ({ data }) => {
+          const d = data?.data
+          const operatorOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
+          const selectedOperator = networkId && d?.filter(item => item.wifiNetworkIds
+            ?.includes(networkId)).map(item => item.id)?.at(0)
+          return { operatorSelectOptions: operatorOptions, selectedOperatorId: selectedOperator }
+        }
+      })
 
-    const { providerSelectOptions } = useGetIdentityProviderListQuery({ payload: defaultPayload }, {
-      selectFromResult: ({ data }) => {
-        const providerOptions = data?.data.map(item => ({ label: item.name, value: item.id })) ?? []
-        return { providerSelectOptions: providerOptions }
-      }
-    })
-
-    const { operatorSelectOptions } = useGetWifiOperatorListQuery({ payload: defaultPayload }, {
-      selectFromResult: ({ data }) => {
-        const operatorOptions = data?.data.map(item => ({ label: item.name, value: item.id })) ?? []
-        return { operatorSelectOptions: operatorOptions }
-      }
-    })
-
-    const selectedProviderList = useGetIdentityProviderListQuery(
-      { payload: networkFilter },
-      { skip: !networkId }
-    )
-
-    const selectedOperatorList = useGetWifiOperatorListQuery(
-      { payload: networkFilter },
-      { skip: !networkId }
-    )
-
-    const selectedProviderIds = selectedProviderList.data?.data.map(item => item.id)
-    const selectedOperatorId = selectedOperatorList && selectedOperatorList.data?.totalCount &&
-      selectedOperatorList.data?.data.map(item => item.id).at(0)
+    const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
+      { payload: defaultPayload }, {
+        selectFromResult: ({ data }) => {
+          const d = data?.data
+          const providerOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
+          const selectedProviderIds = networkId && d?.filter(item => item.wifiNetworkIds
+            ?.includes(networkId)).map(item => item.id)
+          return { providerSelectOptions: providerOptions,
+            selectedProviderIds: selectedProviderIds }
+        }
+      })
 
     useEffect(() => {
       if (wifiOperatorId.current !== undefined &&
@@ -249,6 +232,31 @@ function Hotspot20Form () {
         wifiOperatorId.current = id
       }
       setShowOperatorDrawer(false)
+    }
+
+    const handleEditWifiOperator = (id: string) => {
+      if (editMode &&
+        data &&
+        selectedOperatorId) {
+
+        if (selectedOperatorId !== id) {
+          setData && setData({
+            ...data,
+            hotspot20Settings: {
+              ...data.hotspot20Settings,
+              deactivateOperator: selectedOperatorId
+            }
+          })
+        } else {
+          setData && setData({
+            ...data,
+            hotspot20Settings: {
+              ...data.hotspot20Settings,
+              deactivateOperator: null
+            }
+          })
+        }
+      }
     }
 
     const handleSaveIdentityProvider = (id?: string) => {
@@ -293,9 +301,9 @@ function Hotspot20Form () {
         selectedProviderIds &&
         selectedProviderIds.includes(id) &&
         !data.hotspot20Settings?.deactivateProviders?.includes(id)) {
-        const removes = data.hotspot20Settings?.deactivateProviders ?
-          cloneDeep(data.hotspot20Settings.deactivateProviders) : []
-        removes.push(id)
+        const removeProviders = data.hotspot20Settings?.deactivateProviders
+        const newRemoves = removeProviders ? cloneDeep(removeProviders) : []
+        newRemoves.push(id)
         const selectedIdentityProviders =
           form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
         let newIdentityProviders = cloneDeep(selectedIdentityProviders)
@@ -307,7 +315,7 @@ function Hotspot20Form () {
           hotspot20Settings: {
             ...data.hotspot20Settings,
             identityProviders: newIdentityProviders,
-            deactivateProviders: removes
+            deactivateProviders: newRemoves
           }
         })
       }
@@ -326,7 +334,8 @@ function Hotspot20Form () {
             ]}>
             <Select
               style={{ width: '280px' }}
-              options={operatorSelectOptions} />
+              options={operatorSelectOptions}
+              onSelect={handleEditWifiOperator} />
           </Form.Item>
           <Button type='link'
             disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
