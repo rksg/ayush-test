@@ -193,7 +193,7 @@ export function MultiSelectTable (props: {
       dataSource={dnsProxyList}
       rowActions={filterByAccess(rowActions)}
       rowKey='domainName'
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'radio' }}
     />
   </>
   )
