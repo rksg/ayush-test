@@ -148,6 +148,7 @@ export class Switch {
   rearModule?: string
   serialNumber?: string
   firmwareVersion?: string
+  vlanCustomize?: boolean
 
   constructor () {
     this.name = ''
@@ -267,7 +268,6 @@ export class SwitchViewModel extends Switch {
   uptime?: string
   switchName?: string
   aclCustomize?: boolean
-  vlanCustomize?: boolean
   operationalWarning?: boolean
   cliApplied?: boolean
   formStacking?: boolean

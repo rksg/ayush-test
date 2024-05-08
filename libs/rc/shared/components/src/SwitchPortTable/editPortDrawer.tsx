@@ -28,6 +28,7 @@ import {
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVlansByVenueQuery,
   useLazyGetVenueRoutedListQuery,
+  useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
   useCyclePoeMutation
@@ -216,6 +217,14 @@ export function EditPortDrawer ({
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
+  const { data: switchData, isLoading: isSwitchDataLoading }
+    = useGetSwitchQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetail?.venueId
+    })
+
   const { data: switchesDefaultVlan } = useGetDefaultVlanQuery({
     params: { tenantId, venueId: switchDetail?.venueId },
     payload: switches,
@@ -343,13 +352,14 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (switchesDefaultVlan && !isSwitchDetailLoading && switchDetail?.venueId) {
+    // eslint-disable-next-line max-len
+    if (switchesDefaultVlan && !isSwitchDetailLoading && !isSwitchDataLoading && switchDetail?.venueId) {
       resetFields()
       setData()
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPorts, isSwitchDetailLoading, switchesDefaultVlan, visible, switchDetail])
+  // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, switchesDefaultVlan, visible, switchDetail])
 
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
     vlansByVenue: Vlan[]
@@ -484,7 +494,7 @@ export function EditPortDrawer ({
         || disablePoeCapability
         || !poeEnable
         || (poeClass !== 'ZERO' && poeClass !== 'UNSET')
-      case 'useVenuesettings': return disabledUseVenueSetting || switchDetail?.vlanCustomize
+      case 'useVenuesettings': return disabledUseVenueSetting || switchData?.vlanCustomize
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
