@@ -190,16 +190,16 @@ export function StackForm () {
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({
-      params: { tenantId, switchId, venueId: venueId || editVenueId }
+      params: { tenantId, switchId, venueId: venueId || editVenueId },
+      enableRbac: isSwitchRbacEnabled
     }, {
       skip: action === 'add' ||
         (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
     })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({
-      params: {
-        tenantId, switchId, venueId: venueId || editVenueId
-      }
+      params: { tenantId, switchId, venueId: venueId || editVenueId },
+      enableRbac: isSwitchRbacEnabled
     }, {
       skip: action === 'add' ||
        (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
