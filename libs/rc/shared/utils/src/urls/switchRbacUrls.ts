@@ -419,5 +419,20 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/switches/csvFiles',
     newApi: true
+  },
+  getSwitchPortlist: {
+    method: 'post',
+    url: '/venues/switches/switchPorts/query',
+    newApi: true
+  },
+  getMemberList: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/members',
+    newApi: true
+  },
+  getSwitchRearView: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/rearDetails?unitid=:unitId',
+    newApi: true
   }
 }

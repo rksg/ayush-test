@@ -57,7 +57,11 @@ export function SwitchMacAddressForm () {
     params: { tenantId, switchId },
     payload: vlanPayload
   })
-  const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
+  const portList = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
   const [vlanOptions, setVlanOptions] = useState([] as DefaultOptionType[])
 
