@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd'
 import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip, PasswordInput }                                               from '@acx-ui/components'
+import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -122,7 +122,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
           { min: 8 },
           { max: 32 }
         ]}
-        children={<PasswordInput />}
+        children={<PasswordInputStrength />}
       />
       <Form.Item
         name='privacyProtocol'
