@@ -69,6 +69,11 @@ export type SwitchsExportPayload = {
   tenantId: string
 } & SEARCH & SORTER
 
+type StackInfo = {
+  serialNumber: string
+  venueId: string
+}
+
 const customHeaders = {
   v1: {
     'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -102,7 +107,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchRow>
         const stackMembers:{ [index:string]: StackMember[] } = {}
-        const stacks: string[] = []
+        const stacks: StackInfo[] = []
         if(!list) return { error: listQuery.error as FetchBaseQueryError }
 
         list.data.forEach(async (item:SwitchRow) => {
@@ -110,19 +115,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             item.children = item.switches
             item.switches?.forEach((i:SwitchRow) => {
               if(i.isStack || i.formStacking){
-                stacks.push(i.serialNumber)
+                stacks.push({
+                  serialNumber: i.serialNumber,
+                  venueId: i.venueId
+                })
               }
             })
           }else if(item.isStack || item.formStacking){
-            stacks.push(item.serialNumber)
+            stacks.push({
+              serialNumber: item.serialNumber,
+              venueId: item.venueId
+            })
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allStacksMember:any = await Promise.all(stacks.map(id =>
-          fetchWithBQ(genStackMemberPayload(arg, id))
+        const allStacksMember:any = await Promise.all(stacks.map(stack =>
+          fetchWithBQ(genStackMemberPayload(arg, stack))
         ))
-        stacks.forEach((id:string, index:number) => {
-          stackMembers[id] = allStacksMember[index]?.data?.data
+        stacks.forEach((stack:StackInfo, index:number) => {
+          stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
         })
 
         const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {
@@ -299,11 +310,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    switchRearView: build.query<SwitchRearView, RequestPayload>({
-      query: ({ params }) => {
+    switchRearView: build.query<SwitchRearView & { data:SwitchRearView[] } , RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchRearView,
-          params
+          switchUrls.getSwitchRearView,
+          params,
+          headers
         )
         return {
           ...req
@@ -1428,10 +1442,20 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 
 
-const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string) => {
+const genStackMemberPayload = (switchArg:RequestPayload<unknown>, stack:StackInfo) => {
+  const arg: RequestPayload<unknown> = {
+    ...switchArg,
+    params: {
+      ...switchArg.params,
+      venueId: stack.venueId,
+      switchId: stack.serialNumber
+    }
+  }
+  const switchUrls = getSwitchUrls(arg.enableRbac)
+  const headers = arg.enableRbac ? customHeaders.v1 : {}
   return {
-    ...createHttpRequest(SwitchUrlsInfo.getMemberList, arg.params),
-    body: {
+    ...createHttpRequest(switchUrls.getMemberList, arg.params, headers),
+    ...(arg.enableRbac ? {}: { body: {
       fields: [
         'activeUnitId',
         'unitId',
@@ -1458,9 +1482,9 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
         'suspendingDeployTime'
       ],
       filters: {
-        activeUnitId: [serialNumber]
+        activeUnitId: [stack.serialNumber]
       }
-    }
+    } })
   }
 }
 
