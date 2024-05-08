@@ -12,8 +12,8 @@ import {
   useParams,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
-import { SwitchScopes }  from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }            from '@acx-ui/user'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -111,7 +111,7 @@ function usePropertyManagementEnabled () {
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
 
-  return enablePropertyManagement && !isTemplate
+  return enablePropertyManagement && !isTemplate && hasPermission({ scopes: [WifiScopes.READ] })
 }
 
 export function useSwitchConfigurationEnabled () {

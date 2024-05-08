@@ -21,7 +21,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   const enabledServices = useIsSplitOn(Features.SERVICES)
-  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isPropertyAvailable
+    = useIsTierAllowed(Features.CLOUDPATH_BETA) && hasPermission({ scopes: [WifiScopes.READ] })
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {
@@ -30,9 +31,9 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       sortField: 'name',
       sortOrder: 'ASC'
     }
-  }, { skip: !enableProperty || isTemplate })
+  }, { skip: !isPropertyAvailable || isTemplate })
   const propertyConfig = useGetPropertyConfigsQuery({ params }, {
-    skip: !enableProperty || isTemplate
+    skip: !isPropertyAvailable || isTemplate
   })
 
   const onTabChange = (tab: string) => {
@@ -98,7 +99,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount })}
         key='networks'
       />}
-      {(enableProperty
+      {(isPropertyAvailable
           && !propertyConfig?.isError
           && propertyConfig?.currentData?.status === PropertyConfigStatus.ENABLED
       ) &&

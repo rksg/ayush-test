@@ -21,17 +21,20 @@ import {
 import {
   AssociatedResource,
   EditPropertyConfigMessages,
-  PropertyConfigStatus,
   PropertyConfigs,
+  PropertyConfigStatus,
   ResidentPortalType
 } from '@acx-ui/rc/utils'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
-import { PersonaGroupSelect, PersonaGroupDrawer } from '../users'
+import { PersonaGroupDrawer, PersonaGroupSelect } from '../users'
 
 import { AddResidentPortalModal }            from './AddResidentPortalModal'
 import { showDeletePropertyManagementModal } from './DeletePropertyManagementModal'
+
 
 interface PropertyManagementFormProps {
   venueId: string
@@ -278,6 +281,14 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
     setResidentPortalModalVisible(false)
   }
 
+  const hasRolePermission = () => {
+    return propertyNotFound
+      ? hasPermission({ scopes: [WifiScopes.CREATE] })
+      : isPropertyEnable
+        ? hasPermission({ scopes: [WifiScopes.UPDATE] })
+        : hasPermission({ scopes: [WifiScopes.DELETE] })
+  }
+
   return (
     <Loader
       states={[
@@ -285,6 +296,26 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         { isLoading: false, isFetching: isSubmitting || registrationResult.isLoading }
       ]}
     >
+      <Row gutter={20} style={{ marginBottom: '12px' }}>
+        <Col span={8}>
+          <Typography.Text>
+            {$t({ defaultMessage: 'Enable Property Management' })}
+          </Typography.Text>
+          <Switch
+            data-testid={'property-enable-switch'}
+            checked={isPropertyEnable}
+            onChange={handlePropertyEnable}
+            style={{ marginLeft: '20px' }}
+            disabled={propertyNotFound
+              ? !hasPermission({ scopes: [WifiScopes.CREATE] })
+              : !hasPermission({ scopes: [WifiScopes.DELETE] })}
+          />
+          <Tooltip.Question
+            title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
+            placement={'bottom'}
+          />
+        </Col>
+      </Row>
       <StepsForm
         form={form}
         onFinish={onFinish || onFormFinish}
@@ -292,25 +323,9 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         onCancel={onCancel}
         buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
         initialValues={initialValues}
+        disabled={!hasRolePermission()}
       >
         <StepsForm.StepForm>
-          <Row gutter={20} style={{ marginBottom: '12px' }}>
-            <Col span={8}>
-              <Typography.Text>
-                {$t({ defaultMessage: 'Enable Property Management' })}
-              </Typography.Text>
-              <Switch
-                data-testid={'property-enable-switch'}
-                checked={isPropertyEnable}
-                onChange={handlePropertyEnable}
-                style={{ marginLeft: '20px' }}
-              />
-              <Tooltip.Question
-                title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
-                placement={'bottom'}
-              />
-            </Col>
-          </Row>
           {isPropertyEnable &&
             <Row gutter={20}>
               <Col span={8}>
