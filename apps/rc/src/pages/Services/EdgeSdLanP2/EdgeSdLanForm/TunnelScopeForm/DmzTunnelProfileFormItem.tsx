@@ -9,14 +9,12 @@ import { hasPermission }                                      from '@acx-ui/user
 
 import { messageMappings } from '../messageMappings'
 
-interface DmzTunnelProfileFormItemProps {
-  options: { label: string, value: string }[]
-  isLoading: boolean
-  onChange: (val: string) => void
-}
+import { TunnelProfileFormItemProps } from './TunnelProfileFormItem'
+
+interface DmzTunnelProfileFormItemProps extends TunnelProfileFormItemProps {}
 
 export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) => {
-  const { options, isLoading, onChange } = props
+  const { options, isLoading, onChange, disabled = false, tooltip } = props
   const { $t } = useIntl()
 
   const formInitValues = {
@@ -25,30 +23,36 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
     disabledFields: ['mtuType', 'type']
   }
 
+  const dropdownFormItem = <Form.Item
+    name='guestTunnelProfileId'
+    label={<>
+      { $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }) }
+      <Tooltip.Question
+        title={$t(messageMappings.scope_dmz_tunnel_tooltip)}
+        placement='bottom'
+      />
+    </>}
+    rules={[{
+      required: true,
+      // eslint-disable-next-line max-len
+      message: $t({ defaultMessage: 'Please select tunnel profile (cluster- DMZ cluster tunnel)' })
+    }]}
+  >
+    <Select
+      loading={isLoading}
+      options={options}
+      placeholder={$t({ defaultMessage: 'Select ...' })}
+      onChange={onChange}
+      disabled={disabled}
+    />
+  </Form.Item>
+
   return <Row align='middle' gutter={9}>
     <Col span={10}>
-      <Form.Item
-        name='guestTunnelProfileId'
-        label={<>
-          { $t({ defaultMessage: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' }) }
-          <Tooltip.Question
-            title={$t(messageMappings.scope_dmz_tunnel_tooltip)}
-            placement='bottom'
-          />
-        </>}
-        rules={[{
-          required: true,
-          // eslint-disable-next-line max-len
-          message: $t({ defaultMessage: 'Please select tunnel profile (cluster- DMZ cluster tunnel)' })
-        }]}
-      >
-        <Select
-          loading={isLoading}
-          options={options}
-          placeholder={$t({ defaultMessage: 'Select ...' })}
-          onChange={onChange}
-        />
-      </Form.Item>
+      {tooltip
+        ? <Tooltip title={tooltip}> {dropdownFormItem} </Tooltip>
+        : dropdownFormItem
+      }
     </Col>
     {hasPermission({ scopes: [WifiScopes.CREATE, EdgeScopes.CREATE] }) &&
       <Col span={3}>

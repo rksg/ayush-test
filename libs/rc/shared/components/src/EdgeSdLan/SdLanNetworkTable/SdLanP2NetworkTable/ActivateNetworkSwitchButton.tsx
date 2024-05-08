@@ -1,5 +1,6 @@
 import { Switch, Tooltip } from 'antd'
 import _                   from 'lodash'
+import { useIntl }         from 'react-intl'
 
 import { Network }       from '@acx-ui/rc/utils'
 import { EdgeScopes }    from '@acx-ui/types'
@@ -20,7 +21,8 @@ export interface ActivateNetworkSwitchButtonP2Props {
 }
 
 export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButtonP2Props) => {
-  const { fieldName, row, activated, disabled, onChange, tooltip } = props
+  const { $t } = useIntl()
+  const { fieldName, row, activated, disabled, onChange } = props
   const isActivated = _.findIndex(activated, i => i === row.id) !== -1
   const isPermiited = hasPermission({
     scopes: [isActivated ? EdgeScopes.DELETE : EdgeScopes.UPDATE]
@@ -40,6 +42,10 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
       onChange?.(fieldName, _.omit(row, 'children'), checked, newSelected)
     }}
   />
+
+  const tooltip = props.tooltip
+    || (!isPermiited ? $t({ defaultMessage: 'No permission on this' }) : undefined)
+
   return tooltip
     ? <Tooltip title={tooltip}>
       {switchComponent}
