@@ -25,5 +25,10 @@ export const WifiOperatorUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/hotspot20Operators/query',
     newApi: true
+  },
+  activateWifiOperatorOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:wifiNetworkId/hotspot20Operators/:operatorId',
+    newApi: true
   }
 }

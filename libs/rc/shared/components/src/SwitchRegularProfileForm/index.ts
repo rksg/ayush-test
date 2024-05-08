@@ -1,0 +1,1 @@
+export { ConfigurationProfileForm } from './ConfigurationProfileForm'
