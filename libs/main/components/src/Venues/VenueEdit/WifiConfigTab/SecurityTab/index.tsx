@@ -3,6 +3,7 @@ import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useStat
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                           from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
+import styled                                                      from 'styled-components'
 
 import {
   Button,
@@ -461,6 +462,12 @@ export function SecurityTab () {
   )
 }
 
+const CustomFieldSet = styled(Fieldset)`
+  & > legend > label {
+    font-weight: 100 !important;
+  }
+`
+
 const FieldsetItem = ({
   children,
   label,
@@ -476,7 +483,7 @@ const FieldsetItem = ({
   {...props}
   valuePropName='checked'
 >
-  <Fieldset
+  <CustomFieldSet
     {...{ label, children }}
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
