@@ -142,6 +142,7 @@ export function NetworkVenuesTab () {
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+  const networkId = params.networkId
 
   const networkQuery = useGetNetwork()
   const [
@@ -155,7 +156,7 @@ export function NetworkVenuesTab () {
 
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
   const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
-  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+  const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
@@ -412,7 +413,7 @@ export function NetworkVenuesTab () {
       render: function (_: ReactNode, row: Venue) {
         const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
         if (Boolean(row.activated?.isActivated)) {
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(networkId!, destinationsInfo?.[0])
         } else {
           return ''
         }
