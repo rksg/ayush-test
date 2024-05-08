@@ -506,23 +506,23 @@ export function VenuePropertyTab () {
           return switchList.map((s, index) => <div key={index}>{s}</div>)
         }
       }] : [],
-    {
-      show: isConnectionMeteringAvailable,
-      key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Data Usage Metering' }),
-      dataIndex: 'connectionMetering',
-      render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const connectionMeteringId = persona?.meteringProfileId ?? ''
-        // eslint-disable-next-line max-len
-        const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
-        if (persona && connectionMetering) {
+    ...isConnectionMeteringAvailable ? [
+      {
+        key: 'connectionMetering',
+        title: $t({ defaultMessage: 'Data Usage Metering' }),
+        dataIndex: 'connectionMetering',
+        render: (_: ReactNode, row: PropertyUnit) => {
+          const persona = personaMap.get(row.personaId)
+          const connectionMeteringId = persona?.meteringProfileId ?? ''
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
+          const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
+          if (persona && connectionMetering) {
+          // eslint-disable-next-line max-len
+            return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
+          }
+          return ''
         }
-        return ''
-      }
-    },
+      }]: [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),
