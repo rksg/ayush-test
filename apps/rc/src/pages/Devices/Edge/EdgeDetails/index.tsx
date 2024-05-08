@@ -1,5 +1,5 @@
 import { useParams }                                     from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                    from '@acx-ui/types'
+import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
 import { goToNoPermission, goToNotFound, hasPermission } from '@acx-ui/user'
 
 import { EdgeDetailsDataProvider } from './EdgeDetailsDataProvider'
@@ -12,24 +12,25 @@ import { EdgeTroubleshooting }     from './EdgeTroubleshooting'
 
 const tabs = {
   overview: {
-    scopeKey: [EdgeScopes.READ],
     content: EdgeOverview
   },
   troubleshooting: {
-    scopeKey: [EdgeScopes.UPDATE],
-    content: EdgeTroubleshooting
+    content: EdgeTroubleshooting,
+    scopeKey: [EdgeScopes.UPDATE]
   },
   services: {
-    scopeKey: [EdgeScopes.READ],
     content: EdgeServices
   },
   dhcp: {
-    scopeKey: [EdgeScopes.READ],
     content: EdgeDhcp
   },
   timeline: {
-    scopeKey: [EdgeScopes.READ],
     content: EdgeTimeline
+  }
+} as {
+  [key in string]: {
+    content: () => JSX.Element
+    scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
   }
 }
 
@@ -38,7 +39,9 @@ export default function EdgeDetails () {
   const tabConfig = tabs[activeTab as keyof typeof tabs]
 
   const Tab = tabConfig
-    ? hasPermission({ scopes: tabConfig.scopeKey }) ? tabConfig.content : goToNoPermission
+    ? (!tabConfig.scopeKey || hasPermission({ scopes: tabConfig.scopeKey })
+      ? tabConfig.content
+      : goToNoPermission)
     : goToNotFound
 
   return <EdgeDetailsDataProvider serialNumber={serialNumber}>
