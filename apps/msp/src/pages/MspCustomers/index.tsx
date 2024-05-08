@@ -620,7 +620,7 @@ export function MspCustomers () {
           setVisible={setModalVisible}
           tenantId={selTenantId}
         />}
-        {drawerAssignEcMspAdminsVisible && (isAbacToggleEnabled && selEcTenantIds.length === 1)
+        {drawerAssignEcMspAdminsVisible && ((isAbacToggleEnabled && selEcTenantIds.length === 1)
           ? <ManageDelegateAdminDrawer
             visible={drawerAssignEcMspAdminsVisible}
             setVisible={setDrawerAssignEcMspAdminsVisible}
@@ -631,7 +631,7 @@ export function MspCustomers () {
             visible={drawerAssignEcMspAdminsVisible}
             tenantIds={selEcTenantIds}
             setVisible={setDrawerAssignEcMspAdminsVisible}
-            setSelected={() => {}}/>
+            setSelected={() => {}}/>)
         }
         {drawerScheduleFirmwareVisible && <ScheduleFirmwareDrawer
           visible={drawerScheduleFirmwareVisible}

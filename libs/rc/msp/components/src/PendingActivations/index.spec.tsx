@@ -174,6 +174,18 @@ const activations = {
     productClass: 'ACX-TRIAL-NEW',
     orderCreateDate: '2024-04-22T08:53:05.000+0000',
     orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
+  },
+  {
+    orderId: 'a0EO3000001haUHMAY',
+    salesOrderId: 'a0FO30000012DgXMAU',
+    productName: 'R1 Pro 1 AP/SW REC 1-Yr',
+    productCode: 'CLD-PROF-APSW-REC1',
+    quantity: 60,
+    spaStartDate: '2024-04-22',
+    spaEndDate: '2025-04-22',
+    productClass: 'ACX-PROF-NEW',
+    orderCreateDate: '2024-04-22T08:53:05.000+0000',
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
   }]
 }
 
