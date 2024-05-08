@@ -7,7 +7,8 @@ import {
   CommonUrlsInfo,
   TableResult,
   CommonResult,
-  Dashboard
+  Dashboard,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseEventAlarmApi } from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -52,7 +53,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
     }),
     clearAlarmByVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.clearAlarm, params)
+        const req = createHttpRequest(CommonRbacUrlsInfo.clearAlarmByVenue, params)
         return {
           ...req
         }
