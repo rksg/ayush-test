@@ -26,7 +26,7 @@ describe('Role Selection', () => {
     await userEvent.click(screen.getByTitle('Network Admin'))
     expect(mockedOnchange).toBeCalledWith(
       'network-admin',
-      { value: 'network-admin', label: 'Network Admin', key: 1 }
+      { value: 'network-admin', label: 'Network Admin', key: 'network-admin' }
     )
   })
 })

@@ -2,6 +2,7 @@ import { useDebugValue } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { getUserProfile } from '@acx-ui/analytics/utils'
 import { get }            from '@acx-ui/config'
 import { useTenantId }    from '@acx-ui/utils'
