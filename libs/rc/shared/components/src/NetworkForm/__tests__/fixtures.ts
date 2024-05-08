@@ -2130,3 +2130,23 @@ export const mockHotpost20IdentityProviderList = {
     }
   ]
 }
+export const mockWifiCallingDetail = {
+  networkIds: [
+    '44c5604da90443968e1ee91706244e63',
+    'c8cd8bbcb8cc42caa33c991437ecb983',
+    '5cae9e28662447008ea86ec7c339661b'
+  ],
+  description: 'for test',
+  qosPriority: 'WIFICALLING_PRI_VOICE',
+  name: 'wifiCSP1',
+  id: 'wifiCallingServiceId1',
+  epdgs: [
+    {
+      ip: '1.2.3.4',
+      domain: 'abc.com'
+    },
+    {
+      domain: 'def.com'
+    }
+  ]
+}

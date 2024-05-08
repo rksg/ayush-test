@@ -4,6 +4,8 @@ import { rest }  from 'msw'
 import { CertificateUrls }                                                        from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { WifiScopes }                                                             from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
 
@@ -156,5 +158,49 @@ describe('CertificateAuthorityTable', () => {
     await waitFor(() => {
       expect(editFn).toHaveBeenCalled()
     })
+  })
+
+  it('should render correctly with wifi-u wifi-d permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+    })
+
+    render(<Provider><CertificateAuthorityTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateAuthority/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /onboard2/ })
+    await userEvent.click(row)
+    expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  it('should render correctly with wifi-r permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(<Provider><CertificateAuthorityTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateAuthority/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /onboard2/ })
+    await userEvent.click(row)
+    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
   })
 })
