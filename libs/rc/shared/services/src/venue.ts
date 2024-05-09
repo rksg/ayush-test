@@ -1061,9 +1061,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        const apiInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const req = createHttpRequest(apiInfo.getVenueDirectedMulticast, params, apiCustomHeader)
+        const req = createHttpRequest(urlsInfo.getVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1084,11 +1084,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueDirectedMulticast)
-        const apiInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const configPayload = rbacApiVersion ? JSON.stringify(config) : config
 
-        const req = createHttpRequest(apiInfo.updateVenueDirectedMulticast, params, apiCustomHeader)
+        const req = createHttpRequest(urlsInfo.updateVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
           body: configPayload

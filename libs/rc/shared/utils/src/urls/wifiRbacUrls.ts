@@ -435,13 +435,17 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  },
+  }
+  /*
+  // deprecated. use the updateApDirectedMulticast to replace
   resetApDirectedMulticast: {
     method: 'delete',
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  }/*,
+  },
+  */
+  /*,
   getVenueLoadBalancing: {
     method: 'get',
     url: '/venues/:venueId/loadBalancingSettings',
