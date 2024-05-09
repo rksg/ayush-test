@@ -6,6 +6,7 @@ import {
   AccessControlForm,
   AccessControlTable,
   AdaptivePolicySetForm,
+  ApGroupEdit,
   CertificateAuthorityForm,
   CertificateTemplateForm,
   ClientIsolationForm,
@@ -68,7 +69,6 @@ import ApDetails                                    from './pages/Devices/Wifi/A
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
 import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
-import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'

@@ -54,7 +54,7 @@ export function SelectVlanModal (props: {
   } = props
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
-  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
+  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState<Number | ''>(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
   const [vlanDrawerVisible, setVlanDrawerVisible] = useState(false)
   const [taggedVlanOptions, setTaggedVlanOptions] = useState([] as CheckboxOptionType[])
@@ -141,13 +141,14 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    setSelectUntaggedVlan(Number(untaggedVlan))
+    const untagged = untaggedVlan ? Number(untaggedVlan) : ''
+    setSelectUntaggedVlan(untagged)
     setSelectTaggedVlans(taggedVlans)
   }, [])
 
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
+    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan as number)
     setTaggedVlanOptions(taggedVlanOptions)
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
