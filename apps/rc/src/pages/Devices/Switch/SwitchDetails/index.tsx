@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery }                        from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { UseQueryResult }                                                       from '@acx-ui/types'
-import { goToNotFound, hasPermission }                                          from '@acx-ui/user'
+import { goToNotFound, hasAccess }                                              from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
@@ -20,7 +20,7 @@ import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
 const tabs = {
   overview: SwitchOverviewTab,
-  incidents: () => hasPermission() ? <SwitchIncidentsTab/> : null,
+  incidents: () => hasAccess() ? <SwitchIncidentsTab/> : null,
   troubleshooting: SwitchTroubleshootingTab,
   clients: SwitchClientsTab,
   configuration: SwitchConfigurationTab,

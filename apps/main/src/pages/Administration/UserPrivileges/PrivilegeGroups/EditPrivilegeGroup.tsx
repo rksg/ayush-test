@@ -34,6 +34,7 @@ import {
   PrivilegePolicyObjectType,
   Venue,
   VenueObjectList,
+  excludeSpaceRegExp,
   specialCharactersRegExp,
   systemDefinedNameValidator
 } from '@acx-ui/rc/utils'
@@ -479,7 +480,8 @@ export function EditPrivilegeGroup () {
                 { min: 2 },
                 { max: 128 },
                 { validator: (_, value) => systemDefinedNameValidator(value) },
-                { validator: (_, value) => specialCharactersRegExp(value) }
+                { validator: (_, value) => specialCharactersRegExp(value) },
+                { validator: (_, value) => excludeSpaceRegExp(value) }
               ]}
               children={<Input />}
             />

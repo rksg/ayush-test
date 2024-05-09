@@ -29,10 +29,10 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -233,7 +233,6 @@ export const VenueFirmwareTable = (
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
-    scopeKey: [SwitchScopes.UPDATE],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -244,7 +243,6 @@ export const VenueFirmwareTable = (
   },
   {
     label: $t({ defaultMessage: 'Change Update Schedule' }),
-    scopeKey: [SwitchScopes.UPDATE],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -255,7 +253,6 @@ export const VenueFirmwareTable = (
   },
   {
     label: $t({ defaultMessage: 'Skip Update' }),
-    scopeKey: [SwitchScopes.UPDATE],
     disabled: (selectedRows) => {
       let disabledUpdate = false
       selectedRows.forEach((row) => {
@@ -273,10 +270,6 @@ export const VenueFirmwareTable = (
     }
   }]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE]
-  })
-
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -289,12 +282,12 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
-        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
+        rowActions={rowActions}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }] : []}
+        }])}
       />
 
       <SwitchUpgradeWizard
