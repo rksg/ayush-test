@@ -27,6 +27,7 @@ export enum Features {
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
+  CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',
   CERTIFICATE_TEMPLATE = 'certificate-template-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
