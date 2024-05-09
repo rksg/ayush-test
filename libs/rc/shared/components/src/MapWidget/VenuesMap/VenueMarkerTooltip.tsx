@@ -6,7 +6,9 @@ import {
   Table,
   getDeviceConnectionStatusColors
 }     from '@acx-ui/components'
-import { VenueMarkerOptions } from '@acx-ui/rc/utils'
+import { VenueMarkerOptions }                   from '@acx-ui/rc/utils'
+import { EdgeScopes, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }                        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -78,7 +80,7 @@ export function VenueMarkerTooltip (
   }
 
   const data = [
-    {
+    ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
       key: '1',
       name: $t({ defaultMessage: 'Wi-Fi' }),
       networkDevices: apsCount > 0
@@ -104,8 +106,8 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No AP clients' })}
         </UI.TextWrapper>
-    },
-    {
+    }] : []),
+    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
       key: '2',
       name: $t({ defaultMessage: 'Switch' }),
       networkDevices: switchesCount > 0
@@ -131,10 +133,10 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switch clients' })}
         </UI.TextWrapper>
-    }
+    }] : [])
   ]
 
-  if (isEdgeEnabled) {
+  if (isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.READ] })) {
     data.push({
       key: '3',
       name: $t({ defaultMessage: 'SmartEdge' }),
