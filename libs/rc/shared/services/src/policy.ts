@@ -2250,6 +2250,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
     }),
+    bindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.bindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    unbindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.unbindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
     deleteCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
@@ -2727,6 +2747,8 @@ export const {
   useDeleteCertificateTemplateMutation,
   useGetCertificateTemplateQuery,
   useEditCertificateTemplateMutation,
+  useBindCertificateTemplateWithPolicySetMutation,
+  useUnbindCertificateTemplateWithPolicySetMutation,
   useGetCertificatesQuery,
   useGetSpecificTemplateCertificatesQuery,
   useAddCertificateAuthorityMutation,

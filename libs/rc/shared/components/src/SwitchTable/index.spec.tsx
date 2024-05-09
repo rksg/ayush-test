@@ -16,8 +16,6 @@ import {
   within,
   findTBody
 } from '@acx-ui/test-utils'
-import { SwitchScopes }                   from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { SwitchTable } from '.'
 
@@ -639,63 +637,5 @@ describe('SwitchTable', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(await screen.findAllByText(/Members: 1/i)).toHaveLength(2)
-  })
-
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ, SwitchScopes.UPDATE]
-      })
-
-      mockServer.use(
-        rest.post(
-          SwitchUrlsInfo.getSwitchList.url,
-          (req, res, ctx) => res(ctx.json({
-            ...switchList,
-            data: switchList.data.slice(3, 4)
-          }))
-        )
-      )
-      render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
-        route: { params, path: '/:tenantId/t' }
-      })
-
-      const table = await screen.findByTestId('switch-table')
-      const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
-      await userEvent.click(await within(row).findByRole('checkbox'))
-
-      await within(table).findByText(/1 selected/)
-      expect(await within(table).findByRole('button', { name: 'Edit' })).toBeVisible()
-      expect(within(table).queryByRole('button', { name: 'Delete' })).toBeNull()
-    })
-
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      mockServer.use(
-        rest.post(
-          SwitchUrlsInfo.getSwitchList.url,
-          (req, res, ctx) => res(ctx.json({
-            ...switchList,
-            data: switchList.data.slice(3, 4)
-          }))
-        )
-      )
-      render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
-        route: { params, path: '/:tenantId/t' }
-      })
-
-      const table = await screen.findByTestId('switch-table')
-      const row = await within(table).findByRole('row', { name: /FEK3224R1AG/i })
-      expect(within(row).queryByRole('checkbox')).toBeNull()
-    })
   })
 })

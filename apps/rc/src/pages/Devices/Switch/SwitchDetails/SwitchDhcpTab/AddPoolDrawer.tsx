@@ -13,8 +13,8 @@ import {
   SwitchDhcp,
   SwitchDhcpOption
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 
@@ -232,7 +232,7 @@ export function AddPoolDrawer (props: {
         <Table
           rowKey='seq'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && {
+          rowSelection={hasAccess() && {
             type: 'radio',
             selectedRowKeys: selected ? [selected.seq]:[],
             onChange: (keys: React.Key[]) => {
