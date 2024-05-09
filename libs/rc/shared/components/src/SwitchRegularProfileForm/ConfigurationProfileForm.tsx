@@ -14,8 +14,8 @@ import {
 }                   from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
-  generatePageHeaderTitle, SwitchConfigurationProfile, SwitchModel,
-  TaggedVlanPorts, useConfigTemplate, useConfigTemplateBreadcrumb,
+  useConfigTemplatePageHeaderTitle, SwitchConfigurationProfile, SwitchModel,
+  TaggedVlanPorts, useConfigTemplateBreadcrumb,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   Vlan, VoiceVlanConfig, VoiceVlanOption
@@ -63,15 +63,13 @@ export function ConfigurationProfileForm () {
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: 'Wired' }) },
     { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
     { text: $t({ defaultMessage: 'Configuration Profiles' }), link: '/networks/wired/profiles' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: editMode,
-    isTemplate,
     instanceLabel: $t({ defaultMessage: 'Switch Configuration Profile' })
   })
 

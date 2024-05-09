@@ -21,7 +21,8 @@ import {
   RogueAPDetectionDetailView,
   SyslogForm,
   SyslogDetailView,
-  ConfigurationProfileForm
+  ConfigurationProfileForm,
+  CliProfileForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -385,6 +386,22 @@ export function ConfigTemplatesRoutes () {
             element={
               <AuthRoute scopes={[SwitchScopes.UPDATE]}>
                 <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_CLI] && <>
+          <Route path='networks/wired/:configType/cli/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <CliProfileForm />
+              </AuthRoute>
+            } />
+          <Route
+            path='networks/wired/:configType/cli/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <CliProfileForm />
               </AuthRoute>
             }
           />

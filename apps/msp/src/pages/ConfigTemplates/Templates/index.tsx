@@ -318,6 +318,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate,
     [ConfigTemplateType.SYSLOG]: deleteSyslogTemplate,
     [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
-    [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate
+    [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
+    [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate
   }
 }

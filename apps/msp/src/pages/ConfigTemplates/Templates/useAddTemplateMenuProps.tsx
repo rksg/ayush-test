@@ -122,16 +122,23 @@ export function useSwitchMenuItems (): ItemType | null {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = getIntl()
 
-  if (!visibilityMap[ConfigTemplateType.SWITCH_REGULAR]) return null
+  // eslint-disable-next-line max-len
+  if (!visibilityMap[ConfigTemplateType.SWITCH_REGULAR] && !visibilityMap[ConfigTemplateType.SWITCH_CLI]) return null
 
   return {
     key: 'add-switch-profile',
     label: $t({ defaultMessage: 'Wired' }),
     children: [
       (visibilityMap[ConfigTemplateType.SWITCH_REGULAR] ? {
-        key: 'add-switch-config-profile',
+        key: 'add-switch-regular-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/add'>
-          {$t({ defaultMessage: 'Configuration Profile' })}
+          {$t({ defaultMessage: 'Regular Profile' })}
+        </ConfigTemplateLink>
+      } : null),
+      (visibilityMap[ConfigTemplateType.SWITCH_CLI] ? {
+        key: 'add-switch-cli-profile',
+        label: <ConfigTemplateLink to='networks/wired/profiles/cli/add'>
+          {$t({ defaultMessage: 'CLI Profile' })}
         </ConfigTemplateLink>
       } : null)
     ]

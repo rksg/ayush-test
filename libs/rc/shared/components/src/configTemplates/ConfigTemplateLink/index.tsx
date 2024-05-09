@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import {
   ConfigTemplateType,
@@ -119,7 +119,7 @@ export function ServiceConfigTemplateLinkSwitcher (props: React.PropsWithChildre
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string | number | ReactNode, activeTab?: string) {
+export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: ReactNode, activeTab?: string): ReactElement {
   const targetTab = activeTab ?? configTemplateDefaultDetailsTab[type]
   const policyType = configTemplatePolicyTypeMap[type]
   const serviceType = configTemplateServiceTypeMap[type]
@@ -147,7 +147,7 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
   }
 
-  return name
+  return <span>{name}</span>
 }
 
 // eslint-disable-next-line max-len

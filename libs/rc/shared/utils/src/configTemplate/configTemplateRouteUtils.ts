@@ -33,6 +33,8 @@ export function getConfigTemplateEditPath (type: ConfigTemplateType, id: string)
     path = `venues/${id}/edit/details`
   } else if (type === ConfigTemplateType.SWITCH_REGULAR) {
     path = `networks/wired/profiles/regular/${id}/edit`
+  } else if (type === ConfigTemplateType.SWITCH_CLI) {
+    path = `networks/wired/profiles/cli/${id}/edit`
   }
 
   return getConfigTemplatePath(path)
