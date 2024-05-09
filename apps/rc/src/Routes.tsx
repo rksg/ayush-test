@@ -49,7 +49,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
-import { WifiScopes }                                  from '@acx-ui/types'
+import { EdgeScopes, WifiScopes }                      from '@acx-ui/types'
 import { AuthRoute }                                   from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
@@ -154,6 +154,7 @@ import WifiClientDetails                    from './pages/Users/Wifi/ClientDetai
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
 
+
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
@@ -216,24 +217,43 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
-      <Route path='devices/edge/add' element={<AddEdge />} />
-      <Route path='devices/edge/cluster/add' element={<AddEdgeCluster />} />
+      <Route path='devices/edge' element={<Edges />} />
+      <Route
+        path='devices/edge/add'
+        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+          <AddEdge />
+        </AuthRoute>}/>
+      <Route
+        path='devices/edge/cluster/add'
+        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+          <AddEdgeCluster />
+        </AuthRoute>}/>
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
-        element={<EditEdge />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdge />
+        </AuthRoute>}/>
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        element={<EditEdge />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdge />
+        </AuthRoute>} />
       <Route path='devices/edge/:serialNumber/details/:activeTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<EditEdgeCluster />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdgeCluster />
+        </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure'
-        element={<EdgeClusterConfigWizard />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EdgeClusterConfigWizard />
+        </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
-        element={<EdgeClusterConfigWizard />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EdgeClusterConfigWizard />
+        </AuthRoute>} />
 
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
@@ -244,8 +264,6 @@ function DeviceRoutes () {
       <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/stack/:action'
         element={<StackForm />} />
-
-      <Route path='devices/edge' element={<Edges />} />
     </Route>
   )
 }
@@ -309,12 +327,16 @@ const edgeSdLanRoutes = (isP2Enabled: boolean) => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.CREATE })}
-      element={isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        {isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        {isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
@@ -331,7 +353,9 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.CREATE
       })}
-      element={<AddDHCP/>}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddDHCP/>
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({
@@ -352,7 +376,9 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.EDIT
       })}
-      element={<EditDhcp />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditDhcp />
+      </AuthRoute>}
     />
   </>
 }
@@ -378,14 +404,18 @@ const edgeFirewallRoutes = () => {
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.CREATE
       })}
-      element={<AddFirewall />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddFirewall />
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.EDIT
       })}
-      element={<EditFirewall />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditFirewall />
+      </AuthRoute>}
     />
   </>
 }
@@ -395,7 +425,9 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.CREATE })}
-      element={<AddPersonalIdentitNetwork />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddPersonalIdentitNetwork />
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -410,7 +442,9 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.EDIT })}
-      element={<EditPersonalIdentityNetwork />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditPersonalIdentityNetwork />
+      </AuthRoute>}
     />
   </>
 }
@@ -758,7 +792,9 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
-        element={<AddTunnelProfile />} />
+        element={<AuthRoute scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+          <AddTunnelProfile />
+        </AuthRoute>} />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
         element={<TunnelProfileTable />}
@@ -769,7 +805,9 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
-        element={<EditTunnelProfile />}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
+          <EditTunnelProfile />
+        </AuthRoute>}
       />
       {isConnectionMeteringEnabled && <>
         <Route
