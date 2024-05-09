@@ -3,7 +3,7 @@ import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { ApGroupEdit } from '.'
+import { ApGroupEdit } from './index'
 
 
 

@@ -1,4 +1,5 @@
-import ApGroupNetworksTable  from '../../ApGroupNetworkTable'
+import { ApGroupNetworksTable } from '@acx-ui/rc/components'
+
 import { useApGroupContext } from '../ApGroupContextProvider'
 
 

@@ -26,10 +26,9 @@ import {
   networkTypes,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes } from '@acx-ui/types'
-import { hasPermission }                from '@acx-ui/user'
-import { noDataDisplay }                from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RequestPayload }        from '@acx-ui/types'
+import { noDataDisplay }         from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -345,12 +344,12 @@ export const ConnectedClientsTable = (props: {
           })
         }
       },
-      ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+      {
         key: 'switchSerialNumber',
         title: intl.$t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
         sorter: true,
-        render: (_: React.ReactNode, row: ClientList) => {
+        render: (_, row) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if(!row.switchName){
               return noDataDisplay
@@ -361,7 +360,7 @@ export const ConnectedClientsTable = (props: {
             }
           })
         }
-      }] : []),
+      },
       ...(networkId ? [] : [{
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'Network' }),
