@@ -17,8 +17,9 @@ import {
   TunnelTypeEnum,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { EdgeScopes, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }         from '@acx-ui/user'
 
 import { ageTimeUnitConversion } from '../util'
 
@@ -103,11 +104,13 @@ const TunnelProfileDetail = () => {
         ]}
         extra={
           filterByAccess([
-            <TenantLink to={getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}>
+            <TenantLink
+              scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}
+              to={getPolicyDetailsLink({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.EDIT,
+                policyId: params.policyId as string
+              })}>
               <Button key={'configure'} type={'primary'} disabled={isDefaultTunnelProfile}>
                 {$t({ defaultMessage: 'Configure' })}
               </Button></TenantLink>
