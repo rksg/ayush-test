@@ -253,7 +253,7 @@ export function SecurityTab () {
       width: 450,
       title: $t({ defaultMessage: 'TLS Enhanced Key' }),
       content: $t({ defaultMessage:
-          `Enabling TLS Enhanced key will prompt a reboot of all AP devices
+          `Enabling or disabling TLS Enhanced key will prompt a reboot of all AP devices
           within this <venueSingular></venueSingular>. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
