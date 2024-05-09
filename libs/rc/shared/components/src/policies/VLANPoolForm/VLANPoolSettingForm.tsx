@@ -83,7 +83,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
                   You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br>
                   Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br>
                   The total number of VLAN members per pool is 64 (including ranges)<br></br>
-                  IF DHCP/NAT is enabled on a venue, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>
+                  IF DHCP/NAT is enabled on a <venueSingular></venueSingular>, the VLANs configured should be aligned with the VLANs in the DHCP profiles.
+                  Otherwise, clients may experience connectivity issues<br></br>
                 `}
                 /* eslint-enable */
               />}

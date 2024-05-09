@@ -21,11 +21,6 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId',
     newApi: true
   },
-  getVenuesTemplateList: {
-    method: 'post',
-    url: '/templates/venues/query',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/templates/venues/:venueId/aps/capabilities',

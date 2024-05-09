@@ -9,5 +9,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/position',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:serialNumber/position',
     newApi: true
+  },
+  clearAlarmByVenue: {
+    method: 'delete',
+    url: '/venues/:venueId/alarms',
+    newApi: true
   }
 }

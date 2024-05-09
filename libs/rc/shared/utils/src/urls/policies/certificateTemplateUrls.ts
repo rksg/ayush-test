@@ -26,6 +26,16 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/certificateTemplates/:policyId'
   },
+  bindCertificateTemplateWithPolicySet: {
+    method: 'put',
+    newApi: true,
+    url: '/certificateTemplates/:templateId/policySets/:policySetId'
+  },
+  unbindCertificateTemplateWithPolicySet: {
+    method: 'delete',
+    newApi: true,
+    url: '/certificateTemplates/:templateId/policySets/:policySetId'
+  },
   deleteCertificateTemplate: {
     method: 'delete',
     newApi: true,

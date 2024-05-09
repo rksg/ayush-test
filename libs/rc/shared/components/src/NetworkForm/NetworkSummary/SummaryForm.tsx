@@ -21,10 +21,11 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { captiveTypes } from '../contentsMap'
 
-import { AaaSummaryForm }    from './AaaSummaryForm'
-import { DpskSummaryForm }   from './DpskSummaryForm'
-import { PortalSummaryForm } from './PortalSummaryForm'
-import { PskSummaryForm }    from './PskSummaryForm'
+import { AaaSummaryForm }       from './AaaSummaryForm'
+import { DpskSummaryForm }      from './DpskSummaryForm'
+import { Hotspot20SummaryForm } from './Hotspot20SummaryForm'
+import { PortalSummaryForm }    from './PortalSummaryForm'
+import { PskSummaryForm }       from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
@@ -108,7 +109,8 @@ export function SummaryForm (props: {
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL
+            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.HOTSPOT20
             && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
           && <Form.Item
             label={$t({ defaultMessage: 'Use RADIUS Server:' })}
@@ -164,6 +166,9 @@ export function SummaryForm (props: {
               )?.name}`
             }/>
           }
+          {summaryData.type === NetworkTypeEnum.HOTSPOT20 &&
+            <Hotspot20SummaryForm summaryData={summaryData} />
+          }
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
           }
@@ -177,7 +182,7 @@ export function SummaryForm (props: {
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({ defaultMessage: 'Activated in venues' }) }
+            { $t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' }) }
           </Subtitle>
           <Form.Item children={getVenues()} />
         </Col>

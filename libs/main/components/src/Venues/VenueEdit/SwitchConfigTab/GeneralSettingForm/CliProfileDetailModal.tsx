@@ -80,10 +80,11 @@ export function CliProfileDetailModal (props: {
             }
           />
           <Form.Item
-            label={$t({ defaultMessage: 'Venues to apply' })}
+            label={$t({ defaultMessage: '<VenuePlural></VenuePlural> to apply' })}
             children={
               selectedProfile?.venues && selectedProfile?.venues?.length > 1
-                ? `${selectedProfile?.venues.length} ${$t({ defaultMessage: 'Venues' })}`
+                // eslint-disable-next-line max-len
+                ? `${selectedProfile?.venues.length} ${$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}`
                 : selectedProfile?.venues
             }
           />

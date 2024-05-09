@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { LayoutUI, Dropdown }      from '@acx-ui/components'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { userLogout }              from '@acx-ui/utils'
 
 export const UserButton = () => {
   const { $t } = useIntl()
@@ -20,11 +21,7 @@ export const UserButton = () => {
       onClick={(menuInfo) => {
         switch (menuInfo.key) {
           case 'logout':
-            const form = document.createElement('form')
-            form.action = '/analytics/api/auth/v1/user/logout'
-            form.method = 'POST'
-            document.body.appendChild(form)
-            form.submit()
+            userLogout()
             break
         }
       }}
