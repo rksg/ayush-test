@@ -39,8 +39,7 @@ import {
   SwitchClient,
   Client
 } from '@acx-ui/rc/utils'
-import { RequestPayload, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { hasPermission }                            from '@acx-ui/user'
+import { RequestPayload } from '@acx-ui/types'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
@@ -81,8 +80,7 @@ const searches = [
         searchString,
         searchTargetFields: ['name', 'description']
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -101,8 +99,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultApPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -140,8 +137,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultSwitchPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [SwitchScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -160,8 +156,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultClientPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -196,8 +191,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [SwitchScopes.READ] }) }
+      pagination
     })
     return {
       result,

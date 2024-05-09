@@ -3,8 +3,6 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useIsTierAllowed, TierFeatures }        from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, WifiScopes }  from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueSwitch } from './VenueSwitch'
@@ -25,20 +23,18 @@ export function VenueDevicesTab () {
   }
 
   const tabs = [
-    ...(hasPermission({ scopes: [WifiScopes.READ] }) ? [{
+    {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'wifi',
       children: <VenueWifi />
-    }] : []),
-
-    ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+    },
+    {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <VenueSwitch />
-    }] : []),
-
+    },
     ...(useIsTierAllowed(TierFeatures.SMART_EDGES)
-      && hasPermission({ scopes: [EdgeScopes.READ] }) ? [{
+      ? [{
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
         children: <VenueEdge />

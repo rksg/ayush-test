@@ -7,8 +7,6 @@ import { DateFormatEnum, formatter }                                            
 import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { useLocation }                                                                              from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                               from '@acx-ui/types'
-import { hasPermission }                                                                            from '@acx-ui/user'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
 
@@ -54,15 +52,12 @@ export function APDetailsCard (props: {
 
   return <Card><Card.Title>
     <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-      { hasPermission({ scopes: [WifiScopes.READ] })
-        ? <UI.NodeTitle
-          state={{ from: location.pathname }}
-          // eslint-disable-next-line max-len
-          to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
-          {apName}
-        </UI.NodeTitle>
-        : <Space style={{ fontSize: '12px' }}>{ apName }</Space>
-      }
+      <UI.NodeTitle
+        state={{ from: location.pathname }}
+        // eslint-disable-next-line max-len
+        to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
+        {apName}
+      </UI.NodeTitle>
       <Button
         size='small'
         type='link'

@@ -7,8 +7,6 @@ import { venueApi, apApi }                                from '@acx-ui/rc/servi
 import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { SwitchScopes, WifiScopes }                       from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                 from '@acx-ui/user'
 
 import { venueSetting, venueApCompatibilitiesData, apCompatibilitiesFilterData } from '../../__tests__/fixtures'
 
@@ -226,48 +224,4 @@ describe('Venue device tab', () => {
     })
   })
 
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ, WifiScopes.READ]
-      })
-
-      render(
-        <Provider>
-          <VenueDevicesTab />
-        </Provider>, {
-          route: {
-            params,
-            path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
-          }
-        })
-
-      expect(await screen.findAllByRole('tab')).toHaveLength(2)
-    })
-
-    it('has permission: switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      render(
-        <Provider>
-          <VenueDevicesTab />
-        </Provider>, {
-          route: {
-            params,
-            path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab'
-          }
-        })
-
-      const tab = await screen.findByRole('tab', { name: 'Switch' })
-      expect(tab.getAttribute('aria-selected')).toBeTruthy()
-    })
-  })
 })

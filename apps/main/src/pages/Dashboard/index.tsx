@@ -87,19 +87,17 @@ export default function Dashboard () {
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    ...(hasPermission({ scopes: [WifiScopes.READ] }) ? [{
+    {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
       children: <ApWidgets />
-    }] : []),
-
-    ...(hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+    },
+    {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: <SwitchWidgets />
-    }] : []),
-
-    ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.READ] }) ? [
+    },
+    ...(isEdgeEnabled && isEdgeReady ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
@@ -118,32 +116,27 @@ export default function Dashboard () {
     localStorage.setItem('dashboard-tab', value)
   }
 
-  const hasReadPermission
-  = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
-
   return (
     <DashboardFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      { hasReadPermission && <>
-        <Divider dashed
-          style={{
-            borderColor: 'var(--acx-neutrals-30)',
-            margin: '20px 0px 5px 0px' }}/>
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          size='large'
-          defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-          onChange={onTabChange}
-          extra={
-            <UI.Wrapper>
-              <TenantLink to={'/reports'}>
-                {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-              </TenantLink>
-            </UI.Wrapper>
-          }
-        />
-      </>}
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px 5px 0px' }}/>
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='large'
+        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+        onChange={onTabChange}
+        extra={
+          <UI.Wrapper>
+            <TenantLink to={'/reports'}>
+              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+            </TenantLink>
+          </UI.Wrapper>
+        }
+      />
       <Divider dashed
         style={{
           borderColor: 'var(--acx-neutrals-30)',
@@ -293,9 +286,6 @@ function EdgeWidgets () {
 function CommonDashboardWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
 
-  const hasReadPermission
-    = hasPermission({ scopes: [WifiScopes.READ, SwitchScopes.READ, EdgeScopes.READ] })
-
   return (
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
@@ -314,12 +304,12 @@ function CommonDashboardWidgets () {
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <VenuesDashboardWidgetV2 />
           </GridCol>
-          { hasReadPermission && <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
+          <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <DevicesDashboardWidgetV2 />
-          </GridCol>}
-          { hasReadPermission && <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
+          </GridCol>
+          <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <ClientsWidgetV2 />
-          </GridCol>}
+          </GridCol>
         </GridRow>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '410px' }}>

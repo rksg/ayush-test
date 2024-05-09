@@ -6,8 +6,6 @@ import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { generatePath }                          from '@acx-ui/react-router-dom'
 import { Provider, store  }                      from '@acx-ui/store'
 import { mockServer, fireEvent, render, screen } from '@acx-ui/test-utils'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { getUserProfile, setUserProfile }        from '@acx-ui/user'
 
 import { VenueOverviewTab } from '.'
 
@@ -101,47 +99,4 @@ describe('VenueOverviewTab', () => {
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
 
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission: wifi & switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [WifiScopes.READ, SwitchScopes.READ]
-      })
-
-      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
-
-      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
-      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
-    })
-
-    it('has permission: switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
-
-      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
-      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
-    })
-
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
-
-      expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(2)
-      expect(await screen.findAllByTestId(/^rc/)).toHaveLength(2)
-    })
-  })
 })

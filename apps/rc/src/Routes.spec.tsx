@@ -14,19 +14,11 @@ import {
   getServiceCatalogRoutePath,
   getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
 } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
-import { SwitchScopes }                   from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import RcRoutes             from './Routes'
-
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
   ...jest.requireActual('./pages/Devices/Wifi/ApsTable'),
@@ -364,915 +356,880 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('EditEdge')).toBeVisible()
   })
 
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission: switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
+  describe('RcRoutes: Networks', () => {
+    test('should navigate to networks', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
-          path: '/tenantId/t/devices/switch',
+          path: '/tenantId/t/networks',
           wrapRoutes: false
         }
       })
-      expect(screen.getByTestId('SwitchesTable')).toBeVisible()
+      expect(screen.getByTestId('NetworksTable')).toBeVisible()
     })
 
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
+    test('should navigate to networks/add', async () => {
       render(<Provider><RcRoutes /></Provider>, {
         route: {
-          path: '/tenantId/t/devices/switch',
+          path: '/tenantId/t/networks/wireless/add',
           wrapRoutes: false
         }
       })
-      expect(screen.queryByTestId('SwitchesTable')).toBeNull()
+      expect(screen.getByTestId('NetworkForm')).toBeVisible()
     })
-  })
-})
 
-describe('RcRoutes: Networks', () => {
-  test('should navigate to networks', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/networks',
-        wrapRoutes: false
-      }
+    test('should navigate to network-details', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/networks/wireless/networkId/network-details/some-tab',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('NetworkDetails')).toBeVisible()
     })
-    expect(screen.getByTestId('NetworksTable')).toBeVisible()
-  })
 
-  test('should navigate to networks/add', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/networks/wireless/add',
-        wrapRoutes: false
-      }
+    test('should navigate to network-action', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/networks/wireless/networkId/edit',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('NetworkForm')).toBeVisible()
     })
-    expect(screen.getByTestId('NetworkForm')).toBeVisible()
-  })
 
-  test('should navigate to network-details', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/networks/wireless/networkId/network-details/some-tab',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('NetworkDetails')).toBeVisible()
   })
 
-  test('should navigate to network-action', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/networks/wireless/networkId/edit',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('NetworkForm')).toBeVisible()
-  })
-
-})
-
-describe('RcRoutes: Services', () => {
-  test('should navigate to service list', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceListRoutePath(),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('MyServices')).toBeVisible()
-  })
-
-  test('should navigate to service catalog', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceCatalogRoutePath(),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
-  })
-
-  test('should navigate to select service page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getSelectServiceRoutePath(),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
-  })
-
-  test('should navigate to create MdnsProxy page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('MdnsProxyForm')).toBeVisible()
-  })
-
-  test('should navigate to edit MdnsProxy page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('MdnsProxyForm')).toBeVisible()
-  })
-
-  test('should navigate to MdnsProxy details page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
-  })
-
-  test('should navigate to create DPSK page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DpskForm')).toBeVisible()
-  })
-
-  test('should navigate to edit DPSK page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DpskForm')).toBeVisible()
-  })
-
-  test('should navigate to DPSK table page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DpskTable')).toBeVisible()
-  })
-
-  test('should navigate to create WIFI_CALLING page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('WifiCallingForm')).toBeVisible()
-  })
-
-  test('should navigate to edit WIFI_CALLING page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('WifiCallingConfigureForm')).toBeVisible()
-  })
-
-  test('should navigate to WIFI_CALLING details page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('WifiCallingDetailView')).toBeVisible()
-  })
-
-  test('should navigate to create DHCP page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DHCPForm')).toBeVisible()
-  })
-
-  test('should navigate to edit DHCP page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DHCPForm')).toBeVisible()
-  })
-
-  test('should navigate to DHCP details page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('DHCPDetail')).toBeVisible()
-  })
-
-  test('should navigate to create Portal page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalForm')).toBeVisible()
-  })
-
-  test('should navigate to edit Portal page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalForm')).toBeVisible()
-  })
-
-  test('should navigate to Portal details page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
-  })
-
-  test('should navigate to create Edge firewall page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AddEdgeFirewall')).toBeVisible()
-  })
-
-  test('should navigate to edit Edge firewall page', async () => {
-    const path = getServiceDetailsLink({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
-  })
-
-  test('should not navigate to create Edge DHCP page', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.queryByTestId('AddEdgeDhcp')).toBeNull()
-  })
-
-  test('should not navigate to create Edge firewall page', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.queryByTestId('AddEdgeFirewall')).toBeNull()
-  })
-
-  describe('RcRoutes: Services > Edge SD-LAN service', () => {
-    const addFormPath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
-    const editFormPath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
-    const listPagePath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST })
-    const detailPagePath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
-
-    const getRouteData = (tailPath: string) => ({
-      route: {
-        path: '/tenantId/t/' + tailPath,
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Services', () => {
+    test('should navigate to service list', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceListRoutePath(),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MyServices')).toBeVisible()
     })
 
-    describe('Only P1 enabled', () => {
-      beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
-        flag === Features.EDGES_SD_LAN_TOGGLE
-      ))
+    test('should navigate to service catalog', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceCatalogRoutePath(),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
+    })
 
-      test('should navigate to create Edge SD-LAN P1 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
-        expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
+    test('should navigate to select service page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getSelectServiceRoutePath(),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('SelectServiceForm')).toBeVisible()
+    })
+
+    test('should navigate to create MdnsProxy page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MdnsProxyForm')).toBeVisible()
+    })
+
+    test('should navigate to edit MdnsProxy page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MdnsProxyForm')).toBeVisible()
+    })
+
+    test('should navigate to MdnsProxy details page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
+    })
+
+    test('should navigate to create DPSK page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DpskForm')).toBeVisible()
+    })
+
+    test('should navigate to edit DPSK page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DpskForm')).toBeVisible()
+    })
+
+    test('should navigate to DPSK table page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DpskTable')).toBeVisible()
+    })
+
+    test('should navigate to create WIFI_CALLING page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('WifiCallingForm')).toBeVisible()
+    })
+
+    test('should navigate to edit WIFI_CALLING page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('WifiCallingConfigureForm')).toBeVisible()
+    })
+
+    test('should navigate to WIFI_CALLING details page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('WifiCallingDetailView')).toBeVisible()
+    })
+
+    test('should navigate to create DHCP page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DHCPForm')).toBeVisible()
+    })
+
+    test('should navigate to edit DHCP page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DHCPForm')).toBeVisible()
+    })
+
+    test('should navigate to DHCP details page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('DHCPDetail')).toBeVisible()
+    })
+
+    test('should navigate to create Portal page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortalForm')).toBeVisible()
+    })
+
+    test('should navigate to edit Portal page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortalForm')).toBeVisible()
+    })
+
+    test('should navigate to Portal details page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
+    })
+
+    test('should navigate to create Edge firewall page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEdgeFirewall')).toBeVisible()
+    })
+
+    test('should navigate to edit Edge firewall page', async () => {
+      const path = getServiceDetailsLink({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('EditEdgeFirewall')).toBeVisible()
+    })
+
+    test('should not navigate to create Edge DHCP page', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.queryByTestId('AddEdgeDhcp')).toBeNull()
+    })
+
+    test('should not navigate to create Edge firewall page', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.queryByTestId('AddEdgeFirewall')).toBeNull()
+    })
+
+    describe('RcRoutes: Services > Edge SD-LAN service', () => {
+      const addFormPath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.CREATE })
+      const editFormPath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      const listPagePath = getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.LIST })
+      const detailPagePath = getServiceDetailsLink({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+
+      const getRouteData = (tailPath: string) => ({
+        route: {
+          path: '/tenantId/t/' + tailPath,
+          wrapRoutes: false
+        }
       })
 
-      test('should navigate to edit Edge SD-LAN P1 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
-        expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P1 list page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
-        expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P1 detail page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
-        expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
-      })
-    })
+      describe('Only P1 enabled', () => {
+        beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
+          flag === Features.EDGES_SD_LAN_TOGGLE
+        ))
 
-    describe('Only P2 enabled', () => {
-      beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
-        flag === Features.EDGES_SD_LAN_HA_TOGGLE
-      ))
+        test('should navigate to create Edge SD-LAN P1 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+          expect(screen.getByTestId('AddEdgeSdLan')).toBeVisible()
+        })
 
-      test('should navigate to create Edge SD-LAN P2 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
-        expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+        test('should navigate to edit Edge SD-LAN P1 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+          expect(screen.getByTestId('EditEdgeSdLan')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P1 list page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+          expect(screen.getByTestId('EdgeSdLanTable')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P1 detail page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+          expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+        })
       })
-      test('should navigate to edit Edge SD-LAN P2 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
-        expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P2 list page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
-        expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P2 detail page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
-        expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
-      })
-    })
 
-    describe('P1 & P2 enabled', () => {
-      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
-      test('should navigate to create Edge SD-LAN P2 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
-        expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+      describe('Only P2 enabled', () => {
+        beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
+          flag === Features.EDGES_SD_LAN_HA_TOGGLE
+        ))
+
+        test('should navigate to create Edge SD-LAN P2 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+          expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+        })
+        test('should navigate to edit Edge SD-LAN P2 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+          expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P2 list page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+          expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P2 detail page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+          expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
+        })
       })
-      test('should navigate to edit Edge SD-LAN P2 page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
-        expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P2 list page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
-        expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
-      })
-      test('should navigate to Edge SD-LAN P2 detail page', async () => {
-        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
-        expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
+
+      describe('P1 & P2 enabled', () => {
+        beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+        test('should navigate to create Edge SD-LAN P2 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+          expect(screen.getByTestId('AddEdgeSdLanP2')).toBeVisible()
+        })
+        test('should navigate to edit Edge SD-LAN P2 page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+          expect(screen.getByTestId('EditEdgeSdLanP2')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P2 list page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+          expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+        })
+        test('should navigate to Edge SD-LAN P2 detail page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+          expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
+        })
       })
     })
   })
-})
 
-describe('RcRoutes: Policies', () => {
-  test('should navigate to My Policies', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyListRoutePath(),
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Policies', () => {
+    test('should navigate to My Policies', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyListRoutePath(),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MyPolicies')).toBeVisible()
     })
-    expect(screen.getByTestId('MyPolicies')).toBeVisible()
-  })
 
-  test('should navigate to create ROGUE_AP_DETECTION page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
+    test('should navigate to create ROGUE_AP_DETECTION page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
-  })
 
-  test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
-    let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
+      let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
-  })
 
-  test.skip('should navigate to detail SYSLOG page', async () => {
-    const path = getPolicyDetailsLink({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
+    test.skip('should navigate to detail SYSLOG page', async () => {
+      const path = getPolicyDetailsLink({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(screen.getByText(/configure/i)).toBeVisible()
-  })
-
-  test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
     })
-    expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
-  })
 
-  test('should navigate to edit RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
     })
-    expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
-  })
 
-  test('should navigate to detail RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to edit RADIUS ATTRIBUTE GROUP page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RadiusAttributeGroupForm')).toBeVisible()
     })
-    expect(screen.getByTestId('RadiusAttributeGroupDetail')).toBeVisible()
-  })
 
-  test.skip('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
+    test('should navigate to detail RADIUS ATTRIBUTE GROUP page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RadiusAttributeGroupDetail')).toBeVisible()
     })
+
+    test.skip('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
 
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'RADIUS Attribute Groups' })).toBeVisible()
-  })
-
-  test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('MacRegistrationListForm')).toBeVisible()
-  })
-
-  test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
     })
 
-    expect(screen.getByTestId('MacRegistrationListForm')).toBeVisible()
-  })
-
-  test('should navigate to create ACCESS_CONTROL page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
+    test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('MacRegistrationListForm')).toBeVisible()
     })
 
-    expect(screen.getByTestId('AccessControlForm')).toBeVisible()
-  })
+    test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
 
-  test('should navigate to Client Isolation details page', async () => {
-    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+      expect(screen.getByTestId('MacRegistrationListForm')).toBeVisible()
     })
-    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
-  })
 
-  test('should navigate to edit ACCESS_CONTROL page', async () => {
-    const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AccessControlForm')).toBeVisible()
-  })
-  test('should navigate to create AAA Policy page', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
-  })
+    test('should navigate to create ACCESS_CONTROL page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
 
-  test('should navigate to edit AAA Policy page', async () => {
-    let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+      expect(screen.getByTestId('AccessControlForm')).toBeVisible()
     })
-    expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
-  })
-  test('should navigate to AAA Policy details page', async () => {
-    let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('AAAPolicyDetail')).toBeVisible()
-  })
 
-  test.skip('should navigate to AAA table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
+    test('should navigate to Client Isolation details page', async () => {
+      const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
     })
+
+    test('should navigate to edit ACCESS_CONTROL page', async () => {
+      const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+    })
+    test('should navigate to create AAA Policy page', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
+    })
+
+    test('should navigate to edit AAA Policy page', async () => {
+      let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
+    })
+    test('should navigate to AAA Policy details page', async () => {
+      let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AAAPolicyDetail')).toBeVisible()
+    })
+
+    test.skip('should navigate to AAA table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: /RADIUS Server/ })).toBeVisible()
-  })
-
-  test.skip('should navigate to Access Control table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
     })
+
+    test.skip('should navigate to Access Control table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'Access Control' })).toBeVisible()
-  })
-
-  test.skip('should navigate to Client Isolation table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
     })
+
+    test.skip('should navigate to Client Isolation table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'Client Isolation' })).toBeVisible()
-  })
-
-  test('should navigate to Rogue AP Detection table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
     })
-    expect(screen.getByTestId('RogueAPDetectionTable')).toBeVisible()
-  })
 
-  test.skip('should navigate to Syslog Server table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
+    test('should navigate to Rogue AP Detection table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('RogueAPDetectionTable')).toBeVisible()
     })
+
+    test.skip('should navigate to Syslog Server table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'Syslog Server' })).toBeVisible()
-  })
-
-  test.skip('should navigate to VLAN Pools table', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
     })
+
+    test.skip('should navigate to VLAN Pools table', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: /VLAN Pools/ })).toBeVisible()
-  })
-})
-
-describe('RcRoutes: User', () => {
-  test('should redirect user to users/wifi/clients', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/',
-        wrapRoutes: false
-      }
     })
-    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
-  })
-  test('should redirect users/wifi to users/wifi/clients', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
-  })
-  test('should redirect to users/wifi/clients correctly', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi/clients',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
-  })
-  test('should redirect details to details/overview', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi/clients/clientId/details/',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
-  })
-  test('should redirect to details/overview correctly', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi/clients/clientId/details/overview',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
-  })
-  test('should redirect details/timeline to details/timeline/events', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi/clients/clientId/details/timeline',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
-  })
-  test('should redirect to details/timeline/events correctly', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/wifi/clients/clientId/details/timeline/events',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
-  })
-  test('should redirect to Persona Portal', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/identity-management',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PersonaPortal')).toBeVisible()
-  })
-  test('should redirect to Persona detail', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/identity-management/identity-group/personGroupId/identity/personaId',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PersonaDetails')).toBeVisible()
-  })
-  test('should redirect to Persona Group detail', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/users/identity-management/identity-group/personGroupId',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
-  })
-})
-
-describe('RcRoutes: Timeline', () => {
-  test('should redirect timeline to timeline/activities', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/timeline',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('Timeline')).toBeVisible()
   })
 
-  test('should navigate to timeline/activities', async () => {
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/timeline/activities',
-        wrapRoutes: false
-      }
+  describe('RcRoutes: User', () => {
+    test('should redirect user to users/wifi/clients', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
     })
-    expect(screen.getByTestId('Timeline')).toBeVisible()
+    test('should redirect users/wifi to users/wifi/clients', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
+    })
+    test('should redirect to users/wifi/clients correctly', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi/clients',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
+    })
+    test('should redirect details to details/overview', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi/clients/clientId/details/',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+    })
+    test('should redirect to details/overview correctly', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi/clients/clientId/details/overview',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+    })
+    test('should redirect details/timeline to details/timeline/events', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi/clients/clientId/details/timeline',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+    })
+    test('should redirect to details/timeline/events correctly', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/wifi/clients/clientId/details/timeline/events',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+    })
+    test('should redirect to Persona Portal', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/identity-management',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PersonaPortal')).toBeVisible()
+    })
+    test('should redirect to Persona detail', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/identity-management/identity-group/personGroupId/identity/personaId',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PersonaDetails')).toBeVisible()
+    })
+    test('should redirect to Persona Group detail', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/users/identity-management/identity-group/personGroupId',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+    })
   })
 
-  test('should navigate to create Adaptive Policy page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
+  describe('RcRoutes: Timeline', () => {
+    test('should redirect timeline to timeline/activities', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/timeline',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('Timeline')).toBeVisible()
     })
-    expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
-  })
 
-  test('should navigate to edit Adaptive Policy page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)
-    path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to timeline/activities', async () => {
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/timeline/activities',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('Timeline')).toBeVisible()
     })
-    expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
-  })
 
-  test('should navigate to detail Adaptive Policy page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)
-    path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to create Adaptive Policy page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
     })
-    expect(screen.getByTestId('AdaptivePolicyDetail')).toBeVisible()
-  })
 
-  test.skip('should navigate to Adaptive Policy table', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
+    test('should navigate to edit Adaptive Policy page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)
+      path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicyForm')).toBeVisible()
     })
+
+    test('should navigate to detail Adaptive Policy page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)
+      path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicyDetail')).toBeVisible()
+    })
+
+    test.skip('should navigate to Adaptive Policy table', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy' })).toBeVisible()
-  })
-
-  test('should navigate to create Adaptive Policy Set page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
-        wrapRoutes: false
-      }
     })
-    expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
-  })
 
-  test('should navigate to edit Adaptive Policy Set page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to create Adaptive Policy Set page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
     })
-    expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
-  })
 
-  test('should navigate to detail Adaptive Policy Set page', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })
-    path = path.replace(':policyId', 'policyId')
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + path,
-        wrapRoutes: false
-      }
+    test('should navigate to edit Adaptive Policy Set page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicySetForm')).toBeVisible()
     })
-    expect(screen.getByTestId('AdaptivePolicySetDetail')).toBeVisible()
-  })
 
-  test.skip('should navigate to Adaptive Policy Set table', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),
-        wrapRoutes: false
-      }
+    test('should navigate to detail Adaptive Policy Set page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })
+      path = path.replace(':policyId', 'policyId')
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + path,
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AdaptivePolicySetDetail')).toBeVisible()
     })
+
+    test.skip('should navigate to Adaptive Policy Set table', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),
+          wrapRoutes: false
+        }
+      })
     // FIXME: Please mock it with jest and use "screen.getByTestId"
     // expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy Sets' })).toBeVisible()
+    })
   })
-})
 
-test('should navigate to Data Usage Metering table', async () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
-  render(<Provider><RcRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }),
-      wrapRoutes: false
-    }
+  test('should navigate to Data Usage Metering table', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
   })
-  expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
-})
 
-test('should navigate to Data Usage Metering Detail', async () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
-  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
-  path = path.replace(':policyId', 'policyId')
-  render(<Provider><RcRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/' + path,
-      wrapRoutes: false
-    }
+  test('should navigate to Data Usage Metering Detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
   })
-  expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
-})
 
-test('should navigate to Data Usage Metering Page create form', async () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
-  render(<Provider><RcRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE }),
-      wrapRoutes: false
-    }
+  test('should navigate to Data Usage Metering Page create form', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
   })
-  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
-})
 
-test('should navigate to Data Usage Metering Page edit form', async () => {
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
-  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
-  path = path.replace(':policyId', 'policyId')
-  render(<Provider><RcRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/' + path,
-      wrapRoutes: false
-    }
+  test('should navigate to Data Usage Metering Page edit form', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
   })
-  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
+
 })

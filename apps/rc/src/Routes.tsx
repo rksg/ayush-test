@@ -207,27 +207,15 @@ function DeviceRoutes () {
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchDetails />
-          </AuthRoute>
-        }
+        element={<SwitchDetails />}
       />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchDetails />
-          </AuthRoute>
-        }
+        element={<SwitchDetails />}
       />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchDetails />
-          </AuthRoute>
-        }
+        element={<SwitchDetails />}
       />
       <Route path='devices/edge' element={<Edges />} />
       <Route
@@ -269,15 +257,11 @@ function DeviceRoutes () {
 
       <Route path='devices/switch'
         element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchList tab={SwitchTabsEnum.LIST} />
-          </AuthRoute>
+          <SwitchList tab={SwitchTabsEnum.LIST} />
         } />
       <Route path='devices/switch/reports/wired'
         element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />
-          </AuthRoute>
+          <SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />
         } />
       <Route path='devices/switch/:action'
         element={
@@ -352,10 +336,7 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <Wired />
-          </AuthRoute>} />
+        element={<Wired />} />
       <Route
         path='networks/wired/profiles/add'
         element={
@@ -967,26 +948,17 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>
-            </AuthRoute>}
+          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.LIST })}
           // eslint-disable-next-line max-len
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>
-            </AuthRoute>}
+          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>}
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>
-            </AuthRoute>}
+          element={<CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>}
         />
         <Route
           // eslint-disable-next-line max-len
@@ -1022,10 +994,7 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <CertificateTemplateDetail/>
-            </AuthRoute>}
+          element={<CertificateTemplateDetail/>}
         />
       </>
       }
@@ -1056,17 +1025,9 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchClientList />
-          </AuthRoute>
-        } />
+        element={<SwitchClientList />} />
       <Route path='users/switch/clients/:clientId'
-        element={
-          <AuthRoute scopes={[SwitchScopes.READ]}>
-            <SwitchClientDetailsPage />
-          </AuthRoute>
-        } />
+        element={<SwitchClientDetailsPage />} />
       {(isCloudpathBetaEnabled)
         ? <><Route
           path='users/identity-management'

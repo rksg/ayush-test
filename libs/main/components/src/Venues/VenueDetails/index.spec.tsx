@@ -6,7 +6,7 @@ import { venueApi }                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RolesEnum, SwitchScopes }        from '@acx-ui/types'
+import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
@@ -141,8 +141,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Services')
+    expect(await screen.findByTestId('rc-VenueServicesTab')).toBeVisible()
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -201,47 +200,4 @@ describe('VenueDetails', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(2)
   })
 
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      const params = {
-        tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-        venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-        activeTab: 'overview'
-      }
-      render(<Provider><VenueDetails /></Provider>, {
-        route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
-      })
-      expect(await screen.findByText('testVenue')).toBeVisible()
-      expect(screen.getAllByRole('tab')).toHaveLength(6)
-      expect(await screen.findByTestId('rc-VenueOverviewTab')).toBeVisible()
-    })
-
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      const params = {
-        tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-        venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-        activeTab: 'overview'
-      }
-      render(<Provider><VenueDetails /></Provider>, {
-        route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
-      })
-      expect(await screen.findByText('testVenue')).toBeVisible()
-      expect(screen.getAllByRole('tab')).toHaveLength(4)
-      expect(await screen.findByTestId('rc-VenueOverviewTab')).toBeVisible()
-    })
-  })
 })

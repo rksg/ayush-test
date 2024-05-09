@@ -10,8 +10,6 @@ import {
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
 
@@ -58,7 +56,7 @@ export function VenueClientsTab () {
   }
 
   const tabs = [
-    ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
+    {
       label: $t({ defaultMessage: 'Wireless' }),
       value: 'wifi',
       children: <IconThirdTab
@@ -82,13 +80,13 @@ export function VenueClientsTab () {
           />
         </Tabs.TabPane>
       </IconThirdTab>
-    }] : []),
+    },
 
-    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+    {
       label: $t({ defaultMessage: 'Wired' }),
       value: 'switch',
       children: <SwitchClientsTable filterBySwitch={true}/>
-    }] : []),
+    },
 
     ...(isCloudpathBetaEnabled
     && personaGroupData?.personalIdentityNetworkId
