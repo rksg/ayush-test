@@ -14,9 +14,9 @@ import {
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { EdgeScopes, RequestPayload }    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -157,6 +157,7 @@ export const EdgeServices = () => {
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
+      scopeKey: [EdgeScopes.DELETE],
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
@@ -207,6 +208,7 @@ export const EdgeServices = () => {
     },
     {
       label: $t({ defaultMessage: 'Restart' }),
+      scopeKey: [EdgeScopes.UPDATE],
       disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
@@ -255,6 +257,8 @@ export const EdgeServices = () => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({ scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE] })
+
   return (
     <Loader states={[
       tableQuery
@@ -262,7 +266,7 @@ export const EdgeServices = () => {
       <Table
         settingsId={settingsId}
         rowKey='serviceId'
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}

@@ -2,7 +2,8 @@ import {
   getUserSettingsByPath,
   setDeepUserSettings,
   getProductKey,
-  goToNotFound
+  goToNotFound,
+  goToNoPermission
 } from './utils'
 
 
@@ -78,6 +79,15 @@ describe('user settings utility', () => {
       expect(result.type.name).toBe('TenantNavigate')
       expect(result.props.replace).toBeTruthy()
       expect(result.props.to).toBe('/not-found')
+    })
+  })
+
+  describe('goToNoPermission', () => {
+    it('should return a TenantNavigate', () => {
+      const result = goToNoPermission()
+      expect(result.type.name).toBe('TenantNavigate')
+      expect(result.props.replace).toBeTruthy()
+      expect(result.props.to).toBe('/no-permissions')
     })
   })
 })
