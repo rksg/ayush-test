@@ -155,7 +155,7 @@ function useCardData (): CardDataProps[] {
       totalCount: useMacRegListsQuery({ params }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: !cloudpathBetaEnabled
+      disabled: !cloudpathBetaEnabled || !hasPermission({ scopes: [WifiScopes.READ] })
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,

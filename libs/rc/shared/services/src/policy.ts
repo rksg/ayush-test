@@ -1081,6 +1081,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
+    updateAdaptivePolicySetToMacList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.updateAdaptivePolicySet, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    deleteAdaptivePolicySetFromMacList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteAdaptivePolicySet, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params)
@@ -2569,6 +2591,8 @@ export const {
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
+  useUpdateAdaptivePolicySetToMacListMutation,
+  useDeleteAdaptivePolicySetFromMacListMutation,
   useAvcCategoryListQuery,
   useAvcAppListQuery,
   useAddRoguePolicyMutation,

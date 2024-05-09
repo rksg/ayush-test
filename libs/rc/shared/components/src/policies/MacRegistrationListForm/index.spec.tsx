@@ -7,9 +7,9 @@ import {
   getPolicyRoutePath,
   MacRegListUrlsInfo, PolicyOperation, PolicyType, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                                                               from '@acx-ui/react-router-dom'
-import { Provider }                                                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { Provider }                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedCreateFormData } from './__tests__/fixtures'
 
@@ -110,7 +110,7 @@ describe('MacRegistrationListForm', () => {
       ),
       rest.post(
         MacRegListUrlsInfo.createMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => res(ctx.json(macRegList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
@@ -119,6 +119,18 @@ describe('MacRegistrationListForm', () => {
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.delete(
+        MacRegListUrlsInfo.deleteAdaptivePolicySet.url,
+        (req, res, ctx) => res(ctx.json('12345'))
+      ),
+      rest.put(
+        MacRegListUrlsInfo.updateAdaptivePolicySet.url,
+        (req, res, ctx) => res(ctx.json('12345'))
+      ),
+      rest.patch(
+        MacRegListUrlsInfo.updateMacRegistrationPool.url,
+        (req, res, ctx) => res(ctx.json(macRegList))
       )
     )
   })
@@ -199,13 +211,6 @@ describe('MacRegistrationListForm', () => {
   })
 
   it('should edit list successfully', async () => {
-    mockServer.use(
-      rest.patch(
-        MacRegListUrlsInfo.updateMacRegistrationPool.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
-
     render(
       <Provider><MacRegistrationListForm
         editMode={true}/>
@@ -224,8 +229,7 @@ describe('MacRegistrationListForm', () => {
     await screen.findByRole('button', { name: 'Cancel' })
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
+    await screen.findByText('List ' + macRegList.name + ' was updated')
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {

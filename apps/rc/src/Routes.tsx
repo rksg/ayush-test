@@ -710,19 +710,35 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
-          element={<MacRegistrationListDetails />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListDetails />
+            </AuthRoute>}
+        />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
-          element={<MacRegistrationListsTable />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListsTable />
+            </AuthRoute>}
+        />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-          element={<MacRegistrationListForm />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListForm />
+            </AuthRoute>
+          } />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-          element={<MacRegistrationListForm editMode={true} />}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListForm editMode={true}/>
+            </AuthRoute>
+          }
         /> </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}

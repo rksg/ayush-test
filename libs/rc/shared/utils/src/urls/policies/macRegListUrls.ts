@@ -96,5 +96,15 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     url: newMacRegApiBaseUrl + '/:policyId/registrations/csvFile',
     oldUrl: macRegApiBaseUrl + '/:policyId/registrations/csvFile',
     newApi: true
+  },
+  deleteAdaptivePolicySet: {
+    method: 'delete',
+    url: newMacRegApiBaseUrl + '/:policyId/policySets/:policySetId',
+    newApi: true
+  },
+  updateAdaptivePolicySet: {
+    method: 'put',
+    url: newMacRegApiBaseUrl + '/:policyId/policySets/:policySetId',
+    newApi: true
   }
 }

@@ -7,7 +7,9 @@ import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance
 import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
+  useDeleteAdaptivePolicySetFromMacListMutation,
   useGetMacRegListQuery,
+  useUpdateAdaptivePolicySetToMacListMutation,
   useUpdateMacRegListMutation
 } from '@acx-ui/rc/services'
 import {
@@ -48,6 +50,9 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
   const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
+  const [bindPolicySet] = useUpdateAdaptivePolicySetToMacListMutation()
+  const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
+
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
@@ -71,11 +76,14 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess ?? 'ACCEPT',
-        policySetId: data.policySetId
+        defaultAccess: data.defaultAccess ?? 'ACCEPT'
       }
       // eslint-disable-next-line max-len
       const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
+
+      if (result.id && data.policySetId) {
+        await bindPolicySet({ params: { policyId: result.id, policySetId: data.policySetId } })
+      }
 
       if (!isAsync) {
         showToast({
@@ -93,20 +101,25 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
     }
   }
 
-  const handleEditList = async (data: MacRegistrationPoolFormFields) => {
+  const handleEditList = async (formData: MacRegistrationPoolFormFields) => {
     try {
       const saveData = {
-        name: data.name,
-        ...transferExpirationFormFieldsToData(data.expiration),
-        autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess ?? 'ACCEPT',
-        policySetId: data.policySetId ?? null
+        name: formData.name,
+        ...transferExpirationFormFieldsToData(formData.expiration),
+        autoCleanup: formData.autoCleanup,
+        defaultAccess: formData.defaultAccess ?? 'ACCEPT'
       }
       await updateMacRegList({
         params: { policyId },
         payload: saveData,
         customHeaders
       }).unwrap()
+
+      if (formData.policySetId) {
+        await bindPolicySet({ params: { policyId, policySetId: formData.policySetId } })
+      } else if (data?.policySetId) {
+        await unbindPolicySet({ params: { policyId, policySetId: data?.policySetId } })
+      }
 
       if (!isAsync) {
         showToast({
