@@ -13,5 +13,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueCityList: {
     method: 'post',
     url: '/venues/citylist/query'
+  },
+  clearAlarmByVenue: {
+    method: 'delete',
+    url: '/venues/:venueId/alarms',
+    newApi: true
   }
 }

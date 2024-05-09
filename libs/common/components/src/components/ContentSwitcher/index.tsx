@@ -38,9 +38,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
       disabled: tabDetail.disabled
     }
   })
-  const isDefaultOptionVisible = options.find(o => o.value === defaultValue)
-  const defaultActiveContent = isDefaultOptionVisible ? defaultValue : options[0].value
-  const [activeContent, setActiveContent] = useState(defaultActiveContent)
+  const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   const padding = size === 'small'
     ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
     : `${sizeSpaceMap[size!]} 0`

@@ -12,13 +12,15 @@ import { CertificateTemplateForm } from './CertificateTemplateForm'
 
 const mockedUsedNavigate = jest.fn()
 const mockedUsedEdit = jest.fn()
+const mockedBind = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useEditCertificateTemplateMutation: () => [mockedUsedEdit]
+  useEditCertificateTemplateMutation: () => [mockedUsedEdit],
+  useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind]
 }))
 
 describe('CertificateTemplateForm', () => {
@@ -94,6 +96,7 @@ describe('CertificateTemplateForm', () => {
     expect(await screen.findByText('testApiKey')).toBeVisible()
 
     await userEvent.click(screen.getByText('Add'))
+    await waitFor(() => expect(mockedBind).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 
@@ -127,8 +130,15 @@ describe('CertificateTemplateForm', () => {
     expect(await screen.findByLabelText('Certificate Template Name'))
       .toHaveValue('certificateTemplate1')
     expect(await screen.findByLabelText('Common Name')).toHaveValue('test')
+    await userEvent.click(screen.getByText('More Settings'))
+    expect(await screen.findAllByText('Adaptive Policy Set')).toHaveLength(2)
+    const adaptivePolicySelect = await screen.findByRole('combobox')
+    await userEvent.click(adaptivePolicySelect)
+    await userEvent.click(await screen.findByText('ps2'))
+    await userEvent.click(screen.getByRole('switch'))
     await userEvent.click(screen.getByText('Apply'))
     await waitFor(() => expect(mockedUsedEdit).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedBind).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 })

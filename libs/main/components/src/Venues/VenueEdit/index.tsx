@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState } from 'react'
 
 import { isEmpty }   from 'lodash'
 import { IntlShape } from 'react-intl'
@@ -9,10 +9,9 @@ import { VenueLed,
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { goToNotFound, hasPermission }           from '@acx-ui/user'
-import { getIntl }                               from '@acx-ui/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
+import { getIntl }      from '@acx-ui/utils'
 
 import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
@@ -92,9 +91,6 @@ export const VenueEditContext = createContext({} as {
 })
 
 export function VenueEdit () {
-  const navigate = useNavigate()
-  const basePath = useTenantLink('')
-
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   const [previousPath, setPreviousPath] = useState('')
@@ -116,19 +112,6 @@ export function VenueEdit () {
   const [
     editAdvancedContextData, setEditAdvancedContextData
   ] = useState({} as AdvanceSettingContext)
-
-  useEffect(() => {
-    const hasNoPermissions
-    = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
-    || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
-
-    if (hasNoPermissions) {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/no-permissions`
-      }, { replace: true })
-    }
-  }, [activeTab, basePath, navigate])
 
   return (
     <VenueEditContext.Provider value={{

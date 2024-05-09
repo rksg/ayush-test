@@ -35,14 +35,17 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
   skip = false,
   payload?: Payload,
   extraParams?: Params<string>,
+  templatePayload?: Payload,
   enableRbac?: boolean
 ): ReturnType<typeof useQueryFn> {
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
+  const currentPayload = isTemplate && templatePayload ? templatePayload : payload
   const requestPayload = {
     params: { ...params, ...(extraParams ?? {}) },
     ...(payload ? ({ payload }) : {}),
-    ...(enableRbac ? ({ enableRbac }) : {})
+    ...(enableRbac ? ({ enableRbac }) : {}),
+    ...(currentPayload ? ({ payload: currentPayload }) : {})
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
   const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })
