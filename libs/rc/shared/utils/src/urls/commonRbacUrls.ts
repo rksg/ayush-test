@@ -14,5 +14,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/alarms',
     newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/venues/:venueId/rwgs/:rwgId',
+    newApi: true
   }
 }
