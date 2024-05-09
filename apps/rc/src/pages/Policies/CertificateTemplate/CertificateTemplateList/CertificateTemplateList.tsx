@@ -4,6 +4,7 @@ import { Button, PageHeader, Tabs }                                             
 import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }      from '@acx-ui/rc/services'
 import { CertificateCategoryType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                                       from '@acx-ui/types'
 import { filterByAccess }                                                                                   from '@acx-ui/user'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
@@ -75,6 +76,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
         extra={filterByAccess([
           <TenantLink
             to={buttonLinkMapping[props.tabKey]}
+            scopeKey={[WifiScopes.CREATE]}
           >
             <Button key='configure' type='primary'>{buttonTextMapping[props.tabKey]}</Button>
           </TenantLink>

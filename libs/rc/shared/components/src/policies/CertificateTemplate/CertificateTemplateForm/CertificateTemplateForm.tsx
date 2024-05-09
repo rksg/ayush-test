@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                                                                                                                                                                                                    from '@acx-ui/components'
-import { useAddCertificateTemplateMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery }                                                                                                                                    from '@acx-ui/rc/services'
+import { useAddCertificateTemplateMutation, useBindCertificateTemplateWithPolicySetMutation, useEditCertificateTemplateMutation, useGetCertificateTemplateQuery, useUnbindCertificateTemplateWithPolicySetMutation }                                from '@acx-ui/rc/services'
 import { AlgorithmType, CertificateAuthorityType, CertificateTemplateFormData, ChromebookCertRemovalType, ChromebookEnrollmentType, ExpirationDateEntity, ExpirationType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                                                                                                                                                                                               from '@acx-ui/react-router-dom'
 
@@ -32,6 +32,8 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
   const [form] = Form.useForm<CertificateTemplateFormData>()
   const [addCertificateTemplate] = useAddCertificateTemplateMutation()
   const [editCertificateTemplate] = useEditCertificateTemplateMutation()
+  const [bindPolicySet] = useBindCertificateTemplateWithPolicySetMutation()
+  const [unbindPolicySet] = useUnbindCertificateTemplateWithPolicySetMutation()
   const { data: dataFromServer } = useGetCertificateTemplateQuery({ params }, { skip: !editMode })
   const linkToList = useTenantLink(getPolicyRoutePath({
     type: PolicyType.CERTIFICATE_TEMPLATE,
@@ -102,7 +104,6 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
           organizationUnitPattern, statePattern, localityPattern,
           ...transferExpirationFormDataToPayload(formData)
         },
-        policySetId: policySetId || '',
         ...(chromebook ? {
           chromebook: {
             enabled, enrollmentType, notifyAppId, apiKey,
@@ -111,8 +112,15 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
         } : { chromebook: { enabled: false } })
       }
       await editCertificateTemplate({ params, payload })
+      if (policySetId) {
+        await bindPolicySet({ params: { templateId: params.policyId, policySetId } })
+      } else if (dataFromServer?.policySetId) {
+        // eslint-disable-next-line max-len
+        await unbindPolicySet({ params: { templateId: params.policyId, policySetId: dataFromServer?.policySetId } })
+      }
     } else {
-      const { notAfter, notBefore, policySetName, chromebook, ...restFormData } = formData
+      const { notAfter, notBefore,
+        policySetId, policySetName, chromebook, ...restFormData } = formData
       const payload = {
         ...restFormData,
         onboard: {
@@ -130,6 +138,10 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
         params: { caId: formData.onboard?.certificateAuthorityId },
         payload
       }).unwrap()
+
+      if (res.id && policySetId) {
+        await bindPolicySet({ params: { templateId: res.id, policySetId } })
+      }
 
       if (modalMode && res) {
         modalCallBack?.(res.id)
