@@ -1,7 +1,7 @@
 import { ConfigTemplateType } from '@acx-ui/rc/utils'
 import { renderHook }         from '@acx-ui/test-utils'
 
-import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem } from './useAddTemplateMenuProps'
+import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
@@ -17,7 +17,16 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.DHCP]: true,
   [ConfigTemplateType.ACCESS_CONTROL]: true,
   [ConfigTemplateType.PORTAL]: true,
-  [ConfigTemplateType.VLAN_POOL]: false
+  [ConfigTemplateType.VLAN_POOL]: false,
+  [ConfigTemplateType.LAYER_2_POLICY]: true,
+  [ConfigTemplateType.LAYER_3_POLICY]: true,
+  [ConfigTemplateType.APPLICATION_POLICY]: true,
+  [ConfigTemplateType.DEVICE_POLICY]: true,
+  [ConfigTemplateType.WIFI_CALLING]: false,
+  [ConfigTemplateType.SYSLOG]: false,
+  [ConfigTemplateType.CLIENT_ISOLATION]: false,
+  [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
+  [ConfigTemplateType.SWITCH_REGULAR]: false
 }
 
 describe('useAddTemplateMenuProps', () => {
@@ -26,7 +35,7 @@ describe('useAddTemplateMenuProps', () => {
   })
   it('should return the correct menu items for the main overlay', () => {
     const { result } = renderHook(() => useAddTemplateMenuProps())
-    expect(result.current.items).toHaveLength(4)
+    expect(result.current.items?.filter(item => item)).toHaveLength(4)
   })
 
   it('should create the correct policy menu item', () => {
@@ -53,5 +62,18 @@ describe('useAddTemplateMenuProps', () => {
     // eslint-disable-next-line max-len
     const disallowedResult = createServiceMenuItem(ConfigTemplateType.ACCESS_CONTROL, mockedConfigTemplateVisibilityMap)
     expect(disallowedResult).toBeNull()
+  })
+
+  it('should create the correct switch menu item', () => {
+    const disallowedResult = useSwitchMenuItems()
+    expect(disallowedResult).toBeNull()
+
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.SWITCH_REGULAR]: true
+    })
+
+    const allowedResult = useSwitchMenuItems()
+    expect(allowedResult?.key).toBe('add-switch-profile')
   })
 })

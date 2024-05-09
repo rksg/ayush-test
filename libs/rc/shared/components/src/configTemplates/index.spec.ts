@@ -27,7 +27,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.WIFI_CALLING]: false,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
-      [ConfigTemplateType.SYSLOG]: false
+      [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.SWITCH_REGULAR]: false
     })
   })
 
@@ -54,7 +55,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.WIFI_CALLING]: true,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: true,
-      [ConfigTemplateType.SYSLOG]: true
+      [ConfigTemplateType.SYSLOG]: true,
+      [ConfigTemplateType.SWITCH_REGULAR]: true
     })
   })
 
@@ -81,7 +83,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.WIFI_CALLING]: false,
       [ConfigTemplateType.CLIENT_ISOLATION]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
-      [ConfigTemplateType.SYSLOG]: false
+      [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.SWITCH_REGULAR]: false
     })
   })
 })

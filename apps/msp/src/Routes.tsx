@@ -20,7 +20,8 @@ import {
   RogueAPDetectionForm,
   RogueAPDetectionDetailView,
   SyslogForm,
-  SyslogDetailView
+  SyslogDetailView,
+  ConfigurationProfileForm
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -36,6 +37,8 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
+import { SwitchScopes }                                                          from '@acx-ui/types'
+import { AuthRoute }                                                             from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
@@ -366,6 +369,24 @@ export function ConfigTemplatesRoutes () {
               type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL
             })}
             element={<RogueAPDetectionDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR] && <>
+          <Route
+            path='networks/wired/profiles/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='networks/wired/profiles/regular/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
           />
         </>}
       </Route>

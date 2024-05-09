@@ -25,7 +25,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   DpskForm: () => <div>DpskForm</div>,
   DHCPForm: () => <div>DHCPForm</div>,
   PortalForm: () => <div>PortalForm</div>,
-  VLANPoolForm: () => <div>VLANPoolForm</div>
+  VLANPoolForm: () => <div>VLANPoolForm</div>,
+  ConfigurationProfileForm: () => <div>ConfigurationProfileForm</div>
 }))
 
 jest.mock('@acx-ui/main/components', () => ({
@@ -47,7 +48,10 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.LAYER_2_POLICY]: false,
   [ConfigTemplateType.LAYER_3_POLICY]: false,
   [ConfigTemplateType.DEVICE_POLICY]: false,
-  [ConfigTemplateType.APPLICATION_POLICY]: false
+  [ConfigTemplateType.APPLICATION_POLICY]: false,
+  [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
+  [ConfigTemplateType.SYSLOG]: false,
+  [ConfigTemplateType.SWITCH_REGULAR]: false
 }
 
 describe('MspRoutes: ConfigTemplatesRoutes', () => {
@@ -204,5 +208,20 @@ describe('MspRoutes: ConfigTemplatesRoutes', () => {
     })
 
     expect(await screen.findByText('VLANPoolForm')).toBeVisible()
+  })
+  it('should navigate to the Switch profile config template', async () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.SWITCH_REGULAR]: true
+    })
+
+    render(<Provider><ConfigTemplatesRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/v/' + getConfigTemplatePath('networks/wired/profiles/add'),
+        wrapRoutes: false
+      }
+    })
+
+    expect(await screen.findByText('ConfigurationProfileForm')).toBeVisible()
   })
 })

@@ -147,7 +147,7 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
   }
 
-  return <></>
+  return name
 }
 
 // eslint-disable-next-line max-len
