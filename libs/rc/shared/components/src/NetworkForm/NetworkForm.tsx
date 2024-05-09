@@ -22,7 +22,8 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useDeactivateWifiOperatorOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -481,7 +482,7 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'hotspot20Settings.wifiOperator',
-            'hotspot20Settings.deactivateOperator',
+            'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.activateProviders',
             'hotspot20Settings.deactivateProviders']))
@@ -544,7 +545,7 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'hotspot20Settings.wifiOperator',
-            'hotspot20Settings.deactivateOperator',
+            'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.activateProviders',
             'hotspot20Settings.deactivateProviders'
@@ -850,7 +851,7 @@ function useWifiOperatorActivation () {
 }
 
 function useWifiOperatorDeactivation () {
-  const [deactivate] = useActivateWifiOperatorOnWifiNetworkMutation()
+  const [deactivate] = useDeactivateWifiOperatorOnWifiNetworkMutation()
   const deactivateWifiOperator =
     async (wifiNetworkId?: string, operatorId?: string) => {
       return wifiNetworkId && operatorId ?
@@ -909,23 +910,26 @@ function useUpdateHotspot20Activation () {
     async (network?: NetworkSaveData) => {
       if (network && network.type === NetworkTypeEnum.HOTSPOT20) {
         const hotspot20Setting = network.hotspot20Settings
-        const hotspot20ActivateProviders = hotspot20Setting?.activateProviders
-        const hotspot20DeactivateProviders = hotspot20Setting?.deactivateProviders
-        const hotspot20DeactivateOperator = hotspot20Setting?.deactivateOperator
+        const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
+        const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
 
-        if (hotspot20DeactivateOperator) {
-          await deactivateOperator(network.id, hotspot20DeactivateOperator)
+        if (hotspot20OriginalOperator &&
+          hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
+          await deactivateOperator(network.id, hotspot20OriginalOperator)
           await activateOperator(network.id, hotspot20Setting.wifiOperator)
         }
 
-        if (hotspot20DeactivateProviders) {
-          hotspot20DeactivateProviders.forEach(async (id) => {
+        if (hotspot20OriginalProviders &&
+          hotspot20Setting?.identityProviders &&
+          !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
+          hotspot20OriginalProviders.forEach(async (id) => {
+            hotspot20Setting?.identityProviders &&
+            !(hotspot20Setting?.identityProviders.includes(id)) &&
             await deactivateProvider(network.id, id)
           })
-        }
 
-        if (hotspot20ActivateProviders) {
-          hotspot20ActivateProviders.forEach(async (id) => {
+          hotspot20Setting?.identityProviders.forEach(async (id) => {
+            !hotspot20OriginalProviders.includes(id) &&
             await activateProvider(network.id, id)
           })
         }

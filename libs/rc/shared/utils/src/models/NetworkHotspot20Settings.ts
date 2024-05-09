@@ -12,11 +12,10 @@ export class NetworkHotspot20Settings {
   identityProviders?: string[]
 
   // operator only allow to activate once
-  deactivateOperator?: string | null      // for editMode
+  originalOperator?: string | null      // for editMode
 
   // identity provider only allow to activate same provider once
-  activateProviders?: string[]           // for editMode
-  deactivateProviders?: string[]         // for editMode
+  originalProviders?: string[]           // for editMode
 
   constructor () {
     this.allowInternetAccess = true
