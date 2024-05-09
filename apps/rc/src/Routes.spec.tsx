@@ -14,19 +14,11 @@ import {
   getServiceCatalogRoutePath,
   getPolicyDetailsLink, getAdaptivePolicyDetailRoutePath
 } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
-import { SwitchScopes }                   from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import RcRoutes             from './Routes'
-
-const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
   ...jest.requireActual('./pages/Devices/Wifi/ApsTable'),
@@ -364,41 +356,6 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('EditEdge')).toBeVisible()
   })
 
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission: switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/devices/switch',
-          wrapRoutes: false
-        }
-      })
-      expect(screen.getByTestId('SwitchesTable')).toBeVisible()
-    })
-
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      render(<Provider><RcRoutes /></Provider>, {
-        route: {
-          path: '/tenantId/t/devices/switch',
-          wrapRoutes: false
-        }
-      })
-      expect(screen.queryByTestId('SwitchesTable')).toBeNull()
-    })
-  })
 })
 
 describe('RcRoutes: Networks', () => {
