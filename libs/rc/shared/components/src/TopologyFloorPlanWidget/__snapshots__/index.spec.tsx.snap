@@ -52,7 +52,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+                class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -176,7 +176,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+                class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -382,7 +382,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+                class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
