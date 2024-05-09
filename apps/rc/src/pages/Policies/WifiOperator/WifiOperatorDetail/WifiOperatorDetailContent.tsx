@@ -40,7 +40,7 @@ const WifiOperatorDetailContent = () => {
   ]
 
   return <Loader states={[{ isLoading }]}>
-    <SummaryCard data={wifiOperatorInfo} />
+    <SummaryCard data={wifiOperatorInfo} colPerRow={4} />
   </Loader>
 }
 
