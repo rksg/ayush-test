@@ -9,7 +9,8 @@ import {
   Loader,
   PageHeader,
   PasswordInput,
-  StepsForm
+  StepsForm,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useAddGatewayMutation,
@@ -191,7 +192,17 @@ export function RWGForm () {
                 <Form.Item
                   name='hostname'
                   initialValue={data?.hostname}
-                  label={$t({ defaultMessage: 'FQDN / IP' })}
+                  label={<>{$t({ defaultMessage: 'FQDN / IP' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        'Fully Qualified Domain Name or IP address of the RWG Device' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
                     { type: 'string', required: true },
                     { validator: (_, value) => URLProtocolRegExp(value) }
@@ -201,9 +212,21 @@ export function RWGForm () {
                 <Form.Item
                   name='apiKey'
                   initialValue={data?.apiKey}
-                  label={$t({ defaultMessage: 'API Key' })}
+                  label={<>{$t({ defaultMessage: 'API Key' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        // eslint-disable-next-line max-len
+                        'API keys can be generated and copied from the RWG administrator UI without any expiration date. They are 80-character strings' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
                     { required: true },
+                    { max: 80 },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}
                   children={<PasswordInput />}

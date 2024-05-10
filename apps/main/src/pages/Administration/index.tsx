@@ -38,7 +38,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
   const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
-    skip: !hasAdministratorTab,
+    skip: !isAdministratorAccessible,
     pollingInterval: 30_000
   })
   const notificationList = useGetNotificationRecipientsQuery({
@@ -49,7 +49,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params },
-    { skip: !hasAdministratorTab }
+    { skip: !isAdministratorAccessible }
   )
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0

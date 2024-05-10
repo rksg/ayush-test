@@ -18,6 +18,7 @@ import {
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
 import {
+  CustomGroupType,
   CustomRole,
   specialCharactersRegExp,
   systemDefinedNameValidator
@@ -55,8 +56,8 @@ export function AddCustomRole () {
   const isEditMode = action === 'edit'
   const isClone = action === 'clone'
   const clonePreDefinedRole = location?.preDefinedRole ? location?.preDefinedRole
-    : (isClone && location?.name &&
-      Object.values(RolesEnum).includes(location?.name) ? location?.name : undefined)
+    : ((isClone && location?.name && location?.type === CustomGroupType.SYSTEM) ? location.name
+      : undefined)
 
   const wifiScopes = [
     WifiScopes.READ, WifiScopes.CREATE,

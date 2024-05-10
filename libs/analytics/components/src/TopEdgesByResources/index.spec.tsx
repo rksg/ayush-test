@@ -32,7 +32,7 @@ type MockSelectProps = React.PropsWithChildren<{
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       {children ? <><option value={undefined}></option>{children}</> : null}
       {options?.map((option, index) => (

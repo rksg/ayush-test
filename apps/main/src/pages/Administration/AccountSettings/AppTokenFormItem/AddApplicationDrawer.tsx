@@ -1,9 +1,12 @@
 import { Divider, Form, Input, Select } from 'antd'
 import { useIntl }                      from 'react-intl'
+import { useParams }                    from 'react-router-dom'
 
 import { Button, Drawer, PasswordInput }   from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useAddTenantAuthenticationsMutation,
+  useGetPrivilegeGroupsQuery,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -14,8 +17,11 @@ import {
   ApplicationAuthenticationStatus,
   getRoles
 } from '@acx-ui/rc/utils'
+import { RolesEnum }     from '@acx-ui/types'
+import { roleStringMap } from '@acx-ui/user'
 
 import { reloadAuthTable } from '.'
+
 
 interface AddApplicationDrawerProps {
   visible: boolean
@@ -38,10 +44,19 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible, isEditMode, editData } = props
+  const params = useParams()
   const [form] = Form.useForm()
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const [addApiToken] = useAddTenantAuthenticationsMutation()
   const [updateApiToken] = useUpdateTenantAuthenticationsMutation()
+  const { data: pgList } = useGetPrivilegeGroupsQuery({ params }, { skip: !isAbacToggleEnabled })
+
+  const privilegeGroupList = pgList?.map((item) => ({
+    label: roleStringMap[item.name as RolesEnum]
+      ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
+    value: item.name
+  }))
 
   const onClose = () => {
     setVisible(false)
@@ -179,7 +194,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       ]}
     >
       <Select
-        options={rolesList}
+        options={isAbacToggleEnabled ? privilegeGroupList : rolesList}
         placeholder={$t({ defaultMessage: 'Select...' })}
       />
     </Form.Item>
