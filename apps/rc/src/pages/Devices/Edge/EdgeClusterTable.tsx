@@ -19,7 +19,7 @@ import {
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
-  isVirtualEdgeSerial
+  isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
@@ -236,7 +236,7 @@ export const EdgeClusterTable = () => {
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
           // eslint-disable-next-line max-len
-          selectedRows.filter(row => isVirtualEdgeSerial(row.serialNumber)).length === selectedRows.length),
+          selectedRows.filter(row => isOtpEnrollmentRequired(row.serialNumber)).length === selectedRows.length),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (selectedRows, clearSelection) => {
         sendEdgeOnboardOtp(selectedRows, clearSelection)
