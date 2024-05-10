@@ -22,7 +22,8 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useDeactivateWifiOperatorOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -39,7 +40,6 @@ import {
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  CommonResult,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -136,9 +136,8 @@ export function NetworkForm (props:{
     useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
   )
   const activateCertificateTemplate = useCertificateTemplateActivation()
-  const activateHotspot20NetworkOperator = useWifiOperatorActivation()
-  const activateHotspot20NetworkProvider = useIdentityProviderActivation()
-  const deactivateHotspot20NetworkProvider = useIdentityProviderDeactivation()
+  const addHotspot20NetworkActivations = useAddHotspot20Activation()
+  const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -483,19 +482,14 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'hotspot20Settings.wifiOperator',
-            'hotspot20Settings.identityProviders']))
-      const networkResponse = await addNetworkInstance({ params, payload,
-        callback: async (res: CommonResult) => {
-          if (saveState.type === NetworkTypeEnum.HOTSPOT20) {
-            await activateHotspot20NetworkOperator(
-              res.response?.id, saveState.hotspot20Settings?.wifiOperator)
-            saveState.hotspot20Settings?.identityProviders?.forEach(async (id) => {
-              await activateHotspot20NetworkProvider(res.response?.id, id)
-            })
-          }
-        } }).unwrap()
+            'hotspot20Settings.originalOperator',
+            'hotspot20Settings.identityProviders',
+            'hotspot20Settings.originalProviders']))
+      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+      const networkId = networkResponse?.response?.id
+      await addHotspot20NetworkActivations(saveState, networkId)
       // eslint-disable-next-line max-len
-      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkResponse?.response?.id)
+      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
       if (hasResult && payload.venues) {
         // @ts-ignore
@@ -550,9 +544,9 @@ export function NetworkForm (props:{
             'owePairNetworkId',
             'certificateTemplateId',
             'hotspot20Settings.wifiOperator',
+            'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.activateProviders',
-            'hotspot20Settings.deactivateProviders'
+            'hotspot20Settings.originalProviders'
           ]
         )
       }else{
@@ -572,27 +566,11 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
-      const hotspot20ActivateProviders = formData.hotspot20Settings?.activateProviders
-      const hotspot20DeactivateProviders = formData.hotspot20Settings?.deactivateProviders
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload,
-        callback: async () => {
-          if (payload.type === NetworkTypeEnum.HOTSPOT20) {
-            if (hotspot20DeactivateProviders) {
-              hotspot20DeactivateProviders.forEach(async (id) => {
-                await deactivateHotspot20NetworkProvider(formData.id, id)
-              })
-            }
-
-            if (hotspot20ActivateProviders) {
-              hotspot20ActivateProviders.forEach(async (id) => {
-                await activateHotspot20NetworkProvider(formData.id, id)
-              })
-            }
-          }
-        } }).unwrap()
+      await updateNetworkInstance({ params, payload }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      await updateHotspot20NetworkActivations(formData)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -870,6 +848,16 @@ function useWifiOperatorActivation () {
   return activateWifiOperator
 }
 
+function useWifiOperatorDeactivation () {
+  const [deactivate] = useDeactivateWifiOperatorOnWifiNetworkMutation()
+  const deactivateWifiOperator =
+    async (wifiNetworkId?: string, operatorId?: string) => {
+      return wifiNetworkId && operatorId ?
+        await deactivate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
+    }
+
+  return deactivateWifiOperator
+}
 
 function useIdentityProviderActivation () {
   const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
@@ -891,4 +879,61 @@ function useIdentityProviderDeactivation () {
     }
 
   return deactivateIdentityProvider
+}
+
+function useAddHotspot20Activation () {
+  const activateHotspot20NetworkOperator = useWifiOperatorActivation()
+  const activateHotspot20NetworkProvider = useIdentityProviderActivation()
+  const addHotspot20Activations =
+    async (network?: NetworkSaveData, networkId?: string) => {
+      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId) {
+        await activateHotspot20NetworkOperator(
+          networkId, network.hotspot20Settings?.wifiOperator)
+        network.hotspot20Settings?.identityProviders?.forEach(async (id) => {
+          await activateHotspot20NetworkProvider(networkId, id)
+        })
+      }
+      return
+    }
+
+  return addHotspot20Activations
+}
+
+function useUpdateHotspot20Activation () {
+  const activateOperator = useWifiOperatorActivation()
+  const deactivateOperator = useWifiOperatorDeactivation()
+  const activateProvider = useIdentityProviderActivation()
+  const deactivateProvider = useIdentityProviderDeactivation()
+  const updateHotspot20Activations =
+    async (network?: NetworkSaveData) => {
+      if (network && network.type === NetworkTypeEnum.HOTSPOT20) {
+        const hotspot20Setting = network.hotspot20Settings
+        const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
+        const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
+
+        if (hotspot20OriginalOperator &&
+          hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
+          await deactivateOperator(network.id, hotspot20OriginalOperator)
+          await activateOperator(network.id, hotspot20Setting.wifiOperator)
+        }
+
+        if (hotspot20OriginalProviders &&
+          hotspot20Setting?.identityProviders &&
+          !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
+          hotspot20OriginalProviders.forEach(async (id) => {
+            hotspot20Setting?.identityProviders &&
+            !(hotspot20Setting?.identityProviders.includes(id)) &&
+            await deactivateProvider(network.id, id)
+          })
+
+          hotspot20Setting?.identityProviders.forEach(async (id) => {
+            !hotspot20OriginalProviders.includes(id) &&
+            await activateProvider(network.id, id)
+          })
+        }
+      }
+      return
+    }
+
+  return updateHotspot20Activations
 }

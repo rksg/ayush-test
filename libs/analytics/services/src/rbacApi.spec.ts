@@ -86,6 +86,7 @@ describe('RBAC API', () => {
     )
     expect(data).toStrictEqual([{
       ...user,
+      displayRole: 'Admin',
       displayType: 'Internal',
       displayInvitationState: '--',
       displayInvitor: '--'
