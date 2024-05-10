@@ -29,7 +29,6 @@ import {
   LocationExtended,
   VenueExtended,
   checkObjectNotExists,
-  generatePageHeaderTitle,
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
@@ -170,13 +169,11 @@ export function VenuesForm () {
   const previousPath = usePreviousPath()
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: action === 'edit',
-    isTemplate,
     instanceLabel: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })

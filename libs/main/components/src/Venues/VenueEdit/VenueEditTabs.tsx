@@ -2,10 +2,10 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                                from '@acx-ui/components'
-import { Features, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
-import { useIsConfigTemplateGA, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
-import { useConfigTemplate, type LocationExtended }            from '@acx-ui/rc/utils'
+import { Tabs }                                     from '@acx-ui/components'
+import { Features, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }             from '@acx-ui/rc/components'
+import { useConfigTemplate, type LocationExtended } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -112,11 +112,4 @@ function usePropertyManagementEnabled () {
   const { isTemplate } = useConfigTemplate()
 
   return enablePropertyManagement && !isTemplate
-}
-
-export function useSwitchConfigurationEnabled () {
-  const { isTemplate } = useConfigTemplate()
-  const isConfigTemplateGA = useIsConfigTemplateGA()
-
-  return !isTemplate || isConfigTemplateGA
 }

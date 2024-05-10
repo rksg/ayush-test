@@ -15,7 +15,9 @@ import {
   useUpdateSwitchConfigProfileMutation
 } from '@acx-ui/rc/services'
 import {
-  CliConfiguration
+  CliConfiguration,
+  useConfigTemplatePageHeaderTitle,
+  useConfigTemplateBreadcrumb
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -49,6 +51,18 @@ export function CliProfileForm () {
   const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
   const { data: cliProfile, isLoading: isProfileLoading }
     = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
+
+
+  // Config Template related states
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Wired' }) },
+    { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+    { text: $t({ defaultMessage: 'Configuration Profiles' }), link: '/networks/wired/profiles' }
+  ])
+  const pageTitle = useConfigTemplatePageHeaderTitle({
+    isEdit: editMode,
+    instanceLabel: $t({ defaultMessage: 'CLI Configuration Profile' })
+  })
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
@@ -109,17 +123,8 @@ export function CliProfileForm () {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit CLI Configuration Profile' })
-          : $t({ defaultMessage: 'Add CLI Configuration Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
-          {
-            text: $t({ defaultMessage: 'Configuration Profiles' }),
-            link: '/networks/wired/profiles'
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
 
       <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
