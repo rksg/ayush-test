@@ -14,7 +14,8 @@ import {
   NetworkVenue,
   ClientIsolationVenue,
   ManagementFrameProtectionEnum,
-  GuestNetworkTypeEnum
+  GuestNetworkTypeEnum,
+  NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
 import { NetworkVxLanTunnelProfileInfo } from './utils'
@@ -106,8 +107,16 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   return saveData
 }
 
-const parseHotspot20SettingDataToSave = (data: NetworkSaveData) => {
+const parseHotspot20SettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = { ...data }
+
+  if (!editMode && !get(data, 'hotspot20Settings.allowInternetAccess')) {
+    saveData = {
+      ...saveData,
+      hotspot20Settings: new NetworkHotspot20Settings(),
+      accountingInterimUpdates: 5
+    }
+  }
 
   return saveData
 }
@@ -252,7 +261,7 @@ export function transferDetailToSave (data: NetworkSaveData) {
 export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
-    [NetworkTypeEnum.HOTSPOT20]: parseHotspot20SettingDataToSave(data),
+    [NetworkTypeEnum.HOTSPOT20]: parseHotspot20SettingDataToSave(data, editMode),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
     [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),
@@ -420,6 +429,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       ...data.wlan,
       vlanId,
       advancedCustomization
+    },
+    hotspot20Settings: {
+      ...originalData?.hotspot20Settings,
+      wifiOperator: data.hotspot20Settings?.wifiOperator,
+      identityProviders: data.hotspot20Settings?.identityProviders
     }
   }
 
