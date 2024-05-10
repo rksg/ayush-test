@@ -1,4 +1,3 @@
-import { TrustedCAChain } from './../../../utils/src/models/TrustedCAChain';
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { ConfigTemplateType }                       from '@acx-ui/rc/utils'
 import { renderHook }                               from '@acx-ui/test-utils'
