@@ -12,21 +12,27 @@ import {
 import {
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchConfigProfileTemplateQuery,
+  useAddSwitchConfigProfileTemplateMutation,
+  useUpdateSwitchConfigProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration,
   useConfigTemplatePageHeaderTitle,
-  useConfigTemplateBreadcrumb
+  useConfigTemplateBreadcrumb,
+  useConfigTemplateQueryFnSwitcher,
+  ConfigurationProfile,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }        from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -43,15 +49,22 @@ export function CliProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToNetworks = useTenantLink('/networks/wired/profiles')
+  const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
 
   const [form] = Form.useForm()
-  const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
-  const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
+  const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
+    useAddSwitchConfigProfileMutation, useAddSwitchConfigProfileTemplateMutation
+  )
+  const [updateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
+    useUpdateSwitchConfigProfileMutation, useUpdateSwitchConfigProfileTemplateMutation
+  )
   const { data: cliProfile, isLoading: isProfileLoading }
-    = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
-
+    = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
+      useGetSwitchConfigProfileQuery,
+      useGetSwitchConfigProfileTemplateQuery,
+      !editMode
+    )
 
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
@@ -89,7 +102,7 @@ export function CliProfileForm () {
           ...transformSaveData(data)
         }
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      navigate(linkToProfiles, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -100,7 +113,7 @@ export function CliProfileForm () {
       await addSwitchConfigProfile({
         params, payload: transformSaveData(data)
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      navigate(linkToProfiles, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -134,7 +147,7 @@ export function CliProfileForm () {
           initialValues={{
             venues: cliProfile?.venues
           }}
-          onCancel={() => navigate(linkToNetworks)}
+          onCancel={() => navigate(linkToProfiles)}
           onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
         >
           <StepsForm.StepForm
