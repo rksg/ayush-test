@@ -3,6 +3,7 @@ import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useStat
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                           from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
+import styled                                                      from 'styled-components'
 
 import {
   Button,
@@ -253,7 +254,7 @@ export function SecurityTab () {
       width: 450,
       title: $t({ defaultMessage: 'TLS Enhanced Key' }),
       content: $t({ defaultMessage:
-          `Enabling TLS Enhanced key will prompt a reboot of all AP devices
+          `Enabling or disabling TLS Enhanced key will prompt a reboot of all AP devices
           within this <venueSingular></venueSingular>. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
@@ -459,6 +460,12 @@ export function SecurityTab () {
   )
 }
 
+const CustomFieldSet = styled(Fieldset)`
+  & > legend > label {
+    font-weight: 100 !important;
+  }
+`
+
 const FieldsetItem = ({
   children,
   label,
@@ -474,7 +481,7 @@ const FieldsetItem = ({
   {...props}
   valuePropName='checked'
 >
-  <Fieldset
+  <CustomFieldSet
     {...{ label, children }}
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
