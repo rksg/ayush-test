@@ -15,6 +15,7 @@ import {
 
 export * from './types'
 export * from './urls'
+export * from './mspRbacUrls'
 export const MSP_USER_SETTING = 'COMMON$MSP'
 
 export const MSPUtils = () => {

@@ -121,7 +121,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspProfile: {
     method: 'get',
-    url: '/brandings',
+    url: '/msplabel',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
   },
@@ -256,19 +256,19 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspLabel: {
     method: 'get',
-    url: '/brandings',
+    url: '/msplabel',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
   },
   addMspLabel: {
     method: 'post',
-    url: '/brandings',
+    url: '/msplabel',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
   },
   updateMspLabel: {
     method: 'put',
-    url: '/brandings',
+    url: '/msplabel',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
   },
