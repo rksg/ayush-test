@@ -121,7 +121,7 @@ const list = [
 
 describe('License Banner Component', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
-  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ENTITLEMENT_RBAC_API)
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {

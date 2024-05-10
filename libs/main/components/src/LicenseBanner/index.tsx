@@ -88,16 +88,16 @@ export function LicenseBanner (props: BannerProps) {
   const { isMSPUser } = props
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
   const params = useParams()
 
   const { data: bannerData } = useEntitlementBannersQuery({ params },
-    { skip: isMSPUser || isAbacToggleEnabled })
+    { skip: isMSPUser || isEntitlementRbacApiEnabled })
   const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
-    { skip: !isMSPUser || isAbacToggleEnabled })
+    { skip: !isMSPUser || isEntitlementRbacApiEnabled })
 
   const recPayload = {
     filters: {
@@ -112,16 +112,16 @@ export function LicenseBanner (props: BannerProps) {
   }
 
   const { data: bannersSelf } = useGetBannersQuery({ params, payload: recPayload },
-    { skip: isMSPUser || !isAbacToggleEnabled })
+    { skip: isMSPUser || !isEntitlementRbacApiEnabled })
   const { data: bannersMsp } = useGetBannersQuery({ params, payload: mspPayload },
-    { skip: !isMSPUser || !isAbacToggleEnabled })
+    { skip: !isMSPUser || !isEntitlementRbacApiEnabled })
 
   useEffect(() => {
-    if(!isAbacToggleEnabled && (bannerData || mspBannerData)){
+    if(!isEntitlementRbacApiEnabled && (bannerData || mspBannerData)){
       const list = getExpireInfo(isMSPUser ? (mspBannerData||[]) : bannerData||[])
       setExpireList(list)
     }
-    if(isAbacToggleEnabled && (bannersSelf || bannersMsp)) {
+    if(isEntitlementRbacApiEnabled && (bannersSelf || bannersMsp)) {
       const list = getExpireInfo(isMSPUser ? (bannersMsp?.data||[]) : bannersSelf?.data || [])
       setExpireList(list)
     }
