@@ -1234,6 +1234,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    deactivateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.deactivateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -2646,6 +2655,7 @@ export const {
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
   useActivateWifiOperatorOnWifiNetworkMutation,
+  useDeactivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,

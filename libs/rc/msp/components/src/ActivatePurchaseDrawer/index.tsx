@@ -69,7 +69,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       await form.validateFields()
       let payload = {
         region: form.getFieldValue(['region']),
-        startDate: moment((form.getFieldValue(['startDate']))).format('YYYY/MM/DD'),
+        startDate: moment((form.getFieldValue(['startDate']))).format('YYYY-MM-DD'),
         orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
       }
 

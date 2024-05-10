@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { getUserProfile, Roles }                 from '@acx-ui/analytics/utils'
+import { getUserProfile, RolesEnum }             from '@acx-ui/analytics/utils'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -18,7 +18,7 @@ function ClientDetailTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       {
-        role !== Roles.BUSINESS_INSIGHTS_USER
+        role !== RolesEnum.REPORT_ONLY
           ? <Tabs.TabPane
             tab={$t({ defaultMessage: 'Troubleshooting' })}
             key='troubleshooting'

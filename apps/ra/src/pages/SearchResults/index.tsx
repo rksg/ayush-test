@@ -15,7 +15,7 @@ import {
   formattedPath,
   getUserProfile,
   encodeFilterPath,
-  Roles
+  RolesEnum
 } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
@@ -40,7 +40,7 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
   const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === Roles.BUSINESS_INSIGHTS_USER
+  const isReportOnly = role === RolesEnum.REPORT_ONLY
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
@@ -63,7 +63,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row: AP) => {
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const link = role === Roles.BUSINESS_INSIGHTS_USER
+        const link = role === RolesEnum.REPORT_ONLY
           ? `/reports/aps?${filter}`
           : `/devices/wifi/${row.macAddress}/details/ai`
         return <TenantLink to={link}>{row.apName}</TenantLink>
@@ -227,7 +227,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
           : `/reports/wireless?${filter}`
-        const link = role === Roles.BUSINESS_INSIGHTS_USER
+        const link = role === RolesEnum.REPORT_ONLY
           ? reportOnly
           : defaultPath
         return <TenantLink to={link}>{row.name}</TenantLink>
