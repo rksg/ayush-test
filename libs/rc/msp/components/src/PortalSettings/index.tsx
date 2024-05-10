@@ -26,6 +26,7 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
@@ -80,6 +81,7 @@ export function PortalSettings () {
   const [form] = Form.useForm()
   const params = useParams()
 
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
@@ -111,7 +113,8 @@ export function PortalSettings () {
 
   const { data: provider } = useExternalProvidersQuery({ params })
   const { data: baseUrl } = useGetMspBaseURLQuery({ params })
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: mspLabel } = useGetMspLabelQuery({ params:
+    isRbacEnabled ? { isRbacApi: 'true' } : params })
 
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {

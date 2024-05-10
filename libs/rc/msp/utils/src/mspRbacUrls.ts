@@ -122,7 +122,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getMspProfile: {
     method: 'get',
     url: '/brandings',
-    oldUrl: '/msplabel',
+    oldUrl: '/mspLabels',
     newApi: true
   },
   getMspEcProfile: {
@@ -248,30 +248,28 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   method: 'post',
   //   url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
   // },
-
-  // getMspBaseURL: {
-  //   method: 'get',
-  //   url: '/mspLabels/baseUrls',
-  //   oldUrl: '/api/mspservice/baseurl',
-  //   newApi: true
-  // },
-
+  getMspBaseURL: {
+    method: 'get',
+    url: '/brandings/suffix',
+    oldUrl: '/mspLabels/baseUrls',
+    newApi: true
+  },
   getMspLabel: {
     method: 'get',
     url: '/brandings',
-    oldUrl: '/msplabel',
+    oldUrl: '/mspLabels',
     newApi: true
   },
   addMspLabel: {
     method: 'post',
     url: '/brandings',
-    oldUrl: '/msplabel',
+    oldUrl: '/mspLabels',
     newApi: true
   },
   updateMspLabel: {
     method: 'put',
     url: '/brandings',
-    oldUrl: '/msplabel',
+    oldUrl: '/mspLabels',
     newApi: true
   },
   acceptRejectInvitation: {
@@ -341,7 +339,8 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAvailableMspRecCustomers: {
     method: 'get',
-    url: '/mspCustomers/recs',
+    url: '/brandAccounts',
+    oldUrl: '/mspCustomers/recs',
     newApi: true
   },
   addMspRecCustomer: {

@@ -29,7 +29,8 @@ import {
   MspEcAlarmList,
   RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
-  MspEcWithVenue
+  MspEcWithVenue,
+  MspRbacUrlsInfo
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -589,7 +590,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspLabel: build.query<MspPortal, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspLabel, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspLabel : MspUrlsInfo.getMspLabel, params)
         return{
           ...req
         }
