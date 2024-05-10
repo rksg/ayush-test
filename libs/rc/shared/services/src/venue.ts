@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
 import { cloneDeep, omit, uniq } from 'lodash'
 
-import { DateFormatEnum, formatter }                                                                                                     from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -77,7 +77,18 @@ import {
   ApCompatibility,
   ApCompatibilityResponse,
   VeuneApAntennaTypeSettings,
-  NetworkApGroup, ConfigTemplateUrlsInfo, getVenueTimeZone, getCurrentTimeSlotIndex, SchedulerTypeEnum, ISlotIndex, Network, ITimeZone
+  NetworkApGroup,
+  ConfigTemplateUrlsInfo,
+  getVenueTimeZone,
+  getCurrentTimeSlotIndex,
+  SchedulerTypeEnum,
+  ISlotIndex,
+  Network,
+  ITimeZone,
+  WifiRbacUrlsInfo,
+  GetApiVersionHeader,
+  ApiVersionType,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1075,8 +1086,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueDirectedMulticast, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1096,10 +1110,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueDirectedMulticast, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueDirectedMulticast)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
@@ -1434,8 +1453,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1454,10 +1476,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueRadiusOptions)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(apiInfo.updateVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]

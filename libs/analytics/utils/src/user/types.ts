@@ -1,4 +1,4 @@
-import { Roles } from '../constants'
+import { RolesEnum } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -17,7 +17,7 @@ export type UserProfile = {
 }
 export type Invitation = {
   accountName: string
-  role: Roles
+  role: RolesEnum
   type: string
   resourceGroupId: string
   firstName: string
@@ -28,7 +28,7 @@ export type Tenant = {
   name: string
   support: boolean
   type: 'tenant' | 'super-tenant'
-  role: Roles
+  role: RolesEnum
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
@@ -69,7 +69,7 @@ export type ManagedUser = {
   email: string
   accountId: string
   accountName: string
-  role: Roles
+  role: RolesEnum
   tenantId: string
   resourceGroupId: string
   resourceGroupName: string

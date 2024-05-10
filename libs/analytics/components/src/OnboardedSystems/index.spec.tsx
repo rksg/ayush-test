@@ -169,7 +169,7 @@ describe('OnboardedSystems', () => {
     expect(await screen.findByTestId('toast-content'))
       .toHaveTextContent('Failed to delete sz3')
   })
-  it('should query only Roles.PRIME_ADMINISTRATOR tenants', () => {
+  it('should query only RolesEnum.ADMIN tenants', () => {
     setUserProfile({ accountId: tenants[0].id, tenants: [
       ...tenants,
       { id: 'id3', name: 'account3', permissions: { [PERMISSION_MANAGE_MLISA]: false } }
