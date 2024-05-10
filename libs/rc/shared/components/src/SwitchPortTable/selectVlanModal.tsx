@@ -11,10 +11,8 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { SwitchScopes }  from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import { VlanSettingDrawer } from '../VlanSettingDrawer'
 
@@ -54,7 +52,7 @@ export function SelectVlanModal (props: {
   } = props
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
-  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
+  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState<Number | ''>(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
   const [vlanDrawerVisible, setVlanDrawerVisible] = useState(false)
   const [taggedVlanOptions, setTaggedVlanOptions] = useState([] as CheckboxOptionType[])
@@ -141,13 +139,14 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    setSelectUntaggedVlan(Number(untaggedVlan))
+    const untagged = untaggedVlan ? Number(untaggedVlan) : ''
+    setSelectUntaggedVlan(untagged)
     setSelectTaggedVlans(taggedVlans)
   }, [])
 
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
+    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan as number)
     setTaggedVlanOptions(taggedVlanOptions)
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
@@ -225,7 +224,7 @@ export function SelectVlanModal (props: {
       onCancel={onCancel}
       footer={[
         <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
-          { hasPermission({ scopes: [SwitchScopes.CREATE] }) ? <Tooltip
+          <Tooltip
             placement='top'
             key='disable-add-vlan-tooltip'
             title={!hasSwitchProfile ? vlanDisabledTooltip : ''}
@@ -242,7 +241,7 @@ export function SelectVlanModal (props: {
                 {$t({ defaultMessage: 'Add VLAN' })}
               </Button>
             </Space>
-          </Tooltip> : <Space> </Space>}
+          </Tooltip>
           <Space>
             <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
             <Tooltip

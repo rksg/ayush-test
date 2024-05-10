@@ -5,10 +5,10 @@ import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }                          from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { ApGroupEditContext }                                                                                 from '..'
-import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList, vlanPoolList } from '../../ApGroupDetails/__tests__/fixtures'
+import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList, vlanPoolList } from '../__tests__/fixtures'
+import { ApGroupEditContext }                                                                                 from '../index'
 
-import { ApGroupVlanRadioTab } from '.'
+import { ApGroupVlanRadioTab } from './index'
 
 
 const mockedUsedNavigate = jest.fn()

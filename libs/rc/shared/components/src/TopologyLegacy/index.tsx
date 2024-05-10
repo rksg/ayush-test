@@ -15,8 +15,7 @@ import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, 
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
 import { ConnectionStates, ConnectionStatus, DeviceStates, TopologyDeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }                                                                                                                                                                                                   from '@acx-ui/types'
-import { hasPermission }                                                                                                                                                                                                              from '@acx-ui/user'
+import { hasAccess }                                                                                                                                                                                                                  from '@acx-ui/user'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -605,17 +604,17 @@ export function TopologyGraphLegacy (props:{ venueId?: string,
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               // eslint-disable-next-line max-len
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this <venueSingular></venueSingular>' })}>
-                { <Row style={{ justifyContent: 'space-around' }}>
-                  { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Col>
+                { hasAccess() && <Row>
+                  <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>
-                  </Col>}
-                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) && <Col>
+                  </Col>
+                  <Col span={8} offset={4}>
                     <TenantLink to='devices/switch/add'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>
-                  </Col>}
+                  </Col>
                 </Row>}
               </Empty>
               // eslint-disable-next-line max-len

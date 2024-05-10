@@ -24,9 +24,8 @@ import {
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 
@@ -188,7 +187,6 @@ export function SwitchVeTable ( { isVenueLevel } : {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         setIsEditMode(true)
         setEditData(selectedRows[0])
@@ -197,7 +195,6 @@ export function SwitchVeTable ( { isVenueLevel } : {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [SwitchScopes.DELETE],
       disabled: disabledDelete || cliApplied,
       tooltip: deleteButtonTooltip || $t(VenueMessages.CLI_APPLIED),
       onClick: (rows, clearSelection) => {
@@ -221,10 +218,6 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const [visible, setVisible] = useState(false)
   const [editData, setEditData] = useState({} as VeViewModel)
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
-
   return <Loader states={[tableQuery]}>
     <Table
       settingsId='switch-ve-table'
@@ -234,7 +227,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={isSelectionVisible ? {
+      rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record?.inactiveRow
@@ -243,10 +236,9 @@ export function SwitchVeTable ( { isVenueLevel } : {
         },
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
-      } : undefined}
+      }}
       actions={filterByAccess([{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
-        scopeKey: [SwitchScopes.CREATE],
         disabled: cliApplied,
         tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
         onClick: () => {

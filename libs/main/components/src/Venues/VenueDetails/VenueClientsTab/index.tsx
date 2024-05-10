@@ -10,8 +10,6 @@ import {
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }            from '@acx-ui/reports/components'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { hasPermission }                         from '@acx-ui/user'
 
 import { IconThirdTab } from '../VenueDevicesTab/VenueWifi/styledComponents'
 
@@ -57,73 +55,64 @@ export function VenueClientsTab () {
     })
   }
 
-  const tabs = [
-    ...( hasPermission({ scopes: [WifiScopes.READ] }) ? [{
-      label: $t({ defaultMessage: 'Wireless' }),
-      value: 'wifi',
-      children: <IconThirdTab
-        activeKey={categoryTab}
-        defaultActiveKey='list'
-        onChange={onCategoryTabChange}
-      >
-        <Tabs.TabPane key='list'
-          tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
-            <ListSolid />
-          </Tooltip>}>
-          <ClientDualTable />
-        </Tabs.TabPane>
-        <Tabs.TabPane key='overview'
-          tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
-            <LineChartOutline />
-          </Tooltip>}>
-          <EmbeddedReport
-            reportName={ReportType.CLIENT}
-            rlsClause={`"zoneName" in ('${venueId}')`}
-          />
-        </Tabs.TabPane>
-      </IconThirdTab>
-    }] : []),
-
-    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
-      label: $t({ defaultMessage: 'Wired' }),
-      value: 'switch',
-      children: <SwitchClientsTable filterBySwitch={true}/>
-    }] : []),
-
-    ...(isCloudpathBetaEnabled
-    && personaGroupData?.personalIdentityNetworkId
-    && personaGroupData?.id ? [{
-        label: $t(
-          { defaultMessage: 'Identity ({count})' },
-          { count: personaGroupData?.identities?.length ?? 0 }
-        ),
-        value: 'identity',
-        children: <BasePersonaTable
-          personaGroupId={personaGroupData?.id}
-          colProps={{
-            name: { searchable: true },
-            groupId: { show: false, filterable: false },
-            vlan: { show: false },
-            ethernetPorts: { show: false }
-          }}
-        />
-      }] : [])
-  ]
-
   return (
     <Tabs activeKey={activeSubTab}
-      defaultActiveKey={activeSubTab || tabs[0]?.value}
+      defaultActiveKey='wifi'
       onChange={onTabChange}
       type='card'
     >
-      {tabs.map((tab) => (
-        <Tabs.TabPane
-          tab={tab.label}
-          key={tab.value}
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Wireless' })}
+        key='wifi'>
+        <IconThirdTab
+          activeKey={categoryTab}
+          defaultActiveKey='list'
+          onChange={onCategoryTabChange}
         >
-          {tab.children}
+          <Tabs.TabPane key='list'
+            tab={<Tooltip title={$t({ defaultMessage: 'Client List' })}>
+              <ListSolid />
+            </Tooltip>}>
+            <ClientDualTable />
+          </Tabs.TabPane>
+          <Tabs.TabPane key='overview'
+            tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+              <LineChartOutline />
+            </Tooltip>}>
+            <EmbeddedReport
+              reportName={ReportType.CLIENT}
+              rlsClause={`"zoneName" in ('${venueId}')`}
+            />
+          </Tabs.TabPane>
+        </IconThirdTab>
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Wired' })}
+        key='switch'>
+        <SwitchClientsTable filterBySwitch={true}/>
+      </Tabs.TabPane>
+      {(isCloudpathBetaEnabled
+          && personaGroupData?.personalIdentityNetworkId
+          && personaGroupData?.id
+      ) &&
+        <Tabs.TabPane
+          tab={$t(
+            { defaultMessage: 'Identity ({count})' },
+            { count: personaGroupData?.identities?.length ?? 0 }
+          )}
+          key={'identity'}
+        >
+          <BasePersonaTable
+            personaGroupId={personaGroupData.id}
+            colProps={{
+              name: { searchable: true },
+              groupId: { show: false, filterable: false },
+              vlan: { show: false },
+              ethernetPorts: { show: false }
+            }}
+          />
         </Tabs.TabPane>
-      ))}
+      }
     </Tabs>
   )
 }

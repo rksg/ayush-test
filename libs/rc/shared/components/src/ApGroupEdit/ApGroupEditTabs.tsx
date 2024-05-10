@@ -12,7 +12,7 @@ import {
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
 
-import { ApGroupEditContext, showUnsavedModal } from '.'
+import { ApGroupEditContext, showUnsavedModal } from './index'
 
 import type { History, Transition } from 'history'
 

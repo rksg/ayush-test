@@ -8,7 +8,7 @@ import { filterByAccess }    from '@acx-ui/user'
 
 import { useApGroupNetworkColumns } from '../../ApGroupNetworkTable'
 
-import { ApGroupVlanRadioContext } from '.'
+import { ApGroupVlanRadioContext } from './index'
 
 
 export function ApGroupVlanRadioTable () {
