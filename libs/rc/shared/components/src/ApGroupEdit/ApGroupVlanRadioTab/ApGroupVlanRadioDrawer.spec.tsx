@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { ApGroupNetworkTableData, vlanPoolList } from '../../ApGroupDetails/__tests__/fixtures'
+import { ApGroupNetworkTableData, vlanPoolList } from '../__tests__/fixtures'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 
-import { ApGroupVlanRadioContext } from '.'
+import { ApGroupVlanRadioContext } from './index'
 
 const vlanPoolingNameMap = vlanPoolList.map(vp => ({ key: vp.id, value: vp.name }))
 const venueId = 'venue-id'
