@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import {
   useAdaptivePolicyListQuery,
   useAdaptivePolicySetListQuery,
-  useRadiusAttributeGroupListQuery
+  useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -21,7 +21,8 @@ export default function AdaptivePolicyTabs (props: { activeTab: AdaptivePolicyTa
   const navigate = useNavigate()
 
   const attributeGroupTableQuery = useTableQuery({
-    useQuery: useRadiusAttributeGroupListQuery,
+    useQuery: useRadiusAttributeGroupListByQueryQuery,
+    apiParams: { excludeContent: 'true' },
     defaultPayload: {}
   })
 

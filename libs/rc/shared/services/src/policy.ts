@@ -1781,24 +1781,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createNewTableHttpRequest({
-          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
-          params,
-          payload: payload as TableChangePayload
-        })
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
-        return transferToTableResult<RadiusAttributeGroup>(result)
-      },
-      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     // eslint-disable-next-line max-len
     radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1814,22 +1796,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
-    }),
-    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
-      query: ({ params }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createHttpRequest(
-          RadiusAttributeGroupUrlsInfo.getAttributes,
-          params
-        )
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttribute>) {
-        return transferToTableResult<RadiusAttribute>(result)
-      },
-      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
     }),
     radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
       query: ({ params }) => {
@@ -2687,15 +2653,12 @@ export const {
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
   useResetApSnmpSettingsMutation,
-  useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
-  useRadiusAttributeListQuery,
   useRadiusAttributeVendorListQuery,
   useRadiusAttributeListWithQueryQuery,
   useLazyRadiusAttributeListWithQueryQuery,
   useRadiusAttributeQuery,
   useDeleteRadiusAttributeGroupMutation,
-  useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery,

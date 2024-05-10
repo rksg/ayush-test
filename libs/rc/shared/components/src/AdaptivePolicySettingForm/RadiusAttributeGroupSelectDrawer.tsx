@@ -4,7 +4,7 @@ import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
 
 import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
-import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
+import { useRadiusAttributeGroupListByQueryQuery }                  from '@acx-ui/rc/services'
 import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                from '@acx-ui/user'
 
@@ -64,8 +64,9 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   const selectedGroupId = Form.useWatch('attributeGroupId', settingForm)
 
   const tableQuery = useTableQuery({
-    useQuery: useRadiusAttributeGroupListQuery,
+    useQuery: useRadiusAttributeGroupListByQueryQuery,
     defaultPayload: {},
+    apiParams: { excludeContent: 'false' },
     pagination: {
       pageSize: 2000,
       page: 1
