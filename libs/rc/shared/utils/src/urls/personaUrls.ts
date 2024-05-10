@@ -7,7 +7,7 @@ export const PersonaBaseUrl = '/api/identityGroups'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 type PersonaUrlType =
-  'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
+  'addPersonaGroup' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
   'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaById' |
   'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
@@ -29,12 +29,6 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateMacRegistration: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`
-  },
-  getPersonaGroupList: {
-    method: 'get',
-    url: NewPersonaBaseUrl + paginationParams,
-    oldUrl: PersonaBaseUrl + paginationParams,
-    newApi: true
   },
   searchPersonaGroupList: {
     method: 'post',

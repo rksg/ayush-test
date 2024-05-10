@@ -9,10 +9,10 @@ import { DownloadOutlined }                                                   fr
 import {
   useDeletePersonasMutation,
   useGetPersonaGroupByIdQuery,
-  useGetPersonaGroupListQuery,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
-  useLazyGetPropertyUnitByIdQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
@@ -52,9 +52,9 @@ function useColumns (
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
-  const personaGroupList = useGetPersonaGroupListQuery({
+  const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
-      page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
+      page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
 

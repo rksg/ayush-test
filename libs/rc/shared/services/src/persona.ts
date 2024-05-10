@@ -65,37 +65,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
         })
       }
     }),
-    getPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: PersonaUrls.getPersonaGroupList,
-          params,
-          payload: payload as TableChangePayload,
-          headers: defaultPersonaVersioningHeaders
-        })
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewTableResult<PersonaGroup>) {
-        return transferToTableResult<PersonaGroup>(result)
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'CreateGroup',
-            'UpdateGroup',
-            'DeleteGroup'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(personaApi.util.invalidateTags([
-              { type: 'PersonaGroup', id: 'LIST' }
-            ]))
-          })
-        })
-      },
-      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
-    }),
     associateIdentityGroupWithDpsk: build.mutation({
       query: ({ params }) => {
         return {
@@ -395,7 +364,6 @@ export const {
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
-  useGetPersonaGroupListQuery,
   useSearchPersonaGroupListQuery,
   useLazySearchPersonaGroupListQuery,
   useGetPersonaGroupByIdQuery,
