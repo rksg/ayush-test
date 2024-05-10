@@ -20,7 +20,7 @@ import {
   PolicyOperation,
   PolicyType,
   WifiOperatorContext,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -52,7 +52,7 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
   const [ updateWifiOperator ] = useUpdateWifiOperatorMutation()
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.WIFI_OPERATOR)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.WIFI_OPERATOR)
 
   useEffect(() => {
     if (data) {

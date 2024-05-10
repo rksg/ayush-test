@@ -27,7 +27,6 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
-  generatePageHeaderTitle,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -40,26 +39,27 @@ import {
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   CommonResult,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }                from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   tranferSettingsToSave,
   transferDetailToSave,
@@ -184,15 +184,13 @@ export function NetworkForm (props:{
     })
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
     { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
     { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: editMode,
-    isTemplate,
     instanceLabel: intl.$t({ defaultMessage: 'Network' }),
     addLabel: intl.$t({ defaultMessage: 'Create New' })
   })

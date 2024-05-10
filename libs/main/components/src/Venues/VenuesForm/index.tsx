@@ -36,7 +36,8 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   Venue,
   TableResult,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
