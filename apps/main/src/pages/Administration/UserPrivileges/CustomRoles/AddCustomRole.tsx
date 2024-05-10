@@ -104,7 +104,7 @@ export function AddCustomRole () {
 
   useEffect(() => {
     if (location && (isEditMode || isClone)) {
-      form.setFieldValue('name', isClone ? (location?.name + '-copy') : location?.name)
+      form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
     }
   }, [form, location])
