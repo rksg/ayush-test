@@ -5,6 +5,7 @@ import { rest }       from 'msw'
 import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import {
   AdministrationUrlsInfo, CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
   VenueConfigTemplateUrlsInfo,
   useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -246,7 +247,7 @@ describe('Venues Form', () => {
         }
       ),
       rest.post(
-        VenueConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
       )
     )

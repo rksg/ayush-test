@@ -10,6 +10,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { EdgeScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
@@ -50,11 +51,13 @@ const EdgeSdLanDetail = () => {
           }
         ]}
         extra={filterByAccess([
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.EDGE_SD_LAN,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId!
-          })}>
+          <TenantLink
+            scopeKey={[EdgeScopes.UPDATE]}
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_SD_LAN,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId!
+            })}>
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

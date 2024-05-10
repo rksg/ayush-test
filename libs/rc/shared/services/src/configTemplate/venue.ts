@@ -1,6 +1,6 @@
 import {
   AAASetting,
-  CapabilitiesApModel, CommonResult, ExternalAntenna,
+  CapabilitiesApModel, CommonResult, ConfigTemplateUrlsInfo, ExternalAntenna,
   LocalUser, RadiusServer, TableResult, TacacsServer,
   TriBandSettings, Venue, VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
@@ -40,7 +40,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
