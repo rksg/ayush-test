@@ -484,8 +484,7 @@ export function NetworkForm (props:{
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.activateProviders',
-            'hotspot20Settings.deactivateProviders']))
+            'hotspot20Settings.originalProviders']))
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
@@ -547,8 +546,7 @@ export function NetworkForm (props:{
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.activateProviders',
-            'hotspot20Settings.deactivateProviders'
+            'hotspot20Settings.originalProviders'
           ]
         )
       }else{
