@@ -33,10 +33,16 @@ const createPersonaHttpRequest = (
   return createHttpRequest(apiInfo, paramValues, headers, ignoreDelegation)
 }
 
+export interface AsyncCommonResponse {
+  id?: string,
+  requestId: string
+}
+
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
     // PersonaGroup
-    addPersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
+    // eslint-disable-next-line max-len
+    addPersonaGroup: build.mutation<AsyncCommonResponse, RequestPayload<PersonaGroup> & { callback?: (response: AsyncCommonResponse) => void }>({
       query: ({ params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
         return {
@@ -44,7 +50,20 @@ export const personaApi = basePersonaApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
+      invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === 'SUCCESS'
+              && msg.useCase === 'CreateGroup') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch { }
+        })
+      }
     }),
     getPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -76,6 +95,22 @@ export const personaApi = basePersonaApi.injectEndpoints({
         })
       },
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
+    }),
+    associateIdentityGroupWithDpsk: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createPersonaHttpRequest(PersonaUrls.associateDpskPool, params)
+        }
+      },
+      invalidatesTags: [{ type: 'PersonaGroup' }]
+    }),
+    associateIdentityGroupWithMacRegistration: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createPersonaHttpRequest(PersonaUrls.associateMacRegistration, params)
+        }
+      },
+      invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
     searchPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -124,7 +159,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         { type: 'Persona', id: 'ID' }
       ]
     }),
-    updatePersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
+    updatePersonaGroup: build.mutation<AsyncCommonResponse, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
         return {
@@ -358,6 +393,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
 export const {
   useAddPersonaGroupMutation,
+  useAssociateIdentityGroupWithDpskMutation,
+  useAssociateIdentityGroupWithMacRegistrationMutation,
   useGetPersonaGroupListQuery,
   useSearchPersonaGroupListQuery,
   useLazySearchPersonaGroupListQuery,

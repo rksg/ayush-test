@@ -11,7 +11,8 @@ type PersonaUrlType =
   'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaById' |
   'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
-  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni'
+  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
+  'associateDpskPool'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -20,6 +21,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     url: NewPersonaBaseUrl,
     oldUrl: PersonaBaseUrl,
     newApi: true
+  },
+  associateDpskPool: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`
+  },
+  associateMacRegistration: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`
   },
   getPersonaGroupList: {
     method: 'get',
