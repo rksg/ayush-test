@@ -81,7 +81,7 @@ export function PortalSettings () {
   const [form] = Form.useForm()
   const params = useParams()
 
-  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isRbacEnabled = true//useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
@@ -112,7 +112,8 @@ export function PortalSettings () {
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
   const { data: provider } = useExternalProvidersQuery({ params })
-  const { data: baseUrl } = useGetMspBaseURLQuery({ params })
+  const { data: baseUrl } = useGetMspBaseURLQuery({ params:
+    isRbacEnabled ? { isRbacApi: 'true' } : params })
   const { data: mspLabel } = useGetMspLabelQuery({ params:
     isRbacEnabled ? { isRbacApi: 'true' } : params })
 
@@ -401,7 +402,8 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      await addMspLabel({ params, payload: formData }).unwrap()
+      await addMspLabel({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
+        payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
     } catch(error) {
@@ -418,7 +420,8 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      await updateMspLabel({ params, payload: portal }).unwrap()
+      await updateMspLabel({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
+        payload: portal }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }

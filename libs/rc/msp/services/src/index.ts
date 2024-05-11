@@ -581,7 +581,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspBaseURL: build.query<BaseUrl, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspBaseURL : MspUrlsInfo.getMspBaseURL, params)
         return{
           ...req
         }
@@ -601,7 +603,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     addMspLabel: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.addMspLabel, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.addMspLabel : MspUrlsInfo.addMspLabel, params)
         return {
           ...req,
           body: payload
@@ -611,7 +615,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     updateMspLabel: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspLabel, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.updateMspLabel : MspUrlsInfo.updateMspLabel, params)
         return {
           ...req,
           body: payload
