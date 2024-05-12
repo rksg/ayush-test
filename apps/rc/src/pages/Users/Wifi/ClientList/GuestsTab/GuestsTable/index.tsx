@@ -317,8 +317,8 @@ export const GuestsTable = () => {
         key: 'Approver',
         title: $t({ defaultMessage: 'Approver' }),
         dataIndex: 'hostApprovalEmail',
-        filterable: false
-
+        filterable: false,
+        show: false
       }
     ]: [])
   ]
@@ -413,6 +413,7 @@ export const GuestsTable = () => {
         <Alert message={notificationMessage} type='info' showIcon ></Alert>
       }
       <Table
+        settingsId='guest-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
