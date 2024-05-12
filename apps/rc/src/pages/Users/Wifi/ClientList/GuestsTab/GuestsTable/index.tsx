@@ -22,6 +22,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@a
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
+  // useWifiNetworkListQuery,
   useImportGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
@@ -34,7 +35,8 @@ import {
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
   FILTER,
-  SEARCH
+  SEARCH,
+  GuestClient
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload }                          from '@acx-ui/types'
@@ -56,15 +58,11 @@ import {
 import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
-  fields: ['name', 'defaultGuestCountry', 'id'],
+  fields: ['name', 'defaultGuestCountry', 'id', 'venues', 'nwSubType', 'captiveType'],
   sortField: 'name',
   sortOrder: 'ASC',
-  pageSize: 10000,
-  filters: {
-    nwSubType: [NetworkTypeEnum.CAPTIVEPORTAL],
-    captiveType: [GuestNetworkTypeEnum.GuestPass]
-  },
-  url: '/api/viewmodel/tenant/{tenantId}/network'
+  pageSize: 10000
+  // url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
 export const GuestsTable = () => {
@@ -76,7 +74,6 @@ export const GuestsTable = () => {
     includeExpired: ['true']
   }
   const { setGuestCount } = useContext(GuestTabContext)
-
 
   const queryOptions = {
     defaultPayload: {
@@ -95,7 +92,8 @@ export const GuestsTable = () => {
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
-    defaultPayload: defaultGuestNetworkPayload
+    defaultPayload: defaultGuestNetworkPayload,
+    pagination: { defaultPageSize: 10000, pageSize: 10000 }
   })
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const notificationMessage =
@@ -127,7 +125,9 @@ export const GuestsTable = () => {
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+  const [venues, setVenues] = useState<{ [name: string]: string }>({})
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [guestNetworkList, setGuestNetworkList] = useState<Network[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
@@ -156,7 +156,24 @@ export const GuestsTable = () => {
 
   useEffect(() => {
     if (networkListQuery.data?.data) {
-      setAllowedNetworkList(networkListQuery.data?.data)
+      const networks = networkListQuery.data?.data ?? []
+      const networksWithPortal = networks.filter(network =>
+        network.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL)
+      const networksWithGuestPass = networksWithPortal.filter(network =>
+        network.captiveType === GuestNetworkTypeEnum.GuestPass)
+      setGuestNetworkList(networksWithPortal)
+      setAllowedNetworkList(networksWithGuestPass)
+      const currentVenues:{ [name: string]: string } = {}
+      networksWithGuestPass.forEach(network => {
+        if (network.venues && network.venues.count > 0) {
+          network.venues.ids.forEach((venueId:string, index) => {
+            if (!currentVenues[venueId]) {
+              currentVenues[venueId] = network.venues.names[index]
+            }
+          })
+        }
+      })
+      setVenues(currentVenues)
     }
   }, [networkListQuery.data])
 
@@ -184,8 +201,22 @@ export const GuestsTable = () => {
       }
     })
     importCsv({
-      params: { tenantId: params.tenantId, networkId: values.networkId }, payload: formData
+      params: { tenantId: params.tenantId, networkId: values.wifiNetworkId }, payload: formData
     })
+  }
+
+  const onClickGuest = (guest: Guest) => {
+    const networkName = guestNetworkList
+      .filter(network => network.id === guest.wifiNetworkId)[0]?.name ?? ''
+    const clients: GuestClient[] = []
+    guest.clients?.forEach(client => {
+      const venueName = venues[client.venueId] || ''
+      clients.push({ ...client, venueName })
+    })
+    setCurrentGuest({ ...guest,
+      ssid: networkName,
+      clients: clients.length > 0 ? clients : undefined })
+    setVisible(true)
   }
 
   const columns: TableProps<Guest>['columns'] = [
@@ -203,10 +234,7 @@ export const GuestsTable = () => {
         <Button
           type='link'
           size='small'
-          onClick={() => {
-            setCurrentGuest(row)
-            setVisible(true)
-          }}
+          onClick={() => onClickGuest(row)}
         >
           {formatter(DateFormatEnum.DateTimeFormat)(row.creationDate)}
         </Button>
@@ -226,10 +254,7 @@ export const GuestsTable = () => {
         <a
           // eslint-disable-next-line no-script-url
           href='javascript: void(0)'
-          onClick={() => {
-            setCurrentGuest(row)
-            setVisible(true)
-          }}
+          onClick={() => onClickGuest(row)}
           children={highlightFn(row.name as string)}
         />
     }, {
@@ -257,12 +282,12 @@ export const GuestsTable = () => {
     }, {
       key: 'ssid',
       title: $t({ defaultMessage: 'Allowed Network' }),
-      dataIndex: 'ssid',
-      filterKey: 'networkId',
+      dataIndex: 'wifiNetworkId',
+      filterKey: 'wifiNetworkId',
       filterable: networkFilterOptions || true,
       sorter: true,
       render: function (_, row) {
-        return renderAllowedNetwork(row)
+        return renderAllowedNetwork(row, networkFilterOptions)
       }
     }, {
       key: 'expiryDate',
@@ -291,7 +316,9 @@ export const GuestsTable = () => {
       {
         key: 'Approver',
         title: $t({ defaultMessage: 'Approver' }),
-        dataIndex: 'hostApprovalEmail'
+        dataIndex: 'hostApprovalEmail',
+        filterable: false
+
       }
     ]: [])
   ]
@@ -334,7 +361,7 @@ export const GuestsTable = () => {
           guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
         ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId ))
+          guestDetail.wifiNetworkId ))
         return Boolean(flag)
       },
       onClick: (selectedRows) => {
@@ -346,7 +373,7 @@ export const GuestsTable = () => {
       label: $t({ defaultMessage: 'Disable' }),
       visible: (selectedRows) => {
         return selectedRows.length === 1 &&
-          !_.isEmpty(selectedRows[0].networkId) &&
+          !_.isEmpty(selectedRows[0].wifiNetworkId) &&
           (selectedRows[0].guestStatus !== GuestStatusEnum.DISABLED) &&
           (selectedRows[0].guestStatus !== GuestStatusEnum.EXPIRED)
       },
@@ -356,7 +383,7 @@ export const GuestsTable = () => {
       label: $t({ defaultMessage: 'Enable' }),
       visible: (selectedRows) => {
         return selectedRows.length === 1 &&
-          !_.isEmpty(selectedRows[0].networkId) &&
+          !_.isEmpty(selectedRows[0].wifiNetworkId) &&
           (selectedRows[0].guestStatus === GuestStatusEnum.DISABLED)
       },
       onClick: (selectedRows) => { guestAction.enableGuest(selectedRows[0], params.tenantId)}
@@ -400,7 +427,7 @@ export const GuestsTable = () => {
           type: 'checkbox'
         }}
         actions={filterByAccess([{
-          key: 'POST:/guestUsers',
+          key: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -411,12 +438,14 @@ export const GuestsTable = () => {
           disabled: !isServicesEnabled
         },
         {
-          key: 'POST:/networks/{networkId}/guestUsers',
+          key: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }])
-        }
+        }]).map((action, index) => {
+          action.key = `${action.key}_${index}`
+          return action
+        })}
       />
 
       <Drawer
@@ -427,7 +456,6 @@ export const GuestsTable = () => {
           <GuestsDetail
             triggerClose={onClose}
             currentGuest={currentGuest}
-            queryPayload={tableQuery?.payload}
           />
         }
         width={'550px'}
@@ -474,16 +502,19 @@ export const GuestsTable = () => {
   )
 }
 
-export const renderAllowedNetwork = function (currentGuest: Guest) {
+export const renderAllowedNetwork =
+(currentGuest: Guest, networkList?: { key: string, value: string }[]) => {
   const { $t } = getIntl()
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
+  const ssid = networkList ? networkList
+    .filter(network => network.key === currentGuest.wifiNetworkId)[0]?.value : currentGuest.ssid
   if (isGuestManager) {
-    return currentGuest.ssid
-  } else if (currentGuest.networkId) {
+    return ssid
+  } else if (currentGuest.wifiNetworkId && ssid) {
     return (
-      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
-        {currentGuest.ssid}</TenantLink>
+      <TenantLink to={`/networks/wireless/${currentGuest.wifiNetworkId}/network-details/overview`}>
+        {ssid}</TenantLink>
     )
   } else {
     return $t({ defaultMessage: 'None [Network modified or deleted]' })
@@ -505,7 +536,9 @@ export const renderExpires = function (row: Guest) {
           $t({ defaultMessage: 'days' }) : $t({ defaultMessage: 'day' })
         const hourText = hours > 1 ?
           $t({ defaultMessage: 'hours' }) : $t({ defaultMessage: 'hour' })
-        result = `${days} ${dayText} ${hours} ${hourText}`
+        const daysStr = days > 0 ? `${days} ${dayText}` : ''
+        const hoursStr = hours > 0 ? `${hours} ${hourText}` : ''
+        result = `${daysStr} ${hoursStr}`
       } else {
         result = row.passDurationHours +
           (row.passDurationHours === 1 ?

@@ -29,7 +29,8 @@ import {
   clientReportList,
   eventMetaList,
   histClientList,
-  GuestClient,
+  GuestList,
+  GuestClients,
   dpskPassphraseClient
 } from '../../__tests__/fixtures'
 
@@ -87,6 +88,9 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
+      rest.post(ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json(GuestClients))
+      ),
       graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
         res(ctx.data({ client: clientReportList[0] })))
     )
@@ -187,7 +191,10 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(clientVenueList[0])))
+        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
+      rest.post(ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json(GuestClients))
+      )
     )
   })
 
@@ -296,13 +303,17 @@ describe('ClientOverviewTab - ClientProperties', () => {
             }))),
           rest.post(CommonUrlsInfo.getGuestsList.url,
             (_, res, ctx) => res(ctx.json({
-              ...GuestClient,
+              ...GuestList,
               data: [{
-                ...GuestClient.data[3],
+                ...GuestList.data[3],
                 name: '24418cc316df',
-                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
+                wifiNetworkId: '423c3673e74f44e69c0f3b35cd579ecc',
+                clients: GuestClients.data
               }]
-            })))
+            }))),
+          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+            res(ctx.json(GuestClients))
+          )
         )
         render(<Provider>
           <ClientProperties
@@ -315,8 +326,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
         expect(await screen.findByText('Guest Details')).toBeVisible()
-        expect(await screen.findByText(GuestClient.data[3].emailAddress)).toBeVisible()
-        expect(await screen.findByText(GuestClient.data[3].mobilePhoneNumber!)).toBeVisible()
+        expect(await screen.findByText(GuestList.data[3].emailAddress)).toBeVisible()
+        expect(await screen.findByText(GuestList.data[3].mobilePhoneNumber!)).toBeVisible()
       })
 
       it('should render dpsk client correctly', async () => {
@@ -472,13 +483,17 @@ describe('ClientOverviewTab - ClientProperties', () => {
             }))),
           rest.post(CommonUrlsInfo.getGuestsList.url,
             (_, res, ctx) => res(ctx.json({
-              ...GuestClient,
+              ...GuestList,
               data: [{
-                ...GuestClient.data[3],
+                ...GuestList.data[3],
                 name: '24418cc316df',
-                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
+                wifiNetworkId: '423c3673e74f44e69c0f3b35cd579ecc',
+                clients: GuestClients.data
               }]
-            })))
+            }))),
+          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+            res(ctx.json(GuestClients))
+          )
         )
         render(<Provider>
           <ClientProperties
@@ -515,13 +530,17 @@ describe('ClientOverviewTab - ClientProperties', () => {
           ),
           rest.post(CommonUrlsInfo.getGuestsList.url,
             (_, res, ctx) => res(ctx.json({
-              ...GuestClient,
+              ...GuestList,
               data: [{
-                ...GuestClient.data[3],
+                ...GuestList.data[3],
                 name: '24418cc316df',
-                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
+                wifiNetworkId: '423c3673e74f44e69c0f3b35cd579ecc',
+                clients: GuestClients.data
               }]
             }))),
+          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+            res(ctx.json(GuestClients))
+          ),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )

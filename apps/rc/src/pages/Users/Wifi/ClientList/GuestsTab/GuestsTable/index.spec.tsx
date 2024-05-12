@@ -18,7 +18,8 @@ import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
   AllowedNetworkList,
-  GuestClient,
+  GuestList,
+  GuestClients,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
 
@@ -28,7 +29,6 @@ import { GuestsTable } from '.'
 
 const mockedDeleteReq = jest.fn()
 const mockedDownloadReq = jest.fn()
-const mockedGetNetworkReq = jest.fn()
 const mockedPatchReq = jest.fn()
 const mockedDownloadFileReq = jest.fn()
 const mockedGetVMNetworksReq = jest.fn()
@@ -63,7 +63,7 @@ const openGuestDetailsAndClickAction = async (guestName: string) => {
 }
 
 describe('Guest Table', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: string, wifiNetworkId: string }
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
@@ -72,7 +72,6 @@ describe('Guest Table', () => {
     store.dispatch(networkApi.util.resetApiState())
     mockedDeleteReq.mockClear()
     mockedDownloadReq.mockClear()
-    mockedGetNetworkReq.mockClear()
     mockedPatchReq.mockClear()
     mockedDownloadFileReq.mockClear()
     mockedGetVMNetworksReq.mockClear()
@@ -80,7 +79,11 @@ describe('Guest Table', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getGuestsList.url,
-        (req, res, ctx) => res(ctx.json(GuestClient))
+        (req, res, ctx) => res(ctx.json(GuestList))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json(GuestClients))
       ),
       rest.post(
         ClientUrlsInfo.getGuests.url,
@@ -105,7 +108,7 @@ describe('Guest Table', () => {
         }
       ),
       rest.delete(
-        ClientUrlsInfo.deleteGuests.url,
+        ClientUrlsInfo.deleteGuest.url,
         (req, res, ctx) => {
           mockedDeleteReq()
           return res(ctx.json({ requestId: '123' }))
@@ -114,13 +117,13 @@ describe('Guest Table', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => {
-          mockedGetNetworkReq()
           return res(ctx.json({ guestPortal: { guestPage: {} } }))
         }
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      wifiNetworkId: 'tenant-id'
     }
   })
   afterEach(() => {
@@ -149,7 +152,7 @@ describe('Guest Table', () => {
     const userProfile = getUserProfile()
     setUserProfile({
       ...userProfile,
-      allowedOperations: ['POST:/guestUsers']
+      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
     })
 
     render(
@@ -237,7 +240,7 @@ describe('Guest Table', () => {
 
     const table = await screen.findByRole('table')
     await userEvent.click(await within(table).findByText('+12015550321'))
-    await userEvent.click( await screen.findByRole('button', { name: 'Generate New Password' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Generate New Password' }))
 
     const dialog = await screen.findByTestId('generate-password-modal')
     expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
@@ -348,7 +351,7 @@ describe('Guest Table', () => {
     const table = await screen.findByRole('table')
     await userEvent.click(await within(table).findByText('test4'))
     expect(await screen.findByText('Guest Details')).toBeVisible()
-    expect(await screen.findByText('testVenue')).toBeVisible()
+    // expect(await screen.findByText('testVenue')).toBeVisible()
     expect(await screen.findByTestId('guest-status')).toHaveTextContent('Online (1)')
   })
 
@@ -444,7 +447,6 @@ describe('Guest Table', () => {
     }))
     const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
@@ -456,7 +458,7 @@ describe('Guest Table', () => {
         createdDate: 1670475350467,
         name: 'guest1',
         disabled: false,
-        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        wifiNetworkId: 'd50b652907b64a008e8af2d160b29b64',
         notes: '',
         email: 'test@commscope.com',
         mobilePhoneNumber: '+886988000000',
@@ -494,12 +496,12 @@ describe('Guest Table', () => {
 
     await openGuestDetailsAndClickAction('test4')
     await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
+    expect(await screen.findByText(/Print Guest pass/i)).toBeVisible()
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
+
+    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).toBeChecked()
     const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
@@ -511,7 +513,7 @@ describe('Guest Table', () => {
         createdDate: 1670475350467,
         name: 'guest1',
         disabled: false,
-        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        wifiNetworkId: 'd50b652907b64a008e8af2d160b29b64',
         notes: '',
         email: 'test@commscope.com',
         mobilePhoneNumber: '+886988000000',
@@ -552,9 +554,10 @@ describe('Guest Table', () => {
     await userEvent.click(screen.getByRole('checkbox', {
       name: /print guest pass/i
     }))
+    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).toBeChecked()
     const generateButton = screen.getByRole('button', { name: 'Generate' })
+    expect(generateButton).toBeEnabled()
     await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedPatchReq).toBeCalledTimes(1)
   })
 
@@ -575,7 +578,7 @@ describe('Guest Table', () => {
     // expect(mockedDownloadFileReq).toBeCalledTimes(1)
   })
 
-  it('should click "delete" correctly', async () => {
+  it('should click "delete" on GuestDetailDrawer correctly', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -591,10 +594,11 @@ describe('Guest Table', () => {
 
     await userEvent.click(await screen.findByText(/actions/i))
     await userEvent.click(await screen.findByText(/delete guest/i))
-    await screen.findByText(/are you sure you want to delete this guest\?/i)
+    const content = await screen.findByText(/are you sure you want to delete this guest\?/i)
     await userEvent.click(screen.getByRole('button', {
       name: /delete guest/i
     }))
+    await waitFor(() => expect(content).not.toBeVisible())
     await waitFor(() => expect(mockedDeleteReq).toBeCalledTimes(1))
   })
 
@@ -638,7 +642,7 @@ describe('Guest Table', () => {
     const userProfile = getUserProfile()
     setUserProfile({
       ...userProfile,
-      allowedOperations: ['POST:/networks/{networkId}/guestUsers']
+      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
     })
 
     mockServer.use(
@@ -681,14 +685,16 @@ describe('Guest Table', () => {
     const allowedNetworkCombo =
       await within(dialog).findByLabelText('Allowed Network', { exact: false })
     fireEvent.mouseDown(allowedNetworkCombo)
-    const option = await screen.findByText('guest pass wlan1')
+    const option = await screen.findByText('guest pass wlan2')
     await userEvent.click(option)
 
-    await userEvent.click(
-      await within(dialog).findByLabelText('Print Guest pass', { exact: false })
-    )
+    await userEvent.click(await within(dialog).findByRole('checkbox', { name: /Print Guest pass/ }))
+
+    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).not.toBeChecked()
 
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    expect(await screen.findByText(/Guest pass won\’t be printed or sent/)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
 

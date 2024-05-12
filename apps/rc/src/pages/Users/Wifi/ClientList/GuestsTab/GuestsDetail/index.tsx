@@ -59,7 +59,7 @@ export const defaultGuestPayload = {
     'name',
     'passDurationHours',
     'id',
-    'networkId',
+    'wifiNetworkId',
     'maxNumberOfClients',
     'notes',
     'clients',
@@ -78,7 +78,7 @@ export const defaultGuestPayload = {
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest, queryPayload = {} } = props
+  const { currentGuest } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
@@ -88,7 +88,9 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
-      ...queryPayload
+      filters: {
+        id: [currentGuest.id]
+      }
     }
   })
 
@@ -99,16 +101,21 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   useEffect(() => {
     tableQuery.setPayload({
       ...tableQuery.payload,
-      ...queryPayload
+      filters: {
+        id: [currentGuest.id]
+      }
     })
-  }, [queryPayload])
+  }, [currentGuest.id])
 
   useEffect(() => {
-    const guest = tableQuery?.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
+    const result = tableQuery.data?.data
+    const guest = result && result.length > 0 ? result[0] : null
     if (guest) {
-      setGuestDetail(guest)
+      setGuestDetail({ ...guest, ssid: currentGuest.ssid, clients: currentGuest.clients })
+    } else {
+      setGuestDetail(currentGuest)
     }
-  }, [currentGuest.id, tableQuery])
+  }, [tableQuery?.data])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {
@@ -261,7 +268,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
           guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
         ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId ))
+          guestDetail.wifiNetworkId ))
         }
 
         return true

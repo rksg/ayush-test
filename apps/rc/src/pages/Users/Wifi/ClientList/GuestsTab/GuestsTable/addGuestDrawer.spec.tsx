@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { clientApi, networkApi }                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
-import { store, Provider }                                            from '@acx-ui/store'
+import { clientApi, networkApi }                                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
+import { store, Provider }                                                            from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -17,7 +17,8 @@ import {
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
-  GuestClient,
+  GuestList,
+  GuestClients,
   AllowedNetworkList,
   UserProfile,
   AddGuestPassResponse,
@@ -54,7 +55,6 @@ async function selectAllowedNetwork (optionName: string) {
 }
 
 const mockedAddGuestReq = jest.fn()
-const mockedGetNetworkReq = jest.fn()
 
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
@@ -63,10 +63,12 @@ describe('Add Guest Drawer', () => {
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     mockedAddGuestReq.mockClear()
-    mockedGetNetworkReq.mockClear()
     mockServer.use(
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
-        res(ctx.json(GuestClient))
+        res(ctx.json(GuestList))
+      ),
+      rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+        res(ctx.json(GuestClients))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
@@ -76,7 +78,6 @@ describe('Add Guest Drawer', () => {
         return res(ctx.json(AddGuestPassResponse))
       }),
       rest.get(WifiUrlsInfo.getNetwork.url, (req, res, ctx) => {
-        mockedGetNetworkReq()
         return res(ctx.json(wifiNetworkDetail))
       }),
       rest.get(UserUrlsInfo.getUserProfile.url, (req, res, ctx) =>
@@ -103,7 +104,6 @@ describe('Add Guest Drawer', () => {
     await fillInfo()
     await selectAllowedNetwork('guest pass wlan1')
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedAddGuestReq).toBeCalledTimes(1)
   })
   it('should created guest without delivery methods correctly', async () => {
@@ -152,11 +152,10 @@ describe('Add Guest Drawer', () => {
     await selectAllowedNetwork('guest pass wlan1')
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedAddGuestReq).toBeCalled()
   })
   it('should created guest without expiration and unit day period correctly', async () => {
-    AddGuestPassWihtoutExpirationResponse.response[0].expiration.unit = 'Day'
+    AddGuestPassWihtoutExpirationResponse.response.expiration.unit = 'Day'
     mockServer.use(
       rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
         mockedAddGuestReq()
@@ -173,7 +172,6 @@ describe('Add Guest Drawer', () => {
     await selectAllowedNetwork('guest pass wlan1')
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedAddGuestReq).toBeCalled()
   })
   it('should handle error correctly', async () => {
@@ -297,7 +295,6 @@ describe('Add Guest Drawer', () => {
 
     await fillInfo()
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
     expect(mockedAddGuestReq).toBeCalledTimes(1)
   })
   it('test getMomentLocale', async () => {
