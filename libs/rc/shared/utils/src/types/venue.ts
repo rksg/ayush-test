@@ -718,6 +718,7 @@ export interface VenueConfigHistoryDetailResp {
 	response: {
 		list: ConfigurationHistory[]
 	}
+	list?: ConfigurationHistory[]
 }
 
 export enum LoadBalancingMethodEnum {

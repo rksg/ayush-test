@@ -170,7 +170,7 @@ jest.mock('@acx-ui/main/components', () => ({
   UserButton: () => <div data-testid='user-button' />,
   FetchBot: () => <div data-testid='fetch-bot' />
 }))
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
 describe('Layout', () => {
   let params: { tenantId: string }
