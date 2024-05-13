@@ -1288,7 +1288,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getCliTemplate: build.query<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getCliTemplate, params, headers)
         return {
@@ -1300,7 +1300,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.addCliTemplate, params, headers)
         return {
@@ -1312,7 +1312,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getCliConfigExamples: build.query<CliTemplateExample[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getCliConfigExamples, params, headers)
         return {
@@ -1322,7 +1322,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     updateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.updateCliTemplate, params, headers)
         return {
@@ -1346,6 +1346,23 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(
           SwitchRbacUrlsInfo.associateCliTemplate, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
+    }),
+    disassociateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.disassociateCliTemplate, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchDisassociateCliTemplate: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.disassociateCliTemplate, requests, fetchWithBQ, customHeaders.v1
         )
       }
     }),
@@ -1656,6 +1673,7 @@ export const {
   useGetDhcpLeasesQuery,
   useLazyValidateUniqueProfileNameQuery,
   useGetCliTemplatesQuery,
+  useLazyGetCliTemplatesQuery,
   useGetProfilesQuery,
   useGetCliFamilyModelsQuery,
   useAddCliTemplateMutation,
@@ -1665,6 +1683,7 @@ export const {
   useUpdateCliTemplateMutation,
   useAssociateCliTemplateMutation,
   useBatchAssociateCliTemplateMutation,
+  useBatchDisassociateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
   useAddVlanMutation,
