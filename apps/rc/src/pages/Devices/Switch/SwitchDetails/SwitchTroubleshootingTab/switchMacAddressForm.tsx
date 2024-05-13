@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input, Select } from 'antd'
 import TextArea                          from 'antd/lib/input/TextArea'
@@ -8,6 +8,7 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Loader }            from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
@@ -22,15 +23,20 @@ import {
   TroubleshootingType
 } from '@acx-ui/rc/utils'
 
+import { SwitchDetailsContext } from '..'
+
 export function SwitchMacAddressForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const [form] = Form.useForm()
 
   const [isValid, setIsValid] = useState(true)
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [refineOption, setRefineOption] = useState(TroubleshootingMacAddressOptionsEnum.NONE)
+
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const portPayload = {
     fields: ['id', 'portIdentifier'],
@@ -51,7 +57,11 @@ export function SwitchMacAddressForm () {
     params: { tenantId, switchId },
     payload: vlanPayload
   })
-  const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
+  const portList = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
   const [vlanOptions, setVlanOptions] = useState([] as DefaultOptionType[])
 
@@ -77,6 +87,7 @@ export function SwitchMacAddressForm () {
   const troubleshootingParams = {
     tenantId,
     switchId,
+    venueId: switchDetailsContextData.switchDetailHeader?.venueId,
     troubleshootingType: TroubleshootingType.MAC_ADDRESS_TABLE
   }
 
@@ -84,7 +95,8 @@ export function SwitchMacAddressForm () {
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
 
   const refetchResult = function () {
@@ -199,7 +211,15 @@ export function SwitchMacAddressForm () {
           break
       }
 
-      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
+      const result = await runMutation({
+        params: {
+          tenantId,
+          switchId,
+          venueId: switchDetailsContextData.switchDetailHeader?.venueId
+        },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
       if (result) {
         refetchResult()
       }
@@ -212,7 +232,8 @@ export function SwitchMacAddressForm () {
   const onClear = async () => {
     setIsLoading(true)
     await getTroubleshootingClean({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
     refetchResult()
   }

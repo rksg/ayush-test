@@ -109,12 +109,14 @@ export const createHttpRequest = (
 
 export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
   fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<
-  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
+  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>,
+  customHeaders?: Record<string, unknown>
+) => {
   const promises = requests.map((arg) => {
-    const req = createHttpRequest(apiInfo, arg.params)
+    const req = createHttpRequest(apiInfo, arg.params, customHeaders)
     return fetchWithBQ({
       ...req,
-      body: arg.payload
+      body: JSON.stringify(arg.payload)
     })
   })
   return Promise.all(promises)
