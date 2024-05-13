@@ -7,6 +7,9 @@ import { SwitchUrlsInfo }                                     from '@acx-ui/rc/u
 import { Provider }                                           from '@acx-ui/store'
 import { act, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
+import { SwitchDetailsContext }     from '..'
+import { switchDetailsContextData } from '../__tests__/fixtures'
+
 import {
   doRunResponse,
   portlist,
@@ -68,7 +71,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_result)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
@@ -80,9 +88,15 @@ describe.skip('SwitchMacAddressForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_empty)))
     )
-    render(<Provider>
-      <SwitchMacAddressForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchMacAddressForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Refine table by/i)).toBeVisible()
   })
@@ -93,9 +107,15 @@ describe.skip('SwitchMacAddressForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_emptyResult)))
     )
-    render(<Provider>
-      <SwitchMacAddressForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchMacAddressForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Refine table by/i)).toBeVisible()
   })
@@ -107,9 +127,15 @@ describe.skip('SwitchMacAddressForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_empty)))
     )
-    render(<Provider>
-      <SwitchMacAddressForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchMacAddressForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
   })
@@ -121,9 +147,15 @@ describe.skip('SwitchMacAddressForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_port)))
     )
-    render(<Provider>
-      <SwitchMacAddressForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchMacAddressForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
@@ -136,7 +168,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_vlan)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
@@ -150,7 +187,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_mac)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
@@ -165,7 +207,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_mac)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
@@ -186,7 +233,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_mac)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
@@ -207,7 +259,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_timeout)))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
 
@@ -224,7 +281,12 @@ describe.skip('SwitchMacAddressForm', () => {
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
     render(<Provider>
-      <SwitchMacAddressForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchMacAddressForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()

@@ -4,7 +4,8 @@ export const wiredSummaryNoDataFixture = {
       switchDHCP: { attemptCount: 0, successCount: 0 },
       switchCpuUtilizationPct: 0,
       stormPortCount: 0,
-      portCount: 0
+      portCount: 0,
+      congestedPortCount: 0
 
     }
   }
@@ -16,7 +17,8 @@ export const wiredSummaryDataFixture = {
       switchDHCP: { attemptCount: 1001, successCount: 701 },
       switchCpuUtilizationPct: 0.12345,
       stormPortCount: 5,
-      portCount: 637
+      portCount: 637,
+      congestedPortCount: 4
     }
   }
 }
