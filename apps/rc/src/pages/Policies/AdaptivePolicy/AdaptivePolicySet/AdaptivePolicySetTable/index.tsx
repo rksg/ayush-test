@@ -6,8 +6,8 @@ import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useAdaptivePolicySetListByQueryQuery,
-  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetDpskListQuery,
-  useMacRegListsQuery
+  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet, FILTER,
@@ -39,8 +39,18 @@ export default function AdaptivePolicySetTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  const { macRegList, getMacListLoading } = useMacRegListsQuery(
-    { payload: { pageSize: 10000 } }, {
+  const { macRegList, getMacListLoading } = useSearchMacRegListsQuery(
+    {
+      payload: {
+        pageSize: 10000,
+        dataOption: 'all',
+        searchCriteriaList: [{
+          filterKey: 'name',
+          operation: 'cn',
+          value: ''
+        }]
+      }
+    }, {
       selectFromResult: ({ data, isLoading }) => {
         const macRegList = new Map(data?.data.map((mac) =>
           [mac.id, mac.name]))
@@ -51,7 +61,7 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const { dpskList, getDpsksLoading } = useGetDpskListQuery(
+  const { dpskList, getDpsksLoading } = useGetEnhancedDpskListQuery(
     {
       payload: { pageSize: 10000 }
     }, {

@@ -66,12 +66,12 @@ describe('AdaptivePolicySetTable', () => {
         RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
       ),
-      rest.get(
-        DpskUrls.getDpskList.url.split('?')[0],
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
       ),
       rest.post(

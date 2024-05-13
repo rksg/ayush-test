@@ -8,7 +8,7 @@ export const policySetList = {
       name: 'ps12',
       description: 'ps12',
       mappedPolicyCount: 2,
-      assignmentCount: 0,
+      assignmentCount: 1,
       policyNames: ['ap20', 'ap123'],
       externalAssignments: [
         {
@@ -41,7 +41,7 @@ export const policySetList = {
 export const macList = {
   content: [
     {
-      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      id: '47f3d966-4204-455a-aa23-749cec8e0484',
       name: 'Registration pool-1',
       autoCleanup: true,
       enabled: true,
