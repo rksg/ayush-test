@@ -715,6 +715,11 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   stroke-width="0"
                                 />
                                 <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
                                   fill="none"
                                   stroke="#ccc"
@@ -974,6 +979,11 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   fill="none"
                                   stroke="#5470c6"
                                   stroke-width="0"
+                                />
+                                <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
