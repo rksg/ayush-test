@@ -34,7 +34,11 @@ export function getPendoConfig (): PendoParameters {
 }
 const getSelectedTenant = (profile: UserProfile): Tenant => {
   const search = new URLSearchParams(window.location.search)
-  const id = decodeTenantId(search) || profile.accountId
+  let id = decodeTenantId(search)
+  if (!id) {
+    id = profile.accountId
+    window.location.search = '?selectedTenants=' + window.btoa(JSON.stringify([id]))
+  }
   return profile.tenants.find(tenant => tenant.id === id)!
 }
 export const getUserProfile = () => user.profile
