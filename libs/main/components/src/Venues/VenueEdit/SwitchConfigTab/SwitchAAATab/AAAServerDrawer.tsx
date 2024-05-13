@@ -4,6 +4,7 @@ import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Tooltip, PasswordInput }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import {
   useAddAAAServerMutation, useUpdateAAAServerMutation,
   useAddVenueTemplateSwitchAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
@@ -38,6 +39,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher(
     useAddAAAServerMutation, useAddVenueTemplateSwitchAAAServerMutation
   )
@@ -85,7 +87,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         }
         await addAAAServer({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else {
         const payload = {
@@ -97,7 +100,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
             ...params,
             aaaServerId: payload.id
           },
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
     }

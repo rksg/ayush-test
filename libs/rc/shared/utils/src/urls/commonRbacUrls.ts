@@ -259,6 +259,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/position',
     newApi: true
   },
+  getVenueCityList: {
+    method: 'post',
+    url: '/venues/citylist/query'
+  },
   /*
   UpdateApPosition: {
     method: 'put',
