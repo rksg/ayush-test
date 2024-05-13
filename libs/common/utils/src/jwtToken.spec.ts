@@ -106,8 +106,10 @@ describe('getJwtHeaders', () => {
 })
 
 describe('loadImageWithJWT', () => {
+  const originalFetch = global.fetch
   afterEach(() => {
     jest.restoreAllMocks()
+    global.fetch = originalFetch
   })
 
   it('should return image URL when result is truthy', async () => {

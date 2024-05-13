@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
-
-import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }                    from '@acx-ui/utils'
+import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                              from '@acx-ui/types'
+import { hasRoles }                               from '@acx-ui/user'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { LocationExtended }                                                               from '../../common'
 import { CONFIG_TEMPLATE_LIST_PATH, generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
@@ -25,21 +25,13 @@ export function generateServicePageHeaderTitle (isEdit: boolean, isTemplate: boo
   })
 }
 
-export function useServiceListBreadcrumb (type: ServiceType) {
+// eslint-disable-next-line max-len
+export function useServiceListBreadcrumb (type: ServiceType): { text: string, link?: string, tenantType?: TenantType }[] {
   const { isTemplate } = useConfigTemplate()
-  const fallbackPath = getServiceRoutePath({ type, oper: ServiceOperation.LIST })
-  const { $t } = useIntl()
   const breadcrumb = useMemo(() => {
     return isTemplate
       ? generateConfigTemplateBreadcrumb()
-      : [
-        { text: $t({ defaultMessage: 'Network Control' }) },
-        {
-          text: $t({ defaultMessage: 'My Services' }),
-          link: getServiceListRoutePath(true)
-        },
-        { text: $t(serviceTypeLabelMapping[type]), link: fallbackPath }
-      ]
+      : generateServiceListBreadcrumb(type)
   }, [isTemplate])
 
   return breadcrumb
@@ -54,4 +46,40 @@ export function useServicePreviousPath (type: ServiceType, oper: ServiceOperatio
   const location = useLocation()
 
   return (location as LocationExtended)?.state?.from ?? { pathname: fallbackPath.pathname }
+}
+
+export function generateDpskManagementBreadcrumb () {
+  const { $t } = getIntl()
+  return [
+    {
+      text: $t({ defaultMessage: 'DPSK Management' }),
+      link: '/users/dpskAdmin'
+    }
+  ]
+}
+
+function generateServicesBreadcrumb () {
+  const { $t } = getIntl()
+  return [
+    { text: $t({ defaultMessage: 'Network Control' }) },
+    {
+      text: $t({ defaultMessage: 'My Services' }),
+      link: getServiceListRoutePath(true)
+    }
+  ]
+}
+
+function generateServiceListBreadcrumb (type: ServiceType) {
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
+  if (type === ServiceType.DPSK && isDPSKAdmin) return generateDpskManagementBreadcrumb()
+
+  const { $t } = getIntl()
+  return [
+    ...generateServicesBreadcrumb(),
+    {
+      text: $t(serviceTypeLabelMapping[type]),
+      link: getServiceRoutePath({ type, oper: ServiceOperation.LIST })
+    }
+  ]
 }

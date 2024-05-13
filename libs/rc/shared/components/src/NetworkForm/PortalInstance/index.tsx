@@ -59,8 +59,13 @@ const PortalInstance = (props: {
     socials.linkedInEnabled = socialIdentities.linkedin ? true : false
   }
   const portalServiceID = useWatch('portalServiceProfileId')
+  const templatePayload = {
+    fields: ['id', 'name'],
+    pageSize: 256
+  }
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>(
-    useGetPortalProfileListQuery, useGetEnhancedPortalTemplateListQuery
+    useGetPortalProfileListQuery,
+    useGetEnhancedPortalTemplateListQuery, false, undefined, undefined, templatePayload
   )
   const [demoValue, setDemoValue] = useState({} as Demo)
   const portalServices =

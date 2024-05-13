@@ -3,11 +3,12 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showToast, Table, TableProps } from '@acx-ui/components'
-import { useGetVenueSyslogListQuery }   from '@acx-ui/rc/services'
+import { showToast, Table, TableProps }                                        from '@acx-ui/components'
+import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
   SyslogActionTypes,
+  useConfigTemplate,
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
@@ -39,6 +40,7 @@ const defaultPayload = {
 const SyslogVenueTable = () => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SyslogContext)
+  const { isTemplate } = useConfigTemplate()
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({
@@ -66,7 +68,7 @@ const SyslogVenueTable = () => {
 
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true
@@ -127,7 +129,7 @@ const SyslogVenueTable = () => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useGetVenueSyslogListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useGetVenueSyslogListQuery,
     defaultPayload
   })
 
@@ -149,7 +151,8 @@ const SyslogVenueTable = () => {
           type: 'info',
           duration: 10,
           content: $t({ defaultMessage:
-            'The max-number of venues in a syslog server policy profile is 64.' })
+            // eslint-disable-next-line max-len
+            'The max-number of <venuePlural></venuePlural> in a syslog server policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

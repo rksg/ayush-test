@@ -200,7 +200,7 @@ describe('HealthPieChart', () => {
     it('should return correct title for ACX', () => {
       mockGet.mockReturnValue(undefined)
       const venue = pieNodeMap(pathToFilter([]))
-      expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('Venue')
+      expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('VenueSingular')
     })
     it('should return correct title for RA', () => {
       mockGet.mockReturnValue('true')

@@ -49,6 +49,7 @@ export enum Features {
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
+  ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
@@ -78,8 +79,10 @@ export enum Features {
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
   MSP_EC_CREATE_WITH_TIER = 'mspservice-mspec-create-pass-tier-info',
   MSP_HSP_SUPPORT = 'mspservice-hsp-01',
-  MSP_HSP_PLM_FF = 'LOC-HSP',
+  MSP_HSP_360_PLM_FF = 'HSP-360',
+  MSP_HSP_PLM_FF = 'HSP-LOC',
   MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
+  MSP_PATCH_TIER = 'mspservice-patch-tier',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
@@ -126,6 +129,7 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION = 'switch-stack-unit-limitation',
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
+  SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   TRI_RADIO = 'tri-band-radio-toggle',
@@ -164,6 +168,7 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_API_V2_TOGGLE = 'wifi-api-network-activations-by-query-v2-toggle',
+  WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
@@ -174,7 +179,8 @@ export enum Features {
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
-  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle'
+  SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

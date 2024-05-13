@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
@@ -5,38 +7,40 @@ import {
   Button,
   Loader,
   Table,
-  TableProps,
-  showToast
+  TableProps
 } from '@acx-ui/components'
 import { get }                        from '@acx-ui/config'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
 import {
   useRefreshEntitlementsMutation,
-  useInternalRefreshEntitlementsMutation,
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdministrationUrlsInfo,
   EntitlementActivations
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
+import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
+
 const PendingActivationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [activationData, setActivationData] = useState<EntitlementActivations>()
+  const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
+  const isActivatePendingActivationEnabled =
+    useIsSplitOn(Features.ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE)
 
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
   }
-  const { data: pendingActivationResults }
+  const pendingActivationResults
     = useGetEntitlementActivationsQuery({ params: useParams(), payload: pendingActivationPayload })
 
-  const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
-  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
 
   const columns: TableProps<EntitlementActivations>['columns'] = [
     {
@@ -44,7 +48,7 @@ const PendingActivationsTable = () => {
       dataIndex: 'orderCreateDate',
       key: 'orderCreateDate',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateFormat)(row.orderCreateDate)
+        return row.isChild ? '' : formatter(DateFormatEnum.DateFormat)(row.orderCreateDate)
       }
     },
     {
@@ -52,11 +56,13 @@ const PendingActivationsTable = () => {
       dataIndex: 'orderAcxRegistrationCode',
       key: 'orderAcxRegistrationCode',
       render: function (_, row) {
-        return <Button
+        return row.isChild ? '' : <Button
           type='link'
           onClick={() => {
-            const urlSupportActivation = 'http://support.ruckuswireless.com/register_code/' +
-              row.orderAcxRegistrationCode
+            const licenseUrl = get('MANAGE_LICENSES')
+            const support = new URL(licenseUrl).hostname
+            const urlSupportActivation =
+                  `http://${support}/register_code/${row.orderAcxRegistrationCode}`
             window.open(urlSupportActivation, '_blank')
           }}
         >{row.orderAcxRegistrationCode}</Button>
@@ -65,7 +71,16 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Part Number' }),
       dataIndex: 'productCode',
-      key: 'productCode'
+      key: 'productCode',
+      render: function (_, row) {
+        return isActivatePendingActivationEnabled ? <Button
+          type='link'
+          onClick={() => {
+            setDrawerActivateVisible(true)
+            setActivationData(row)
+          }}
+        >{row.productCode}</Button> : row.productCode
+      }
     },
     {
       title: $t({ defaultMessage: 'Part Number Description' }),
@@ -102,15 +117,7 @@ const PendingActivationsTable = () => {
 
   const refreshFunc = async () => {
     try {
-      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-      if (isNewApi === false) {
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Successfully refreshed.'
-          })
-        })
-      }
+      await (refreshEntitlement)({ params }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -130,14 +137,38 @@ const PendingActivationsTable = () => {
     }
   ]
 
+  let spaActivationCodes:string[] = []
+  const GetChildStatus = (spaCode: string) => {
+    if (spaActivationCodes.includes(spaCode)) {
+      return true
+    } else {
+      spaActivationCodes.push(spaCode)
+      return false
+    }
+  }
+
+  const subscriptionData = pendingActivationResults.data?.data.map(response => {
+    return {
+      ...response,
+      isChild: GetChildStatus(response?.orderAcxRegistrationCode)
+    }
+  })
+
   return (
-    <Loader>
+    <Loader states={[pendingActivationResults
+    ]}>
       <Table
         columns={columns}
         actions={filterByAccess(actions)}
-        dataSource={pendingActivationResults?.data}
+        dataSource={subscriptionData}
         rowKey='orderId'
       />
+      {drawerActivateVisible && <ActivatePurchaseDrawer
+        visible={drawerActivateVisible}
+        setVisible={setDrawerActivateVisible}
+        activationData={activationData}
+      />}
+
     </Loader>
   )
 }

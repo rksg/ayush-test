@@ -140,7 +140,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     expect(await within(dialog).findByRole('radio', { name: '7.0.0.104.1242 (Release - Recommended) - 02/27/2024' })).toBeVisible()
 
     // eslint-disable-next-line max-len
-    const firstDoNotUpdateButton = screen.queryAllByRole('radio', { name: 'Do not update firmware on selected venue(s)' })[0]
+    const firstDoNotUpdateButton = screen.queryAllByRole('radio', { name: 'Do not update firmware on selected venues' })[0]
     await userEvent.click(firstDoNotUpdateButton)
     // Verify the selected options are kept when jumping within the steps
     await userEvent.click(within(dialog).getByRole('button', { name: /Next/ }))
