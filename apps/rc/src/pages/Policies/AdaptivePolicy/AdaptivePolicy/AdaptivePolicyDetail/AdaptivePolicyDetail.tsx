@@ -20,6 +20,7 @@ import {
   useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 export default function AdaptivePolicyDetail () {
@@ -80,8 +81,9 @@ export default function AdaptivePolicyDetail () {
                 oper: PolicyOperation.EDIT,
                 policyId: policyId!,
                 templateId: templateId!
-              })
-            }>
+              })}
+            scopeKey={[WifiScopes.UPDATE]}
+          >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

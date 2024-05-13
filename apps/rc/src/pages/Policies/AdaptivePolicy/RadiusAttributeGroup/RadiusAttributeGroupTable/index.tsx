@@ -16,7 +16,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -60,7 +61,8 @@ export default function RadiusAttributeGroupTable () {
             policyId: selectedRows[0].id!
           })
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -88,7 +90,8 @@ export default function RadiusAttributeGroupTable () {
               })
           }
         )
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     }]
 
     function useColumns () {
@@ -158,7 +161,8 @@ export default function RadiusAttributeGroupTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           onFilterChange={handleFilterChange}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
           actions={filterByAccess([{
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
@@ -169,7 +173,8 @@ export default function RadiusAttributeGroupTable () {
                   oper: PolicyOperation.CREATE
                 })
               })
-            }
+            },
+            scopeKey: [WifiScopes.CREATE]
           }])}
         />
       </Loader>

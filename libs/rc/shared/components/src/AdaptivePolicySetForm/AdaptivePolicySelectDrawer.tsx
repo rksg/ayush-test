@@ -15,6 +15,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes } from '@acx-ui/types'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -178,7 +179,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)
-              }
+              },
+              scopeKey: [WifiScopes.CREATE]
             }]}
           />
         </Form.Item>

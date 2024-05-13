@@ -241,7 +241,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 columns={useColumns()}
                 dataSource={evaluationRules}
                 rowActions={filterByAccess(rowActions)}
-                rowSelection={hasAccess() && { type: 'radio' }}
+                // eslint-disable-next-line max-len
+                rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
