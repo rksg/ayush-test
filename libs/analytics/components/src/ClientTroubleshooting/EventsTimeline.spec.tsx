@@ -426,7 +426,7 @@ describe('EventsTimeLine', () => {
     )
 
     expect(await screen.findByText(
-      'Data granularity at this level is not available.')).toBeVisible()
+      'Data granularity at this level is not available')).toBeVisible()
 
     const PlusSquareOutline = (await screen.findAllByTestId('PlusSquareOutlined'))
 
@@ -435,11 +435,11 @@ describe('EventsTimeLine', () => {
 
     fireEvent.mouseOver(PlusSquareOutline[1])
     expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      'Data granularity at this level is not available.')
+      'Data granularity at this level is not available')
 
     fireEvent.mouseOver(PlusSquareOutline[2])
     expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      'Data granularity at this level is not available.')
+      'Data granularity at this level is not available')
   })
 
   it('should handle onDotClick for scatter properly', async () => {

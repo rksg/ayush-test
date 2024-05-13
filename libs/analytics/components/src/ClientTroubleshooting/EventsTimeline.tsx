@@ -28,7 +28,7 @@ import {
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
-import { TimelineChart }                   from './TimelineChart'
+import { TimelineChart, granularityText }  from './TimelineChart'
 import {
   transformEvents,
   transformConnectionQualities,
@@ -103,11 +103,10 @@ export function TimeLine (props: TimeLineProps) {
   ) => {
     if (noData || druidRollup) {
       return <Tooltip
-        title={noData
+        title={<UI.TooltipTextWrapper>{noData
           ? $t({ defaultMessage: 'No APs Available' })
-          : <UI.TooltipTextWrapper>
-            {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
-          </UI.TooltipTextWrapper>}
+          : $t(granularityText)
+        }</UI.TooltipTextWrapper>}
         placement='topLeft'
       >
         <UI.StyledDisabledPlusSquareOutline
@@ -152,8 +151,7 @@ export function TimeLine (props: TimeLineProps) {
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
                     && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
-                  (checkRollup(config?.value, startDate)
-                    ? true : false)
+                  checkRollup(config?.value, startDate)
                 )}
               </Col>
               <Col

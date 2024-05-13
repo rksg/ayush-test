@@ -23,8 +23,8 @@ import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                     from 'moment-timezone'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { categoryCodeMap, IncidentCode, incidentsToggle, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
 import {
@@ -287,15 +287,16 @@ export const useDataZoom = (
 
   return [canResetZoom, resetZoomCallback]
 }
+const textStyle = {
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
+}
 const tooltipOptions = () =>
   ({
-    textStyle: {
-      color: cssStr('--acx-primary-black'),
-      fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: cssNumber('--acx-body-5-font-size'),
-      lineHeight: cssNumber('--acx-body-5-line-height'),
-      fontWeight: cssNumber('--acx-body-font-weight')
-    },
+    textStyle,
     borderRadius: 2,
     borderWidth: 0,
     padding: 8,
@@ -304,6 +305,8 @@ const tooltipOptions = () =>
     backgroundColor: 'transparent',
     extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
   } as TooltipComponentOption)
+export const granularityText =
+  defineMessage({ defaultMessage: 'Data granularity at this level is not available' })
 
 export function updateBoundary (window: TimeStampRange, ref: MutableRefObject<TimeStampRange>) {
   ref.current = window
@@ -350,8 +353,6 @@ export function TimelineChart ({
   )
   useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
 
-  const GranularityText = $t({ defaultMessage: 'Data granularity at this level is not available.' })
-
   const mappedData = useMemo(() => mapping
     .slice()
     .reverse()
@@ -391,11 +392,12 @@ export function TimelineChart ({
               [
                 {
                   name: ((value && startDate) && checkRollup(value, startDate))
-                    ? GranularityText : '',
+                    ? $t(granularityText) : '',
                   xAxis: 'min',
                   yAxis: 'min',
                   label: {
-                    offset: [0, 12]
+                    offset: [0, 12],
+                    ...textStyle
                   }
                 },
                 {

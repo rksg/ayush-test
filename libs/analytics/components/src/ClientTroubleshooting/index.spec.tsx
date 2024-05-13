@@ -105,7 +105,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     )
-    await screen.findAllByText('Data granularity at this level is not available.')
+    await screen.findAllByText('Data granularity at this level is not available')
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(
