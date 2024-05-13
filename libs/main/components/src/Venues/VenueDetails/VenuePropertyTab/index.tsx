@@ -61,8 +61,8 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }                   from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { exportMessageMapping }                     from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
@@ -162,7 +162,6 @@ export function VenuePropertyTab () {
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
-  && !!hasPermission({ scopes: [WifiScopes.READ, EdgeScopes.READ] })
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 

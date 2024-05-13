@@ -33,7 +33,7 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { filterByAccess, hasScope } from '@acx-ui/user'
 
 interface CardDataProps {
   type: PolicyType
@@ -211,7 +211,7 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
       disabled: !isConnectionMeteringEnabled ||
-        !hasPermission({ scopes: [WifiScopes.READ, EdgeScopes.READ] })
+        !hasScope([WifiScopes.READ, EdgeScopes.READ])
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,

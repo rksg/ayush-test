@@ -43,8 +43,6 @@ import {
   trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }            from '@acx-ui/types'
-import { hasPermission }                     from '@acx-ui/user'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 import { ConnectionMeteringSettingForm } from '../ConnectionMeteringSettingForm'
@@ -187,7 +185,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const enableGuestVlan = useWatch('enableGuestVlan', form)
 
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
-  && !!hasPermission({ scopes: [ WifiScopes.READ, EdgeScopes.READ] })
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
     { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringAvailable }
   )
