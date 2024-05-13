@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetCliTemplatesQuery, useGetProfilesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
@@ -10,6 +11,7 @@ import WiredTabs from './WiredTabs'
 function WiredPageHeader () {
   const { $t } = useIntl()
   const { tenantId, venueId, serialNumber } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -18,7 +20,8 @@ function WiredPageHeader () {
 
   const cli = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled
   })
 
   const profileList = useGetProfilesQuery({ params: { tenantId }, payload: defaultPayload }, {

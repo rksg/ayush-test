@@ -2,6 +2,7 @@ import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
 import { PageHeader, Loader }          from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   ApTable,
   defaultApPayload,
@@ -39,8 +40,7 @@ import {
   SwitchClient,
   Client
 } from '@acx-ui/rc/utils'
-import { RequestPayload, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { hasPermission }                            from '@acx-ui/user'
+import { RequestPayload } from '@acx-ui/types'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
@@ -70,7 +70,6 @@ const searches = [
       component: <VenueTable tableQuery={result} searchable={false} />
     }
   },
-
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
@@ -81,8 +80,7 @@ const searches = [
         searchString,
         searchTargetFields: ['name', 'description']
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -90,7 +88,6 @@ const searches = [
       component: <NetworkTable tableQuery={result} />
     }
   },
-
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
       useQuery: useApListQuery,
@@ -101,8 +98,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultApPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -110,7 +106,6 @@ const searches = [
       component: <ApTable tableQuery={result} searchable={false} />
     }
   },
-
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useEventsTableQuery(
       { entity_type: undefined },
@@ -130,9 +125,10 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t']) => {
+  (searchString: string, $t: IntlShape['$t'], enableRbac?: boolean) => {
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
+      enableRbac,
       defaultPayload: {
         ...defaultSwitchPayload
       },
@@ -140,8 +136,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultSwitchPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [SwitchScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -149,7 +144,6 @@ const searches = [
       component: <SwitchTable tableQuery={result} searchable={false}/>
     }
   },
-
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
@@ -160,8 +154,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultClientPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [WifiScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -185,7 +178,6 @@ const searches = [
       component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
     }
   },
-
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
@@ -196,8 +188,7 @@ const searches = [
         searchString,
         searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
-      pagination,
-      option: { skip: !hasPermission({ scopes: [SwitchScopes.READ] }) }
+      pagination
     })
     return {
       result,
@@ -207,9 +198,10 @@ const searches = [
   }
 ]
 
-function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
+function SearchResult ({ searchVal, enableRbac }:
+  { searchVal: string | undefined, enableRbac?:boolean }) {
   const { $t } = useIntl()
-  const results = searches.map(search => search(searchVal as string, $t))
+  const results = searches.map(search => search(searchVal as string, $t, enableRbac))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
   return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
     {count
@@ -243,5 +235,6 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal} searchVal={searchVal} />
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  return <SearchResult key={searchVal} searchVal={searchVal} enableRbac={isSwitchRbacEnabled} />
 }

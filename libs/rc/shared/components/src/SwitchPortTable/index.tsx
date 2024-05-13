@@ -17,12 +17,12 @@ import {
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
+  SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getIntl }                       from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
@@ -31,12 +31,16 @@ import * as UI            from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
-export function SwitchPortTable ({ isVenueLevel }: {
+export function SwitchPortTable (props: {
   isVenueLevel: boolean
+  switchDetail?: SwitchViewModel
 }) {
   const { $t } = useIntl()
+  const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -52,19 +56,26 @@ export function SwitchPortTable ({ isVenueLevel }: {
   useEffect(() => {
     const setData = async () => {
       if (isVenueLevel) {
-        const vlanList = await getSwitchesVlan({ params: { tenantId, venueId } }).unwrap()
+        const vlanList = await getSwitchesVlan({
+          params: { tenantId, venueId },
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         setVlanList(vlanList)
-      } else {
-        const vlanUnion = await getSwitchVlan({ params: { tenantId, switchId } }).unwrap()
+      } else if (switchDetail) {
+        const vlanUnion = await getSwitchVlan({
+          params: { tenantId, switchId, venueId: switchDetail?.venueId },
+          enableRbac: isSwitchRbacEnabled,
+          option: { skip: switchDetail?.venueId }
+        }).unwrap()
         // eslint-disable-next-line max-len
-        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
+        const vlanList = vlanUnion?.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
           .concat(vlanUnion.profileVlan || [])
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
       }
     }
     setData()
-  }, [isVenueLevel])
+  }, [isVenueLevel, switchDetail])
 
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
@@ -89,6 +100,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       sortOrder: 'ASC'
     },
     enableSelectAllPagesData: queryFields,
+    enableRbac: isSwitchRbacEnabled,
     pagination: { settingsId }
   })
 
@@ -286,7 +298,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
-    scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
       setDrawerVisible(true)
@@ -310,7 +321,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? {
+      rowSelection={hasAccess() ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record?.inactiveRow
