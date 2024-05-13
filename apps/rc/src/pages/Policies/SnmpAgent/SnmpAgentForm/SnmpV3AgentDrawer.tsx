@@ -32,6 +32,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { state, dispatch } = useContext(SnmpAgentFormContext)
 
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
+  const [level, setLevel] = useState<boolean>()
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
@@ -59,6 +60,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
 
       form.setFieldsValue(snmpV3Agent)
     }
+
   }, [editIndex, visible, form, isEditMode, state])
 
   const userNameValidator = async (value: string) => {
@@ -75,7 +77,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
       ? Promise.reject($t({ defaultMessage: 'The User name already exists' }))
       : Promise.resolve()
   }
-
 
   const content = (
     <Form layout='vertical' form={form} >
@@ -118,11 +119,14 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         label={$t({ defaultMessage: 'Authentication Password' })}
         style={{ width: '350px' }}
         rules={[
-          { required: true },
-          { min: 8 },
-          { max: 32 }
+          { validator: () => level ? Promise.resolve() : Promise.reject() }
         ]}
-        children={<PasswordInputStrength />}
+        children={<PasswordInputStrength
+          name={'authPassword'}
+          minlevel={4}
+          onLevelChange={setLevel}
+          value={form.getFieldValue('authPassword')} />
+        }
       />
       <Form.Item
         name='privacyProtocol'

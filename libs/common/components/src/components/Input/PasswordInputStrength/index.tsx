@@ -1,35 +1,101 @@
-
+/* minLevel: 1-4 */
 import { useEffect, useState } from 'react'
 
-import { InputProps } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Col, InputProps, Row, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
 
-import { SuccessSolid }     from '@acx-ui/icons'
-import { InformationSolid } from '@acx-ui/icons'
+import { InformationOutlined, SuccessSolid } from '@acx-ui/icons'
 
 import { PasswordInput }   from '..'
 import { cssStr }          from '../../../theme/helper'
 import { StackedBarChart } from '../../StackedBarChart'
 import { Tooltip }         from '../../Tooltip'
 
-import * as UI from './styledComponents'
+interface PasswordStrengthProps extends InputProps {
+  regExRules: RegExp[]
+  regExErrorMessages: string[]
+  minlevel: number
+  onLevelChange: (newLevel: boolean) => void
+  callback?: (value: string) => void
+}
+
+interface PasswordStrengthIndicatorProps {
+  input: string
+  regExRules: RegExp[]
+  regExErrorMessages: string[]
+  minlevel: number
+}
+
 
 const usedBarColor: string[] = [
-  cssStr('--acx-neutrals-50'),
-  cssStr('--acx-semantics-red-60'),
-  cssStr('--acx-semantics-yellow-60'),
-  cssStr('--acx-accents-blue-60'),
-  cssStr('--acx-semantics-green-60')
+  cssStr('--acx-neutrals-20'),
+  cssStr('--acx-semantics-red-50'),
+  cssStr('--acx-semantics-yellow-50'),
+  cssStr('--acx-accents-blue-50'),
+  cssStr('--acx-semantics-green-50')
 ]
 
 export const PasswordInputStrength = ({
   ...props
-}: Partial<InputProps>) => {
+}: Partial<PasswordStrengthProps>) => {
+  const { regExRules, regExErrorMessages, minlevel, onLevelChange, value } = props
   const { $t } = useIntl()
   const [input, setInput] = useState('')
+
+  const RULE_REGEX = regExRules || [
+    /^.{8,}$/,
+    /(?=.*[a-z])(?=.*[A-Z])/,
+    /(?=.*\d)/,
+    /(?=.*[^\w\d\s])/
+  ]
+
+  const RULE_MESSAGES = regExErrorMessages || [
+    $t({ defaultMessage: '8 characters' }),
+    $t({ defaultMessage: 'One uppercase and one lowercase letters' }),
+    $t({ defaultMessage: 'One number' }),
+    $t({ defaultMessage: 'One special symbol' })
+  ]
+  const [level, setLevel] = useState(false)
+
+  useEffect(() => {
+    onLevelChange?.(level)
+
+    if(value){
+      setInput(value.toString())
+    }
+  }, [level, value])
+
+  return (
+    <>
+      <PasswordInput
+        {...props}
+        onChange={(e) => {
+          setInput(e.target.value)
+          const passedRulesRatio = calculatePassedRulesRatio(e.target.value, RULE_REGEX)
+          setLevel(passedRulesRatio >= (minlevel || 4))
+          minlevel && onLevelChange?.(passedRulesRatio >= minlevel)
+          props?.onChange?.(e)
+        }}
+      />
+      <PasswordStrengthIndicator
+        input={input}
+        regExRules={RULE_REGEX}
+        regExErrorMessages={RULE_MESSAGES}
+        minlevel={minlevel || 4}
+      />
+    </>
+  )
+}
+
+export const PasswordStrengthIndicator = ({
+  input, regExRules, regExErrorMessages, minlevel }:
+    PasswordStrengthIndicatorProps) => {
+  const { $t } = useIntl()
+  const [mouseEnterTooltip, setMouseEnterTooltip] = useState(true)
+  const [currentLevel, setCurrentLevel] = useState(0)
   const [usedBarColors, setUsedBarColors] = useState([
     usedBarColor[0],
-    cssStr('--acx-neutrals-50')
+    cssStr('--acx-neutrals-20')
   ])
 
   const [ series, setSeries ] = useState([
@@ -47,18 +113,12 @@ export const PasswordInputStrength = ({
 
   const [ strengthStatus, setStrengthStatus ] = useState(PASSWORD_STRENGTH_CODE[0])
 
-  const RULE_REGEX = [
-    /^.{8,}$/,
-    /(?=.*[a-z])(?=.*[A-Z])/,
-    /(?=.*\d)/,
-    /(?=.*[^\w\d\s])/
-  ]
   const [validRegexIndex, setValidRegexIndex] = useState(new Map<number, boolean>(
-    RULE_REGEX.map((_, index) => [index, false])
+    regExRules.map((_, index) => [index, false])
   ))
 
   useEffect(() => {
-    const passedRulesCount = RULE_REGEX.reduce((count, regEx, index) => {
+    const passedRulesCount = regExRules.reduce((count, regEx, index) => {
       if (regEx.test(input)) {
         setValidRegexIndex(map => new Map(map.set(index, true)))
         return count + 1
@@ -68,11 +128,10 @@ export const PasswordInputStrength = ({
       }
     }, 0)
 
-    const passedRulesRatio = Math.floor(passedRulesCount/RULE_REGEX.length*4)
-
+    const passedRulesRatio = Math.floor(passedRulesCount/regExRules.length*4)
     setUsedBarColors([
       usedBarColor[passedRulesRatio],
-      cssStr('--acx-neutrals-50')
+      cssStr('--acx-neutrals-20')
     ])
 
     setSeries([
@@ -83,50 +142,57 @@ export const PasswordInputStrength = ({
     setStrengthStatus(input === '' ?
       $t({ defaultMessage: 'Strength' }) :
       PASSWORD_STRENGTH_CODE[passedRulesRatio])
-  }, [input])
 
-  const RULE_MESSAGES = [
-    $t({ defaultMessage: '8 characters' }),
-    $t({ defaultMessage: 'One uppercase and one lowercase letters' }),
-    $t({ defaultMessage: 'One number' }),
-    $t({ defaultMessage: 'One special symbol' })
-  ]
+    setCurrentLevel(passedRulesRatio)
+  },[input])
 
-  return (
-    <>
-      <div>
-        <PasswordInput
-          {...props}
-          value={input}
-          onChange={(e) => { setInput(e.target.value); props?.onChange?.(e) }}
-        />
-      </div>
+  return (<div style={{ display: 'flex', gap: '8px', marginTop: 5 }}>
+    <StackedBarChart
+      style={{ height: 8, width: 270, marginTop: 5 }}
+      showLabels={false}
+      showTotal={false}
+      showTooltip={false}
+      barWidth={270}
+      data={[{
+        series,
+        category: 'password strength'
+      }]}
+      barColors={usedBarColors}
+      total={4}
+    />
+    <span style={{ minWidth: 50, textAlign: 'center' }}>{strengthStatus}</span>
 
-      <div style={{ display: 'flex', gap: '8px', marginTop: 5 }}>
-        <StackedBarChart
-          style={{ height: 8, width: 270, marginTop: 5 }}
-          showLabels={false}
-          showTotal={false}
-          showTooltip={false}
-          barWidth={270}
-          data={[{
-            series,
-            category: 'password strength'
-          }]}
-          barColors={usedBarColors}
-          total={4}
-        />
-        <span style={{ minWidth: 50, textAlign: 'center' }}>{strengthStatus}</span>
+    <Tooltip
+      title={<div>
+        <Row gutter={[8, 16]}>
+          <Col span={24}>
+            <Typography style={{ fontWeight: 700, color: cssStr('--acx-primary-white') }}>
+              {$t({ defaultMessage: 'Password must contain at least:' })}</Typography>
+          </Col>
+        </Row>
+        {regExErrorMessages.map((item, index) => (
+          <Row gutter={[8, 16]} key={index}>
+            <Col span={2}>{validRegexIndex.get(index) ? <SuccessSolid /> : '-'}</Col>
+            <Col span={22}>{item}</Col>
+          </Row>
+        ))}
+      </div>}
+      visible={currentLevel < minlevel || mouseEnterTooltip}
+      placement={'bottom'}
+    >
+      <InformationOutlined
+        style={{ paddingTop: '2px' }}
+        onMouseEnter={() => setMouseEnterTooltip(true)}
+        onMouseLeave={() => setMouseEnterTooltip(false)}
+      />
+    </Tooltip>
+  </div>)
 
-        <Tooltip
-          title={<UI.Ul>{RULE_MESSAGES.map(
-            (item, index) => {
-              return <li>{validRegexIndex.get(index)?<SuccessSolid />:'-'} {item}</li> })}
-          </UI.Ul>}
-        >
-          <InformationSolid style={{ paddingTop: '2px' }}/>
-        </Tooltip>
-      </div>
-    </>
-  )
+}
+
+const calculatePassedRulesRatio = (input: string, regExRules: RegExp[]) => {
+  const passedRulesCount = regExRules.reduce((count, regEx) => {
+    return count + (regEx.test(input) ? 1 : 0)
+  }, 0)
+  return Math.floor((passedRulesCount / regExRules.length) * 4)
 }
