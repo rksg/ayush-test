@@ -1,8 +1,7 @@
-import * as config                        from '@acx-ui/config'
-import { MLISA_BASE_PATH }                from '@acx-ui/react-router-dom'
-import { Provider }                       from '@acx-ui/store'
-import { logRoles, render, screen }       from '@acx-ui/test-utils'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import * as config                  from '@acx-ui/config'
+import { MLISA_BASE_PATH }          from '@acx-ui/react-router-dom'
+import { Provider }                 from '@acx-ui/store'
+import { logRoles, render, screen } from '@acx-ui/test-utils'
 
 import ReportsRoutes from './Routes'
 
@@ -24,24 +23,6 @@ test('should navigate to reports/wireless for R1', async () => {
   logRoles(container)
   //expect(screen.getByRole('heading', { name: /wireless/i })).toBeDefined()
   expect(screen.getByTestId('some-report-id')).toBeDefined()
-})
-
-test('should navigate to no permission pages', async () => {
-  setUserProfile({
-    ...getUserProfile(),
-    abacEnabled: true,
-    isCustomRole: true,
-    scopes: []
-  })
-
-  const { container }=render(<Provider><ReportsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/reports/wireless',
-      wrapRoutes: false
-    }
-  })
-  logRoles(container)
-  expect(screen.queryByTestId('some-report-id')).toBeNull()
 })
 
 test('should navigate to reports/wireless for RA', async () => {

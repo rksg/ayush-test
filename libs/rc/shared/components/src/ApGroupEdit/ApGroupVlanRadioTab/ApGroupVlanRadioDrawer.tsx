@@ -11,7 +11,7 @@ import { IsNetworkSupport6g, Network, RadioTypeEnum, VlanType } from '@acx-ui/rc
 
 import { getCurrentVenue } from '../../ApGroupNetworkTable'
 
-import { ApGroupVlanRadioContext } from '.'
+import { ApGroupVlanRadioContext } from './index'
 
 
 export type ApGroupVlanRadioDrawerState = {
