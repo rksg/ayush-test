@@ -18,15 +18,15 @@ import {
 import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
-  useGetDpskListQuery,
-  useGetNetworkSegmentationGroupListQuery,
+  useGetEnhancedDpskListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyVenuesListQuery,
-  useMacRegListsQuery,
+  useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
@@ -42,6 +42,21 @@ const propertyConfigDefaultPayload = {
   pageSize: 100
 }
 
+const macRegSearchDefaultPayload = {
+  dataOption: 'all',
+  searchCriteriaList: [
+    {
+      filterKey: 'name',
+      operation: 'cn',
+      value: ''
+    }
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
+
 function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
@@ -51,12 +66,20 @@ function useColumns (
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
 
-  const { data: dpskPool } = useGetDpskListQuery({})
-  const { data: macList } = useMacRegListsQuery({
+  const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
-    { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
+  const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
+  const { data: nsgList } = useGetNetworkSegmentationViewDataListQuery(
+    {
+      payload: {
+        page: 1,
+        pageSize: 10000,
+        fields: ['name', 'id'],
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
     { skip: !networkSegmentationEnabled }
   )
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({

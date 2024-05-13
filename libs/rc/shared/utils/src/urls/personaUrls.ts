@@ -9,7 +9,7 @@ const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 type PersonaUrlType =
   'addPersonaGroup' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
   'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaById' |
-  'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
+  'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
   'associateDpskPool'
@@ -73,12 +73,6 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'get',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
-    newApi: true
-  },
-  listPersonaByGroupId: {
-    method: 'get',
-    url: `${NewPersonaBaseUrl}/:groupId/identities`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/identities`,
     newApi: true
   },
   searchPersonaList: {

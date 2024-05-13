@@ -219,23 +219,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
-    listPersonaByGroupId: build.query<TableResult<Persona>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.listPersonaByGroupId, params)
-        return {
-          ...req,
-          params,
-          payload
-        }
-      },
-      transformResponse (result: NewTableResult<Persona>) {
-        return transferToTableResult<Persona>(result)
-      },
-      providesTags: [
-        { type: 'Persona', id: 'LIST' },
-        { type: 'PersonaGroup', id: 'ID' }
-      ]
-    }),
     searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({

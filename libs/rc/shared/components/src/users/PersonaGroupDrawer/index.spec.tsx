@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  NewDpskBaseUrl,
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
-  PersonaUrls
+  PersonaUrls,
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -54,8 +54,8 @@ describe('Persona Group Drawer', () => {
         replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
-      rest.get(
-        NewDpskBaseUrl,
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
       )
     )

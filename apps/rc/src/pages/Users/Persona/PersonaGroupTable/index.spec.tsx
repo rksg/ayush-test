@@ -119,16 +119,16 @@ describe.skip('Persona Group Table', () => {
         MacRegListUrlsInfo.getMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
-      rest.get(
-        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
+      rest.post(
+        replacePagination(MacRegListUrlsInfo.searchMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(
         DpskUrls.getDpsk.url,
         (req, res, ctx) => res(ctx.json(mockDpskPool))
       ),
-      rest.get(
-        replacePagination(DpskUrls.getDpskList.url),
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
       ),
       rest.post(
@@ -143,10 +143,10 @@ describe.skip('Persona Group Table', () => {
         NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
         (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       ),
-      rest.get(
-        replacePagination(NetworkSegmentationUrls.getNetworkSegmentationGroupList.url),
+      rest.post(
+        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
         // just for filterable options generation
-        (req, res, ctx) => res(ctx.json({ content: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyConfigsQuery.url,
