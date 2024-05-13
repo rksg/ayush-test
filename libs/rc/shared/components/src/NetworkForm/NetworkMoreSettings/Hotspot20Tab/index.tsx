@@ -190,15 +190,13 @@ export function Hotspot20Tab () {
     }
 
     if (editMode) {
-      const capabilityIdx = connectionCapabilities
-        .findIndex((capability: Hotspot20ConnectionCapability) =>
-          capability.port === capabilityObject.port &&
-        capability.protocolNumber === capabilityObject.protocolNumber
-        )
-      connectionCapabilities[capabilityIdx] = capabilityObject
-      setConnectionCapabilities([
-        ...connectionCapabilities
-      ])
+      const idx = connectionCapibilityMap.current?.get(
+        capabilityObject.protocolNumber + '_' + capabilityObject.port) as number
+      if (idx > -1) {
+        let newCapbilities = cloneDeep(connectionCapabilities)
+        newCapbilities[idx] = capabilityObject
+        setConnectionCapabilities(newCapbilities)
+      }
     } else {
       setConnectionCapabilities([
         ...connectionCapabilities, capabilityObject
