@@ -434,7 +434,7 @@ export function EditPortDrawer ({
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
     setCyclePoeEnable(portsSetting?.filter(s => s?.poeEnable)?.length > 0)
-    
+
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
