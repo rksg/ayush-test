@@ -10,6 +10,7 @@ import {
   DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
+  SwitchRbacUrlsInfo,
   FloorPlanDto,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -97,6 +98,17 @@ import { handleCallbackWhenActivitySuccess } from './utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
+}
+
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
 }
 
 export const venueApi = baseVenueApi.injectEndpoints({
@@ -265,10 +277,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueCityList: build.query<{ name: string }[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params, headers)
         return{
-          ...req, body: payload
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (result: { cityList: { name: string }[] }) => {
@@ -701,37 +715,42 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params, headers)
         return{
           ...req
         }
       }
     }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     venueSwitchAAAServerList: build.query<
     TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const listReq = createHttpRequest(urlsInfo.getAaaServerList, params, headers)
         return {
           ...listReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     getAaaSetting: build.query<AAASetting, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params, headers)
         return{
           ...req
         }
@@ -747,38 +766,44 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateAAASetting: build.mutation<AAASetting, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateAaaSetting, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.updateAaaSetting, params, headers)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     updateAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteAaaServer, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.deleteAaaServer, params, headers)
         return {
           ...req
         }
@@ -786,11 +811,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.bulkDeleteAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.bulkDeleteAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -1097,35 +1124,42 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
     }),
     getVenueConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: {
+        response:{ list:ConfigurationHistory[], totalCount:number }
+        } & { list:ConfigurationHistory[], totalCount:number }, meta
+      , arg: { payload:{ page:number } }) => {
+        const result = res.response?.list || res.list
+        const totalCount = res.response?.totalCount || res.totalCount
+        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' ) : 'configType'
         return {
-          data: res.response.list ? res.response.list.map(item => ({
+          data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: (item.configType as unknown as string[])
+            configType: (item[configType] as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
-          totalCount: res.response.totalCount,
+          totalCount: totalCount,
           page: arg.payload.page
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
