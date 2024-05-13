@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { render, screen, within }         from '@acx-ui/test-utils'
-import { SwitchScopes }                   from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { render, screen, within } from '@acx-ui/test-utils'
 
 import { ReportList } from '.'
 
@@ -39,36 +37,6 @@ describe('ReportList', () => {
       pathname: `/${params.tenantId}/t/reports/overview`,
       hash: '',
       search: ''
-    })
-  })
-
-  describe('should render correctly when abac is enabled', () => {
-    it('has permission: switch', () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      render(<ReportList />, { route: { path, params } })
-      expect(screen.getByText('Overview')).toBeVisible()
-      expect(screen.getByText('Switches')).toBeVisible()
-      expect(screen.queryByText('Access Points')).toBeNull()
-    })
-
-    it('has no permission', () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      render(<ReportList />, { route: { path, params } })
-      expect(screen.getByText('Overview')).toBeVisible()
-      expect(screen.queryByText('Access Points')).toBeNull()
-      expect(screen.queryByText('Switches')).toBeNull()
     })
   })
 })

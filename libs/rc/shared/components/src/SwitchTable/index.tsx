@@ -47,8 +47,9 @@ import {
   getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }                     from '@acx-ui/user'
+import { RequestPayload }                                    from '@acx-ui/types'
+import { SwitchScopes }                                      from '@acx-ui/types'
+import { filterByAccess }                                    from '@acx-ui/user'
 import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
@@ -383,10 +384,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     return !!selectOne && selectedRows.length === 1
   }
 
-  const isSelectionVisible = searchable !== false && hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
-
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
@@ -405,7 +402,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows) => {
       const row = rows[0]
       const isUpgradeFail = row.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
@@ -424,7 +420,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
     tooltip: stackTooltip,
-    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows) => {
       const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(rows)
       return !!notOperational || !!invalid || !!hasStack
@@ -435,7 +430,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   },
   ...(enableSwitchAdminPassword ? [{
     label: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
-    scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows: SwitchRow[]) => {
       return rows.filter((row:SwitchRow) => {
         const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
@@ -449,7 +443,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }] : []),
   {
     label: $t({ defaultMessage: 'Retry firmware update' }),
-    scopeKey: [SwitchScopes.UPDATE],
     visible: (rows) => {
       const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
       return isActionVisible(rows, { selectOne: true }) && isFirmwareUpdateFailed
@@ -540,7 +533,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         filterableWidth={140}
         rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? record.switchMac + 'stack-member' : '')}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible ? {
+        rowSelection={searchable !== false ? {
           type: 'checkbox',
           renderCell: (checked, record, index, originNode) => {
             return record.isFirstLevel
@@ -565,19 +558,16 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         } : undefined}
         actions={filterByAccess(props.enableActions ? [{
           label: $t({ defaultMessage: 'Add Switch' }),
-          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Add Stack' }),
-          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate(`${linkToEditSwitch.pathname}/stack/add`)
           }
         }, {
           label: $t({ defaultMessage: 'Import from file' }),
-          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             setImportVisible(true)
           }

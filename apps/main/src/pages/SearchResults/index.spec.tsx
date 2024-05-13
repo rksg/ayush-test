@@ -3,8 +3,6 @@ import '@testing-library/jest-dom'
 import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { SwitchScopes }                                                from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                              from '@acx-ui/user'
 
 import {
   apListData,
@@ -85,52 +83,5 @@ describe('Search Results', () => {
     const header =
       await screen.findByText(/Hmmmm... we couldn’t find any match for "bdcPerformanceVenue2"/i)
     expect(header).toBeInTheDocument()
-  })
-
-  describe('should render tables correctly when abac is enabled', () => {
-    it('has permission: switch', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [SwitchScopes.READ]
-      })
-
-      render(<SearchResults />, {
-        wrapper: Provider,
-        route: {
-          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
-        }
-      })
-      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(screen.getByText('Venues (1)')).toHaveTextContent('Venues (1)')
-      expect(screen.getByText('Switches (1)')).toHaveTextContent('Switches (1)')
-      expect(screen.queryByText('Networks (3)')).toBeNull()
-      expect(screen.queryByText('APs (1)')).toBeNull()
-      expect(screen.getByText('Events (1)')).toHaveTextContent('Events (1)')
-
-    })
-
-    it('has no permission', async () => {
-      setUserProfile({
-        ...getUserProfile(),
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: []
-      })
-
-      render(<SearchResults />, {
-        wrapper: Provider,
-        route: {
-          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
-        }
-      })
-      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(screen.getByText('Venues (1)')).toHaveTextContent('Venues (1)')
-      expect(screen.queryByText('Switches (1)')).toBeNull()
-      expect(screen.queryByText('Networks (3)')).toBeNull()
-      expect(screen.queryByText('APs (1)')).toBeNull()
-      expect(screen.getByText('Events (1)')).toHaveTextContent('Events (1)')
-    })
   })
 })

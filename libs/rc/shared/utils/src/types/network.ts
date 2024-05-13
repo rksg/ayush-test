@@ -157,6 +157,7 @@ export interface NetworkSaveData {
   hotspot20Settings?: NetworkHotspot20Settings
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
+  accountingInterimUpdates?: number
 }
 
 export enum MaxRateEnum {

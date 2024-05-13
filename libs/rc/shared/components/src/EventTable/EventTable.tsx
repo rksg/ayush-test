@@ -14,8 +14,7 @@ import { DateFormatEnum, formatter }                                      from '
 import { DownloadOutlined }                                               from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
 import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes }           from '@acx-ui/types'
-import { hasPermission }                                                  from '@acx-ui/user'
+import { RequestPayload }                                                 from '@acx-ui/types'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -79,10 +78,8 @@ export const EventTable = ({
   }
 
   const excludeEventType = [
-    ...(!isEdgeEnabled || !hasPermission({ scopes: [EdgeScopes.READ] }) ? ['EDGE'] : []),
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : []),
-    ...(!hasPermission({ scopes: [SwitchScopes.READ] }) ? ['SWITCH'] : []),
-    ...(!hasPermission({ scopes: [WifiScopes.READ] }) ? ['AP', 'NETWORK'] : [])
+    ...(!isEdgeEnabled ? ['EDGE'] : []),
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
   ]
 
   const supportedEventTypes =
@@ -160,9 +157,7 @@ export const EventTable = ({
     }
 
   const excludeProduct = [
-    ...(!hasPermission({ scopes: [WifiScopes.READ] }) ? ['WIFI'] : []),
-    ...(!hasPermission({ scopes: [SwitchScopes.READ] }) ? ['SWITCH'] : []),
-    ...(!isEdgeEnabled|| !hasPermission({ scopes: [EdgeScopes.READ] }) ? ['EDGE'] : [])
+    ...(!isEdgeEnabled ? ['EDGE'] : [])
   ]
 
   const columns: TableProps<Event>['columns'] = [
