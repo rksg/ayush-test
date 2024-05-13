@@ -131,6 +131,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -151,6 +152,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
+    enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       filters: getFilters(params),
       ...defaultSwitchPayload
@@ -234,9 +236,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       okText: $t({ defaultMessage: 'Match Password' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: () => {
-        const switchIdList = rows
+        const switchRows = rows
           .filter(row => isFirmwareSupportAdminPassword(row?.firmware ?? ''))
-          .map(row => row.id)
 
         const callback = () => {
           clearSelection?.()
@@ -245,7 +246,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
             content: $t({ defaultMessage: 'Start admin password sync' })
           })
         }
-        switchAction.doSyncAdminPassword(switchIdList, callback)
+        switchAction.doSyncAdminPassword(switchRows, callback)
       }
     })
   }
@@ -380,11 +381,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return row.isFirstLevel ? row.extIp || noDataDisplay : ''
       }
     }] : [])
-      // { // TODO: Waiting for TAG feature support
-      //   key: 'tags',
-      //   title: $t({ defaultMessage: 'Tags' }),
-      //   dataIndex: 'tags'
-      // }
     ] as TableProps<SwitchRow>['columns']
   }, [$t, filterableKeys])
 
@@ -420,7 +416,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     onClick: async (rows) => {
       const row = rows[0]
-      const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
+      const token = (await getJwtToken({
+        params: {
+          tenantId: params.tenantId,
+          serialNumber: row.serialNumber,
+          venueId: params.venueId
+        },
+        enableRbac: isSwitchRbacEnabled
+      }, true)
         .unwrap()).access_token || ''
       setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
       setTimeout(() => {

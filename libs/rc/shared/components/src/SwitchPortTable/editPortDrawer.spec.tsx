@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { switchApi }              from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -116,7 +116,12 @@ const initPortValue = {
 
 const transformSubmitValue = (updateValue?: object) => {
   return {
-    params: { tenantId: 'tenant-id' },
+    enableRbac: false,
+    option: { skip: false },
+    params: {
+      tenantId: 'tenant-id',
+      venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+    },
     payload: [{
       switchId: 'c0:c5:20:aa:32:79',
       port: {
@@ -136,6 +141,9 @@ describe('EditPortDrawer', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailHeader))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({ id: 'c0:c5:20:aa:32:79' }))
       ),
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
@@ -188,6 +196,7 @@ describe('EditPortDrawer', () => {
 
   describe('single edit', () => {
     it('should apply edit data correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -230,7 +239,7 @@ describe('EditPortDrawer', () => {
     })
 
     it('should cycle PoE correctly', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -454,7 +463,12 @@ describe('EditPortDrawer', () => {
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: '58:fb:96:0e:82:8a',
           port: {
@@ -591,7 +605,12 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -844,7 +863,12 @@ describe('EditPortDrawer', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -1104,7 +1128,12 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('Applied at venue')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {

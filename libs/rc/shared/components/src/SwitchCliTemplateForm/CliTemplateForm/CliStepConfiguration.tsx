@@ -13,6 +13,7 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliTemplatesQuery
@@ -96,6 +97,7 @@ export function CliStepConfiguration () {
   const { form, editMode } = useStepFormContext()
   const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
@@ -107,9 +109,15 @@ export function CliStepConfiguration () {
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [initVariableList, setInitVariableList] = useState(false)
 
-  const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
+  const { data: configExamples } = useGetCliConfigExamplesQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
   const { data: cliTemplates }
-    = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
+    = useGetCliTemplatesQuery({
+      params,
+      payload: cliTemplatesPayload,
+      enableRbac: isSwitchRbacEnabled
+    }, { skip: !isTemplate })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,

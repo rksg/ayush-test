@@ -36,7 +36,6 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchVenueVersionList: {
     method: 'post',
     url: '/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
     newApi: true
   },
   getSwitchAvailableFirmwareList: {
@@ -46,9 +45,8 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchCurrentVersions: {
-    method: 'post',
+    method: 'get',
     url: '/switchFirmwares/currentVersions',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
   getSwitchFirmwareList: {
