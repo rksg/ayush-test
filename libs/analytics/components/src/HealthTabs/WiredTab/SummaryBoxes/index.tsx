@@ -34,7 +34,10 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'red',
       values: [{
         title: defineMessage({ defaultMessage: 'Uplink usage' }),
-        value: 'X2%'
+        value: !isNil(summaryData?.congestedPortCount) &&
+        summaryData?.portCount
+          ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
+          : noDataDisplay
       }],
       onClick: () => { }
     },
