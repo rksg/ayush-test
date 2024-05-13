@@ -51,7 +51,7 @@ type RecommendationKPIConfig = {
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: ReturnType<typeof formatter>;
   showAps?: boolean;
-  onlyForStatuses?: StateType[]
+  filter?: CallableFunction
 }
 
 type RecommendationConfig = {
@@ -202,17 +202,7 @@ const probeflexConfig: RecommendationConfig = {
       label: defineMessage({ defaultMessage: 'Average management traffic per client before the recommendation was applied' }),
       format: formatter('bytesFormat'),
       deltaSign: 'none',
-      onlyForStatuses: [
-        'applied',
-        'applyfailed',
-        'beforeapplyinterrupted',
-        'afterapplyinterrupted',
-        'applywarning',
-        'revertscheduled',
-        'revertscheduleinprogress',
-        'revertfailed',
-        'reverted'
-      ]
+      filter: (trail: StatusTrail ) => trail.some((t) => t.status === 'applied' )
     }
   ]
 }
@@ -611,8 +601,3 @@ export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) =
   acc[key as StateType] = val.text
   return acc
 }, {} as Record<StateType, MessageDescriptor>)
-
-export const filterKpisByStatus = (kpis: RecommendationKPIConfig[], status: StateType) => {
-  return kpis.filter(kpi => typeof kpi.onlyForStatuses === 'undefined'
-    || kpi.onlyForStatuses.includes(status))
-}
