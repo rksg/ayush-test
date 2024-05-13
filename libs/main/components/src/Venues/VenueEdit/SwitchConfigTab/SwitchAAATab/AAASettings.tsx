@@ -14,6 +14,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
 import { Loader, Fieldset, Transfer, AnchorContext }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import {
   useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery,
   useGetVenueTemplateSwitchAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery
@@ -121,6 +122,7 @@ export const AAASettings = (props: {
   const form = Form.useFormInstance()
   const { setReadyToScroll } = useContext(AnchorContext)
   const { isTemplate } = useConfigTemplate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const serverLevelItem = [{
     value: 'PORT_CONFIG',
@@ -151,7 +153,8 @@ export const AAASettings = (props: {
     defaultPayload: { ...defaultPayload, serverType: AAAServerTypeEnum.RADIUS },
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const tacasTableQuery = useTableQuery({
@@ -159,12 +162,13 @@ export const AAASettings = (props: {
     defaultPayload: { ...defaultPayload, serverType: AAAServerTypeEnum.TACACS },
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   // const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
   const { data: aaaSetting, isFetching, isLoading } = useConfigTemplateQueryFnSwitcher<AAASetting>(
-    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
   )
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)

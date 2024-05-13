@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 import TextArea           from 'antd/lib/input/TextArea'
@@ -7,6 +7,7 @@ import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
 import { Button, Loader }               from '@acx-ui/components'
+import { useIsSplitOn, Features }       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
@@ -17,27 +18,34 @@ import {
   TroubleshootingType
 } from '@acx-ui/rc/utils'
 
+import { SwitchDetailsContext } from '..'
+
 import { parseResult } from './switchPingForm'
 
 export function SwitchIpRouteForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const [form] = Form.useForm()
 
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const troubleshootingParams = {
     tenantId,
     switchId,
-    troubleshootingType: TroubleshootingType.ROUTE_TABLE
+    troubleshootingType: TroubleshootingType.ROUTE_TABLE,
+    venueId: switchDetailsContextData.switchDetailHeader?.venueId
   }
 
   const [runMutation] = useIpRouteMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
 
   const refetchResult = function () {
@@ -64,8 +72,15 @@ export function SwitchIpRouteForm () {
   const onSubmit = async () => {
     setIsLoading(true)
     try {
-      const result = await runMutation({ params: { tenantId, switchId },
-        payload: { troubleshootingType: 'route-table' } }).unwrap()
+      const result = await runMutation({
+        params: {
+          tenantId,
+          switchId,
+          venueId: switchDetailsContextData.switchDetailHeader?.venueId
+        },
+        payload: { troubleshootingType: 'route-table' },
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
       if (result) {
         refetchResult()
       }
@@ -77,7 +92,8 @@ export function SwitchIpRouteForm () {
   const onClear = async () => {
     setIsLoading(true)
     await getTroubleshootingClean({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
     refetchResult()
   }

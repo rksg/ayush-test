@@ -8,6 +8,9 @@ import { SwitchUrlsInfo }                                      from '@acx-ui/rc/
 import { Provider, store }                                     from '@acx-ui/store'
 import { act, fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { SwitchDetailsContext }     from '..'
+import { switchDetailsContextData } from '../__tests__/fixtures'
+
 import {
   doRunResponse,
   troubleshootingResult_traceRoute_empty,
@@ -48,9 +51,15 @@ describe('SwitchTraceRouteForm', () => {
 
   it('should copy correctly', async () => {
     jest.spyOn(navigator.clipboard, 'writeText')
-    render(<Provider>
-      <SwitchTraceRouteForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTraceRouteForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
 
@@ -64,9 +73,15 @@ describe('SwitchTraceRouteForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_empty)))
     )
-    render(<Provider>
-      <SwitchTraceRouteForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTraceRouteForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
   })
@@ -77,9 +92,15 @@ describe('SwitchTraceRouteForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_syncing)))
     )
-    render(<Provider>
-      <SwitchTraceRouteForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTraceRouteForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
     expect(await screen.findByRole('img', { name: 'loader' })).toBeVisible()
@@ -92,9 +113,15 @@ describe('SwitchTraceRouteForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_emptyResult)))
     )
-    render(<Provider>
-      <SwitchTraceRouteForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTraceRouteForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
   })
@@ -106,9 +133,15 @@ describe('SwitchTraceRouteForm', () => {
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_empty)))
     )
-    render(<Provider>
-      <SwitchTraceRouteForm />
-    </Provider>, { route: { params } })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTraceRouteForm />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
 
     const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
@@ -148,7 +181,12 @@ describe('SwitchTraceRouteForm', () => {
       )
     )
     render(<Provider>
-      <SwitchTraceRouteForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTraceRouteForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
 
@@ -164,7 +202,12 @@ describe('SwitchTraceRouteForm', () => {
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
     render(<Provider>
-      <SwitchTraceRouteForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTraceRouteForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     const ipAddressField = await screen.findByRole('textbox', {

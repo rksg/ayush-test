@@ -5,6 +5,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 
 import { Alert, Loader, Collapse, AnchorContext }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import {
   useGetAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery,
   useGetVenueTemplateSwitchAaaSettingQuery, useVenueSwitchAAAServerListQuery
@@ -31,7 +32,7 @@ export function AAAServers (props: {
   const { $t } = useIntl()
   const { setReadyToScroll } = useContext(AnchorContext)
   const { isTemplate } = useConfigTemplate()
-
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
     return $t(PanelHeader[type] , { count })
   }
@@ -50,7 +51,7 @@ export function AAAServers (props: {
   }
 
   const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>(
-    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
   )
 
   const radiusTableQuery = useTableQuery({
@@ -58,7 +59,8 @@ export function AAAServers (props: {
     defaultPayload: payloadMap[AAAServerTypeEnum.RADIUS],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const tacasTableQuery = useTableQuery({
@@ -66,7 +68,8 @@ export function AAAServers (props: {
     defaultPayload: payloadMap[AAAServerTypeEnum.TACACS],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const localUserTableQuery = useTableQuery({
@@ -74,7 +77,8 @@ export function AAAServers (props: {
     defaultPayload: payloadMap[AAAServerTypeEnum.LOCAL_USER],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [aaaServerCount, setAaaServerCount] = useState({
